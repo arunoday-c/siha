@@ -35,17 +35,11 @@ export async function addPatienAdmission(
       ward_id: input.ward_id,
 
       bed_id: input.bed_id,
-
       insurance_yesno: input.insurance_yesno,
-
       insurance_provider_id: input.insurance_provider_id,
-
       insurance_sub_id: input.insurance_sub_id,
-
       network_id: input.network_id,
-
       insurance_network_office_id: input.insurance_network_office_id,
-
       policy_number: input.policy_number,
 
       pre_approval: input.pre_approval,

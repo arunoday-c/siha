@@ -4,6 +4,7 @@ import {
   AlgaehFormGroup,
   AlgaehAutoComplete,
   AlgaehButton,
+  AlgaehLabel,
 } from "algaeh-react-components";
 import "./LabInvestigation.scss";
 
@@ -22,6 +23,7 @@ export default function Formulae({
     if (openFormula) {
       onClearFormula();
       setFormula_description(selectedRow.display_formula);
+      setDecimals(selectedRow.decimals);
       // setFieldArray(selectedRow.display_formula.match(/[A-Za-z]/g));
       // console.log("fieldArray", fieldArray);
     }
@@ -38,13 +40,10 @@ export default function Formulae({
   }
   function generateFormula() {
     if (formula_description !== "") {
-      let descFormula = formula_description.replace(/[()?%&^]/g, "");
+      let descFormula = formula_description.replace(/[?%&^]/g, "");
       for (let i = 0; i < valueForm.length; i++) {
         const { label, value } = valueForm[i];
-        const formula_reg = new RegExp(
-          `${label.replace(/[()?%&^]/g, "")}`,
-          "gi"
-        );
+        const formula_reg = new RegExp(`${label.replace(/[?%&^]/g, "")}`, "gi");
         descFormula = descFormula.replace(formula_reg, value);
       }
 
@@ -97,7 +96,17 @@ export default function Formulae({
           </div>
           <div className="col-8">
             <div className="row">
-              <AlgaehFormGroup
+              <div className="col-12">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Previously applied formula",
+                  }}
+                />
+                <h6>
+                  {formula_description ? formula_description : "--------"}
+                </h6>
+              </div>
+              {/* <AlgaehFormGroup
                 div={{ className: "col-12" }}
                 label={{
                   forceLabel: "Current Formula",
@@ -113,9 +122,9 @@ export default function Formulae({
                 // events={{
                 //   onChange: onChangeDecimals,
                 // }}
-              />
+              /> */}
               <AlgaehAutoComplete
-                div={{ className: "col-4 mandatory form-group" }}
+                div={{ className: "col-12 mandatory form-group" }}
                 label={{
                   forceLabel: "Select an Analyte",
                   isImp: true,
@@ -149,23 +158,7 @@ export default function Formulae({
                 }}
               />
               <AlgaehFormGroup
-                div={{ className: "col-3" }}
-                label={{
-                  forceLabel: "Enter Decimals",
-                  isImp: false,
-                }}
-                textBox={{
-                  type: "number",
-                  className: "txt-fld",
-                  name: "Decimals",
-                  value: decimals,
-                }}
-                events={{
-                  onChange: onChangeDecimals,
-                }}
-              />
-              <AlgaehFormGroup
-                div={{ className: "col-12 mandatory" }}
+                div={{ className: "col-12 mandatory form-group" }}
                 label={{
                   forceLabel: "Enter Formula",
                   isImp: true,
@@ -180,8 +173,26 @@ export default function Formulae({
                     setFormula_description(e.target.value);
                   },
                 }}
+              />{" "}
+              <AlgaehFormGroup
+                div={{ className: "col-12 form-group" }}
+                label={{
+                  forceLabel: "Enter Result Decimals",
+                  isImp: false,
+                }}
+                textBox={{
+                  type: "number",
+                  className: "txt-fld",
+                  name: "Decimals",
+                  value: decimals,
+                  others: {
+                    placeholder: "2",
+                  },
+                }}
+                events={{
+                  onChange: onChangeDecimals,
+                }}
               />
-
               <div
                 className="col-12 form-group "
                 style={{ textAlign: "right" }}

@@ -9,7 +9,7 @@
     "@typescript-eslint/eslint-plugin": "1.13.0",
     "@typescript-eslint/parser": "1.13.0",
     "agentkeepalive": "^4.1.0",
-    "algaeh-react-components": "^3.12.6",
+    "algaeh-react-components": "^3.13.10",
     "antd": "^4.15.4",
     "axios": "^0.19.2",
     "axios-cancel": "^0.2.2",

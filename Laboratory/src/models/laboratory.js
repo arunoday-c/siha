@@ -998,7 +998,11 @@ export default {
       let inputParam = { ...req.body };
 
       return new Promise((resolve, reject) => {
-        // console.log("inputParam.hims_d_lab_sample_id", inputParam.hims_d_lab_sample_id)
+        console.log(
+          "inputParam.hims_d_lab_sample_id",
+          inputParam.hims_d_lab_sample_id
+        );
+        console.log("inputParam.container_id", inputParam.container_id);
         let strQuery = "";
 
         if (inputParam.hims_d_lab_sample_id === null) {
@@ -1034,15 +1038,13 @@ export default {
           );
         } else {
           strQuery = mysql.format(
-            "SELECT distinct LS.container_id, LC.container_id as container_code FROM hims_m_lab_specimen LS \
-            inner join hims_d_investigation_test IT on IT.hims_d_investigation_test_id = LS.test_id \
-            inner join hims_d_lab_container LC on LC.hims_d_lab_container_id = LS.container_id \
-            where IT.services_id=?;\
+            "SELECT container_id as container_code FROM hims_d_lab_container \
+            where hims_d_lab_container_id=?;\
             SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;\
             UPDATE hims_f_lab_sample SET `container_id`=?, `sample_id`=?,`collected`=?,`status`=?, `collected_by`=?,\
-          `collected_date` =now(), `barcode_gen` = now() WHERE hims_d_lab_sample_id=?;",
+            `collected_date` =now(), `barcode_gen` = now() WHERE hims_d_lab_sample_id=?;",
             [
-              inputParam.service_id,
+              inputParam.container_id,
               inputParam.hims_d_hospital_id,
               inputParam.container_id,
               inputParam.sample_id,
@@ -1059,7 +1061,6 @@ export default {
             printQuery: true,
           })
           .then((update_lab_sample) => {
-            inputParam.container_id = update_lab_sample[0][0].container_id;
             inputParam.container_code = update_lab_sample[0][0].container_code;
             inputParam.lab_location_code =
               update_lab_sample[1][0].lab_location_code;
@@ -1640,7 +1641,7 @@ export default {
                     left join hims_d_lab_analytes A on M.analyte_id=A.hims_d_lab_analytes_id\
                     left join  hims_d_lab_analytes_range R on  M.analyte_id=R.analyte_id\
                     and (R.gender=? or R.gender='BOTH') and (R.age_type=? or R.age_type='Y') and ? between R.from_age and R.to_age\
-                    where M.test_id in(?);",
+                    where M.test_id in(?) order by display_order;",
                 values: [req.body.gender, age_type, age, input.test_id],
                 printQuery: true,
               })
@@ -1941,13 +1942,14 @@ export default {
 
       for (let i = 0; i < req.body.length; i++) {
         qry += mysql.format(
-          "UPDATE `hims_f_ord_analytes` SET result=?,\
+          "UPDATE `hims_f_ord_analytes` SET result_unit=?, result=?,\
         `status`=?,`remarks`=?,`run1`=?,`run2`=?,`run3`=?,`critical_type`=?, \
           amended=?,amended_date=?,normal_low=?, normal_high=?, text_value=?,\
           updated_date=?,updated_by=? " +
             strAnaQry +
             " where order_id=? AND hims_f_ord_analytes_id=?;",
           [
+            inputParam[i].result_unit,
             inputParam[i].result,
             inputParam[i].status,
             inputParam[i].remarks,

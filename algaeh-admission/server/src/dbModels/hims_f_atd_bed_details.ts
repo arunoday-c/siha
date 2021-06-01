@@ -104,7 +104,7 @@ hims_f_atd_bed_details.init(
     },
 
     policy_number: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(100),
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -124,44 +124,44 @@ hims_f_atd_bed_details.init(
       defaultValue: "N",
     },
     quantity: {
-      type: DataTypes.ENUM("N", "Y"),
+      type: DataTypes.FLOAT,
       defaultValue: "N",
     },
 
     unit_cost: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     gross_amount: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     discount_amout: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     discount_percentage: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     net_amout: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     copay_percentage: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     copay_amount: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     deductable_amount: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     deductable_percentage: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     tax_inclusive: {
@@ -169,35 +169,35 @@ hims_f_atd_bed_details.init(
       defaultValue: "N",
     },
     patient_resp: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     comapany_resp: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     patient_tax: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     company_tax: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     patient_payable: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     company_payble: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     total_tax: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     total_amount: {
-      type: DataTypes.FLOAT(10, 3),
+      type: DataTypes.DECIMAL(10, 3),
       allowNull: true,
     },
     hospital_id: {

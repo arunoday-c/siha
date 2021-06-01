@@ -19,6 +19,7 @@ import {
   updateLabInvestigation,
   updateAnalyteGroup,
   deleteLabAnalyte,
+  dataDrag,
 } from "./LabInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -111,14 +112,29 @@ class LabInvestigation extends Component {
   analyteidhandle = analyteidhandle.bind(this);
   containeridhandle = containeridhandle.bind(this);
   changeGridEditors(row, e) {
+    const { state } = this.context;
+    let analytes = state.analytes;
+
+    let analytes_index = analytes.indexOf(row);
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
-    row.update();
+
+    analytes[analytes_index] = row;
+
+    if (this.context !== undefined) {
+      this.context.updateState({
+        analytes: analytes,
+        analyte_report_group: "N",
+        // update_analytes: update_analytes,
+      });
+    }
   }
+
   // Crud a
   AddAnalytes = AddAnalytes.bind(this);
   deleteLabAnalyte = deleteLabAnalyte.bind(this);
+  dataDrag = dataDrag.bind(this);
   updateLabInvestigation = updateLabInvestigation.bind(this);
   updateAnalyteGroup = updateAnalyteGroup.bind(this);
 
@@ -136,9 +152,23 @@ class LabInvestigation extends Component {
     });
   }
   onDeleteFormula(row) {
+    debugger;
+    const { state } = this.context;
+    let analytes = [...state.analytes];
+
+    let analytes_index = analytes.indexOf(row);
+
     row.display_formula = null;
     row.formula = null;
     row.decimals = null;
+
+    analytes[analytes_index] = row;
+
+    if (this.context !== undefined) {
+      this.context.updateState({
+        analytes: analytes,
+      });
+    }
   }
   render() {
     const { state } = this.context;
@@ -264,7 +294,7 @@ class LabInvestigation extends Component {
               <div>
                 <div className="row" data-validate="analyte_details">
                   <AlagehAutoComplete
-                    div={{ className: "col mandatory" }}
+                    div={{ className: "col-7 mandatory" }}
                     label={{
                       fieldName: "analyte_id",
                       isImp: true,
@@ -296,11 +326,11 @@ class LabInvestigation extends Component {
                         valueField: "value",
                         data: GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
                       },
-                      onChange: this.analyteidhandle,
+                      onChange: this.texthandle,
                     }}
                   />
 
-                  <div className="col" style={{ padding: 0 }}>
+                  <div className="col-1" style={{ padding: 0 }}>
                     <button
                       className="btn btn-primary"
                       style={{ marginTop: 20 }}
@@ -364,7 +394,8 @@ class LabInvestigation extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
+                                    data:
+                                      GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
@@ -375,7 +406,7 @@ class LabInvestigation extends Component {
                             );
                           },
                           others: {
-                            minWidth: 150,
+                            maxWidth: 250,
                             style: { textAlign: "left" },
                           },
                         },
@@ -408,6 +439,10 @@ class LabInvestigation extends Component {
                               </div>
                             );
                           },
+                          others: {
+                            maxWidth: 250,
+                            style: { textAlign: "left" },
+                          },
                         },
                       ]}
                       keyId="analyte_id"
@@ -419,11 +454,9 @@ class LabInvestigation extends Component {
                       events={{
                         onDelete: this.deleteLabAnalyte,
                         onEdit: (row) => {},
-                        onDrop: (dat) => {
-                          console.log("dat====>", dat);
-                        },
+                        onDrop: this.dataDrag,
                         // onDone: this.updateLabInvestigation,
-                        onDone: this.updateAnalyteGroup,
+                        onSave: this.updateAnalyteGroup,
                       }}
                     />
                   </div>

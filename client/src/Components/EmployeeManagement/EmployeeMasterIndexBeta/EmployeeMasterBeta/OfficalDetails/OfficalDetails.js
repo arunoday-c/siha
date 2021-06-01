@@ -999,31 +999,58 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
                 )}
               /> */}
               {HIMS_Active === true ? (
-                <Controller
-                  name="service_dis_percentage"
-                  control={control}
-                  rules={{ required: "Required" }}
-                  render={(props) => (
-                    <AlgaehFormGroup
-                      div={{ className: "col-3 mandatory form-group" }}
-                      error={errors}
-                      label={{
-                        forceLabel: "Discount % Elgible",
-                        isImp: false,
-                      }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        name: "service_dis_percentage",
-                        // type: "text",
-                        className: "form-control",
-                        ...props,
-                        others: {
-                          placeholder: "0.00",
-                        },
-                      }}
-                    />
-                  )}
-                />
+                <>
+                  <Controller
+                    name="service_dis_percentage"
+                    control={control}
+                    rules={{ required: "Required" }}
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{ className: "col-3 mandatory form-group" }}
+                        error={errors}
+                        label={{
+                          forceLabel: "Elgible Max. Discount %",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          name: "service_dis_percentage",
+                          // type: "text",
+                          className: "form-control",
+                          ...props,
+                          others: {
+                            placeholder: "0.00",
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="service_credit_percentage"
+                    control={control}
+                    rules={{ required: "Required" }}
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{ className: "col-3 mandatory form-group" }}
+                        error={errors}
+                        label={{
+                          forceLabel: "Elgible Min. Credit %",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          name: "service_credit_percentage",
+                          // type: "text",
+                          className: "form-control",
+                          ...props,
+                          others: {
+                            placeholder: "0.00",
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                </>
               ) : // <AlagehFormGroup
               //   div={{ className: "col-3 mandatory form-group" }}
               //   label={{
