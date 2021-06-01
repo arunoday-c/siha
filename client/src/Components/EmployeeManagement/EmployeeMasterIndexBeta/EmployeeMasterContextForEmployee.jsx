@@ -108,8 +108,8 @@ const baseState = {
     gratuity_encash: 0,
     identity_type_id: null,
     identity_no: null,
-
     service_dis_percentage: 100,
+    service_credit_percentage: 100,
   },
 };
 

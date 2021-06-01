@@ -512,28 +512,6 @@ class OfficalDetails extends Component {
                   }}
                 />
 
-                {this.state.HIMS_Active === true ? (
-                  <AlagehFormGroup
-                    div={{ className: "col-3 mandatory form-group" }}
-                    label={{
-                      forceLabel: "Discount % Elgible",
-                      isImp: false,
-                    }}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: this.state.service_dis_percentage,
-                      className: "txt-fld",
-                      name: "service_dis_percentage",
-                      events: {
-                        onChange: ondiscountChange.bind(this, this),
-                      },
-                      others: {
-                        placeholder: "0.00",
-                      },
-                    }}
-                  />
-                ) : null}
-
                 {this.state.HRMS_Active === true ? (
                   <AlagehAutoComplete
                     div={{ className: "col-3 mandatory form-group" }}
@@ -668,6 +646,48 @@ class OfficalDetails extends Component {
                       </div>
                     </div>
                   </React.Fragment>
+                ) : null}
+                {this.state.HIMS_Active === true ? (
+                  <>
+                    <AlagehFormGroup
+                      div={{ className: "col-3 mandatory form-group" }}
+                      label={{
+                        forceLabel: "Elgible Max. Discount %",
+                        isImp: false,
+                      }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        value: this.state.service_dis_percentage,
+                        className: "txt-fld",
+                        name: "service_dis_percentage",
+                        events: {
+                          onChange: ondiscountChange.bind(this, this),
+                        },
+                        others: {
+                          placeholder: "0.00",
+                        },
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col-3 mandatory form-group" }}
+                      label={{
+                        forceLabel: "Elgible Min. Credit %",
+                        isImp: false,
+                      }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        value: this.state.service_credit_percentage,
+                        className: "txt-fld",
+                        name: "service_credit_percentage",
+                        events: {
+                          onChange: ondiscountChange.bind(this, this),
+                        },
+                        others: {
+                          placeholder: "100.00",
+                        },
+                      }}
+                    />
+                  </>
                 ) : null}
                 {_isDoctor === "Y" ? (
                   <AlagehAutoComplete

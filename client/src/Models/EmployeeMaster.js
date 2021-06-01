@@ -111,6 +111,7 @@ export default {
       identity_no: null,
 
       service_dis_percentage: 100,
+      service_credit_percentage: 100,
     };
     return output;
   },
