@@ -15,7 +15,7 @@ const executePDF = function executePDFMethod(options) {
       });
 
       if (input.hospital_id > 0) {
-        str += ` and ED.hospital_id= ${input.hospital_id}`;
+        str += ` and E.hospital_id= ${input.hospital_id}`;
       }
 
       if (input.employee_group_id > 0) {
@@ -46,7 +46,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_employee_group EG on E.employee_group_id = EG.hims_d_employee_group_id
           left join hims_d_designation DG on E.employee_designation_id=DG.hims_d_designation_id 
           left join hims_d_hospital H  on ED.hospital_id=H.hims_d_hospital_id 
-          where ED.year=? and ED.month=? and ED.category=? and E.employee_status='A' ${is_local}  ${str} order by ED.hospital_id`,
+          where ED.year=? and ED.month=? and ED.category=? and E.employee_status='A' ${is_local}  ${str} order by E.hospital_id`,
           values: [input.year, input.month, input.edType],
           printQuery: true,
         })
