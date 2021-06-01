@@ -53,15 +53,15 @@ export default function ChangeEntitlement(props) {
     enabled: !!visit,
   });
 
-  const { data: bills, isLoading: billLoadin, clear: clearBills } = useQuery(
-    ["patient-bills", { ...visit }],
-    getBillsForVisit,
-    {
-      initialData: [],
-      initialStale: true,
-      enabled: !!visit,
-    }
-  );
+  const {
+    data: bills,
+    isLoading: billLoadin,
+    clear: clearBills,
+  } = useQuery(["patient-bills", { ...visit }], getBillsForVisit, {
+    initialData: [],
+    initialStale: true,
+    enabled: !!visit,
+  });
 
   const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 
@@ -75,6 +75,7 @@ export default function ChangeEntitlement(props) {
   const onSubmit = async (e) => {
     try {
       debugger;
+      return;
       const insurance_data = state.dropdownData;
 
       if (insurance_data.insured === "Y") {
@@ -101,9 +102,11 @@ export default function ChangeEntitlement(props) {
             : "Y",
         visit_bills: bills,
       };
-      const after_generate = await generateBills(inpit_data).catch((error) => {
-        throw error;
-      });
+      const after_generate = await generateBills(inpit_data)
+        .then(res)
+        .catch((error) => {
+          throw error;
+        });
       setGenerateEnable(true);
       console.log("after_generate", after_generate);
       debugger;
