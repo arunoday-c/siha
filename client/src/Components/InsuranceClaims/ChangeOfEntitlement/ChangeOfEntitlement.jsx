@@ -115,6 +115,7 @@ export default function ChangeEntitlement(props) {
         throw error;
       });
       setGenerateEnable(true);
+      console.log("after_generate", after_generate);
       try {
         const data = {
           visit_code: visit?.visit_code,
