@@ -592,7 +592,7 @@ export default {
           ordered_date: s.created_date,
           test_type: s.test_type,
           test_id: s.test_id,
-          creidt_order: parseFloat(req.body.credit_amount) > 0 ? "Y" : "N",
+          credit_order: parseFloat(req.body.credit_amount) > 0 ? "Y" : "N",
         };
       });
 
@@ -612,7 +612,7 @@ export default {
           "ordered_date",
           "test_type",
           "test_id",
-          "creidt_order",
+          "credit_order",
         ];
 
         _mysql
@@ -2259,18 +2259,18 @@ export default {
           appsettings.hims_d_service_type.service_type_id.Lab
       );
 
-      const creidt_order = parseFloat(req.body.credit_amount) > 0 ? "Y" : "N";
+      const credit_order = parseFloat(req.body.credit_amount) > 0 ? "Y" : "N";
       if (OrderServices.length > 0) {
         let qry = "";
 
         for (let i = 0; i < OrderServices.length; i++) {
           qry += mysql.format(
-            "UPDATE `hims_f_lab_order` SET billing_header_id=?, billed=?,creidt_order=?,\
+            "UPDATE `hims_f_lab_order` SET billing_header_id=?, billed=?,credit_order=?,\
           updated_date=?,updated_by=? where ordered_services_id=?;",
             [
               req.body.hims_f_billing_header_id,
               OrderServices[i].billed,
-              creidt_order,
+              credit_order,
               moment().format("YYYY-MM-DD HH:mm"),
               OrderServices[i].updated_by,
               OrderServices[i].ordered_services_id,

@@ -202,7 +202,7 @@ export default {
         );
         if (balance_credit === 0) {
           qry += mysql.format(
-            "UPDATE hims_f_lab_order SET creidt_order='N' where billing_header_id in (?);",
+            "UPDATE hims_f_lab_order SET credit_order='N' where billing_header_id in (?);",
             [details[i].bill_header_id]
           );
         }
