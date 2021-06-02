@@ -105,7 +105,7 @@ function NavBars(props) {
   function addDefaultSrc(e) {
     e.target.src = localSrc;
   }
-  const { product_type } = userToken;
+  const { product_name } = userToken;
   return (
     <>
       <nav className="navbar fixed-top navbar-expand-lg navbar-dark mainTheme">
@@ -140,8 +140,7 @@ function NavBars(props) {
           </span>
           <span>
             <i className="appName">
-              {" "}
-              {product_type !== undefined ? product_type.replace("_", " ") : ""}
+              {product_name !== null ? product_name : "Algaeh ERP"}
             </i>
           </span>
         </div>
