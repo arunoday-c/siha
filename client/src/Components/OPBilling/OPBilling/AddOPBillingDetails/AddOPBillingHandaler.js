@@ -341,6 +341,11 @@ const onquantitycol = ($this, row, e) => {
 const credittexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
+  const credit_limit =
+    (parseFloat($this.state.net_amount) *
+      parseFloat($this.state.service_credit_percentage)) /
+    100;
+
   if (parseFloat(e.target.value) > parseFloat($this.state.net_amount)) {
     swalMessage({
       title: "Credit amount cannot be greater than Net amount",
@@ -355,23 +360,39 @@ const credittexthandle = ($this, context, ctrl, e) => {
         [e.target.name]: $this.state.credit_amount,
       });
     }
-  } else {
-    // let balance_credit = $this.state.receiveable_amount - e.target.value;
-    $this.setState(
-      {
-        [e.target.name]: e.target.value,
-      },
-      () => {
-        billheaderCalculation($this, context, e);
-      }
-    );
+    return;
+  }
+  if (parseFloat(e.target.value) > parseFloat(credit_limit)) {
+    swalMessage({
+      title: "You dont have privilage of credit. " + credit_limit,
+      type: "warning",
+    });
+    $this.setState({
+      [e.target.name]: $this.state.credit_amount,
+    });
 
     if (context !== null) {
       context.updateState({
-        [e.target.name]: e.target.value,
-        balance_credit: e.target.value === "" ? 0 : e.target.value,
+        [e.target.name]: $this.state.credit_amount,
       });
     }
+    return;
+  }
+  // let balance_credit = $this.state.receiveable_amount - e.target.value;
+  $this.setState(
+    {
+      [e.target.name]: e.target.value,
+    },
+    () => {
+      billheaderCalculation($this, context, e);
+    }
+  );
+
+  if (context !== null) {
+    context.updateState({
+      [e.target.name]: e.target.value,
+      balance_credit: e.target.value === "" ? 0 : e.target.value,
+    });
   }
 };
 

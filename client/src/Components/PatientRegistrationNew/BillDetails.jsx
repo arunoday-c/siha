@@ -124,6 +124,7 @@ export function BillDetails({
     default_nationality,
     local_vat_applicable,
     service_dis_percentage,
+    service_credit_percentage,
     decimal_places,
   } = userToken;
   const {
@@ -584,7 +585,7 @@ export function BillDetails({
                       }}
                     />
                   )}
-                />{" "}
+                />
                 <div className="col">
                   <button
                     style={{ marginTop: 21 }}
@@ -592,6 +593,18 @@ export function BillDetails({
                     type="button"
                     onClick={(e) => {
                       e.preventDefault();
+                      if (
+                        parseFloat(dis_percentage) >
+                        parseFloat(service_dis_percentage)
+                      ) {
+                        AlgaehMessagePop({
+                          display:
+                            "You dont have privilage to give discount More than." +
+                            service_dis_percentage,
+                          type: "warning",
+                        });
+                        return;
+                      }
                       if (
                         parseFloat(dis_percentage) !== parseFloat(discount_old)
                       ) {
@@ -697,8 +710,9 @@ export function BillDetails({
                               state.net_amount - amount;
                             state.cash_amount = 0;
                             state.card_amount = 0;
-                            state.unbalanced_amount =
-                              state.receiveable_amount.toFixed(3);
+                            state.unbalanced_amount = state.receiveable_amount.toFixed(
+                              3
+                            );
                             return { ...state };
                           });
                         },
@@ -876,6 +890,20 @@ export function BillDetails({
                           const credit = e.target.value
                             ? parseFloat(e.target.value)
                             : 0;
+                          debugger;
+                          const credit_limit =
+                            (parseFloat(billData?.net_amount) *
+                              parseFloat(service_credit_percentage)) /
+                            100;
+                          if (parseFloat(credit) > parseFloat(credit_limit)) {
+                            AlgaehMessagePop({
+                              display:
+                                "You dont have privilage of credit. " +
+                                credit_limit,
+                              type: "warning",
+                            });
+                            return;
+                          }
                           setBillData((sendingObject) => {
                             sendingObject.credit_amount = credit;
                             sendingObject.balance_credit = credit;
@@ -885,8 +913,9 @@ export function BillDetails({
                               credit;
                             sendingObject.cash_amount = 0;
                             sendingObject.card_amount = 0;
-                            sendingObject.unbalanced_amount =
-                              sendingObject.receiveable_amount.toFixed(3);
+                            sendingObject.unbalanced_amount = sendingObject.receiveable_amount.toFixed(
+                              3
+                            );
                             return { ...sendingObject };
                           });
                         },
