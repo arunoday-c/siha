@@ -316,6 +316,31 @@ export default {
     }
   },
 
+  serviceList: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      _mysql
+        .executeQuery({
+          query: `SELECT hims_d_services_id as value,service_name as label
+          FROM hims_d_services where service_type_id in (1,2,5,11,15,6)`,
+
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   getServiceInsured: (req, res, next) => {
     let input = req.query;
     const _mysql = new algaehMysql();
