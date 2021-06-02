@@ -435,6 +435,8 @@ class OPBilling extends Component {
                 service_amount: m.patient_resp,
                 service_vat: m.patient_tax,
                 hospital_id: this.state.hospital_id,
+                report_download:
+                  parseFloat(this.state.credit_amount) > 0 ? "N" : "Y",
               };
             });
           }

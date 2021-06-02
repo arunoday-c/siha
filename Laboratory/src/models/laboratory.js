@@ -573,7 +573,8 @@ export default {
           ? req.body.billdetails
           : req.records.ResultOfFetchOrderIds;
 
-      // console.log("Services", Services);
+      // console.log("Services", req.body.credit_amount);
+      // consol.log("Services", req.body.credit_amount);
       const labServices = Services.filter(
         (f) =>
           f.service_type_id ==
@@ -591,6 +592,7 @@ export default {
           ordered_date: s.created_date,
           test_type: s.test_type,
           test_id: s.test_id,
+          creidt_order: parseFloat(req.body.credit_amount) > 0 ? "Y" : "N",
         };
       });
 
@@ -610,6 +612,7 @@ export default {
           "ordered_date",
           "test_type",
           "test_id",
+          "creidt_order",
         ];
 
         _mysql
@@ -1305,7 +1308,7 @@ export default {
                 detailsOf: _.chain(details)
                   .groupBy((it) => it.send_out_test)
                   .map((detail, index) => {
-                    const { send_out_test, ordered_date } = _.head(detail);
+                    const head = _.head(detail);
                     return {
                       send_out_test: send_out_test,
                       detail: detail,
@@ -2256,16 +2259,18 @@ export default {
           appsettings.hims_d_service_type.service_type_id.Lab
       );
 
+      const creidt_order = parseFloat(req.body.credit_amount) > 0 ? "Y" : "N";
       if (OrderServices.length > 0) {
         let qry = "";
 
         for (let i = 0; i < OrderServices.length; i++) {
           qry += mysql.format(
-            "UPDATE `hims_f_lab_order` SET billing_header_id=?, billed=?,\
+            "UPDATE `hims_f_lab_order` SET billing_header_id=?, billed=?,creidt_order=?,\
           updated_date=?,updated_by=? where ordered_services_id=?;",
             [
               req.body.hims_f_billing_header_id,
               OrderServices[i].billed,
+              creidt_order,
               moment().format("YYYY-MM-DD HH:mm"),
               OrderServices[i].updated_by,
               OrderServices[i].ordered_services_id,

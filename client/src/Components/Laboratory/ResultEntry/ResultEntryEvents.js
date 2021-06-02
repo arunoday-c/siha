@@ -115,7 +115,7 @@ const UpdateLabOrder = ($this, value, status) => {
               service_id: $this.state.service_id,
               visit_code: $this.state.visit_code,
               patient_identity: $this.state.primary_id_no,
-              service_status: "SAMPLE COLLECTED'",
+              service_status: "SAMPLE COLLECTED",
             };
             axios
               .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)

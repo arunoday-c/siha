@@ -58,6 +58,7 @@ class OPCreditSettlement extends Component {
     IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false;
     IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false;
     IOputs.default_pay_type = userToken.default_pay_type;
+    IOputs.portal_exists = userToken.portal_exists;
 
     this.setState({ ...this.state, ...IOputs });
   }
@@ -129,7 +130,7 @@ class OPCreditSettlement extends Component {
               onChange: getCtrlCode.bind(this, this),
             },
             selectValue: "credit_number",
-            searchName: "onlycreditpatients",
+            searchName: "opCreidt",
             jsonFile: {
               fileName: "spotlightSearch",
               fieldName: "creidtbills.opCreidt",

@@ -23,10 +23,11 @@ let algaehSearchConfig = (searchName, req) => {
       },
       {
         searchName: "onlycreditpatients",
-        searchQuery: `select SQL_CALC_FOUND_ROWS  hims_d_patient_id, patient_code,primary_id_no, full_name, arabic_name,  contact_number, employee_id, 
-        age, date_of_birth, gender, email, title_id
-        from hims_f_patient as P inner join hims_f_billing_header as H on P.hims_d_patient_id =H.patient_id
-        where H.credit_amount >0 and H.balance_credit >0 and H.cancelled='N' and H.hospital_id=${hospitalId}`,
+        searchQuery: `select SQL_CALC_FOUND_ROWS  hims_d_patient_id, patient_code,primary_id_no, full_name, 
+          arabic_name,  contact_number, employee_id, age, date_of_birth, gender, email, title_id 
+          from hims_f_patient as P inner join hims_f_billing_header as H on P.hims_d_patient_id =H.patient_id
+          where H.credit_amount >0 and H.balance_credit >0 and H.cancelled='N' and H.hospital_id=${hospitalId}`,
+        groupBy: " GROUP By P.hims_d_patient_id",
       },
       {
         searchName: "patientappoinment",

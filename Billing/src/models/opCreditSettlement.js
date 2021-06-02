@@ -191,6 +191,7 @@ export default {
 
       let details = inputParam.criedtdetails;
       let qry = "";
+
       // utilities.logger().log("updateOPBilling: ");
       for (let i = 0; i < details.length; i++) {
         let balance_credit =
@@ -199,9 +200,13 @@ export default {
           " UPDATE `hims_f_billing_header` SET balance_credit= ? WHERE hims_f_billing_header_id=?;",
           [balance_credit, details[i].bill_header_id]
         );
+        if (balance_credit === 0) {
+          qry += mysql.format(
+            "UPDATE hims_f_lab_order SET creidt_order='N' where billing_header_id in (?);",
+            [details[i].bill_header_id]
+          );
+        }
       }
-
-      // utilities.logger().log("qry: ", qry);
 
       _mysql
         .executeQuery({
@@ -234,29 +239,52 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       let patient_id = "";
+      let strQuery = "";
 
       if (req.connection == null) {
         patient_id = req.query.patient_id;
+        strQuery = mysql.format(
+          "SELECT H.*, V.visit_code,P.primary_id_no, D.services_id from hims_f_billing_header H \
+            inner join hims_f_billing_details D on D.hims_f_billing_header_id = H.hims_f_billing_header_id \
+            inner join hims_f_patient_visit V on V.hims_f_patient_visit_id = H.visit_id\
+            inner join hims_f_patient P on P.hims_d_patient_id = H.patient_id\
+            WHERE cancelled='N' and adjusted='N' and balance_credit>0 AND H.patient_id=? \
+            order by hims_f_billing_header_id desc;",
+          [patient_id]
+        );
       } else {
-        // console.log(
-        //   "req.records.patientRegistration: ",
-        //   req.records.patientRegistration.hims_d_patient_id
-        // );
         patient_id = req.records.patientRegistration.hims_d_patient_id;
+        strQuery = mysql.format(
+          "SELECT * from hims_f_billing_header WHERE cancelled='N' and adjusted='N' and \
+            balance_credit > 0 AND patient_id=? order by hims_f_billing_header_id desc;",
+          [patient_id]
+        );
       }
       _mysql
         .executeQuery({
-          query:
-            "SELECT * from hims_f_billing_header  \
-          WHERE record_status='A' AND balance_credit>0 AND patient_id=? \
-             order by hims_f_billing_header_id desc",
-          values: [patient_id],
+          query: strQuery,
           printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
           if (req.connection == null) {
-            req.records = result;
+            const result_data = _.chain(result)
+              .groupBy((it) => it.hims_f_billing_header_id)
+              .map((detail, index) => {
+                const _head_data = _.head(detail);
+                _head_data.bill_header_id = _head_data.hims_f_billing_header_id;
+                _head_data.receipt_amount = 0;
+                _head_data.balance_amount = _head_data.balance_credit;
+                _head_data.previous_balance = _head_data.balance_credit;
+                _head_data.bill_amount = _head_data.net_amount;
+                return {
+                  ..._head_data,
+                  service_data: detail,
+                };
+              })
+              .value();
+            // console.log("result_data", result_data);
+            req.records = result_data;
           } else {
             req.bill_criedt = { bill_criedt: result };
           }
