@@ -202,7 +202,7 @@ const getSampleCollectionDetails = ($this) => {
 
 const ResultEntryModel = ($this, row) => {
   // row.comment_list = row.comments !== null ? row.comments.split("<br/>") : []
-  if (row.test_section === "M") {
+  if (row.test_section === "M" && row.culture_test === "Y") {
     if (row.group_id !== null) {
       algaehApiCall({
         uri: "/labmasters/getGroupComments",

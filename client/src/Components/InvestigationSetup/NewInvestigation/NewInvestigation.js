@@ -246,6 +246,28 @@ class NewInvestigation extends PureComponent {
                           <i className="fas fa-search fa-lg"></i>
                         </h6>
                       </div>
+                      {this.state.investigation_type === "L" ? (
+                        <AlagehAutoComplete
+                          div={{ className: "col-6 form-group" }}
+                          label={{
+                            fieldName: "Culture Test",
+                          }}
+                          selector={{
+                            name: "culture_test",
+                            className: "select-fld",
+                            value: this.state.culture_test,
+                            dataSource: {
+                              textField:
+                                this.state.selectedLang === "en"
+                                  ? "name"
+                                  : "arabic_name",
+                              valueField: "value",
+                              data: variableJson.FORMAT_YESNO,
+                            },
+                            onChange: texthandle.bind(this, this),
+                          }}
+                        />
+                      ) : null}
                       {/* <AlagehFormGroup
                         div={{ className: "col-6 form-group" }}
                         label={{

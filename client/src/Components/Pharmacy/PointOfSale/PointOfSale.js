@@ -82,6 +82,9 @@ class PointOfSale extends Component {
     IOputs.default_pay_type = userToken.default_pay_type;
     IOputs.userToken = this.context.userToken;
 
+    IOputs.service_dis_percentage = userToken.service_dis_percentage;
+    IOputs.service_credit_percentage = userToken.service_credit_percentage;
+
     this.setState(IOputs);
   }
 

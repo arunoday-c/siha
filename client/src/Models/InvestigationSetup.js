@@ -43,6 +43,7 @@ export default {
 
       film_category: "NA",
       screening_test: "N",
+      culture_test: "N",
       film_used: "N",
       clear: false,
       analytes_required: true,
@@ -51,6 +52,7 @@ export default {
       from_age: 0,
       to_age: 0,
       tat_standard_time: "00:00:00",
+      test_section: null,
     };
     return output;
   },

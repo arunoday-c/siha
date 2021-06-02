@@ -39,6 +39,24 @@ const discounthandle = ($this, context, ctrl, e) => {
         sheet_discount_percentage: 0,
       });
     }
+  } else if (
+    sheet_discount_percentage > parseFloat($this.state.service_dis_percentage)
+  ) {
+    swalMessage({
+      title:
+        "You dont have privilage to give discount More than." +
+        $this.state.service_dis_percentage,
+      type: "warning",
+    });
+    $this.setState({
+      sheet_discount_percentage: $this.state.sheet_discount_percentage,
+    });
+
+    if (context !== null) {
+      context.updateState({
+        sheet_discount_percentage: $this.state.sheet_discount_percentage,
+      });
+    }
   } else if (sheet_discount_amount > $this.state.patient_payable) {
     swalMessage({
       title: "Discount Amount cannot be greater than Patient Share.",
@@ -1513,29 +1531,49 @@ const EditGrid = ($this, context, cancelRow) => {
 
 const credittexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
+  const credit_limit =
+    (parseFloat($this.state.net_amount) *
+      parseFloat($this.state.service_credit_percentage)) /
+    100;
 
   if (e.target.value > $this.state.net_amount) {
     swalMessage({
       title: "Credit amount cannot be greater than Net amount",
       type: "warning",
     });
-  } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value,
-        balance_credit: e.target.value,
-      },
-      () => {
-        PosheaderCalculation($this, context);
-      }
-    );
+    return;
+  }
+  if (parseFloat(e.target.value) > parseFloat(credit_limit)) {
+    swalMessage({
+      title: "You dont have privilage of credit. " + credit_limit,
+      type: "warning",
+    });
+    $this.setState({
+      [e.target.name]: $this.state.credit_amount,
+    });
 
     if (context !== null) {
       context.updateState({
-        [e.target.name]: e.target.value,
-        balance_credit: e.target.value,
+        [e.target.name]: $this.state.credit_amount,
       });
     }
+    return;
+  }
+  $this.setState(
+    {
+      [e.target.name]: e.target.value,
+      balance_credit: e.target.value,
+    },
+    () => {
+      PosheaderCalculation($this, context);
+    }
+  );
+
+  if (context !== null) {
+    context.updateState({
+      [e.target.name]: e.target.value,
+      balance_credit: e.target.value,
+    });
   }
 };
 
