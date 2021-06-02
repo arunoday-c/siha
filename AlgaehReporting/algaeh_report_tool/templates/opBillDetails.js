@@ -16,8 +16,8 @@ const executePDF = function executePDFMethod(options) {
         str += `and  BD.service_type_id=${input.service_type_id}`;
       }
 
-      if (input.item_id > 0) {
-        str += ` and BD.services_id= ${input.item_id}`;
+      if (input.hims_d_services_ids.length > 0) {
+        str += ` and BD.services_id in (${input.hims_d_services_ids}) `;
       }
 
       options.mysql
