@@ -40,10 +40,13 @@ export default function Formulae({
   }
   function generateFormula() {
     if (formula_description !== "") {
-      let descFormula = formula_description.replace(/[?%&^]/g, "");
+      let descFormula = formula_description.replace(/[()?%&^]/g, "");
       for (let i = 0; i < valueForm.length; i++) {
         const { label, value } = valueForm[i];
-        const formula_reg = new RegExp(`${label.replace(/[?%&^]/g, "")}`, "gi");
+        const formula_reg = new RegExp(
+          `${label.replace(/[()?%&^]/g, "")}`,
+          "gi"
+        );
         descFormula = descFormula.replace(formula_reg, value);
       }
 
