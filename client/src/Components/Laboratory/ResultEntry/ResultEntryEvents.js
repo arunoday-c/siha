@@ -133,7 +133,7 @@ const UpdateLabOrder = ($this, value, status) => {
             title: "Re-Run Started, Investigation is in Progress . .",
           });
         } else {
-          if (status === "CF" || status === "V") {
+          if (status === "CF" || status === "V" || status === "AV") {
             if ($this.state.portal_exists === "Y") {
               const portal_data = {
                 service_id: $this.state.service_id,
@@ -186,7 +186,10 @@ const UpdateLabOrder = ($this, value, status) => {
             AlgaehLoader({ show: false });
           }
         );
-        if ($this.state.portal_exists === "Y" && status === "V") {
+        if (
+          $this.state.portal_exists === "Y" &&
+          (status === "V" || status === "AV")
+        ) {
           generateLabResultReport({ ...$this.state, hidePrinting: true });
         }
       }
@@ -215,18 +218,7 @@ const onvalidate = ($this) => {
       test_analytes[k].status = "V";
       test_analytes[k].validate = "Y";
       test_analytes[k].isre_run = false;
-      // swalMessage({
-      //   type: "warning",
-      //   title: "Please confirm result for all the Analytes",
-      // });
-
-      // return;
     }
-    // else {
-    //   test_analytes[k].status = "V";
-    //   test_analytes[k].validate = "Y";
-    //   test_analytes[k].isre_run = false;
-    // }
     test_analytes[k].status = "V";
     // test_analytes[k].validate = "Y";
     test_analytes[k].isre_run = false;
@@ -485,20 +477,19 @@ const onconfirm = ($this) => {
     if (test_analytes[k].result === null || test_analytes[k].result === "") {
       strTitle =
         "Are you sure want to Confirm, for few Analytes no Result Entered?";
-      // swalMessage({
-      //   type: "warning",
-      //   title: "Please enter result for all the Analytes.",
-      // });
-      // return;
       intNoofAnalytes = intNoofAnalytes + 1;
     } else {
       test_analytes[k].status = "C";
       test_analytes[k].confirm = "Y";
       test_analytes[k].isre_run = false;
+      if ($this.state.auto_validate === "Y") {
+        test_analytes[k].status = "AV";
+        test_analytes[k].validate = "Y";
+        strTitle = "This Test is Auto Validate Are you sure want to Confirm ?";
+      }
     }
     test_analytes[k].comments = $this.state.comments;
   }
-  // debugger
 
   if (test_analytes.length === intNoofAnalytes) {
     swalMessage({
@@ -508,6 +499,7 @@ const onconfirm = ($this) => {
     return;
   }
 
+  debugger;
   swal({
     title: strTitle,
     type: "warning",
@@ -519,7 +511,11 @@ const onconfirm = ($this) => {
   }).then((willProceed) => {
     if (willProceed.value) {
       test_analytes.push({ runtype: $this.state.run_type });
-      UpdateLabOrder($this, test_analytes, "CF");
+      UpdateLabOrder(
+        $this,
+        test_analytes,
+        $this.state.auto_validate === "Y" ? "AV" : "CF"
+      );
     }
   });
 };

@@ -2151,7 +2151,7 @@ class Appointment extends PureComponent {
           }}
         />
         <AlgaehModal
-          title={`Are you Sure you want to Cancle Appointment for ${this.state.rowData.patient_name}`}
+          title={`Are you Sure you want to Cancel Appointment for ${this.state.rowData.patient_name}`}
           visible={this.state.rejectVisible}
           destroyOnClose={true}
           okText="Update"

@@ -522,27 +522,6 @@ function AppointmentComponent(props) {
                   </div>
 
                   <div className="row">
-                    {/* <AlagehFormGroup
-                      div={{
-                        className: "col-6 form-group mandatory",
-                      }}
-                      label={{
-                        fieldName: "contact_number",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "contact_number",
-                        others: {
-                          type: "number",
-                          disabled: props.state.fromSearch || false,
-                        },
-                        value: props.state.contact_number,
-                        events: {
-                          onChange: props.texthandle,
-                        },
-                      }}
-                    /> */}
                     {!!countries?.length && (
                       <div className="col-lg-4 algaehInputGroup">
                         <AlgaehLabel
@@ -671,8 +650,6 @@ function AppointmentComponent(props) {
                     />
                   </div>
                 </div>
-                {/* </div>
-                  </div>{" "} */}
               </div>
               <div className="popupFooter">
                 <div className="col-lg-12">
