@@ -114,6 +114,7 @@ class ResultEntry extends Component {
 
   static contextType = MainContext;
   UNSAFE_componentWillReceiveProps(newProps) {
+    debugger;
     const userToken = this.context.userToken;
     if (newProps.selectedPatient !== undefined && newProps.open === true) {
       newProps.selectedPatient.portal_exists = userToken.portal_exists;
