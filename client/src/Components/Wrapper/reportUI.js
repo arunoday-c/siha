@@ -17,7 +17,11 @@ import ReactDOM from "react-dom";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import ButtonType from "../Wrapper/algaehButton";
 import moment from "moment";
-import { MainContext } from "algaeh-react-components";
+import {
+  MainContext,
+  // Select,
+  AlgaehLabel as Label,
+} from "algaeh-react-components";
 // import {AlgaehReportViewer} from "algaeh-react-components";
 // import { Document, Page } from "react-pdf/dist/entry.parcel";
 export default class ReportUI extends Component {
@@ -36,6 +40,7 @@ export default class ReportUI extends Component {
       buttonDisable: true,
       report_name: null,
       base64Pdf: undefined,
+      multipleValue: [],
       pageOrentation: "landscape",
       pageSize: "A4",
     };
@@ -215,16 +220,19 @@ export default class ReportUI extends Component {
             "report_generation_interface"
           );
           let parameters = [];
-          element.querySelectorAll("input").forEach((item) => {
-            if (item.name !== undefined) {
-              let label = item.parentElement.parentElement.querySelector(
-                "label"
-              )?.innerText;
 
-              if (!label) {
-                let label = item.parentElement.parentElement.parentElement.querySelector(
+          element.querySelectorAll("input").forEach((item) => {
+            if (item.name) {
+              let label =
+                item.parentElement.parentElement.querySelector(
                   "label"
-                ).innerText;
+                )?.innerText;
+              // _inputBox[0].parentElement.querySelectorAll("span")[0].innerText
+              if (!label) {
+                let label =
+                  item.parentElement.parentElement.parentElement.querySelector(
+                    "label"
+                  ).innerText;
 
                 let labelValue = item.value;
                 let data = that.state.parameterCollection.item_id;
@@ -248,8 +256,8 @@ export default class ReportUI extends Component {
                     ? item.getAttribute("referencevalue")
                     : item.value;
                 if (type === "dropdownlist") {
-                  labelValue = item.parentElement.querySelector(".text")
-                    .innerText;
+                  labelValue =
+                    item.parentElement.querySelector(".text").innerText;
                 }
                 const filter =
                   labelValue === ""
@@ -264,6 +272,15 @@ export default class ReportUI extends Component {
                   ...filter,
                 });
               }
+            } else {
+              const name =
+                item.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute(
+                  "name"
+                );
+              parameters.push({
+                name: name,
+                value: this.state.multipleValue,
+              });
             }
           });
 
@@ -470,6 +487,19 @@ export default class ReportUI extends Component {
       });
     }
   }
+  selectMultipleHandle(name, e) {
+    let _inputText = "";
+
+    const _inputBox = document.getElementsByName(name.name);
+    if (_inputBox.length !== 0) {
+      _inputText = _inputBox[0].value;
+    }
+    this.setState({
+      multipleValue: e,
+      [name.name + "_text"]: _inputText,
+    });
+  }
+
   dropDownOnClear(e) {
     const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
       .where((w) => w.name === e)
@@ -631,6 +661,10 @@ export default class ReportUI extends Component {
       AlagehFormGroup,
       AlgaehDateHandler,
     } = require("./algaehWrapper");
+    const {
+      Select,
+      // AlgaehLabel as Label,
+    } = require("algaeh-react-components");
     // const { AlgaehAutoSearch } = require("./autoSearch");
     for (let i = 0; i < _parameters.length; i++) {
       const _param = _parameters[i];
@@ -724,6 +758,52 @@ export default class ReportUI extends Component {
                   this.attReg = attReg;
                 }}
               />
+            );
+            break;
+          case "selectMultiple":
+            const _data1 =
+              this.state[_param.name + "_list"] === undefined
+                ? _param.data === undefined
+                  ? []
+                  : _param.data
+                : this.state[_param.name + "_list"];
+
+            _controls.push(
+              <>
+                <Label
+                  label={{
+                    fieldName: _param.name,
+                    forceLabel: _param.label,
+                  }}
+                />
+                <Select
+                  {...{
+                    mode: "multiple",
+                    style: {
+                      width: "100%",
+                    },
+                    data_role: "multipleSelectList",
+                    name: _param.name,
+                    value: this.state.multipleValue,
+                    options: _data1,
+                    onChange: this.selectMultipleHandle.bind(this, {
+                      name: _param.name,
+                    }),
+                    optionFilterProp: "children",
+                    // onSearch: onSearch,
+                    filterOption: (input, option) => {
+                      return (
+                        option.label
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      );
+                    },
+
+                    placeholder: "Select Item...",
+                    // maxTagCount: "responsive",
+                  }}
+                />
+              </>
             );
             break;
           case "date":

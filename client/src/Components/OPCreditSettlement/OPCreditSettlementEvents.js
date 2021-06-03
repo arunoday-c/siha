@@ -1,13 +1,13 @@
 import extend from "extend";
 import SettlementIOputs from "../../Models/OPCreditSettlement";
-import {
-  algaehApiCall,
-  swalMessage
-} from "../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import FrontDesk from "../../Search/FrontDesk.json";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
+import axios from "axios";
+
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 
 const PatientSearch = ($this, e) => {
   AlgaehSearch({
@@ -47,18 +47,7 @@ const getPatientDetails = ($this) => {
     data: { patient_id: $this.state.patient_id },
     onSuccess: (response) => {
       if (response.data.success) {
-        let data = response.data.records;
-        if (data.length > 0) {
-          for (let i = 0; i < data.length; i++) {
-            data[i].bill_header_id = data[i].hims_f_billing_header_id;
-            data[i].receipt_amount = 0;
-            data[i].balance_amount = data[i].balance_credit;
-            data[i].previous_balance = data[i].balance_credit;
-            data[i].bill_amount = data[i].net_amount;
-          }
-
-          $this.setState({ criedtdetails: data });
-        }
+        $this.setState({ criedtdetails: response.data.records });
       }
       AlgaehLoader({ show: false });
     },
@@ -316,6 +305,16 @@ const SaveOPCreidt = ($this) => {
         Inputobj.criedtdetails = listOfinclude;
         Inputobj.ScreenCode = "BL0004";
         AlgaehLoader({ show: true });
+        let service_id = [];
+        for (let i = 0; i < listOfinclude.length; i++) {
+          if (parseFloat(listOfinclude[i].balance_amount) === 0) {
+            listOfinclude[i].service_data.map((o) => {
+              service_id.push(o.services_id);
+              return o.services_id;
+            });
+          }
+        }
+
         algaehApiCall({
           uri: "/opCreditSettlement/addCreidtSettlement",
           module: "billing",
@@ -336,6 +335,24 @@ const SaveOPCreidt = ($this) => {
                 title: "Done Successfully",
                 type: "success",
               });
+              if ($this.state.portal_exists === "Y" && service_id.length > 0) {
+                const portal_data = {
+                  service_id: service_id,
+                  visit_code: listOfinclude[0].visit_code,
+                  patient_identity: listOfinclude[0].primary_id_no,
+                  report_download: "Y",
+                };
+                axios
+                  .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+                  .then(function (response) {
+                    //handle success
+                    console.log(response);
+                  })
+                  .catch(function (response) {
+                    //handle error
+                    console.log(response);
+                  });
+              }
             } else {
               swalMessage({
                 title: response.data.records.message,

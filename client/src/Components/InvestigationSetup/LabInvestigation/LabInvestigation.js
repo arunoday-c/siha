@@ -152,9 +152,23 @@ class LabInvestigation extends Component {
     });
   }
   onDeleteFormula(row) {
+    debugger;
+    const { state } = this.context;
+    let analytes = [...state.analytes];
+
+    let analytes_index = analytes.indexOf(row);
+
     row.display_formula = null;
     row.formula = null;
     row.decimals = null;
+
+    analytes[analytes_index] = row;
+
+    if (this.context !== undefined) {
+      this.context.updateState({
+        analytes: analytes,
+      });
+    }
   }
   render() {
     const { state } = this.context;
@@ -280,7 +294,7 @@ class LabInvestigation extends Component {
               <div>
                 <div className="row" data-validate="analyte_details">
                   <AlagehAutoComplete
-                    div={{ className: "col mandatory" }}
+                    div={{ className: "col-7 mandatory" }}
                     label={{
                       fieldName: "analyte_id",
                       isImp: true,
@@ -316,7 +330,7 @@ class LabInvestigation extends Component {
                     }}
                   />
 
-                  <div className="col" style={{ padding: 0 }}>
+                  <div className="col-1" style={{ padding: 0 }}>
                     <button
                       className="btn btn-primary"
                       style={{ marginTop: 20 }}

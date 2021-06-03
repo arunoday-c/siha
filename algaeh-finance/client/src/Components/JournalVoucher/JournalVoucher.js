@@ -105,6 +105,7 @@ export default function JournalVoucher() {
   const [printEnable, setPrintEnable] = useState(true);
   const [costCenterField, setCostCenterField] = useState(undefined);
   const [samePage, setSamePage] = useState(true);
+  const [afterSaveDisabled, setAfterSaveDisabled] = useState(false);
   const [journerList, setJournerList] = useState(
     baseJournalList.map((m) => {
       return { ...m, narration: "" };
@@ -133,6 +134,9 @@ export default function JournalVoucher() {
   }, [location.state]);
   /** above code is for changing language */
   useEffect(() => {
+    plotCostCenter();
+  }, []);
+  const plotCostCenter = () => {
     getCostCentersForVoucher().then((result) => {
       setbranchData(result);
       algaehApiCall({
@@ -169,6 +173,7 @@ export default function JournalVoucher() {
                         updateInternally: true,
                         data: result,
                         disableHeader: true,
+                        // disabled: afterSaveDisabled,
                         textField: "hospital_name",
                         valueField: "hims_d_hospital_id",
                         children: {
@@ -224,7 +229,7 @@ export default function JournalVoucher() {
         },
       });
     });
-  }, []);
+  };
 
   useEffect(() => {
     if (!drawer) {
@@ -288,7 +293,7 @@ export default function JournalVoucher() {
       });
       return result;
     }
-    //
+    debugger;
     // console.log("location.state====>", location.state);
 
     if (location.state) {
@@ -433,8 +438,25 @@ export default function JournalVoucher() {
             .catch((e) => console.log(e));
         }
       }
+    } else {
+      setJournerList([
+        {
+          child_id: undefined,
+          head_id: undefined,
+          slno: 1,
+          payment_type: "CR",
+          payment_mode: "CA",
+        },
+        {
+          child_id: undefined,
+          head_id: undefined,
+          slno: 2,
+          payment_type: "DR",
+          payment_mode: "CA",
+        },
+      ]);
     }
-  }, [location.state]);
+  }, [location.state !== undefined]);
 
   // const show = voucherType === "receipt" || voucherType === "payment";
 
@@ -478,7 +500,22 @@ export default function JournalVoucher() {
         },
       ]);
     } else {
-      setJournerList(baseJournalList);
+      setJournerList([
+        {
+          child_id: undefined,
+          head_id: undefined,
+          slno: 1,
+          payment_type: "CR",
+          payment_mode: "CA",
+        },
+        {
+          child_id: undefined,
+          head_id: undefined,
+          slno: 2,
+          payment_type: "DR",
+          payment_mode: "CA",
+        },
+      ]);
     }
   }
 
@@ -660,6 +697,7 @@ export default function JournalVoucher() {
         // setPayment(basePayment);
         // setVoucherType("");
         // setAccounts([]);
+        setAfterSaveDisabled(true);
         setVoucherNo(result.voucher_no);
         setVoucherID(result.finance_voucher_header_id);
         // dataPayment = dataPayment.map(m => {
@@ -699,11 +737,27 @@ export default function JournalVoucher() {
   };
 
   const clearState = () => {
+    setAfterSaveDisabled(false);
     setNarration("");
     setVoucherType("");
     setAccounts([]);
     setPayment(basePayment);
-    setJournerList(baseJournalList);
+    setJournerList([
+      {
+        child_id: undefined,
+        head_id: undefined,
+        slno: 1,
+        payment_type: "CR",
+        payment_mode: "CA",
+      },
+      {
+        child_id: undefined,
+        head_id: undefined,
+        slno: 2,
+        payment_type: "DR",
+        payment_mode: "CA",
+      },
+    ]);
     setHospitalID(null);
     setCostCenter(null);
     setClearLoading(false);
@@ -722,10 +776,11 @@ export default function JournalVoucher() {
     setSorCDetailLoading(false);
     setSorCDetailValue(undefined);
     setSorCHeaderName(undefined);
-    if (samePage === true) {
-      history.push("/JournalVoucher", null);
-      history.go(0);
-    }
+
+    // if (samePage === true) {
+    //   history.push("/JournalVoucher", null);
+    //   history.go(0);
+    // }
   };
 
   const printVoucher = () => {
@@ -953,6 +1008,7 @@ export default function JournalVoucher() {
             valueField: "value",
             textField: "label",
           },
+
           updateInternally: true,
           onChange: (selected) => {
             record["payment_type"] = selected.value;
@@ -991,7 +1047,7 @@ export default function JournalVoucher() {
     return (
       <AlgaehFormGroup
         textBox={{
-          disabled: disableAmount,
+          disabled: disableAmount || afterSaveDisabled,
           updateInternally: true,
           value: row,
           type: "number",
@@ -1094,20 +1150,20 @@ export default function JournalVoucher() {
                 setSorCHeaderName(undefined);
                 setSorCDetailValue(undefined);
                 setSorCHeaderValue(undefined);
+
                 // setPrefix(selected.shortHand + "-");
                 onSelectExpenceVoucher(selected.value);
               },
               onClear: () => {
+                setJournerList(baseJournalList);
                 setSorCHeaderName(undefined);
                 setSorCDetailValue(undefined);
                 setSorCHeaderValue(undefined);
                 setVoucherType("");
                 setAccounts([]);
-
-                setPayment(basePayment);
               },
               others: {
-                disabled: disableFiled,
+                disabled: disableFiled || afterSaveDisabled,
               },
             }}
           />
@@ -1160,6 +1216,7 @@ export default function JournalVoucher() {
                   value: bankAmount,
                   onChange: (e) => {
                     setBankAmount(e.target.value);
+                    setTotalCredit(e.target.value);
                   },
                 }}
               />
@@ -1429,7 +1486,7 @@ export default function JournalVoucher() {
                 </div>
                 <div className="col-12" style={{ marginTop: 10 }}>
                   <button
-                    disabled={disableAmount}
+                    disabled={disableAmount || afterSaveDisabled}
                     className="btn btn-primary btn-small"
                     onClick={() => {
                       setJournerList((result) => {

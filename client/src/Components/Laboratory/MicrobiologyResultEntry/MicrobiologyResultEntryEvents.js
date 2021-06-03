@@ -222,8 +222,12 @@ const resultEntryUpdate = ($this) => {
 };
 
 const onconfirm = ($this) => {
+  let strTitle = "Are you sure want to Confirm?";
+  if ($this.state.auto_validate === "Y") {
+    strTitle = "This Test is Auto Validate Are you sure want to Confirm ?";
+  }
   swal({
-    title: "Are you sure want to Confirm?",
+    title: strTitle,
     type: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes",
@@ -232,7 +236,7 @@ const onconfirm = ($this) => {
     cancelButtonText: "No",
   }).then((willProceed) => {
     if (willProceed.value) {
-      UpdateLabOrder($this, "CF");
+      UpdateLabOrder($this, $this.state.auto_validate === "Y" ? "AV" : "CF");
     }
   });
 };

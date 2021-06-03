@@ -259,9 +259,8 @@ const executePDF = function executePDFMethod(options) {
                     employee_earning: employee_earning,
                     employee_deduction: employee_deduction,
                     employee_contributions: employee_contributions,
-                    employe_plus_employr: employe_plus_employr.toFixed(
-                      decimal_places
-                    ),
+                    employe_plus_employr:
+                      employe_plus_employr.toFixed(decimal_places),
                   });
                 }
                 // console.log("outputArray: ", outputArray);
@@ -288,8 +287,8 @@ const executePDF = function executePDFMethod(options) {
                     sum_contributions.toFixed(decimal_places),
                     options.args.crypto
                   ),
-                  sum_net_salary: soptions.currencyFormat(
-                    um_net_salary.toFixed(decimal_places),
+                  sum_net_salary: options.currencyFormat(
+                    sum_net_salary.toFixed(decimal_places),
                     options.args.crypto
                   ),
                   sum_employe_plus_emplyr: sum_employe_plus_emplyr,

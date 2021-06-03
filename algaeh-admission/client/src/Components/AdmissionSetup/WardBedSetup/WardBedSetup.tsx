@@ -745,7 +745,7 @@ export default function WardBedSetup(Props: any) {
                 </div>
               </div>
               <Collapse className="wardBedListAcc">
-                {wardHeaderData.map((item: any, key: number) => {
+                {wardHeaderData?.map((item: any, key: number) => {
                   return (
                     <Panel
                       header={

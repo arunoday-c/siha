@@ -16,6 +16,10 @@ const executePDF = function executePDFMethod(options) {
         str += `and  BD.service_type_id=${input.service_type_id}`;
       }
 
+      if (input.hims_d_services_ids.length > 0) {
+        str += ` and BD.services_id in (${input.hims_d_services_ids}) `;
+      }
+
       options.mysql
         .executeQuery({
           query: `select BD.services_id, count(BD.services_id) as service_count,sum(BD.net_amout) as total_amount,ST.service_type_code,ST.service_type,S.service_code,S.service_name

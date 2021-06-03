@@ -14,6 +14,7 @@
                         <th>Patient Name</th>
                         <th>Dept. Name</th>
                         <th>Doctor Name</th>
+                        <th>Cashier Name</th>
                         <th>Cash</th>
                         <th>Card</th>
                         <th>total</th>
@@ -21,7 +22,7 @@
                 </thead>
                 <tbody>
                     <tr class="numberFldTotalBottom">
-                        <td colspan="7" class="numberFld"></td>
+                        <td colspan="8" class="numberFld"></td>
                          <td class="numberFld">{{numberFormating total_cash currencyheader}}</td>
                          <td class="numberFld">{{numberFormating total_card currencyheader}}</td>
                          <td class="numberFld">{{numberFormating total_collection currencyheader}}</td>
@@ -41,6 +42,7 @@
 
                         <td class="txtFld">{{sub_department_name}}</td>
                         <td class="txtFld">{{doctor_name}}</td>
+                        <td class="txtFld">{{cashier_name}}</td>
                          <td class="numberFld">{{numberFormating cash ../currency}}</td>
                          <td class="numberFld">{{numberFormating card ../currency}}</td>
                          <td class="numberFld">{{numberFormating total ../currency}}</td>
@@ -48,7 +50,7 @@
                     </tr>
                     {{/each }}
                     <tr class="numberFldTotalBottom">
-                        <td colspan="7" class="numberFld"></td>
+                        <td colspan="8" class="numberFld"></td>
                          <td class="numberFld">{{numberFormating total_cash currencyheader}}</td>
                          <td class="numberFld">{{numberFormating total_card currencyheader}}</td>
                          <td class="numberFld">{{numberFormating total_collection currencyheader}}</td>

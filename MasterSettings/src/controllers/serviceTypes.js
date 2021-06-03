@@ -16,6 +16,7 @@ const {
   getProceduresDetail,
   getProceduresNew,
   releaseDB,
+  serviceList,
   getOnlyServiceList,
 } = serviceModels;
 
@@ -60,6 +61,14 @@ export default () => {
   });
 
   api.get("/getService", getServices, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.get("/serviceList", serviceList, (req, res, next) => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,

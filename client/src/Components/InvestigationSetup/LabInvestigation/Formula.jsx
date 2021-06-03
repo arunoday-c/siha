@@ -23,6 +23,7 @@ export default function Formulae({
     if (openFormula) {
       onClearFormula();
       setFormula_description(selectedRow.display_formula);
+      setDecimals(selectedRow.decimals);
       // setFieldArray(selectedRow.display_formula.match(/[A-Za-z]/g));
       // console.log("fieldArray", fieldArray);
     }
@@ -39,13 +40,10 @@ export default function Formulae({
   }
   function generateFormula() {
     if (formula_description !== "") {
-      let descFormula = formula_description.replace(/[()?%&^]/g, "");
+      let descFormula = formula_description.replace(/[?%&^]/g, "");
       for (let i = 0; i < valueForm.length; i++) {
         const { label, value } = valueForm[i];
-        const formula_reg = new RegExp(
-          `${label.replace(/[()?%&^]/g, "")}`,
-          "gi"
-        );
+        const formula_reg = new RegExp(`${label.replace(/[?%&^]/g, "")}`, "gi");
         descFormula = descFormula.replace(formula_reg, value);
       }
 
@@ -104,7 +102,9 @@ export default function Formulae({
                     forceLabel: "Previously applied formula",
                   }}
                 />
-                <h6>{decimals ? decimals : "--------"}</h6>
+                <h6>
+                  {formula_description ? formula_description : "--------"}
+                </h6>
               </div>
               {/* <AlgaehFormGroup
                 div={{ className: "col-12" }}

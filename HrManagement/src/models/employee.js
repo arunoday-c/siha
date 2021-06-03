@@ -307,7 +307,7 @@ export default {
         .executeQuery({
           query: `
           SELECT E.hims_d_employee_id,E.hospital_id,E.isDoctor,E.appointment_type,E.agency_id,E.title_id,E.employee_type,E.date_of_joining,
-          E.sub_department_id,E.reporting_to_id,E.employee_designation_id,SD.sub_department_name, D.department_name,E.service_dis_percentage,
+          E.sub_department_id,E.reporting_to_id,E.employee_designation_id,SD.sub_department_name, D.department_name,E.service_dis_percentage,E.service_credit_percentage
           E.employee_group_id,G.monthly_accrual_days,E.employee_category,E.overtime_group_id,E.isdoctor,E.services_id,E.date_of_resignation,
           E.date_of_resignation,E.notice_period,E.accomodation_provided,E.employee_bank_id,E.employee_bank_ifsc_code,
           E.employee_account_number,E.company_bank_id,E.mode_of_payment,E.employee_status FROM hims_d_employee E
@@ -367,9 +367,9 @@ export default {
             company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
             accomodation_provided,hospital_id,sub_department_id,overtime_group_id,employee_bank_id,services_id,\
             employee_group_id, reporting_to_id, employee_designation_id, entitled_daily_ot, employee_category,\
-            gratuity_encash,identity_type_id, identity_no, agency_id, service_dis_percentage,\
+            gratuity_encash,identity_type_id, identity_no, agency_id, service_dis_percentage,service_credit_percentage,\
             created_date,created_by,updated_date,updated_by,eos_id,standard_work_hours,ramzan_work_hours) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.employee_code,
               input.full_name,
@@ -426,6 +426,7 @@ export default {
               input.identity_no,
               input.agency_id,
               input.service_dis_percentage,
+              input.service_credit_percentage,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
@@ -505,7 +506,7 @@ export default {
               pf_applicable=?,overtime_group_id=?,employee_group_id=?, reporting_to_id=?,sub_department_id=?,\
               employee_designation_id=?, entitled_daily_ot= ?, employee_bank_id=?,services_id=?, employee_status=?, \
               inactive_date=?, employee_category=?, gratuity_encash=?, identity_type_id=?, identity_no=?,agency_id=?, \
-              service_dis_percentage=?, updated_date=?,updated_by=?,eos_id=?,standard_work_hours=?,ramzan_work_hours=? WHERE record_status='A' and  hims_d_employee_id=?",
+              service_dis_percentage=?,service_credit_percentage=?, updated_date=?,updated_by=?,eos_id=?,standard_work_hours=?,ramzan_work_hours=? WHERE record_status='A' and  hims_d_employee_id=?",
             values: [
               input.employee_code,
               input.full_name,
@@ -581,6 +582,7 @@ export default {
               input.identity_no,
               input.agency_id,
               input.service_dis_percentage,
+              input.service_credit_percentage,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               input.eos_id,

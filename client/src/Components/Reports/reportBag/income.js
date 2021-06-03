@@ -3,6 +3,7 @@ export default function Income({
   RECEIPT_TYPE,
   cashier_id,
   FORMAT_YESNO,
+  spotlightSearch,
 }) {
   return {
     name: "Income",
@@ -447,6 +448,30 @@ export default function Income({
               data: undefined,
             },
           },
+          // {
+          //   className: "col-6 form-group AutosearchClass",
+          //   type: "Autosearch",
+          //   name: "item_id",
+          //   isImp: false,
+          //   columns: spotlightSearch.Services.onlyService,
+          //   displayField: "item_description",
+          //   value: null,
+          //   searchName: "hospitalserviceonly",
+          //   label: "Services List",
+          // },
+          {
+            className: "col-6 form-group AutosearchClass",
+            type: "selectMultiple",
+            name: "hims_d_services_ids",
+            isImp: false,
+            link: {
+              uri: "/serviceType/serviceList",
+              module: "masterSettings",
+            },
+            value: null,
+            data: undefined,
+            label: "Services List",
+          },
         ],
       },
       {
@@ -494,6 +519,23 @@ export default function Income({
           },
           {
             className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -510,23 +552,6 @@ export default function Income({
             others: {
               maxDate: new Date(),
               minDate: null,
-            },
-          },
-          {
-            className: "col-3 form-group mandatory",
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Branch",
-            link: {
-              uri: "/organization/getOrganizationByUser",
-            },
-            value: hospital_id,
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined,
             },
           },
           {
@@ -575,6 +600,24 @@ export default function Income({
             dataSource: {
               textField: "full_name",
               valueField: "employee_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "cashier_name",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Cashier",
+            link: {
+              uri: "/shiftAndCounter/getCashiers",
+              module: "masterSettings",
+            },
+            value: cashier_id,
+            dataSource: {
+              textField: "cashier_name",
+              valueField: "cashier_id",
               data: undefined,
             },
           },

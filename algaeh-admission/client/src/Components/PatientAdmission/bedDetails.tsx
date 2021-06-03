@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Tabs, AlgaehLabel } from "algaeh-react-components";
+import { Tabs, AlgaehLabel, AlgaehModal } from "algaeh-react-components";
+import BedManagement from "../BedManagement/index";
 const { TabPane } = Tabs;
 
 // const getPatientInsurance = async (key, { patient_id }) => {
@@ -14,10 +15,28 @@ const { TabPane } = Tabs;
 
 export default function bedDetails(props: any) {
   const [bed_details, setBedDetails] = useState({});
+  const [visible, setVisible] = useState(false);
 
+  const onClose = () => {
+    setVisible((pre) => !pre);
+  };
   return (
     <div className="hptl-phase1-insurance-details margin-top-15">
       <div className="insurance-section">
+        <AlgaehModal
+          title="select Bed"
+          visible={visible}
+          mask={true}
+          maskClosable={true}
+          onCancel={onClose}
+          footer={[
+            <button onClick={onClose} className="btn btn-default">
+              Close
+            </button>,
+          ]}
+        >
+          <BedManagement />
+        </AlgaehModal>
         <Tabs type="card">
           <TabPane
             tab={
@@ -72,6 +91,7 @@ export default function bedDetails(props: any) {
                         <button
                           type="button"
                           className="btn btn-primary btn-rounded"
+                          onClick={() => setVisible(true)}
                         >
                           <i className="fas fa-plus" />
                         </button>

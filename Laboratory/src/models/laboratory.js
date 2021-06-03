@@ -60,20 +60,20 @@ export default {
             concat(V.age_in_months,'M')months, concat(V.age_in_days,'D')days, \
             lab_id_number, run_type, P.primary_id_no,P.patient_code,P.full_name,P.date_of_birth, P.gender, LS.sample_id, LS.container_id, \
             LS.collected, LS.collected_by, LS.remarks, LS.collected_date, LS.hims_d_lab_sample_id, \
-            LS.status as sample_status, TC.test_section,DLS.urine_specimen, IT.hims_d_investigation_test_id, IT.isPCR, \
+            LS.status as sample_status, TC.test_section,DLS.urine_specimen, IT.hims_d_investigation_test_id, IT.isPCR,IT.culture_test, \
             case when LO.run_type='1' then '1 Time' when LO.run_type='2' then '2 Times' when LO.run_type='3' then '3 times' else '-' end as run_types, \
-            LO.contaminated_culture, LS.barcode_gen, \
+            LO.contaminated_culture, LS.barcode_gen, IT.auto_validate,\
             max(if(CL.algaeh_d_app_user_id=LO.entered_by, EM.full_name,'' )) as entered_by_name, \
             max(if(CL.algaeh_d_app_user_id=LO.confirmed_by, EM.full_name,'')) as confirm_by_name, \
             max(if(CL.algaeh_d_app_user_id=LO.validated_by, EM.full_name,'')) as validate_by_name, \
             LO.entered_date,LO.confirmed_date,LO.validated_date  from hims_f_lab_order LO \
             inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
             inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id \
-            left join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
+            inner join hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = LO.test_id \
             inner join hims_f_patient P on LO.patient_id=P.hims_d_patient_id and  P.record_status='A'\
+            left join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
             left outer join hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A' \
             left join hims_d_title as T on T.his_d_title_id = E.title_id \
-            left join hims_d_investigation_test as IT on IT.services_id = LO.service_id \
             left join hims_d_lab_specimen as DLS on DLS.hims_d_lab_specimen_id = LS.sample_id \
             left join hims_d_test_category as TC on TC.hims_d_test_category_id = IT.category_id \
             left join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LO.entered_by or \
@@ -573,7 +573,8 @@ export default {
           ? req.body.billdetails
           : req.records.ResultOfFetchOrderIds;
 
-      // console.log("Services", Services);
+      // console.log("Services", req.body.credit_amount);
+      // consol.log("Services", req.body.credit_amount);
       const labServices = Services.filter(
         (f) =>
           f.service_type_id ==
@@ -591,6 +592,7 @@ export default {
           ordered_date: s.created_date,
           test_type: s.test_type,
           test_id: s.test_id,
+          credit_order: parseFloat(req.body.credit_amount) > 0 ? "Y" : "N",
         };
       });
 
@@ -610,6 +612,7 @@ export default {
           "ordered_date",
           "test_type",
           "test_id",
+          "credit_order",
         ];
 
         _mysql
@@ -998,7 +1001,11 @@ export default {
       let inputParam = { ...req.body };
 
       return new Promise((resolve, reject) => {
-        // console.log("inputParam.hims_d_lab_sample_id", inputParam.hims_d_lab_sample_id)
+        console.log(
+          "inputParam.hims_d_lab_sample_id",
+          inputParam.hims_d_lab_sample_id
+        );
+        console.log("inputParam.container_id", inputParam.container_id);
         let strQuery = "";
 
         if (inputParam.hims_d_lab_sample_id === null) {
@@ -1034,15 +1041,13 @@ export default {
           );
         } else {
           strQuery = mysql.format(
-            "SELECT distinct LS.container_id, LC.container_id as container_code FROM hims_m_lab_specimen LS \
-            inner join hims_d_investigation_test IT on IT.hims_d_investigation_test_id = LS.test_id \
-            inner join hims_d_lab_container LC on LC.hims_d_lab_container_id = LS.container_id \
-            where IT.services_id=?;\
+            "SELECT container_id as container_code FROM hims_d_lab_container \
+            where hims_d_lab_container_id=?;\
             SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;\
             UPDATE hims_f_lab_sample SET `container_id`=?, `sample_id`=?,`collected`=?,`status`=?, `collected_by`=?,\
-          `collected_date` =now(), `barcode_gen` = now() WHERE hims_d_lab_sample_id=?;",
+            `collected_date` =now(), `barcode_gen` = now() WHERE hims_d_lab_sample_id=?;",
             [
-              inputParam.service_id,
+              inputParam.container_id,
               inputParam.hims_d_hospital_id,
               inputParam.container_id,
               inputParam.sample_id,
@@ -1059,7 +1064,6 @@ export default {
             printQuery: true,
           })
           .then((update_lab_sample) => {
-            inputParam.container_id = update_lab_sample[0][0].container_id;
             inputParam.container_code = update_lab_sample[0][0].container_code;
             inputParam.lab_location_code =
               update_lab_sample[1][0].lab_location_code;
@@ -1304,7 +1308,7 @@ export default {
                 detailsOf: _.chain(details)
                   .groupBy((it) => it.send_out_test)
                   .map((detail, index) => {
-                    const { send_out_test, ordered_date } = _.head(detail);
+                    const head = _.head(detail);
                     return {
                       send_out_test: send_out_test,
                       detail: detail,
@@ -1848,6 +1852,10 @@ export default {
         .Where((w) => w.status == "V")
         .ToArray().length;
 
+      let status_AV = new LINQ(inputParam)
+        .Where((w) => w.status == "AV")
+        .ToArray().length;
+
       let status_N = new LINQ(inputParam)
         .Where((w) => w.status == "N")
         .ToArray().length;
@@ -1909,6 +1917,33 @@ export default {
             moment().format("YYYY-MM-DD HH:mm") +
             "'  ";
           break;
+        case status_AV:
+          //Do functionality for V here
+          ref = "V";
+          validated_by = req.userIdentity.algaeh_d_app_user_id;
+          confirmed_by = req.userIdentity.algaeh_d_app_user_id;
+          strQuery +=
+            ", confirmed_by='" +
+            req.userIdentity.algaeh_d_app_user_id +
+            "', confirmed_date = '" +
+            moment().format("YYYY-MM-DD HH:mm") +
+            "', validated_by='" +
+            req.userIdentity.algaeh_d_app_user_id +
+            "', validated_date = '" +
+            moment().format("YYYY-MM-DD HH:mm") +
+            "'";
+
+          strAnaQry +=
+            ", confirm_by='" +
+            req.userIdentity.algaeh_d_app_user_id +
+            "', confirmed_date = '" +
+            moment().format("YYYY-MM-DD HH:mm") +
+            "' , validate_by='" +
+            req.userIdentity.algaeh_d_app_user_id +
+            "', validated_date = '" +
+            moment().format("YYYY-MM-DD HH:mm") +
+            "'  ";
+          break;
 
         case status_N:
           //Do functionality for CL here
@@ -1950,7 +1985,7 @@ export default {
           [
             inputParam[i].result_unit,
             inputParam[i].result,
-            inputParam[i].status,
+            inputParam[i].status === "AV" ? "V" : inputParam[i].status,
             inputParam[i].remarks,
             inputParam[i].run1,
             inputParam[i].run2,
@@ -2130,7 +2165,7 @@ export default {
           "', confirmed_date = '" +
           moment().format("YYYY-MM-DD HH:mm") +
           "'  ";
-      } else if (inputParam.status == "V") {
+      } else if (inputParam.status == "V" || inputParam.status == "AV") {
         if (inputParam.bacteria_type === "G") {
           for (let i = 0; i < inputParam.microAntbiotic.length; i++) {
             updateQuery += mysql.format(
@@ -2255,16 +2290,18 @@ export default {
           appsettings.hims_d_service_type.service_type_id.Lab
       );
 
+      const credit_order = parseFloat(req.body.credit_amount) > 0 ? "Y" : "N";
       if (OrderServices.length > 0) {
         let qry = "";
 
         for (let i = 0; i < OrderServices.length; i++) {
           qry += mysql.format(
-            "UPDATE `hims_f_lab_order` SET billing_header_id=?, billed=?,\
+            "UPDATE `hims_f_lab_order` SET billing_header_id=?, billed=?,credit_order=?,\
           updated_date=?,updated_by=? where ordered_services_id=?;",
             [
               req.body.hims_f_billing_header_id,
               OrderServices[i].billed,
+              credit_order,
               moment().format("YYYY-MM-DD HH:mm"),
               OrderServices[i].updated_by,
               OrderServices[i].ordered_services_id,

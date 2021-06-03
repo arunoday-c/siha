@@ -92,6 +92,7 @@ class OPBilling extends Component {
     IOputs.default_pay_type = userToken.default_pay_type;
     IOputs.userToken = this.context.userToken;
     IOputs.service_dis_percentage = userToken.service_dis_percentage;
+    IOputs.service_credit_percentage = userToken.service_credit_percentage;
     IOputs.portal_exists = userToken.portal_exists;
 
     this.setState({ ...this.state, ...IOputs });
@@ -434,6 +435,8 @@ class OPBilling extends Component {
                 service_amount: m.patient_resp,
                 service_vat: m.patient_tax,
                 hospital_id: this.state.hospital_id,
+                report_download:
+                  parseFloat(this.state.credit_amount) > 0 ? "N" : "Y",
               };
             });
           }

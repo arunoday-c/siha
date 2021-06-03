@@ -51,7 +51,7 @@
           }
         }
         &:hover {
-          background-color: whitesmoke;
+          background-color: rgb(247, 102, 102);
           cursor: pointer;
         }
         &:last-child {
@@ -61,6 +61,43 @@
     }
     &:last-child {
       border-left: none;
+    }
+  }
+  .singleBedSelect {
+    background-color: red;
+
+    cursor: pointer;
+  }
+  .appStatusListCntr {
+    &:hover {
+      .appStatusList {
+        display: block;
+      }
+    }
+    ul.appStatusList {
+      display: none;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: #000;
+      background: #fff;
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      position: absolute;
+      width: 100%;
+      left: 0;
+      top: 37px;
+      li {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border-top: 1px solid #fff;
+        display: block;
+        span {
+          padding: 3px 5px;
+          display: block;
+        }
+      }
     }
   }
 }
