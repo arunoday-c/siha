@@ -460,7 +460,7 @@ export default function Income({
           //   label: "Services List",
           // },
           {
-            className: "col-6 form-group AutosearchClass",
+            className: "col-12 form-group AutosearchClass",
             type: "selectMultiple",
             name: "hims_d_services_ids",
             isImp: false,
