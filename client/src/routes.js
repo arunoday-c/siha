@@ -45,7 +45,9 @@ const SalesDashboard = React.lazy(() =>
 // const PatientRegistration = React.lazy(() =>
 //   retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
 // );
-
+const AppointmentBeta = React.lazy(() =>
+  retry(() => import("./Components/AppointmentBeta"))
+);
 const PatientRegistrationNew = React.lazy(() =>
   retry(() => import("./Components/PatientRegistrationNew"))
 );
@@ -155,9 +157,9 @@ const ItemSetup = React.lazy(() =>
 const FrontDesk = React.lazy(() =>
   retry(() => import("./Components/FrontDesk/FrontDesk"))
 );
-const FrontDeskBeta = React.lazy(() =>
-  retry(() => import("./Components/FrontDesk/FrontDeskBeta"))
-);
+// const FrontDeskBeta = React.lazy(() =>
+//   retry(() => import("./Components/FrontDesk/FrontDeskBeta"))
+// );
 const ResultEntryList = React.lazy(() =>
   retry(() => import("./Components/Laboratory/ResultEntryList/ResultEntryList"))
 );
@@ -796,7 +798,7 @@ const privateRoutes = [
   {
     path: "/AppointmentBeta",
     isExactPath: true,
-    component: <FrontDeskBeta screen="Appointment" />,
+    component: <AppointmentBeta screen="Appointment" />,
   },
   {
     path: "/UpdatePatientDetails",
