@@ -215,6 +215,17 @@ const generateReports = ($this) => {
     },
   });
 };
+
+const itemchangeText = ($this, e, ctrl) => {
+  let name = ctrl;
+  let value = e.hims_d_inventory_item_master_id;
+
+  $this.setState({
+    [name]: value,
+    item_description: e.item_description,
+  });
+};
+
 const DrillDownScree = (row, $this) => {
   if (row.transaction_type === "ST") {
     $this.props.history.push(
@@ -263,4 +274,5 @@ export {
   dateValidate,
   DrillDownScree,
   generateReports,
+  itemchangeText,
 };

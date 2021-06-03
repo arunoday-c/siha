@@ -1051,23 +1051,27 @@ class ResultEntry extends Component {
                         <div className="row finalCommentsSection">
                           <h6>View Final Comments</h6>
                           <ol>
-                            {this.state.comment_list.length > 0
+                            {this.state.comment_list?.length > 0
                               ? this.state.comment_list.map((row, index) => {
-                                  return (
-                                    <React.Fragment key={index}>
-                                      <li key={index}>
-                                        <span>{row}</span>
-                                        <i
-                                          className="fas fa-times"
-                                          onClick={deleteComment.bind(
-                                            this,
-                                            this,
-                                            row
-                                          )}
-                                        ></i>
-                                      </li>
-                                    </React.Fragment>
-                                  );
+                                  if (row) {
+                                    return (
+                                      <React.Fragment key={index}>
+                                        <li key={index}>
+                                          <span>{row}</span>
+                                          <i
+                                            className="fas fa-times"
+                                            onClick={deleteComment.bind(
+                                              this,
+                                              this,
+                                              row
+                                            )}
+                                          ></i>
+                                        </li>
+                                      </React.Fragment>
+                                    );
+                                  } else {
+                                    return null;
+                                  }
                                 })
                               : null}
                           </ol>

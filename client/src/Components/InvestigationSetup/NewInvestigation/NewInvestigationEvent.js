@@ -8,7 +8,6 @@ const texthandle = ($this, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value === "" ? null : e.value || e.target.value;
 
-  debugger;
   if (name === "category_id") {
     let analytes_required =
       e.selected.test_section === "M" && $this.state.culture_test === "Y"
@@ -132,9 +131,13 @@ const InsertLabTest = ($this, e) => {
   // console.log($this.state, "from insert lab");
 
   if (!err) {
-    // debugger;
+    //
     if ($this.state.draging_done === true) {
       $this.state.analytes = $this.state.drag_analytes;
+    } else {
+      $this.state.analytes.map((item, index) => {
+        return { ...item, display_order: index };
+      });
     }
     if ($this.state.hims_d_investigation_test_id === null) {
       algaehApiCall({

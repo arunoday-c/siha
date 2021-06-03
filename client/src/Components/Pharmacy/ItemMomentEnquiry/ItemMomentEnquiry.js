@@ -9,8 +9,10 @@ import {
   AlagehAutoComplete,
   AlgaehDateHandler,
   AlagehFormGroup,
+  // AlgaehAutoSearch,
 } from "../../Wrapper/algaehWrapper";
-
+import AlgaehAutoSearch from "../../Wrapper/autoSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 // import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
@@ -19,6 +21,7 @@ import {
   ProcessItemMoment,
   dateValidate,
   DrillDownScree,
+  itemchangeText,
   generateReports,
 } from "./ItemMomentEnquiryEvents";
 import "./ItemMomentEnquiry.scss";
@@ -43,6 +46,7 @@ class ItemMomentEnquiry extends Component {
       to_date: null,
       vendor_batchno: null,
       transaction_type: null,
+      item_description: "",
     };
   }
 
@@ -149,7 +153,38 @@ class ItemMomentEnquiry extends Component {
                     maxDate={new Date()}
                     value={this.state.to_date}
                   />
-                  <AlagehAutoComplete
+                  <AlgaehAutoSearch
+                    div={{
+                      className: "col-12 form-group mandatory AlgaehAutoSearch",
+                    }}
+                    label={{ forceLabel: "Item Name", isImp: false }}
+                    title="Search Items"
+                    id="item_id_search"
+                    template={(result) => {
+                      return (
+                        <section className="resultSecStyles">
+                          <div className="row">
+                            <div className="col-12">
+                              <h4 className="title">
+                                {result.item_description}
+                              </h4>
+                              <small>{result.uom_description}</small>
+                            </div>
+                          </div>
+                        </section>
+                      );
+                    }}
+                    name={"item_id"}
+                    columns={spotlightSearch.Items.Pharmacyitemmaster}
+                    displayField="item_description"
+                    value={this.state.item_description}
+                    searchName={"PharmacyforMaterialRequesition"}
+                    onClick={itemchangeText.bind(this, this)}
+                    // others={{
+                    //   disabled: this.state.ItemDisable,
+                    // }}
+                  />{" "}
+                  {/* <AlagehAutoComplete
                     div={{ className: "col" }}
                     label={{ forceLabel: "Item Name" }}
                     selector={{
@@ -168,7 +203,7 @@ class ItemMomentEnquiry extends Component {
                         });
                       },
                     }}
-                  />
+                  /> */}
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
@@ -204,7 +239,6 @@ class ItemMomentEnquiry extends Component {
                       },
                     }}
                   />
-
                   <AlagehAutoComplete
                     div={{ className: "col" }}
                     label={{ forceLabel: "Transaction Type" }}
@@ -225,7 +259,6 @@ class ItemMomentEnquiry extends Component {
                       onChange: changeTexts.bind(this, this),
                     }}
                   />
-
                   <div className="col" style={{ paddingTop: "3vh" }}>
                     <button
                       className="btn btn-primary btn-sm"
