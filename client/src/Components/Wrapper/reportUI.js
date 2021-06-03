@@ -769,7 +769,7 @@ export default class ReportUI extends Component {
                 : this.state[_param.name + "_list"];
 
             _controls.push(
-              <>
+              <div className={_param.className}>
                 <Label
                   label={{
                     fieldName: _param.name,
@@ -803,7 +803,7 @@ export default class ReportUI extends Component {
                     // maxTagCount: "responsive",
                   }}
                 />
-              </>
+              </div>
             );
             break;
           case "date":
