@@ -356,7 +356,7 @@ export default {
       bill_package.map((o) => {
         _ordered_package_id.push(o.ordered_package_id);
       });
-      console.log("_ordered_package_id", _ordered_package_id);
+      // console.log("_ordered_package_id", _ordered_package_id);
       if (_ordered_package_id.length > 0) {
         _mysql
           .executeQuery({

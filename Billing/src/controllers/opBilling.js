@@ -19,6 +19,7 @@ const {
   generateAccountingEntry,
   addCashHandover,
   revertOldCashHandover,
+  getPackageServices,
 } = billModels;
 const {
   addOpBIlling,
@@ -70,6 +71,13 @@ export default () => {
     updateOrderedPackageBilled,
     updatePhysiotherapyServices,
     (req, res, next) => {
+      if (req.body.portal_exists == "Y") {
+        getPackageServices(req, res, next);
+      } else {
+        next();
+      }
+    },
+    (req, res, next) => {
       if (
         req.records.PHYSIOTHERAPY != null &&
         req.records.PHYSIOTHERAPY == true
@@ -96,9 +104,10 @@ export default () => {
       }
     },
     (req, res, next) => {
+      const result = { ...req.records, package_data: req.package_data };
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records,
+        records: result,
       });
     }
   );
