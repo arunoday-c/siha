@@ -421,25 +421,31 @@ class OPBilling extends Component {
           Inputobj.insurance_yesno = $this.state.insured;
           Inputobj.ScreenCode = "BL0001";
 
-          debugger;
+          const package_exists = Inputobj.billdetails.filter(
+            (f) => f.service_type_id === 14
+          );
+          console.log("package_exists", package_exists);
+
+          // debugger;
           let portal_data = {};
-          if (this.state.portal_exists === "Y") {
+          if (Inputobj.portal_exists === "Y") {
             portal_data = Inputobj.billdetails.map((m) => {
               return {
                 service_id: m.services_id,
                 service_name: m.service_name,
                 service_category: m.service_type,
-                visit_code: this.state.visit_code,
-                patient_identity: this.state.primary_id_no,
+                visit_code: Inputobj.visit_code,
+                patient_identity: Inputobj.primary_id_no,
                 pay_type: m.insurance_yesno === "Y" ? "INSURANCE" : "CASH",
                 service_amount: m.patient_resp,
                 service_vat: m.patient_tax,
-                hospital_id: this.state.hospital_id,
+                hospital_id: Inputobj.hospital_id,
                 report_download:
-                  parseFloat(this.state.credit_amount) > 0 ? "N" : "Y",
+                  parseFloat(Inputobj.credit_amount) > 0 ? "N" : "Y",
               };
             });
           }
+          Inputobj.package_exists = package_exists;
           AlgaehLoader({ show: true });
           algaehApiCall({
             uri: "/opBilling/addOpBIlling",
@@ -457,7 +463,27 @@ class OPBilling extends Component {
                   saveEnable: true,
                 });
 
-                if (this.state.portal_exists === "Y") {
+                if (Inputobj.portal_exists === "Y") {
+                  const package_data = response.data.records.package_data;
+                  for (let i = 0; i < package_data.length; i++) {
+                    portal_data.push({
+                      service_id: package_data[i].service_id,
+                      service_name: package_data[i].service_name,
+                      service_category: package_data[i].service_type,
+                      visit_code: Inputobj.visit_code,
+                      patient_identity: Inputobj.primary_id_no,
+                      pay_type:
+                        package_data[i].insurance_yesno === "Y"
+                          ? "INSURANCE"
+                          : "CASH",
+                      service_amount: 0,
+                      service_vat: 0,
+                      hospital_id: Inputobj.hospital_id,
+                      report_download:
+                        parseFloat(Inputobj.credit_amount) > 0 ? "N" : "Y",
+                    });
+                  }
+
                   axios
                     .post(`${PORTAL_HOST}/info/patientService`, portal_data)
                     .then(function (response) {

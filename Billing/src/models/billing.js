@@ -3825,6 +3825,51 @@ export default {
     }
   },
 
+  getPackageServices: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let inputParam = req.body;
+
+      if (inputParam.package_exists.length > 0) {
+        const package_ids = inputParam.package_exists.map((o) => {
+          return o.ordered_package_id;
+        });
+
+        _mysql
+          .executeQuery({
+            query: `SELECT D.service_id, service_name, service_type, H.insurance_yesno FROM hims_f_package_header H 
+              inner join hims_f_package_detail D on H.hims_f_package_header_id=D.package_header_id 
+              inner join hims_d_services S on S.hims_d_services_id=D.service_id 
+              inner join hims_d_service_type ST on ST.hims_d_service_type_id=D.service_type_id 
+              where D.service_type_id=5 and D.service_type_id=11 and hims_f_package_header_id in (?) ;`,
+            values: [package_ids],
+            printQuery: true,
+          })
+          .then((result) => {
+            if (req.connection == null) {
+              req.package_data = result;
+              next();
+            } else {
+              req.package_data = result;
+              next();
+            }
+          })
+          .catch((error) => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      } else {
+        next();
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
   //created by:IRFAN
   generateAccountingEntry: (req, res, next) => {
     try {
@@ -3970,7 +4015,9 @@ export default {
                         parseFloat(vat_charge);
                       if (final_amount > 0) {
                         EntriesArray.push({
-                          payment_date: moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                          payment_date: moment(inputParam.bill_date).format(
+                            "YYYY-MM-DD"
+                          ),
                           head_id: CARD_SETTL.head_id,
                           child_id: CARD_SETTL.child_id,
                           debit_amount: final_amount,
@@ -3981,7 +4028,9 @@ export default {
                       }
                       if (service_charge > 0) {
                         EntriesArray.push({
-                          payment_date:moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                          payment_date: moment(inputParam.bill_date).format(
+                            "YYYY-MM-DD"
+                          ),
                           head_id: card_data[0].head_id,
                           child_id: card_data[0].child_id,
                           debit_amount: service_charge,
@@ -3992,7 +4041,9 @@ export default {
                       }
                       if (vat_charge > 0) {
                         EntriesArray.push({
-                          payment_date: moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                          payment_date: moment(inputParam.bill_date).format(
+                            "YYYY-MM-DD"
+                          ),
                           head_id: INPUT_TAX.head_id,
                           child_id: INPUT_TAX.child_id,
                           debit_amount: vat_charge,
@@ -4006,7 +4057,9 @@ export default {
 
                       if (parseFloat(m.amount) > 0) {
                         EntriesArray.push({
-                          payment_date: moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                          payment_date: moment(inputParam.bill_date).format(
+                            "YYYY-MM-DD"
+                          ),
                           head_id: CIH_OP.head_id,
                           child_id: CIH_OP.child_id,
                           debit_amount: m.amount,
@@ -4027,7 +4080,9 @@ export default {
 
                   if (inputParam.total_amount > 0) {
                     EntriesArray.push({
-                      payment_date: moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                      payment_date: moment(inputParam.bill_date).format(
+                        "YYYY-MM-DD"
+                      ),
                       head_id: OP_DEP.head_id,
                       child_id: OP_DEP.child_id,
                       debit_amount: inputParam.total_amount,
@@ -4040,7 +4095,9 @@ export default {
                   // DECREASE CASH IN HAND
                   if (parseFloat(amount) > 0) {
                     EntriesArray.push({
-                      payment_date: moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                      payment_date: moment(inputParam.bill_date).format(
+                        "YYYY-MM-DD"
+                      ),
                       head_id: CIH_OP.head_id,
                       child_id: CIH_OP.child_id,
                       debit_amount: 0,
@@ -4073,7 +4130,9 @@ export default {
 
                     if (credit_amount > 0) {
                       EntriesArray.push({
-                        payment_date: moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                        payment_date: moment(inputParam.bill_date).format(
+                          "YYYY-MM-DD"
+                        ),
                         head_id: curService.head_id,
                         child_id: curService.child_id,
                         debit_amount: 0,
@@ -4119,7 +4178,9 @@ export default {
                     //   ", Adjusting Advance  Amount of " +
                     //   inputParam.pack_advance_amount;
                     EntriesArray.push({
-                      payment_date: moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                      payment_date: moment(inputParam.bill_date).format(
+                        "YYYY-MM-DD"
+                      ),
                       head_id: OP_DEP.head_id,
                       child_id: OP_DEP.child_id,
                       debit_amount: inputParam.pack_advance_adjust,
@@ -4136,7 +4197,9 @@ export default {
                       inputParam.credit_amount;
 
                     EntriesArray.push({
-                      payment_date: moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                      payment_date: moment(inputParam.bill_date).format(
+                        "YYYY-MM-DD"
+                      ),
                       head_id: OP_REC.head_id,
                       child_id: OP_REC.child_id,
                       debit_amount: inputParam.credit_amount,
@@ -4168,7 +4231,9 @@ export default {
                         parseFloat(vat_charge);
                       if (final_amount > 0) {
                         EntriesArray.push({
-                          payment_date: moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                          payment_date: moment(inputParam.bill_date).format(
+                            "YYYY-MM-DD"
+                          ),
                           head_id: CARD_SETTL.head_id,
                           child_id: CARD_SETTL.child_id,
                           debit_amount: final_amount,
@@ -4179,7 +4244,9 @@ export default {
                       }
                       if (service_charge > 0) {
                         EntriesArray.push({
-                          payment_date:moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                          payment_date: moment(inputParam.bill_date).format(
+                            "YYYY-MM-DD"
+                          ),
                           head_id: card_data[0].head_id,
                           child_id: card_data[0].child_id,
                           debit_amount: service_charge,
@@ -4190,7 +4257,9 @@ export default {
                       }
                       if (vat_charge > 0) {
                         EntriesArray.push({
-                          payment_date: moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                          payment_date: moment(inputParam.bill_date).format(
+                            "YYYY-MM-DD"
+                          ),
                           head_id: INPUT_TAX.head_id,
                           child_id: INPUT_TAX.child_id,
                           debit_amount: vat_charge,
@@ -4212,7 +4281,9 @@ export default {
                       if (parseFloat(m.amount) > 0) {
                         narration = narration + ",Received By CASH:" + m.amount;
                         EntriesArray.push({
-                          payment_date: moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                          payment_date: moment(inputParam.bill_date).format(
+                            "YYYY-MM-DD"
+                          ),
                           head_id: CIH_OP.head_id,
                           child_id: CIH_OP.child_id,
                           debit_amount: m.amount,
@@ -4234,7 +4305,9 @@ export default {
                     //   `, insurance (${insurance_data[0]["insurance_sub_name"]}) receivable: ${inputParam.company_payble}`;
 
                     EntriesArray.push({
-                      payment_date: moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                      payment_date: moment(inputParam.bill_date).format(
+                        "YYYY-MM-DD"
+                      ),
                       head_id: OP_CTRL.head_id,
                       child_id: OP_CTRL.child_id,
                       debit_amount: inputParam.company_payble,
@@ -4248,7 +4321,9 @@ export default {
 
                   if (parseFloat(inputParam.total_tax) > 0) {
                     EntriesArray.push({
-                      payment_date: moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                      payment_date: moment(inputParam.bill_date).format(
+                        "YYYY-MM-DD"
+                      ),
                       head_id: OUTPUT_TAX.head_id,
                       child_id: OUTPUT_TAX.child_id,
                       debit_amount: 0,
@@ -4259,7 +4334,9 @@ export default {
                   }
                   if (inputParam.sheet_discount_amount > 0) {
                     EntriesArray.push({
-                      payment_date:moment(inputParam.bill_date).format("YYYY-MM-DD"),
+                      payment_date: moment(inputParam.bill_date).format(
+                        "YYYY-MM-DD"
+                      ),
                       head_id: SALES_DISCOUNT.head_id,
                       child_id: SALES_DISCOUNT.child_id,
                       debit_amount: inputParam.sheet_discount_amount,
