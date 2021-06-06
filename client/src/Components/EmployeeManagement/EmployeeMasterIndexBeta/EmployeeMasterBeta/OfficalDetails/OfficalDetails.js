@@ -1006,7 +1006,7 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
                     rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
-                        div={{ className: "col-3 mandatory form-group" }}
+                        div={{ className: "col-3  form-group" }}
                         error={errors}
                         label={{
                           forceLabel: "Elgible Max. Discount %",
@@ -1031,7 +1031,7 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
                     rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
-                        div={{ className: "col-3 mandatory form-group" }}
+                        div={{ className: "col-3  form-group" }}
                         error={errors}
                         label={{
                           forceLabel: "Elgible Min. Credit %",
