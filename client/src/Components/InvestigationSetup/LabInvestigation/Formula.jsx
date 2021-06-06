@@ -14,16 +14,22 @@ export default function Formulae({
   selectedRow,
   analytes,
 }) {
+  const [previousFomulla, setPreviousFomulla] = useState("");
   const [analyte_id, setAnalyte_id] = useState("");
   const [formula_description, setFormula_description] = useState("");
   const [valueForm, setValueForm] = useState([]);
   const [decimals, setDecimals] = useState("");
+  const [filterOnlyQty, setFilterOnlyQty] = useState([]);
   // const [fieldArray, setFieldArray] = useState([]);
   useEffect(() => {
     if (openFormula) {
       onClearFormula();
       setFormula_description(selectedRow.display_formula);
       setDecimals(selectedRow.decimals);
+      setPreviousFomulla(selectedRow.display_formula);
+      debugger;
+      setFilterOnlyQty(analytes.filter((f) => f.analyte_type === "QN"));
+
       // setFieldArray(selectedRow.display_formula.match(/[A-Za-z]/g));
       // console.log("fieldArray", fieldArray);
     }
@@ -105,9 +111,7 @@ export default function Formulae({
                     forceLabel: "Previously applied formula",
                   }}
                 />
-                <h6>
-                  {formula_description ? formula_description : "--------"}
-                </h6>
+                <h6>{previousFomulla ? previousFomulla : "--------"}</h6>
               </div>
               {/* <AlgaehFormGroup
                 div={{ className: "col-12" }}
@@ -137,7 +141,7 @@ export default function Formulae({
                   dataSource: {
                     textField: "analyte_description",
                     valueField: "analyte_id",
-                    data: analytes,
+                    data: filterOnlyQty,
                   },
                   value: analyte_id,
                   onChange: (e) => {
@@ -178,10 +182,10 @@ export default function Formulae({
                 }}
               />{" "}
               <AlgaehFormGroup
-                div={{ className: "col-12 form-group" }}
+                div={{ className: "col-4 form-group mandatory" }}
                 label={{
                   forceLabel: "Enter Result Decimals",
-                  isImp: false,
+                  isImp: true,
                 }}
                 textBox={{
                   type: "number",
@@ -197,10 +201,9 @@ export default function Formulae({
                 }}
               />
               <div
-                className="col-12 form-group "
-                style={{ textAlign: "right" }}
+                className="col-8 form-group "
+                style={{ textAlign: "right", paddingTop: 21 }}
               >
-                {" "}
                 <AlgaehButton
                   className="btn btn-default"
                   style={{ marginRight: 10 }}
