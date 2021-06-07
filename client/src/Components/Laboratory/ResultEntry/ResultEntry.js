@@ -1095,7 +1095,12 @@ class ResultEntry extends Component {
                       className="btn btn-default"
                       loading={this.state.loading}
                       onClick={this.onClickPrintHandle.bind(this)}
-                      disabled={this.state.status === "V" ? false : true}
+                      disabled={
+                        this.state.status === "V" &&
+                        this.state.credit_order === "N"
+                          ? false
+                          : true
+                      }
                     >
                       Print
                     </AlgaehButton>

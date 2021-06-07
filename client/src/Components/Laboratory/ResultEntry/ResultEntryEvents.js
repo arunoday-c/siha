@@ -170,7 +170,7 @@ const UpdateLabOrder = ($this, value, status) => {
         $this.setState(
           {
             test_analytes: value,
-            status: status,
+            status: status === "AV" ? "V" : status,
             entered_by:
               response.data.records.entered_by || $this.state.entered_by,
             confirmed_by:
