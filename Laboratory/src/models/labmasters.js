@@ -1469,6 +1469,7 @@ export default {
                 "to_age",
                 "critical_low",
                 "critical_high",
+                "critical_value_req",
                 "normal_low",
                 "normal_high",
                 "normal_qualitative_value",

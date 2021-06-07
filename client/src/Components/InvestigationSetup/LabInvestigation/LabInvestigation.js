@@ -152,7 +152,6 @@ class LabInvestigation extends Component {
     });
   }
   onDeleteFormula(row) {
-    debugger;
     const { state } = this.context;
     let analytes = [...state.analytes];
 
@@ -160,6 +159,7 @@ class LabInvestigation extends Component {
 
     row.display_formula = null;
     row.formula = null;
+    row.original_formula = null;
     row.decimals = null;
 
     analytes[analytes_index] = row;
