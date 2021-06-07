@@ -15,6 +15,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
     normal_high: 0,
     critical_low: 0,
     critical_high: 0,
+    critical_value_req: "N",
     text_value: "",
     normal_qualitative_value: "",
     from_oprator: "notselected",
@@ -28,12 +29,22 @@ export default function RangeInput({ addAnalyte, analyteType }) {
   function handleChange(e) {
     const name = e.name || e.target.name;
     const value = e.value || e.target.value;
+
     setinputs((state) => ({
       ...state,
       [name]: value,
     }));
   }
 
+  function checkhandleChange(e) {
+    const name = e.name || e.target.name;
+    const value = e.target.checked;
+
+    setinputs((state) => ({
+      ...state,
+      [name]: value ? "Y" : "N",
+    }));
+  }
   const TYPES = { D: "Days", Y: "Years", M: "Months" };
 
   function onSubmit() {
@@ -271,6 +282,57 @@ export default function RangeInput({ addAnalyte, analyteType }) {
               },
             }}
           />
+          <div className="customRadio" style={{ borderBottom: 0 }}>
+            <label className="checkbox inline">
+              <input
+                type="checkbox"
+                name="critical_value_req"
+                value="Y"
+                checked={inputs.critical_value_req === "Y" ? true : false}
+                onChange={checkhandleChange}
+              />
+              <span>Critical Values Required?</span>
+            </label>
+          </div>
+
+          {inputs.critical_value_req === "Y" ? (
+            <div className="col-12">
+              <div className="row">
+                <AlagehFormGroup
+                  div={{ className: "col-6 form-group" }}
+                  label={{
+                    forceLabel: "Critical Low",
+                  }}
+                  textBox={{
+                    decimal: { allowNegative: false },
+                    className: "txt-fld",
+                    name: "critical_low",
+                    value: inputs.critical_low,
+                    events: {
+                      onChange: handleChange,
+                    },
+                  }}
+                />
+
+                <AlagehFormGroup
+                  div={{ className: "col-6 form-group" }}
+                  label={{
+                    forceLabel: "Critical High",
+                  }}
+                  textBox={{
+                    decimal: { allowNegative: false },
+                    className: "txt-fld",
+                    name: "critical_high",
+                    value: inputs.critical_high,
+                    events: {
+                      onChange: handleChange,
+                    },
+                  }}
+                />
+              </div>
+            </div>
+          ) : null}
+
           {/* <AlagehFormGroup
             div={{ className: "col-6 form-group" }}
             label={{
