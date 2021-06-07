@@ -1151,6 +1151,14 @@ let algaehSearchConfig = (searchName, req) => {
           inner join hims_d_insurance_sub SU on S.sub_insurance_id = SU.hims_d_insurance_sub_id where S.record_status='A'`,
         orderBy: "S.hims_f_insurance_statement_id desc",
       },
+      {
+        searchName: "InsuranceStatementReport",
+        searchQuery: `select S.hims_f_insurance_statement_id as hims_d_item_master_id,S.insurance_statement_number as item_description,
+          SU.insurance_sub_name as uom_description from hims_f_insurance_statement S 
+          inner join hims_d_insurance_provider P on S.insurance_provider_id = P.hims_d_insurance_provider_id
+          inner join hims_d_insurance_sub SU on S.sub_insurance_id = SU.hims_d_insurance_sub_id where S.record_status='A'`,
+        orderBy: "S.hims_f_insurance_statement_id desc",
+      },
       ...search_global1,
     ],
   };

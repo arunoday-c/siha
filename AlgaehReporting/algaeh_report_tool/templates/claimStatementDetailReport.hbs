@@ -1,0 +1,88 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div class="print-body">
+
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Service Code</th>
+            <th>Service Name</th>
+            <th>Gross Amt.</th>
+            <th>Patient Res.</th>
+            <th>Patient Tax</th>
+            <th>Patient Payable</th>
+            <th>Company Res.</th>
+            <th>VAT Rate %</th>
+            <th>Company Tax</th>
+            <th>Company Payable</th>
+          </tr>
+        </thead>
+        <tbody>
+           <tr class="numberFldTotalBottom">
+            <td colspan="3"></td>
+            <td class="numberFld">{{numberFormating ftr_total_gross_amount ./currencyOnly}}</td>
+            <td class="numberFld">{{numberFormating ftr_total_patient_payable ./currencyOnly}}</td>
+            <td class="numberFld">{{numberFormating ftr_total_patient_tax ./currencyOnly}}</td>
+            <td class="numberFld">{{numberFormating ftr_total_patient_resp ./currencyOnly}}</td>
+            <td class="numberFld">{{numberFormating ftr_total_company_resp ./currencyOnly}}</td>
+            <td class="numberFld"></td>
+            <td class="numberFld">{{numberFormating ftr_total_company_tax ./currencyOnly}}</td>
+            <td class="numberFld">{{numberFormating ftr_total_company_payable ./currencyOnly}}</td>
+          </tr>
+          {{#each detail}}
+            <tr>
+              <td colspan="3" class="tableSubHdg">{{policy_number}}|
+                {{invoice_number}}
+                |
+                {{invoice_date}}</td>
+              <td colspan="8" class="tableSubHdg">{{patient_code}}|
+                {{full_name}}
+              </td>
+            </tr>
+            {{#each detailList}}
+              <tr>
+                <td>{{inc @index}}</td>
+                <td>{{service_code}}</td>
+                <td class="txtFld">{{service_name}}</td>
+                <td class="numberFld">{{gross_amount}}</td>
+                <td class="numberFld">{{patient_payable}}</td>
+                <td class="numberFld">{{patient_tax}}</td>
+                <td class="numberFld">{{patient_resp}}</td>
+                <td class="numberFld">{{company_resp}}</td>
+                <td class="numberFld">{{vat_percent}}</td>
+                <td class="numberFld">{{company_tax}}</td>
+                <td class="numberFld">{{company_payable}}</td>
+              </tr>
+            {{/each}}
+            <tr class="footerTotalDown">
+             <td colspan="3"></td>
+            <td class="numberFld">{{numberFormating total_gross_amount ../decimalOnly}}</td>
+            <td class="numberFld">{{numberFormating total_patient_payable ../decimalOnly}}</td>
+            <td class="numberFld">{{numberFormating total_patient_tax ../decimalOnly}}</td>
+            <td class="numberFld">{{numberFormating total_patient_resp ../decimalOnly}}</td>
+            <td class="numberFld">{{numberFormating total_company_resp ../decimalOnly}}</td>
+            <td class="numberFld"></td>
+            <td class="numberFld">{{numberFormating total_company_tax ../decimalOnly}}</td>
+            <td class="numberFld">{{numberFormating total_company_payable ../decimalOnly}}</td>
+            </tr>
+          {{/each}}
+          <tr class="numberFldTotalBottom">
+            <td colspan="3"></td>
+            <td class="numberFld">{{numberFormating ftr_total_gross_amount ./currencyOnly}}</td>
+            <td class="numberFld">{{numberFormating ftr_total_patient_payable ./currencyOnly}}</td>
+            <td class="numberFld">{{numberFormating ftr_total_patient_tax ./currencyOnly}}</td>
+            <td class="numberFld">{{numberFormating ftr_total_patient_resp ./currencyOnly}}</td>
+            <td class="numberFld">{{numberFormating ftr_total_company_resp ./currencyOnly}}</td>
+            <td class="numberFld"></td>
+            <td class="numberFld">{{numberFormating ftr_total_company_tax ./currencyOnly}}</td>
+            <td class="numberFld">{{numberFormating ftr_total_gross_amount ./currencyOnly}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
+</body>
