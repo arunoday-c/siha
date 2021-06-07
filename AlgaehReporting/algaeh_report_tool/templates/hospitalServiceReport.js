@@ -28,7 +28,7 @@ const executePDF = function executePDFMethod(options) {
           query: `SELECT S.service_type_id,S.hims_d_services_id,S.service_code,S.service_name,S.arabic_service_name,
           SD.sub_department_name,ST.service_type,case when S.vat_applicable='Y' then 'Yes' else 'No' end as vat_applicable,
           case when S.physiotherapy_service='Y' then 'Yes' else 'No' end as physiotherapy_service, 
-          S.vat_percent,S.standard_fee,FH.account_code,FH.account_name,FC.ledger_code,
+          S.vat_percent,S.standard_fee,S.service_cost,FH.account_code,FH.account_name,FC.ledger_code,
           FC.child_name,S.hospital_id,S.procedure_type,CPT.cpt_desc,CPT.cpt_code
           FROM hims_d_services S
           left join hims_d_sub_department SD on SD.hims_d_sub_department_id = S.sub_department_id
