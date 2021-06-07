@@ -1639,7 +1639,7 @@ export default {
               .executeQuery({
                 query:
                   "select hims_m_lab_analyte_id,test_id,M.analyte_id, R.gender, R.age_type, R.from_age,\
-                    R.to_age, R.critical_low,  R.critical_high, R.normal_low, R.normal_high ,\
+                    R.to_age, R.critical_value_req, R.critical_low,  R.critical_high, R.normal_low, R.normal_high ,\
                     R.normal_qualitative_value,R.text_value ,A.analyte_type,A.result_unit from hims_m_lab_analyte  M \
                     left join hims_d_lab_analytes A on M.analyte_id=A.hims_d_lab_analytes_id\
                     left join  hims_d_lab_analytes_range R on  M.analyte_id=R.analyte_id\
@@ -1655,6 +1655,7 @@ export default {
                     "analyte_id",
                     "analyte_type",
                     "result_unit",
+                    "critical_value_req",
                     "critical_low",
                     "critical_high",
                     "normal_low",
@@ -1667,7 +1668,7 @@ export default {
                       query:
                         "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ? \
                         ON DUPLICATE KEY UPDATE normal_low=values(normal_low),normal_high=values(normal_high), \
-                        text_value=values(text_value)",
+                        critical_value_req = values(critical_value_req), critical_low=values(critical_low), critical_high=values(critical_high), text_value=values(text_value)",
                       values: all_analytes,
                       includeValues: analyts,
                       extraValues: {
@@ -1762,7 +1763,7 @@ export default {
             .executeQuery({
               query:
                 "select hims_m_lab_analyte_id,test_id,M.analyte_id, R.gender, R.age_type, R.from_age,\
-                    R.to_age, R.critical_low,  R.critical_high, R.normal_low, R.normal_high ,\
+                    R.to_age, R.critical_value_req, R.critical_low,  R.critical_high, R.normal_low, R.normal_high ,\
                     R.normal_qualitative_value,R.text_value ,A.analyte_type,A.result_unit from hims_m_lab_analyte  M \
                     left join hims_d_lab_analytes A on M.analyte_id=A.hims_d_lab_analytes_id\
                     left join  hims_d_lab_analytes_range R on  M.analyte_id=R.analyte_id\
@@ -1778,6 +1779,7 @@ export default {
                   "analyte_id",
                   "analyte_type",
                   "result_unit",
+                  "critical_value_req",
                   "critical_low",
                   "critical_high",
                   "normal_low",
@@ -1790,7 +1792,7 @@ export default {
                     query:
                       "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ? \
                         ON DUPLICATE KEY UPDATE analyte_type=values(analyte_type), normal_low=values(normal_low),normal_high=values(normal_high), \
-                        text_value=values(text_value)",
+                        critical_value_req = values(critical_value_req), critical_low=values(critical_low), critical_high=values(critical_high), text_value=values(text_value)",
                     values: all_analytes,
                     includeValues: analyts,
                     extraValues: {
