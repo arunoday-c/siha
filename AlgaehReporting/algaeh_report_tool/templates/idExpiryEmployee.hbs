@@ -1,72 +1,77 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
-            {{!-- <table class="tableForLabel" cell-padding="0">
+    <section>
+      {{!-- <table class="tableForLabel" cell-padding="0">
                 <tr>
                     <td><label class="textEnLft">Total Employees</label>:<span class="valueText">{{no_employees}}</span>
                     </td>
                 </tr>
             </table> --}}
 
+    </section>
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            {{! <th>Sl No.</th> }}
+            <th>Primary ID</th>
+            <th>Employee Code</th>
+            <th>Employee Name</th>
+            <th>Natioinality</th>
+            <th>ID No.</th>
+            <th>Valid Upto</th>
+          </tr>
 
-        </section>
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        {{!-- <th>Sl No.</th> --}}
-                        <th>Employee Code</th>
-                        <th>Employee Name</th>
-                        <th>Natioinality</th>
-                        <th>ID No.</th>
-                        <th>Valid Upto</th>
-                    </tr>
-
-                </thead>
-                <tbody>
-                    {{!-- <tr>
+        </thead>
+        <tbody>
+          {{!-- <tr>
                         <td colspan="10"></td>
                         <td colspan="1"><span class="textFloatRight">Total No.
                                 Employees: <b>{{no_employees}}</b></span></td>
 
                     </tr> --}}
-                    {{#hasElement result}}
+          {{#hasElement result}}
 
+            {{#each result}}
+              <tr>
+                <td
+                  colspan="7"
+                  class="tableSubHdg"
+                >{{identity_document_name}}</td>
 
-                    {{#each result}}
-                    <tr>
-                        <td colspan="6" class="tableSubHdg">{{identity_document_name}}</td>
-
-                    </tr>
-                    {{#each employees}}
-                    {{!-- <tr>
+              </tr>
+              {{#each employees}}
+                {{!-- <tr>
                         <td colspan="6" class="tableSubHdg2">{{totalEmployee}} 
                         </td>
                     </tr> --}}
-                    {{#each emps}}
-                    <tr>
-                        {{!-- <td>{{inc @index}}</td> --}}
-                        <td>{{employee_code}}</td>
-                        <td excelborder='{"top":{"style":"thin","color":{"argb":"dddddd"}},"left":{"style":"thin","color":{"argb":"dddddd"}},"bottom":{"style":"thin","color":{"argb":"dddddd"}},"right":{"style":"thin","color":{"argb":"dddddd"}}}'
-                            class="txtFld">{{full_name}}</td>
-                        <td>{{nationality}}</td>
-                        <td>{{identity_number}}</td>
-                        <td>{{valid_upto}}</td>
-                    </tr>
-                    {{/each }}{{/each }}{{/each }}
-                  
-                    {{else}}
-                    <tr>
-                        <td colspan="6" class="noResultTextReport">No Records Found</td>
-                    </tr>{{/hasElement }}
-                </tbody>
+                {{#each emps}}
+                  <tr>
+                    {{!-- <td>{{inc @index}}</td> --}}
+                    <td>{{identity_no}}</td>
+                    <td>{{employee_code}}</td>
+                    <td
+                      excelborder='{"top":{"style":"thin","color":{"argb":"dddddd"}},"left":{"style":"thin","color":{"argb":"dddddd"}},"bottom":{"style":"thin","color":{"argb":"dddddd"}},"right":{"style":"thin","color":{"argb":"dddddd"}}}'
+                      class="txtFld"
+                    >{{full_name}}</td>
+                    <td>{{nationality}}</td>
+                    <td>{{identity_number}}</td>
+                    <td>{{valid_upto}}</td>
+                  </tr>
+                {{/each}}{{/each}}{{/each}}
 
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+          {{else}}
+            <tr>
+              <td colspan="7" class="noResultTextReport">No Records Found</td>
+            </tr>{{/hasElement}}
+        </tbody>
 
-    </div>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+  </div>
 </body>

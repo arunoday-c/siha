@@ -972,6 +972,27 @@ export default function Inventory({
         componentCode: "INV_PUR_ITM_SUP_RPT",
         reportParameters: [
           {
+            className: "col-3 mandatory  form-group",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+
+          {
+            className: "col-3 mandatory  form-group",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
             className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
