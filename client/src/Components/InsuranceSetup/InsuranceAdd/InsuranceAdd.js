@@ -19,7 +19,7 @@ import MyContext from "../../../utils/MyContext";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { MainContext } from "algaeh-react-components";
+// import { MainContext } from "algaeh-react-components";
 
 function getSteps() {
   return ["Insurance Provider", "Sub Insurance", "Network/Plan", "Price List"];
@@ -54,7 +54,7 @@ class InsuranceAdd extends PureComponent {
     };
   }
 
-  static contextType = MainContext;
+  // static contextType = MainContext;
 
   UNSAFE_componentWillMount() {
     let IOputs = InsuranceSetup.inputParam();
@@ -62,13 +62,13 @@ class InsuranceAdd extends PureComponent {
   }
 
   componentDidMount() {
-    const userToken = this.context.userToken;
+    // const userToken = this.context.userToken;
     let prevLang = getCookie("Language");
 
     setGlobal({ selectedLang: prevLang });
     this.setState({
       selectedLang: prevLang,
-      portal_exists: userToken.portal_exists,
+      // portal_exists: userToken.portal_exists,
     });
   }
 
@@ -111,6 +111,7 @@ class InsuranceAdd extends PureComponent {
 
     let insurance_provider_id = null;
     let insurance_provider_name = null;
+    let insurance_type = null;
     if (nextProps.buttonenable === true) {
       insurance_provider_id =
         nextProps.insurance_provider_id !== null
@@ -121,11 +122,14 @@ class InsuranceAdd extends PureComponent {
         nextProps.insurance_provider_name !== null
           ? nextProps.insurance_provider_name
           : null;
+      insurance_type =
+        nextProps.insurance_type !== null ? nextProps.insurance_type : null;
     }
     this.setState({
       buttonenable: nextProps.buttonenable,
       insurance_provider_id: insurance_provider_id,
       insurance_provider_name: insurance_provider_name,
+      insurance_type: insurance_type,
     });
   }
 

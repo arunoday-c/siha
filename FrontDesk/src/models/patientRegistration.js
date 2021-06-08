@@ -194,7 +194,7 @@ export default {
                mIns.primary_insurance_provider_id as insurance_provider_id,\
                Ins.insurance_provider_name as insurance_provider_name,\
               mIns.primary_sub_id as sub_insurance_provider_id ,\
-               sIns.insurance_sub_name as sub_insurance_provider_name,\
+               sIns.insurance_sub_name as sub_insurance_provider_name, sIns.user_id,\
               mIns.primary_network_id as network_id, \
                net.network_type,netoff.policy_number,netoff.hims_d_insurance_network_office_id, netoff.preapp_limit as preapp_limit_amount, \
                mIns.primary_card_number as card_number,\
@@ -212,7 +212,7 @@ export default {
               (select  mIns.patient_id as sec_patient_id , mIns.patient_visit_id  as sec_patient_visit_id, mIns.secondary_insurance_provider_id , \
                Ins.insurance_provider_name as secondary_insurance_provider_name,\
                mIns.secondary_sub_id as secondary_sub_insurance_provider_id,\
-               sIns.insurance_sub_name as secondary_sub_insurance_provider_name, \
+               sIns.insurance_sub_name as secondary_sub_insurance_provider_name, sIns.user_id as sec_user_id,,\
                mIns.secondary_network_id ,\
                net.network_type as secondary_network_type,\
                netoff.policy_number as secondary_policy_number,netoff.hims_d_insurance_network_office_id as secondary_network_office_id ,mIns.secondary_card_number,mIns.secondary_inc_card_path,\

@@ -2,8 +2,6 @@ import { Validations } from "./InsuranceAddValidation";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import InsuranceSetup from "../../../Models/InsuranceSetup";
-import axios from "axios";
-import moment from "moment";
 
 const handleNext = ($this, setp, e) => {
   // if (setp === "Close") {
@@ -14,7 +12,6 @@ const handleNext = ($this, setp, e) => {
   const err = Validations($this);
   if (!err) {
     if ($this.state.screenName === "InsuranceProvider") {
-      const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
       if ($this.state.insurance_provider_saved === false) {
         //Save Insurance
         $this.state.preapp_valid_days =
@@ -28,41 +25,6 @@ const handleNext = ($this, setp, e) => {
           data: $this.state,
           onSuccess: (response) => {
             if (response.data.success === true) {
-              if (
-                $this.state.insurance_type === "C" &&
-                $this.state.portal_exists === "Y"
-              ) {
-                const eff_end_date = moment(
-                  $this.state.effective_end_date
-                ).format("YYYYMMDD");
-                const firstFourLetters = String($this.state.payer_id)
-                  .substring(0, 4)
-                  .toUpperCase();
-                const password = `${firstFourLetters}${eff_end_date}`;
-
-                debugger;
-                const _data = {
-                  user_id: $this.state.payer_id,
-                  password: password,
-                };
-                try {
-                  axios
-                    .post(`${PORTAL_HOST}/info/userCreation`, _data)
-                    .then(function (response) {
-                      //handle success
-                      console.log(response);
-                    })
-                    .catch(function (response) {
-                      //handle error
-                      console.log(response);
-                    });
-                } catch (error) {
-                  swalMessage({
-                    title: error,
-                    type: "error",
-                  });
-                }
-              }
               if (setp === "Close") {
                 $this.onClose(e);
               } else if (setp === "Next") {

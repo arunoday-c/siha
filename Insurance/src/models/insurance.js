@@ -367,6 +367,7 @@ export default {
                   "transaction_number",
                   "effective_start_date",
                   "effective_end_date",
+                  "user_id",
                 ];
 
                 _mysql
