@@ -197,18 +197,16 @@ class OPBillCancellation extends Component {
         Inputobj.pay_type = "P";
         Inputobj.ScreenCode = "BL0003";
         AlgaehLoader({ show: true });
-        debugger;
         let _services_id = [];
         Inputobj.billdetails.map((o) => {
           _services_id.push(o.services_id);
           return null;
         });
-        const portal_data = {
-          service_id: _services_id,
-          visit_code: this.state.visit_code,
-          patient_identity: this.state.primary_id_no,
-          delete_data: true,
-        };
+
+        const package_exists = Inputobj.billdetails.filter(
+          (f) => f.service_type_id === 14
+        );
+        Inputobj.package_exists = package_exists;
         debugger;
         algaehApiCall({
           uri: "/opBillCancellation/addOpBillCancellation",
@@ -220,6 +218,16 @@ class OPBillCancellation extends Component {
 
             if (response.data.success) {
               if (this.state.portal_exists === "Y") {
+                const package_data = response.data.records.package_data;
+                for (let i = 0; i < package_data.length; i++) {
+                  _services_id.push(package_data[i].service_id);
+                }
+                const portal_data = {
+                  service_id: _services_id,
+                  visit_code: this.state.visit_code,
+                  patient_identity: this.state.primary_id_no,
+                  delete_data: true,
+                };
                 axios
                   .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
                   .then(function (response) {
@@ -231,6 +239,7 @@ class OPBillCancellation extends Component {
                     console.log(response);
                   });
               }
+              debugger;
 
               $this.setState({
                 bill_cancel_number: response.data.records.bill_number,

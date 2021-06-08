@@ -16,7 +16,7 @@ const {
 } = opModels;
 import recModels from "../models/receiptentry";
 const { getReceiptEntry, addReceiptEntry } = recModels;
-const { reVertCashHandover } = billModule;
+const { reVertCashHandover, getPackageServices } = billModule;
 
 export default () => {
   const api = Router();
@@ -72,6 +72,7 @@ export default () => {
     },
 
     cancelPackage,
+    getPackageServices,
     generateAccountingEntry,
     reVertCashHandover,
     (req, res, next) => {
@@ -94,9 +95,10 @@ export default () => {
     updateOPBilling,
 
     (req, res, next) => {
+      const result = { ...req.records, package_data: req.package_data };
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records,
+        records: result,
       });
     }
   );

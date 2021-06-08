@@ -77,16 +77,19 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "new_insurance",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS Ins.hims_d_insurance_provider_id as insurance_provider_id,Ins.insurance_provider_name, Ins.effective_end_date,Ins.effective_start_date,\
-          sIns.hims_d_insurance_sub_id as sub_insurance_provider_id, sIns.insurance_sub_name,Ins.insurance_type,\
+          "select SQL_CALC_FOUND_ROWS Ins.hims_d_insurance_provider_id as insurance_provider_id, \
+          Ins.insurance_provider_name, Ins.effective_end_date,Ins.effective_start_date,\
+          sIns.hims_d_insurance_sub_id as sub_insurance_provider_id, sIns.insurance_sub_name, \
+          Ins.insurance_type, \
           CASE WHEN Ins.insurance_type='I' THEN 'Insurance' else 'Corporate Client' END as insurance_type_d,\
-          net.hims_d_insurance_network_id as network_id,  net.network_type, net.effective_start_date as net_effective_start_date, net.effective_end_date as net_effective_end_date, \
-          netoff.hims_d_insurance_network_office_id, netoff.policy_number, Ins.payer_id from \
-          (((hims_d_insurance_network_office netoff INNER JOIN  hims_d_insurance_network net \
-          ON netoff.network_id=net.hims_d_insurance_network_id)INNER JOIN hims_d_insurance_sub sIns ON \
-          net.insurance_sub_id=sIns.hims_d_insurance_sub_id )INNER JOIN hims_d_insurance_provider Ins ON \
-          sIns.insurance_provider_id=Ins.hims_d_insurance_provider_id ) where netoff.record_status='A' \
-          and sIns.record_status='A' and Ins.record_status='A'",
+          net.hims_d_insurance_network_id as network_id,  net.network_type, \
+          net.effective_start_date as net_effective_start_date, net.effective_end_date as net_effective_end_date, \
+          netoff.hims_d_insurance_network_office_id, netoff.policy_number, sIns.user_id, sIns.creidt_limit_req, \
+          sIns.creidt_limit, sIns.creidt_amount_till from hims_d_insurance_network_office netoff \
+          INNER JOIN  hims_d_insurance_network net ON netoff.network_id=net.hims_d_insurance_network_id \
+          INNER JOIN hims_d_insurance_sub sIns ON net.insurance_sub_id=sIns.hims_d_insurance_sub_id \
+          INNER JOIN hims_d_insurance_provider Ins ON sIns.insurance_provider_id=Ins.hims_d_insurance_provider_id \
+          where netoff.record_status='A' and sIns.record_status='A' and Ins.record_status='A'",
         orderBy: "netoff.hims_d_insurance_network_office_id desc",
         groupBy: " GROUP By netoff.hims_d_insurance_network_office_id",
       },
@@ -1147,6 +1150,14 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "InsuranceStatement",
         searchQuery: `select S.*, SU.insurance_sub_name, 
         P.insurance_provider_name from hims_f_insurance_statement S 
+          inner join hims_d_insurance_provider P on S.insurance_provider_id = P.hims_d_insurance_provider_id
+          inner join hims_d_insurance_sub SU on S.sub_insurance_id = SU.hims_d_insurance_sub_id where S.record_status='A'`,
+        orderBy: "S.hims_f_insurance_statement_id desc",
+      },
+      {
+        searchName: "InsuranceStatementReport",
+        searchQuery: `select S.hims_f_insurance_statement_id as hims_d_item_master_id,S.insurance_statement_number as item_description,
+          SU.insurance_sub_name as uom_description from hims_f_insurance_statement S 
           inner join hims_d_insurance_provider P on S.insurance_provider_id = P.hims_d_insurance_provider_id
           inner join hims_d_insurance_sub SU on S.sub_insurance_id = SU.hims_d_insurance_sub_id where S.record_status='A'`,
         orderBy: "S.hims_f_insurance_statement_id desc",

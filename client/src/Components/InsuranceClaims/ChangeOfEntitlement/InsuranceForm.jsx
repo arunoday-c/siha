@@ -153,7 +153,7 @@ export function InsuranceForm({
           primary_effective_start_date: row?.effective_start_date,
           primary_effective_end_date: row?.effective_end_date,
           primary_card_number: "",
-          payer_id: row?.payer_id,
+          user_id: row?.user_id,
         });
       },
     });

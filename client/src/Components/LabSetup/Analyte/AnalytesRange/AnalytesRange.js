@@ -25,24 +25,22 @@ class AnalytesRange extends PureComponent {
     if (
       (this.props.active &&
         this.props.active.hims_d_lab_analytes_id !==
-        prevProps.active.hims_d_lab_analytes_id) ||
+          prevProps.active.hims_d_lab_analytes_id) ||
       this.state.refresh
     ) {
       const { hims_d_lab_analytes_id } = this.props.active;
       try {
-
         if (hims_d_lab_analytes_id) {
           const result = await this.getAnalyteDetail(hims_d_lab_analytes_id);
           // console.log("result.data.records", result.data.records);
 
-          debugger
           for (let i = 0; i < result.data.records.length; i++) {
             if (result.data.records[i].analyte_type === "T") {
               result.data.records[i].text_value_data = result.data.records[
                 i
               ].text_value.split("<br/>");
             } else {
-              result.data.records[i].text_value_data = []
+              result.data.records[i].text_value_data = [];
             }
           }
           this.setState({
@@ -550,6 +548,64 @@ class AnalytesRange extends PureComponent {
                       },
 
                       {
+                        fieldName: "critical_low",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Critical Low" }} />
+                        ),
+                        editorTemplate: (row) => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                value: row.critical_low,
+                                className: "txt-fld",
+                                name: "critical_low",
+                                others: {
+                                  type: "number",
+                                },
+                                events: {
+                                  onChange: (e) => this.handleChange(row, e),
+                                },
+                              }}
+                            />
+                          );
+                        },
+                        others: {
+                          show: isQuantity,
+                        },
+                      },
+
+                      {
+                        fieldName: "critical_high",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Critical High" }}
+                          />
+                        ),
+                        editorTemplate: (row) => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                value: row.critical_high,
+                                className: "txt-fld",
+                                name: "critical_high",
+                                others: {
+                                  type: "number",
+                                },
+                                events: {
+                                  onChange: (e) => this.handleChange(row, e),
+                                },
+                              }}
+                            />
+                          );
+                        },
+                        others: {
+                          show: isQuantity,
+                        },
+                      },
+
+                      {
                         fieldName: "text_value",
                         label: <AlgaehLabel label={{ forceLabel: "Text" }} />,
                         displayTemplate: (row) => {
@@ -557,8 +613,8 @@ class AnalytesRange extends PureComponent {
                             <ul className="analyteTxtUL">
                               {row.text_value_data.length > 0
                                 ? row.text_value_data.map((row) => {
-                                  return <li>{row}</li>;
-                                })
+                                    return <li>{row}</li>;
+                                  })
                                 : null}
                             </ul>
                           );
@@ -616,7 +672,7 @@ class AnalytesRange extends PureComponent {
                     }}
                     events={{
                       onDelete: this.deleteAnalyte,
-                      onEdit: (row) => { },
+                      onEdit: (row) => {},
                       onDone: this.updateAnalyte,
                     }}
                   />

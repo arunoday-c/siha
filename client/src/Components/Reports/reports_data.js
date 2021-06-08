@@ -55,7 +55,11 @@ export default function loadActiveReports(
       let result = [];
       switch (parameterName) {
         case "insurance":
-          result = Insurance({ algaehApiCall });
+          result = Insurance({
+            hospital_id: hims_d_hospital_id,
+            algaehApiCall,
+            spotlightSearch,
+          });
           break;
         case "income":
           result = Income({

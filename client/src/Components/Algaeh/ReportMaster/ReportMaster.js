@@ -162,9 +162,9 @@ export default function ReportMaster() {
   };
   return (
     <div className="ReportMaster">
-      <div className="row inner-top-search margin-bottom-15">
-        <form onSubmit={handleSubmit(onSubmit)} onError={onSubmit}>
-          <Spin spinning={updateLoading || saveLoading}>
+      <form onSubmit={handleSubmit(onSubmit)} onError={onSubmit}>
+        <Spin spinning={updateLoading || saveLoading}>
+          <div className="row inner-top-search margin-bottom-15">
             {" "}
             <Controller
               control={control}
@@ -653,10 +653,11 @@ export default function ReportMaster() {
               >
                 {current ? "Update" : "Add to List"}
               </button>
-            </div>
-          </Spin>
-        </form>
-      </div>
+            </div>{" "}
+          </div>
+        </Spin>
+      </form>
+
       <div className="row">
         <div className="col-12">
           <div className="portlet portlet-bordered margin-bottom-15">
@@ -751,15 +752,16 @@ export default function ReportMaster() {
                             : "None";
                         },
                       },
+
                       {
-                        fieldName: "report_name",
+                        fieldName: "report_name_for_header",
                         label: (
                           <AlgaehLabel label={{ fieldName: "Report Name" }} />
                         ),
                         filterable: true,
                       },
                       {
-                        fieldName: "report_name_for_header",
+                        fieldName: "report_name",
                         label: (
                           <AlgaehLabel label={{ fieldName: "File Name" }} />
                         ),

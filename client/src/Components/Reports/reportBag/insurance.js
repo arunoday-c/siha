@@ -1,4 +1,8 @@
-export default function Insurance({ hospital_id }) {
+export default function Insurance({
+  hospital_id,
+  algaehApiCall,
+  spotlightSearch,
+}) {
   return {
     name: "Insurance",
     excel: "true",
@@ -96,6 +100,109 @@ export default function Insurance({ hospital_id }) {
           //     data: undefined,
           //   },
           // },
+        ],
+        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Statement Detail Report",
+        reportName: "claimStatementDetailReport",
+        // reportQuery: "subDepartmentIncome",
+        requireIframe: true,
+        componentCode: "RPT_INS_CLM_DTL",
+
+        // subitem: "All Claim Statement",
+        // template_name: "allClaimStatementInsurance",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "insurance_provider_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Company",
+          //   link: {
+          //     uri: "/insurance/getInsuranceProviders",
+          //     module: "insurance",
+          //   },
+
+          //   events: {
+          //     onChange: (reportState, currentEvent) => {
+          //       algaehApiCall({
+          //         uri: "/insurance/getSubInsurance",
+          //         module: "insurance",
+          //         method: "GET",
+          //         data: { insurance_provider_id: currentEvent.value },
+
+          //         onSuccess: (result) => {
+          //           reportState.setState({
+          //             hims_d_insurance_sub_id_list: result.data.records,
+          //           });
+          //         },
+          //       });
+          //     },
+          //     onClear: (reportState, currentName) => {
+          //       reportState.setState({
+          //         [currentName]: undefined,
+          //         hims_d_insurance_sub_id_list: [],
+          //       });
+          //     },
+          //   },
+
+          //   dataSource: {
+          //     textField: "insurance_provider_name",
+          //     valueField: "hims_d_insurance_provider_id",
+          //     data: undefined,
+          //   },
+          // },
+
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "hims_d_insurance_sub_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Sub Company",
+          //   dataSource: {
+          //     textField: "insurance_sub_name",
+          //     valueField: "hims_d_insurance_sub_id",
+          //     data: [],
+          //   },
+          //   events: {
+          //     onClear: (reportState, currentName) => {
+          //       reportState.setState({
+          //         [currentName]: undefined,
+          //       });
+          //     },
+          //   },
+          // },
+          {
+            className: "col-6 form-group AutosearchClass",
+            type: "Autosearch",
+            name: "item_id",
+            isImp: false,
+            columns: spotlightSearch.Insurance.InsuranceStatementReport,
+            displayField: "item_description",
+            value: null,
+            searchName: "InsuranceStatementReport",
+            label: "Statement No",
+          },
         ],
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },

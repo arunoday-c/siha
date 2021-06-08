@@ -135,7 +135,8 @@ const InsertLabTest = ($this, e) => {
     if ($this.state.draging_done === true) {
       $this.state.analytes = $this.state.drag_analytes;
     } else {
-      $this.state.analytes.map((item, index) => {
+      debugger;
+      $this.state.analytes = $this.state.analytes.map((item, index) => {
         return { ...item, display_order: index };
       });
     }

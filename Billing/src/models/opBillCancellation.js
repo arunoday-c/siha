@@ -25,6 +25,35 @@ export default {
 
           req.body.bill_cancel_number = generatedNumbers.OP_CBIL;
 
+          let strQuery = "";
+
+          // console.log(
+          //   "inputParam.creidt_limit_req",
+          //   inputParam.creidt_limit_req
+          // );
+          // console.log(
+          //   "inputParam.creidt_amount_till",
+          //   inputParam.company_payable
+          // );
+          // console.log(
+          //   "inputParam.primary_sub_id",
+          //   inputParam.sub_insurance_provider_id
+          // );
+
+          if (inputParam.creidt_limit_req === "Y") {
+            strQuery += _mysql.mysqlQueryFormat(
+              "UPDATE `hims_d_insurance_sub` SET creidt_amount_till=creidt_amount_till-(?) \
+          where hims_d_insurance_sub_id=?;",
+              [
+                parseFloat(inputParam.company_payable),
+                inputParam.sub_insurance_provider_id,
+              ]
+            );
+          }
+
+          // console.log("strQuery", strQuery);
+          // consol.log("strQuery", strQuery);
+
           // let criedt_qry = "";
           // if (parseFloat(inputParam.credit_amount) > 0) {
           //   criedt_qry = _mysql.mysqlQueryFormat(
@@ -45,7 +74,8 @@ export default {
                   patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, payable_amount, \
                   created_by, created_date, updated_by, updated_date, copay_amount, sec_copay_amount,\
                   deductable_amount, sec_deductable_amount, cancel_remarks, hospital_id ) \
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);" +
+                strQuery,
               values: [
                 bill_cancel_number,
                 inputParam.patient_id,
@@ -356,7 +386,7 @@ export default {
       bill_package.map((o) => {
         _ordered_package_id.push(o.ordered_package_id);
       });
-      console.log("_ordered_package_id", _ordered_package_id);
+      // console.log("_ordered_package_id", _ordered_package_id);
       if (_ordered_package_id.length > 0) {
         _mysql
           .executeQuery({

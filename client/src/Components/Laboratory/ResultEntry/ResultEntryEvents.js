@@ -170,7 +170,7 @@ const UpdateLabOrder = ($this, value, status) => {
         $this.setState(
           {
             test_analytes: value,
-            status: status,
+            status: status === "AV" ? "V" : status,
             entered_by:
               response.data.records.entered_by || $this.state.entered_by,
             confirmed_by:
@@ -252,7 +252,6 @@ const onvalidate = ($this) => {
 const reloadAnalytesMaster = ($this) => {
   AlgaehLoader({ show: true });
 
-  // debugger
   const inputObj = {
     test_id: $this.state.hims_d_investigation_test_id,
     date_of_birth: $this.state.date_of_birth,
@@ -499,7 +498,6 @@ const onconfirm = ($this) => {
     return;
   }
 
-  debugger;
   swal({
     title: strTitle,
     type: "warning",
@@ -616,19 +614,31 @@ const onchangegridresult = ($this, row, e) => {
 };
 
 function checkRange(row) {
-  let { result, normal_low, normal_high } = row;
+  let {
+    result,
+    normal_low,
+    normal_high,
+    critical_value_req,
+    critical_low,
+    critical_high,
+  } = row;
 
   result = parseFloat(result);
-  // critical_low = parseFloat(critical_low);
+  critical_low = parseFloat(critical_low);
   normal_low = parseFloat(normal_low);
   normal_high = parseFloat(normal_high);
-  // critical_high = parseFloat(critical_high);
+  critical_high = parseFloat(critical_high);
+  debugger;
   if (row.analyte_type === "QN") {
     if (!result) {
       return null;
+    } else if (critical_value_req === "Y" && result < critical_low) {
+      return "CL";
     } else if (result < normal_low) {
       return "L";
-    } else if (result > normal_high) {
+    } else if (result > critical_high) {
+      return "CH";
+    } else if (critical_value_req === "Y" && result > normal_high) {
       return "H";
     } else {
       return "N";

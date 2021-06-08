@@ -899,7 +899,7 @@ let getPatientPrescription = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "SELECT H.hims_f_prescription_id,H.patient_id, P.patient_code,P.full_name,H.encounter_id, H.provider_id, H.episode_id, \
+          "SELECT H.hims_f_prescription_id,H.visit_id,H.patient_id, P.patient_code,P.full_name,H.encounter_id, H.provider_id, H.episode_id, \
         H.prescription_date,H.prescription_status,H.cancelled,D.hims_f_prescription_detail_id, D.prescription_id, D.item_id, D.generic_id, D.dosage,D.med_units,\
         D.frequency, D.no_of_days,D.dispense, D.frequency_type, D.frequency_time, D.frequency_route,D.start_date, D.item_status \
         from hims_f_prescription H,hims_f_prescription_detail D ,hims_f_patient P WHERE H.hims_f_prescription_id = D.prescription_id\
