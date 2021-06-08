@@ -591,6 +591,25 @@ export function PatientRegistration() {
     let inputData;
     const receiptdetails = [];
 
+    debugger;
+    if (billInfo.insurance_yesno === "Y") {
+      if (insuranceInfo.creidt_limit_req === "Y") {
+        const creidt_amount_till =
+          parseFloat(insuranceInfo.creidt_amount_till) +
+          parseFloat(billInfo.company_payable);
+        if (
+          parseFloat(creidt_amount_till) >
+          parseFloat(insuranceInfo.creidt_limit)
+        ) {
+          AlgaehMessagePop({
+            display:
+              "Selected Company creidt limit reached, You can proceed further.",
+            type: "error",
+          });
+          return;
+        }
+      }
+    }
     receiptdetails.push({
       amount: input.cash_amount,
       card_check_number: null,
@@ -629,6 +648,8 @@ export function PatientRegistration() {
         department_type: parseInt(department_type, 10),
         consultation: consultationInfo?.consultation,
         insured: input?.primary_insurance_provider_id ? "Y" : "N",
+        creidt_limit_req:
+          insuranceInfo === undefined ? null : insuranceInfo.creidt_limit_req,
         maternity_patient: "N",
         is_mlc: "N",
         existing_plan: "N",
@@ -677,6 +698,8 @@ export function PatientRegistration() {
         primary_effective_start_date: input?.primary_effective_start_date,
         primary_effective_end_date: input?.primary_effective_end_date,
         insured: input?.primary_insurance_provider_id ? "Y" : "N",
+        creidt_limit_req:
+          insuranceInfo === undefined ? null : insuranceInfo.creidt_limit_req,
         advance_adjust,
         sheet_discount_percentage,
         sheet_discount_amount,

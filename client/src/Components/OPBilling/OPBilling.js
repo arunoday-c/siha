@@ -415,16 +415,15 @@ class OPBilling extends Component {
       if (this.state.unbalanced_amount === 0) {
         this.GenerateReciept(($this) => {
           let Inputobj = $this.state;
-
           Inputobj.patient_payable = $this.state.patient_payable_h;
           Inputobj.company_payable = $this.state.company_payble;
           Inputobj.insurance_yesno = $this.state.insured;
+          Inputobj.primary_sub_id = $this.state.sub_insurance_provider_id;
           Inputobj.ScreenCode = "BL0001";
 
           const package_exists = Inputobj.billdetails.filter(
             (f) => f.service_type_id === 14
           );
-          console.log("package_exists", package_exists);
 
           // debugger;
           let portal_data = {};
