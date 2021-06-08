@@ -9,16 +9,20 @@ const apsock = (socket) => {
       patient.appointment_from_time
     )} slot ${formatDate(patient.appointment_date)}`;
 
-    // console.log(frontMsg, "mes");
+    console.log("patient=>>>>>", patient);
 
     const frontDeskNot = new notifiModel({
       module: "ftdsk",
       message: frontMsg,
       title: "FrontDesk",
     });
+
     frontDeskNot.save().then((doc) => {
       // console.log("saved---refresh_appointment");
-      socket.broadcast.to("ftdsk").emit("refresh_appointment", doc);
+      socket.emit("reload_appointment", patient);
+      socket.broadcast
+        .to("ftdsk")
+        .emit("refresh_appointment", { msg: doc, patient });
     });
 
     // doctor
@@ -63,7 +67,6 @@ const apsock = (socket) => {
       });
   });
   socket.on("request_insurance_correction", ({ type, rowData }) => {
-    console.log("rowwwww data", rowData);
     const docMsg = `${rowData.patient_name} : Request For Insurance Correction`;
 
     const docNoti = new notifiModel({
@@ -181,5 +184,12 @@ const apsock = (socket) => {
   });
   // specimen_collection_reload
 };
-
+// socket.on("appointment_created_updated", ({ collected_date }) => {
+//   // if (element.service_type === "Lab") {
+//   socket.broadcast.emit("reload_specimen_acknowledge", {
+//     collected_date: collected_date,
+//     // service_type: service_type,
+//   });
+//   // }
+// });
 export default apsock;

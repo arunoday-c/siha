@@ -1,5 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import { useQuery } from "react-query";
+import { MainContext } from "algaeh-react-components";
 import { useParams } from "react-router-dom";
 import TopSelect from "./topSelection";
 import DoctorFilter from "./filter";
@@ -9,7 +10,10 @@ import { AppointmentContext } from "../AppointmentContext";
 import { getDepartmentAndDoctorList, getAppointmentStatus } from "./events";
 import { swalMessage } from "../../../utils/algaehApiCall";
 import "../appointment.scss";
+import { getDoctorSchedule } from "./events";
+// import socket from "../../../socket";
 export default function BookAppointment(props) {
+  const { socket } = useContext(MainContext);
   const params = useParams();
   const {
     setAppointmentDate,
@@ -17,12 +21,15 @@ export default function BookAppointment(props) {
     setDepartment,
     setDoctor,
     setAppointmentStatus,
+    setDepartmentData,
+    setDoctorSchedules,
   } = useContext(AppointmentContext);
   const { data, isLoading } = useQuery(
     "appointment-department-doctors",
     getDepartmentAndDoctorList,
     {
       keepPreviousData: true,
+      onSuccess: (data) => setDepartmentData(data),
       onError: (error) => {
         swalMessage({
           title: error.message,
@@ -112,6 +119,35 @@ export default function BookAppointment(props) {
       setDoctor(parameters.get("provider_id"));
     }
   }, [params]);
+
+  useEffect(() => {
+    const parameters = new URLSearchParams(window.location.search);
+    debugger;
+    if (socket.connected) {
+      socket.on("reload_appointment", (patient) => {
+        const provider_id = parameters.get("provider_id");
+        const sub_department_id = parameters.get("sub_department_id");
+        const appointmentDate = parameters.get("appointmentDate");
+        let currentDate = new Date(appointmentDate);
+        var appointmentDate1 = new Date(patient.appointment_date);
+
+        //best to use .getTime() to compare dates
+        if (currentDate.getTime() === appointmentDate1.getTime()) {
+          if (
+            sub_department_id === patient.sub_department_id &&
+            provider_id === patient.provider_id
+          ) {
+            const dataSchedule = getDoctorSchedule("", {
+              sub_dept_id: sub_department_id,
+              provider_id,
+              schedule_date: appointmentDate,
+            });
+            setDoctorSchedules(dataSchedule);
+          }
+        }
+      });
+    }
+  }, [socket]);
 
   return (
     <div className="appointment">

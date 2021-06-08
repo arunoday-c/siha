@@ -2,6 +2,7 @@ import React, { memo, useState, useContext } from "react";
 import swal from "sweetalert2";
 import { useHistory } from "react-router-dom";
 import CancelAppointment from "./cancelPopup";
+import ReschedulePopup from "./reschedule";
 import { MainContext } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../hooks";
 import { swalMessage } from "../../../utils/algaehApiCall";
@@ -16,7 +17,9 @@ export default memo(function LiList(props) {
     provider_id,
     appointmentDate,
   } = useContext(AppointmentContext);
+  const [maxSlots, setMaxSlots] = useState(null);
   const [showCancelPopup, setShowCancelPopup] = useState(false);
+  const [showReschedulePopup, setShowReschedulePopup] = useState(false);
   function appointmentUpdate(type) {
     swal({
       title: "Are you Sure you want to Update Appointment?",
@@ -67,10 +70,13 @@ export default memo(function LiList(props) {
       }
     });
   }
-
+  // const openReschedule = () => {
+  //   debugger;
+  //   setShowReschedulePopup((pre) => !pre);
+  // };
   return (
     <li
-      onClick={() => {
+      onClick={(e) => {
         switch (props.item.default_status) {
           case "CAN":
             setShowCancelPopup(true);
@@ -81,6 +87,34 @@ export default memo(function LiList(props) {
                 ? props.item?.statusDesc
                 : props.item?.description_ar
             );
+            break;
+          case "RS":
+            debugger;
+            if (!showReschedulePopup) {
+              let maxSlots = 1;
+              const _currentRow =
+                e.target.parentElement.parentNode.parentElement.parentElement
+                  .parentElement.parentElement.sectionRowIndex + 1;
+              const _allRows =
+                e.target.parentElement.parentElement.parentElement
+                  .childElementCount;
+
+              for (let i = _currentRow; i < _allRows; i++) {
+                const _element =
+                  e.target.parentElement.parentElement.parentElement.children[
+                    i
+                  ];
+                const _firstChild = _element.children[0];
+                const _hasPatient = _firstChild.querySelector("div[appt-pat]");
+                if (_hasPatient) break;
+                else {
+                  maxSlots = maxSlots + 1;
+                }
+              }
+              setMaxSlots(maxSlots);
+              setShowReschedulePopup(true);
+            }
+
             break;
           case "C":
             if (!props.patient?.patient_code) {
@@ -117,6 +151,14 @@ export default memo(function LiList(props) {
           showCancelPopup={showCancelPopup}
           setShowCancelPopup={setShowCancelPopup}
           patient={props.patient}
+        />
+      ) : null}
+      {props.item.default_status === "RS" && showReschedulePopup ? (
+        <ReschedulePopup
+          showReschedulePopup={showReschedulePopup}
+          setShowReschedulePopup={() => setShowReschedulePopup((pre) => !pre)}
+          patient={props.patient}
+          maxSlots={maxSlots}
         />
       ) : null}
     </li>
