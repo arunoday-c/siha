@@ -7,11 +7,8 @@ const executePDF = function executePDFMethod(options) {
       let input = {};
       let params = options.args.reportParams;
 
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
 
       params.forEach((para) => {
         input[para["name"]] = para["value"];
@@ -52,8 +49,8 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_inventory_tem_category IC on INV.category_id = IC.hims_d_inventory_tem_category_id
           left join hims_m_inventory_item_location ITL on ITL.item_id = POD.inv_item_id
           left join hims_f_procurement_po_header PO on PO.hims_f_procurement_po_header_id = POD.purchase_order_header_id
-        where POH.cancelled = 'N' ${str} order by PO.po_date DESC;
-          `,
+        where POH.cancelled = 'N' and date(po_date)  between date(?) and date(?) ${str} order by PO.po_date DESC;`,
+          values: [input.from_date, input.to_date],
           printQuery: true,
         })
         .then((result) => {
