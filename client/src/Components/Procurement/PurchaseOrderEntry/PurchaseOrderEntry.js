@@ -756,93 +756,97 @@ class PurchaseOrderEntry extends Component {
                     {this.state.vendorDetails.length > 0
                       ? this.state.vendorDetails.map((item) => {
                           return (
-                            
-                            
                             <div className="hoverVendor">
                               <i className="fas fa-eye"></i>
-                            <div className="vendorDetCntr animated slideInDown faster">
-                              <div className="row">
-                                <div className="col">
-                                  <table>
-                                    <tbody>
-                                      <tr>
-                                        <td colSpan="2" className="hdr">
-                                          <span>Vendor Details:-</span>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>Vendor Code:</td>
-                                        <td>{item.vendor_code}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>Vendor Name:</td>
-                                        <td>{item.vendor_name}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>BUSINESS REG. NO.</td>
-                                        <td>{item.business_registration_no}</td>
-                                      </tr>
-                                      <tr>
-                                        <td colSpan="2" className="hdr">
-                                          <span>Contact Details:-</span>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>CONTACT NUMBER</td>
-                                        <td>{item.contact_number}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>Email Address Primary</td>
-                                        <td>{item.email_id_1}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>Email Address Secondary</td>
-                                        <td>
-                                          {item.email_id_2
-                                            ? item.email_id_2
-                                            : "---"}
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>Address</td>
-                                        <td>{item.address}</td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                </div>
-                                <div className="col">
-                                  <table>
-                                    <tbody>
-                                      <tr>
-                                        <td colSpan="2" className="hdr">
-                                          <span>Payment Information:-</span>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>PAYMENT TERMS IN DAYS</td>
-                                        <td>{item.payment_terms}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>PAYMENT MODE</td>
-                                        <td>{item.payment_mode}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>VAT NUMBER</td>
-                                        <td>{item.vat_number}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>BANK NAME</td>
-                                        <td>{item.bank_name}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>ACCOUNT NUMBER</td>
-                                        <td>{item.bank_account_no}</td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
+                              <div className="vendorDetCntr animated slideInDown faster">
+                                <div className="row">
+                                  <div className="col">
+                                    <table>
+                                      <tbody>
+                                        <tr>
+                                          <td colSpan="2" className="hdr">
+                                            <span>Vendor Details:-</span>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td>Vendor Code:</td>
+                                          <td>{item.vendor_code}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>Vendor Name:</td>
+                                          <td>{item.vendor_name}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>BUSINESS REG. NO.</td>
+                                          <td>
+                                            {item.business_registration_no}
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td colSpan="2" className="hdr">
+                                            <span>Contact Details:-</span>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td>CONTACT NUMBER</td>
+                                          <td>{item.contact_number}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>Email Address Primary</td>
+                                          <td>{item.email_id_1}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>Email Address Secondary</td>
+                                          <td>
+                                            {item.email_id_2
+                                              ? item.email_id_2
+                                              : "---"}
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td>Address</td>
+                                          <td>{item.address}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                  <div className="col">
+                                    <table>
+                                      <tbody>
+                                        <tr>
+                                          <td colSpan="2" className="hdr">
+                                            <span>Payment Information:-</span>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td>PAYMENT TERMS IN DAYS</td>
+                                          <td>{item.payment_terms}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>PAYMENT MODE</td>
+                                          <td>{item.payment_mode}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>VAT NUMBER</td>
+                                          <td>{item.vat_number}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>BANK NAME</td>
+                                          <td>{item.bank_name}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>ACCOUNT NUMBER</td>
+                                          <td>{item.bank_account_no}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>AIBAN Number</td>
+                                          <td>{item.aiban_number}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
                             </div>
                           );
                         })

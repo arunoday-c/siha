@@ -11,6 +11,7 @@ import {
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
+import MaskedInput from "react-maskedinput";
 
 class VendorSetup extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class VendorSetup extends Component {
       vat_applicable: false,
       btn_txt: "ADD",
       vendor_status: "A",
+      aiban_number: "",
     };
     this.getAllVendors();
     this.getCountries();
@@ -131,6 +133,7 @@ class VendorSetup extends Component {
           vendor_status: this.state.vendor_status,
           bank_account_no: this.state.bank_account_no,
           vat_number: this.state.vat_number,
+          aiban_number: this.state.aiban_number,
         };
 
         algaehApiCall({
@@ -191,9 +194,19 @@ class VendorSetup extends Component {
   }
 
   changeTexts(e) {
-    this.setState({
-      [e.target.name]: e.target.value,
-    });
+    const re = /[0-9\b]+$/;
+    debugger;
+    if (e.target.name === "bank_account_no") {
+      if (e.target.name === "" || re.test(e.target.value)) {
+        this.setState({
+          [e.target.name]: e.target.value,
+        });
+      }
+    } else {
+      this.setState({
+        [e.target.name]: e.target.value,
+      });
+    }
   }
 
   changeChecks(e) {
@@ -551,7 +564,7 @@ class VendorSetup extends Component {
                         allowNegative: false,
                         thousandSeparator: ",",
                       },
-                      dontAllowKeys: ["-", "e", "."],
+                      dontAllowKeys: [],
                       value: this.state.payment_terms,
                       className: "txt-fld",
                       name: "payment_terms",
@@ -637,7 +650,23 @@ class VendorSetup extends Component {
                       },
                     }}
                   />
-
+                  <div className="col no-padding-left-right mandatory cardMaskFld">
+                    <AlgaehLabel
+                      label={{ fieldName: "AIBAN NO.", isImp: false }}
+                    />
+                    <MaskedInput
+                      mask={"AA11111111"}
+                      className="txt-fld"
+                      placeholder={"eg: AA11111111"}
+                      name="aiban_number"
+                      value={this.state.aiban_number}
+                      guide={true}
+                      id="my-input-id"
+                      onBlur={() => {}}
+                      onChange={this.changeTexts.bind(this)}
+                      // disabled={isLoading || disabled}
+                    />
+                  </div>
                   <AlagehFormGroup
                     div={{
                       className: `col-2  ${
