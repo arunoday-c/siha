@@ -43,6 +43,9 @@ const saveSubInsurance = ($this, context) => {
         $this.state.effective_end_date !== null
           ? moment($this.state.effective_end_date)._d
           : null,
+
+      creidt_limit: $this.state.creidt_limit,
+      creidt_limit_req: $this.state.creidt_limit_req,
     };
     let previous = $this.state.sub_insurance ? $this.state.sub_insurance : [];
     previous.push(obj);

@@ -207,7 +207,7 @@ class OPBillCancellation extends Component {
           (f) => f.service_type_id === 14
         );
         Inputobj.package_exists = package_exists;
-        // debugger;
+        debugger;
         algaehApiCall({
           uri: "/opBillCancellation/addOpBillCancellation",
           module: "billing",
@@ -239,6 +239,7 @@ class OPBillCancellation extends Component {
                     console.log(response);
                   });
               }
+              debugger;
 
               $this.setState({
                 bill_cancel_number: response.data.records.bill_number,

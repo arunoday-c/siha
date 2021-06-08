@@ -54,6 +54,8 @@ class SubInsurance extends PureComponent {
       accounts: [],
       finance_providers: [],
       portal_exists: "N",
+      creidt_limit: 0,
+      creidt_limit_req: "N",
       // sub_insurance: []
       // created_by: getCookie("UserID")
     };
@@ -131,7 +133,6 @@ class SubInsurance extends PureComponent {
                             : "Insurar Name"}
                         </h6>
                       </div>
-
                       <AlagehFormGroup
                         div={{ className: "col-2 mandatory form-group" }}
                         label={{
@@ -150,7 +151,6 @@ class SubInsurance extends PureComponent {
                           },
                         }}
                       />
-
                       <AlagehFormGroup
                         div={{ className: "col-4 mandatory form-group" }}
                         label={{
@@ -170,7 +170,6 @@ class SubInsurance extends PureComponent {
                           },
                         }}
                       />
-
                       <AlagehFormGroup
                         div={{ className: "col-4 mandatory form-group" }}
                         label={{
@@ -187,7 +186,8 @@ class SubInsurance extends PureComponent {
                           },
                         }}
                       />
-
+                    </div>
+                    <div className="row">
                       <AlgaehDateHandler
                         div={{ className: "col mandatory form-group" }}
                         label={{
@@ -212,7 +212,10 @@ class SubInsurance extends PureComponent {
 
                       <AlgaehDateHandler
                         div={{ className: "col mandatory form-group" }}
-                        label={{ fieldName: "effective_end_date", isImp: true }}
+                        label={{
+                          fieldName: "effective_end_date",
+                          isImp: true,
+                        }}
                         textBox={{
                           className: "txt-fld",
                           name: "effective_end_date",
@@ -229,29 +232,7 @@ class SubInsurance extends PureComponent {
                             : null
                         }
                       />
-                      {this.state.insurance_type === "C" &&
-                      this.state.portal_exists === "Y" ? (
-                        <AlagehFormGroup
-                          div={{ className: "col mandatory form-group" }}
-                          label={{
-                            forceLabel: "User Name For Portal",
-                            isImp:
-                              this.state.portal_exists === "Y" ? true : false,
-                          }}
-                          textBox={{
-                            value: this.state.user_id,
-                            className: "txt-fld",
-                            name: "user_id",
 
-                            events: {
-                              onChange: texthandle.bind(this, this),
-                            },
-                            others: {
-                              "data-subdata": true,
-                            },
-                          }}
-                        />
-                      ) : null}
                       <AlagehFormGroup
                         div={{ className: "col form-group" }}
                         label={{
@@ -327,6 +308,109 @@ class SubInsurance extends PureComponent {
                           },
                         }}
                       /> */}
+                    </div>
+                    <div className="row">
+                      {this.state.insurance_type === "C" &&
+                      this.state.portal_exists === "Y" ? (
+                        <AlagehFormGroup
+                          div={{ className: "col mandatory form-group" }}
+                          label={{
+                            forceLabel: "User Name For Portal",
+                            isImp:
+                              this.state.portal_exists === "Y" ? true : false,
+                          }}
+                          textBox={{
+                            value: this.state.user_id,
+                            className: "txt-fld",
+                            name: "user_id",
+
+                            events: {
+                              onChange: texthandle.bind(this, this),
+                            },
+                            others: {
+                              "data-subdata": true,
+                            },
+                          }}
+                        />
+                      ) : null}
+                      {this.state.insurance_type === "C" ? (
+                        <>
+                          <div className="col">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Creidt Limit Req.",
+                              }}
+                            />
+                            <div
+                              className="customRadio"
+                              style={{ borderBottom: 0 }}
+                            >
+                              <label className="radio inline">
+                                <input
+                                  type="radio"
+                                  value="Y"
+                                  name="creidt_limit_req"
+                                  checked={
+                                    this.state.creidt_limit_req === "Y"
+                                      ? true
+                                      : false
+                                  }
+                                  onChange={texthandle.bind(this, this)}
+                                />
+                                <span>
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Yes",
+                                    }}
+                                  />
+                                </span>
+                              </label>
+                              <label className="radio inline">
+                                <input
+                                  type="radio"
+                                  value="N"
+                                  name="creidt_limit_req"
+                                  checked={
+                                    this.state.creidt_limit_req === "N"
+                                      ? true
+                                      : false
+                                  }
+                                  onChange={texthandle.bind(this, this)}
+                                />
+                                <span>
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "No",
+                                    }}
+                                  />
+                                </span>
+                              </label>
+                            </div>
+                          </div>
+                          {this.state.creidt_limit_req === "Y" ? (
+                            <AlagehFormGroup
+                              div={{ className: "col-3 form-group" }}
+                              label={{
+                                forceLabel: "Creidt Limit",
+                                isImp:
+                                  this.state.creidt_limit_req === "Y"
+                                    ? true
+                                    : false,
+                              }}
+                              textBox={{
+                                decimal: { allowNegative: false },
+                                value: this.state.creidt_limit,
+                                className: "txt-fld",
+                                name: "creidt_limit",
+
+                                events: {
+                                  onChange: texthandle.bind(this, this),
+                                },
+                              }}
+                            />
+                          ) : null}
+                        </>
+                      ) : null}
 
                       <div className="col" style={{ marginTop: 20 }}>
                         <button

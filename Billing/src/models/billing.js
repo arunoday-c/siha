@@ -193,6 +193,21 @@ export default {
         strQuery = `SELECT advance_amount FROM hims_f_patient WHERE hims_d_patient_id='${inputParam.patient_id}';`;
       }
 
+      // console.log("inputParam.creidt_limit_req", inputParam.creidt_limit_req);
+      // console.log("inputParam.creidt_amount_till", inputParam.company_payable);
+      // console.log("inputParam.primary_sub_id", inputParam.primary_sub_id);
+
+      if (inputParam.creidt_limit_req === "Y") {
+        strQuery += mysql.format(
+          "UPDATE `hims_d_insurance_sub` SET creidt_amount_till=creidt_amount_till+(?) \
+          where hims_d_insurance_sub_id=?;",
+          [parseFloat(inputParam.company_payable), inputParam.primary_sub_id]
+        );
+      }
+
+      // console.log("strQuery", strQuery);
+      // consol.log("inputParam.primary_sub_id", inputParam.primary_sub_id);
+
       _mysql
         .executeQuery({
           query:
@@ -3861,6 +3876,7 @@ export default {
             });
           });
       } else {
+        req.package_data = [];
         next();
       }
     } catch (e) {

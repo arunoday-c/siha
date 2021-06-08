@@ -26,6 +26,9 @@ export default function AppointmentContextProvider(props) {
     setAppointmentStatus(payload) {
       dispatch({ type: TYPES.APP_STATUS, payload });
     },
+    setDepartmentData(payload) {
+      dispatch({ type: TYPES.DEPARTMENT_DATA, payload });
+    },
     // setEditState(e) {
     //   dispatch({ type: TYPES.setEditState, payload: e });
     // },

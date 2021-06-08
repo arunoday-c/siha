@@ -108,6 +108,9 @@ export function InsuranceDetails({
         setInsuranceInfo({
           primary_network_office_id: row?.hims_d_insurance_network_office_id,
           user_id: row?.user_id,
+          creidt_limit_req: row?.creidt_limit_req,
+          creidt_limit: row?.creidt_limit,
+          creidt_amount_till: row?.creidt_amount_till,
         });
         // setValue("primary_network_office_id", row?.network_office_id);
         setValue("primary_policy_num", row?.policy_number);
@@ -204,6 +207,7 @@ export function InsuranceDetails({
                                 name: "primary_insurance_provider_id",
                                 className: "select-fld",
                                 onChange: (_, selected) => {
+                                  debugger;
                                   onChange(selected);
                                   const [current] = dropDownData?.filter(
                                     (item) =>
@@ -225,6 +229,10 @@ export function InsuranceDetails({
                                     primary_network_office_id:
                                       current?.hims_d_insurance_network_office_id,
                                     user_id: current?.user_id,
+                                    creidt_limit_req: current?.creidt_limit_req,
+                                    creidt_limit: current?.creidt_limit,
+                                    creidt_amount_till:
+                                      current?.creidt_amount_till,
                                   });
                                   setValue(
                                     "primary_policy_num",
