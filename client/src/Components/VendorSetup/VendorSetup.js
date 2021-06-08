@@ -197,7 +197,7 @@ class VendorSetup extends Component {
     const re = /[0-9\b]+$/;
     debugger;
     if (e.target.name === "bank_account_no") {
-      if (e.target.name === "" || re.test(e.target.value)) {
+      if (e.target.value === "" || re.test(e.target.value)) {
         this.setState({
           [e.target.name]: e.target.value,
         });
