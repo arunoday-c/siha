@@ -63,15 +63,15 @@ export default function ChangeEntitlement(props) {
   //   enabled: !!visit,
   // });
 
-  const {
-    data: bills,
-    isLoading: billLoadin,
-    clear: clearBills,
-  } = useQuery(["patient-bills", { ...visit }], getBillsForVisit, {
-    initialData: [],
-    initialStale: true,
-    enabled: !!visit,
-  });
+  const { data: bills, isLoading: billLoadin, clear: clearBills } = useQuery(
+    ["patient-bills", { ...visit }],
+    getBillsForVisit,
+    {
+      initialData: [],
+      initialStale: true,
+      enabled: !!visit,
+    }
+  );
 
   const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 
@@ -119,7 +119,7 @@ export default function ChangeEntitlement(props) {
       try {
         const data = {
           visit_code: visit?.visit_code,
-          corporate_id: insurance_data.payer_id,
+          corporate_id: insurance_data.user_id,
         };
         axios
           .post(`${PORTAL_HOST}/info/updatepatientVisit`, data)

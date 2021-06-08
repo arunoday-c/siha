@@ -58,7 +58,7 @@ const baseState = {
     package_details: [],
   },
   insuranceInfo: {
-    payer_id: null,
+    user_id: null,
     primary_network_office_id: null,
   },
   disabled: false,
@@ -149,7 +149,7 @@ export const FProvider = ({ children }) => {
     doctor_id: null,
     department_type: null,
     // primary_network_office_id: null,
-    // payer_id: null,
+    // user_id: null,
   });
 
   const dispatches = {

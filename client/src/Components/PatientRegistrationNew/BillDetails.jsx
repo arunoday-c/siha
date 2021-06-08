@@ -183,7 +183,7 @@ export function BillDetails({
         primary_insurance_provider_id,
         primary_network_id,
         primary_network_office_id: insuranceInfo?.primary_network_office_id,
-        payer_id: insuranceInfo?.payer_id,
+        user_id: insuranceInfo?.user_id,
         default_nationality,
         local_vat_applicable,
         prevVisits,

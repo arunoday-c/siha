@@ -81,7 +81,7 @@ let algaehSearchConfig = (searchName, req) => {
           sIns.hims_d_insurance_sub_id as sub_insurance_provider_id, sIns.insurance_sub_name,Ins.insurance_type,\
           CASE WHEN Ins.insurance_type='I' THEN 'Insurance' else 'Corporate Client' END as insurance_type_d,\
           net.hims_d_insurance_network_id as network_id,  net.network_type, net.effective_start_date as net_effective_start_date, net.effective_end_date as net_effective_end_date, \
-          netoff.hims_d_insurance_network_office_id, netoff.policy_number, Ins.payer_id from \
+          netoff.hims_d_insurance_network_office_id, netoff.policy_number, sIns.user_id from \
           (((hims_d_insurance_network_office netoff INNER JOIN  hims_d_insurance_network net \
           ON netoff.network_id=net.hims_d_insurance_network_id)INNER JOIN hims_d_insurance_sub sIns ON \
           net.insurance_sub_id=sIns.hims_d_insurance_sub_id )INNER JOIN hims_d_insurance_provider Ins ON \

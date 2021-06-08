@@ -107,13 +107,13 @@ export function InsuranceDetails({
         setValue("primary_network_id", row?.network_id);
         setInsuranceInfo({
           primary_network_office_id: row?.hims_d_insurance_network_office_id,
-          payer_id: row?.payer_id,
+          user_id: row?.user_id,
         });
         // setValue("primary_network_office_id", row?.network_office_id);
         setValue("primary_policy_num", row?.policy_number);
         setValue("primary_effective_start_date", row?.effective_start_date);
         setValue("primary_effective_end_date", row?.effective_end_date);
-        // setInsurancePayerID(row?.payer_id);
+        // setInsurancePayerID(row?.user_id);
       },
     });
   };
@@ -224,7 +224,7 @@ export function InsuranceDetails({
                                   setInsuranceInfo({
                                     primary_network_office_id:
                                       current?.hims_d_insurance_network_office_id,
-                                    payer_id: current?.payer_id,
+                                    user_id: current?.user_id,
                                   });
                                   setValue(
                                     "primary_policy_num",
@@ -238,7 +238,7 @@ export function InsuranceDetails({
                                     "primary_effective_end_date",
                                     current?.effective_end_date
                                   );
-                                  // setInsurancePayerID(current?.payer_id);
+                                  // setInsurancePayerID(current?.user_id);
                                   trigger();
                                 },
                                 value,
