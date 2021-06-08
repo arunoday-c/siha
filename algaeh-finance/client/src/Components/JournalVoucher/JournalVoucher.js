@@ -120,6 +120,7 @@ export default function JournalVoucher() {
   const [debitNoteList, setDebitNoteList] = useState([]);
   const [customerSupplierList, setCustomerSupplierList] = useState([]);
   const [customerSupplierDetails, setCustomerSupplierDetails] = useState([]);
+  const [customerSupplierID, setCustomerSupplierID] = useState(undefined);
   /** This code is for changing language */
   const [language, setLanguage] = useState("ltr");
   const [SorCHeaderValue, setSorCHeaderValue] = useState(undefined); //Supplier or Customer
@@ -293,7 +294,7 @@ export default function JournalVoucher() {
       });
       return result;
     }
-    debugger;
+
     // console.log("location.state====>", location.state);
 
     if (location.state) {
@@ -311,8 +312,13 @@ export default function JournalVoucher() {
         customerOrSupplerDetailName,
       } = location.state;
       setSamePage(location.state?.samePage ?? false);
+
       setSorCHeaderValue(customerOrSupplerHeaderName);
       setSorCDetailValue(customerOrSupplerDetailName);
+      setCustomerSupplierID({
+        child_id: data.child_id,
+        customer_type: data.customer_type,
+      });
       // console.log("location.state====>", location.state);
       setDebitNoteTotal(debitNoteTotal);
       setDebitNoteList(filterDebitNotes);
@@ -521,6 +527,7 @@ export default function JournalVoucher() {
 
   const saveJournal = () => {
     setLoading(true);
+
     if (voucherDate === "") {
       setLoading(false);
       AlgaehMessagePop({
@@ -687,6 +694,7 @@ export default function JournalVoucher() {
       finance_voucher_header_id: finance_voucher_header_id,
       debitNoteTotal,
       debitNoteList,
+      customerSupplierID: customerSupplierID,
     })
       .then((result) => {
         setLoading(false);
@@ -773,6 +781,7 @@ export default function JournalVoucher() {
     setCustomerSupplierList([]);
     setCustomerSupplierDetails([]);
     setSorCHeaderValue(undefined);
+    setCustomerSupplierID(undefined);
     setSorCDetailLoading(false);
     setSorCDetailValue(undefined);
     setSorCHeaderName(undefined);
@@ -890,6 +899,10 @@ export default function JournalVoucher() {
     setSorCDetailLoading(true);
     setSorCHeaderName(selected.child_name);
     setSorCHeaderValue(selected.finance_account_child_id);
+    setCustomerSupplierID({
+      child_id: selected.finance_account_child_id,
+      customer_type: selected.customer_type,
+    });
     setSorCDetailValue(undefined);
     if (voucherType === "receipt") {
       getCustomerReceivableDetails({
@@ -968,6 +981,10 @@ export default function JournalVoucher() {
         voucher_type: voucherType === "payment" ? "purchase" : "sales",
         invoice_no: selected.invoice_no,
         disabled: true,
+        customer_type:
+          customerSupplierID !== undefined
+            ? customerSupplierID.customer_type
+            : undefined,
       },
       merdge: [
         {
@@ -1150,6 +1167,7 @@ export default function JournalVoucher() {
                 setSorCHeaderName(undefined);
                 setSorCDetailValue(undefined);
                 setSorCHeaderValue(undefined);
+                setCustomerSupplierID(undefined);
 
                 // setPrefix(selected.shortHand + "-");
                 onSelectExpenceVoucher(selected.value);
@@ -1159,6 +1177,7 @@ export default function JournalVoucher() {
                 setSorCHeaderName(undefined);
                 setSorCDetailValue(undefined);
                 setSorCHeaderValue(undefined);
+                setCustomerSupplierID(undefined);
                 setVoucherType("");
                 setAccounts([]);
               },
@@ -1268,6 +1287,7 @@ export default function JournalVoucher() {
                     onChange: onChangeCustomerOrSupplerHeaderList,
                     onClear: () => {
                       setSorCHeaderValue(undefined);
+                      setCustomerSupplierID(undefined);
                       setSorCDetailValue(undefined);
                       setSelInvoice(undefined);
                     },
@@ -1449,7 +1469,6 @@ export default function JournalVoucher() {
                     // xaxis={1500}
                     events={{
                       onDelete: (result) => {
-                        debugger;
                         const { disabled } = result;
                         if (disabled) {
                           AlgaehMessagePop({

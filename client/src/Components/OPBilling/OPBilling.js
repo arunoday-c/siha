@@ -415,6 +415,26 @@ class OPBilling extends Component {
       if (this.state.unbalanced_amount === 0) {
         this.GenerateReciept(($this) => {
           let Inputobj = $this.state;
+          if (Inputobj.insurance_yesno === "Y") {
+            if (Inputobj.creidt_limit_req === "Y") {
+              const creidt_amount_till =
+                parseFloat(Inputobj.creidt_amount_till) +
+                parseFloat(Inputobj.company_payable);
+              if (
+                parseFloat(creidt_amount_till) >
+                parseFloat(Inputobj.creidt_limit)
+              ) {
+                successfulMessage({
+                  message:
+                    "You have reached your credit limit. Please collect payment and proceed.",
+                  title: "Error",
+                  icon: "error",
+                });
+                return;
+              }
+            }
+          }
+
           Inputobj.patient_payable = $this.state.patient_payable_h;
           Inputobj.company_payable = $this.state.company_payble;
           Inputobj.insurance_yesno = $this.state.insured;

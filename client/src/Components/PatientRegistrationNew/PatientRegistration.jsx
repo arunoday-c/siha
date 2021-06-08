@@ -603,7 +603,7 @@ export function PatientRegistration() {
         ) {
           AlgaehMessagePop({
             display:
-              "Selected Company creidt limit reached, You can proceed further.",
+              "You have reached your credit limit. Please collect payment and proceed.",
             type: "error",
           });
           return;
