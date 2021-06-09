@@ -6,11 +6,8 @@ const executePDF = function executePDFMethod(options) {
       let str = "";
       let input = {};
       let params = options.args.reportParams;
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
 
       params.forEach((para) => {
         input[para["name"]] = para["value"];
@@ -49,17 +46,24 @@ const executePDF = function executePDFMethod(options) {
         })
         .then((result) => {
           const header = result.length ? result[0] : {};
-          const total_gratuity_amount = options.currencyFormat(
-            _.sumBy(result, (s) => parseFloat(s.gratuity_amount)),
-            options.args.crypto
+          const total_basic_salary = _.sumBy(result, (s) =>
+            parseFloat(s.basic_salary)
           );
-          const total_acc_gratuity = options.currencyFormat(
-            _.sumBy(result, (s) => parseFloat(s.acc_gratuity)),
-            options.args.crypto
+
+          const total_gratuity_opening_balance = _.sumBy(result, (s) =>
+            parseFloat(s.gratuity_opening_balance)
+          );
+          const total_gratuity_amount = _.sumBy(result, (s) =>
+            parseFloat(s.gratuity_amount)
+          );
+          const total_acc_gratuity = _.sumBy(result, (s) =>
+            parseFloat(s.acc_gratuity)
           );
           resolve({
             result: result,
             header,
+            total_basic_salary,
+            total_gratuity_opening_balance,
             total_gratuity_amount,
             total_acc_gratuity,
             decimalOnly: {

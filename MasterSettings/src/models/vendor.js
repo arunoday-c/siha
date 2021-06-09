@@ -91,9 +91,9 @@ export default {
                     query:
                       "INSERT INTO `hims_d_vendor` (vendor_code,vendor_name,bank_name,business_registration_no,email_id_1,email_id_2,website,\
                 contact_number,payment_terms,payment_mode,vat_applicable,vat_percentage,  postal_code,address, \
-                country_id, state_id, city_id, bank_account_no, vat_number, \
+                country_id, state_id, city_id, bank_account_no, vat_number, iban_number\
                 created_date, created_by, updated_date, updated_by,head_id,child_id)\
-                  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     values: [
                       inputParam.vendor_code,
                       inputParam.vendor_name,
@@ -114,6 +114,7 @@ export default {
                       inputParam.city_id,
                       inputParam.bank_account_no,
                       inputParam.vat_number,
+                      inputParam.iban_number,
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
                       new Date(),
@@ -205,7 +206,7 @@ export default {
             "UPDATE `hims_d_vendor` SET  vendor_name=?,vendor_status=?,business_registration_no=?,email_id_1=?,\
             email_id_2=?,website=?, contact_number=?,payment_terms=?,payment_mode=?,vat_applicable=?,\
             vat_percentage=?,bank_name=?,postal_code=?,address=?, country_id=?, state_id=?, city_id=?,\
-            bank_account_no=?, vat_number=?,\
+            bank_account_no=?, vat_number=?,iban_number=?,\
           updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_vendor_id`=?;",
           values: [
             inputParam.vendor_name,
@@ -227,6 +228,7 @@ export default {
             inputParam.city_id,
             inputParam.bank_account_no,
             inputParam.vat_number,
+            inputParam.iban_number,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             inputParam.hims_d_vendor_id,
@@ -270,7 +272,7 @@ export default {
           query:
             "select hims_d_vendor_id, vendor_code, vendor_name, vendor_status, business_registration_no, email_id_1,\
           email_id_2, website, contact_number, payment_terms, payment_mode, vat_applicable, vat_percentage, bank_name,\
-          postal_code,address, country_id, state_id, city_id, bank_account_no, vat_number \
+          postal_code,address, country_id, state_id, city_id, bank_account_no, vat_number,iban_number \
           from hims_d_vendor where record_status='A' " +
             _strAppend +
             " order by hims_d_vendor_id desc",

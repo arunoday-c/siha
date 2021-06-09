@@ -191,13 +191,13 @@ export default {
             query:
               "SELECT A.* ,B.* FROM \
               (select mIns.patient_id as pri_patient_id, mIns.patient_visit_id as pri_patient_visit_id,\
-               mIns.primary_insurance_provider_id as insurance_provider_id,\
-               Ins.insurance_provider_name as insurance_provider_name,\
+              mIns.primary_insurance_provider_id as insurance_provider_id,\
+              Ins.insurance_provider_name as insurance_provider_name,\
               mIns.primary_sub_id as sub_insurance_provider_id ,\
-               sIns.insurance_sub_name as sub_insurance_provider_name,\
-              mIns.primary_network_id as network_id, \
-               net.network_type,netoff.policy_number,netoff.hims_d_insurance_network_office_id, netoff.preapp_limit as preapp_limit_amount, \
-               mIns.primary_card_number as card_number,\
+              sIns.insurance_sub_name as sub_insurance_provider_name, sIns.user_id, sIns.creidt_limit_req, \
+              sIns.creidt_limit, sIns.creidt_amount_till, mIns.primary_network_id as network_id, \
+              net.network_type,netoff.policy_number,netoff.hims_d_insurance_network_office_id, netoff.preapp_limit as preapp_limit_amount, \
+              mIns.primary_card_number as card_number,\
               mIns.primary_inc_card_path as insurance_card_path,\
               mIns.primary_effective_start_date,mIns.primary_effective_end_date,mIns.primary_effective_end_date as effective_end_date,\
               mIns.card_holder_name, mIns.card_holder_age, mIns.card_holder_gender, mIns.card_class ,iCClas.card_class_name, \
@@ -210,19 +210,20 @@ export default {
               GROUP BY mIns.primary_policy_num)  AS A\
               left join\
               (select  mIns.patient_id as sec_patient_id , mIns.patient_visit_id  as sec_patient_visit_id, mIns.secondary_insurance_provider_id , \
-               Ins.insurance_provider_name as secondary_insurance_provider_name,\
-               mIns.secondary_sub_id as secondary_sub_insurance_provider_id,\
-               sIns.insurance_sub_name as secondary_sub_insurance_provider_name, \
-               mIns.secondary_network_id ,\
-               net.network_type as secondary_network_type,\
-               netoff.policy_number as secondary_policy_number,netoff.hims_d_insurance_network_office_id as secondary_network_office_id ,mIns.secondary_card_number,mIns.secondary_inc_card_path,\
+              Ins.insurance_provider_name as secondary_insurance_provider_name,\
+              mIns.secondary_sub_id as secondary_sub_insurance_provider_id,\
+              sIns.insurance_sub_name as secondary_sub_insurance_provider_name, sIns.user_id as sec_user_id,\
+              sIns.creidt_limit_req as sec_creidt_limit_req, \
+              sIns.creidt_limit as sec_creidt_limit, sIns.creidt_amount_till as sec_creidt_amount_till,mIns.secondary_network_id ,\
+              net.network_type as secondary_network_type,\
+              netoff.policy_number as secondary_policy_number,netoff.hims_d_insurance_network_office_id as secondary_network_office_id ,mIns.secondary_card_number,mIns.secondary_inc_card_path,\
               mIns.secondary_effective_start_date,mIns.secondary_effective_end_date, netoff.preapp_limit as sec_preapp_limit \
               from ((((hims_d_insurance_provider Ins \
               INNER JOIN  hims_m_patient_insurance_mapping mIns ON mIns.secondary_insurance_provider_id=Ins.hims_d_insurance_provider_id)\
-               INNER JOIN  hims_d_insurance_sub sIns ON mIns.secondary_sub_id= sIns.hims_d_insurance_sub_id) \
-               INNER JOIN hims_d_insurance_network net ON mIns.secondary_network_id=net.hims_d_insurance_network_id)\
-               INNER JOIN hims_d_insurance_network_office netoff ON mIns.secondary_policy_num=netoff.policy_number and mIns.primary_network_id = netoff.network_id) where mIns.patient_id=? and mIns.patient_visit_id =?\
-               GROUP BY mIns.secondary_policy_num) AS B  on A.pri_patient_id=B.sec_patient_id ;",
+              INNER JOIN  hims_d_insurance_sub sIns ON mIns.secondary_sub_id= sIns.hims_d_insurance_sub_id) \
+              INNER JOIN hims_d_insurance_network net ON mIns.secondary_network_id=net.hims_d_insurance_network_id)\
+              INNER JOIN hims_d_insurance_network_office netoff ON mIns.secondary_policy_num=netoff.policy_number and mIns.primary_network_id = netoff.network_id) where mIns.patient_id=? and mIns.patient_visit_id =?\
+              GROUP BY mIns.secondary_policy_num) AS B  on A.pri_patient_id=B.sec_patient_id ;",
             values: [
               inputParam.patient_id,
               inputParam.patient_visit_id,
@@ -246,6 +247,8 @@ export default {
             query:
               "(select  mIns.patient_id,mIns.primary_insurance_provider_id as insurance_provider_id,Ins.insurance_provider_name,\
                 mIns.primary_sub_id as sub_insurance_provider_id, sIns.insurance_sub_name as sub_insurance_provider_name,\
+                sIns.user_id, sIns.creidt_limit_req, \
+                sIns.creidt_limit, sIns.creidt_amount_till, \
                 mIns.primary_network_id as network_id,  net.network_type,netoff.policy_number,netoff.hims_d_insurance_network_office_id,mIns.primary_card_number as card_number,\
                 mIns.primary_inc_card_path as insurance_card_path,\
                mIns.primary_effective_start_date,mIns.primary_effective_end_date,mIns.primary_effective_end_date as effective_end_date,\
@@ -258,7 +261,8 @@ export default {
                  GROUP BY mIns.primary_policy_num)\
                  union\
                  (select  mIns.patient_id,mIns.secondary_insurance_provider_id , Ins.insurance_provider_name,\
-                  mIns.secondary_sub_id,sIns.insurance_sub_name, \
+                  mIns.secondary_sub_id,sIns.insurance_sub_name, sIns.user_id as sec_user_id, sIns.creidt_limit_req as sec_creidt_limit_req, \
+                  sIns.creidt_limit as sec_creidt_limit, sIns.creidt_amount_till as sec_creidt_amount_till,\
                   mIns.secondary_network_id, net.network_type,netoff.policy_number,netoff.hims_d_insurance_network_office_id as\
                    secondary_network_office_id,mIns.secondary_card_number,mIns.secondary_inc_card_path,\
                  mIns.secondary_effective_start_date,mIns.secondary_effective_end_date,mIns.secondary_effective_end_date as effective_end_date,\

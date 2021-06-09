@@ -19,6 +19,8 @@ import {
   AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 
+import { Tooltip } from "antd";
+
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
@@ -264,28 +266,30 @@ class RadOrderedList extends Component {
                         label: <AlgaehLabel label={{ fieldName: "action" }} />,
                         displayTemplate: (row) => {
                           return (
-                            <span>
-                              <i
-                                // disabled={row.arrived === "N" ? false : true}
-                                style={{
-                                  pointerEvents:
-                                    row.arrived !== "N"
-                                      ? "none"
-                                      : row.billed === "N"
-                                      ? "none"
-                                      : "",
+                            <Tooltip title="Confirm Patient Arrived">
+                              <span>
+                                <i
+                                  // disabled={row.arrived === "N" ? false : true}
+                                  style={{
+                                    pointerEvents:
+                                      row.arrived !== "N"
+                                        ? "none"
+                                        : row.billed === "N"
+                                        ? "none"
+                                        : "",
 
-                                  opacity:
-                                    row.arrived !== "N"
-                                      ? "0.1"
-                                      : row.billed === "N"
-                                      ? "0.1"
-                                      : "",
-                                }}
-                                className="fas fa-walking"
-                                onClick={UpdateRadOrder.bind(this, this, row)}
-                              />
-                            </span>
+                                    opacity:
+                                      row.arrived !== "N"
+                                        ? "0.1"
+                                        : row.billed === "N"
+                                        ? "0.1"
+                                        : "",
+                                  }}
+                                  className="fas fa-walking"
+                                  onClick={UpdateRadOrder.bind(this, this, row)}
+                                />
+                              </span>{" "}
+                            </Tooltip>
                           );
                         },
                         others: {

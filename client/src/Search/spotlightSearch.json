@@ -516,6 +516,20 @@
         "fieldName": "insurance_sub_name",
         "label": "Sub Insurance Name"
       }
+    ],
+    "InsuranceStatementReport": [
+      {
+        "fieldName": "insurance_statement_number",
+        "label": "Invoice Number"
+      },
+      {
+        "fieldName": "insurance_provider_name",
+        "label": "Insurance Name"
+      },
+      {
+        "fieldName": "insurance_sub_name",
+        "label": "Sub Insurance Name"
+      }
     ]
   },
   "Purchase": {

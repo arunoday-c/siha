@@ -98,6 +98,7 @@ class InsuranceSetup extends Component {
       buttonenable: true,
       insurance_provider_id: row.hims_d_insurance_provider_id,
       insurance_provider_name: row.insurance_provider_name,
+      insurance_type: row.insurance_type,
       isOpen: true,
       addfunctionality: false,
     });
@@ -135,6 +136,7 @@ class InsuranceSetup extends Component {
                 buttonenable={this.state.buttonenable}
                 insurance_provider_id={this.state.insurance_provider_id}
                 insurance_provider_name={this.state.insurance_provider_name}
+                insurance_type={this.state.insurance_type}
               />
             </div>
           </div>

@@ -114,7 +114,6 @@ class ResultEntry extends Component {
 
   static contextType = MainContext;
   UNSAFE_componentWillReceiveProps(newProps) {
-    debugger;
     const userToken = this.context.userToken;
     if (newProps.selectedPatient !== undefined && newProps.open === true) {
       newProps.selectedPatient.portal_exists = userToken.portal_exists;
@@ -701,10 +700,16 @@ class ResultEntry extends Component {
                                 </span>
                               ) : row.critical_type === "L" ? (
                                 <span className="badge badge-warning">Low</span>
+                              ) : row.critical_type === "H" ? (
+                                <span className="badge badge-danger">High</span>
+                              ) : row.critical_type === "CL" ? (
+                                <span className="badge badge-danger">
+                                  Critical Low
+                                </span>
                               ) : (
-                                row.critical_type === "H" && (
+                                row.critical_type === "CH" && (
                                   <span className="badge badge-danger">
-                                    High
+                                    Critical High
                                   </span>
                                 )
                               );
@@ -772,6 +777,76 @@ class ResultEntry extends Component {
                                 />
                               ) : (
                                 row.normal_high
+                              );
+                            },
+                            others: {
+                              resizable: false,
+                              filterable: false,
+                              style: { textAlign: "center" },
+                            },
+                          },
+                          {
+                            fieldName: "critical_low",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Critical Low" }}
+                              />
+                            ),
+                            displayTemplate: (row) => {
+                              return this.state.edit_range === true &&
+                                row.analyte_type === "QN" ? (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    value: row.critical_low,
+                                    className: "txt-fld",
+                                    name: "critical_low",
+                                    events: {
+                                      onChange: ongridEditRanges.bind(
+                                        this,
+                                        this,
+                                        row
+                                      ),
+                                    },
+                                  }}
+                                />
+                              ) : (
+                                row.critical_low
+                              );
+                            },
+                            others: {
+                              resizable: false,
+                              filterable: false,
+                              style: { textAlign: "center" },
+                            },
+                          },
+                          {
+                            fieldName: "critical_high",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Critical High" }}
+                              />
+                            ),
+                            displayTemplate: (row) => {
+                              return this.state.edit_range === true &&
+                                row.analyte_type === "QN" ? (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    value: row.critical_high,
+                                    className: "txt-fld",
+                                    name: "critical_high",
+                                    events: {
+                                      onChange: ongridEditRanges.bind(
+                                        this,
+                                        this,
+                                        row
+                                      ),
+                                    },
+                                  }}
+                                />
+                              ) : (
+                                row.critical_high
                               );
                             },
                             others: {
@@ -1095,7 +1170,12 @@ class ResultEntry extends Component {
                       className="btn btn-default"
                       loading={this.state.loading}
                       onClick={this.onClickPrintHandle.bind(this)}
-                      disabled={this.state.status === "V" ? false : true}
+                      disabled={
+                        this.state.status === "V" &&
+                        this.state.credit_order === "N"
+                          ? false
+                          : true
+                      }
                     >
                       Print
                     </AlgaehButton>

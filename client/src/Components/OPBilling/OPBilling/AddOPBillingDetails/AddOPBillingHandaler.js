@@ -108,6 +108,7 @@ const discounthandle = ($this, context, ctrl, e) => {
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
 
+  debugger;
   if (e.target.name === "sheet_discount_percentage") {
     sheet_discount_percentage =
       e.target.value === "" ? "" : parseFloat(e.target.value);
@@ -252,21 +253,20 @@ const ondiscountgridcol = ($this, context, row, e) => {
   let billdetails = $this.state.billdetails;
   let _index = billdetails.indexOf(row);
 
-  if (parseFloat(value) > parseFloat($this.state.service_dis_percentage)) {
-    row[name] = 0;
-    row["discount_amout"] = 0;
-    billdetails[_index] = row;
-    $this.setState({ billdetails: billdetails });
-    swalMessage({
-      title:
-        "You dont have privilage to give discount More than." +
-        $this.state.service_dis_percentage,
-      type: "warning",
-    });
-    return;
-  }
   if (name === "discount_percentage") {
-    if (parseFloat(value) > 100) {
+    if (parseFloat(value) > parseFloat($this.state.service_dis_percentage)) {
+      row[name] = 0;
+      row["discount_amout"] = 0;
+      billdetails[_index] = row;
+      $this.setState({ billdetails: billdetails });
+      swalMessage({
+        title:
+          "You dont have privilage to give discount % More than." +
+          $this.state.service_dis_percentage,
+        type: "warning",
+      });
+      // return;
+    } else if (parseFloat(value) > 100) {
       row[name] = 0;
       row["discount_amout"] = 0;
       billdetails[_index] = row;
@@ -290,7 +290,24 @@ const ondiscountgridcol = ($this, context, row, e) => {
       row[name] = value;
     }
   } else if (name === "discount_amout") {
-    if (parseFloat(row.gross_amount) < parseFloat(value)) {
+    debugger;
+    const discount_amount =
+      (parseFloat(row.gross_amount) *
+        parseFloat($this.state.service_dis_percentage)) /
+      100;
+    if (parseFloat(value) > parseFloat(discount_amount)) {
+      row[name] = 0;
+      row["discount_percentage"] = 0;
+      billdetails[_index] = row;
+      $this.setState({ billdetails: billdetails });
+      swalMessage({
+        title:
+          "You dont have privilage to give discount amount More than." +
+          discount_amount,
+        type: "warning",
+      });
+      // return;
+    } else if (parseFloat(row.gross_amount) < parseFloat(value)) {
       row[name] = 0;
       row["discount_percentage"] = 0;
       billdetails[_index] = row;
@@ -314,8 +331,7 @@ const ondiscountgridcol = ($this, context, row, e) => {
       row[name] = value;
     }
   }
-  // row[name] = value;
-  // row.update();
+
   if (value !== undefined) {
     calculateAmount($this, context, row, e);
   }

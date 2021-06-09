@@ -650,7 +650,7 @@ class OfficalDetails extends Component {
                 {this.state.HIMS_Active === true ? (
                   <>
                     <AlagehFormGroup
-                      div={{ className: "col-3 mandatory form-group" }}
+                      div={{ className: "col-3 form-group" }}
                       label={{
                         forceLabel: "Elgible Max. Discount %",
                         isImp: false,
@@ -669,7 +669,7 @@ class OfficalDetails extends Component {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-3 mandatory form-group" }}
+                      div={{ className: "col-3  form-group" }}
                       label={{
                         forceLabel: "Elgible Min. Credit %",
                         isImp: false,

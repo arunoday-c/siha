@@ -170,7 +170,7 @@ class InvStockEnquiry extends Component {
                           <div className="col-8">
                             <h4 className="title">{result.item_description}</h4>
                             <small>{result.generic_name}</small>
-                            <small>{result.uom_description}</small>
+                            <small>{result.item_code}</small>
                           </div>
                         </div>
                       </section>

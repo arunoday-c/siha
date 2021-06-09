@@ -2,6 +2,9 @@ import moment from "moment";
 import { Validations } from "./SubInsuranceValidation";
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import axios from "axios";
+
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 
 const texthandle = ($this, e) => {
   let name;
@@ -31,6 +34,7 @@ const saveSubInsurance = ($this, context) => {
       transaction_number: $this.state.transaction_number,
       card_format: $this.state.card_format,
       ins_template_name: $this.state.ins_template_name,
+      user_id: $this.state.user_id,
       effective_start_date:
         $this.state.effective_start_date !== null
           ? moment($this.state.effective_start_date)._d
@@ -39,11 +43,15 @@ const saveSubInsurance = ($this, context) => {
         $this.state.effective_end_date !== null
           ? moment($this.state.effective_end_date)._d
           : null,
+
+      creidt_limit: $this.state.creidt_limit,
+      creidt_limit_req: $this.state.creidt_limit_req,
     };
     let previous = $this.state.sub_insurance ? $this.state.sub_insurance : [];
     previous.push(obj);
     // if ($this.state.buttonenable === true) {
     updatedata.push(obj);
+
     algaehApiCall({
       uri: "/insurance/addSubInsuranceProvider",
       module: "insurance",
@@ -61,6 +69,41 @@ const saveSubInsurance = ($this, context) => {
             });
           }
           addNewSubinsurance($this);
+          if (
+            $this.state.insurance_type === "C" &&
+            $this.state.portal_exists === "Y"
+          ) {
+            const eff_end_date = moment($this.state.effective_end_date).format(
+              "YYYYMMDD"
+            );
+            const firstFourLetters = String($this.state.user_id)
+              .substring(0, 4)
+              .toUpperCase();
+            const password = `${firstFourLetters}${eff_end_date}`;
+
+            const _data = {
+              user_id: $this.state.user_id,
+              password: password,
+            };
+
+            try {
+              axios
+                .post(`${PORTAL_HOST}/info/userCreation`, _data)
+                .then(function (response) {
+                  //handle success
+                  console.log(response);
+                })
+                .catch(function (response) {
+                  //handle error
+                  console.log(response);
+                });
+            } catch (error) {
+              swalMessage({
+                title: error,
+                type: "error",
+              });
+            }
+          }
           swalMessage({
             type: "success",
             title: "Added successfully . .",

@@ -150,7 +150,7 @@ class StockEnquiry extends Component {
                           <div className="col-8">
                             <h4 className="title">{result.item_description}</h4>
                             <small>{result.item_code}</small>
-                            <small>{result.stock_uom_desc}</small>
+                            {/* <small>{result.stock_uom_desc}</small> */}
                           </div>
                           {/*<div className="col-4">
                               <h6 className="price">

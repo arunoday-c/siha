@@ -737,7 +737,7 @@ class MicrobiologyResultEntry extends Component {
                 <button
                   className="btn btn-primary"
                   onClick={generateLabResultReport.bind(this, this.state)}
-                  disabled={this.state.status === "V" ? false : true}
+                  disabled={this.state.status === "V" &&this.state.credit_order === "N" ? false : true}
                 >
                   Print
                 </button>

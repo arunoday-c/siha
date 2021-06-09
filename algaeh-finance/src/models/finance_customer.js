@@ -11,7 +11,7 @@ export default {
     const decimal_places = req.userIdentity.decimal_places;
     _mysql
       .executeQuery({
-        query: `select C.finance_account_child_id ,C.child_name,VD.is_opening_bal,
+        query: `select C.finance_account_child_id ,C.child_name,VD.is_opening_bal,customer_type,
          ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})
         as balance_amount from finance_account_child C left join finance_voucher_details VD
         on C.finance_account_child_id=VD.child_id and VD.auth_status='A'  where  finance_account_child_id in (

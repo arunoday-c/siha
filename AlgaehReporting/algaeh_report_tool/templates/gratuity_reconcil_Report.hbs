@@ -22,6 +22,13 @@
                     </tr>
                 </thead>
                 <tbody>
+                       <tr class="numberFld numberFldTotalBottom">
+                  <td colspan="5" class="txtFld"></td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating total_basic_salary ./currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating total_gratuity_opening_balance ./currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating total_gratuity_amount ./currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating total_acc_gratuity ./currencyOnly}}</td>
+                    </tr>
                     {{#each result}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -36,10 +43,11 @@
                     </tr>
                     {{/each }}
    <tr class="numberFld numberFldTotalBottom">
-                  <td colspan="6" class="txtFld"></td>
-                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'></td>
-                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{total_gratuity_amount}}</td>
-                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{total_acc_gratuity}}</td>
+                  <td colspan="5" class="txtFld"></td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating total_basic_salary ./currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating total_gratuity_opening_balance ./currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating total_gratuity_amount ./currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating total_acc_gratuity ./currencyOnly}}</td>
                     </tr>
                 </tbody>
             </table>

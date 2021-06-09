@@ -19,6 +19,7 @@ import {
 import { InsuranceForm } from "./InsuranceForm";
 import "./InvoiceGeneration.scss";
 import axios from "axios";
+// import _ from "lodash";
 
 const reducer = (state, { type, payload }) => {
   switch (type) {
@@ -63,15 +64,15 @@ export default function ChangeEntitlement(props) {
   //   enabled: !!visit,
   // });
 
-  const {
-    data: bills,
-    isLoading: billLoadin,
-    clear: clearBills,
-  } = useQuery(["patient-bills", { ...visit }], getBillsForVisit, {
-    initialData: [],
-    initialStale: true,
-    enabled: !!visit,
-  });
+  const { data: bills, isLoading: billLoadin, clear: clearBills } = useQuery(
+    ["patient-bills", { ...visit }],
+    getBillsForVisit,
+    {
+      initialData: [],
+      initialStale: true,
+      enabled: !!visit,
+    }
+  );
 
   const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 
@@ -85,22 +86,6 @@ export default function ChangeEntitlement(props) {
   const onSubmit = async (e) => {
     try {
       const insurance_data = state.dropdownData;
-
-      if (insurance_data.insured === "Y") {
-        if (
-          insurance_data.primary_card_number === "" ||
-          insurance_data.primary_card_number === undefined ||
-          insurance_data.primary_insurance_provider_id === undefined ||
-          insurance_data.primary_network_office_id === undefined ||
-          insurance_data.primary_network_id === undefined
-        ) {
-          AlgaehMessagePop({
-            type: "warning",
-            display: "Enter Insurance Details.",
-          });
-          return;
-        }
-      }
       const inpit_data = {
         ...visit,
         ...insurance_data,
@@ -109,17 +94,28 @@ export default function ChangeEntitlement(props) {
             ? local_vat_applicable
             : "Y",
         visit_bills: bills,
+        sub_insurance_provider_id:
+          insurance.length > 0 ? insurance[0].sub_insurance_provider_id : 0,
       };
+
+      // console.log("insurance", insurance);
 
       const after_generate = await generateBills(inpit_data).catch((error) => {
         throw error;
       });
       setGenerateEnable(true);
-      console.log("after_generate", after_generate);
+      // console.log("after_generate", after_generate);
+      if (after_generate.success === false) {
+        AlgaehMessagePop({
+          display: after_generate.result,
+          type: "error",
+        });
+        return;
+      }
       try {
         const data = {
           visit_code: visit?.visit_code,
-          corporate_id: insurance_data.payer_id,
+          corporate_id: insurance_data.user_id,
         };
         axios
           .post(`${PORTAL_HOST}/info/updatepatientVisit`, data)

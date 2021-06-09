@@ -39,6 +39,7 @@ export const TYPES = {
   SELECTED_DEPT: "SELECTED_DEPT",
   DOCTORS_SCHEDULE: "DOCTORS_SCHEDULE",
   APP_STATUS: "APP_STATUS",
+  DEPARTMENT_DATA: "DEPARTMENT_DATA",
 };
 
 export function reducer(state, { type, payload }) {
@@ -53,7 +54,8 @@ export function reducer(state, { type, payload }) {
       return { ...state, doctors_schedule: payload };
     case TYPES.APP_STATUS:
       return { ...state, app_status: payload };
-
+    case TYPES.DEPARTMENT_DATA:
+      return { ...state, departmentData: payload };
     // case TYPES.setEditState:
     //   return { ...state, editState: { ...payload } };
     // case TYPES.clearState:

@@ -59,7 +59,7 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: `
           select  hospital_name FROM hims_d_hospital where 1+1  ${str};
-          select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,
+          select hims_d_employee_id,identity_no,employee_code,full_name,sex,date_of_joining,
           case employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
           when 'R' then 'RESIGNED' when 'T' then 'TERMINATED' when 'E' then 'RETIRED'
           end as employee_status,DG.designation,N.nationality,R.religion_name,

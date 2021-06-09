@@ -64,7 +64,7 @@ class SalesOrder extends Component {
       sales_order_mode: "I",
       reference_number: null,
       customer_id: null,
-      customerDetails:null,
+      customerDetails: null,
       quote_validity: null,
       sales_man: null,
       payment_terms: null,
@@ -184,14 +184,12 @@ class SalesOrder extends Component {
 
     const queryParams = new URLSearchParams(this.props.location.search);
     if (queryParams.get("sales_order_number")) {
-      debugger;
       getCtrlCode(this, false, queryParams.get("sales_order_number"));
       this.getDocuments(queryParams.get("sales_order_number"));
     }
   }
 
   getDocuments = (number) => {
-    debugger;
     this.setState({ loading: true }, () => {
       newAlgaehApi({
         uri: "/getInvoiceDoc",
@@ -622,126 +620,159 @@ class SalesOrder extends Component {
 
                 <div className="col">
                   <div className="row">
-                  <AlagehAutoComplete
-                  div={{ className: "col form-group mandatory" }}
-                  label={{ forceLabel: "Customer", isImp: true }}
-                  selector={{
-                    name: "customer_id",
-                    className: "select-fld",
-                    value: this.state.customer_id,
-                    dataSource: {
-                      textField: "customer_name",
-                      valueField: "hims_d_customer_id",
-                      data: this.props.customer_data,
-                    },
-                    onChange: customerTexthandle.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        customer_id: null,
-                        customerDetails:null,
-                      });
-                    },
-                    autoComplete: "off",
-                    others: {
-                      disabled: this.state.selectedData,
-                    },
-                  }}
-                />
+                    <AlagehAutoComplete
+                      div={{ className: "col form-group mandatory" }}
+                      label={{ forceLabel: "Customer", isImp: true }}
+                      selector={{
+                        name: "customer_id",
+                        className: "select-fld",
+                        value: this.state.customer_id,
+                        dataSource: {
+                          textField: "customer_name",
+                          valueField: "hims_d_customer_id",
+                          data: this.props.customer_data,
+                        },
+                        onChange: customerTexthandle.bind(this, this),
+                        onClear: () => {
+                          this.setState({
+                            customer_id: null,
+                            customerDetails: null,
+                          });
+                        },
+                        autoComplete: "off",
+                        others: {
+                          disabled: this.state.selectedData,
+                        },
+                      }}
+                    />
 
-{this.state.customerDetails !== null
-                      ? 
-                            
-                            <div className="hoverCustomer">
-                              <i className="fas fa-eye"></i>
-                            <div className="customerDetCntr animated slideInDown faster">
-                              <div className="row">
-                                <div className="col">
-                                  <table>
-                                    <tbody>
-                                      <tr>
-                                        <td colSpan="2" className="hdr">
-                                          <span>Customer Details:-</span>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>Customer Code:</td>
-                                        <td>{this.state.customerDetails.customer_code}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>Customer Name:</td>
-                                        <td>{this.state.customerDetails.customer_name}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>BUSINESS REG. NO.</td>
-                                        <td>{this.state.customerDetails.business_registration_no}</td>
-                                      </tr>
-                                      <tr>
-                                        <td colSpan="2" className="hdr">
-                                          <span>Contact Details:-</span>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>CONTACT NUMBER</td>
-                                        <td>{this.state.customerDetails.contact_number}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>Email Address Primary</td>
-                                        <td>{this.state.customerDetails.email_id_1}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>Email Address Secondary</td>
-                                        <td>
-                                          {this.state.customerDetails.email_id_2
-                                            ? this.state.customerDetails.email_id_2
-                                            : "---"}
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>Address</td>
-                                        <td>{this.state.customerDetails.address}</td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                </div>
-                                <div className="col">
-                                  <table>
-                                    <tbody>
-                                      <tr>
-                                        <td colSpan="2" className="hdr">
-                                          <span>Payment Information:-</span>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>PAYMENT TERMS IN DAYS</td>
-                                        <td>{this.state.customerDetails.payment_terms}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>PAYMENT MODE</td>
-                                        <td>{this.state.customerDetails.payment_mode}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>VAT NUMBER</td>
-                                        <td>{this.state.customerDetails.vat_number}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>BANK NAME</td>
-                                        <td>{this.state.customerDetails.bank_name}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>ACCOUNT NUMBER</td>
-                                        <td>{this.state.customerDetails.bank_account_no}</td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                </div>
-                              </div>
+                    {this.state.customerDetails !== null ? (
+                      <div className="hoverCustomer">
+                        <i className="fas fa-eye"></i>
+                        <div className="customerDetCntr animated slideInDown faster">
+                          <div className="row">
+                            <div className="col">
+                              <table>
+                                <tbody>
+                                  <tr>
+                                    <td colSpan="2" className="hdr">
+                                      <span>Customer Details:-</span>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>Customer Code:</td>
+                                    <td>
+                                      {this.state.customerDetails.customer_code}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>Customer Name:</td>
+                                    <td>
+                                      {this.state.customerDetails.customer_name}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>BUSINESS REG. NO.</td>
+                                    <td>
+                                      {
+                                        this.state.customerDetails
+                                          .business_registration_no
+                                      }
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td colSpan="2" className="hdr">
+                                      <span>Contact Details:-</span>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>CONTACT NUMBER</td>
+                                    <td>
+                                      {
+                                        this.state.customerDetails
+                                          .contact_number
+                                      }
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>Email Address Primary</td>
+                                    <td>
+                                      {this.state.customerDetails.email_id_1}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>Email Address Secondary</td>
+                                    <td>
+                                      {this.state.customerDetails.email_id_2
+                                        ? this.state.customerDetails.email_id_2
+                                        : "---"}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>Address</td>
+                                    <td>
+                                      {this.state.customerDetails.address}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
                             </div>
+                            <div className="col">
+                              <table>
+                                <tbody>
+                                  <tr>
+                                    <td colSpan="2" className="hdr">
+                                      <span>Payment Information:-</span>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>PAYMENT TERMS IN DAYS</td>
+                                    <td>
+                                      {this.state.customerDetails.payment_terms}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>PAYMENT MODE</td>
+                                    <td>
+                                      {this.state.customerDetails.payment_mode}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>VAT NUMBER</td>
+                                    <td>
+                                      {this.state.customerDetails.vat_number}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>BANK NAME</td>
+                                    <td>
+                                      {this.state.customerDetails.bank_name}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>ACCOUNT NUMBER</td>
+                                    <td>
+                                      {
+                                        this.state.customerDetails
+                                          .bank_account_no
+                                      }
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>IBAN NUMBER</td>
+                                    <td>
+                                      {this.state.customerDetails.cIban_number}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
                             </div>
-                          
-                      : null}
+                          </div>
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
-
 
                 <AlagehFormGroup
                   div={{ className: "col-2  form-group mandatory" }}

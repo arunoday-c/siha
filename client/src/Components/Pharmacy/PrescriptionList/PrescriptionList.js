@@ -3,8 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
-
 import "./PrescriptionList.scss";
 import "./../../../styles/site.scss";
 
@@ -21,6 +19,7 @@ import {
   Refresh,
   datehandle,
   ListOfItems,
+  printPrescription,
 } from "./PrescriptionListEvents";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -34,6 +33,8 @@ class PrescriptionList extends Component {
 
     this.state = {
       prescription_date: new Date(),
+      // prescription_from_date: new Date(),
+      // prescription_to_date: new Date(),
       medication_list: [],
       patient_id: null,
       item_list: [],
@@ -55,69 +56,64 @@ class PrescriptionList extends Component {
     return (
       <React.Fragment>
         <div className="hptl-phase1-prescription-list-form">
-          <BreadCrumb
-            title={
-              <AlgaehLabel
-                label={{ forceLabel: "Prescription List", align: "ltr" }}
-              />
-            }
-            breadStyle={this.props.breadStyle}
-            // pageNavPath={[
-            //   {
-            //     pageName: (
-            //       <AlgaehLabel
-            //         label={{
-            //           forceLabel: "Home",
-            //           align: "ltr",
-            //         }}
-            //       />
-            //     ),
-            //   },
-            //   {
-            //     pageName: (
-            //       <AlgaehLabel
-            //         label={{ forceLabel: "Prescription List", align: "ltr" }}
-            //       />
-            //     ),
-            //   },
-            // ]}
-          />
-          <div style={{ marginTop: 76 }}>
-            <div
-              className="row inner-top-search"
-              style={{ marginTop: 57, paddingBottom: 10 }}
-            >
+          <div>
+            <div className="row inner-top-search">
               <div className="col-lg-12">
                 <div className="row">
                   <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "Select Date" }}
+                    div={{ className: "col-3 form-group mandatory" }}
+                    label={{ forceLabel: "From Date" }}
                     textBox={{
                       className: "txt-fld",
                       name: "prescription_date",
                     }}
-                    dontAllow={"future"}
+                    // dontAllow={"future"}
                     events={{
                       onChange: datehandle.bind(this, this),
                     }}
                     value={this.state.prescription_date}
                   />
+                  {/* <AlgaehDateHandler
+                    div={{ className: "col-3 form-group mandatory" }}
+                    label={{ forceLabel: "From Date" }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "prescription_from_date",
+                    }}
+                    // dontAllow={"future"}
+                    events={{
+                      onChange: datehandle.bind(this, this),
+                    }}
+                    value={this.state.prescription_from_date}
+                  />
+                  <AlgaehDateHandler
+                    div={{ className: "col-3 form-group mandatory" }}
+                    label={{ forceLabel: "To Date" }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "prescription_to_date",
+                    }}
+                    // dontAllow={"future"}
+                    events={{
+                      onChange: datehandle.bind(this, this),
+                    }}
+                    value={this.state.prescription_to_date}
+                  /> */}
 
-                  <div className="col" style={{ paddingTop: 19 }}>
-                    <button
-                      className="btn btn-primary btn-sm"
-                      type="button"
-                      onClick={getMedicationList.bind(this, this)}
-                      style={{ marginRight: 10 }}
-                    >
-                      Load Data
-                    </button>
+                  <div className="col" style={{ paddingTop: 21 }}>
                     <button
                       className="btn btn-default btn-sm"
                       type="button"
                       onClick={Refresh.bind(this, this)}
                     >
                       Clear
+                    </button>{" "}
+                    <button
+                      className="btn btn-primary btn-sm"
+                      type="button"
+                      onClick={getMedicationList.bind(this, this)}
+                    >
+                      Load
                     </button>
                   </div>
                 </div>
@@ -142,15 +138,20 @@ class PrescriptionList extends Component {
                       displayTemplate: (row) => {
                         return (
                           <span>
+                            {" "}
                             <i
-                              className="fas fa-prescription"
+                              className="fas fa-print"
+                              onClick={printPrescription.bind(this, this, row)}
+                            />
+                            <i
+                              className="fas fa-eye"
                               onClick={ListOfItems.bind(this, this, row)}
                             />
                           </span>
                         );
                       },
                       others: {
-                        maxWidth: 70,
+                        maxWidth: 100,
                         style: { textAlign: "center" },
                         filterable: false,
                       },

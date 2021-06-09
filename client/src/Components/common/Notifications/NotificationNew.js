@@ -116,7 +116,7 @@ export default function Notification({ open, handlePanel, count }) {
         // socket.emit("count");
       });
 
-      socket.on("refresh_appointment", (msg) => {
+      socket.on("refresh_appointment", ({ msg, patient }) => {
         addToNotiList(msg);
       });
       socket.on("patient_added", (msg) => {

@@ -380,11 +380,9 @@ const generateLoanReconilationReport = ($this) => {
 };
 
 const generateLeaveReconilationReport = ($this) => {
-  // console.log("abcd");
-
   algaehApiCall({
-    uri: "/report",
-    // uri: "/excelReport",
+    // uri: "/report",
+    uri: "/excelReport",
     method: "GET",
     module: "reports",
     headers: {
@@ -438,18 +436,25 @@ const generateLeaveReconilationReport = ($this) => {
       },
     },
     onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      const a = document.createElement("a");
+      a.href = urlBlob;
+      a.download = `Leave & Airfare Reconciliation Report ${moment(
+        $this.state.inputs.month,
+        "MM"
+      ).format("MMM")}-${$this.state.inputs.year}.${"xlsx"}`;
+      a.click();
+
       // const urlBlob = URL.createObjectURL(res.data);
-      // const a = document.createElement("a");
-      // a.href = urlBlob;
-      // a.download = `Leave & Airfare Reconciliation Report ${moment(
+      // const origin = `${
+      //   window.location.origin
+      // }/reportviewer/web/viewer.html?file=${urlBlob}&filename=${
+      //   $this.state.inputs.hospital_name
+      // } Leave and Airfare Reconciliation - ${moment(
       //   $this.state.inputs.month,
       //   "MM"
-      // ).format("MMM")}-${$this.state.inputs.year}.${"xlsx"}`;
-      // a.click();
-
-      const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${$this.state.inputs.hospital_name} Leave and Airfare Reconciliation - ${$this.state.monthName} ${$this.state.inputs.year}`;
-      window.open(origin);
+      // ).format("MMM")}-${$this.state.inputs.year}`;
+      // window.open(origin);
     },
   });
 };

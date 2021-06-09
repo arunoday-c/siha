@@ -71,7 +71,7 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: ` 
           select  hospital_name FROM hims_d_hospital where 1+1  ${str};
-          select * from (select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,G.group_description,
+          select * from (select hims_d_employee_id,identity_no,employee_code,full_name,sex,date_of_joining,G.group_description,
           E.date_of_birth, TIMESTAMPDIFF(YEAR, E.date_of_birth, CURDATE()) AS new_age,
           case employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
           when 'R' then 'RESIGNED' when 'T' then 'TERMINATED' when 'E' then 'RETIRED'

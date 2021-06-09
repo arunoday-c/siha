@@ -553,10 +553,9 @@ export function PatientRegistration() {
     //   data: { application_id: appointment_id },
     // });
     // return result?.data?.records;
-
     data.patient_identity = data.primary_id_no;
     data.corporate_id =
-      insuranceInfo === undefined ? null : insuranceInfo.payer_id;
+      insuranceInfo === undefined ? null : insuranceInfo.user_id;
     data.identity_type = identity_type ?? "NATIONALITY ID";
     data.patient_name = data.full_name;
     data.patient_dob = data.date_of_birth;
@@ -592,6 +591,25 @@ export function PatientRegistration() {
     let inputData;
     const receiptdetails = [];
 
+    debugger;
+    if (billInfo.insurance_yesno === "Y") {
+      if (insuranceInfo.creidt_limit_req === "Y") {
+        const creidt_amount_till =
+          parseFloat(insuranceInfo.creidt_amount_till) +
+          parseFloat(billInfo.company_payable);
+        if (
+          parseFloat(creidt_amount_till) >
+          parseFloat(insuranceInfo.creidt_limit)
+        ) {
+          AlgaehMessagePop({
+            display:
+              "You have reached your credit limit. Please collect payment and proceed.",
+            type: "error",
+          });
+          return;
+        }
+      }
+    }
     receiptdetails.push({
       amount: input.cash_amount,
       card_check_number: null,
@@ -616,7 +634,6 @@ export function PatientRegistration() {
       });
     }
 
-    // console.lo("");
     if (!patient_code) {
       save({
         ...input,
@@ -631,6 +648,8 @@ export function PatientRegistration() {
         department_type: parseInt(department_type, 10),
         consultation: consultationInfo?.consultation,
         insured: input?.primary_insurance_provider_id ? "Y" : "N",
+        creidt_limit_req:
+          insuranceInfo === undefined ? null : insuranceInfo.creidt_limit_req,
         maternity_patient: "N",
         is_mlc: "N",
         existing_plan: "N",
@@ -679,6 +698,8 @@ export function PatientRegistration() {
         primary_effective_start_date: input?.primary_effective_start_date,
         primary_effective_end_date: input?.primary_effective_end_date,
         insured: input?.primary_insurance_provider_id ? "Y" : "N",
+        creidt_limit_req:
+          insuranceInfo === undefined ? null : insuranceInfo.creidt_limit_req,
         advance_adjust,
         sheet_discount_percentage,
         sheet_discount_amount,
@@ -773,7 +794,7 @@ export function PatientRegistration() {
       promo_code: "",
       discount_percentage: 0,
       discount_amount: 0,
-      payer_id: "",
+      user_id: "",
     });
     clearState();
     setConsultationInfo(default_visit_type);

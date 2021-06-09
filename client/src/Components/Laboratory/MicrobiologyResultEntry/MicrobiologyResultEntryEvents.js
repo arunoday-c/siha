@@ -148,7 +148,6 @@ const UpdateLabOrder = ($this, status) => {
     method: "PUT",
     onSuccess: (response) => {
       if (response.data.success === true) {
-        debugger;
         if (status === "CF" || status === "V") {
           if ($this.state.portal_exists === "Y") {
             const portal_data = {
@@ -179,7 +178,7 @@ const UpdateLabOrder = ($this, status) => {
 
         getMicroResult($this);
         $this.setState({
-          status: status,
+          status: status === "AV" ? "V" : status,
           entered_by:
             response.data.records.entered_by || $this.state.entered_by,
           confirmed_by:

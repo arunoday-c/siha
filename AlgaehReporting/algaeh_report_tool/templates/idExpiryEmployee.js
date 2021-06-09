@@ -30,7 +30,7 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `SELECT ID.identity_documents_id,ID.employee_id,ID.identity_number,D.identity_document_name,ID.valid_upto, E.employee_code, E.full_name, N.nationality
+          query: `SELECT ID.identity_documents_id,ID.employee_id,ID.identity_number,D.identity_document_name,ID.valid_upto, E.identity_no,E.employee_code, E.full_name, N.nationality
           FROM hims_d_employee_identification as ID
           inner join hims_d_employee E on ID.employee_id = E.hims_d_employee_id
           inner join hims_d_identity_document D on ID.identity_documents_id = D.hims_d_identity_document_id

@@ -28,6 +28,7 @@ import moment from "moment";
 import Options from "../../../Options.json";
 import _ from "lodash";
 import sockets from "../../../sockets";
+import { Tooltip } from "antd";
 // import { swalMessage } from "../../../utils/algaehApiCall";
 
 class AccessionAcknowledgement extends Component {
@@ -306,41 +307,44 @@ class AccessionAcknowledgement extends Component {
                         displayTemplate: (row) => {
                           return (
                             <span>
-                              <i
-                                style={{
-                                  pointerEvents:
-                                    row.sample_status === "A" ? "none" : "",
+                              <Tooltip title="Accept Specimen">
+                                <i
+                                  style={{
+                                    pointerEvents:
+                                      row.sample_status === "A" ? "none" : "",
 
-                                  opacity:
-                                    row.sample_status === "A" ? "0.1" : "",
-                                }}
-                                className="fa fa-check"
-                                aria-hidden="true"
-                                onClick={AcceptandRejectSample.bind(
-                                  this,
-                                  this,
-                                  row,
-                                  "A"
-                                )}
-                              />
+                                    opacity:
+                                      row.sample_status === "A" ? "0.1" : "",
+                                  }}
+                                  className="fa fa-check"
+                                  aria-hidden="true"
+                                  onClick={AcceptandRejectSample.bind(
+                                    this,
+                                    this,
+                                    row,
+                                    "A"
+                                  )}
+                                />
+                              </Tooltip>
+                              <Tooltip title="Reject Specimen">
+                                <i
+                                  style={{
+                                    pointerEvents:
+                                      row.sample_status === "A" ? "none" : "",
 
-                              <i
-                                style={{
-                                  pointerEvents:
-                                    row.sample_status === "A" ? "none" : "",
-
-                                  opacity:
-                                    row.sample_status === "A" ? "0.1" : "",
-                                }}
-                                className="fa fa-times"
-                                aria-hidden="true"
-                                onClick={() => {
-                                  this.setState({
-                                    reject_popup: true,
-                                    selectedRow: row,
-                                  });
-                                }}
-                              />
+                                    opacity:
+                                      row.sample_status === "A" ? "0.1" : "",
+                                  }}
+                                  className="fa fa-times"
+                                  aria-hidden="true"
+                                  onClick={() => {
+                                    this.setState({
+                                      reject_popup: true,
+                                      selectedRow: row,
+                                    });
+                                  }}
+                                />
+                              </Tooltip>
                             </span>
                           );
                         },
