@@ -17,6 +17,7 @@ import {
   AlgaehLabel,
   AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
+import { Tooltip } from "antd";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
@@ -337,15 +338,17 @@ class SampleCollection extends Component {
                         label: <AlgaehLabel label={{ fieldName: "action" }} />,
                         displayTemplate: (row) => {
                           return (
-                            <span>
-                              <i
-                                className="fas fa-flask"
-                                onClick={this.ShowCollectionModel.bind(
-                                  this,
-                                  row
-                                )}
-                              />
-                            </span>
+                            <Tooltip title="Collect Specimen">
+                              <span>
+                                <i
+                                  className="fas fa-flask"
+                                  onClick={this.ShowCollectionModel.bind(
+                                    this,
+                                    row
+                                  )}
+                                />
+                              </span>
+                            </Tooltip>
                           );
                         },
                         others: {

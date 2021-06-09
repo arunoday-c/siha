@@ -25,9 +25,9 @@ import {
 import { newAlgaehApi } from "../../../hooks";
 import { swalMessage } from "../../../utils/algaehApiCall";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
-import { Upload, Modal } from "antd";
 import { AlgaehModal } from "algaeh-react-components";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import { Upload, Modal, Tooltip } from "antd";
 import moment from "moment";
 import Options from "../../../Options.json";
 import _ from "lodash";
@@ -524,25 +524,46 @@ class RadScheduledList extends Component {
                         displayTemplate: (row) => {
                           return (
                             <>
-                              <i
-                                style={{
-                                  pointerEvents:
-                                    row.status === "RA" ? "" : "none",
-                                  opacity: row.status === "RA" ? "" : "0.1",
-                                }}
-                                className="fas fa-print"
-                                onClick={this.generateReport.bind(this, row)}
-                              />
-                              <span>
+                              <Tooltip title="View MRD">
                                 <i
-                                  // style={{
-                                  //   pointerEvents:
-                                  //     row.status === "O"
-                                  //       ? ""
-                                  //       : row.sample_status === "N"
-                                  //       ? "none"
-                                  //       : "",
-                                  // }}
+                                  className="fas fa-eye"
+                                  aria-hidden="true"
+                                  onClick={(e) => {
+                                    setGlobal({
+                                      mrd_patient: row.patient_id,
+                                      patient_code: row.patient_code,
+                                    });
+                                    this.setState({
+                                      openMrdModal: true,
+                                      visit_id: row.visit_id,
+                                      patient_id: row.patient_id,
+                                      patient_code: row.patient_code,
+                                    });
+                                  }}
+                                />
+                              </Tooltip>
+                              <Tooltip title="Enter Result">
+                                <i
+                                  style={{
+                                    pointerEvents:
+                                      row.status !== "O" ? "" : "none",
+                                    opacity: row.status !== "O" ? "" : "0.1",
+                                  }}
+                                  className="fas fa-file-signature"
+                                  onClick={
+                                    row.status !== "O"
+                                      ? openResultEntry.bind(this, this, row)
+                                      : null
+                                  }
+                                />
+                              </Tooltip>
+                              <Tooltip title="Attach External Files">
+                                <i
+                                  style={{
+                                    pointerEvents:
+                                      row.status !== "O" ? "" : "none",
+                                    opacity: row.status !== "O" ? "" : "0.1",
+                                  }}
                                   className="fas fa-paperclip"
                                   aria-hidden="true"
                                   onClick={(e) => {
@@ -560,37 +581,25 @@ class RadScheduledList extends Component {
                                     );
                                   }}
                                 />
-                              </span>
-                              <i
-                                // style={{
-                                //   pointerEvents:
-                                //     row.status === "O"
-                                //       ? ""
-                                //       : row.sample_status === "N"
-                                //       ? "none"
-                                //       : "",
-                                // }}
-                                className="fas fa-eye"
-                                aria-hidden="true"
-                                onClick={(e) => {
-                                  setGlobal({
-                                    mrd_patient: row.patient_id,
-                                    patient_code: row.patient_code,
-                                  });
-                                  this.setState({
-                                    openMrdModal: true,
-                                    visit_id: row.visit_id,
-                                    patient_id: row.patient_id,
-                                    patient_code: row.patient_code,
-                                  });
-                                }}
-                              />
+                              </Tooltip>
+
+                              <Tooltip title="Print Result">
+                                <i
+                                  style={{
+                                    pointerEvents:
+                                      row.status === "RA" ? "" : "none",
+                                    opacity: row.status === "RA" ? "" : "0.1",
+                                  }}
+                                  className="fas fa-print"
+                                  onClick={this.generateReport.bind(this, row)}
+                                />
+                              </Tooltip>
                             </>
                           );
                         },
                         others: {
                           fixed: "left",
-                          maxWidth: 130,
+                          maxWidth: 170,
                           resizable: false,
                           filterable: false,
                         },
@@ -678,20 +687,15 @@ class RadScheduledList extends Component {
                         displayTemplate: (row) => {
                           return (
                             <span
-                              className={row.status !== "O" ? "pat-code" : ""}
-                              onClick={
-                                row.status !== "O"
-                                  ? openResultEntry.bind(this, this, row)
-                                  : null
-                              }
+                            // className={row.status !== "O" ? "pat-code" : ""}
                             >
                               {row.patient_code}
                             </span>
                           );
                         },
-                        className: (drow) => {
-                          return drow.status !== "O" ? "greenCell" : null;
-                        },
+                        // className: (drow) => {
+                        //   return drow.status !== "O" ? "greenCell" : null;
+                        // },
                         disabled: false,
                         others: {
                           maxWidth: 150,

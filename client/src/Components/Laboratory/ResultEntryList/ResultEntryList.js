@@ -22,7 +22,7 @@ import {
   getSavedDocument,
   reloadAnalytesMaster,
 } from "./ResultEntryListHandaler";
-import { Upload, Modal } from "antd";
+import { Upload, Modal, Tooltip } from "antd";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
@@ -307,15 +307,21 @@ class ResultEntryList extends Component {
                           this.state.attached_docs.map((doc) => (
                             <li>
                               <b> {doc.filename} </b>
+
                               <span>
                                 <i
                                   className="fas fa-download"
                                   onClick={() => this.downloadDoc(doc)}
                                 ></i>
+                              </span>
+
+                              <span>
                                 <i
                                   className="fas fa-eye"
                                   onClick={() => this.downloadDoc(doc, true)}
                                 ></i>
+                              </span>
+                              <span>
                                 <i
                                   className="fas fa-trash"
                                   onClick={() => this.deleteDoc(doc)}
@@ -434,66 +440,72 @@ class ResultEntryList extends Component {
                         displayTemplate: (row) => {
                           return (
                             <>
-                              <span>
-                                <i
-                                  style={{
-                                    pointerEvents:
-                                      row.status === "O"
-                                        ? ""
-                                        : row.sample_status === "N"
-                                        ? "none"
-                                        : "",
-                                  }}
-                                  className="fas fa-file-signature"
-                                  aria-hidden="true"
-                                  onClick={ResultEntryModel.bind(
-                                    this,
-                                    this,
-                                    row
-                                  )}
-                                />
-                              </span>
-                              <span>
-                                <i
-                                  // style={{
-                                  //   pointerEvents:
-                                  //     row.status === "O"
-                                  //       ? ""
-                                  //       : row.sample_status === "N"
-                                  //       ? "none"
-                                  //       : "",
-                                  // }}
-                                  className="fas fa-paperclip"
-                                  aria-hidden="true"
-                                  onClick={() => {
-                                    this.setState(
-                                      {
-                                        openUploadModal: true,
-                                        // currentRow: row,
-                                        lab_id_number: row.lab_id_number,
-                                        investigation_test_id:
-                                          row.hims_d_investigation_test_id,
-                                        disableUploadButton: row.lab_id_number
-                                          ? false
-                                          : true,
-                                      },
+                              <Tooltip title="Enter Result">
+                                <span>
+                                  <i
+                                    style={{
+                                      pointerEvents:
+                                        row.status === "O"
+                                          ? ""
+                                          : row.sample_status === "N"
+                                          ? "none"
+                                          : "",
+                                    }}
+                                    className="fas fa-file-signature"
+                                    aria-hidden="true"
+                                    onClick={ResultEntryModel.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )}
+                                  />
+                                </span>
+                              </Tooltip>
+                              <Tooltip title="View or Add Attachment">
+                                <span>
+                                  <i
+                                    // style={{
+                                    //   pointerEvents:
+                                    //     row.status === "O"
+                                    //       ? ""
+                                    //       : row.sample_status === "N"
+                                    //       ? "none"
+                                    //       : "",
+                                    // }}
+                                    className="fas fa-paperclip"
+                                    aria-hidden="true"
+                                    onClick={() => {
+                                      this.setState(
+                                        {
+                                          openUploadModal: true,
+                                          // currentRow: row,
+                                          lab_id_number: row.lab_id_number,
+                                          investigation_test_id:
+                                            row.hims_d_investigation_test_id,
+                                          disableUploadButton: row.lab_id_number
+                                            ? false
+                                            : true,
+                                        },
 
-                                      getSavedDocument.bind(this, this)
-                                    );
-                                  }}
-                                />
-                              </span>
-                              <span>
-                                <i
-                                  className="fas fa-undo-alt"
-                                  aria-hidden="true"
-                                  onClick={reloadAnalytesMaster.bind(
-                                    this,
-                                    this,
-                                    row
-                                  )}
-                                />
-                              </span>
+                                        getSavedDocument.bind(this, this)
+                                      );
+                                    }}
+                                  />
+                                </span>
+                              </Tooltip>
+                              <Tooltip title="Reload Analytes">
+                                <span>
+                                  <i
+                                    className="fas fa-undo-alt"
+                                    aria-hidden="true"
+                                    onClick={reloadAnalytesMaster.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )}
+                                  />
+                                </span>
+                              </Tooltip>
                               {/* {row.status === "V" ? null : 
                               <span>
                                 <i
