@@ -105,6 +105,7 @@ export default function JournalVoucher() {
   const [printEnable, setPrintEnable] = useState(true);
   const [costCenterField, setCostCenterField] = useState(undefined);
   const [samePage, setSamePage] = useState(true);
+  const [columns, setColumns] = useState([]);
   const [afterSaveDisabled, setAfterSaveDisabled] = useState(false);
   const [journerList, setJournerList] = useState(
     baseJournalList.map((m) => {
@@ -137,6 +138,88 @@ export default function JournalVoucher() {
   useEffect(() => {
     plotCostCenter();
   }, []);
+
+  useEffect(() => {
+    if (voucherType === "payment" || voucherType === "receipt") {
+      setColumns([
+        {
+          fieldName: "sourceName",
+          label: <AlgaehLabel label={{ fieldName: "accounts" }} />,
+          // align: "left",
+          displayTemplate: gridTree,
+          others: {
+            width: 250,
+          },
+        },
+        {
+          fieldName: "payment_type",
+          label: <AlgaehLabel label={{ fieldName: "payment_type" }} />,
+          // filtered: true,
+          displayTemplate: PaymentInput,
+          others: {
+            width: 120,
+          },
+        },
+        {
+          fieldName: "amount",
+          label: <AlgaehLabel label={{ fieldName: "amount" }} />,
+          displayTemplate: AmountInput,
+          others: {
+            width: 100,
+          },
+        },
+        {
+          fieldName: "narration",
+          label: <AlgaehLabel label={{ fieldName: "narration" }} />,
+          displayTemplate: NarrationBox,
+        },
+      ]);
+    } else {
+      setColumns([
+        // {
+        //   fieldName: "slno",
+        //   label: <AlgaehLabel label={{ forceLabel: "Sl No." }} />,
+        //   sortable: false,
+        //   others: {
+        //     width: 50,
+        //     maxWidth: 50,
+        //   },
+        // },
+        costCenterField,
+        {
+          fieldName: "sourceName",
+          label: <AlgaehLabel label={{ fieldName: "accounts" }} />,
+          // align: "left",
+          displayTemplate: gridTree,
+          others: {
+            width: 250,
+          },
+        },
+        {
+          fieldName: "payment_type",
+          label: <AlgaehLabel label={{ fieldName: "payment_type" }} />,
+          // filtered: true,
+          displayTemplate: PaymentInput,
+          others: {
+            width: 120,
+          },
+        },
+        {
+          fieldName: "amount",
+          label: <AlgaehLabel label={{ fieldName: "amount" }} />,
+          displayTemplate: AmountInput,
+          others: {
+            width: 100,
+          },
+        },
+        {
+          fieldName: "narration",
+          label: <AlgaehLabel label={{ fieldName: "narration" }} />,
+          displayTemplate: NarrationBox,
+        },
+      ]);
+    }
+  }, [voucherType, accounts]);
   const plotCostCenter = () => {
     getCostCentersForVoucher().then((result) => {
       setbranchData(result);
@@ -398,7 +481,6 @@ export default function JournalVoucher() {
           }
           setVoucherType(currentVoucher);
           setSelInvoice(invoice_no);
-
           getCashAccount()
             .then((res) => {
               if (res.data.success) {
@@ -1411,55 +1493,7 @@ export default function JournalVoucher() {
                 <div className="col-12">
                   <AlgaehDataGrid
                     // className="JLVoucherListGrid"
-                    columns={[
-                      // {
-                      //   fieldName: "slno",
-                      //   label: <AlgaehLabel label={{ forceLabel: "Sl No." }} />,
-                      //   sortable: false,
-                      //   others: {
-                      //     width: 50,
-                      //     maxWidth: 50,
-                      //   },
-                      // },
-                      costCenterField,
-                      {
-                        fieldName: "sourceName",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "accounts" }} />
-                        ),
-                        // align: "left",
-                        displayTemplate: gridTree,
-                        others: {
-                          width: 250,
-                        },
-                      },
-                      {
-                        fieldName: "payment_type",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "payment_type" }} />
-                        ),
-                        // filtered: true,
-                        displayTemplate: PaymentInput,
-                        others: {
-                          width: 120,
-                        },
-                      },
-                      {
-                        fieldName: "amount",
-                        label: <AlgaehLabel label={{ fieldName: "amount" }} />,
-                        displayTemplate: AmountInput,
-                        others: {
-                          width: 100,
-                        },
-                      },
-                      {
-                        fieldName: "narration",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "narration" }} />
-                        ),
-                        displayTemplate: NarrationBox,
-                      },
-                    ]}
+                    columns={columns}
                     direction={language}
                     loading={false}
                     data={journerList}
