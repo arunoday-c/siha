@@ -569,11 +569,34 @@ export default {
                         if (arrCounter.length === 0) {
                           arrCounter = newDetails;
                         }
+                        let strUpdateData = "";
+                        console.log("resul[0].auth_level", resul[0].auth_level);
+                        if (
+                          input.voucher_type === "receipt" &&
+                          resul[0].auth_level == "N"
+                        ) {
+                          if (input.customerSupplierID.customer_type === "I") {
+                            strUpdateData = `UPDATE hims_d_insurance_sub set creidt_amount_till = creidt_amount_till- ${parseFloat(
+                              credit_amount
+                            )} where child_id=${
+                              input.customerSupplierID.child_id
+                            };`;
+                          } else if (
+                            input.customerSupplierID.customer_type === "S"
+                          ) {
+                            strUpdateData = `UPDATE hims_d_insurance_sub set creidt_amount_till = creidt_amount_till- ${parseFloat(
+                              head_amount
+                            )} where child_id=${
+                              input.customerSupplierID.child_id
+                            };`;
+                          }
+                        }
 
                         _mysql
                           .executeQueryWithTransaction({
                             query:
-                              "insert into finance_voucher_details (??) values ?;",
+                              "insert into finance_voucher_details (??) values ?;" +
+                              strUpdateData,
                             values: arrCounter,
                             bulkInsertOrUpdate: true,
                             printQuery: true,
@@ -1592,7 +1615,7 @@ export default {
                   .executeQuery({
                     query:
                       "select VD.debit_amount,amount,voucher_type,invoice_ref_no,VD.child_id,VD.credit_amount,VD.payment_type,H.root_id,VD.hospital_id\
-                      ,C.child_name,VH.receipt_type from finance_voucher_header VH inner join finance_voucher_details VD on VH.finance_voucher_header_id=VD.voucher_header_id\
+                      ,C.child_name,VH.receipt_type, C.customer_type from finance_voucher_header VH inner join finance_voucher_details VD on VH.finance_voucher_header_id=VD.voucher_header_id\
                     inner join finance_account_head H on VD.head_id=H.finance_account_head_id\
                     inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
                     where voucher_header_id=? and auth_status='P';SELECT allow_negative_balance FROM finance_options;",
@@ -1605,6 +1628,24 @@ export default {
                     let total_income = 0;
                     let total_expense = 0;
                     let balance = 0;
+                    let strUpdateCust = "";
+
+                    if (result[0].voucher_type === "receipt") {
+                      const insurance_cust = result.find(
+                        (f) => f.customer_type === "I"
+                      );
+                      const sales_cust = result.find(
+                        (f) => f.customer_type === "C"
+                      );
+
+                      if (insurance_cust === undefined) {
+                        strUpdateCust = `UPDATE hims_d_insurance_sub set creidt_amount_till = creidt_amount_till- ${parseFloat(
+                          insurance_cust.amount
+                        )} where child_id=${insurance_cust.child_id};`;
+                      } else if (sales_cust === undefined) {
+                        strUpdateCust = "";
+                      }
+                    }
 
                     if (result.length > 0) {
                       new Promise((resolve, reject) => {
@@ -1621,7 +1662,8 @@ export default {
                                 "select child_id,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
                             coalesce(sum(debit_amount)-sum(credit_amount),0) as deb_minus_cred\
                           from finance_voucher_details \
-                          where auth_status='A' and child_id in (?) group by child_id;",
+                          where auth_status='A' and child_id in (?) group by child_id;" +
+                                strUpdateCust,
                               values: [child_ids],
                               printQuery: true,
                             })

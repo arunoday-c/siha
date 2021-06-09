@@ -628,7 +628,7 @@ function checkRange(row) {
   normal_low = parseFloat(normal_low);
   normal_high = parseFloat(normal_high);
   critical_high = parseFloat(critical_high);
-  debugger;
+
   if (row.analyte_type === "QN") {
     if (!result) {
       return null;
