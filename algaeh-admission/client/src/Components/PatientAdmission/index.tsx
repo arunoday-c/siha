@@ -43,7 +43,6 @@ export default function PatientAdmission(props: any) {
   });
 
   const getClinicalDoctors = async () => {
-    debugger;
     const { response, error } = await algaehAxios(
       "/frontDesk/getDoctorAndDepartment",
       {
@@ -51,7 +50,7 @@ export default function PatientAdmission(props: any) {
         method: "GET",
       }
     );
-    debugger;
+
     if (error) {
       if (error.show === true) {
         let extendedError: Error | any = error;
@@ -69,6 +68,9 @@ export default function PatientAdmission(props: any) {
 
   useEffect(() => {
     getClinicalDoctors();
+    // debugger;
+    // const c = props.appContext();
+    // console.log("mainCtx====>", c);
   }, []);
 
   return (

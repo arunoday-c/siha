@@ -45,6 +45,11 @@ export default {
         inputValues.push(req.query.status);
       }
 
+      if (req.query.send_sms) {
+        _stringData += " and LO.send_sms=?";
+        inputValues.push(req.query.send_sms);
+      }
+
       if (req.query.test_type != null) {
         _stringData += " and LO.test_type=?";
         inputValues.push(req.query.test_type);
@@ -58,7 +63,7 @@ export default {
             E.full_name as doctor_name, billed, service_id,  S.service_code, S.service_name, \
             LO.status, cancelled, provider_id, ordered_date, test_type, concat(V.age_in_years,'Y')years, \
             concat(V.age_in_months,'M')months, concat(V.age_in_days,'D')days, \
-            lab_id_number, run_type, P.primary_id_no,P.patient_code,P.full_name,P.date_of_birth, P.gender, LS.sample_id, LS.container_id, \
+            lab_id_number, run_type, P.primary_id_no,P.patient_code,P.full_name,P.date_of_birth, P.gender,CONCAT(P.tel_code,P.contact_number) as contact_no, LS.sample_id, LS.container_id, \
             LS.collected, LS.collected_by, LS.remarks, LS.collected_date, LS.hims_d_lab_sample_id, \
             LS.status as sample_status, TC.test_section,DLS.urine_specimen, IT.hims_d_investigation_test_id, IT.isPCR,IT.culture_test, \
             case when LO.run_type='1' then '1 Time' when LO.run_type='2' then '2 Times' when LO.run_type='3' then '3 times' else '-' end as run_types, \

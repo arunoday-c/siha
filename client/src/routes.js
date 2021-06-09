@@ -5,6 +5,7 @@ import { IdleManager } from "./Components/common/IdleManager";
 import Login from "./Components/Login/Login";
 import Layout from "./Components/common/layout";
 import Experiment from "./Components/Experiment";
+import ValidateReportSMS from "./Components/Laboratory/SMS";
 import ConcurrentTest from "./Components/concurrent-test";
 import { useQuery } from "react-query";
 import { newAlgaehApi } from "./hooks";
@@ -652,6 +653,11 @@ const privateRoutes = [
   //
   //   )
   // },
+  {
+    path: "/LabSMS",
+    isExactPath: true,
+    component: <ValidateReportSMS />,
+  },
   {
     path: "/HISDashboard",
     isExactPath: true,

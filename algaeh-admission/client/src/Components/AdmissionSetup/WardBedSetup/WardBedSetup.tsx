@@ -484,7 +484,7 @@ export default function WardBedSetup(Props: any) {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: Props.globalVariables.FORMAT_WARD_TYPE,
+                            data: Props.getGlobalVariables("FORMAT_WARD_TYPE"),
                           },
                           // others: {
                           //   disabled:

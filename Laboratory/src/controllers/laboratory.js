@@ -29,7 +29,7 @@ const {
   top10LabOrders,
   labDashBoardWithAttachment,
 } = labModels;
-
+import { processLabSMS, getValidatedResults } from "../models/labSMS";
 export default () => {
   const api = Router();
   api.get("/getLabOrderedServices", getLabOrderedServices, (req, res, next) => {
@@ -284,6 +284,23 @@ export default () => {
       });
     }
   );
-
+  api.get("/getValidatedResults", getValidatedResults, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        records: req["result"],
+      })
+      .end();
+  });
+  api.post("/processLabSMS", processLabSMS, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        message: "Messages are in progress state",
+      })
+      .end();
+  });
   return api;
 };
