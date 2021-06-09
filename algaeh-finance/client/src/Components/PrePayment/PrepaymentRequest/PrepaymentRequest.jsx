@@ -852,7 +852,7 @@ export function PrepaymentRequest() {
                     </div>{" "}
                     <div className="col-12">
                       <div className="row">
-                        <div className="col-3 draggerCntr">
+                        <div className="col-12 draggerCntr">
                           <Dragger
                             accept=".png,.jpg,.pdf,.doc,.docx,application/msword"
                             name="payment_reqDoc"
@@ -873,9 +873,12 @@ export function PrepaymentRequest() {
                             // disabled={this.state.dataExists && !this.state.editMode}
                             fileList={payment_reqDoc}
                           >
-                            <p className="upload-drag-icon">
+                            {/* <p >
                               <i className="fas fa-file-upload"></i>
-                            </p>
+                            </p> */}
+                            <button className="btn btn-default upload-drag-icon">
+                              Select File
+                            </button>
                             {/* <p className="ant-upload-text">
                               {payment_reqDoc
                                 ? `Click to Upload`
@@ -883,7 +886,7 @@ export function PrepaymentRequest() {
                             </p> */}
                           </Dragger>
                         </div>
-                        <div className="col-9"></div>
+                        <div className="col-12"></div>
                         <div className="col-12">
                           <ul className="prepaymentachmentList">
                             {prepayment_docs.length && disableEdit ? (
