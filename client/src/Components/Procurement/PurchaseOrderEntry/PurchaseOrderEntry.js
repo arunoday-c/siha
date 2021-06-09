@@ -839,8 +839,8 @@ class PurchaseOrderEntry extends Component {
                                           <td>{item.bank_account_no}</td>
                                         </tr>
                                         <tr>
-                                          <td>AIBAN Number</td>
-                                          <td>{item.aiban_number}</td>
+                                          <td>IBAN Number</td>
+                                          <td>{item.iban_number}</td>
                                         </tr>
                                       </tbody>
                                     </table>

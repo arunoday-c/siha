@@ -6,11 +6,12 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../Wrapper/algaehWrapper";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
+import MaskedInput from "react-maskedinput";
 
 class CustomerSetup extends Component {
   constructor(props) {
@@ -37,7 +38,8 @@ class CustomerSetup extends Component {
 
       finance_inch_name: null,
       finance_inch_number: null,
-      finance_inch_emailid: null
+      finance_inch_emailid: null,
+      cIban_number: null,
     };
   }
 
@@ -81,7 +83,8 @@ class CustomerSetup extends Component {
 
       finance_inch_name: null,
       finance_inch_number: null,
-      finance_inch_emailid: null
+      finance_inch_emailid: null,
+      cIban_number: null,
     });
   }
 
@@ -89,17 +92,17 @@ class CustomerSetup extends Component {
     algaehApiCall({
       uri: "/masters/get/countryStateCity",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ countries: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -108,17 +111,17 @@ class CustomerSetup extends Component {
       uri: "/customer/getCustomerMaster",
       module: "masterSettings",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ customers: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -172,7 +175,8 @@ class CustomerSetup extends Component {
           finance_inch_name: this.state.finance_inch_name,
           finance_inch_number: this.state.finance_inch_number,
           finance_inch_emailid: this.state.finance_inch_emailid,
-          bank_account_no: this.state.bank_account_no
+          bank_account_no: this.state.bank_account_no,
+          cIban_number: this.state.cIban_number,
         };
 
         algaehApiCall({
@@ -180,24 +184,24 @@ class CustomerSetup extends Component {
           module: "masterSettings",
           method: method,
           data: sen_data,
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: success_msg,
-                type: "success"
+                type: "success",
               });
               this.resetSaveState();
               this.getAllCustomers();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -205,7 +209,7 @@ class CustomerSetup extends Component {
     this.setState({
       openModal: true,
       btn_txt: "Update",
-      ...data
+      ...data,
     });
 
     this.getStateCity(data.country_id, data.state_id);
@@ -213,33 +217,33 @@ class CustomerSetup extends Component {
 
   changeTexts(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
   changeChecks(e) {
     this.setState({
-      [e.target.name]: !this.state.vat_applicable
+      [e.target.name]: !this.state.vat_applicable,
     });
   }
 
   getStateCity(country_id, state_id) {
     let country = Enumerable.from(this.state.countries)
-      .where(w => w.hims_d_country_id === parseInt(country_id, 10))
+      .where((w) => w.hims_d_country_id === parseInt(country_id, 10))
       .firstOrDefault();
     let states = country !== undefined ? country.states : [];
     if (this.state.countries !== undefined && states.length !== 0) {
       let cities = Enumerable.from(states)
-        .where(w => w.hims_d_state_id === parseInt(state_id, 10))
+        .where((w) => w.hims_d_state_id === parseInt(state_id, 10))
         .firstOrDefault();
       if (cities !== undefined) {
         this.setState({
           states: states,
-          cities: cities.cities
+          cities: cities.cities,
         });
       } else {
         this.setState({
-          states: states
+          states: states,
         });
       }
     }
@@ -250,7 +254,7 @@ class CustomerSetup extends Component {
       case "country_id":
         this.setState({
           [value.name]: value.value,
-          states: value.selected.states
+          states: value.selected.states,
         });
 
         break;
@@ -258,13 +262,13 @@ class CustomerSetup extends Component {
       case "state_id":
         this.setState({
           [value.name]: value.value,
-          cities: value.selected.cities
+          cities: value.selected.cities,
         });
         break;
 
       default:
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
         });
         break;
     }
@@ -276,7 +280,7 @@ class CustomerSetup extends Component {
       customer_status = "I";
     }
     this.setState({
-      customer_status: customer_status
+      customer_status: customer_status,
     });
   }
 
@@ -286,7 +290,7 @@ class CustomerSetup extends Component {
         <AlgaehModalPopUp
           class="createEditPopup"
           events={{
-            onClose: this.resetSaveState.bind(this)
+            onClose: this.resetSaveState.bind(this),
           }}
           title="Add / Edit Customer"
           openPopup={this.state.openModal}
@@ -302,36 +306,36 @@ class CustomerSetup extends Component {
                       div={{ className: "col-2 form-group mandatory" }}
                       label={{
                         fieldName: "customer_code",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "customer_code",
                         value: this.state.customer_code,
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
                           disabled:
                             this.state.hims_d_customer_id === null
                               ? false
-                              : true
-                        }
+                              : true,
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-5 form-group mandatory" }}
                       label={{
                         fieldName: "customer_name",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "customer_name",
                         value: this.state.customer_name,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
 
@@ -339,15 +343,15 @@ class CustomerSetup extends Component {
                       div={{ className: "col-5 form-group mandatory" }}
                       label={{
                         forceLabel: "Customer Name in Arabic",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "arabic_customer_name",
                         value: this.state.arabic_customer_name,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
 
@@ -355,64 +359,64 @@ class CustomerSetup extends Component {
                       div={{ className: "col-3 form-group mandatory" }}
                       label={{
                         forceLabel: "Vat Number",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "vat_number",
                         value: this.state.vat_number,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-3 form-group mandatory" }}
                       label={{
                         fieldName: "contact_number",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "contact_number",
                         value: this.state.contact_number,
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
                           type: "number",
-                          min: 0
-                        }
+                          min: 0,
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-3 form-group mandatory" }}
                       label={{
                         fieldName: "primaryEmail",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "email_id_1",
                         value: this.state.email_id_1,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-3 form-group " }}
                       label={{
                         fieldName: "secondaryEmail",
-                        isImp: false
+                        isImp: false,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "email_id_2",
                         value: this.state.email_id_2,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
 
@@ -420,37 +424,37 @@ class CustomerSetup extends Component {
                       div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         fieldName: "fullAddress",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "address",
                         value: this.state.address,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-3 form-group" }}
                       label={{
                         fieldName: "business_registration_no",
-                        isImp: false
+                        isImp: false,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "business_registration_no",
                         value: this.state.business_registration_no,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-3 form-group" }}
                       label={{
                         fieldName: "country",
-                        isImp: false
+                        isImp: false,
                       }}
                       selector={{
                         name: "country_id",
@@ -459,16 +463,16 @@ class CustomerSetup extends Component {
                         dataSource: {
                           textField: "country_name",
                           valueField: "hims_d_country_id",
-                          data: this.state.countries
+                          data: this.state.countries,
                         },
-                        onChange: this.dropDownHandle.bind(this)
+                        onChange: this.dropDownHandle.bind(this),
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-3 form-group" }}
                       label={{
                         fieldName: "state",
-                        isImp: false
+                        isImp: false,
                       }}
                       selector={{
                         name: "state_id",
@@ -477,15 +481,15 @@ class CustomerSetup extends Component {
                         dataSource: {
                           textField: "state_name",
                           valueField: "hims_d_state_id",
-                          data: this.state.states
+                          data: this.state.states,
                         },
-                        onChange: this.dropDownHandle.bind(this)
+                        onChange: this.dropDownHandle.bind(this),
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-3 form-group" }}
                       label={{
-                        fieldName: "city"
+                        fieldName: "city",
                       }}
                       selector={{
                         name: "city_id",
@@ -494,39 +498,39 @@ class CustomerSetup extends Component {
                         dataSource: {
                           textField: "city_name",
                           valueField: "hims_d_city_id",
-                          data: this.state.cities
+                          data: this.state.cities,
                         },
-                        onChange: this.dropDownHandle.bind(this)
+                        onChange: this.dropDownHandle.bind(this),
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-3 form-group" }}
                       label={{
                         fieldName: "postal_code",
-                        isImp: false
+                        isImp: false,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "postal_code",
                         value: this.state.postal_code,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-3 form-group " }}
                       label={{
                         fieldName: "websiteAddress",
-                        isImp: false
+                        isImp: false,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "website",
                         value: this.state.website,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
                     {this.state.hims_d_customer_id !== null ? (
@@ -550,7 +554,7 @@ class CustomerSetup extends Component {
                             <span>
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "active"
+                                  fieldName: "active",
                                 }}
                               />
                             </span>
@@ -569,7 +573,7 @@ class CustomerSetup extends Component {
                             <span>
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "inactive"
+                                  fieldName: "inactive",
                                 }}
                               />
                             </span>
@@ -584,23 +588,23 @@ class CustomerSetup extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-2  form-group mandatory" }}
                       label={{
-                        forceLabel: "Payment Terms in Days"
+                        forceLabel: "Payment Terms in Days",
                       }}
                       textBox={{
                         number: {
                           allowNegative: false,
-                          thousandSeparator: ","
+                          thousandSeparator: ",",
                         },
                         dontAllowKeys: ["-", "e", "."],
                         value: this.state.payment_terms,
                         className: "txt-fld",
                         name: "payment_terms",
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
-                          placeholder: "0"
-                        }
+                          placeholder: "0",
+                        },
                       }}
                     />
 
@@ -608,7 +612,7 @@ class CustomerSetup extends Component {
                       div={{ className: "col-3 form-group" }}
                       label={{
                         fieldName: "payment_mode",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "payment_mode",
@@ -617,9 +621,9 @@ class CustomerSetup extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.PAYMENT_MODE
+                          data: GlobalVariables.PAYMENT_MODE,
                         },
-                        onChange: this.dropDownHandle.bind(this)
+                        onChange: this.dropDownHandle.bind(this),
                       }}
                     />
 
@@ -634,8 +638,8 @@ class CustomerSetup extends Component {
                         name: "bank_name",
                         value: this.state.bank_name,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
                     <AlagehFormGroup
@@ -648,10 +652,27 @@ class CustomerSetup extends Component {
                         name: "bank_account_no",
                         value: this.state.bank_account_no,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
+                    <div className="col no-padding-left-right mandatory cardMaskFld">
+                      <AlgaehLabel
+                        label={{ fieldName: "IBAN NO.", isImp: false }}
+                      />
+                      <MaskedInput
+                        mask={"AA11111111"}
+                        className="txt-fld"
+                        placeholder={"eg: AA11111111"}
+                        name="cIban_number"
+                        value={this.state.cIban_number}
+                        guide={true}
+                        id="my-input-id"
+                        onBlur={() => {}}
+                        onChange={this.changeTexts.bind(this)}
+                        // disabled={isLoading || disabled}
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="col-4 popRightDiv">
@@ -662,48 +683,48 @@ class CustomerSetup extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-12 form-group " }}
                       label={{
-                        fieldName: "inchargeName"
+                        fieldName: "inchargeName",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "finance_inch_name",
                         value: this.state.finance_inch_name,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
 
                     <AlagehFormGroup
                       div={{ className: "col-6 form-group " }}
                       label={{
-                        fieldName: "contact_number"
+                        fieldName: "contact_number",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "finance_inch_number",
                         value: this.state.finance_inch_number,
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
                           type: "number",
-                          min: 0
-                        }
+                          min: 0,
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-6 form-group" }}
                       label={{
-                        fieldName: "primaryEmail"
+                        fieldName: "primaryEmail",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "finance_inch_emailid",
                         value: this.state.finance_inch_emailid,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
                   </div>
@@ -715,48 +736,48 @@ class CustomerSetup extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-12 form-group " }}
                       label={{
-                        fieldName: "inchargeName"
+                        fieldName: "inchargeName",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "project_inch_name",
                         value: this.state.project_inch_name,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
 
                     <AlagehFormGroup
                       div={{ className: "col-6 form-group " }}
                       label={{
-                        fieldName: "contact_number"
+                        fieldName: "contact_number",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "project_inch_number",
                         value: this.state.project_inch_number,
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
                           type: "number",
-                          min: 0
-                        }
+                          min: 0,
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-6 form-group " }}
                       label={{
-                        fieldName: "primaryEmail"
+                        fieldName: "primaryEmail",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "project_inch_emailid",
                         value: this.state.project_inch_emailid,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
                   </div>
@@ -768,48 +789,48 @@ class CustomerSetup extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-12 form-group " }}
                       label={{
-                        fieldName: "inchargeName"
+                        fieldName: "inchargeName",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "purchase_inch_name",
                         value: this.state.purchase_inch_name,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
 
                     <AlagehFormGroup
                       div={{ className: "col-6 form-group " }}
                       label={{
-                        fieldName: "contact_number"
+                        fieldName: "contact_number",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "purchase_inch_number",
                         value: this.state.purchase_inch_number,
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
                           type: "number",
-                          min: 0
-                        }
+                          min: 0,
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-6 form-group " }}
                       label={{
-                        fieldName: "primaryEmail"
+                        fieldName: "primaryEmail",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "purchase_inch_emailid",
                         value: this.state.purchase_inch_emailid,
                         events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
+                          onChange: this.changeTexts.bind(this),
+                        },
                       }}
                     />
                   </div>
@@ -853,7 +874,7 @@ class CustomerSetup extends Component {
                 onClick={() => {
                   this.setState({
                     openModal: true,
-                    btn_txt: "ADD"
+                    btn_txt: "ADD",
                   });
                 }}
               >
@@ -871,7 +892,7 @@ class CustomerSetup extends Component {
                     {
                       fieldName: "action",
                       label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <div className="row">
                             <div className="col">
@@ -886,23 +907,23 @@ class CustomerSetup extends Component {
                       others: {
                         maxWidth: 120,
                         style: {
-                          textAlign: "center"
+                          textAlign: "center",
                         },
-                        filterable: false
-                      }
+                        filterable: false,
+                      },
                     },
 
                     {
                       fieldName: "customer_code",
                       label: (
                         <AlgaehLabel label={{ fieldName: "customer_code" }} />
-                      )
+                      ),
                     },
                     {
                       fieldName: "customer_name",
                       label: (
                         <AlgaehLabel label={{ fieldName: "customer_name" }} />
-                      )
+                      ),
                     },
                     {
                       fieldName: "business_registration_no",
@@ -910,37 +931,37 @@ class CustomerSetup extends Component {
                         <AlgaehLabel
                           label={{ fieldName: "business_registration_no" }}
                         />
-                      )
+                      ),
                     },
                     {
                       fieldName: "contact_number",
                       label: (
                         <AlgaehLabel label={{ fieldName: "contact_number" }} />
-                      )
+                      ),
                     },
                     {
                       fieldName: "email_id_1",
                       label: (
                         <AlgaehLabel label={{ fieldName: "primaryEmail" }} />
-                      )
+                      ),
                     },
                     {
                       fieldName: "payment_terms",
                       label: (
                         <AlgaehLabel label={{ fieldName: "payment_terms" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.payment_terms + " Days";
-                      }
+                      },
                     },
                     {
                       fieldName: "payment_mode",
                       label: (
                         <AlgaehLabel label={{ fieldName: "payment_mode" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display = GlobalVariables.PAYMENT_MODE.filter(
-                          f => f.value === row.payment_mode
+                          (f) => f.value === row.payment_mode
                         );
 
                         return (
@@ -950,7 +971,7 @@ class CustomerSetup extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
 
                     {
@@ -958,16 +979,16 @@ class CustomerSetup extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "customer_status" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.customer_status === "A"
                           ? "Active"
                           : "Inactive";
-                      }
-                    }
+                      },
+                    },
                   ]}
                   keyId="hims_d_customer_id"
                   dataSource={{
-                    data: this.state.customers
+                    data: this.state.customers,
                   }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}

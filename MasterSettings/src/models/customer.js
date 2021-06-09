@@ -103,8 +103,8 @@ export default {
               contact_number,payment_terms,payment_mode,postal_code,address, country_id, state_id, city_id,\
               purchase_inch_name, purchase_inch_number,purchase_inch_emailid, project_inch_name, \
               project_inch_number, project_inch_emailid, finance_inch_name, finance_inch_number, finance_inch_emailid, \
-              bank_account_no,created_date, created_by, updated_date, updated_by,head_id,child_id)\
-                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              bank_account_no,cIban_number,created_date, created_by, updated_date, updated_by,head_id,child_id)\
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     values: [
                       inputParam.customer_code,
                       inputParam.customer_name,
@@ -133,6 +133,7 @@ export default {
                       inputParam.finance_inch_number,
                       inputParam.finance_inch_emailid,
                       inputParam.bank_account_no,
+                      inputParam.cIban_number,
 
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
@@ -170,8 +171,8 @@ export default {
           contact_number,payment_terms,payment_mode,postal_code,address, country_id, state_id, city_id,\
           purchase_inch_name, purchase_inch_number,purchase_inch_emailid, project_inch_name, \
           project_inch_number, project_inch_emailid, finance_inch_name, finance_inch_number, finance_inch_emailid, \
-          bank_account_no,created_date, created_by, updated_date, updated_by)\
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          bank_account_no,cIban_number,created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 values: [
                   inputParam.customer_code,
                   inputParam.customer_name,
@@ -200,6 +201,7 @@ export default {
                   inputParam.finance_inch_number,
                   inputParam.finance_inch_emailid,
                   inputParam.bank_account_no,
+                  inputParam.cIban_number,
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
@@ -240,7 +242,7 @@ export default {
             postal_code=?,address=?, country_id=?, state_id=?, city_id=?, purchase_inch_name=?, \
             purchase_inch_number=?, purchase_inch_emailid=? , project_inch_name=?, project_inch_number=?, \
             project_inch_emailid=?, finance_inch_name=?, finance_inch_number=?, finance_inch_emailid=?,\
-            bank_account_no=?, updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_customer_id`=?;",
+            bank_account_no=?,cIban_number=?, updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_customer_id`=?;",
           values: [
             inputParam.customer_name,
             inputParam.arabic_customer_name,
@@ -269,6 +271,7 @@ export default {
             inputParam.finance_inch_number,
             inputParam.finance_inch_emailid,
             inputParam.bank_account_no,
+            inputParam.cIban_number,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             inputParam.hims_d_customer_id,
@@ -319,7 +322,7 @@ export default {
           email_id_2, website, contact_number, payment_terms, payment_mode, bank_name, \
           purchase_inch_name, purchase_inch_number,purchase_inch_emailid, project_inch_name, \
           project_inch_number, project_inch_emailid, finance_inch_name, finance_inch_number, finance_inch_emailid,\
-          postal_code,address, country_id, state_id, city_id, vat_number, bank_account_no from hims_d_customer where record_status='A' " +
+          postal_code,address, country_id, state_id, city_id, vat_number, bank_account_no,cIban_number from hims_d_customer where record_status='A' " +
             _strAppend +
             " order by hims_d_customer_id desc",
           values: inputValues,
