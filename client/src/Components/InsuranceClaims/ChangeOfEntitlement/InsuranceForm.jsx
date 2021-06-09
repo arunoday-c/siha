@@ -154,6 +154,9 @@ export function InsuranceForm({
           primary_effective_end_date: row?.effective_end_date,
           primary_card_number: "",
           user_id: row?.user_id,
+          creidt_limit_req: row?.creidt_limit_req,
+          creidt_limit: row?.creidt_limit,
+          creidt_amount_till: row?.creidt_amount_till,
         });
       },
     });
