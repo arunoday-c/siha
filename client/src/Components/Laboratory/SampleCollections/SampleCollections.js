@@ -13,6 +13,7 @@ import {
   updateLabOrderServiceStatus,
   updateLabOrderServiceMultiple,
 } from "./SampleCollectionEvent";
+import { Tooltip } from "antd";
 import {
   AlgaehLabel,
   // AlgaehDataGrid,
@@ -212,36 +213,44 @@ class SampleCollectionPatient extends PureComponent {
                                   return (
                                     <span>
                                       {row.collected !== "Y" ? (
-                                        <i
-                                          style={{
-                                            pointerEvents:
-                                              row.billed === "N" ? "none" : "",
-                                            opacity:
-                                              row.billed === "N" ? "0.1" : "",
-                                          }}
-                                          className="fas fa-check"
-                                          onClick={CollectSample.bind(
-                                            this,
-                                            this,
-                                            context,
-                                            row
-                                          )}
-                                        />
+                                        <Tooltip title="Collect Specimen">
+                                          <i
+                                            style={{
+                                              pointerEvents:
+                                                row.billed === "N"
+                                                  ? "none"
+                                                  : "",
+                                              opacity:
+                                                row.billed === "N" ? "0.1" : "",
+                                            }}
+                                            className="fas fa-check"
+                                            onClick={CollectSample.bind(
+                                              this,
+                                              this,
+                                              context,
+                                              row
+                                            )}
+                                          />
+                                        </Tooltip>
                                       ) : (
-                                        <i
-                                          style={{
-                                            pointerEvents:
-                                              row.billed === "N" ? "none" : "",
-                                            opacity:
-                                              row.billed === "N" ? "0.1" : "",
-                                          }}
-                                          className="fas fa-barcode"
-                                          onClick={printBarcode.bind(
-                                            this,
-                                            this,
-                                            row
-                                          )}
-                                        />
+                                        <Tooltip title="Generate Barcode">
+                                          <i
+                                            style={{
+                                              pointerEvents:
+                                                row.billed === "N"
+                                                  ? "none"
+                                                  : "",
+                                              opacity:
+                                                row.billed === "N" ? "0.1" : "",
+                                            }}
+                                            className="fas fa-barcode"
+                                            onClick={printBarcode.bind(
+                                              this,
+                                              this,
+                                              row
+                                            )}
+                                          />
+                                        </Tooltip>
                                       )}
                                     </span>
                                   );
@@ -250,36 +259,44 @@ class SampleCollectionPatient extends PureComponent {
                                   return (
                                     <span>
                                       {row.collected !== "Y" ? (
-                                        <i
-                                          style={{
-                                            pointerEvents:
-                                              row.billed === "N" ? "none" : "",
-                                            opacity:
-                                              row.billed === "N" ? "0.1" : "",
-                                          }}
-                                          className="fas fa-check"
-                                          onClick={CollectSample.bind(
-                                            this,
-                                            this,
-                                            context,
-                                            row
-                                          )}
-                                        />
+                                        <Tooltip title="Collect Specimen">
+                                          <i
+                                            style={{
+                                              pointerEvents:
+                                                row.billed === "N"
+                                                  ? "none"
+                                                  : "",
+                                              opacity:
+                                                row.billed === "N" ? "0.1" : "",
+                                            }}
+                                            className="fas fa-check"
+                                            onClick={CollectSample.bind(
+                                              this,
+                                              this,
+                                              context,
+                                              row
+                                            )}
+                                          />
+                                        </Tooltip>
                                       ) : (
-                                        <i
-                                          style={{
-                                            pointerEvents:
-                                              row.billed === "N" ? "none" : "",
-                                            opacity:
-                                              row.billed === "N" ? "0.1" : "",
-                                          }}
-                                          className="fas fa-barcode"
-                                          onClick={printBarcode.bind(
-                                            this,
-                                            this,
-                                            row
-                                          )}
-                                        />
+                                        <Tooltip title="Generate Barcode">
+                                          <i
+                                            style={{
+                                              pointerEvents:
+                                                row.billed === "N"
+                                                  ? "none"
+                                                  : "",
+                                              opacity:
+                                                row.billed === "N" ? "0.1" : "",
+                                            }}
+                                            className="fas fa-barcode"
+                                            onClick={printBarcode.bind(
+                                              this,
+                                              this,
+                                              row
+                                            )}
+                                          />
+                                        </Tooltip>
                                       )}
                                     </span>
                                   );
