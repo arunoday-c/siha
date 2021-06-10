@@ -368,6 +368,9 @@ export default {
       }
 
       let shortUrl = "";
+      if (qrCodeReport) {
+        shortUrl = shortid.generate();
+      }
       _mysql
         .executeQuery({
           query:
@@ -661,7 +664,7 @@ export default {
                     if (qrCodeReport) {
                       const qrUrl =
                         process.env.QR_CODE_CLIENT ?? "http://localhost:3024/";
-                      shortUrl = shortid.generate();
+                      // shortUrl = shortid.generate();
                       detailResult["shortUrl"] = `${qrUrl}${shortUrl}`;
                     }
                     let pageContent = await compile(
@@ -819,9 +822,10 @@ export default {
                                 if (reportToPortal === "true") {
                                   const rptParameters =
                                     _inputParam.reportParams;
-                                  const portal_patient_identity = rptParameters.find(
-                                    (f) => f.name === "patient_identity"
-                                  ).value;
+                                  const portal_patient_identity =
+                                    rptParameters.find(
+                                      (f) => f.name === "patient_identity"
+                                    ).value;
                                   const portal_service_id = rptParameters.find(
                                     (f) => f.name === "service_id"
                                   )?.value;
@@ -834,7 +838,8 @@ export default {
                                       {
                                         fileCompletePath: rptPath,
                                         details: {
-                                          patient_identity: portal_patient_identity,
+                                          patient_identity:
+                                            portal_patient_identity,
                                           service_id: portal_service_id,
                                           visit_code: portal_visit_code,
                                           hospital_id:
@@ -864,9 +869,8 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } = __non_webpack_require__(
-                      _supportingJS
-                    );
+                    const { executePDF } =
+                      __non_webpack_require__(_supportingJS);
 
                     executePDF({
                       mysql: _mysql,
@@ -892,6 +896,9 @@ export default {
                           addSymbol
                         );
                       },
+                      shortenURL: `${
+                        process.env.QR_CODE_CLIENT ?? "http://localhost:3024/"
+                      }${shortUrl}`,
                     })
                       .then((resultReq) => {
                         result = resultReq;
@@ -1117,9 +1124,8 @@ export default {
                       );
 
                       if (fs.existsSync(_supportingJS)) {
-                        const { executePDF } = __non_webpack_require__(
-                          _supportingJS
-                        );
+                        const { executePDF } =
+                          __non_webpack_require__(_supportingJS);
                         executePDF({
                           mysql: _mysql,
                           inputs: _inputParam,
@@ -1137,6 +1143,10 @@ export default {
                           utilitites: () => {
                             return new utilitites();
                           },
+                          shortenURL: `${
+                            process.env.QR_CODE_CLIENT ??
+                            "http://localhost:3024/"
+                          }${shortUrl}`,
                         })
                           .then((resultReq) => {
                             result = resultReq;
@@ -1507,9 +1517,10 @@ export default {
                                       0,
                                       onlyAlphabets.length - 1
                                     );
-                                    const lastcharacter = onlyAlphabets.charCodeAt(
-                                      onlyAlphabets.length - 1
-                                    );
+                                    const lastcharacter =
+                                      onlyAlphabets.charCodeAt(
+                                        onlyAlphabets.length - 1
+                                      );
 
                                     const numberOfCols =
                                       parseInt($(this).attr("colspan")) - 1;
@@ -1822,9 +1833,8 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } = __non_webpack_require__(
-                      _supportingJS
-                    );
+                    const { executePDF } =
+                      __non_webpack_require__(_supportingJS);
                     executePDF({
                       mysql: _mysql,
                       inputs: _inputOrders,
@@ -1840,6 +1850,9 @@ export default {
                           formater
                         );
                       },
+                      shortenURL: `${
+                        process.env.QR_CODE_CLIENT ?? "http://localhost:3024/"
+                      }${shortUrl}`,
                     })
                       .then((resultReq) => {
                         result = resultReq;

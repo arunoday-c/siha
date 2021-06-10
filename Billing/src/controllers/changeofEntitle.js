@@ -9,10 +9,24 @@ export default () => {
     "/addChangeOfEntitlement",
     addChangeOfEntitlement,
     (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records,
-      });
+      console.log("req.records", req.records);
+      if (req.records.invalid_input == true) {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().ok)
+          .json({
+            success: false,
+            result: req.records.message,
+          })
+          .end();
+      } else {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().ok)
+          .json({
+            success: true,
+            result: req.records,
+          })
+          .end();
+      }
     }
   );
   return api;

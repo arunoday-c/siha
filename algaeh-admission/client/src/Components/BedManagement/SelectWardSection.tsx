@@ -1,9 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
-interface IFormInputs {
-  // name: string;
-  hims_adm_ward_header_id: string;
-}
 import {
   AlgaehAutoComplete,
   algaehAxios,
@@ -12,7 +8,10 @@ import {
 } from "algaeh-react-components";
 
 import { BedManagementContext } from "./BedMangementContext";
-
+interface IFormInputs {
+  // name: string;
+  hims_adm_ward_header_id: string;
+}
 export default function SelectWardSection() {
   const { setWardHeaderData, wardHeaderData } =
     useContext(BedManagementContext);

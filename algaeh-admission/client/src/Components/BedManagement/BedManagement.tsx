@@ -102,9 +102,7 @@ export default function BedManagement(props: any) {
                 }}
                 // disabled={disabled}
               >
-                <AlgaehLabel
-                  label={{ fieldName: "btn_save", returnText: true }}
-                />
+                <AlgaehLabel label={{ fieldName: "btn_save" }} />
               </button>
               <button
                 type="button"
@@ -117,9 +115,7 @@ export default function BedManagement(props: any) {
                 //   !formState.isDirty
                 // }
               >
-                <AlgaehLabel
-                  label={{ fieldName: "btn_clear", returnText: true }}
-                />
+                <AlgaehLabel label={{ fieldName: "btn_clear" }} />
               </button>
             </div>
           </div>
