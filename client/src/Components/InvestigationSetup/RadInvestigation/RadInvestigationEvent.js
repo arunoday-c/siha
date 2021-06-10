@@ -8,12 +8,12 @@ const texthandle = ($this, context, ctrl, e) => {
   let value = e.value === "" ? null : e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 
   if (context !== undefined) {
     context.updateState({
-      [name]: value
+      [name]: value,
     });
   }
 };
@@ -22,27 +22,28 @@ const ViewEditTemplate = ($this, row) => {
   let template = {
     template_html: row.template_html,
     template_name: row.template_name,
-    hims_d_rad_template_detail_id: row.hims_d_rad_template_detail_id
+    hims_d_rad_template_detail_id: row.hims_d_rad_template_detail_id,
   };
   $this.setState({
     ...$this.state,
     openTemplate: !$this.state.openTemplate,
-    radTempobj: template
+    radTempobj: template,
   });
 };
 
-const ShowTemplate = $this => {
+const ShowTemplate = ($this) => {
   $this.setState({
     ...$this.state,
     openTemplate: !$this.state.openTemplate,
-    radTempobj: null
+    radTempobj: null,
   });
 };
 
 const CloseTemplate = ($this, data) => {
+  debugger;
   let radObj = {
     template_name: data.template_name,
-    template_html: data.template_html
+    template_html: data.template_html,
   };
   let insert_rad_temp = $this.state.insert_rad_temp;
   let RadTemplate = $this.state.RadTemplate;
@@ -60,7 +61,7 @@ const CloseTemplate = ($this, data) => {
     $this.setState({
       openTemplate: !$this.state.openTemplate,
       RadTemplate: RadTemplate,
-      insert_rad_temp: insert_rad_temp
+      insert_rad_temp: insert_rad_temp,
     });
   } else {
     if (data.hims_d_rad_template_detail_id !== 0) {
@@ -81,19 +82,19 @@ const CloseTemplate = ($this, data) => {
         template_html: data.template_html,
         hims_d_rad_template_detail_id: data.hims_d_rad_template_detail_id,
         template_status: "A",
-        record_status: "A"
+        record_status: "A",
       };
       update_rad_temp.push(Updateobj);
       $this.setState({
         openTemplate: !$this.state.openTemplate,
         RadTemplate: RadTemplate,
         update_rad_temp: update_rad_temp,
-        record_status: "A"
+        record_status: "A",
       });
     } else if (data.hims_d_rad_template_detail_id === null) {
     } else {
       $this.setState({
-        openTemplate: !$this.state.openTemplate
+        openTemplate: !$this.state.openTemplate,
       });
     }
   }
@@ -111,7 +112,7 @@ const deleteRadInvestigation = ($this, context, row, rowId) => {
       hims_d_rad_template_detail_id: row.hims_d_rad_template_detail_id,
       template_name: row.template_name,
       template_html: row.template_html,
-      record_status: "I"
+      record_status: "I",
     };
     update_rad_temp.push(Updateobj);
   } else {
@@ -133,14 +134,14 @@ const deleteRadInvestigation = ($this, context, row, rowId) => {
   $this.setState({
     RadTemplate: RadTemplate,
     insert_rad_temp: insert_rad_temp,
-    update_rad_temp: update_rad_temp
+    update_rad_temp: update_rad_temp,
   });
 
   if (context !== undefined) {
     context.updateState({
       RadTemplate: RadTemplate,
       insert_rad_temp: insert_rad_temp,
-      update_rad_temp: update_rad_temp
+      update_rad_temp: update_rad_temp,
     });
   }
 };
@@ -158,37 +159,37 @@ const deleteRadTemplate = ($this, context, row) => {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willUpdate => {
+      cancelButtonText: "No",
+    }).then((willUpdate) => {
       if (willUpdate.value) {
         if (row.hims_d_rad_template_detail_id !== undefined) {
           algaehApiCall({
             uri: "/investigation/deleteRadTemplate",
             module: "laboratory",
             data: {
-              hims_d_rad_template_detail_id: row.hims_d_rad_template_detail_id
+              hims_d_rad_template_detail_id: row.hims_d_rad_template_detail_id,
             },
             method: "DELETE",
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success === true) {
                 findAndRemoveTemplate(RadTemplate, row);
                 findAndRemoveTemplate(update_rad_temp, row);
                 $this.setState({
                   RadTemplate,
-                  update_rad_temp
+                  update_rad_temp,
                 });
                 if (context !== undefined) {
                   context.updateState({
                     RadTemplate,
-                    update_rad_temp
+                    update_rad_temp,
                   });
                 }
                 swalMessage({
                   type: "success",
-                  title: "Deleted successfully ..."
+                  title: "Deleted successfully ...",
                 });
               }
-            }
+            },
           });
         } else {
           findAndRemoveTemplate(insert_rad_temp, row);
@@ -197,18 +198,18 @@ const deleteRadTemplate = ($this, context, row) => {
           $this.setState({
             RadTemplate,
             update_rad_temp,
-            insert_rad_temp
+            insert_rad_temp,
           });
           if (context !== undefined) {
             context.updateState({
               RadTemplate,
               update_rad_temp,
-              insert_rad_temp
+              insert_rad_temp,
             });
           }
           swalMessage({
             type: "success",
-            title: "Deleted successfully ..."
+            title: "Deleted successfully ...",
           });
         }
       }
@@ -224,11 +225,11 @@ function findAndRemoveTemplate(templates, row) {
   }
 }
 
-const updateRadInvestigation = $this => {
+const updateRadInvestigation = ($this) => {
   successfulMessage({
     message: "No Option to edit.",
     title: "Warning",
-    icon: "warning"
+    icon: "warning",
   });
 };
 
@@ -239,5 +240,5 @@ export {
   ViewEditTemplate,
   deleteRadInvestigation,
   updateRadInvestigation,
-  deleteRadTemplate
+  deleteRadTemplate,
 };
