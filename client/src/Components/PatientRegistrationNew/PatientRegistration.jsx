@@ -289,39 +289,39 @@ export function PatientRegistration() {
     },
   });
 
-  const { isLoading, data: patientData, refetch } = useQuery(
-    ["patient", { patient_code }],
-    getPatient,
-    {
-      enabled: !!patient_code,
-      initialData: {
-        bill_criedt: [],
-        patientRegistration: null,
-        identities: [],
-      },
-      retry: 0,
-      initialStale: true,
-      onSuccess: (data) => {
-        if (data?.patientRegistration) {
-          let patientRegistration = data?.patientRegistration;
+  const {
+    isLoading,
+    data: patientData,
+    refetch,
+  } = useQuery(["patient", { patient_code }], getPatient, {
+    enabled: !!patient_code,
+    initialData: {
+      bill_criedt: [],
+      patientRegistration: null,
+      identities: [],
+    },
+    retry: 0,
+    initialStale: true,
+    onSuccess: (data) => {
+      if (data?.patientRegistration) {
+        let patientRegistration = data?.patientRegistration;
 
-          setIdentityType(patientRegistration.identity_type);
-          reset({
-            ...patientRegistration,
-            // consultation: "Y",
-            visit_type: default_visit_type?.hims_d_visit_type_id,
-          });
-        }
-      },
-      onError: (err) => {
-        AlgaehMessagePop({
-          display: err?.message,
-          type: "error",
+        setIdentityType(patientRegistration.identity_type);
+        reset({
+          ...patientRegistration,
+          // consultation: "Y",
+          visit_type: default_visit_type?.hims_d_visit_type_id,
         });
-        history.push(location.pathname);
-      },
-    }
-  );
+      }
+    },
+    onError: (err) => {
+      AlgaehMessagePop({
+        display: err?.message,
+        type: "error",
+      });
+      history.push(location.pathname);
+    },
+  });
 
   const [save, { isLoading: saveLoading }] = useMutation(savePatient, {
     onSuccess: (data) => {
@@ -567,7 +567,7 @@ export function PatientRegistration() {
     data.age = data.age;
     data.doctor_id = data.ins_doctor_id;
     data.visit_code = data.visit_code;
-    data.visit_date = moment(data.visit_date).format("YYYY-MM-DD hh:mm:ss");
+    // data.visit_date = data.visit_date).format("YYYY-MM-DD hh:mm:ss");
     try {
       axios
         .post(`${PORTAL_HOST}/info/patientRegistration`, data)
