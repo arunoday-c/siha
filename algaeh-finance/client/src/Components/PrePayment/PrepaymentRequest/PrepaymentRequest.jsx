@@ -649,6 +649,7 @@ export function PrepaymentRequest() {
                                 forceLabel: "Prepayment Type",
                                 isImp: true,
                               }}
+                              error={errors}
                               selector={{
                                 others: {
                                   disabled: disableEdit,
@@ -676,9 +677,9 @@ export function PrepaymentRequest() {
                             />
                           )}
                         />
-                        {errors.prepayment_type_id && (
+                        {/* {errors.prepayment_type_id && (
                           <span>{errors.prepayment_type_id.message}</span>
-                        )}
+                        )} */}
                         {/* {employees_req === "Y" ? (
                           <Controller
                             name="employee_id"
@@ -738,6 +739,7 @@ export function PrepaymentRequest() {
                                 forceLabel: "Prepayment Remarks",
                                 // isImp: true,
                               }}
+                              // error={errors}
                               textBox={{
                                 ...props,
                                 type: "text",
@@ -746,9 +748,9 @@ export function PrepaymentRequest() {
                             />
                           )}
                         />
-                        {errors.prepayment_remarks && (
+                        {/* {errors.prepayment_remarks && (
                           <span>{errors.prepayment_remarks.message}</span>
-                        )}
+                        )} */}
                         <Controller
                           control={control}
                           rules={{ required: "Please enter an amount" }}
@@ -762,6 +764,7 @@ export function PrepaymentRequest() {
                                 forceLabel: "Prepayment Amt.",
                                 isImp: true,
                               }}
+                              error={errors}
                               textBox={{
                                 ...props,
                                 type: "number",
@@ -770,13 +773,18 @@ export function PrepaymentRequest() {
                             />
                           )}
                         />
-                        {errors.prepayment_amount && (
+                        {/* {errors.prepayment_amount && (
                           <span>{errors.prepayment_amount.message}</span>
-                        )}
+                        )} */}
                         <Controller
                           name="start_date"
                           control={control}
-                          rules={{ required: "Please select a start date" }}
+                          rules={{
+                            required: {
+                              value: true,
+                              message: "Please enter Start Date",
+                            },
+                          }}
                           render={({ value, onChange }) => (
                             <AlgaehDateHandler
                               div={{
@@ -786,9 +794,11 @@ export function PrepaymentRequest() {
                                 forceLabel: "Start Date",
                                 isImp: true,
                               }}
+                              error={errors}
                               textBox={{
-                                className: "form-control",
+                                className: "txt-fld",
                                 value,
+                                name: "start_date",
                               }}
                               events={{
                                 onChange: (mdate) => {
@@ -821,12 +831,18 @@ export function PrepaymentRequest() {
                             />
                           )}
                         />
-                        {errors.start_date && (
+                        {/* {errors.start_date && (
                           <span>{errors.start_date.message}</span>
-                        )}
+                        )} */}
                         <Controller
                           name="end_date"
                           control={control}
+                          rules={{
+                            required: {
+                              value: true,
+                              message: "Please enter End Date",
+                            },
+                          }}
                           render={(props) => (
                             <AlgaehDateHandler
                               div={{
@@ -836,9 +852,11 @@ export function PrepaymentRequest() {
                                 forceLabel: "End Date",
                                 isImp: true,
                               }}
+                              error={errors}
                               textBox={{
                                 value: props.value,
-                                className: "form-control",
+                                className: "txt-fld",
+                                name: "end_date",
                               }}
                               events={{
                                 onChange: (mdate) => props.onChange(mdate?._d),
