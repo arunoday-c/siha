@@ -1,5 +1,5 @@
 import amqpConnection from "./connection";
-const publisher = async (queueName, data) => {
+export async function publisher(queueName, data) {
   try {
     const connection = await amqpConnection;
     const channel = await connection.createChannel();
@@ -18,6 +18,5 @@ const publisher = async (queueName, data) => {
     throw e;
     // console.error("Error Publisher===>", e);
   }
-};
+}
 console.log("<======SMS is activated=====>");
-export default publisher;

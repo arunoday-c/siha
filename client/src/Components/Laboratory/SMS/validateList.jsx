@@ -129,15 +129,6 @@ export default memo(function ValidateList(props) {
               return row.critical_status === "Y" ? "YES" : "NO";
             },
           },
-
-          {
-            fieldName: "validated_by",
-            label: <AlgaehLabel label={{ forceLabel: "Validated By" }} />,
-          },
-          {
-            fieldName: "validated_date",
-            label: <AlgaehLabel label={{ forceLabel: "Validated Date" }} />,
-          },
         ]}
         pagination={false}
         isFilterable={true}

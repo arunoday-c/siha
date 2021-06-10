@@ -38,18 +38,21 @@ export async function sendSMS(data) {
           throw error;
         });
       let res = response.data;
-      let rData = `{"ME":${res.replace("}]}]}", '}]}]},"TOO":')}}`;
+      let rData = res.split('{"ErrorCode"');
+      const resData = JSON.parse(`{"ErrorCode"${rData[1]}`);
 
-      let resData = {};
-      if (typeof rData === "string") resData = JSON.parse(rData);
-      updateLabSMSStatus({
-        ...resData["ME"],
-        error_message: resData["TOO"]["ErrorMessage"],
-        delivery_status: parseInt(resData["TOO"]["ErrorCode"], 10) > 0 ? 1 : 0,
+      await updateLabSMSStatus({
+        ...resData,
+        message: result,
+        number_contact: contact_no,
+        error_message: resData["ErrorMessage"],
+        delivery_status: parseInt(resData["ErrorCode"], 10) > 0 ? 1 : 0,
         processed_by,
       });
     } else {
       throw new Error("There is no TEMPLATE exists by name " + template);
     }
-  } catch (e) {}
+  } catch (e) {
+    console.error("Error====>", e);
+  }
 }
