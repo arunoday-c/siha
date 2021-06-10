@@ -94,6 +94,11 @@ export default memo(function ValidateList(props) {
             displayTemplate: (row) => <CheckCol row={row} />,
           },
           {
+            fieldName: "primary_id_no",
+            label: <AlgaehLabel label={{ fieldName: "primary_id_no" }} />,
+            filterable: true,
+          },
+          {
             fieldName: "patient_code",
             label: <AlgaehLabel label={{ fieldName: "patient_code" }} />,
             filterable: true,

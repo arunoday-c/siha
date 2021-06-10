@@ -35,7 +35,6 @@ export async function processLabSMS(req, res, next) {
           visit_id,
           patient_id,
         } = list[i];
-        console.log("list====>", list[i]);
         await SMSPublisher.publisher("SMS", {
           template: isPCR === "Y" ? TEMPLATES.PCR_TEST : TEMPLATES.LAB_TEST,
           patient_code,
@@ -77,7 +76,7 @@ export async function getValidatedResults(req, res, next) {
     const result = await _mysql
       .executeQuery({
         query: `select LO.hims_f_lab_order_id,LO.patient_id,LO.visit_id,LO.critical_status,
-        IT.isPCR,P.patient_code,UCASE(P.full_name) as full_name,P.gender,
+        IT.isPCR,P.patient_code,UCASE(P.full_name) as full_name,P.gender,P.primary_id_no,
         concat(DATE_FORMAT(FROM_DAYS(DATEDIFF(CURDATE(),P.date_of_birth)), '%Y')+0,'Y') as years,
         IT.description as service_name,LO.short_url,LO.ordered_date,concat(P.tel_code,P.contact_number) as contact_no
          from hims_f_lab_order as LO
