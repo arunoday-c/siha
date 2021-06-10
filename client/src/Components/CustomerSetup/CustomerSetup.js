@@ -39,7 +39,7 @@ class CustomerSetup extends Component {
       finance_inch_name: null,
       finance_inch_number: null,
       finance_inch_emailid: null,
-      cIban_number: null,
+      iban_number: null,
     };
   }
 
@@ -84,7 +84,7 @@ class CustomerSetup extends Component {
       finance_inch_name: null,
       finance_inch_number: null,
       finance_inch_emailid: null,
-      cIban_number: null,
+      iban_number: null,
     });
   }
 
@@ -176,7 +176,7 @@ class CustomerSetup extends Component {
           finance_inch_number: this.state.finance_inch_number,
           finance_inch_emailid: this.state.finance_inch_emailid,
           bank_account_no: this.state.bank_account_no,
-          cIban_number: this.state.cIban_number,
+          iban_number: this.state.iban_number,
         };
 
         algaehApiCall({
@@ -664,8 +664,8 @@ class CustomerSetup extends Component {
                         mask={"AA11111111"}
                         className="txt-fld"
                         placeholder={"eg: AA11111111"}
-                        name="cIban_number"
-                        value={this.state.cIban_number}
+                        name="iban_number"
+                        value={this.state.iban_number}
                         guide={true}
                         id="my-input-id"
                         onBlur={() => {}}

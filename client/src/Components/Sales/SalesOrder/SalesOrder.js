@@ -761,7 +761,7 @@ class SalesOrder extends Component {
                                   <tr>
                                     <td>IBAN NUMBER</td>
                                     <td>
-                                      {this.state.customerDetails.cIban_number}
+                                      {this.state.customerDetails.iban_number}
                                     </td>
                                   </tr>
                                 </tbody>
