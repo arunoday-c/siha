@@ -23,6 +23,7 @@ export default {
       category_id: null,
       analyte_id: null,
       analyte_report_group: "N",
+      includeInReport: "Y",
       analyte_type: null,
       result_unit: null,
       selectedLang: "en",

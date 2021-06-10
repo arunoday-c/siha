@@ -40,7 +40,7 @@ export default {
             R.hims_d_rad_template_detail_id, R.template_name, R.template_html, T.investigation_type, lab_section_id, \
             send_out_test, available_in_house, restrict_order, restrict_by, external_facility_required, \
             facility_description,  priority, cpt_id, category_id, film_category, screening_test, film_used, \
-            A.analyte_id,A.analyte_report_group,  A.hims_m_lab_analyte_id, A.critical_low, A.gender, A.from_age, \
+            A.analyte_id,A.analyte_report_group,A.includeInReport,  A.hims_m_lab_analyte_id, A.critical_low, A.gender, A.from_age, \
             A.to_age, A.age_type, A.critical_high,  TC.test_section, A.normal_low, A.normal_high,LA.analyte_type, \
             S.specimen_id, S.hims_m_lab_specimen_id, S.container_id,SER.service_name,A.formula,A.display_formula,A.decimals, \
             LA.description as analyte_description, tat_standard_time, culture_test from hims_d_investigation_test T \
@@ -76,6 +76,7 @@ export default {
     try {
       const {
         analyte_report_group,
+        includeInReport,
         hims_m_lab_analyte_id,
         display_formula,
         original_formula,
@@ -83,9 +84,10 @@ export default {
       } = req.body;
       _mysql
         .executeQuery({
-          query: `UPDATE hims_m_lab_analyte SET analyte_report_group =?,formula=?,display_formula=?,decimals=? WHERE (hims_m_lab_analyte_id = ?);`,
+          query: `UPDATE hims_m_lab_analyte SET analyte_report_group =?,includeInReport=?,formula=?,display_formula=?,decimals=? WHERE (hims_m_lab_analyte_id = ?);`,
           values: [
             analyte_report_group,
+            includeInReport,
             original_formula,
             display_formula,
             decimals,
@@ -191,6 +193,7 @@ export default {
                       "normal_low",
                       "normal_high",
                       "display_order",
+                      "includeInReport",
                     ];
 
                     _mysql
@@ -438,7 +441,7 @@ export default {
                         qry += mysql.format(
                           "UPDATE `hims_m_lab_analyte` SET record_status=?,\
                         `critical_low`=?, `critical_high`=?, `normal_low`=?, `normal_high`=?,\
-                          `from_age`=?, `to_age`=?, `age_type`=?, `gender`=?, display_order=?, \
+                          `from_age`=?, `to_age`=?, `age_type`=?, `gender`=?, display_order=?,includeInReport=?, \
                         updated_date=?, updated_by=? where hims_m_lab_analyte_id=?;",
                           [
                             update_analytes[i].record_status,
@@ -451,6 +454,7 @@ export default {
                             update_analytes[i].age_type,
                             update_analytes[i].gender,
                             update_analytes[i].display_order,
+                            update_analytes[i].includeInReport,
                             moment().format("YYYY-MM-DD HH:mm"),
                             req.userIdentity.algaeh_d_app_user_id,
                             update_analytes[i].hims_m_lab_analyte_id,

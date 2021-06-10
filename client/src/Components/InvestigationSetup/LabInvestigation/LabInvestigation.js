@@ -13,6 +13,7 @@ import {
 import { AlgaehDataGrid } from "algaeh-react-components";
 import {
   texthandle,
+  handleCheck,
   containeridhandle,
   analyteidhandle,
   AddAnalytes,
@@ -109,6 +110,7 @@ class LabInvestigation extends Component {
 
   // events
   texthandle = texthandle.bind(this);
+  handleCheck = handleCheck.bind(this);
   analyteidhandle = analyteidhandle.bind(this);
   containeridhandle = containeridhandle.bind(this);
   changeGridEditors(row, e) {
@@ -126,6 +128,7 @@ class LabInvestigation extends Component {
       this.context.updateState({
         analytes: analytes,
         analyte_report_group: "N",
+
         // update_analytes: update_analytes,
       });
     }
@@ -329,6 +332,23 @@ class LabInvestigation extends Component {
                       onChange: this.texthandle,
                     }}
                   />
+                  <div
+                    className="customCheckbox col-2"
+                    style={{ border: "none", marginTop: "19px" }}
+                  >
+                    <label className="checkbox" style={{ color: "#212529" }}>
+                      <input
+                        type="checkbox"
+                        name="includeInReport"
+                        checked={state.includeInReport === "Y" ? true : false}
+                        value={state.includeInReport}
+                        onChange={this.handleCheck}
+                      />
+                      <span style={{ fontSize: "0.8rem" }}>
+                        Include In Report
+                      </span>
+                    </label>
+                  </div>
 
                   <div className="col-1" style={{ padding: 0 }}>
                     <button
@@ -394,8 +414,7 @@ class LabInvestigation extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data:
-                                      GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
+                                    data: GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
@@ -410,6 +429,39 @@ class LabInvestigation extends Component {
                             style: { textAlign: "left" },
                           },
                         },
+                        {
+                          fieldName: "includeInReport",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Include In Report" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.includeInReport === "Y" ? "YES" : "NO"}
+                              </span>
+                            );
+                          },
+                          editorTemplate: (row) => {
+                            return (
+                              <input
+                                type="checkbox"
+                                defaultChecked={
+                                  row.includeInReport === "Y" ? true : false
+                                }
+                                onChange={(e) => {
+                                  const status = e.target.checked;
+                                  row["includeInReport"] =
+                                    status === true ? "Y" : "N";
+
+                                  // row.update();
+                                }}
+                              />
+                            );
+                          },
+                        },
+
                         {
                           fieldName: "display_formula",
                           label: (

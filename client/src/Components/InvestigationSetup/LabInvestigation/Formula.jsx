@@ -24,6 +24,28 @@ export default function Formulae({
   useEffect(() => {
     if (openFormula) {
       onClearFormula();
+
+      const displayFormulArray = selectedRow.display_formula?.match(/\[.*?\]/g);
+      const formulaArray = selectedRow.formula
+        ?.match(/\[.*?\]/g)
+        .map((item) => parseInt(item.replace(/[\[\]"]+/g, "")));
+      if (displayFormulArray?.length > 0 || formulaArray?.length > 0) {
+        for (let i = 0; i < displayFormulArray.length; i++) {
+          const _desc = displayFormulArray[i].replace(/[\[\]"]+/g, "");
+
+          const _value = formulaArray[i];
+          const formulaValueExist = valueForm.find((f) => f.value === _value);
+
+          if (!formulaValueExist) {
+            setValueForm((prev) => {
+              prev.push({ label: _desc, value: _value });
+              return [...prev];
+            });
+          }
+        }
+      }
+
+      // console.log("array", array);
       setFormula_description(selectedRow.display_formula);
       setDecimals(selectedRow.decimals);
       setPreviousFomulla(selectedRow.display_formula);
@@ -148,6 +170,7 @@ export default function Formulae({
                     const formulaValueExist = valueForm.find(
                       (f) => f.value === _value
                     );
+
                     if (!formulaValueExist) {
                       setValueForm((prev) => {
                         prev.push({ label: _desc, value: _value });
