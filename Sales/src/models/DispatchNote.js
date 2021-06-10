@@ -943,7 +943,11 @@ export function updateinvSalesOrderDispatchAdjust(req, res, next) {
   }
 }
 
-export function updateinvSalesOrderOnceDispatch(req, res, next) {
+export function updateinvSalesOrderOnceDispatch_BACKUP_10_JUNE_2021(
+  req,
+  res,
+  next
+) {
   const _options = req.connection == null ? {} : req.connection;
   const _mysql = new algaehMysql(_options);
   try {
@@ -1018,6 +1022,99 @@ export function updateinvSalesOrderOnceDispatch(req, res, next) {
             next();
           });
         }
+      })
+      .catch((e) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+}
+
+export function updateinvSalesOrderOnceDispatch(req, res, next) {
+  const _options = req.connection == null ? {} : req.connection;
+  const _mysql = new algaehMysql(_options);
+  try {
+    let inputParam = { ...req.body };
+
+    let details = inputParam.inventory_stock_detail;
+
+    let qry = "";
+
+    let complete = "Y";
+    for (let i = 0; i < details.length; i++) {
+      qry += mysql.format(
+        "UPDATE hims_f_sales_order_items SET `quantity_outstanding`=?\
+            where `hims_f_sales_order_items_id`=?;",
+        [details[i].quantity_outstanding, details[i].sales_order_items_id]
+      );
+    }
+    _mysql
+      .executeQueryWithTransaction({
+        query: qry,
+        printQuery: true,
+      })
+      .then((detailResult) => {
+        _mysql
+          .executeQuery({
+            query:
+              "select  D.quantity_outstanding from hims_f_sales_order H \
+              INNER JOIN hims_f_sales_order_items D on H.hims_f_sales_order_id = D.sales_order_id \
+              WHERE  hims_f_sales_order_id=?",
+            values: [inputParam.sales_order_id],
+            printQuery: true,
+          })
+          .then((detailResult) => {
+            //Update
+            const partial_recived = new LINQ(detailResult)
+              .Where((w) => w.quantity_outstanding > 0)
+              .ToArray();
+            let strQuery = "";
+
+            if (partial_recived.length > 0) {
+              complete = "N";
+            }
+
+            if (inputParam.sales_quotation_id !== null && complete === "Y") {
+              strQuery = mysql.format(
+                "UPDATE hims_f_sales_quotation set qotation_status='C' where hims_f_sales_quotation_id = ?;",
+                [inputParam.sales_quotation_id]
+              );
+            }
+            _mysql
+              .executeQuery({
+                query:
+                  "UPDATE `hims_f_sales_order` SET `is_completed`=?, `completed_by`=?, `completed_date`=? \
+                WHERE `hims_f_sales_order_id`=?; " +
+                  strQuery,
+                values: [
+                  complete,
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  inputParam.sales_order_id,
+                ],
+                printQuery: true,
+              })
+              .then((headerResult) => {
+                // utilities.logger().log("headerResult: ");
+                req.porecords = headerResult;
+                next();
+              })
+              .catch((e) => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+          })
+          .catch((e) => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
       })
       .catch((e) => {
         _mysql.rollBackTransaction(() => {
