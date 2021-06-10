@@ -47,6 +47,7 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const Validations = ($this) => {
+  debugger;
   let isError = false;
   // if ($this.state.test_code === null) {
   //   isError = true;
@@ -58,6 +59,7 @@ const Validations = ($this) => {
   //   document.querySelector("[name='test_code']").focus();
   //   return isError;
   // } else
+
   if ($this.state.description === null) {
     isError = true;
     swalMessage({
@@ -73,6 +75,7 @@ const Validations = ($this) => {
       type: "error",
       title: "Service Cannot be blank.",
     });
+
     // document.querySelector("[name='services_id']").focus();
     return isError;
   } else if ($this.state.investigation_type === "L") {
@@ -114,6 +117,16 @@ const Validations = ($this) => {
     } else {
       return isError;
     }
+  } else if ($this.state.investigation_type === "R") {
+    if ($this.state.RadTemplate.length <= 0) {
+      isError = true;
+      swalMessage({
+        type: "error",
+        title: "At Least One Template to be added.",
+      });
+
+      return isError;
+    }
   }
 
   // else if ($this.state.lab_section_id === null) {
@@ -135,7 +148,6 @@ const InsertLabTest = ($this, e) => {
     if ($this.state.draging_done === true) {
       $this.state.analytes = $this.state.drag_analytes;
     } else {
-      debugger;
       $this.state.analytes = $this.state.analytes.map((item, index) => {
         return { ...item, display_order: index };
       });

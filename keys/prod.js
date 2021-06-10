@@ -23,6 +23,12 @@ exports.default = {
     supportBigNumbers: true,
     bigNumberStrings: true,
   },
+  enableSMS: false,
+  rabbitMQ: {
+    RABBIT_MQ_SERVER: "localhost",
+    RABBIT_MQ_USER: "Algaeh",
+    RABBIT_MQ_PASSWORD: "alg_hea2018",
+  },
   mongoDb: {
     connectionURI: process.env.MONGO_URI,
   },
