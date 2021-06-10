@@ -164,15 +164,15 @@ const SaveDispatchNote = ($this) => {
       }
     }
 
-    const partial_recived = _.filter(InputObj.stock_detail, (f) => {
-      return parseFloat(f.quantity_outstanding) != 0;
-    });
-    // .Where((w) =>
-    // .ToArray();
+    // const partial_recived = _.filter(InputObj.stock_detail, (f) => {
+    //   return parseFloat(f.quantity_outstanding) > 0;
+    // });
+    // // .Where((w) =>
+    // // .ToArray();
 
-    if (partial_recived.length > 0) {
-      InputObj.complete = "N";
-    }
+    // if (partial_recived.length > 0) {
+    //   InputObj.complete = "N";
+    // }
 
     let stock_detail = _.filter(InputObj.stock_detail, (f) => {
       return f.removed === "N";
