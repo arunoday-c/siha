@@ -13,7 +13,7 @@ const sequelize = new Sequelize(
     //@ts-ignore
     dialect: DB_DIALECT,
     logging: process.env.NODE_ENV === "production" ? false : false,
-
+    logQueryParameters: true,
     pool: {
       max: parseInt(SMS_DB_CONN_LMT, 10),
     },

@@ -7,17 +7,21 @@
 }
 .draggerCntr {
   .ant-upload-drag {
-    min-height: 95px !important;
-    max-height: 95px !important;
+    // min-height: 95px !important;
+    // max-height: 95px !important;
+    .ant-upload-btn {
+      display: block;
+      padding: 0;
+    }
   }
   .ant-upload-drag-container {
     display: block;
   }
   .ant-upload-list-text {
     position: absolute;
-    left: 85%;
-    top: 0;
-    width: 300%;
+    left: 100px;
+    top: -4px;
+    width: 65%;
     z-index: 9999;
     overflow: auto;
     max-height: 95px !important;

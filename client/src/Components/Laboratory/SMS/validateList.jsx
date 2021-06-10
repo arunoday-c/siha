@@ -94,6 +94,11 @@ export default memo(function ValidateList(props) {
             displayTemplate: (row) => <CheckCol row={row} />,
           },
           {
+            fieldName: "primary_id_no",
+            label: <AlgaehLabel label={{ fieldName: "primary_id_no" }} />,
+            filterable: true,
+          },
+          {
             fieldName: "patient_code",
             label: <AlgaehLabel label={{ fieldName: "patient_code" }} />,
             filterable: true,
@@ -128,15 +133,6 @@ export default memo(function ValidateList(props) {
             displayTemplate: (row) => {
               return row.critical_status === "Y" ? "YES" : "NO";
             },
-          },
-
-          {
-            fieldName: "validated_by",
-            label: <AlgaehLabel label={{ forceLabel: "Validated By" }} />,
-          },
-          {
-            fieldName: "validated_date",
-            label: <AlgaehLabel label={{ forceLabel: "Validated Date" }} />,
           },
         ]}
         pagination={false}

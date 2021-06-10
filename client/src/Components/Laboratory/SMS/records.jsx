@@ -19,6 +19,8 @@ export default memo(function Record(props) {
           years,
           gender,
           short_url,
+          visit_id,
+          patient_id,
         } = item;
         return {
           hims_f_lab_order_id,
@@ -30,6 +32,8 @@ export default memo(function Record(props) {
           years,
           gender,
           short_url,
+          visit_id,
+          patient_id,
         };
       });
     try {
