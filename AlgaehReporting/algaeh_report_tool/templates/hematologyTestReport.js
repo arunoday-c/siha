@@ -46,7 +46,7 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_d_investigation_test IT on IT.services_id= LO.service_id
           inner join hims_d_test_category TC on TC.hims_d_test_category_id= IT.category_id
           inner join hims_m_lab_analyte LM on LM.analyte_id = LA.hims_d_lab_analytes_id and LM.test_id = LO.test_id
-          where LO.visit_id = ? and LO.hims_f_lab_order_id=? group by LA.hims_d_lab_analytes_id order by hims_f_ord_analytes_id;
+          where LM.includeInReport='Y' and LO.visit_id = ? and LO.hims_f_lab_order_id=? group by LA.hims_d_lab_analytes_id order by hims_f_ord_analytes_id;
           `,
           values: [
             input.hims_d_patient_id,
