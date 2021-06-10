@@ -412,7 +412,7 @@ export default function insuranceDetails({
                           )}
                         />
 
-                        {/* <Controller
+                        <Controller
                           control={control}
                           name="primary_effective_start_date"
                           rules={{
@@ -434,6 +434,7 @@ export default function insuranceDetails({
                                 name: "primary_effective_start_date",
                                 value: value || undefined,
                               }}
+                              type="range"
                               others={{ disabled }}
                               events={{
                                 onChange: (mdate) => {
@@ -451,7 +452,7 @@ export default function insuranceDetails({
                           )}
                         />
 
-                        <Controller
+                        {/*  <Controller
                           control={control}
                           name="primary_effective_end_date"
                           rules={{

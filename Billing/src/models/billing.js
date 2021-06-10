@@ -3821,7 +3821,7 @@ export default {
       const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
-          query: `select hims_f_billing_header_id, bill_number, bill_date, sub_total_amount from \
+          query: `select hims_f_billing_header_id, bill_number, bill_date, company_payable, sub_total_amount from \
           hims_f_billing_header where adjusted = 'N' and cancelled='N' and visit_id =? `,
           values: [req.query.visit_id],
         })

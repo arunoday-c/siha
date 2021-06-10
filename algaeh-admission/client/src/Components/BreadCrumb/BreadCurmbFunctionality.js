@@ -1,6 +1,6 @@
 /*jslint evil: true */
 // import AlgaehSearch from "../../Wrapper/globalSearch";
-
+import { AlgaehSearch } from "algaeh-react-components";
 const SearchDetails = ($this, e) => {
   let columnNames = [];
 
@@ -15,25 +15,25 @@ const SearchDetails = ($this, e) => {
     );
   }
 
-  // AlgaehSearch({
-  //   searchGrid: {
-  //     columns: columnNames,
-  //   },
-  //   searchName: $this.props.soptlightSearch.searchName,
-  //   uri: "/gloabelSearch/get",
-  //   onContainsChange: (text, serchBy, callBack) => {
-  //     callBack(text);
-  //   },
-  //   onRowSelect: (row) => {
-  //     const selectValue = $this.props.soptlightSearch.selectValue;
+  AlgaehSearch({
+    searchGrid: {
+      columns: columnNames,
+    },
+    searchName: $this.props.soptlightSearch.searchName,
+    uri: "/gloabelSearch/get",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: (row) => {
+      const selectValue = $this.props.soptlightSearch.selectValue;
 
-  //     $this.setState({ value: row[selectValue] }, () => {
-  //       if ($this.props.soptlightSearch.events !== undefined) {
-  //         $this.props.soptlightSearch.events.onChange(row[selectValue], row);
-  //       }
-  //     });
-  //   },
-  // });
+      $this.setState({ value: row[selectValue] }, () => {
+        if ($this.props.soptlightSearch.events !== undefined) {
+          $this.props.soptlightSearch.events.onChange(row[selectValue], row);
+        }
+      });
+    },
+  });
 };
 
 const EditDetails = ($this, e) => {

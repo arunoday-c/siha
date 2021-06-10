@@ -13,8 +13,10 @@ const { TabPane } = Tabs;
 //   return res?.data?.records;
 // };
 
-export default function bedDetails(props: any) {
-  const [bed_details, setBedDetails] = useState({});
+export default function BedDetails(props: any) {
+  const [bed_details, setBedDetails] = useState({
+    patient_name: undefined,
+  });
   const [visible, setVisible] = useState(false);
 
   const onClose = () => {

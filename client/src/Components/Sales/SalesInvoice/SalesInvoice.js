@@ -547,6 +547,10 @@ class SalesInvoice extends Component {
                                       <td>ACCOUNT NUMBER</td>
                                       <td>{this.state.bank_account_no}</td>
                                     </tr>
+                                    <tr>
+                                      <td>IBAN NUMBER</td>
+                                      <td>{this.state.cIban_number}</td>
+                                    </tr>
                                   </tbody>
                                 </table>
                               </div>

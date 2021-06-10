@@ -27,7 +27,7 @@ class VendorSetup extends Component {
       vat_applicable: false,
       btn_txt: "ADD",
       vendor_status: "A",
-      aiban_number: "",
+      iban_number: "",
     };
     this.getAllVendors();
     this.getCountries();
@@ -133,7 +133,7 @@ class VendorSetup extends Component {
           vendor_status: this.state.vendor_status,
           bank_account_no: this.state.bank_account_no,
           vat_number: this.state.vat_number,
-          aiban_number: this.state.aiban_number,
+          iban_number: this.state.iban_number,
         };
 
         algaehApiCall({
@@ -195,7 +195,7 @@ class VendorSetup extends Component {
 
   changeTexts(e) {
     const re = /[0-9\b]+$/;
-    debugger;
+
     if (e.target.name === "bank_account_no") {
       if (e.target.value === "" || re.test(e.target.value)) {
         this.setState({
@@ -652,14 +652,14 @@ class VendorSetup extends Component {
                   />
                   <div className="col no-padding-left-right mandatory cardMaskFld">
                     <AlgaehLabel
-                      label={{ fieldName: "AIBAN NO.", isImp: false }}
+                      label={{ fieldName: "IBAN NO.", isImp: false }}
                     />
                     <MaskedInput
                       mask={"AA11111111"}
                       className="txt-fld"
                       placeholder={"eg: AA11111111"}
-                      name="aiban_number"
-                      value={this.state.aiban_number}
+                      name="iban_number"
+                      value={this.state.iban_number}
                       guide={true}
                       id="my-input-id"
                       onBlur={() => {}}

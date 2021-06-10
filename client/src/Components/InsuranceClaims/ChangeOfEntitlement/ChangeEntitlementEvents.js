@@ -77,5 +77,5 @@ export const generateBills = async (PatientData) => {
     data: PatientData,
     method: "POST",
   });
-  return result.data?.records;
+  return result.data?.success ? result.data?.records : result.data;
 };

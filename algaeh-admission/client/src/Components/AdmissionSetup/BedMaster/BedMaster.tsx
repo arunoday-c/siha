@@ -444,7 +444,7 @@ export default function BedStatus(Props: any) {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: Props.globalVariables.FORMAT_STATUS,
+                    data: Props.getGlobalVariables("FORMAT_STATUS"),
                   },
                   // others: {
                   //   disabled:

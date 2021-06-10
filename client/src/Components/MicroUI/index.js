@@ -23,14 +23,22 @@ const MicroFrontend = ({ history, host, path }) => {
     const devLocalhostId = _cnf?.client;
     hostUrl = `http://localhost:${devLocalhostId}/`;
   }
-
+  function getMainContext(type = undefined) {
+    if (type) return mainCtx;
+    else return mainCtx[type];
+  }
+  function getGlobalVariables(type = undefined) {
+    if (type) return globalVariables;
+    else return globalVariables[type];
+  }
   useEffect(() => {
     loadMicroFrontend(hostUrl, () => {
       window[`mount_${appId}`]({
         elementId,
         path,
-        mainContext: mainCtx,
-        globalVariables,
+        // mainContext: mainCtx,
+        getGlobalVariables: getGlobalVariables,
+        getMainContext: getMainContext,
       });
     });
 

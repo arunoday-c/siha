@@ -7,14 +7,16 @@ const APP_ID = "Admission";
 window[`mount_${APP_ID}`] = ({
   elementId,
   path,
-  mainContext,
-  globalVariables,
+  // mainContext,
+  getGlobalVariables,
+  getMainContext,
 }: any) => {
   ReactDOM.render(
     <Router
       path={path}
-      mainContext={mainContext}
-      globalVariables={globalVariables}
+      // mainContext={mainContext}
+      getGlobalVariables={getGlobalVariables}
+      getMainContext={getMainContext}
     />,
     document.getElementById(elementId)
   );

@@ -485,6 +485,10 @@ class ReceiptEntry extends Component {
                                   <td>ACCOUNT NUMBER</td>
                                   <td>{this.state.bank_account_no}</td>
                                 </tr>
+                                <tr>
+                                  <td>IBAN Number</td>
+                                  <td>{this.state.iban_number}</td>
+                                </tr>
                               </tbody>
                             </table>
                           </div>

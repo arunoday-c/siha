@@ -26,14 +26,18 @@ const Routing = [
 ];
 interface interRouter {
   path: string;
-  mainContext: any;
-  globalVariables: any;
+  // mainContext: any;
+  getGlobalVariables: Function;
+  // globalVariables: any;
   // algaehApiCall: Function;
+  // appContext: any;
+  getMainContext: Function;
 }
 export default function Router({
   path,
-  mainContext,
-  globalVariables,
+  // mainContext,
+  getGlobalVariables,
+  getMainContext,
 }: interRouter) {
   const [Component, setComponent] = useState<React.ReactElement>(<></>);
   useEffect(() => {
@@ -41,8 +45,11 @@ export default function Router({
     if (filter) {
       setComponent(
         filter.component({
-          mainContext,
-          globalVariables,
+          getGlobalVariables,
+          getMainContext,
+          // mainContext,
+          // globalVariables,
+          // appContext,
         })
       );
     } else {

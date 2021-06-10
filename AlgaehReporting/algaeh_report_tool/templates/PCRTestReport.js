@@ -1,6 +1,7 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 
 const executePDF = function executePDFMethod(options) {
+  console.log("options====>", options.shortenURL);
   return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
@@ -59,12 +60,15 @@ const executePDF = function executePDFMethod(options) {
           O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,
           O.email,O.website,O.phone1,O.fax from hims_d_hospital H,hims_d_organization O 
           where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id= (select hospital_id from hims_f_lab_order LOH where LOH.hims_f_lab_order_id=?);
+          update hims_f_lab_order set short_url=? where hims_f_lab_order_id=?;
           `,
           values: [
             input.hims_d_patient_id,
             input.visit_id,
             input.visit_id,
             input.hims_f_lab_order_id,
+            input.hims_f_lab_order_id,
+            options.shortenURL,
             input.hims_f_lab_order_id,
           ],
           printQuery: true,
@@ -76,7 +80,7 @@ const executePDF = function executePDFMethod(options) {
             ..._.head(res[1]),
             ..._.head(res[2]),
           };
-          console.log("header---", header);
+
           const result = res[1];
 
           if (result.length > 0) {

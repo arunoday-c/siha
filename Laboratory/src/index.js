@@ -4,22 +4,24 @@ import bodyParser from "body-parser";
 import express from "express";
 import keys from "algaeh-keys";
 import utliites from "algaeh-utilities";
-import routes from "./routes";
+
 import compression from "compression";
 // import { userSecurity } from "algaeh-utilities/checksecurity";
 import { authentication } from "algaeh-utilities/authentication";
+const _port = process.env.PORT;
+process.env.MYSQL_KEYS = JSON.stringify(keys.default.mysqlDb);
+process.env.rabbitMQ = JSON.stringify(keys.default.rabbitMQ);
+import routes from "./routes";
 const app = express();
 app.server = http.createServer(app);
 app.use(cors());
-const _port = process.env.PORT;
+
 app.use(
   bodyParser.json({
     limit: keys.bodyLimit,
   })
 );
 app.use(compression());
-
-process.env.MYSQL_KEYS = JSON.stringify(keys.default.mysqlDb);
 
 app.use((req, res, next) => {
   // const integration = req.url.includes("lisIntegration") ? true:false;
