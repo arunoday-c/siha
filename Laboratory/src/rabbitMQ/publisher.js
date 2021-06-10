@@ -19,5 +19,5 @@ const publisher = async (queueName, data) => {
     // console.error("Error Publisher===>", e);
   }
 };
-
+console.log("<======SMS is activated=====>");
 export default publisher;
