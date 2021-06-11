@@ -29,6 +29,8 @@ import { AdvanceModal } from "./AdvanceRefundModal";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import axios from "axios";
 import sockets from "../../sockets";
+import swal from "sweetalert2";
+
 // import _ from "lodash";
 export const getPatient = async (key, { patient_code }) => {
   const result = await newAlgaehApi({
@@ -567,7 +569,7 @@ export function PatientRegistration() {
     data.age = data.age;
     data.doctor_id = data.ins_doctor_id;
     data.visit_code = data.visit_code;
-    data.visit_date = moment(data.visit_date).format("YYYY-MM-DD hh:mm:ss");
+    // data.visit_date = data.visit_date).format("YYYY-MM-DD hh:mm:ss");
     try {
       axios
         .post(`${PORTAL_HOST}/info/patientRegistration`, data)
@@ -635,111 +637,141 @@ export function PatientRegistration() {
     }
 
     if (!patient_code) {
-      save({
-        ...input,
-        ...billInfo,
-        ...billData,
-        age: moment().diff(moment(input?.date_of_birth), "year"),
-        department_id: parseInt(department_id, 10),
-        sub_department_id: parseInt(sub_department_id, 10),
-        services_id: parseInt(services_id, 10),
-        service_type_id: parseInt(service_type_id, 10),
-        doctor_id: parseInt(doctor_id, 10),
-        department_type: parseInt(department_type, 10),
-        consultation: consultationInfo?.consultation,
-        insured: input?.primary_insurance_provider_id ? "Y" : "N",
-        creidt_limit_req:
-          insuranceInfo === undefined ? null : insuranceInfo.creidt_limit_req,
-        maternity_patient: "N",
-        is_mlc: "N",
-        existing_plan: "N",
-        incharge_or_provider: parseInt(doctor_id, 10),
-        receiptdetails,
-      }).then(async (data) => {
-        await uploadAfterSubmit({ ...data, ...input });
-        if (userToken?.portal_exists === "Y") {
-          insertPatientPortal({ ...data, ...input });
-        }
-        if (sockets.connected) {
-          sockets.emit("patient_checked", {
-            ...data,
-            provider_id: doctor_id,
-            visit_date: new Date(),
-            full_name: input?.full_name,
+      swal({
+        title: "Are you sure you want to Save?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        confirmButtonColor: "#44b8bd",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "No",
+      }).then((willSave) => {
+        if (willSave.value) {
+          save({
+            ...input,
+            ...billInfo,
+            ...billData,
+            age: moment().diff(moment(input?.date_of_birth), "year"),
+            department_id: parseInt(department_id, 10),
+            sub_department_id: parseInt(sub_department_id, 10),
+            services_id: parseInt(services_id, 10),
+            service_type_id: parseInt(service_type_id, 10),
+            doctor_id: parseInt(doctor_id, 10),
+            department_type: parseInt(department_type, 10),
+            consultation: consultationInfo?.consultation,
+            insured: input?.primary_insurance_provider_id ? "Y" : "N",
+            creidt_limit_req:
+              insuranceInfo === undefined
+                ? null
+                : insuranceInfo.creidt_limit_req,
+            maternity_patient: "N",
+            is_mlc: "N",
+            existing_plan: "N",
+            incharge_or_provider: parseInt(doctor_id, 10),
+            receiptdetails,
+          }).then(async (data) => {
+            await uploadAfterSubmit({ ...data, ...input });
+            if (userToken?.portal_exists === "Y") {
+              insertPatientPortal({ ...data, ...input });
+            }
+            if (sockets.connected) {
+              sockets.emit("patient_checked", {
+                ...data,
+                provider_id: doctor_id,
+                visit_date: new Date(),
+                full_name: input?.full_name,
+              });
+            }
           });
         }
       });
     } else {
-      const {
-        advance_adjust,
-        sheet_discount_percentage,
-        sheet_discount_amount,
-        credit_amount,
-        cash_amount,
-        card_amount,
-        card_number,
-        card_date,
-      } = input;
-      inputData = {
-        patient_code,
-        visit_type: input?.visit_type,
-        shift_id: input?.shift_id,
-        hims_d_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
-        hims_f_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
-        patient_id: patientData?.patientRegistration?.hims_d_patient_id,
-        data_of_birth: patientData?.patientRegistration?.date_of_birth,
-        date_of_birth: patientData?.patientRegistration?.date_of_birth,
-        primary_insurance_provider_id: input?.primary_insurance_provider_id,
-        primary_sub_id: input?.primary_sub_id,
-        primary_network_id: input?.primary_network_id,
-        primary_network_office_id: input?.primary_network_office_id,
-        primary_policy_num: input?.primary_policy_num,
-        primary_card_number: input?.primary_card_number,
-        primary_effective_start_date: input?.primary_effective_start_date,
-        primary_effective_end_date: input?.primary_effective_end_date,
-        insured: input?.primary_insurance_provider_id ? "Y" : "N",
-        creidt_limit_req:
-          insuranceInfo === undefined ? null : insuranceInfo.creidt_limit_req,
-        advance_adjust,
-        sheet_discount_percentage,
-        sheet_discount_amount,
-        credit_amount,
-        cash_amount,
-        card_amount,
-        card_number,
-        card_date,
-        from_package,
-        package_details,
-      };
-      update({
-        ...inputData,
-        ...billInfo,
-        ...billData,
-        advance_amount: patientData?.patientRegistration?.advance_amount,
-        department_id: parseInt(department_id, 10),
-        sub_department_id: parseInt(sub_department_id, 10),
-        services_id: parseInt(services_id, 10),
-        service_type_id: parseInt(service_type_id, 10),
-        doctor_id: parseInt(doctor_id, 10),
-        department_type: parseInt(department_type, 10),
-        consultation: consultationInfo?.consultation,
-        maternity_patient: "N",
-        is_mlc: "N",
-        existing_plan: "N",
-        incharge_or_provider: parseInt(doctor_id, 10),
-        receiptdetails,
-      }).then(async (data) => {
-        // console.log("In update", data);
-        await uploadAfterSubmit({ ...data, ...input });
-        if (userToken?.portal_exists === "Y") {
-          insertPatientPortal({ ...data, ...input });
-        }
-        if (sockets.connected) {
-          sockets.emit("patient_checked", {
-            ...data,
-            provider_id: doctor_id,
-            visit_date: new Date(),
-            full_name: input?.full_name,
+      swal({
+        title: "Are you sure you want to Save?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        confirmButtonColor: "#44b8bd",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "No",
+      }).then((willSave) => {
+        if (willSave.value) {
+          const {
+            advance_adjust,
+            sheet_discount_percentage,
+            sheet_discount_amount,
+            credit_amount,
+            cash_amount,
+            card_amount,
+            card_number,
+            card_date,
+          } = input;
+          inputData = {
+            patient_code,
+            visit_type: input?.visit_type,
+            shift_id: input?.shift_id,
+            hims_d_patient_id:
+              patientData?.patientRegistration?.hims_d_patient_id,
+            hims_f_patient_id:
+              patientData?.patientRegistration?.hims_d_patient_id,
+            patient_id: patientData?.patientRegistration?.hims_d_patient_id,
+            data_of_birth: patientData?.patientRegistration?.date_of_birth,
+            date_of_birth: patientData?.patientRegistration?.date_of_birth,
+            primary_insurance_provider_id: input?.primary_insurance_provider_id,
+            primary_sub_id: input?.primary_sub_id,
+            primary_network_id: input?.primary_network_id,
+            primary_network_office_id: input?.primary_network_office_id,
+            primary_policy_num: input?.primary_policy_num,
+            primary_card_number: input?.primary_card_number,
+            primary_effective_start_date: input?.primary_effective_start_date,
+            primary_effective_end_date: input?.primary_effective_end_date,
+            insured: input?.primary_insurance_provider_id ? "Y" : "N",
+            creidt_limit_req:
+              insuranceInfo === undefined
+                ? null
+                : insuranceInfo.creidt_limit_req,
+            advance_adjust,
+            sheet_discount_percentage,
+            sheet_discount_amount,
+            credit_amount,
+            cash_amount,
+            card_amount,
+            card_number,
+            card_date,
+            from_package,
+            package_details,
+          };
+          update({
+            ...inputData,
+            ...billInfo,
+            ...billData,
+            advance_amount: patientData?.patientRegistration?.advance_amount,
+            department_id: parseInt(department_id, 10),
+            sub_department_id: parseInt(sub_department_id, 10),
+            services_id: parseInt(services_id, 10),
+            service_type_id: parseInt(service_type_id, 10),
+            doctor_id: parseInt(doctor_id, 10),
+            department_type: parseInt(department_type, 10),
+            consultation: consultationInfo?.consultation,
+            maternity_patient: "N",
+            is_mlc: "N",
+            existing_plan: "N",
+            incharge_or_provider: parseInt(doctor_id, 10),
+            receiptdetails,
+          }).then(async (data) => {
+            // console.log("In update", data);
+            await uploadAfterSubmit({ ...data, ...input });
+            if (userToken?.portal_exists === "Y") {
+              insertPatientPortal({ ...data, ...input });
+            }
+            if (sockets.connected) {
+              sockets.emit("patient_checked", {
+                ...data,
+                provider_id: doctor_id,
+                visit_date: new Date(),
+                full_name: input?.full_name,
+              });
+            }
           });
         }
       });

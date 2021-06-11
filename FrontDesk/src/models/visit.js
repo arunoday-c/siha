@@ -475,7 +475,7 @@ export default {
               // } else {
               //   next();
               // }
-              console.log("input.age_in_years", input.age_in_years);
+
               let result = {
                 patient_code: input.patient_code,
                 receipt_number: input.receipt_number,
@@ -488,10 +488,11 @@ export default {
                 visit_code: input.visit_code,
                 ins_doctor_id: input.doctor_id,
                 hospital_id: req.userIdentity.hospital_id,
-                visit_date: new Date(),
+                visit_date: moment().format("YYYY-MM-DD HH:mm:ss"),
                 doctor_name: input.doctor_name,
                 department: input.sub_department_name,
               };
+
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = result;

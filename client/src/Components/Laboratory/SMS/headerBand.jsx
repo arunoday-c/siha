@@ -56,7 +56,7 @@ export default memo(function HeaderBand(props) {
         <AlgaehDateHandler
           div={{ className: "col-4" }}
           label={{
-            fieldName: "from_date",
+            forceLabel: "Ordered Date",
           }}
           textBox={{ className: "txt-fld", name: "from_date", value: date }}
           type="range"
@@ -87,27 +87,26 @@ export default memo(function HeaderBand(props) {
               textField: "text",
               valueField: "value",
               data: [
-                { text: "Current Validated", value: "V" },
-                { text: "Sent", value: "S" },
-                { text: "Unsent", value: "US" },
+                { text: "Validated Result", value: "V" },
+                { text: "Already Sent", value: "S" },
+                // { text: "Unsent", value: "US" },
               ],
             },
           }}
         />
-        <button
-          className="btn btn-primary btn-small"
-          style={{ marginTop: 21 }}
-          onClick={onLoadContext}
-        >
-          load
-        </button>
-        &nbsp;
         <button
           className="btn btn-default btn-small"
           style={{ marginTop: 21 }}
           onClick={onClearContext}
         >
           clear
+        </button>{" "}
+        <button
+          className="btn btn-primary btn-small"
+          style={{ marginTop: 21, marginLeft: 5 }}
+          onClick={onLoadContext}
+        >
+          load
         </button>
       </div>
     </div>

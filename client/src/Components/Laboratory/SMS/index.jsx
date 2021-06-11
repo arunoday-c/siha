@@ -22,7 +22,6 @@ export default memo(function ValidateList(props) {
   return (
     <LabContext.Provider value={{ ...state, ...dispatches }}>
       <HeaderBand {...props} />
-
       <DataList {...props} />
     </LabContext.Provider>
   );

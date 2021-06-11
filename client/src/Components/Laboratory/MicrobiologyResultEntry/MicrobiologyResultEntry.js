@@ -732,16 +732,23 @@ class MicrobiologyResultEntry extends Component {
           </div>
 
           <div className="popupFooter">
-            <div className="col-lg-12">
+            <div className="col-6 leftBtnGroup">
+              {" "}
               <AlgaehSecurityComponent componentCode="PRI_LAB_RES">
                 <button
                   className="btn btn-primary"
                   onClick={generateLabResultReport.bind(this, this.state)}
-                  disabled={this.state.status === "V" &&this.state.credit_order === "N" ? false : true}
+                  disabled={
+                    this.state.status === "V" && this.state.credit_order === "N"
+                      ? false
+                      : true
+                  }
                 >
                   Print
                 </button>
               </AlgaehSecurityComponent>
+            </div>
+            <div className="col-6">
               <AlgaehSecurityComponent componentCode="VAL_LAB_RES">
                 <button
                   type="button"

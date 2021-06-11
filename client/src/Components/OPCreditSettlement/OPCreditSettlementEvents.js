@@ -6,6 +6,7 @@ import FrontDesk from "../../Search/FrontDesk.json";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 import axios from "axios";
+import swal from "sweetalert2";
 
 const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 
@@ -130,6 +131,33 @@ const Validations = ($this) => {
     });
 
     return isError;
+  } else if ($this.state.Cashchecked === true) {
+    if (
+      $this.state.cash_amount === undefined ||
+      $this.state.cash_amount === 0
+    ) {
+      isError = true;
+
+      swalMessage({
+        type: "warning",
+        title: "Cash cannot be blank or zero.",
+      });
+
+      document.querySelector("[name='card_check_number']").focus();
+      return isError;
+    }
+  } else if ($this.state.Cardchecked === true) {
+    if ($this.state.card_amount === null || $this.state.card_amount === 0) {
+      isError = true;
+
+      swalMessage({
+        type: "warning",
+        title: "Check Number cannot be blank.",
+      });
+
+      document.querySelector("[name='cheque_number']").focus();
+      return isError;
+    }
   } else if ($this.state.shift_id === null) {
     isError = true;
     swalMessage({
@@ -295,79 +323,97 @@ const SaveOPCreidt = ($this) => {
   const err = Validations($this);
   if (!err) {
     if ($this.state.unbalanced_amount === 0) {
-      GenerateReciept($this, (that) => {
-        let Inputobj = $this.state;
+      swal({
+        title: "Are you sure you want to Save?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        confirmButtonColor: "#44b8bd",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "No",
+      }).then((willSave) => {
+        if (willSave.value) {
+          GenerateReciept($this, (that) => {
+            let Inputobj = $this.state;
 
-        let listOfinclude = Enumerable.from(Inputobj.criedtdetails)
-          .where((w) => w.include === "Y")
-          .toArray();
+            let listOfinclude = Enumerable.from(Inputobj.criedtdetails)
+              .where((w) => w.include === "Y")
+              .toArray();
 
-        Inputobj.criedtdetails = listOfinclude;
-        Inputobj.ScreenCode = "BL0004";
-        AlgaehLoader({ show: true });
-        let service_id = [];
-        for (let i = 0; i < listOfinclude.length; i++) {
-          if (parseFloat(listOfinclude[i].balance_amount) === 0) {
-            listOfinclude[i].service_data.map((o) => {
-              service_id.push(o.services_id);
-              return o.services_id;
-            });
-          }
-        }
-
-        algaehApiCall({
-          uri: "/opCreditSettlement/addCreidtSettlement",
-          module: "billing",
-          data: Inputobj,
-          method: "POST",
-          onSuccess: (response) => {
-            AlgaehLoader({ show: false });
-            if (response.data.success) {
-              $this.setState({
-                credit_number: response.data.records.credit_number,
-                receipt_number: response.data.records.receipt_number,
-                hims_f_credit_header_id:
-                  response.data.records.hims_f_credit_header_id,
-                saveEnable: true,
-                Billexists: true,
-              });
-              swalMessage({
-                title: "Done Successfully",
-                type: "success",
-              });
-              if ($this.state.portal_exists === "Y" && service_id.length > 0) {
-                const portal_data = {
-                  service_id: service_id,
-                  visit_code: listOfinclude[0].visit_code,
-                  patient_identity: listOfinclude[0].primary_id_no,
-                  report_download: "Y",
-                };
-                axios
-                  .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-                  .then(function (response) {
-                    //handle success
-                    console.log(response);
-                  })
-                  .catch(function (response) {
-                    //handle error
-                    console.log(response);
-                  });
+            Inputobj.criedtdetails = listOfinclude;
+            Inputobj.ScreenCode = "BL0004";
+            AlgaehLoader({ show: true });
+            let service_id = [];
+            for (let i = 0; i < listOfinclude.length; i++) {
+              if (parseFloat(listOfinclude[i].balance_amount) === 0) {
+                listOfinclude[i].service_data.map((o) => {
+                  service_id.push(o.services_id);
+                  return o.services_id;
+                });
               }
-            } else {
-              swalMessage({
-                title: response.data.records.message,
-                type: "error",
-              });
             }
-          },
-          onFailure: (error) => {
-            AlgaehLoader({ show: false });
-            swalMessage({
-              title: error.message || error.response.data.message,
-              type: "error",
+
+            algaehApiCall({
+              uri: "/opCreditSettlement/addCreidtSettlement",
+              module: "billing",
+              data: Inputobj,
+              method: "POST",
+              onSuccess: (response) => {
+                AlgaehLoader({ show: false });
+                if (response.data.success) {
+                  $this.setState({
+                    credit_number: response.data.records.credit_number,
+                    receipt_number: response.data.records.receipt_number,
+                    hims_f_credit_header_id:
+                      response.data.records.hims_f_credit_header_id,
+                    saveEnable: true,
+                    Billexists: true,
+                  });
+                  swalMessage({
+                    title: "Done Successfully",
+                    type: "success",
+                  });
+                  if (
+                    $this.state.portal_exists === "Y" &&
+                    service_id.length > 0
+                  ) {
+                    const portal_data = {
+                      service_id: service_id,
+                      visit_code: listOfinclude[0].visit_code,
+                      patient_identity: listOfinclude[0].primary_id_no,
+                      report_download: "Y",
+                    };
+                    axios
+                      .post(
+                        `${PORTAL_HOST}/info/deletePatientService`,
+                        portal_data
+                      )
+                      .then(function (response) {
+                        //handle success
+                        console.log(response);
+                      })
+                      .catch(function (response) {
+                        //handle error
+                        console.log(response);
+                      });
+                  }
+                } else {
+                  swalMessage({
+                    title: response.data.records.message,
+                    type: "error",
+                  });
+                }
+              },
+              onFailure: (error) => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: error.message || error.response.data.message,
+                  type: "error",
+                });
+              },
             });
-          },
-        });
+          });
+        }
       });
     } else {
       swalMessage({

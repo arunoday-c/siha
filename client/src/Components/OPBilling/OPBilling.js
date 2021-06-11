@@ -44,6 +44,8 @@ import {
 } from "algaeh-react-components";
 import sockets from "../../sockets";
 import axios from "axios";
+import swal from "sweetalert2";
+
 const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 class OPBilling extends Component {
   constructor(props) {
@@ -413,140 +415,152 @@ class OPBilling extends Component {
     const err = Validations(this);
     if (!err) {
       if (this.state.unbalanced_amount === 0) {
-        this.GenerateReciept(($this) => {
-          let Inputobj = $this.state;
-          if (Inputobj.insurance_yesno === "Y") {
-            if (Inputobj.creidt_limit_req === "Y") {
-              const creidt_amount_till =
-                parseFloat(Inputobj.creidt_amount_till) +
-                parseFloat(Inputobj.company_payable);
-              if (
-                parseFloat(creidt_amount_till) >
-                parseFloat(Inputobj.creidt_limit)
-              ) {
-                successfulMessage({
-                  message:
-                    "You have reached your credit limit. Please collect payment and proceed.",
-                  title: "Error",
-                  icon: "error",
-                });
-                return;
+        swal({
+          title: "Are you sure you want to Save?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes",
+          confirmButtonColor: "#44b8bd",
+          cancelButtonColor: "#d33",
+          cancelButtonText: "No",
+        }).then((willSave) => {
+          if (willSave.value) {
+            this.GenerateReciept(($this) => {
+              let Inputobj = $this.state;
+              if (Inputobj.insurance_yesno === "Y") {
+                if (Inputobj.creidt_limit_req === "Y") {
+                  const creidt_amount_till =
+                    parseFloat(Inputobj.creidt_amount_till) +
+                    parseFloat(Inputobj.company_payable);
+                  if (
+                    parseFloat(creidt_amount_till) >
+                    parseFloat(Inputobj.creidt_limit)
+                  ) {
+                    successfulMessage({
+                      message:
+                        "You have reached your credit limit. Please collect payment and proceed.",
+                      title: "Error",
+                      icon: "error",
+                    });
+                    return;
+                  }
+                }
               }
-            }
-          }
 
-          Inputobj.patient_payable = $this.state.patient_payable_h;
-          Inputobj.company_payable = $this.state.company_payble;
-          Inputobj.insurance_yesno = $this.state.insured;
-          Inputobj.primary_sub_id = $this.state.sub_insurance_provider_id;
-          Inputobj.ScreenCode = "BL0001";
+              Inputobj.patient_payable = $this.state.patient_payable_h;
+              Inputobj.company_payable = $this.state.company_payble;
+              Inputobj.insurance_yesno = $this.state.insured;
+              Inputobj.primary_sub_id = $this.state.sub_insurance_provider_id;
+              Inputobj.ScreenCode = "BL0001";
 
-          const package_exists = Inputobj.billdetails.filter(
-            (f) => f.service_type_id === 14
-          );
+              const package_exists = Inputobj.billdetails.filter(
+                (f) => f.service_type_id === 14
+              );
 
-          // debugger;
-          let portal_data = {};
-          if (Inputobj.portal_exists === "Y") {
-            portal_data = Inputobj.billdetails.map((m) => {
-              return {
-                service_id: m.services_id,
-                service_name: m.service_name,
-                service_category: m.service_type,
-                visit_code: Inputobj.visit_code,
-                patient_identity: Inputobj.primary_id_no,
-                pay_type: m.insurance_yesno === "Y" ? "INSURANCE" : "CASH",
-                service_amount: m.patient_resp,
-                service_vat: m.patient_tax,
-                hospital_id: Inputobj.hospital_id,
-                report_download:
-                  parseFloat(Inputobj.credit_amount) > 0 ? "N" : "Y",
-              };
-            });
-          }
-          Inputobj.package_exists = package_exists;
-          AlgaehLoader({ show: true });
-          algaehApiCall({
-            uri: "/opBilling/addOpBIlling",
-            module: "billing",
-            data: Inputobj,
-            method: "POST",
-            onSuccess: (response) => {
-              if (response.data.success) {
-                AlgaehLoader({ show: false });
-                $this.setState({
-                  bill_number: response.data.records.bill_number,
-                  receipt_number: response.data.records.receipt_number,
-                  hims_f_billing_header_id:
-                    response.data.records.hims_f_billing_header_id,
-                  saveEnable: true,
+              // debugger;
+              let portal_data = {};
+              if (Inputobj.portal_exists === "Y") {
+                portal_data = Inputobj.billdetails.map((m) => {
+                  return {
+                    service_id: m.services_id,
+                    service_name: m.service_name,
+                    service_category: m.service_type,
+                    visit_code: Inputobj.visit_code,
+                    patient_identity: Inputobj.primary_id_no,
+                    pay_type: m.insurance_yesno === "Y" ? "INSURANCE" : "CASH",
+                    service_amount: m.patient_resp,
+                    service_vat: m.patient_tax,
+                    hospital_id: Inputobj.hospital_id,
+                    report_download:
+                      parseFloat(Inputobj.credit_amount) > 0 ? "N" : "Y",
+                  };
                 });
+              }
+              Inputobj.package_exists = package_exists;
+              AlgaehLoader({ show: true });
+              algaehApiCall({
+                uri: "/opBilling/addOpBIlling",
+                module: "billing",
+                data: Inputobj,
+                method: "POST",
+                onSuccess: (response) => {
+                  if (response.data.success) {
+                    AlgaehLoader({ show: false });
+                    $this.setState({
+                      bill_number: response.data.records.bill_number,
+                      receipt_number: response.data.records.receipt_number,
+                      hims_f_billing_header_id:
+                        response.data.records.hims_f_billing_header_id,
+                      saveEnable: true,
+                    });
 
-                if (Inputobj.portal_exists === "Y") {
-                  const package_data = response.data.records.package_data;
-                  for (let i = 0; i < package_data.length; i++) {
-                    portal_data.push({
-                      service_id: package_data[i].service_id,
-                      service_name: package_data[i].service_name,
-                      service_category: package_data[i].service_type,
-                      visit_code: Inputobj.visit_code,
-                      patient_identity: Inputobj.primary_id_no,
-                      pay_type:
-                        package_data[i].insurance_yesno === "Y"
-                          ? "INSURANCE"
-                          : "CASH",
-                      service_amount: 0,
-                      service_vat: 0,
-                      hospital_id: Inputobj.hospital_id,
-                      report_download:
-                        parseFloat(Inputobj.credit_amount) > 0 ? "N" : "Y",
+                    if (Inputobj.portal_exists === "Y") {
+                      const package_data = response.data.records.package_data;
+                      for (let i = 0; i < package_data.length; i++) {
+                        portal_data.push({
+                          service_id: package_data[i].service_id,
+                          service_name: package_data[i].service_name,
+                          service_category: package_data[i].service_type,
+                          visit_code: Inputobj.visit_code,
+                          patient_identity: Inputobj.primary_id_no,
+                          pay_type:
+                            package_data[i].insurance_yesno === "Y"
+                              ? "INSURANCE"
+                              : "CASH",
+                          service_amount: 0,
+                          service_vat: 0,
+                          hospital_id: Inputobj.hospital_id,
+                          report_download:
+                            parseFloat(Inputobj.credit_amount) > 0 ? "N" : "Y",
+                        });
+                      }
+
+                      axios
+                        .post(`${PORTAL_HOST}/info/patientService`, portal_data)
+                        .then(function (response) {
+                          //handle success
+                          console.log(response);
+                        })
+                        .catch(function (response) {
+                          //handle error
+                          console.log(response);
+                        });
+                    }
+
+                    this.setState({
+                      addNewService: true,
+                      Billexists: true,
+                    });
+                    if (sockets.connected) {
+                      sockets.emit("opBill_add", {
+                        billdetails: Inputobj.billdetails,
+                        bill_date: Inputobj.bill_date,
+                      });
+                    }
+                    successfulMessage({
+                      message: "Done Successfully",
+                      title: "Success",
+                      icon: "success",
+                    });
+                  } else {
+                    AlgaehLoader({ show: false });
+                    swalMessage({
+                      type: "error",
+                      title: response.data.records.message,
                     });
                   }
-
-                  axios
-                    .post(`${PORTAL_HOST}/info/patientService`, portal_data)
-                    .then(function (response) {
-                      //handle success
-                      console.log(response);
-                    })
-                    .catch(function (response) {
-                      //handle error
-                      console.log(response);
-                    });
-                }
-
-                this.setState({
-                  addNewService: true,
-                  Billexists: true,
-                });
-                if (sockets.connected) {
-                  sockets.emit("opBill_add", {
-                    billdetails: Inputobj.billdetails,
-                    bill_date: Inputobj.bill_date,
+                },
+                onFailure: (error) => {
+                  AlgaehLoader({ show: false });
+                  successfulMessage({
+                    message: error.response.data.message || error.message,
+                    title: "Error",
+                    icon: "error",
                   });
-                }
-                successfulMessage({
-                  message: "Done Successfully",
-                  title: "Success",
-                  icon: "success",
-                });
-              } else {
-                AlgaehLoader({ show: false });
-                swalMessage({
-                  type: "error",
-                  title: response.data.records.message,
-                });
-              }
-            },
-            onFailure: (error) => {
-              AlgaehLoader({ show: false });
-              successfulMessage({
-                message: error.response.data.message || error.message,
-                title: "Error",
-                icon: "error",
+                },
               });
-            },
-          });
+            });
+          }
         });
       } else {
         successfulMessage({

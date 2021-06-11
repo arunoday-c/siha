@@ -313,7 +313,7 @@ class SubInsurance extends PureComponent {
                       {this.state.insurance_type === "C" &&
                       this.state.portal_exists === "Y" ? (
                         <AlagehFormGroup
-                          div={{ className: "col mandatory form-group" }}
+                          div={{ className: "col-4 mandatory form-group" }}
                           label={{
                             forceLabel: "User Name For Portal",
                             isImp:
@@ -635,14 +635,13 @@ class SubInsurance extends PureComponent {
                             />
                           ),
                           displayTemplate: (row) => {
-                            const [
-                              current,
-                            ] = this.state.finance_providers.filter(
-                              (item) =>
-                                item.finance_account_child_id ===
-                                  row.finance_account_child_id &&
-                                item.head_id === row.head_id
-                            );
+                            const [current] =
+                              this.state.finance_providers.filter(
+                                (item) =>
+                                  item.finance_account_child_id ===
+                                    row.finance_account_child_id &&
+                                  item.head_id === row.head_id
+                              );
                             return current ? current.child_name : "";
                           },
                           editorTemplate: (row, rowId) => {
@@ -674,9 +673,8 @@ class SubInsurance extends PureComponent {
                                   tree={{
                                     treeDefaultExpandAll: true,
                                     onChange: (val) => {
-                                      const [head_id, child_id] = val.split(
-                                        "-"
-                                      );
+                                      const [head_id, child_id] =
+                                        val.split("-");
                                       row.child_id = child_id;
                                       row.head_id = head_id;
                                       row.update();

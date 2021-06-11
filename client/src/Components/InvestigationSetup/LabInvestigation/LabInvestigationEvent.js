@@ -95,6 +95,7 @@ export function updateAnalyteGroup(row, rowId) {
         original_formula: row.original_formula,
         display_formula: row.display_formula,
         decimals: row.decimals,
+        includeInReport: row.includeInReport,
       },
       method: "PUT",
       onSuccess: (response) => {
@@ -201,6 +202,11 @@ export function texthandle(ctrl, e) {
     ...obj,
   });
 }
+export function handleCheck(e) {
+  this.context.updateState({
+    includeInReport: e.target.checked === true ? "Y" : "N",
+  });
+}
 
 export function analyteidhandle(ctrl, e) {
   e = e || ctrl;
@@ -231,7 +237,7 @@ export function containeridhandle(ctrl, e) {
 }
 
 export function dataDrag(data) {
-  // debugger;
+  //
   const { state } = this.context;
   let exits_analytes = state.analytes;
   let drag_analytes = [];
