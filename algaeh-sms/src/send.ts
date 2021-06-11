@@ -24,7 +24,7 @@ export async function sendSMS(data) {
       const html = fs.readFileSync(filePath, "utf-8");
       const result = await hbs.compile(html)(data);
       const response = await axios
-        .get(SMS_GATEWAY_SERVER, {
+        .get(SMS_GATEWAY_SERVER ?? "", {
           params: {
             user: SMS_GATEWAY_USER,
             password: SMS_GATEWAY_PASSWORD,
