@@ -1,19 +1,43 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<style>
+  .texttruncate{ text-overflow: ellipsis; overflow: hidden;white-space: nowrap;
+  } @page { margin: 0; size: landscape; } .sheet { margin: 0; overflow: hidden;
+  position: relative; box-sizing: border-box; page-break-after: always; }
+
+</style>
 
 <body style="width: 100%;">
-  <div class="print-body" style="page-break-before: always; page-break-after: always;margin: 0;">
-      <div class="barcodeLine" style="">
-        {{!-- <small class="small-right">{{header.description}}</div> --}}
-        <small class="small-left" style="margin-top: 4px;">Lab ID: <b>{{header.lab_id_number}}</b></small>
-         <small class="small-right"  style="margin-top: 4px;"><b>{{header.barcode_gen}}</b></small>
-        <img class="specimenBarcode" src={{barcode "code128" header.lab_id_number false }} />
-        <small class="small-center"><b>{{header.full_name}}</b></small>
-        <small class="small-left"><b>{{header.patient_code}}</b></small>
-        <small class="small-right"><b>{{header.date_of_birth}} / {{header.gender}}</b></small>
-        <small class="small-center"><b></b></small>
-        <small class="small-left"><b>{{header.description}}</b></small>
-        <small class="small-right" style="border-radius:2px;padding:1px 4px;background-color: {{header.color_code}}"><b>{{header.color_name}}</b></small>
-        {{!-- <small class="small-center"><b>{{header.lab_id_number}}</b></small> --}}
-      </div>
+  <div
+    class="print-body"
+    style="page-break-before: always; page-break-after: always;margin: 0;"
+  >
+    <div class="barcodeLine" style="">
+      {{!-- <small class="small-right">{{header.description}}</div> --}}
+      <small class="small-left" style="margin-top: 4px;">Lab ID:
+        <b>{{header.lab_id_number}}</b></small>
+      <small class="small-right" style="margin-top: 4px;"><b
+        >{{header.barcode_gen}}</b></small>
+      <img
+        class="specimenBarcode"
+        src={{barcode "code128" header.lab_id_number false}}
+      />
+      <small class="small-center"><b>{{header.full_name}}</b></small>
+      <small class="small-left"><b>{{header.patient_code}}</b></small>
+      <small class="small-right"><b>{{header.date_of_birth}}
+          /
+          {{header.gender}}</b></small>
+      <small class="small-center"><b></b></small>
+      <small
+        class="small-left texttruncate"
+        style=" width:
+  78%; line-height:12px;text-align:left;"
+      ><b>{{header.description}}</b></small>
+      <small
+        class="small-right"
+        style="border-radius:2px;padding:1px 4px;border: 2px dashed {{header.color_code}}"
+      ><b>{{header.color_name}}</b></small>
+      {{!-- <small class="small-center"><b>{{header.lab_id_number}}</b></small> --}}
+    </div>
   </div>
 </body>
