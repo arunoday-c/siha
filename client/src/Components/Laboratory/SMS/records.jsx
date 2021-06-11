@@ -58,9 +58,7 @@ export default memo(function Record(props) {
                 {" "}
                 <div className="col-7"></div>
                 <div className="col-3">
-                  <label className="style_Label ">
-                    Total Selected Balance Amount
-                  </label>
+                  <label className="style_Label ">Total Records</label>
                   <h6>{TOTAL_RECORDS}</h6>
                 </div>
                 <div className="col-2">
