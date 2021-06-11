@@ -49,40 +49,45 @@ export default memo(function Record(props) {
     }
   }
   return (
-    <div className="row  margin-bottom-15 topResultCard">
-      <div className="col-12">
-        <div className="card-group">
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">{TOTAL_RECORDS}</h5>
-              <p className="card-text">
-                <span className="badge badge-secondary"> Total records </span>
-              </p>
-            </div>
-          </div>
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">{SELECTED_RECORDS}</h5>
-              <p className="card-text">
-                <span className="badge badge-secondary">Selected records</span>
-              </p>
-            </div>
-          </div>
-          <div className="card">
-            <div className="card-body">
-              <button
-                className="btn btn-primary"
-                disabled={
-                  !SELECTED_RECORDS || SELECTED_RECORDS === 0 ? true : false
-                }
-                onClick={onLickProcessSMS}
-              >
-                Proceed to Send SMS
-              </button>
+    <>
+      <div className="portlet portlet-bordered">
+        <div className="portlet-body">
+          <div className="row">
+            <div className="col-12" style={{ textAlign: "right" }}>
+              <div className="row">
+                {" "}
+                <div className="col-7"></div>
+                <div className="col-3">
+                  <label className="style_Label ">
+                    Total Selected Balance Amount
+                  </label>
+                  <h6>{TOTAL_RECORDS}</h6>
+                </div>
+                <div className="col-2">
+                  <label className="style_Label ">Selected records</label>
+                  <h6>{SELECTED_RECORDS}</h6>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col-lg-12">
+            <button
+              className="btn btn-primary"
+              disabled={
+                !SELECTED_RECORDS || SELECTED_RECORDS === 0 ? true : false
+              }
+              onClick={onLickProcessSMS}
+            >
+              Send SMS with Selected
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
   );
 });
