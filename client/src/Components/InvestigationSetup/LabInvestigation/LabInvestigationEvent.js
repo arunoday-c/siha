@@ -27,6 +27,7 @@ export function AddAnalytes() {
         analyte_description: state.analyte_desc,
         analyte_report_group: state.analyte_report_group,
         test_id: state.hims_d_investigation_test_id,
+        includeInReport: state.includeInReport,
       };
       // if (state.hims_d_investigation_test_id !== null) {
       //   let Insertobj = {
