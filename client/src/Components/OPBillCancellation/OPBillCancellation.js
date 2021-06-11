@@ -31,6 +31,8 @@ import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
 import { RawSecurityComponent, MainContext } from "algaeh-react-components";
 import axios from "axios";
+import swal from "sweetalert2";
+
 const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 class OPBillCancellation extends Component {
   constructor(props) {
@@ -188,92 +190,107 @@ class OPBillCancellation extends Component {
   CancelOPBill(e) {
     const err = Validations(this);
     if (!err) {
-      this.GenerateReciept(($this) => {
-        let Inputobj = $this.state;
-        // debugger;
-        // return;
-        Inputobj.patient_payable = $this.state.patient_payable_h;
-        Inputobj.payable_amount = $this.state.receiveable_amount;
-        Inputobj.pay_type = "P";
-        Inputobj.ScreenCode = "BL0003";
-        AlgaehLoader({ show: true });
-        let _services_id = [];
-        Inputobj.billdetails.map((o) => {
-          _services_id.push(o.services_id);
-          return null;
-        });
-
-        const package_exists = Inputobj.billdetails.filter(
-          (f) => f.service_type_id === 14
-        );
-        Inputobj.package_exists = package_exists;
-        debugger;
-        algaehApiCall({
-          uri: "/opBillCancellation/addOpBillCancellation",
-          module: "billing",
-          data: Inputobj,
-          method: "POST",
-          onSuccess: (response) => {
-            AlgaehLoader({ show: false });
-
-            if (response.data.success) {
-              if (this.state.portal_exists === "Y") {
-                const package_data = response.data.records.package_data;
-                for (let i = 0; i < package_data.length; i++) {
-                  _services_id.push(package_data[i].service_id);
-                }
-                const portal_data = {
-                  service_id: _services_id,
-                  visit_code: this.state.visit_code,
-                  patient_identity: this.state.primary_id_no,
-                  delete_data: true,
-                };
-                axios
-                  .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-                  .then(function (response) {
-                    //handle success
-                    console.log(response);
-                  })
-                  .catch(function (response) {
-                    //handle error
-                    console.log(response);
-                  });
-              }
-              debugger;
-
-              $this.setState({
-                bill_cancel_number: response.data.records.bill_number,
-                receipt_number: response.data.records.receipt_number,
-                hims_f_bill_cancel_header_id:
-                  response.data.records.hims_f_bill_cancel_header_id,
-                saveEnable: true,
-              });
-              if (sockets.connected) {
-                sockets.emit("opBill_cancel", {
-                  billdetails: Inputobj.billdetails,
-                  bill_date: Inputobj.bill_date,
-                });
-              }
-
-              swalMessage({
-                title: "Cancelled Successfully",
-                type: "success",
-              });
-            } else {
-              swalMessage({
-                title: response.data.records.message,
-                type: "error",
-              });
-            }
-          },
-          onFailure: (error) => {
-            AlgaehLoader({ show: false });
-            swalMessage({
-              title: error.response.data.message || error.message,
-              type: "error",
+      swal({
+        title: "Are you sure you want to Cancel?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        confirmButtonColor: "#44b8bd",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "No",
+      }).then((willSave) => {
+        if (willSave.value) {
+          this.GenerateReciept(($this) => {
+            let Inputobj = $this.state;
+            // debugger;
+            // return;
+            Inputobj.patient_payable = $this.state.patient_payable_h;
+            Inputobj.payable_amount = $this.state.receiveable_amount;
+            Inputobj.pay_type = "P";
+            Inputobj.ScreenCode = "BL0003";
+            AlgaehLoader({ show: true });
+            let _services_id = [];
+            Inputobj.billdetails.map((o) => {
+              _services_id.push(o.services_id);
+              return null;
             });
-          },
-        });
+
+            const package_exists = Inputobj.billdetails.filter(
+              (f) => f.service_type_id === 14
+            );
+            Inputobj.package_exists = package_exists;
+
+            algaehApiCall({
+              uri: "/opBillCancellation/addOpBillCancellation",
+              module: "billing",
+              data: Inputobj,
+              method: "POST",
+              onSuccess: (response) => {
+                AlgaehLoader({ show: false });
+
+                if (response.data.success) {
+                  if (this.state.portal_exists === "Y") {
+                    const package_data = response.data.records.package_data;
+                    for (let i = 0; i < package_data.length; i++) {
+                      _services_id.push(package_data[i].service_id);
+                    }
+                    const portal_data = {
+                      service_id: _services_id,
+                      visit_code: this.state.visit_code,
+                      patient_identity: this.state.primary_id_no,
+                      delete_data: true,
+                    };
+                    axios
+                      .post(
+                        `${PORTAL_HOST}/info/deletePatientService`,
+                        portal_data
+                      )
+                      .then(function (response) {
+                        //handle success
+                        console.log(response);
+                      })
+                      .catch(function (response) {
+                        //handle error
+                        console.log(response);
+                      });
+                  }
+                  debugger;
+
+                  $this.setState({
+                    bill_cancel_number: response.data.records.bill_number,
+                    receipt_number: response.data.records.receipt_number,
+                    hims_f_bill_cancel_header_id:
+                      response.data.records.hims_f_bill_cancel_header_id,
+                    saveEnable: true,
+                  });
+                  if (sockets.connected) {
+                    sockets.emit("opBill_cancel", {
+                      billdetails: Inputobj.billdetails,
+                      bill_date: Inputobj.bill_date,
+                    });
+                  }
+
+                  swalMessage({
+                    title: "Cancelled Successfully",
+                    type: "success",
+                  });
+                } else {
+                  swalMessage({
+                    title: response.data.records.message,
+                    type: "error",
+                  });
+                }
+              },
+              onFailure: (error) => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: error.response.data.message || error.message,
+                  type: "error",
+                });
+              },
+            });
+          });
+        }
       });
     }
   }

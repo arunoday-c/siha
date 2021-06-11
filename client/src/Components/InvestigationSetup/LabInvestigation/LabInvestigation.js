@@ -297,7 +297,7 @@ class LabInvestigation extends Component {
               <div>
                 <div className="row" data-validate="analyte_details">
                   <AlagehAutoComplete
-                    div={{ className: "col-7 mandatory" }}
+                    div={{ className: "col-4 mandatory" }}
                     label={{
                       fieldName: "analyte_id",
                       isImp: true,
@@ -315,7 +315,7 @@ class LabInvestigation extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-3 mandatory" }}
+                    div={{ className: "col mandatory" }}
                     label={{
                       forceLabel: "Report Group",
                       isImp: true,
@@ -332,6 +332,24 @@ class LabInvestigation extends Component {
                       onChange: this.texthandle,
                     }}
                   />
+
+                  <div className="col">
+                    <label>Show in report</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox inline">
+                        <input
+                          type="checkbox"
+                          name="includeInReport"
+                          checked={state.includeInReport === "Y" ? true : false}
+                          value={state.includeInReport}
+                          onChange={this.handleCheck}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* 
                   <div
                     className="customCheckbox col-2"
                     style={{ border: "none", marginTop: "19px" }}
@@ -348,7 +366,7 @@ class LabInvestigation extends Component {
                         Include In Report
                       </span>
                     </label>
-                  </div>
+                  </div> */}
 
                   <div className="col-1" style={{ padding: 0 }}>
                     <button
@@ -425,7 +443,7 @@ class LabInvestigation extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 250,
+                            minWidth: 200,
                             style: { textAlign: "left" },
                           },
                         },
@@ -433,7 +451,7 @@ class LabInvestigation extends Component {
                           fieldName: "includeInReport",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Include In Report" }}
+                              label={{ forceLabel: "Show in report" }}
                             />
                           ),
                           displayTemplate: (row) => {
@@ -459,6 +477,10 @@ class LabInvestigation extends Component {
                                 }}
                               />
                             );
+                          },
+                          others: {
+                            minWidth: 130,
+                            style: { textAlign: "center" },
                           },
                         },
 
@@ -492,8 +514,8 @@ class LabInvestigation extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 250,
-                            style: { textAlign: "left" },
+                            minWidth: 250,
+                            style: { textAlign: "center" },
                           },
                         },
                       ]}

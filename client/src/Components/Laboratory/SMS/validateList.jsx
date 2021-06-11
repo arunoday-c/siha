@@ -1,4 +1,5 @@
 import React, { memo, useState, useEffect, useContext } from "react";
+import "./labSMS.scss";
 import {
   AlgaehDataGrid,
   Spin,
@@ -85,60 +86,121 @@ export default memo(function ValidateList(props) {
 
   return (
     <Spin tip="Please Wait..." spinning={loading}>
+      <div className="row">
+        <div className="col-lg-12">
+          <div
+            className="portlet portlet-bordered margin-bottom-15"
+            id="labSMSGrid"
+          >
+            <AlgaehDataGrid
+              columns={[
+                {
+                  fieldName: "selected",
+                  label: <Checkbox onChange={onSelectAll} />,
+                  displayTemplate: (row) => <CheckCol row={row} />,
+                  others: {
+                    width: 40,
+                    style: { textAlign: "center" },
+                  },
+                },
+                {
+                  fieldName: "primary_id_no",
+                  label: <AlgaehLabel label={{ fieldName: "primary_id_no" }} />,
+                  filterable: true,
+                  others: {
+                    width: 150,
+                    style: { textAlign: "center" },
+                  },
+                },
+                {
+                  fieldName: "patient_code",
+                  label: <AlgaehLabel label={{ fieldName: "patient_code" }} />,
+                  filterable: true,
+                  others: {
+                    width: 150,
+                    style: { textAlign: "center" },
+                  },
+                },
+                {
+                  fieldName: "full_name",
+                  label: <AlgaehLabel label={{ fieldName: "patient_name" }} />,
+                  filterable: true,
+                  others: {
+                    style: { textAlign: "left" },
+                  },
+                },
+                // {
+                //   fieldName: "years",
+                //   label: <AlgaehLabel label={{ fieldName: "Age" }} />,
+                // },
+                // {
+                //   fieldName: "gender",
+                //   label: <AlgaehLabel label={{ fieldName: "Gender" }} />,
+                // },
+                {
+                  fieldName: "service_name",
+                  label: <AlgaehLabel label={{ fieldName: "service_name" }} />,
+                  filterable: true,
+                  others: {
+                    style: { textAlign: "left" },
+                  },
+                },
+                {
+                  fieldName: "isPCR",
+                  label: <AlgaehLabel label={{ fieldName: "IS PCR" }} />,
+                  displayTemplate: (row) => {
+                    return row.isPCR === "Y" ? "YES" : "NO";
+                  },
+                  filterable: true,
+                  filterType: "choices",
+                  choices: [
+                    {
+                      name: "Yes",
+                      value: "Y",
+                    },
+                    {
+                      name: "No",
+                      value: "N",
+                    },
+                  ],
+                  others: {
+                    width: 100,
+                    style: { textAlign: "center" },
+                  },
+                },
+
+                {
+                  fieldName: "critical_status",
+                  label: <AlgaehLabel label={{ forceLabel: "Is Critical" }} />,
+                  displayTemplate: (row) => {
+                    return row.critical_status === "Y" ? "YES" : "NO";
+                  },
+                  filterable: true,
+                  filterType: "choices",
+                  choices: [
+                    {
+                      name: "Yes",
+                      value: "Y",
+                    },
+                    {
+                      name: "No",
+                      value: "N",
+                    },
+                  ],
+                  others: {
+                    width: 100,
+                    style: { textAlign: "center" },
+                  },
+                },
+              ]}
+              pagination={false}
+              isFilterable={true}
+              data={data}
+            />
+          </div>
+        </div>{" "}
+      </div>
       <Records {...props} data={data} />
-      <AlgaehDataGrid
-        columns={[
-          {
-            fieldName: "selected",
-            label: <Checkbox onChange={onSelectAll} />,
-            displayTemplate: (row) => <CheckCol row={row} />,
-          },
-          {
-            fieldName: "primary_id_no",
-            label: <AlgaehLabel label={{ fieldName: "primary_id_no" }} />,
-            filterable: true,
-          },
-          {
-            fieldName: "patient_code",
-            label: <AlgaehLabel label={{ fieldName: "patient_code" }} />,
-            filterable: true,
-          },
-          {
-            fieldName: "full_name",
-            label: <AlgaehLabel label={{ fieldName: "patient_name" }} />,
-            filterable: true,
-          },
-          {
-            fieldName: "years",
-            label: <AlgaehLabel label={{ fieldName: "Age" }} />,
-          },
-          {
-            fieldName: "gender",
-            label: <AlgaehLabel label={{ fieldName: "Gender" }} />,
-          },
-          {
-            fieldName: "isPCR",
-            label: <AlgaehLabel label={{ fieldName: "IS PCR" }} />,
-            displayTemplate: (row) => {
-              return row.isPCR === "Y" ? "YES" : "NO";
-            },
-          },
-          {
-            fieldName: "service_name",
-            label: <AlgaehLabel label={{ fieldName: "service_name" }} />,
-          },
-          {
-            fieldName: "critical_status",
-            label: <AlgaehLabel label={{ forceLabel: "Is Critical" }} />,
-            displayTemplate: (row) => {
-              return row.critical_status === "Y" ? "YES" : "NO";
-            },
-          },
-        ]}
-        pagination={false}
-        isFilterable={true}
-        data={data}
-      />
     </Spin>
   );
 });

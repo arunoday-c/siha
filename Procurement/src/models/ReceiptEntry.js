@@ -138,7 +138,7 @@ export default {
             next();
             return;
           }
-          console.log("1");
+          // console.log("1");
           _mysql
             .generateRunningNumber({
               user_id: req.userIdentity.algaeh_d_app_user_id,
@@ -146,7 +146,7 @@ export default {
               table_name: "hims_f_procurement_numgen",
             })
             .then((generatedNumbers) => {
-              console.log("2");
+              // console.log("2");
               grn_number = generatedNumbers.RE_NUM;
 
               let year = moment().format("YYYY");
@@ -434,24 +434,27 @@ export default {
     }
   },
   updatePurchaseOrder: (req, res, next) => {
-    console.log("PO1");
+    // console.log("PO1");
     if (req.records.invalid_input == false) {
       next();
       return;
     }
-    console.log("updatePurchaseOrder");
+    // console.log("updatePurchaseOrder");
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
       _mysql
         .executeQuery({
           query:
-            "select is_completed from hims_f_procurement_po_header where hims_f_procurement_po_header_id=?",
+            "select is_completed from hims_f_procurement_dn_header where purchase_order_id=?;",
           values: [req.body.po_id],
           printQuery: true,
         })
         .then((po_data) => {
-          if (po_data[0].is_completed === "Y") {
+          const partial_recived = po_data.filter((f) => f.is_completed === "N");
+          const is_completed = partial_recived.length > 0 ? "N" : "Y";
+
+          if (is_completed === "Y") {
             _mysql
               .executeQuery({
                 query:
@@ -460,7 +463,11 @@ export default {
                 printQuery: true,
               })
               .then((po_data) => {
-                next();
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.dnrecords = po_data;
+                  next();
+                });
               })
               .catch((e) => {
                 _mysql.rollBackTransaction(() => {
@@ -468,7 +475,10 @@ export default {
                 });
               });
           } else {
-            next();
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              next();
+            });
           }
         })
         .catch((e) => {
@@ -521,11 +531,7 @@ export default {
             printQuery: true,
           })
           .then((detailResult) => {
-            _mysql.commitTransaction(() => {
-              _mysql.releaseConnection();
-              req.dnrecords = detailResult;
-              next();
-            });
+            next();
           })
           .catch((e) => {
             _mysql.rollBackTransaction(() => {

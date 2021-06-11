@@ -15,7 +15,7 @@ const sequelize = new Sequelize(
     logging: process.env.NODE_ENV === "production" ? false : false,
     logQueryParameters: true,
     pool: {
-      max: parseInt(SMS_DB_CONN_LMT, 10),
+      max: parseInt(SMS_DB_CONN_LMT ?? "0", 10),
     },
   }
 );
