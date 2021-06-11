@@ -576,9 +576,11 @@ const makeZeroIngrid = ($this, context, row, e) => {
     let billdetails = $this.state.billdetails;
     let _index = billdetails.indexOf(row);
     billdetails[_index] = row;
-    context.updateState({
-      billdetails: billdetails,
-    });
+    // context.updateState({
+    //   billdetails: billdetails,
+    // });
+
+    calculateAmount($this, context, row, e);
   }
 };
 

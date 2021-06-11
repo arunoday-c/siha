@@ -26,22 +26,25 @@ export default memo(function HeaderBand(props) {
     if (_DATE_RANGES.length > 0) setDate(_DATE_RANGES);
   }, []);
   function onLoadContext() {
-    if (moment(date[1]).diff(moment(date[0]), "days") <= numberOfDays) {
-      const _from_date = moment(date[0]).format("YYYY-MM-DD");
-      const _to_date = moment(date[1]).format("YYYY-MM-DD");
-      setLabState({
-        DATE_RANGE: [_from_date, _to_date],
-        STATUS: type,
-        TRIGGER_LOAD: undefined,
-      });
-      history.push(
-        pathName + `?from_date=${_from_date}&to_date=${_to_date}&status=${type}`
-      );
-    } else {
-      swalMessage({
-        type: "error",
-        title: `Please select date range between ${numberOfDays} days`,
-      });
+    if (Array.isArray(date) && date.length > 0) {
+      if (moment(date[1]).diff(moment(date[0]), "days") <= numberOfDays) {
+        const _from_date = moment(date[0]).format("YYYY-MM-DD");
+        const _to_date = moment(date[1]).format("YYYY-MM-DD");
+        setLabState({
+          DATE_RANGE: [_from_date, _to_date],
+          STATUS: type,
+          TRIGGER_LOAD: undefined,
+        });
+        history.push(
+          pathName +
+            `?from_date=${_from_date}&to_date=${_to_date}&status=${type}`
+        );
+      } else {
+        swalMessage({
+          type: "error",
+          title: `Please select date range between ${numberOfDays} days`,
+        });
+      }
     }
   }
   function onClearContext() {
