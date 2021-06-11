@@ -51,8 +51,8 @@ export default () => {
   api.post(
     "/addReceiptEntry",
     addReceiptEntry,
-    updatePurchaseOrder,
     updateDNEntry,
+    updatePurchaseOrder,
     (req, res, next) => {
       if (req.records.invalid_input == false) {
         res

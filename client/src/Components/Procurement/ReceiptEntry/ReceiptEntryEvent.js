@@ -295,6 +295,7 @@ const SaveReceiptEnrty = ($this) => {
     module: "procurement",
     data: Inputobj,
     onSuccess: (response) => {
+      debugger;
       if (response.data.success === true) {
         getCtrlCode($this, response.data.records.grn_number);
         swalMessage({
