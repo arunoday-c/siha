@@ -21,103 +21,141 @@ const texthandle = ($this, e) => {
     [name]: value,
   });
 };
-
-const saveSubInsurance = ($this, context) => {
+const saveAfterUnique = ($this, context) => {
   let updatedata = [];
-  const err = Validations($this);
-  if (!err) {
-    let obj = {
-      insurance_sub_code: $this.state.insurance_sub_code,
-      insurance_sub_name: $this.state.insurance_sub_name,
-      arabic_sub_name: $this.state.arabic_sub_name,
-      insurance_provider_id: $this.state.insurance_provider_id,
-      transaction_number: $this.state.transaction_number,
-      card_format: $this.state.card_format,
-      ins_template_name: $this.state.ins_template_name,
-      user_id: $this.state.user_id,
-      effective_start_date:
-        $this.state.effective_start_date !== null
-          ? moment($this.state.effective_start_date)._d
-          : null,
-      effective_end_date:
-        $this.state.effective_end_date !== null
-          ? moment($this.state.effective_end_date)._d
-          : null,
+  let obj = {
+    insurance_sub_code: $this.state.insurance_sub_code,
+    insurance_sub_name: $this.state.insurance_sub_name,
+    arabic_sub_name: $this.state.arabic_sub_name,
+    insurance_provider_id: $this.state.insurance_provider_id,
+    transaction_number: $this.state.transaction_number,
+    card_format: $this.state.card_format,
+    ins_template_name: $this.state.ins_template_name,
+    user_id: $this.state.user_id,
+    effective_start_date:
+      $this.state.effective_start_date !== null
+        ? moment($this.state.effective_start_date)._d
+        : null,
+    effective_end_date:
+      $this.state.effective_end_date !== null
+        ? moment($this.state.effective_end_date)._d
+        : null,
 
-      creidt_limit: $this.state.creidt_limit,
-      creidt_limit_req: $this.state.creidt_limit_req,
-    };
-    let previous = $this.state.sub_insurance ? $this.state.sub_insurance : [];
-    previous.push(obj);
-    // if ($this.state.buttonenable === true) {
-    updatedata.push(obj);
+    creidt_limit: $this.state.creidt_limit,
+    creidt_limit_req: $this.state.creidt_limit_req,
+  };
+  let previous = $this.state.sub_insurance ? $this.state.sub_insurance : [];
+  previous.push(obj);
+  // if ($this.state.buttonenable === true) {
+  updatedata.push(obj);
+  const filterBranchData = previous.filter(
+    (thing, index, self) =>
+      index ===
+      self.findIndex((t) => t.insurance_sub_code === thing.insurance_sub_code)
+  );
+  algaehApiCall({
+    uri: "/insurance/addSubInsuranceProvider",
+    module: "insurance",
+    data: updatedata,
+    onSuccess: (response) => {
+      if (response.data.success === true) {
+        $this.setState({
+          insurance_sub_saved: true,
+          sub_insurance: filterBranchData,
+        });
 
-    algaehApiCall({
-      uri: "/insurance/addSubInsuranceProvider",
-      module: "insurance",
-      data: updatedata,
-      onSuccess: (response) => {
-        if (response.data.success === true) {
-          $this.setState({
-            insurance_sub_saved: true,
-            sub_insurance: previous,
-          });
-
-          if (context !== undefined) {
-            context.updateState({
-              sub_insurance: previous,
-            });
-          }
-          addNewSubinsurance($this);
-          if (
-            $this.state.insurance_type === "C" &&
-            $this.state.portal_exists === "Y"
-          ) {
-            const eff_end_date = moment($this.state.effective_end_date).format(
-              "YYYYMMDD"
-            );
-            const firstFourLetters = String($this.state.user_id)
-              .substring(0, 4)
-              .toUpperCase();
-            const password = `${firstFourLetters}${eff_end_date}`;
-
-            const _data = {
-              user_id: $this.state.user_id,
-              password: password,
-            };
-
-            try {
-              axios
-                .post(`${PORTAL_HOST}/info/userCreation`, _data)
-                .then(function (response) {
-                  //handle success
-                  console.log(response);
-                })
-                .catch(function (response) {
-                  //handle error
-                  console.log(response);
-                });
-            } catch (error) {
-              swalMessage({
-                title: error,
-                type: "error",
-              });
-            }
-          }
-          swalMessage({
-            type: "success",
-            title: "Added successfully . .",
+        if (context !== undefined) {
+          context.updateState({
+            sub_insurance: filterBranchData,
           });
         }
-      },
-      onFailure: (error) => {
+        addNewSubinsurance($this);
+        if (
+          $this.state.insurance_type === "C" &&
+          $this.state.portal_exists === "Y"
+        ) {
+          const eff_end_date = moment($this.state.effective_end_date).format(
+            "YYYYMMDD"
+          );
+          const firstFourLetters = String($this.state.user_id)
+            .substring(0, 4)
+            .toUpperCase();
+          const password = `${firstFourLetters}${eff_end_date}`;
+
+          const _data = {
+            user_id: $this.state.user_id,
+            password: password,
+          };
+
+          try {
+            axios
+              .post(`${PORTAL_HOST}/info/userCreation`, _data)
+              .then(function (response) {
+                //handle success
+                console.log(response);
+              })
+              .catch(function (response) {
+                //handle error
+                console.log(response);
+              });
+          } catch (error) {
+            swalMessage({
+              title: error,
+              type: "error",
+            });
+          }
+        }
         swalMessage({
-          title: error.response.data.message,
-          type: "error",
+          type: "success",
+          title: "Added successfully . .",
         });
-      },
-    });
-    // }
+      }
+    },
+    onFailure: (error) => {
+      swalMessage({
+        title: error.response.data.message,
+        type: "error",
+      });
+    },
+  });
+  // }
+};
+const saveSubInsurance = ($this, context) => {
+  const err = Validations($this);
+  if (!err) {
+    if ($this.state.user_id) {
+      const userId = $this.state.user_id.toLowerCase();
+      console.log("userId", userId);
+      algaehApiCall({
+        uri: "/insurance/verifyUserIdExist",
+        module: "insurance",
+        method: "GET",
+        data: {
+          user_id: userId,
+        },
+        onSuccess: (response) => {
+          const { success, message } = response.data;
+
+          if (!success) {
+            swalMessage({
+              title: message,
+              type: "error",
+            });
+            return;
+          } else {
+            saveAfterUnique($this, context);
+          }
+        },
+        onCatch: (error) => {
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+    } else {
+      saveAfterUnique($this, context);
+    }
   }
 };
 

@@ -141,11 +141,12 @@ let getLoginUserMaster = (req, res, next) => {
       _mysql
         .executeQuery({
           query:
-            "select  algaeh_d_app_user_id,username,user_display_name,user_type,user_status,hims_d_employee_id,\
+            "select  algaeh_d_app_user_id,H.hospital_name,username,user_display_name,user_type,user_status,hims_d_employee_id,\
             employee_code,full_name,E.email,E.work_email, role_name,app_group_name,algaeh_m_role_user_mappings_id , app_d_app_roles_id, \
             UM.hospital_id, hims_m_user_employee_id, R.app_group_id, RU.role_id from  hims_m_user_employee UM \
             inner join algaeh_d_app_user U on UM.user_id=U.algaeh_d_app_user_id\
             inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id\
+            inner join hims_d_hospital H on UM.hospital_id=H.hims_d_hospital_id\
             inner join algaeh_m_role_user_mappings RU  on  UM.user_id=RU.user_id \
             inner join algaeh_d_app_roles R on  RU.role_id=R.app_d_app_roles_id\
             inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id \

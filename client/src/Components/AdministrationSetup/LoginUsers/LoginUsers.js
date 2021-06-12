@@ -285,6 +285,7 @@ class LoginUsers extends Component {
                 algaeh_m_role_user_mappings_id:
                   firstRecordSet.algaeh_m_role_user_mappings_id,
                 hims_d_employee_id: firstRecordSet.hims_d_employee_id,
+                hospital_name: firstRecordSet.hospital_name,
               };
             })
             .toArray();
@@ -485,6 +486,14 @@ class LoginUsers extends Component {
           );
           selectedData.login_user = "Y";
           branch_data.push(selectedData);
+
+          const filterBranchData = branch_data.filter(
+            (thing, index, self) =>
+              index ===
+              self.findIndex(
+                (t) => t.hims_d_hospital_id === thing.hims_d_hospital_id
+              )
+          );
           algaehApiCall({
             uri: "/algaehappuser/createUserLogin",
             method: "POST",
@@ -501,7 +510,7 @@ class LoginUsers extends Component {
               employee_id: this.state.employee_id,
               sub_department_id: this.state.sub_department_id,
               hospital_id: this.state.hospital_id,
-              branch_data: branch_data,
+              branch_data: filterBranchData,
             },
             onSuccess: (response) => {
               if (response.data.success) {
@@ -547,8 +556,8 @@ class LoginUsers extends Component {
               role_id: this.state.role_id,
               user_type: this.state.user_type,
               algaeh_d_app_user_id: this.state.algaeh_d_app_user_id,
-              algaeh_m_role_user_mappings_id: this.state
-                .algaeh_m_role_user_mappings_id,
+              algaeh_m_role_user_mappings_id:
+                this.state.algaeh_m_role_user_mappings_id,
               user_status: this.state.user_status,
               branch_data: branch_data,
               employee_id: this.state.employee_id,
@@ -631,6 +640,7 @@ class LoginUsers extends Component {
       m.checked = e.target.checked;
       return m;
     });
+
     this.setState({ branch_detail: branch_detail });
   }
   selectBranch(data, e) {
@@ -1243,6 +1253,18 @@ class LoginUsers extends Component {
                           fieldName: "full_name",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Full Name" }} />
+                          ),
+                          others: {
+                            disabled: true,
+                            minWidth: 200,
+                          },
+                        },
+                        {
+                          fieldName: "hospital_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Branch Name" }}
+                            />
                           ),
                           others: {
                             disabled: true,
