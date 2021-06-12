@@ -104,6 +104,15 @@ export default memo(function ValidateList(props) {
                   },
                 },
                 {
+                  fieldName: "ordered_date",
+                  label: <AlgaehLabel label={{ fieldName: "ordered_date" }} />,
+                  filterable: true,
+                  others: {
+                    width: 150,
+                    style: { textAlign: "center" },
+                  },
+                },
+                {
                   fieldName: "primary_id_no",
                   label: <AlgaehLabel label={{ fieldName: "primary_id_no" }} />,
                   filterable: true,
@@ -127,6 +136,14 @@ export default memo(function ValidateList(props) {
                   filterable: true,
                   others: {
                     style: { textAlign: "left" },
+                  },
+                },
+                {
+                  fieldName: "contact_no",
+                  label: <AlgaehLabel label={{ fieldName: "contact_no" }} />,
+                  filterable: true,
+                  others: {
+                    style: { textAlign: "center" },
                   },
                 },
                 // {
