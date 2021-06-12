@@ -193,9 +193,10 @@ export default memo(function ValidateList(props) {
                   },
                 },
               ]}
-              pagination={false}
-              isFilterable={true}
               data={data}
+              isFilterable={true}
+              pagination={true}
+              pageOptions={{ rows: 100, page: 1 }}
             />
           </div>
         </div>{" "}

@@ -14,6 +14,7 @@ import "regenerator-runtime/runtime";
 // import chrome from "algaeh-keys";
 import writtenForm from "written-number";
 import cheerio from "cheerio";
+import FormData from "form-data";
 import axios from "axios";
 import Excel from "exceljs/modern.browser";
 import utilitites from "algaeh-utilities/utilities";
@@ -371,6 +372,8 @@ export default {
       if (qrCodeReport) {
         shortUrl = shortid.generate();
       }
+
+      const qrUrl = process.env.QR_CODE_CLIENT ?? "http://localhost:3024/";
       _mysql
         .executeQuery({
           query:
@@ -662,8 +665,8 @@ export default {
                     }
                     let detailResult = result;
                     if (qrCodeReport) {
-                      const qrUrl =
-                        process.env.QR_CODE_CLIENT ?? "http://localhost:3024/";
+                      // const qrUrl =
+                      //   process.env.QR_CODE_CLIENT ?? "http://localhost:3024/";
                       // shortUrl = shortid.generate();
                       detailResult["shortUrl"] = `${qrUrl}${shortUrl}`;
                     }
@@ -758,7 +761,8 @@ export default {
                                 const _fs = fs.createReadStream(_rOut);
                                 _fs.on("end", async () => {
                                   const axiosRes = await axios(
-                                    "http://localhost:3024/fileShare",
+                                    //"http://localhost:3024/fileShare",
+                                    "http://localhost:3024/uploadFile",
                                     {
                                       method: "POST",
                                       data: {
@@ -810,14 +814,26 @@ export default {
                               _fs.on("end", async () => {
                                 const rptPath = _reportOutput[0];
                                 if (qrCodeReport) {
+                                  const form = new FormData();
+                                  form.append(
+                                    "file",
+                                    fs.createReadStream(rptPath)
+                                  );
+                                  form.append("shortUrl", shortUrl);
                                   await axios
-                                    .post("http://localhost:3024/fileShare", {
-                                      filePath: rptPath,
-                                      shortUrl: shortUrl,
+                                    .post(`${qrUrl}uploadFile`, form, {
+                                      headers: { ...form.getHeaders() },
                                     })
                                     .catch((error) => {
                                       console.error(error.message);
                                     });
+                                  // await axios.post(
+                                  //   "http://localhost:3024/fileShare",
+                                  //   {
+                                  //     filePath: rptPath,
+                                  //     shortUrl: shortUrl,
+                                  //   }
+                                  // );
                                 }
                                 if (reportToPortal === "true") {
                                   const rptParameters =

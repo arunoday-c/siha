@@ -1307,7 +1307,6 @@ export default {
             .groupBy((g) => moment(g.ordered_date).format("YYYY-MM-DD"))
             .map((details, key) => {
               const { ordered_date } = _.head(details);
-
               return {
                 date: ordered_date,
                 detailsOf: _.chain(details)

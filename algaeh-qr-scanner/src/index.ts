@@ -4,6 +4,7 @@ import path from "path";
 import fs from "fs-extra";
 import cors from "cors";
 import shortid from "shortid";
+import { uploadFile } from "./uploadManager";
 // import validUrl from "valid-url";
 const app = express();
 const port = process.env.PORT ?? 3024;
@@ -59,3 +60,4 @@ app.get("/:id", (req: Request, res: Response) => {
       .end();
   }
 });
+app.post("/uploadFile", uploadFile);
