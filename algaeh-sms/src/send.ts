@@ -23,6 +23,15 @@ export async function sendSMS(data) {
     if (fs.existsSync(filePath)) {
       const html = fs.readFileSync(filePath, "utf-8");
       const result = await hbs.compile(html)(data);
+      console.log(
+        "SMS_GATEWAY_SERVER,SMS_GATEWAY_USER,SMS_GATEWAY_PASSWORD,SMS_GATEWAY_SID,contact_no,message ",
+        SMS_GATEWAY_SERVER,
+        SMS_GATEWAY_USER,
+        SMS_GATEWAY_PASSWORD,
+        SMS_GATEWAY_SID,
+        contact_no,
+        result
+      );
       const response = await axios
         .get(SMS_GATEWAY_SERVER ?? "", {
           params: {
@@ -38,8 +47,17 @@ export async function sendSMS(data) {
           throw error;
         });
       let res = response.data;
-      let rData = res.split('{"ErrorCode"');
-      const resData = JSON.parse(`{"ErrorCode"${rData[1]}`);
+      console.error("Raw sms response===>", res);
+      let resData = {};
+      try {
+        if (typeof res === "string") resData = JSON.parse(res);
+        else {
+          resData = res;
+        }
+      } catch (e) {
+        let rData = res.split('{"ErrorCode"');
+        resData = JSON.parse(`{"ErrorCode"${rData[1]}`);
+      }
 
       await updateLabSMSStatus({
         ...resData,

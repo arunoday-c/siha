@@ -8,7 +8,7 @@ const consumeSMS = async (queueName) => {
     channel.prefetch(1);
     channel.consume(queueName, async (message) => {
       const data = JSON.parse(message?.content.toString() ?? "");
-      console.log("Message===>", data);
+
       sendSMS(data);
       channel.ack(message);
     });

@@ -1,6 +1,7 @@
 import formidable from "formidable";
 import path from "path";
-import fs from "fs";
+// import fs from "fs";
+import mv from "mv";
 import { Request, Response } from "express";
 export async function uploadFile(req: Request, res: Response) {
   try {
@@ -19,9 +20,21 @@ export async function uploadFile(req: Request, res: Response) {
       } else {
         const file_name = path.join(folderPath, fields["shortUrl"] + ".pdf");
         const auto_file_name = files.file.path;
-        fs.renameSync(auto_file_name, file_name);
-        res.write("File uploaded");
-        res.end();
+        mv(auto_file_name, file_name, (err) => {
+          if (err) {
+            res
+              .status(400)
+              .json({
+                success: false,
+                message: err.message,
+              })
+              .end();
+          } else {
+            res.write("File uploaded");
+            res.end();
+          }
+        });
+        // fs.renameSync(auto_file_name, file_name);
       }
     });
   } catch (e) {
