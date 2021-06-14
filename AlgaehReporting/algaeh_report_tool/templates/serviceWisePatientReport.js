@@ -5,11 +5,8 @@ const executePDF = function executePDFMethod(options) {
       const _ = options.loadash;
       const moment = options.moment;
 
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
 
       let input = {};
       let params = options.args.reportParams;
@@ -30,7 +27,7 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `
-          SELECT BD.services_id,BH.bill_date,BH.bill_number,V.visit_date, P.hims_d_patient_id,P.full_name, P.patient_code,  N.nationality,
+          SELECT BD.services_id,BH.bill_date,BH.bill_number,V.visit_date, P.hims_d_patient_id,P.full_name, P.patient_code,P.primary_id_no,concat(P.tel_code,P.contact_number) as contact_no,  N.nationality,
           S.service_code,S.service_name
           FROM hims_f_billing_details as BD
           left join hims_f_billing_header BH on BD.hims_f_billing_header_id = BH.hims_f_billing_header_id
