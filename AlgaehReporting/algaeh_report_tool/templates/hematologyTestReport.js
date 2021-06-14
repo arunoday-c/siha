@@ -28,7 +28,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_insurance_provider IP on IM.primary_insurance_provider_id=IP.hims_d_insurance_provider_id
           where P.hims_d_patient_id=? and V.hims_f_patient_visit_id=?;
           select MS.hims_d_lab_specimen_id, MS.description as investigation_name,LA.description as analyte_name,LA.reference_range_required,
-          LM.analyte_report_group, CASE WHEN LM.analyte_report_group = 'P' THEN 'Physical Appearance' WHEN LM.analyte_report_group = 'M' THEN 'Microscopic Examination' WHEN LM.analyte_report_group = 'D' THEN 'Differential Leukocyte Count'  WHEN LM.analyte_report_group = 'C' THEN 'Chemical Examination' ELSE '' END AS analyte_report_group_desc,
+          LM.analyte_report_group, CASE WHEN LM.analyte_report_group = 'P' THEN 'Physical Appearance' WHEN LM.analyte_report_group = 'M' THEN 'Microscopic Examination' WHEN LM.analyte_report_group = 'D' THEN 'Differential Leukocyte Count'  WHEN LM.analyte_report_group = 'C' THEN 'Chemical Examination' WHEN LM.analyte_report_group = 'ME' THEN 'Macroscopic Examination' WHEN LM.analyte_report_group = 'AG' THEN 'Agglutination' WHEN LM.analyte_report_group = 'MT' THEN 'Motility' WHEN LM.analyte_report_group = 'SM' THEN 'Sperm Morphology' ELSE '' END AS analyte_report_group_desc,
           LO.ordered_date,LS.collected_date,LO.entered_date,LO.validated_date, LO.critical_status,LO.comments,
           OA.result,CASE WHEN OA.result_unit = 'NULL'  THEN '--' WHEN OA.result_unit IS NULL THEN '--' ELSE OA.result_unit END result_unit,
           TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_low)) as normal_low,

@@ -534,6 +534,22 @@
       "value": "C"
     },
     {
+      "name": "Macroscopic Examination",
+      "value": "ME"
+    },
+    {
+      "name": "Agglutination",
+      "value": "AG"
+    },
+    {
+      "name": "Motility",
+      "value": "MT"
+    },
+    {
+      "name": "Sperm Morphology",
+      "value": "SM"
+    },
+    {
       "name": "None",
       "value": "N"
     }
