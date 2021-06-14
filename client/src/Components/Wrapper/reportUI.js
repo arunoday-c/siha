@@ -731,8 +731,10 @@ export default class ReportUI extends Component {
                     <section className="resultSecStyles">
                       <div className="row">
                         <div className="col-8">
-                          <h4 className="title">{result.item_description}</h4>
-                          <small>{result.uom_description}</small>
+                          <h4 className="title">
+                            {result[_param.primaryDesc]}
+                          </h4>
+                          <small>{result[_param.secondaryDesc]}</small>
                           {/* <h4 className="title">{result.item_description}</h4>
                           <small>{result.uom_description}</small> */}
                         </div>
