@@ -623,22 +623,22 @@ function checkRange(row) {
     critical_high,
   } = row;
 
-  result = parseFloat(result);
+  result = result === "" ? "" : parseFloat(result);
   critical_low = parseFloat(critical_low);
   normal_low = parseFloat(normal_low);
   normal_high = parseFloat(normal_high);
   critical_high = parseFloat(critical_high);
 
   if (row.analyte_type === "QN") {
-    if (!result) {
+    if (result === "") {
       return null;
     } else if (critical_value_req === "Y" && result < critical_low) {
       return "CL";
     } else if (result < normal_low) {
       return "L";
-    } else if (result > critical_high) {
+    } else if (critical_value_req === "Y" && result > critical_high) {
       return "CH";
-    } else if (critical_value_req === "Y" && result > normal_high) {
+    } else if (result > normal_high) {
       return "H";
     } else {
       return "N";
