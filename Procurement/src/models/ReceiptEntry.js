@@ -446,7 +446,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select is_completed from hims_f_procurement_dn_header where purchase_order_id=?;",
+            "select is_completed from hims_f_procurement_po_header where hims_f_procurement_po_header_id=?;",
           values: [req.body.po_id],
           printQuery: true,
         })
