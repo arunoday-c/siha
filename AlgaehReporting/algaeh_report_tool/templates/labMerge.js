@@ -4,6 +4,10 @@ const executePDF = function executePDFMethod(options) {
     M: "Microscopic Examination",
     D: "Differential Leukocyte Count",
     C: "Chemical Examination",
+    ME: "Macroscopic Examination",
+    AG: "Agglutination",
+    MT: "Motility",
+    SM: "Sperm Morphology",
   };
   return new Promise((resolve, reject) => {
     try {
@@ -58,11 +62,8 @@ const executePDF = function executePDFMethod(options) {
           let records = _.chain(result[1])
             .groupBy((g) => g.hims_f_lab_order_id)
             .map((details) => {
-              const {
-                investigation_name,
-                service_name,
-                category_name,
-              } = _.head(details);
+              const { investigation_name, service_name, category_name } =
+                _.head(details);
               testRequestName += `${service_name},`;
               return {
                 investigation_name,

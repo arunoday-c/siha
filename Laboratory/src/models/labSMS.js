@@ -84,7 +84,7 @@ export async function getValidatedResults(req, res, next) {
          from hims_f_lab_order as LO
         inner join hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = LO.test_id
         inner join hims_f_patient P on LO.patient_id=P.hims_d_patient_id and  P.record_status='A'
-        where LO.send_sms='N' and date(ordered_date) between date(?) and (?)
+        where LO.send_sms='N' and date(LO.ordered_date) between date(?) and (?)
         and LO.status='V' and LO.record_status='A' ;`,
         values: [from_date, to_date],
         printQuery: true,

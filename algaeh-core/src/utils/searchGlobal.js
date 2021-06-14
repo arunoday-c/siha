@@ -838,7 +838,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "hospitalserviceonly",
         searchQuery:
-          "SELECT hims_d_services_id as hims_d_item_master_id,service_code  as uom_description,service_name as item_description,arabic_service_name,service_type_id FROM hims_d_services where service_type_id in (1,2,5,11,15,6)",
+          "SELECT hims_d_services_id as hims_d_item_master_id,service_code,service_name,arabic_service_name,service_type_id FROM hims_d_services where service_type_id in (1,2,5,11,15,6)",
         orderBy: "hims_d_services_id desc",
         // inputSequence: ["service_type_id", "service_type_id"],
       },
@@ -1156,8 +1156,8 @@ let algaehSearchConfig = (searchName, req) => {
       },
       {
         searchName: "InsuranceStatementReport",
-        searchQuery: `select S.hims_f_insurance_statement_id as hims_d_item_master_id,S.insurance_statement_number as item_description,
-          SU.insurance_sub_name as uom_description from hims_f_insurance_statement S 
+        searchQuery: `select S.hims_f_insurance_statement_id as hims_d_item_master_id,S.insurance_statement_number ,
+          SU.insurance_sub_name  from hims_f_insurance_statement S 
           inner join hims_d_insurance_provider P on S.insurance_provider_id = P.hims_d_insurance_provider_id
           inner join hims_d_insurance_sub SU on S.sub_insurance_id = SU.hims_d_insurance_sub_id where S.record_status='A'`,
         orderBy: "S.hims_f_insurance_statement_id desc",

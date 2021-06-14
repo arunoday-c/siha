@@ -232,7 +232,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
               forceLabel: "Low",
             }}
             textBox={{
-              decimal: { allowNegative: false },
+              decimal: { allowNegative: false, decimalScale: 4 },
               className: "txt-fld",
               name: "normal_low",
               value: inputs.normal_low,
@@ -273,7 +273,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
               forceLabel: "High",
             }}
             textBox={{
-              decimal: { allowNegative: false },
+              decimal: { allowNegative: false, decimalScale: 4 },
               className: "txt-fld",
               name: "normal_high",
               value: inputs.normal_high,
@@ -304,7 +304,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
                     forceLabel: "Critical Low",
                   }}
                   textBox={{
-                    decimal: { allowNegative: false },
+                    decimal: { allowNegative: false, decimalScale: 4 },
                     className: "txt-fld",
                     name: "critical_low",
                     value: inputs.critical_low,
@@ -320,7 +320,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
                     forceLabel: "Critical High",
                   }}
                   textBox={{
-                    decimal: { allowNegative: false },
+                    decimal: { allowNegative: false, decimalScale: 4 },
                     className: "txt-fld",
                     name: "critical_high",
                     value: inputs.critical_high,

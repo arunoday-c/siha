@@ -36,9 +36,8 @@ class AnalytesRange extends PureComponent {
 
           for (let i = 0; i < result.data.records.length; i++) {
             if (result.data.records[i].analyte_type === "T") {
-              result.data.records[i].text_value_data = result.data.records[
-                i
-              ].text_value.split("<br/>");
+              result.data.records[i].text_value_data =
+                result.data.records[i].text_value.split("<br/>");
             } else {
               result.data.records[i].text_value_data = [];
             }

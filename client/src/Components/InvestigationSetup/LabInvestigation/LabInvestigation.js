@@ -414,6 +414,14 @@ class LabInvestigation extends Component {
                                   ? "Differential Leukocyte Count"
                                   : row.analyte_report_group === "C"
                                   ? "Chemical Examination"
+                                  : row.analyte_report_group === "ME"
+                                  ? "Macroscopic Examination"
+                                  : row.analyte_report_group === "AG"
+                                  ? "Agglutination"
+                                  : row.analyte_report_group === "MT"
+                                  ? "Motility"
+                                  : row.analyte_report_group === "SM"
+                                  ? "Sperm Morphology"
                                   : "None"}
                               </span>
                             );

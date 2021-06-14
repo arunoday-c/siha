@@ -30,6 +30,7 @@ const {
   deleteNetworkAndNetworkOfficRecords,
   getInsuranceProviders,
   getFinanceInsuranceProviders,
+  verifyUserIdExist,
 } = insuranceModels;
 
 export default () => {
@@ -59,6 +60,17 @@ export default () => {
       next();
     }
   );
+  api.get("/verifyUserIdExist", verifyUserIdExist, (req, res, next) => {
+    const exists = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: exists,
+      message:
+        exists === false
+          ? `User id is already exists please use another id`
+          : "",
+    });
+    next();
+  });
   api.get("/getSubInsurance", getSubInsurance, (req, res, next) => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

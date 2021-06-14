@@ -1529,9 +1529,9 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hims_d_lab_analytes_range_id,analyte_id,gender,age_type,from_age,to_age,\
-            critical_low,critical_high,normal_low,normal_qualitative_value,text_value,normal_high,\
-            from_oprator,to_operator,low_operator,high_operator from hims_d_lab_analytes_range where analyte_id=? ",
+            "select AR.hims_d_lab_analytes_range_id,AR.analyte_id,LA.analyte_type,AR.gender,AR.age_type,AR.from_age,AR.to_age,\
+            AR.critical_low,AR.critical_high,AR.normal_low,AR.normal_qualitative_value,AR.text_value,AR.normal_high,\
+            AR.from_oprator,AR.to_operator,AR.low_operator,AR.high_operator from hims_d_lab_analytes_range AR left join hims_d_lab_analytes LA on LA.hims_d_lab_analytes_id=AR.analyte_id where analyte_id=? ",
           values: [req.query.analyte_id],
           printQuery: true,
         })

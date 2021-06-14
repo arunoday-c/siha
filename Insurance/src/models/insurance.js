@@ -455,7 +455,32 @@ export default {
       next(e);
     }
   },
+  verifyUserIdExist: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      const { user_id } = req.query;
 
+      _mysql
+        .executeQuery({
+          query: `select user_id,insurance_sub_code from hims_d_insurance_sub where LOWER(user_id) = LOWER(?)`,
+          values: [user_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result.length > 0 ? false : true;
+
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   //created by:irfan
   updateSubInsuranceProvider: (req, res, next) => {
     const _mysql = new algaehMysql();

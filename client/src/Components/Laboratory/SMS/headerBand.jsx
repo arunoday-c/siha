@@ -63,7 +63,7 @@ export default memo(function HeaderBand(props) {
           }}
           textBox={{ className: "txt-fld", name: "from_date", value: date }}
           type="range"
-          maxDate={new Date()}
+          // maxDate={new Date()}
           events={{
             onChange: (e) => {
               setDate(e);
