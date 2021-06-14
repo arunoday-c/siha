@@ -109,6 +109,7 @@ class Reports extends Component {
                           template_name: item.template_name,
                           reportQuery: item.reportQuery,
                           requireIframe: item.requireIframe,
+                          pdfButtonDisabled: item.pdfButtonDisabled,
                           fileName: item.template_name,
                         };
                         if (

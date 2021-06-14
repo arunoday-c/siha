@@ -1127,29 +1127,34 @@ export default class ReportUI extends Component {
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col">
-                    {" "}
-                    <ButtonType
-                      classname="btn-primary"
-                      onClick={this.generateReport.bind(this, this)}
-                      label={{
-                        forceLabel: "  Preview Report",
-                        returnText: true,
-                      }}
-                      others={{
-                        reporttype: "preview",
-                      }}
-                    />{" "}
-                    <ButtonType
-                      classname="btn-default"
-                      onClick={this.generateReport.bind(this, this)}
-                      label={{
-                        forceLabel: "  Download as PDF",
-                        returnText: true,
-                      }}
-                      others={{
-                        reporttype: "pdf",
-                      }}
-                    />
+                    {this.props.options.report.pdfButtonDisabled ===
+                    true ? null : (
+                      <>
+                        {" "}
+                        <ButtonType
+                          classname="btn-primary"
+                          onClick={this.generateReport.bind(this, this)}
+                          label={{
+                            forceLabel: "Preview Report",
+                            returnText: true,
+                          }}
+                          others={{
+                            reporttype: "preview",
+                          }}
+                        />
+                        <ButtonType
+                          classname="btn-default"
+                          onClick={this.generateReport.bind(this, this)}
+                          label={{
+                            forceLabel: "  Download as PDF",
+                            returnText: true,
+                          }}
+                          others={{
+                            reporttype: "pdf",
+                          }}
+                        />
+                      </>
+                    )}
                     {this.props.options.report.excel === "true" ? (
                       <ButtonType
                         classname="btn-default"
