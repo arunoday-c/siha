@@ -48,7 +48,7 @@ app.get("/:id", (req: Request, res: Response) => {
       const _fs = fs.createReadStream(pdfPath);
       res.writeHead(200, {
         "content-type": "application/pdf",
-        "content-disposition": "attachment;filename=pcrTest.pdf",
+        "content-disposition": "attachment;filename=PCR-TEST-REPORT.pdf",
       });
       _fs.pipe(res);
     } else {
