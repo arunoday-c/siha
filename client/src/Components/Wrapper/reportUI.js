@@ -731,8 +731,10 @@ export default class ReportUI extends Component {
                     <section className="resultSecStyles">
                       <div className="row">
                         <div className="col-8">
-                          <h4 className="title">{result.item_description}</h4>
-                          <small>{result.uom_description}</small>
+                          <h4 className="title">
+                            {result[_param.primaryDesc]}
+                          </h4>
+                          <small>{result[_param.secondaryDesc]}</small>
                           {/* <h4 className="title">{result.item_description}</h4>
                           <small>{result.uom_description}</small> */}
                         </div>
@@ -1125,29 +1127,34 @@ export default class ReportUI extends Component {
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col">
-                    {" "}
-                    <ButtonType
-                      classname="btn-primary"
-                      onClick={this.generateReport.bind(this, this)}
-                      label={{
-                        forceLabel: "  Preview Report",
-                        returnText: true,
-                      }}
-                      others={{
-                        reporttype: "preview",
-                      }}
-                    />{" "}
-                    <ButtonType
-                      classname="btn-default"
-                      onClick={this.generateReport.bind(this, this)}
-                      label={{
-                        forceLabel: "  Download as PDF",
-                        returnText: true,
-                      }}
-                      others={{
-                        reporttype: "pdf",
-                      }}
-                    />
+                    {this.props.options.report.pdfButtonDisabled ===
+                    true ? null : (
+                      <>
+                        {" "}
+                        <ButtonType
+                          classname="btn-primary"
+                          onClick={this.generateReport.bind(this, this)}
+                          label={{
+                            forceLabel: "Preview Report",
+                            returnText: true,
+                          }}
+                          others={{
+                            reporttype: "preview",
+                          }}
+                        />
+                        <ButtonType
+                          classname="btn-default"
+                          onClick={this.generateReport.bind(this, this)}
+                          label={{
+                            forceLabel: "  Download as PDF",
+                            returnText: true,
+                          }}
+                          others={{
+                            reporttype: "pdf",
+                          }}
+                        />
+                      </>
+                    )}
                     {this.props.options.report.excel === "true" ? (
                       <ButtonType
                         classname="btn-default"
