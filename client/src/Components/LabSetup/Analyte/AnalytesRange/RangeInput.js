@@ -282,7 +282,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
               },
             }}
           />
-          <div className="customRadio" style={{ borderBottom: 0 }}>
+          {/* <div className="customRadio" style={{ borderBottom: 0 }}>
             <label className="checkbox inline">
               <input
                 type="checkbox"
@@ -293,6 +293,22 @@ export default function RangeInput({ addAnalyte, analyteType }) {
               />
               <span>Critical Values Required?</span>
             </label>
+          </div> */}
+
+          <div className="col-6">
+            <label>Critical Values Required?</label>
+            <div className="customCheckbox">
+              <label className="checkbox inline">
+                <input
+                  type="checkbox"
+                  name="critical_value_req"
+                  value="Y"
+                  checked={inputs.critical_value_req === "Y" ? true : false}
+                  onChange={checkhandleChange}
+                />
+                <span>Yes</span>
+              </label>
+            </div>
           </div>
 
           {inputs.critical_value_req === "Y" ? (

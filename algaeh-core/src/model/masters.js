@@ -376,7 +376,7 @@ let countryStateCity = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "select  hims_d_country_id,country_name,arabic_country_name,tel_code from hims_d_country where status='A';\
+          "select  hims_d_country_id,country_name,arabic_country_name,tel_code,max_phone_digits from hims_d_country where status='A';\
         select hims_d_state_id,state_name,arabic_state_name,country_id  from hims_d_state where record_status='A';\
         select  hims_d_city_id,city_name,city_arabic_name,state_id  from hims_d_city where record_status='A';",
       })

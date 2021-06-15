@@ -163,12 +163,16 @@
             }}</span></td>
         <td class="textArbRht"><label>تاريخ نتيجة الفحص </label></td>
       </tr>
-      <tr>
-        <td class="textEngLft"><label>Referral institution</label></td>
-        <td class="textEngCtr" colspan="2"><span
-          >{{header.institute_name}}</span></td>
-        <td class="textArbRht"><label>الجهة المحولة</label></td>
-      </tr>
+
+      {{#if header.institute_name null}}{{else}}
+        <tr>
+          <td class="textEngLft"><label>Referral institution</label></td>
+          <td class="textEngCtr" colspan="2"><span
+            >{{header.institute_name}}</span></td>
+          <td class="textArbRht"><label>الجهة المحولة</label></td>
+        </tr>
+      {{/if}}
+
     </table>
   </section>
   <section>
@@ -195,8 +199,7 @@
       <tr>
         <td class="textEngLft"><p>Scan the QR Code to electronically check the
             report</p>
-          <p>Match sure the data on this report matches the onces in the
-            passport</p></td>
+          <p>Make sure the data on this report matches the onces in the passport</p></td>
         <td class="textEngCtr" width="50%"></td>
         <td class="textArbRht"><p>قم بمسح الباركود للتحقق من التقرير الكترونيا</p><p
           >تأكد من مطابقة البيانات في هذا التقرير بمعلومات جواز السفر أو الهوية

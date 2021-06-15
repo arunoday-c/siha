@@ -28,7 +28,7 @@ export default function AddNewAccount({
   isNewAccount,
   ledgerCode,
 }) {
-  debugger;
+  // debugger;
   const [lodingAddtoList, setLoadingAddtoList] = useState(false);
   // const [account_code, setAccountCode] = useState("");
   const [account_name, setAccountName] = useState("");
@@ -155,6 +155,7 @@ export default function AddNewAccount({
           type,
           ledgerCode: ledger_code,
           obDate: account_type === "G" ? undefined : obDate,
+          account_type: account_typ,
         };
       }
       if (enableOP) {

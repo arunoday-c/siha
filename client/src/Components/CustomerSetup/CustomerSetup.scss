@@ -1,7 +1,7 @@
 .customer_setup {
   #customerGrid {
     .ReactTable {
-      max-height: 70vh !important;
+      max-height: 78vh !important;
     }
   }
 }
@@ -9,6 +9,9 @@
   .algaeh-modal {
     .popupInner {
       // min-height: 75vh;
+      .popLeftDiv {
+        max-height: 73vh;
+      }
       h6 {
         font-weight: bold;
         text-transform: uppercase;

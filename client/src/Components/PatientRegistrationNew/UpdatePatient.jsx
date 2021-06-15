@@ -62,6 +62,7 @@ export function UpdatePatient({
     control,
     handleSubmit,
     setValue,
+    getValues,
     errors,
     reset,
     clearErrors,
@@ -109,7 +110,6 @@ export function UpdatePatient({
       }
     },
     onError: (err) => {
-      debugger;
       if (err.message?.includes("hims_f_patient.primary_id_no_UNIQUE")) {
         swalMessage({
           title: "Duplicate primary id number, Please provide a new ID number",
@@ -127,7 +127,7 @@ export function UpdatePatient({
       if (data === undefined) {
         return;
       }
-      debugger;
+
       const images = [];
 
       if (userToken?.portal_exists === "Y") {
@@ -208,6 +208,7 @@ export function UpdatePatient({
     <Demographics
       control={control}
       setValue={setValue}
+      getValues={getValues}
       errors={errors}
       clearErrors={clearErrors}
       patientImage={patientImage}
