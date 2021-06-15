@@ -210,13 +210,8 @@ export default memo(function (props) {
       }
       grandTotal = totalAmount - debitNoteTotal;
     }
-    const {
-      narration,
-      child_id,
-      head_id,
-      voucher_type,
-      invoice_no,
-    } = filterCheck[0];
+    const { narration, child_id, head_id, voucher_type, invoice_no } =
+      filterCheck[0];
     Modal.confirm({
       title: "Please verify payment details",
       className: "debitNoteConfirmModal",
@@ -285,6 +280,7 @@ export default memo(function (props) {
             voucher_type: "payment",
           };
         });
+        debugger;
         let merdgeData = merdge;
         if (isFromProcessed === true) {
           for (let i = 0; i < filterDebitNotes.length; i++)
