@@ -1632,6 +1632,7 @@ export default {
               .then((subResult) => {
                 let strQuery = `delete from finance_day_end_sub_detail where day_end_header_id=${input.finance_day_end_header_id};
                   delete from finance_day_end_header where finance_day_end_header_id=${input.finance_day_end_header_id};`;
+
                 if (input.from_screen == "PR0004") {
                   _mysql
                     .executeQueryWithTransaction({
@@ -1677,6 +1678,36 @@ export default {
                         next(e);
                       });
                     });
+                  // strQuery += `update hims_f_procurement_grn_header set posted='N' where grn_number='${input.document_number}';`;
+                } else if (input.from_screen == "PR0006") {
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query:
+                        `UPDATE hims_f_procurement_po_return_header SET is_posted='N', is_revert='Y', \
+                        revert_reason=?, reverted_date=?, reverted_by=? WHERE purchase_return_number=?;` +
+                        strQuery,
+                      values: [
+                        input.revert_reason,
+                        new Date(),
+                        req.userIdentity.algaeh_d_app_user_id,
+                        input.document_number,
+                      ],
+                      printQuery: true,
+                    })
+                    .then((result) => {
+                      // consol.log("document_id", input.document_id);
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = result;
+                        next();
+                      });
+                    })
+                    .catch((e) => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
+                    });
+
                   // strQuery += `update hims_f_procurement_grn_header set posted='N' where grn_number='${input.document_number}';`;
                 } else if (input.from_screen == "SAL005") {
                   // strQuery += `update hims_f_sales_invoice_header set is_posted='N' where invoice_number='${input.document_number}';`;
