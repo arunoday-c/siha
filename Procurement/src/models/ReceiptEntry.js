@@ -446,13 +446,24 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select is_completed from hims_f_procurement_dn_header where purchase_order_id=?;",
-          values: [req.body.po_id],
+            "select is_completed from hims_f_procurement_dn_header where purchase_order_id=?;\
+            select is_completed from hims_f_procurement_po_header where hims_f_procurement_po_header_id=?;",
+          values: [req.body.po_id, req.body.po_id],
           printQuery: true,
         })
-        .then((po_data) => {
-          const partial_recived = po_data.filter((f) => f.is_completed === "N");
-          const is_completed = partial_recived.length > 0 ? "N" : "Y";
+        .then((result_data) => {
+          const dn_data = result_data[0];
+          const po_data = result_data[1][0];
+          const partial_recived = dn_data.filter((f) => f.is_completed === "N");
+          const is_completed =
+            partial_recived.length > 0 || po_data.is_completed === "N"
+              ? "N"
+              : "Y";
+
+          // console.log("po_data.is_completed", po_data.is_completed);
+          // console.log("partial_recived.length", partial_recived.length);
+          // console.log("is_completed", is_completed);
+          // consol.log("is_completed", is_completed);
 
           if (is_completed === "Y") {
             _mysql
@@ -462,10 +473,10 @@ export default {
                 values: [req.body.po_id],
                 printQuery: true,
               })
-              .then((po_data) => {
+              .then((update_po_data) => {
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
-                  req.dnrecords = po_data;
+                  req.dnrecords = update_po_data;
                   next();
                 });
               })

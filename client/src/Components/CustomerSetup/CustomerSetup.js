@@ -586,7 +586,7 @@ class CustomerSetup extends Component {
                   <hr style={{ margin: 0 }} />
                   <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col-2  form-group mandatory" }}
+                      div={{ className: "col-3  form-group mandatory" }}
                       label={{
                         forceLabel: "Payment Terms in Days",
                       }}
@@ -609,7 +609,7 @@ class CustomerSetup extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-3 form-group" }}
+                      div={{ className: "col-3 form-group mandatory" }}
                       label={{
                         fieldName: "payment_mode",
                         isImp: true,
@@ -626,12 +626,17 @@ class CustomerSetup extends Component {
                         onChange: this.dropDownHandle.bind(this),
                       }}
                     />
-
+                  </div>
+                  <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col-3 form-group" }}
+                      div={{
+                        className: `col  ${
+                          this.state.payment_mode === "BT" ? "mandatory" : ""
+                        }`,
+                      }}
                       label={{
                         fieldName: "bank_name",
-                        // isImp: this.state.payment_mode === "BT" ? true : false
+                        isImp: this.state.payment_mode === "BT" ? true : false,
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -642,23 +647,18 @@ class CustomerSetup extends Component {
                         },
                       }}
                     />
-                    <AlagehFormGroup
-                      div={{ className: "col-3 form-group" }}
-                      label={{
-                        fieldName: "bank_account_no",
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "bank_account_no",
-                        value: this.state.bank_account_no,
-                        events: {
-                          onChange: this.changeTexts.bind(this),
-                        },
-                      }}
-                    />
-                    <div className="col no-padding-left-right mandatory cardMaskFld">
+
+                    <div
+                      className={`col-2 no-padding-left-right cardMaskFld ${
+                        this.state.payment_mode === "BT" ? "mandatory" : ""
+                      }`}
+                    >
                       <AlgaehLabel
-                        label={{ fieldName: "IBAN NO.", isImp: false }}
+                        label={{
+                          fieldName: "IBAN No.",
+                          isImp:
+                            this.state.payment_mode === "BT" ? true : false,
+                        }}
                       />
                       <MaskedInput
                         mask={"AA11111111"}
@@ -673,6 +673,25 @@ class CustomerSetup extends Component {
                         // disabled={isLoading || disabled}
                       />
                     </div>
+                    <AlagehFormGroup
+                      div={{
+                        className: `col ${
+                          this.state.payment_mode === "BT" ? "mandatory" : ""
+                        }`,
+                      }}
+                      label={{
+                        fieldName: "bank_account_no",
+                        isImp: this.state.payment_mode === "BT" ? true : false,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "bank_account_no",
+                        value: this.state.bank_account_no,
+                        events: {
+                          onChange: this.changeTexts.bind(this),
+                        },
+                      }}
+                    />
                   </div>
                 </div>
                 <div className="col-4 popRightDiv">
