@@ -1,7 +1,4 @@
-import {
-  swalMessage,
-  algaehApiCall
-} from "../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
 // import Enumerable from "linq";
 
@@ -18,7 +15,7 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -28,7 +25,7 @@ const loctexthandle = ($this, e) => {
 
   $this.setState({
     [name]: value,
-    location_type: e.selected.location_type
+    location_type: e.selected.location_type,
   });
 };
 
@@ -40,7 +37,7 @@ const vendortexthandle = ($this, e) => {
     [name]: value,
     vendor_name: e.selected.vendor_name,
     payment_terms: e.selected.payment_terms,
-    tax_percentage: e.selected.vat_percentage
+    tax_percentage: e.selected.vat_percentage,
   });
 };
 
@@ -53,7 +50,7 @@ const poforhandle = ($this, e) => {
     [name]: value,
     pharmcy_location_id: null,
     inventory_location_id: null,
-    ReqData: false
+    ReqData: false,
   });
 };
 
@@ -73,18 +70,18 @@ const discounthandle = ($this, context, ctrl, e) => {
   if (sheet_discount_percentage > 100) {
     swalMessage({
       title: "Discount % cannot be greater than 100.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState({
       sheet_discount_percentage: sheet_discount_percentage,
-      sheet_discount_amount: sheet_discount_amount
+      sheet_discount_amount: sheet_discount_amount,
     });
 
     if (context !== null) {
       context.updateState({
         sheet_discount_percentage: sheet_discount_percentage,
-        sheet_discount_amount: sheet_discount_amount
+        sheet_discount_amount: sheet_discount_amount,
       });
     }
   }
@@ -97,12 +94,12 @@ const numberchangeTexts = ($this, context, e) => {
   if (value < 0) {
     swalMessage({
       title: "Quantity cannot be less than Zero",
-      type: "warning"
+      type: "warning",
     });
   } else if (value > $this.state.qtyhand) {
     swalMessage({
       title: "Quantity cannot be greater than Quantity in hand",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState({ [name]: value });
@@ -111,7 +108,7 @@ const numberchangeTexts = ($this, context, e) => {
     texthandlerInterval = setInterval(() => {
       if (context !== undefined) {
         context.updateState({
-          [name]: value
+          [name]: value,
         });
       }
       clearInterval(texthandlerInterval);
@@ -121,7 +118,7 @@ const numberchangeTexts = ($this, context, e) => {
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
@@ -135,7 +132,8 @@ const ReceiptSearch = ($this, e) => {
     $this.state.po_return_from === "PHR" &&
     $this.state.pharmcy_location_id !== null
   ) {
-    Inputs += " and GH.pharmcy_location_id = " + $this.state.pharmcy_location_id;
+    Inputs +=
+      " and GH.pharmcy_location_id = " + $this.state.pharmcy_location_id;
   } else if (
     $this.state.po_return_from === "INV" &&
     $this.state.inventory_location_id !== null
@@ -150,7 +148,7 @@ const ReceiptSearch = ($this, e) => {
 
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Receipt.ReceiptEntry
+      columns: spotlightSearch.Receipt.ReceiptEntry,
     },
     searchName: "ReceiptEntry",
     uri: "/gloabelSearch/get",
@@ -158,7 +156,7 @@ const ReceiptSearch = ($this, e) => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/PurchaseReturnEntry/getReceiptEntryItems",
@@ -167,10 +165,10 @@ const ReceiptSearch = ($this, e) => {
           grn_header_id: row.hims_f_procurement_grn_header_id,
           po_return_from: $this.state.po_return_from,
           pharmacy_location_id: row.pharmcy_location_id,
-          inventory_location_id: row.inventory_location_id
+          inventory_location_id: row.inventory_location_id,
         },
         method: "GET",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let data = response.data.records;
 
@@ -186,9 +184,9 @@ const ReceiptSearch = ($this, e) => {
             });
             AlgaehLoader({ show: false });
           }
-        }
+        },
       });
-    }
+    },
   });
 };
 
@@ -197,12 +195,13 @@ const ClearData = ($this, e) => {
   IOputs.dataExitst = false;
   $this.setState(IOputs);
 
-  RawSecurityComponent({ componentCode: "PUR_RTN_INVENTORY" }).then((result) => {
-    if (result === "show") {
-      getData($this, "INV");
-      $this.setState({ po_return_from: "INV", ReqData: false });
+  RawSecurityComponent({ componentCode: "PUR_RTN_INVENTORY" }).then(
+    (result) => {
+      if (result === "show") {
+        getData($this, "INV");
+        $this.setState({ po_return_from: "INV", ReqData: false });
+      }
     }
-  }
   );
 
   RawSecurityComponent({ componentCode: "PUR_RTN_PHARMACY" }).then((result) => {
@@ -211,11 +210,9 @@ const ClearData = ($this, e) => {
       $this.setState({ po_return_from: "PHR", ReqData: false });
     }
   });
-
-
 };
 
-const SavePOReutrnEnrty = $this => {
+const SavePOReutrnEnrty = ($this) => {
   AlgaehLoader({ show: true });
   if ($this.state.po_return_from === "PHR") {
     $this.state.po_return_entry_detail = $this.state.pharmacy_stock_detail;
@@ -227,7 +224,7 @@ const SavePOReutrnEnrty = $this => {
     uri: "/PurchaseReturnEntry/addPurchaseReturnEntry",
     module: "procurement",
     data: $this.state,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
           purchase_return_number: response.data.records.purchase_return_number,
@@ -235,23 +232,23 @@ const SavePOReutrnEnrty = $this => {
             response.data.records.hims_f_procurement_return_po_header_id,
           saveEnable: true,
           postEnable: false,
-          dataExitst: true
+          dataExitst: true,
         });
 
         swalMessage({
           type: "success",
-          title: "Saved successfully . ."
+          title: "Saved successfully . .",
         });
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -266,12 +263,12 @@ const getCtrlCode = ($this, docNumber) => {
       module: "procurement",
       method: "GET",
       data: { purchase_return_number: docNumber },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
           getData($this, data.po_return_from);
 
-          debugger
+          debugger;
           const queryParams = new URLSearchParams($this.props.location.search);
           if (queryParams.get("purchase_return_number")) {
             data.addItemButton = true;
@@ -298,13 +295,13 @@ const getCtrlCode = ($this, docNumber) => {
         }
         AlgaehLoader({ show: false });
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   });
 };
@@ -318,8 +315,8 @@ const getData = ($this, po_return_from) => {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "poitemlist"
-      }
+        mappingName: "poitemlist",
+      },
     });
 
     $this.props.getLocation({
@@ -327,12 +324,12 @@ const getData = ($this, po_return_from) => {
       module: "pharmacy",
       method: "GET",
       data: {
-        location_status: "A"
+        location_status: "A",
       },
       redux: {
         type: "LOCATIONS_GET_DATA",
-        mappingName: "polocations"
-      }
+        mappingName: "polocations",
+      },
     });
 
     $this.props.getItemCategory({
@@ -341,8 +338,8 @@ const getData = ($this, po_return_from) => {
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "poitemcategory"
-      }
+        mappingName: "poitemcategory",
+      },
     });
 
     $this.props.getItemGroup({
@@ -351,8 +348,8 @@ const getData = ($this, po_return_from) => {
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
-        mappingName: "poitemgroup"
-      }
+        mappingName: "poitemgroup",
+      },
     });
 
     $this.props.getItemUOM({
@@ -361,8 +358,8 @@ const getData = ($this, po_return_from) => {
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
-        mappingName: "poitemuom"
-      }
+        mappingName: "poitemuom",
+      },
     });
   } else if (po_return_from === "INV") {
     $this.props.getItems({
@@ -372,8 +369,8 @@ const getData = ($this, po_return_from) => {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "poitemlist"
-      }
+        mappingName: "poitemlist",
+      },
     });
 
     $this.props.getLocation({
@@ -381,12 +378,12 @@ const getData = ($this, po_return_from) => {
       module: "inventory",
       method: "GET",
       data: {
-        location_status: "A"
+        location_status: "A",
       },
       redux: {
         type: "LOCATIONS_GET_DATA",
-        mappingName: "polocations"
-      }
+        mappingName: "polocations",
+      },
     });
 
     $this.props.getItemCategory({
@@ -395,9 +392,9 @@ const getData = ($this, po_return_from) => {
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "poitemcategory"
+        mappingName: "poitemcategory",
       },
-      afterSuccess: data => { }
+      afterSuccess: (data) => {},
     });
 
     $this.props.getItemGroup({
@@ -406,8 +403,8 @@ const getData = ($this, po_return_from) => {
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
-        mappingName: "poitemgroup"
-      }
+        mappingName: "poitemgroup",
+      },
     });
 
     $this.props.getItemUOM({
@@ -416,20 +413,20 @@ const getData = ($this, po_return_from) => {
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
-        mappingName: "poitemuom"
-      }
+        mappingName: "poitemuom",
+      },
     });
   }
 };
 
-const generatePOReceipt = data => {
+const generatePOReceipt = (data) => {
   console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -441,31 +438,31 @@ const generatePOReceipt = data => {
         reportParams: [
           {
             name: "purchase_return_number",
-            value: data.purchase_return_number
-          }
+            value: data.purchase_return_number,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${data.purchase_return_number}-Purchase Order Return Receipt`
+      const reportName = `${data.purchase_return_number}-Purchase Order Return Receipt`;
 
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
       // window.document.title = "Purchase Order Receipt";
-    }
+    },
   });
 };
 
-const generatePOReceiptNoPrice = data => {
+const generatePOReceiptNoPrice = (data) => {
   console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -477,34 +474,34 @@ const generatePOReceiptNoPrice = data => {
         reportParams: [
           {
             name: "purchase_return_number",
-            value: data.purchase_return_number
-          }
+            value: data.purchase_return_number,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${data.purchase_return_number}-Purchase Order Return Receipt`
+      const reportName = `${data.purchase_return_number}-Purchase Order Return Receipt`;
 
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
       // window.document.title = "Purchase Order Return Receipt";
-    }
+    },
   });
 };
 
-const PostPOReturnEntry = $this => {
+const PostPOReturnEntry = ($this) => {
   if ($this.state.return_ref_no === null || $this.state.return_ref_no === "") {
     swalMessage({
       type: "warning",
-      title: "Please Enter Return Reference No."
+      title: "Please Enter Return Reference No.",
     });
     return;
   } else if ($this.state.inovice_number === $this.state.return_ref_no) {
     swalMessage({
       type: "warning",
-      title: "Invoice number and Return Reference No. can't be same."
+      title: "Invoice number and Return Reference No. can't be same.",
     });
     return;
   }
@@ -584,30 +581,31 @@ const PostPOReturnEntry = $this => {
     module: "procurement",
     data: InputObj,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
           postEnable: true,
-          is_posted: "Y"
+          is_posted: "Y",
+          is_revert: "N",
         });
         swalMessage({
           title: "Posted successfully . .",
-          type: "success"
+          type: "success",
         });
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const getVendorMaster = $this => {
+const getVendorMaster = ($this) => {
   $this.props.getVendorMaster({
     uri: "/vendor/getVendorMaster",
     module: "masterSettings",
@@ -615,8 +613,8 @@ const getVendorMaster = $this => {
     data: { vendor_status: "A" },
     redux: {
       type: "VENDORS_GET_DATA",
-      mappingName: "povendors"
-    }
+      mappingName: "povendors",
+    },
   });
 };
 export {
@@ -635,5 +633,5 @@ export {
   getVendorMaster,
   generatePOReceipt,
   generatePOReceiptNoPrice,
-  getData
+  getData,
 };

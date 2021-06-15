@@ -10,7 +10,8 @@ const {
   cancelPurchaseOrderEntry,
   getPurchaseReturnEntry,
   postPurchaseReturnOrderEntry,
-  generateAccountingEntry
+  generateAccountingEntry,
+  releaseConnection,
 } = purchaseReturnModels;
 
 const { updateIntoItemLocation } = pharmacyComModels;
@@ -22,56 +23,66 @@ export default () => {
   api.get("/getReceiptEntryItems", getReceiptEntryItems, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
-  api.get("/getPurchaseReturnEntry", getPurchaseReturnEntry, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: req.records
-    });
-  });
-
-  api.post("/addPurchaseReturnEntry", addPurchaseReturnEntry, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: req.records
-    });
-  });
-
-  api.put("/cancelPurchaseOrderEntry", cancelPurchaseOrderEntry, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: req.records
-    });
-  });
-
-  api.put("/postPurchaseReturnOrderEntry",
-    postPurchaseReturnOrderEntry,
-    generateAccountingEntry,
-    (req, res, next) => {
-      if (req.body.po_return_from == "PHR") {
-        updateIntoItemLocation(req, res, next);
-      } else {
-        next();
-      }
-    },
-    (req, res, next) => {
-      if (req.body.po_return_from == "INV") {
-        updateIntoInvItemLocation(req, res, next);
-      } else {
-        next();
-      }
-    },
+  api.get(
+    "/getPurchaseReturnEntry",
+    getPurchaseReturnEntry,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
-    });
+    }
+  );
 
+  api.post(
+    "/addPurchaseReturnEntry",
+    addPurchaseReturnEntry,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
 
+  api.put(
+    "/cancelPurchaseOrderEntry",
+    cancelPurchaseOrderEntry,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+
+  api.put(
+    "/postPurchaseReturnOrderEntry",
+    postPurchaseReturnOrderEntry,
+    generateAccountingEntry,
+    (req, res, next) => {
+      if (req.body.is_revert == "Y") {
+        releaseConnection(req, res, next);
+      } else {
+        if (req.body.po_return_from == "PHR") {
+          updateIntoItemLocation(req, res, next);
+        } else {
+          updateIntoInvItemLocation(req, res, next);
+        }
+      }
+    },
+
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
 
   return api;
 };

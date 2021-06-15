@@ -5,7 +5,11 @@ import { bindActionCreators } from "redux";
 import "./PurchaseReturnEntry.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import MyContext from "../../../utils/MyContext";
-import { AlgaehLabel, AlagehAutoComplete, AlagehFormGroup } from "../../Wrapper/algaehWrapper";
+import {
+  AlgaehLabel,
+  AlagehAutoComplete,
+  AlagehFormGroup,
+} from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -40,7 +44,7 @@ class PurchaseReturnEntry extends Component {
     super(props);
     this.state = {
       decimal_places: null,
-      selectBatch: false
+      selectBatch: false,
     };
     getVendorMaster(this, this);
 
@@ -92,15 +96,15 @@ class PurchaseReturnEntry extends Component {
       this.state.po_return_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-          .where((w) => w.location_type === "WH")
-          .toArray();
+            .where((w) => w.location_type === "WH")
+            .toArray();
 
     const class_finder =
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === false
-          ? ""
-          : " disableFinder";
+        ? ""
+        : " disableFinder";
 
     return (
       <div>
@@ -166,25 +170,25 @@ class PurchaseReturnEntry extends Component {
           printArea={
             this.state.purchase_return_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Receipt for Internal",
-                    events: {
-                      onClick: () => {
-                        generatePOReceipt(this.state);
+                  menuitems: [
+                    {
+                      label: "Receipt for Internal",
+                      events: {
+                        onClick: () => {
+                          generatePOReceipt(this.state);
+                        },
                       },
                     },
-                  },
-                  {
-                    label: "Receipt for Vendor",
-                    events: {
-                      onClick: () => {
-                        generatePOReceiptNoPrice(this.state);
+                    {
+                      label: "Receipt for Vendor",
+                      events: {
+                        onClick: () => {
+                          generatePOReceiptNoPrice(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -250,7 +254,6 @@ class PurchaseReturnEntry extends Component {
                     </label>
                   </div>
                 </div>
-
 
                 <AlagehAutoComplete
                   div={{ className: "col-3" }}
@@ -329,11 +332,13 @@ class PurchaseReturnEntry extends Component {
                     },
                   }}
                 />
-                {this.state.return_type === "R" ?
+                {this.state.return_type === "R" ? (
                   <div className="col-6">
                     <div className="row">
                       <div className={"col-6 globalSearchCntr" + class_finder}>
-                        <AlgaehLabel label={{ forceLabel: "Search Receipt No." }} />
+                        <AlgaehLabel
+                          label={{ forceLabel: "Search Receipt No." }}
+                        />
                         <h6 onClick={ReceiptSearch.bind(this, this)}>
                           {this.state.grn_number
                             ? this.state.grn_number
@@ -351,9 +356,8 @@ class PurchaseReturnEntry extends Component {
                         </h6>
                       </div>
                     </div>
-                  </div> : null}
-
-
+                  </div>
+                ) : null}
 
                 {/* <AlagehFormGroup
                                     div={{ className: "col-2" }}
@@ -423,6 +427,23 @@ class PurchaseReturnEntry extends Component {
             </div>
           </div>
 
+          {this.state.is_revert === "Y" ? (
+            <div className="alert alert-danger">
+              <div className="row">
+                <div className="col">
+                  <p>
+                    Reason:<b>{this.state.revert_reason}</b>
+                  </p>
+                </div>
+                <div className="col-4">
+                  <p>
+                    Reverted By:<b>{this.state.reverted_name}</b>
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
           <MyContext.Provider
             value={{
               state: this.state,
@@ -445,9 +466,7 @@ class PurchaseReturnEntry extends Component {
                       forceLabel: "Receipt Net Payable",
                     }}
                   />
-                  <h6>
-                    {GetAmountFormart(this.state.receipt_net_payable)}
-                  </h6>
+                  <h6>{GetAmountFormart(this.state.receipt_net_payable)}</h6>
                 </div>
 
                 <div className="col">
