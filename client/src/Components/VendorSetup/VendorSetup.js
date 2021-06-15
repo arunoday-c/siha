@@ -597,7 +597,7 @@ class VendorSetup extends Component {
                   /> */}
 
                   <AlagehAutoComplete
-                    div={{ className: "col-3 mandatory" }}
+                    div={{ className: "col-2 mandatory" }}
                     label={{
                       fieldName: "payment_mode",
                       isImp: true,
@@ -616,7 +616,7 @@ class VendorSetup extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-3 mandatory" }}
+                    div={{ className: "col-2 mandatory" }}
                     label={{
                       fieldName: "vat_number",
                       isImp: true,
@@ -633,7 +633,7 @@ class VendorSetup extends Component {
 
                   <AlagehFormGroup
                     div={{
-                      className: `col-2  ${
+                      className: `col  ${
                         this.state.payment_mode === "BT" ? "mandatory" : ""
                       }`,
                     }}
@@ -650,9 +650,16 @@ class VendorSetup extends Component {
                       },
                     }}
                   />
-                  <div className="col no-padding-left-right mandatory cardMaskFld">
+                  <div
+                    className={`col-1 no-padding-left-right cardMaskFld ${
+                      this.state.payment_mode === "BT" ? "mandatory" : ""
+                    }`}
+                  >
                     <AlgaehLabel
-                      label={{ fieldName: "IBAN NO.", isImp: false }}
+                      label={{
+                        fieldName: "IBAN No.",
+                        isImp: this.state.payment_mode === "BT" ? true : false,
+                      }}
                     />
                     <MaskedInput
                       mask={"AA11111111"}
@@ -669,7 +676,7 @@ class VendorSetup extends Component {
                   </div>
                   <AlagehFormGroup
                     div={{
-                      className: `col-2  ${
+                      className: `col  ${
                         this.state.payment_mode === "BT" ? "mandatory" : ""
                       }`,
                     }}
