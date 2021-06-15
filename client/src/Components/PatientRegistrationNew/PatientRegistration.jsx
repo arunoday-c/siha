@@ -291,39 +291,39 @@ export function PatientRegistration() {
     },
   });
 
-  const { isLoading, data: patientData, refetch } = useQuery(
-    ["patient", { patient_code }],
-    getPatient,
-    {
-      enabled: !!patient_code,
-      initialData: {
-        bill_criedt: [],
-        patientRegistration: null,
-        identities: [],
-      },
-      retry: 0,
-      initialStale: true,
-      onSuccess: (data) => {
-        if (data?.patientRegistration) {
-          let patientRegistration = data?.patientRegistration;
+  const {
+    isLoading,
+    data: patientData,
+    refetch,
+  } = useQuery(["patient", { patient_code }], getPatient, {
+    enabled: !!patient_code,
+    initialData: {
+      bill_criedt: [],
+      patientRegistration: null,
+      identities: [],
+    },
+    retry: 0,
+    initialStale: true,
+    onSuccess: (data) => {
+      if (data?.patientRegistration) {
+        let patientRegistration = data?.patientRegistration;
 
-          setIdentityType(patientRegistration.identity_type);
-          reset({
-            ...patientRegistration,
-            // consultation: "Y",
-            visit_type: default_visit_type?.hims_d_visit_type_id,
-          });
-        }
-      },
-      onError: (err) => {
-        AlgaehMessagePop({
-          display: err?.message,
-          type: "error",
+        setIdentityType(patientRegistration.identity_type);
+        reset({
+          ...patientRegistration,
+          // consultation: "Y",
+          visit_type: default_visit_type?.hims_d_visit_type_id,
         });
-        history.push(location.pathname);
-      },
-    }
-  );
+      }
+    },
+    onError: (err) => {
+      AlgaehMessagePop({
+        display: err?.message,
+        type: "error",
+      });
+      history.push(location.pathname);
+    },
+  });
 
   const [save, { isLoading: saveLoading }] = useMutation(savePatient, {
     onSuccess: (data) => {
@@ -593,7 +593,6 @@ export function PatientRegistration() {
     let inputData;
     const receiptdetails = [];
 
-    debugger;
     if (billInfo.insurance_yesno === "Y") {
       if (insuranceInfo.creidt_limit_req === "Y") {
         const creidt_amount_till =
@@ -1191,6 +1190,7 @@ export function PatientRegistration() {
                   setValue={setValue}
                   errors={errors}
                   clearErrors={clearErrors}
+                  getValues={getValues}
                   patientImage={patientImage}
                   patientIdCard={patientIdCard}
                   incomeByOp={incomeByOp}

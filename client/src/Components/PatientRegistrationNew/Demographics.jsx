@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./PatientRegistrationStyle.scss";
 import { useQuery } from "react-query";
 import { Controller, useWatch } from "react-hook-form";
@@ -60,6 +60,7 @@ async function getDemoData() {
 export function Demographics({
   control,
   setValue,
+  getValues,
   errors,
   patientIdCard,
   patientImage,
@@ -71,6 +72,7 @@ export function Demographics({
 }) {
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
+  const [maxLength, setMaxLength] = useState(null);
   const { savedPatient, setIdentityType } = useContext(FrontdeskContext);
   const disabled = !inModal && (!!patient_code || !!savedPatient?.patient_code);
   const {
@@ -97,6 +99,7 @@ export function Demographics({
     countries = [],
     religions = [],
   } = useContext(MainContext);
+
   const { isLoading, data: dropdownData } = useQuery(
     "dropdown-data",
     getDemoData,
@@ -140,7 +143,20 @@ export function Demographics({
     }
     // eslint-disable-next-line
   }, [nationality_id, nationalities, patient_code, loadFromReader]);
-
+  useEffect(() => {
+    const telCode = getValues().tel_code;
+    if (telCode) {
+      const maxlength = countries.filter((f) => f.tel_code === telCode)[0]
+        .max_phone_digits;
+      setMaxLength(maxlength);
+    } else {
+      const country_id = getValues().country_id;
+      const maxlength = countries.filter(
+        (f) => f.hims_d_country_id === country_id
+      )[0].max_phone_digits;
+      setMaxLength(maxlength);
+    }
+  }, [getValues().tel_code]);
   const calculateAge = (date) => {
     if (date) {
       let fromDate = moment(date);
@@ -425,7 +441,14 @@ export function Demographics({
                                   <>
                                     <Select
                                       value={value}
-                                      onChange={onChange}
+                                      onChange={(_, selected) => {
+                                        onChange(_, selected);
+                                        setMaxLength(
+                                          selected.max_phone_digits
+                                            ? selected.max_phone_digits
+                                            : null
+                                        );
+                                      }}
                                       virtual={true}
                                       disabled={disabled}
                                       showSearch
@@ -437,12 +460,21 @@ export function Demographics({
                                         );
                                       }}
                                       options={countries
-                                        ?.map((item) => item.tel_code)
+                                        ?.map((item) => ({
+                                          tel_code: item.tel_code,
+                                          max_phone_digits:
+                                            item.max_phone_digits,
+                                        }))
                                         .filter((v, i, a) => a.indexOf(v) === i)
-                                        .map((item) => ({
-                                          label: item,
-                                          value: item,
-                                        }))}
+                                        .map((item) => {
+                                          return {
+                                            label: item.tel_code,
+                                            value: item.tel_code,
+
+                                            max_phone_digits:
+                                              item.max_phone_digits,
+                                          };
+                                        })}
                                     >
                                       {/* {countries?.map((item) => (
                                       <Option
@@ -471,7 +503,11 @@ export function Demographics({
                                 }}
                                 render={(props) => (
                                   <>
-                                    <Input {...props} disabled={disabled} />
+                                    <Input
+                                      {...props}
+                                      disabled={disabled}
+                                      maxLength={maxLength}
+                                    />
                                   </>
                                 )}
                               />

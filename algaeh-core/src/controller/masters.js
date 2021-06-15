@@ -372,6 +372,7 @@ export default () => {
                 country_name: items.country_name,
                 arabic_country_name: items.arabic_country_name,
                 tel_code: items.tel_code,
+                max_phone_digits: items.max_phone_digits,
                 states: new LINQ(req.records[1])
                   .Where((state) => state.country_id == items.hims_d_country_id)
                   .Select((s) => {
