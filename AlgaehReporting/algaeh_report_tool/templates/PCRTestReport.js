@@ -20,11 +20,11 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: `
          
-          select P.patient_code,trim(E.full_name) as doctor_name,P.full_name as patient_name,P.arabic_name as patient_ar_name,P.date_of_birth,P.contact_number,
+          select P.patient_code,trim(E.full_name) as doctor_name,P.full_name as patient_name,P.arabic_name as patient_ar_name,P.date_of_birth,P.tel_code,P.contact_number,
           N.nationality,N.arabic_nationality,SD.sub_department_name,gender, age_in_years,   age_in_months,age_in_days, IP.insurance_provider_name,
           P.primary_id_no,ID.identity_document_name as primaryIDName,ID.arabic_identity_document_name as primaryAraIDName,
           P.secondary_id_no,IDD.identity_document_name as secondaryIDName,IDD.arabic_identity_document_name  as secondaryAraIDName,
-          REF.institute_name, REF.tel_code, REF.contact_number, REF.inCharge_name
+          REF.institute_name, REF.tel_code  as REF_tel_code, REF.contact_number as REF_contact_number, REF.inCharge_name
           from hims_f_patient P
           left join hims_d_nationality N on N.hims_d_nationality_id = P.nationality_id
           left join hims_d_referring_institute REF on REF.hims_d_referring_institute_id = P.referring_institute_id
