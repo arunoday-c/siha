@@ -507,6 +507,9 @@ export function Demographics({
                                       {...props}
                                       disabled={disabled}
                                       maxLength={maxLength}
+                                      placeholder={
+                                        maxLength ? `${maxLength} digits` : ""
+                                      }
                                     />
                                   </>
                                 )}
