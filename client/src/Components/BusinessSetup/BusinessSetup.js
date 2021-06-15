@@ -128,6 +128,7 @@ class BusinessSetup extends Component {
           />
         ),
         children: <CardMaster />,
+        componentCode: "BUSS_CARD",
       },
       {
         title: (
