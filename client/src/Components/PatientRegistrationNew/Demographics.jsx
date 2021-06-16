@@ -1233,7 +1233,8 @@ export function Demographics({
                           />
                           <h6>
                             {incomeByPoint || incomeByOp
-                              ? parseInt(incomeByOp) + parseInt(incomeByPoint)
+                              ? parseFloat(incomeByOp ? incomeByOp : 0.0) +
+                                parseFloat(incomeByPoint ? incomeByPoint : 0.0)
                               : 0.0}
                           </h6>
                         </div>{" "}
