@@ -28,9 +28,9 @@ export default {
 
       cancelled: "N",
       is_posted: "N",
+      is_revert: "N",
       postEnable: true,
       dataFinder: false,
-
 
       pharmacy_stock_detail: [],
       inventory_stock_detail: [],
@@ -39,8 +39,8 @@ export default {
       dataExitst: false,
       ReqData: true,
       return_type: "R",
-      Batch_Items: []
+      Batch_Items: [],
     };
     return output;
-  }
+  },
 };

@@ -367,7 +367,8 @@ class POReturnItemList extends Component {
                                 />
                               ),
                               displayTemplate: (row) => {
-                                return this.state.is_posted === "N" ? (
+                                return this.state.is_posted === "N" &&
+                                  this.state.is_revert === "N" ? (
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{

@@ -56,10 +56,29 @@ export function GenerateExcel({
       function insertRows(records) {
         if (typeof excelBodyRender === "function") {
           excelBodyRender(records, (correctedData) => {
-            worksheet.addRow(correctedData);
+            let c_object = records;
+            if (Array.isArray(columns)) {
+              for (let c = 0; c < columns.length; c++) {
+                const e_value = records[columns[c]["fieldName"]];
+                c_object[columns[c]["fieldName"]] = isNaN(e_value)
+                  ? e_value
+                  : parseFloat(e_value);
+              }
+            }
+            worksheet.addRow(c_object);
           });
         } else {
-          worksheet.addRow(records);
+          debugger;
+          let c_object = records;
+          if (Array.isArray(columns)) {
+            for (let c = 0; c < columns.length; c++) {
+              const e_value = records[columns[c]["fieldName"]];
+              c_object[columns[c]["fieldName"]] = isNaN(e_value)
+                ? e_value
+                : parseFloat(e_value);
+            }
+          }
+          worksheet.addRow(c_object);
         }
 
         if (Array.isArray(records["children"])) {
@@ -77,15 +96,17 @@ export function GenerateExcel({
         const elementsTd = elementTr.querySelectorAll("td");
         let footerFields = [];
         for (let f = 0; f < elementsTd.length; f++) {
-          footerFields.push(elementsTd[f].innerText);
+          const e_value = isNaN(elementsTd[f].innerText)
+            ? elementsTd[f].innerText
+            : parseFloat(elementsTd[f].innerText);
+          footerFields.push(e_value);
         }
         worksheet.addRow(footerFields);
       }
       workbook.xlsx.writeBuffer().then((buff) => {
         resolve(
           new Blob([buff], {
-            type:
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           })
         );
       });

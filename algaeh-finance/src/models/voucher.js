@@ -131,12 +131,8 @@ export default {
       default:
         voucher_type = input.voucher_type.toUpperCase();
     }
-    const {
-      merdgeRecords,
-      partial_amount,
-      debitNoteTotal,
-      debitNoteList,
-    } = input;
+    const { merdgeRecords, partial_amount, debitNoteTotal, debitNoteList } =
+      input;
     if (voucher_type == "") {
       req.records = {
         invalid_input: true,
@@ -467,20 +463,22 @@ export default {
                               finance_voucher_header_id,
                             } = merdgeRecords[i];
 
+                            let b_amt = modified_amount
+                              ? modified_amount
+                              : partial_amount
+                              ? partial_amount
+                              : balance_amount;
+                            if (
+                              voucher_type === "debit_note" ||
+                              voucher_type === "credit_note"
+                            ) {
+                              b_amt = balance_amount;
+                            }
+
                             queryString += _mysql.mysqlQueryFormat(
                               "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount,voucher_type)value(?,?,?,?);",
-                              [
-                                result.insertId,
-                                invoice_no,
-                                modified_amount
-                                  ? modified_amount
-                                  : partial_amount
-                                  ? partial_amount
-                                  : balance_amount,
-                                voucher_type,
-                              ]
+                              [result.insertId, invoice_no, b_amt, voucher_type]
                             );
-
                             if (
                               input["voucher_type"] == "credit_note" ||
                               input["voucher_type"] == "debit_note" ||
@@ -520,35 +518,7 @@ export default {
                               `;
                             }
                           }
-                          // debugger;
-                          // newDetails.forEach((item) => {
-                          //   const {
-                          //     amount,
-                          //     debit_amount,
-                          //     credit_amount,
-                          //     ...rest
-                          //   } = item;
 
-                          //   arrCounter.push({
-                          //     ...rest,
-                          //     debit_amount:
-                          //       item.payment_type === "DR"
-                          //         ? debit_amount
-                          //         : // ? partial_amount
-                          //           //   ? debit_amount
-                          //           //   : balance_amount
-                          //           0,
-                          //     credit_amount:
-                          //       item.payment_type === "CR"
-                          //         ? credit_amount
-                          //         : // ? partial_amount
-                          //           //   ? credit_amount
-                          //           //   : balance_amount
-                          //           0,
-                          //   });
-                          // });
-                          // _mysql.rollBackTransaction();
-                          // return;
                           _mysql
                             .executeQueryWithTransaction({
                               query: `${queryString}${updateQry}${updateDebitNoteQuery}`,
@@ -605,23 +575,25 @@ export default {
                               voucher_header_id: result.insertId,
                               hospital_id: input.hospital_id,
                             },
-                            // extraValues: {
-                            //   payment_date: transaction_date,
-                            //   month: month,
-                            //   year: year,
-                            //   voucher_header_id: result.insertId,
-                            //   entered_by: algaeh_d_app_user_id,
-                            //   hospital_id: input.hospital_id,
-                            //   project_id: project_cost_center,
-                            //   sub_department_id: subDept_cost_center
-                            // }
                           })
                           .then((result2) => {
+                            //For Testing without saving Data
+                            // _mysql.rollBackTransaction(() => {
+                            //   _mysql.releaseConnection();
+                            //   req.records = {
+                            //     voucher_no: numgen[voucher_type],
+                            //     finance_voucher_header_id:
+                            //       finance_voucher_header_id,
+                            //   };
+                            //   next();
+                            // });
+                            // For testing without saving data
                             _mysql.commitTransaction(() => {
                               _mysql.releaseConnection();
                               req.records = {
                                 voucher_no: numgen[voucher_type],
-                                finance_voucher_header_id: finance_voucher_header_id,
+                                finance_voucher_header_id:
+                                  finance_voucher_header_id,
                               };
                               next();
                             });
@@ -646,21 +618,6 @@ export default {
                       next();
                     });
                   }
-                  // })
-                  // .catch((e) => {
-                  //   _mysql.rollBackTransaction(() => {
-                  //     next(e);
-                  //   });
-                  // });
-                  // } else {
-                  //   _mysql.rollBackTransaction(() => {
-                  //     req.records = {
-                  //       invalid_input: true,
-                  //       message: "Credit and Debit Amount are not equal",
-                  //     };
-                  //     next();
-                  //   });
-                  // }
                 })
                 .catch((e) => {
                   _mysql.rollBackTransaction(() => {
@@ -1898,11 +1855,13 @@ export default {
                                         let head_amount = result[0]["amount"];
 
                                         if (hasMultiple === "M") {
-                                          const oneRecord = subHeaderResult.find(
-                                            (f) =>
-                                              f.invoice_ref_no === voucher_no ||
-                                              f.invoice_ref_no === invoice_no
-                                          );
+                                          const oneRecord =
+                                            subHeaderResult.find(
+                                              (f) =>
+                                                f.invoice_ref_no ===
+                                                  voucher_no ||
+                                                f.invoice_ref_no === invoice_no
+                                            );
 
                                           head_amount = oneRecord.amount;
                                         }
