@@ -22,10 +22,8 @@ export default {
       .executeQuery({
         query: `
         SELECT finance_account_child_id ,child_name  FROM  finance_account_head as AH 
-inner join finance_account_child as AC on AH.finance_account_head_id = AC.head_id
-where  AH.account_type='PL' limit 1;
-        
-        
+        inner join finance_account_child as AC on AH.finance_account_head_id = AC.head_id
+        where  AH.account_type='PL' limit 1;
         with recursive cte as (
           select finance_account_head_id,account_code,account_name,       
           parent_acc_id from finance_account_head   where  account_type ='AR'
@@ -204,7 +202,7 @@ function cashFlow_TotalsOnly(options, next) {
                     group by C.finance_account_child_id;
 
                     select  'Account Receivables' as name ,ROUND((coalesce(sum( debit_amount ) ,0)- coalesce(sum(credit_amount) ,0) ),${decimal_places}) as 
-                    closing_bal from finance_voucher_details where head_id in(${AR}) and auth_status='A'
+                     closing_bal from finance_voucher_details where head_id in(${AR}) and auth_status='A'
                     and payment_date < date('${from_date}');
 
                     select  finance_account_child_id as child_id,child_name as name , 
@@ -238,7 +236,7 @@ function cashFlow_TotalsOnly(options, next) {
 
 
                     select  'Cash and cash eqv' as name ,ROUND((coalesce(sum( debit_amount ) ,0)- coalesce(sum(credit_amount) ,0) ),${decimal_places}) as 
-                    closing_bal from finance_voucher_details where head_id in(${cash}) and auth_status='A'
+                     closing_bal from finance_voucher_details where head_id in(${cash}) and auth_status='A'
                     and payment_date < date('${from_date}');
 
 
@@ -388,29 +386,34 @@ function cashFlow_TotalsOnly(options, next) {
             let non_cash_adjustment = 0;
 
             //ST-Profit and loss
-            let pl_amount =
+            let pl_amount = parseFloat(
               parseFloat(dataArray[i + 1]["PL"][0]["closing_bal"]) -
-              parseFloat(dataArray[i]["PL"][0]["closing_bal"]);
+                parseFloat(dataArray[i]["PL"][0]["closing_bal"])
+            ).toFixed(decimal_places);
 
-            _PL[colum_id] = pl_amount;
+            _PL[colum_id] = parseFloat(pl_amount).toFixed(decimal_places);
 
-            operating_amount =
-              parseFloat(operating_amount) + parseFloat(pl_amount);
+            operating_amount = parseFloat(
+              parseFloat(operating_amount) + parseFloat(pl_amount)
+            ).toFixed(decimal_places);
 
             //END-Profit and loss
 
             //ST-Account receivables
-            let ar_amount =
+            let ar_amount = parseFloat(
               parseFloat(dataArray[i]["AR"][0]["closing_bal"]) -
-              parseFloat(dataArray[i + 1]["AR"][0]["closing_bal"]);
+                parseFloat(dataArray[i + 1]["AR"][0]["closing_bal"])
+            ).toFixed(decimal_places);
 
             _AR[colum_id] = ar_amount;
 
-            operating_amount =
-              parseFloat(operating_amount) + parseFloat(ar_amount);
+            operating_amount = parseFloat(
+              parseFloat(operating_amount) + parseFloat(ar_amount)
+            ).toFixed(decimal_places);
 
-            non_cash_adjustment =
-              parseFloat(non_cash_adjustment) + parseFloat(ar_amount);
+            non_cash_adjustment = parseFloat(
+              parseFloat(non_cash_adjustment) + parseFloat(ar_amount)
+            ).toFixed(decimal_places);
 
             //END-Account receivables
 
@@ -424,16 +427,19 @@ function cashFlow_TotalsOnly(options, next) {
                 return f.child_id == item.child_id;
               });
 
-              let ca_amount =
-                parseFloat(A["closing_bal"]) - parseFloat(B["closing_bal"]);
+              let ca_amount = parseFloat(
+                parseFloat(A["closing_bal"]) - parseFloat(B["closing_bal"])
+              ).toFixed(decimal_places);
 
               item[colum_id] = ca_amount;
 
-              operating_amount =
-                parseFloat(operating_amount) + parseFloat(ca_amount);
+              operating_amount = parseFloat(
+                parseFloat(operating_amount) + parseFloat(ca_amount)
+              ).toFixed(decimal_places);
 
-              non_cash_adjustment =
-                parseFloat(non_cash_adjustment) + parseFloat(ca_amount);
+              non_cash_adjustment = parseFloat(
+                parseFloat(non_cash_adjustment) + parseFloat(ca_amount)
+              ).toFixed(decimal_places);
             });
 
             //END-Current Asset
@@ -448,15 +454,17 @@ function cashFlow_TotalsOnly(options, next) {
 
               let cl_amount = parseFloat(
                 B["closing_bal"] - parseFloat(A["closing_bal"])
-              );
+              ).toFixed(decimal_places);
 
               item[colum_id] = cl_amount;
 
-              operating_amount =
-                parseFloat(operating_amount) + parseFloat(cl_amount);
+              operating_amount = parseFloat(
+                parseFloat(operating_amount) + parseFloat(cl_amount)
+              ).toFixed(decimal_places);
 
-              non_cash_adjustment =
-                parseFloat(non_cash_adjustment) + parseFloat(cl_amount);
+              non_cash_adjustment = parseFloat(
+                parseFloat(non_cash_adjustment) + parseFloat(cl_amount)
+              ).toFixed(decimal_places);
             });
 
             //ST-FIXED Asset
@@ -473,12 +481,14 @@ function cashFlow_TotalsOnly(options, next) {
                 );
               });
 
-              let fa_amount =
-                parseFloat(A["closing_bal"]) - parseFloat(B["closing_bal"]);
+              let fa_amount = parseFloat(
+                parseFloat(A["closing_bal"]) - parseFloat(B["closing_bal"])
+              ).toFixed(decimal_places);
               item[colum_id] = fa_amount;
 
-              investing_amount =
-                parseFloat(investing_amount) + parseFloat(fa_amount);
+              investing_amount = parseFloat(
+                parseFloat(investing_amount) + parseFloat(fa_amount)
+              ).toFixed(decimal_places);
             });
             //END-FIXED Asset
 
@@ -498,11 +508,12 @@ function cashFlow_TotalsOnly(options, next) {
 
               let fl_amount = parseFloat(
                 B["closing_bal"] - parseFloat(A["closing_bal"])
-              );
+              ).toFixed(decimal_places);
               item[colum_id] = fl_amount;
 
-              financing_amount =
-                parseFloat(financing_amount) + parseFloat(fl_amount);
+              financing_amount = parseFloat(
+                parseFloat(financing_amount) + parseFloat(fl_amount)
+              ).toFixed(decimal_places);
             });
             //END-Current Liability
 
@@ -511,10 +522,11 @@ function cashFlow_TotalsOnly(options, next) {
             net_financing[colum_id] = financing_amount;
             adjustments[colum_id] = non_cash_adjustment;
 
-            netCashIncrease[colum_id] =
+            netCashIncrease[colum_id] = parseFloat(
               parseFloat(operating_amount) +
-              parseFloat(investing_amount) +
-              parseFloat(financing_amount);
+                parseFloat(investing_amount) +
+                parseFloat(financing_amount)
+            ).toFixed(decimal_places);
 
             cash_at_begining[colum_id] = dataArray[i]["cash"][0]["closing_bal"];
             cash_at_end[colum_id] = dataArray[i + 1]["cash"][0]["closing_bal"];
