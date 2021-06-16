@@ -887,6 +887,7 @@ class DayEndProcess extends Component {
                               {this.state.posted === "N" &&
                               this.state.revert_trans === "N" &&
                               (row.from_screen === "PR0004" ||
+                                row.from_screen === "PR0006" ||
                                 row.from_screen === "SAL005") ? (
                                 <Tooltip title="Revert">
                                   <i
