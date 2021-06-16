@@ -13,8 +13,8 @@ export default {
             max(if(U.algaeh_d_app_user_id = PH.reverted_by, E.full_name,'' )) as reverted_name\
             from  hims_f_procurement_po_return_header PH  \
             left join hims_f_procurement_grn_header GRN on GRN.hims_f_procurement_grn_header_id=PH.grn_header_id\
-            inner join algaeh_d_app_user U on PH.reverted_by = U.algaeh_d_app_user_id\
-            inner join hims_d_employee E on E.hims_d_employee_id = U.employee_id\
+            left join algaeh_d_app_user U on PH.reverted_by = U.algaeh_d_app_user_id\
+            left join hims_d_employee E on E.hims_d_employee_id = U.employee_id\
             where purchase_return_number=? group by hims_f_procurement_return_po_header_id;",
           values: [req.query.purchase_return_number],
           printQuery: true,
