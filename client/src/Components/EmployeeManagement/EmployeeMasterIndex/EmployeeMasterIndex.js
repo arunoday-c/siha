@@ -23,7 +23,12 @@ import {
   // selectAllBranches,
 } from "./EmployeeMasterIndexEvent";
 // import variableJson from "../../../utils/GlobalVariables.json";
-import { MainContext, AlgaehDataGrid } from "algaeh-react-components";
+import {
+  MainContext,
+  AlgaehDataGrid,
+  Menu,
+  Dropdown,
+} from "algaeh-react-components";
 import _ from "lodash";
 
 class EmployeeMasterIndex extends Component {
@@ -41,6 +46,7 @@ class EmployeeMasterIndex extends Component {
       branches: [],
     };
   }
+
   static contextType = MainContext;
   componentDidMount() {
     const userToken = this.context.userToken;
@@ -118,7 +124,7 @@ class EmployeeMasterIndex extends Component {
     }
   }
 
-  onClickHandler(e) {
+  downloadEmployeeData(e) {
     algaehApiCall({
       uri: "/employee/downloadEmployeeMaster",
       method: "GET",
@@ -151,6 +157,57 @@ class EmployeeMasterIndex extends Component {
         reader.readAsText(error.response.data);
       },
     });
+  }
+
+  downloadSuspendedEmployee(e) {
+    if (this.state.hospital_id) {
+      const hospitalName = this.state.branches.filter(
+        (f) => f.hims_d_hospital_id === this.state.hospital_id
+      )[0].hospital_name;
+
+      algaehApiCall({
+        uri: "/report",
+        // uri: "/excelReport",
+        method: "GET",
+        module: "reports",
+        headers: {
+          Accept: "blob",
+        },
+        others: { responseType: "blob" },
+        data: {
+          report: {
+            reportName: "employeeSuspendedReport",
+            pageOrentation: "landscape",
+            reportParams: [
+              {
+                name: "hospital_id",
+                value:
+                  this.state.hospital_id === -1 ? null : this.state.hospital_id,
+              },
+            ],
+            outputFileType: "EXCEL", //"EXCEL", //"PDF",
+          },
+        },
+
+        onSuccess: (res) => {
+          // const urlBlob = URL.createObjectURL(res.data);
+          // const a = document.createElement("a");
+          // a.href = urlBlob;
+          // a.download = `Suspended Employee Report`;
+          // a.click();
+
+          const urlBlob = URL.createObjectURL(res.data);
+          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${hospitalName} Employee Suspended Report`;
+          window.open(origin);
+        },
+      });
+    } else {
+      swalMessage({
+        type: "error",
+        title: "Please select any branch",
+      });
+      return;
+    }
   }
 
   ShowModel(e) {
@@ -224,6 +281,22 @@ class EmployeeMasterIndex extends Component {
         return f.suspend_salary === "Y";
       });
     }
+
+    const employeeMasterDownload = (
+      <Menu>
+        <Menu.Item key="1">
+          <span onClick={this.downloadEmployeeData.bind(this)}>
+            Download Employee Data
+          </span>
+        </Menu.Item>
+        <Menu.Item key="2">
+          <span onClick={this.downloadSuspendedEmployee.bind(this)}>
+            Download Suspended Employee Data
+          </span>
+        </Menu.Item>
+      </Menu>
+    );
+
     return (
       <div className="hims_hospitalservices">
         {/* <BreadCrumb
@@ -262,21 +335,29 @@ class EmployeeMasterIndex extends Component {
               <h3 className="caption-subject">Employee Master Lists</h3>
             </div>
             <div className="actions">
-              <button
+              {/* <button
                 className="btn btn-default btn-circle active"
                 style={{ marginRight: 10 }}
                 onClick={this.onClickHandler.bind(this)}
                 // Download action come here
               >
                 <i className="fas fa-download" />
-              </button>
+              </button> */}
+              <Dropdown overlay={employeeMasterDownload}>
+                <button
+                  className="btn btn-default btn-circle"
+                  onClick={this.ShowModel.bind(this)}
+                >
+                  <i className="fas fa-download" />
+                </button>
+              </Dropdown>{" "}
               <button
                 className="btn btn-primary btn-circle active"
+                style={{ marginLeft: 4 }}
                 onClick={this.ShowModel.bind(this)}
               >
                 <i className="fas fa-plus" />
               </button>
-
               <EmployeeMaster
                 HeaderCaption={
                   <AlgaehLabel
