@@ -307,7 +307,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "POReturnEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS PO.*, PO.return_date as returndate, CASE PO.po_return_from WHEN 'INV' then 'Inventory' \
-          else 'Pharmacy' end as po_return_from , CASE PO.po_return_from WHEN 'INV' then IL.location_description \
+          else 'Pharmacy' end as po_return_from , case when PO.return_type ='D' then 'Direct' else 'Receipt' end as return_type,   CASE PO.po_return_from WHEN 'INV' then IL.location_description \
           else PL.location_description end as loc_description,V.vendor_name, GRN.grn_number, PH.purchase_number \
           from hims_f_procurement_po_return_header PO \
           left join hims_f_procurement_grn_header GRN on PO.grn_header_id = GRN.hims_f_procurement_grn_header_id \

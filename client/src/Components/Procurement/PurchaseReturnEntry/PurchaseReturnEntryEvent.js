@@ -44,7 +44,6 @@ const vendortexthandle = ($this, e) => {
 const poforhandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-
   getData($this, value);
   $this.setState({
     [name]: value,
@@ -210,14 +209,21 @@ const ClearData = ($this, e) => {
       $this.setState({ po_return_from: "PHR", ReqData: false });
     }
   });
+
+  getData($this, $this.po_return_from);
 };
 
 const SavePOReutrnEnrty = ($this) => {
+  debugger;
   AlgaehLoader({ show: true });
   if ($this.state.po_return_from === "PHR") {
     $this.state.po_return_entry_detail = $this.state.pharmacy_stock_detail;
   } else {
     $this.state.po_return_entry_detail = $this.state.inventory_stock_detail;
+  }
+
+  if ($this.state.return_type === "D") {
+    $this.state.grn_header_id = null;
   }
 
   algaehApiCall({
@@ -420,6 +426,7 @@ const getData = ($this, po_return_from) => {
 };
 
 const generatePOReceipt = (data) => {
+  debugger;
   console.log("data:", data);
   algaehApiCall({
     uri: "/report",
