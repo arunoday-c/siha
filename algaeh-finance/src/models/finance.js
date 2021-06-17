@@ -3482,7 +3482,7 @@ export function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
             finance_account_head_id,
             finance_account_head_id,
           ],
-          printQuery: true,
+          // printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -3793,5 +3793,41 @@ export async function uploadOBAccounts(req, res, next) {
     }
   } catch (e) {
     next(e);
+  }
+}
+
+export function getAccountForDashBoard(req, res, next) {
+  try {
+    const _mysql = new algaehMysql();
+    const input = req.query;
+    _mysql
+      .executeQuery({
+        query: `select H.root_id , case  H.root_id when 1 then SUM(debit_amount) when 2 then SUM(credit_amount) 
+        when 3 then SUM(credit_amount) when 4 then SUM(credit_amount) when 5 then SUM(debit_amount)
+        end amount from  finance_account_child as C left join 
+        finance_account_head as H on H.finance_account_head_id = C.head_id
+        left join finance_voucher_details as VD on VD.head_id = C.head_id
+        and VD.child_id = C.finance_account_child_id
+        where 
+       Date(VD.payment_date) between Date(?) and Date(?) 
+       and
+        VD.auth_status='A' 
+       -- H.root_id in (1,2,3,4,5)
+        group by H.root_id ;`,
+        values: [input.from_date, input.to_date],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next();
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next();
   }
 }
