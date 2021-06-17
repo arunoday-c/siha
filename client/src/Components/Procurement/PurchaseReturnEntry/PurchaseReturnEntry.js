@@ -89,6 +89,8 @@ class PurchaseReturnEntry extends Component {
     if (queryParams.get("purchase_return_number")) {
       getCtrlCode(this, queryParams.get("purchase_return_number"));
     }
+
+    getData(this, this.po_return_from);
   }
 
   render() {
@@ -201,8 +203,8 @@ class PurchaseReturnEntry extends Component {
             <div className="col-lg-12">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{ forceLabel: "PO Return For" }}
+                  div={{ className: "col-2 mandatory" }}
+                  label={{ forceLabel: "PO Return For", isImp: true }}
                   selector={{
                     name: "po_return_from",
                     className: "select-fld",
@@ -226,7 +228,6 @@ class PurchaseReturnEntry extends Component {
                     },
                   }}
                 />
-
                 <div className="col-2">
                   <label>Return Type</label>
                   <div className="customRadio">
@@ -237,7 +238,7 @@ class PurchaseReturnEntry extends Component {
                         name="return_type"
                         checked={this.state.return_type === "R" ? true : false}
                         onChange={texthandle.bind(this, this)}
-                        disabled={this.state.dataExists}
+                        disabled={this.state.dataExitst}
                       />
                       <span>Receipt</span>
                     </label>
@@ -248,16 +249,60 @@ class PurchaseReturnEntry extends Component {
                         name="return_type"
                         checked={this.state.return_type === "D" ? true : false}
                         onChange={texthandle.bind(this, this)}
-                        disabled={this.state.dataExists}
+                        disabled={this.state.dataExitst}
                       />
                       <span>Direct</span>
                     </label>
                   </div>
                 </div>
+                {this.state.return_type === "R" ? (
+                  <div className="col-5">
+                    <div className="row">
+                      <div className={"col-7 globalSearchCntr" + class_finder}>
+                        <AlgaehLabel
+                          label={{ forceLabel: "Search Receipt No." }}
+                        />
+                        <h6 onClick={ReceiptSearch.bind(this, this)}>
+                          {this.state.grn_number
+                            ? this.state.grn_number
+                            : "Receipt No."}
+                          <i className="fas fa-search fa-lg"></i>
+                        </h6>
+                      </div>
 
+                      <div className="col-5">
+                        <AlgaehLabel label={{ forceLabel: "Invoice Number" }} />
+                        <h6>
+                          {this.state.inovice_number
+                            ? this.state.inovice_number
+                            : "------"}
+                        </h6>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}{" "}
+                <AlagehFormGroup
+                  div={{ className: "col-2 mandatory" }}
+                  label={{
+                    forceLabel: "Return Reference No.",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    value: this.state.return_ref_no,
+                    className: "txt-fld",
+                    name: "return_ref_no",
+
+                    events: {
+                      onChange: texthandle.bind(this, this),
+                    },
+                    others: {
+                      disabled: this.state.is_posted === "N" ? false : true,
+                    },
+                  }}
+                />
                 <AlagehAutoComplete
-                  div={{ className: "col-3" }}
-                  label={{ forceLabel: "Location Code" }}
+                  div={{ className: "col-3 mandatory" }}
+                  label={{ forceLabel: "Location Code", isImp: true }}
                   selector={{
                     name:
                       this.state.po_return_from === "PHR"
@@ -289,10 +334,9 @@ class PurchaseReturnEntry extends Component {
                     },
                   }}
                 />
-
                 <AlagehAutoComplete
-                  div={{ className: "col-3" }}
-                  label={{ forceLabel: "Vendor Name" }}
+                  div={{ className: "col-3 mandatory" }}
+                  label={{ forceLabel: "Vendor Name", isImp: true }}
                   selector={{
                     name: "vendor_id",
                     className: "select-fld",
@@ -313,52 +357,6 @@ class PurchaseReturnEntry extends Component {
                     },
                   }}
                 />
-                <AlagehFormGroup
-                  div={{ className: "col-2 mandatory" }}
-                  label={{
-                    forceLabel: "Return Reference No..",
-                    isImp: true,
-                  }}
-                  textBox={{
-                    value: this.state.return_ref_no,
-                    className: "txt-fld",
-                    name: "return_ref_no",
-
-                    events: {
-                      onChange: texthandle.bind(this, this),
-                    },
-                    others: {
-                      disabled: this.state.is_posted === "N" ? false : true,
-                    },
-                  }}
-                />
-                {this.state.return_type === "R" ? (
-                  <div className="col-6">
-                    <div className="row">
-                      <div className={"col-6 globalSearchCntr" + class_finder}>
-                        <AlgaehLabel
-                          label={{ forceLabel: "Search Receipt No." }}
-                        />
-                        <h6 onClick={ReceiptSearch.bind(this, this)}>
-                          {this.state.grn_number
-                            ? this.state.grn_number
-                            : "Receipt No."}
-                          <i className="fas fa-search fa-lg"></i>
-                        </h6>
-                      </div>
-
-                      <div className="col-6">
-                        <AlgaehLabel label={{ forceLabel: "Invoice Number" }} />
-                        <h6>
-                          {this.state.inovice_number
-                            ? this.state.inovice_number
-                            : "------"}
-                        </h6>
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
-
                 {/* <AlagehFormGroup
                                     div={{ className: "col-2" }}
                                     label={{

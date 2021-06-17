@@ -569,7 +569,7 @@
     "POReturnEntry": [
       {
         "fieldName": "purchase_return_number",
-        "label": "PO Number"
+        "label": "PO Return No."
       },
       {
         "fieldName": "return_date",
@@ -578,6 +578,10 @@
       {
         "fieldName": "po_return_from",
         "label": "PO Done For"
+      },
+      {
+        "fieldName": "return_type",
+        "label": "Return Type"
       },
       {
         "fieldName": "grn_number",
