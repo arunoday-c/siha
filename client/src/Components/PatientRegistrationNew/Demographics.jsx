@@ -135,6 +135,13 @@ export function Demographics({
         if (res[0]?.identity_document_id) {
           setValue("primary_identity_id", res[0]?.identity_document_id);
           setIdentityType(res[0]?.identity_type);
+          if (identities.length > 0) {
+            const initialValue = identities.filter(
+              (f) =>
+                f.hims_d_identity_document_id === res[0]?.identity_document_id
+            )[0].initial_value_identity;
+            setValue("primary_id_no", initialValue);
+          }
         } else {
           setValue("primary_identity_id", "");
           setIdentityType("");
@@ -142,7 +149,7 @@ export function Demographics({
       }
     }
     // eslint-disable-next-line
-  }, [nationality_id, nationalities, patient_code, loadFromReader]);
+  }, [nationality_id, nationalities, patient_code, identities, loadFromReader]);
   useEffect(() => {
     const telCode = getValues().tel_code;
     if (telCode) {
@@ -1070,6 +1077,10 @@ export function Demographics({
                                   onChange(selected);
                                   setIdentityType(identity_type);
                                   setValue("identity_type", identity_type);
+                                  setValue(
+                                    "primary_id_no",
+                                    _.initial_value_identity
+                                  );
                                 },
                                 onClear: () => {
                                   onChange("");

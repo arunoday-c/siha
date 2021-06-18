@@ -49,6 +49,7 @@ class IDType extends Component {
       visible: false,
       activateEdit: false,
       IDGridColumnHide: false,
+      initial_value_identity: null,
     };
 
     this.baseState = this.state;
@@ -392,6 +393,7 @@ class IDType extends Component {
       notify_expiry: row.notify_expiry,
       notify_before: row.notify_before,
       notifyUserArray: row.employees,
+      initial_value_identity: row.initial_value_identity,
       employeeIDs: row.employees.map((item) => {
         return item.hims_d_employee_id;
       }),
@@ -474,8 +476,8 @@ class IDType extends Component {
                       },
                       others: {
                         tabIndex: "1",
-                        placeholder: this.state
-                          .identity_document_code_placeHolder,
+                        placeholder:
+                          this.state.identity_document_code_placeHolder,
                       },
                     }}
                   />
@@ -557,6 +559,21 @@ class IDType extends Component {
                       />
                     </div>
                   </div>
+                  <AlagehFormGroup
+                    div={{ className: "col-12 form-group" }}
+                    label={{
+                      forceLabel: "Initial Value",
+                      // isImp: true,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "initial_value_identity",
+                      value: this.state.initial_value_identity,
+                      events: {
+                        onChange: this.changeTexts.bind(this),
+                      },
+                    }}
+                  />
 
                   <AlgaehSecurityElement elementCode="ID_NOTIFY_EXP">
                     <div className="col-6 form-group">
@@ -762,6 +779,14 @@ class IDType extends Component {
                           ),
                         },
 
+                        {
+                          fieldName: "initial_value_identity",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "Initial Value " }}
+                            />
+                          ),
+                        },
                         {
                           fieldName: "notify_expiry",
                           label: (
