@@ -3808,11 +3808,9 @@ export function getAccountForDashBoard(req, res, next) {
         finance_account_head as H on H.finance_account_head_id = C.head_id
         left join finance_voucher_details as VD on VD.head_id = C.head_id
         and VD.child_id = C.finance_account_child_id
-        where 
-       Date(VD.payment_date) between Date(?) and Date(?) 
-       and
+        where Date(VD.payment_date) between Date(?) and Date(?) and
         VD.auth_status='A' 
-       -- H.root_id in (1,2,3,4,5)
+        -- H.root_id in (1,2,3,4,5)
         group by H.root_id ;`,
         values: [input.from_date, input.to_date],
         printQuery: true,
