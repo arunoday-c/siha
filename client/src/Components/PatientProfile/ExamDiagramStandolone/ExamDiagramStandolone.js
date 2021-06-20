@@ -107,6 +107,7 @@ export default class ExaminationDiagram extends Component {
           <div className="diagramDropdown">
             <>
               <img
+                alt=""
                 src={`${window.location.protocol}//${window.location.hostname}${
                   window.location.port === "" ? "/docserver" : `:3006`
                 }/UPLOAD/${item.sub_department_id}/${item.unique_id}`}
