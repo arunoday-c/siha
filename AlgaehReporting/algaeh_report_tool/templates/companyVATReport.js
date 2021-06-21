@@ -33,7 +33,7 @@ const executePDF = function executePDFMethod(options) {
           inner join  hims_m_patient_insurance_mapping PI on BH.visit_id = PI.patient_visit_id \
           inner join  hims_d_insurance_sub IP on PI.primary_sub_id = IP.hims_d_insurance_sub_id \
 					inner join hims_d_nationality N on N.hims_d_nationality_id = P.nationality_id \
-					where adjusted='N' and cancelled='N' and BD.insurance_yesno='Y' and date(bill_date) between date(?) and date(?) and BH.hospital_id=? ${strData} ;\
+					where adjusted='N' and cancelled='N' and BD.insurance_yesno='Y' and date(bill_date) between date(?) and date(?) and BH.hospital_id=? ${strData} order by V.visit_date;\
 					select pos_number as doc_number, V.visit_date, P.full_name, P.patient_code, N.nationality,\
 					CASE WHEN PD.insurance_yesno='Y' THEN 'Insurance' else 'Cash' END as insurance_yesno, \
 					PD.net_extended_cost, PD.company_responsibility as total_before_vat, PD.company_payable as total_after_vat, \
@@ -44,7 +44,7 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_d_nationality N on N.hims_d_nationality_id = P.nationality_id \
           inner join  hims_m_patient_insurance_mapping PI on PH.visit_id = PI.patient_visit_id \
           inner join  hims_d_insurance_sub IP on PI.primary_sub_id = IP.hims_d_insurance_sub_id \
-					where PH.cancelled='N' and PD.insurance_yesno='Y' and  PH.posted='Y' and date(pos_date) between date(?) and date(?) and PH.hospital_id=? ${strData};`,
+					where PH.cancelled='N' and PD.insurance_yesno='Y' and  PH.posted='Y' and date(pos_date) between date(?) and date(?) and PH.hospital_id=? ${strData} order by V.visit_date;`,
           values: [
             input.from_date,
             input.to_date,
