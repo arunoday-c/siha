@@ -206,7 +206,30 @@ class POReturnItemList extends Component {
                           }}
                         />
 
-                        <div className="col">
+                        <AlagehFormGroup
+                          div={{ className: "col form-group" }}
+                          label={{
+                            forceLabel: "Unit Cost",
+                            isImp: false,
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            className: "txt-fld",
+                            name: "unit_cost",
+                            value: this.state.unit_cost,
+                            events: {
+                              onChange: numberchangeTexts.bind(
+                                this,
+                                this,
+                                context
+                              ),
+                            },
+                            others: {
+                              tabIndex: "4",
+                            },
+                          }}
+                        />
+                        {/* <div className="col">
                           <AlgaehLabel
                             label={{
                               forceLabel: "Unit Cost",
@@ -217,7 +240,7 @@ class POReturnItemList extends Component {
                               ? GetAmountFormart(this.state.unit_cost)
                               : "-----------"}
                           </h6>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                     <div className="row">
@@ -406,7 +429,33 @@ class POReturnItemList extends Component {
                                 />
                               ),
                               displayTemplate: (row) => {
-                                return (
+                                return this.state.is_posted === "N" &&
+                                  this.state.is_revert === "N" ? (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      number: {
+                                        allowNegative: false,
+                                        thousandSeparator: ",",
+                                      },
+                                      value:
+                                        row.unit_cost !== ""
+                                          ? parseFloat(row.unit_cost)
+                                          : null,
+                                      className: "txt-fld",
+                                      name: "unit_cost",
+                                      dontAllowKeys: ["-", "e"],
+                                      events: {
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          context,
+                                          row
+                                        ),
+                                      },
+                                    }}
+                                  />
+                                ) : (
                                   <span>
                                     {GetAmountFormart(row.unit_cost, {
                                       appendSymbol: false,
@@ -414,6 +463,15 @@ class POReturnItemList extends Component {
                                   </span>
                                 );
                               },
+                              // displayTemplate: (row) => {
+                              //   return (
+                              //     <span>
+                              //       {GetAmountFormart(row.unit_cost, {
+                              //         appendSymbol: false,
+                              //       })}
+                              //     </span>
+                              //   );
+                              // },
                             },
                             {
                               fieldName: "extended_cost",

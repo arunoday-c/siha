@@ -50,14 +50,14 @@ const discounthandle = ($this, context, ctrl, e) => {
         value === ""
           ? 0
           : (parseFloat($this.state.extended_price) * sub_discount_percentage) /
-          100;
+            100;
     } else {
       sub_discount_amount = value === "" ? "" : parseFloat(value);
       sub_discount_percentage =
         value === ""
           ? 0
           : (sub_discount_amount / parseFloat($this.state.extended_price)) *
-          100;
+            100;
 
       sub_discount_percentage = sub_discount_percentage.toFixed(3);
     }
@@ -142,7 +142,6 @@ const numberchangeTexts = ($this, context, e) => {
         [name]: value,
       });
     }
-
   }
 };
 
@@ -195,7 +194,7 @@ const unitpricenumberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, context, e, ctrl) => {
-  debugger
+  debugger;
   let name = ctrl;
 
   if (
@@ -203,7 +202,10 @@ const itemchangeText = ($this, context, e, ctrl) => {
     $this.state.inventory_location_id !== null
   ) {
     if ($this.state.vendor_id !== null) {
-      let value = $this.state.po_return_from === "PHR" ? e.hims_d_item_master_id : e.hims_d_inventory_item_master_id;
+      let value =
+        $this.state.po_return_from === "PHR"
+          ? e.hims_d_item_master_id
+          : e.hims_d_inventory_item_master_id;
 
       if ($this.state.po_return_from === "PHR") {
         algaehApiCall({
@@ -218,7 +220,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
             if (response.data.success) {
               let data = response.data.records;
               if (data.locationResult.length > 0) {
-                const qtyhand = parseFloat(data.locationResult[0].qtyhand)
+                const qtyhand = parseFloat(data.locationResult[0].qtyhand);
 
                 $this.setState({
                   [name]: value,
@@ -240,7 +242,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                   uom_description: e.stk_uom_description,
                   stocking_uom: e.stocking_uom,
                   sales_price: e.sale_price,
-                  unit_cost: data.locationResult[0].avgcost
+                  unit_cost: data.locationResult[0].avgcost,
                 });
 
                 if (context !== undefined) {
@@ -265,7 +267,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                     uom_description: e.stk_uom_description,
                     stocking_uom: e.stocking_uom,
                     sales_price: e.sale_price,
-                    unit_cost: data.locationResult[0].avgcost
+                    unit_cost: data.locationResult[0].avgcost,
                   });
                 }
               } else {
@@ -311,7 +313,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
             if (response.data.success) {
               let data = response.data.records;
               if (data.locationResult.length > 0) {
-                const qtyhand = parseFloat(data.locationResult[0].qtyhand)
+                const qtyhand = parseFloat(data.locationResult[0].qtyhand);
 
                 $this.setState({
                   [name]: value,
@@ -334,7 +336,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                   uom_description: e.uom_description,
                   stocking_uom: e.stocking_uom,
                   sales_price: e.sale_price,
-                  unit_cost: data.locationResult[0].avgcost
+                  unit_cost: data.locationResult[0].avgcost,
                 });
 
                 if (context !== undefined) {
@@ -358,7 +360,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                     uom_description: e.uom_description,
                     stocking_uom: e.stocking_uom,
                     sales_price: e.sale_price,
-                    unit_cost: data.locationResult[0].avgcost
+                    unit_cost: data.locationResult[0].avgcost,
                   });
                 }
               } else {
@@ -420,9 +422,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
   }
 };
 
-
 const AddItems = ($this, context) => {
-
   if (parseFloat($this.state.quantity) <= 0) {
     swalMessage({
       title: "Enter the Quantity",
@@ -431,7 +431,7 @@ const AddItems = ($this, context) => {
     return;
   }
 
-  debugger
+  debugger;
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   let inventory_stock_detail = $this.state.inventory_stock_detail;
 
@@ -441,8 +441,8 @@ const AddItems = ($this, context) => {
   let return_total = 0,
     tax_amount = 0;
 
-  let BatchExists = []
-  let ItemBatchInput = {}
+  let BatchExists = [];
+  let ItemBatchInput = {};
   if ($this.state.po_return_from === "PHR") {
     BatchExists = pharmacy_stock_detail.filter(
       (f) => f.batchno === $this.state.batchno
@@ -455,7 +455,8 @@ const AddItems = ($this, context) => {
       });
       return;
     }
-    const extended_cost = parseFloat($this.state.quantity) * parseFloat($this.state.unit_cost)
+    const extended_cost =
+      parseFloat($this.state.quantity) * parseFloat($this.state.unit_cost);
 
     ItemBatchInput = {
       phar_item_id: $this.state.phar_item_id,
@@ -479,7 +480,7 @@ const AddItems = ($this, context) => {
       net_extended_cost: extended_cost,
       tax_percentage: 0,
       tax_amount: 0,
-      total_amount: extended_cost
+      total_amount: extended_cost,
     };
     pharmacy_stock_detail.push(ItemBatchInput);
     if (pharmacy_stock_detail.length > 0) {
@@ -522,7 +523,8 @@ const AddItems = ($this, context) => {
       return;
     }
 
-    const extended_cost = parseFloat($this.state.quantity) * parseFloat($this.state.unit_cost)
+    const extended_cost =
+      parseFloat($this.state.quantity) * parseFloat($this.state.unit_cost);
 
     ItemBatchInput = {
       inv_item_id: $this.state.inv_item_id,
@@ -546,7 +548,7 @@ const AddItems = ($this, context) => {
       net_extended_cost: extended_cost,
       tax_percentage: 0,
       tax_amount: 0,
-      total_amount: extended_cost
+      total_amount: extended_cost,
     };
     inventory_stock_detail.push(ItemBatchInput);
     if (inventory_stock_detail.length > 0) {
@@ -578,12 +580,6 @@ const AddItems = ($this, context) => {
     }
   }
 
-
-
-
-
-
-
   $this.setState({
     pharmacy_stock_detail: pharmacy_stock_detail,
     item_id: null,
@@ -610,7 +606,6 @@ const AddItems = ($this, context) => {
     tax_amount: tax_amount,
     return_total: return_total,
   });
-
 
   if (context !== undefined) {
     context.updateState({
@@ -873,22 +868,24 @@ const onchangegridcol = ($this, context, row, e) => {
   let _index = _stock_detail.indexOf(row);
 
   // IU.conversion_factor
-  if (
-    parseFloat(value) >
-    parseFloat(row.qtyhand) / parseFloat(row.conversion_factor)
-  ) {
-    swalMessage({
-      title:
-        "Return Quantity cannot be Greater than Qty In Hand / Deliverd Quantity.",
-      type: "warning",
-    });
-    return;
-  } else if (parseFloat(value) < 0) {
-    swalMessage({
-      title: "Return Quantity cannot be less than Zero.",
-      type: "warning",
-    });
-    return;
+  if (name === "return_qty") {
+    if (
+      parseFloat(value) >
+      parseFloat(row.qtyhand) / parseFloat(row.conversion_factor)
+    ) {
+      swalMessage({
+        title:
+          "Return Quantity cannot be Greater than Qty In Hand / Deliverd Quantity.",
+        type: "warning",
+      });
+      return;
+    } else if (parseFloat(value) < 0) {
+      swalMessage({
+        title: "Return Quantity cannot be less than Zero.",
+        type: "warning",
+      });
+      return;
+    }
   }
   row[name] = value;
   _stock_detail[_index] = row;
@@ -1113,14 +1110,12 @@ const gridNumHandler = ($this, row, e) => {
   }
 };
 
-
 const ShowItemBatch = ($this, e) => {
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
   });
 };
-
 
 const CloseItemBatch = ($this, context, e) => {
   let batchno =
@@ -1228,5 +1223,5 @@ export {
   GridAssignData,
   gridNumHandler,
   ShowItemBatch,
-  CloseItemBatch
+  CloseItemBatch,
 };
