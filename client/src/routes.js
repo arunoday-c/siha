@@ -164,6 +164,9 @@ const FrontDesk = React.lazy(() =>
 const ResultEntryList = React.lazy(() =>
   retry(() => import("./Components/Laboratory/ResultEntryList/ResultEntryList"))
 );
+const HassanNumber = React.lazy(() =>
+  retry(() => import("./Components/Laboratory/HassanNumber/HassanNumber"))
+);
 const ResultDispatch = React.lazy(() =>
   retry(() => import("./Components/Laboratory/ResultDispatch/ResultDispatch"))
 );
@@ -1266,6 +1269,12 @@ const privateRoutes = [
     path: "/ResultEntryList",
     isExactPath: true,
     component: <ResultEntryList />,
+  },
+
+  {
+    path: "/HassanNumber",
+    isExactPath: true,
+    component: <HassanNumber />,
   },
   {
     path: "/ResultDispatch",

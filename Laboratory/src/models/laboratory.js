@@ -58,7 +58,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            " select hims_f_lab_order_id,V.episode_id, LO.patient_id, entered_by, confirmed_by, validated_by, visit_id, critical_status,\
+            " select hims_f_lab_order_id,V.episode_id, LO.patient_id,hassan_number_updated_date,hassan_number, entered_by, confirmed_by, validated_by, visit_id, critical_status,\
             group_id, organism_type, bacteria_name, bacteria_type, V.visit_code, provider_id, LO.send_out_test,\
             E.full_name as doctor_name, billed, service_id,  S.service_code, S.service_name, \
             LO.status, cancelled, provider_id, ordered_date, test_type, concat(V.age_in_years,'Y')years, \
@@ -70,7 +70,8 @@ export default {
             LO.contaminated_culture, LS.barcode_gen, IT.auto_validate,\
             max(if(CL.algaeh_d_app_user_id=LO.entered_by, EM.full_name,'' )) as entered_by_name, \
             max(if(CL.algaeh_d_app_user_id=LO.confirmed_by, EM.full_name,'')) as confirm_by_name, \
-            max(if(CL.algaeh_d_app_user_id=LO.validated_by, EM.full_name,'')) as validate_by_name, \
+            max(if(CL.algaeh_d_app_user_id=LO.validated_by, EM.full_name,'')) as validate_by_name,\
+            max(if(CL.algaeh_d_app_user_id=LO.hassan_number_updated_by, EM.full_name,'')) as haasan_updated_by_name, \
             LO.entered_date,LO.confirmed_date,LO.validated_date, LO.credit_order  from hims_f_lab_order LO \
             inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
             inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id \
@@ -941,6 +942,38 @@ export default {
             req["userIdentity"].algaeh_d_app_user_id,
             new Date(),
             inputParam.hims_d_lab_sample_id,
+          ],
+          printQuery: true,
+        })
+        .then((result) => {
+          req.records = result;
+          _mysql.releaseConnection();
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+
+      next(e);
+    }
+  },
+
+  updateHassanNo: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+      // cancelled
+      _mysql
+        .executeQuery({
+          query: `update hims_f_lab_order set hassan_number=?, hassan_number_updated_date=?,hassan_number_updated_by=? where hims_f_lab_order_id=?;`,
+          values: [
+            inputParam.hassan_number,
+            new Date(),
+            req["userIdentity"].algaeh_d_app_user_id,
+            inputParam.hims_f_lab_order_id,
           ],
           printQuery: true,
         })

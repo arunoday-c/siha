@@ -28,6 +28,7 @@ const {
   getSendInAndSendOutTestDetails,
   top10LabOrders,
   labDashBoardWithAttachment,
+  updateHassanNo,
 } = labModels;
 import { processLabSMS, getValidatedResults } from "../models/labSMS";
 export default () => {
@@ -85,6 +86,12 @@ export default () => {
       });
     }
   );
+  api.put("/updateHassanNo", updateHassanNo, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
   api.get(
     "/getLabOrderedServicesPatient",
     getLabOrderedServicesPatient,
