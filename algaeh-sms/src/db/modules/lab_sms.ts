@@ -40,6 +40,7 @@ hims_f_sms_lab.init(
   },
   {
     sequelize: db,
+    tableName: "hims_f_sms_lab",
   }
 );
 (async () => {

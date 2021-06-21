@@ -2,10 +2,9 @@ import Keys from "algaeh-keys";
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 
-const enableSMS = true; //Keys.default?.enableSMS;
-// let SMSPublisher;
-// if (enableSMS === true) SMSPublisher = require("../rabbitMQ/publisher");
-let SMSPublisher = require("../rabbitMQ/publisher");
+const enableSMS = Keys.default?.enableSMS;
+let SMSPublisher;
+if (enableSMS === "true") SMSPublisher = require("../rabbitMQ/publisher");
 const TEMPLATES = {
   LAB_TEST: "LAB_TEST",
   PCR_TEST: "PCR_TEST",
