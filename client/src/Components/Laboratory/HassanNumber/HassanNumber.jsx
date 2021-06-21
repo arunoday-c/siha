@@ -44,7 +44,7 @@ function HassanNumber() {
     control,
     errors,
     // register,
-    // reset,
+    reset,
     // handleSubmit,
     // // setValue,
     getValues,
@@ -52,13 +52,7 @@ function HassanNumber() {
   } = useForm({
     defaultValues: {
       hospital_id: userToken.hims_d_hospital_id,
-      start_date: [
-        moment(
-          new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-          "YYYY-MM-DD"
-        ),
-        moment(new Date()),
-      ],
+      start_date: [moment(new Date()), moment(new Date())],
     },
   });
 
@@ -151,6 +145,7 @@ function HassanNumber() {
   }
   const [updateHassanNo] = useMutation(update, {
     onSuccess: (data) => {
+      refetch();
       AlgaehMessagePop({
         type: "success",
         display: "Hassan No Updated successfully",
@@ -213,16 +208,21 @@ function HassanNumber() {
           <button
             className="btn btn-default btn-sm"
             type="button"
-            // onClick={Refresh.bind(this, this)}
-          ></button>
-          <button
+            onClick={() => {
+              reset({ start_date: [moment(new Date()), moment(new Date())] });
+              refetch();
+            }}
+          >
+            Clear
+          </button>
+          {/* <button
             className="btn btn-primary btn-sm"
             style={{ marginLeft: "10px" }}
             type="button"
             // onClick={getSampleCollectionDetails.bind(this, this)}
           >
             Load
-          </button>
+          </button> */}
         </div>
       </div>
 
