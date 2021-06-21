@@ -5,6 +5,7 @@ import Excel from "exceljs/modern.browser";
 
 import OpenBalExcelModels from "../models/OpeningBalanceExcel";
 import openingBalanceUpload from "../models/openingBalanceUpload";
+import { deleteCacheMaster } from "algaeh-utilities/checksecurity";
 
 const {
   uploadEmployeeGratuity,
@@ -221,12 +222,20 @@ export default () => {
     }
   );
 
-  api.post("/addEmployeeMaster", addEmployeeMaster, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: req.records,
-    });
-  });
+  api.post(
+    "/addEmployeeMaster",
+    (req, res, next) => {
+      deleteCacheMaster("get_All_Doctors_DepartmentWise");
+      next();
+    },
+    addEmployeeMaster,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
   api.post("/requestCertificate", requestCertificate, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
@@ -241,12 +250,20 @@ export default () => {
     });
   });
 
-  api.put("/updateEmployee", updateEmployee, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: req.records,
-    });
-  });
+  api.put(
+    "/updateEmployee",
+    (req, res, next) => {
+      deleteCacheMaster("get_All_Doctors_DepartmentWise");
+      next();
+    },
+    updateEmployee,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
 
   api.get(
     "/getEmployeeDepartments",
