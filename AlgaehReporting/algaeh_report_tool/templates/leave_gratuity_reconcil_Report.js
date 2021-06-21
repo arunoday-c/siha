@@ -19,21 +19,21 @@ const executePDF = function executePDFMethod(options) {
       // }
 
       if (input.hospital_id > 0) {
-        str += ` and EM.hospital_id= ${input.hospital_id}`;
+        str += ` and E.hospital_id= ${input.hospital_id}`;
       }
 
       if (input.sub_department_id) {
-        str += ` and EM.sub_department_id= '${input.sub_department_id}'`;
+        str += ` and E.sub_department_id= '${input.sub_department_id}'`;
       }
       // if (input.designation_id) {
       //   str += ` and EM.designation_id= '${input.designation_id}'`;
       // }
       if (input.hims_d_employee_id) {
         // str += ` and EM.employee_id= '${input.hims_d_employee_id}'`;
-        str += ` and EM.hims_d_employee_id= '${input.hims_d_employee_id}'`;
+        str += ` and E.hims_d_employee_id= '${input.hims_d_employee_id}'`;
       }
       if (input.group_id) {
-        str += ` and EM.employee_group_id= '${input.group_id}'`;
+        str += ` and E.employee_group_id= '${input.group_id}'`;
       }
 
       // const strMonth =
@@ -61,72 +61,101 @@ const executePDF = function executePDFMethod(options) {
       //     ? "november"
       //     : "december";
 
+      //       options.mysql
+      //         .executeQuery({
+      //           query: `
+      // SELECT LH.employee_id,EM.employee_code, EM.full_name,DS.designation,
+      // EM.date_of_joining,EE.amount as basic_salary, max(LD.year) as year,
+      // MONTHNAME(CONCAT('2011-',LD.month,'-01')) as deducting_month,
+      // LD.leave_salary_amount,
+      // LD.leave_days,
+      // LD.airticket_amount,
+      // LD.month,
+      // COALESCE(sum(LDD.leave_salary_amount),0) as last_leave_salary_amount,
+      // COALESCE(sum(LDD.leave_days),0) as last_leave_days,
+      // COALESCE(sum(LDD.airticket_amount),0) as last_airticket_amount,
+      // LH.opening_leave_days,
+      // LH.opening_leave_salary,
+      // LH.opening_airticket,
+      // LH.utilized_leave_days,
+      // LH.utilized_leave_salary_amount,
+      // LH.utilized_airticket_amount,
+      // case when
+      // LD.month ='1' then ML.january when
+      // LD.month ='2' then ML.february when
+      // LD.month ='3' then ML.march when
+      // LD.month ='4' then ML.april when
+      // LD.month ='5' then ML.may when
+      // LD.month ='6' then ML.june when
+      // LD.month ='7' then ML.july when
+      // LD.month ='8' then ML.august when
+      // LD.month ='9' then ML.september when
+      // LD.month ='10' then ML.october when
+      // LD.month ='11' then ML.november
+      // else ML.december end as ml_month,
+      // COALESCE (LEC.leave_days,0) as enc_leave_days,LEC.leave_amount as enc_leave_amount,LEC.airfare_amount as enc_airfare_amount
+      // FROM hims_f_employee_leave_salary_header LH
+      // left join hims_f_employee_leave_salary_detail LD on LD.employee_leave_salary_header_id = LH.hims_f_employee_leave_salary_header_id
+      // and LD.year = ?  and LD.month <= ?
+      // left join hims_f_employee_leave_salary_detail LDD on LDD.employee_leave_salary_header_id = LH.hims_f_employee_leave_salary_header_id
+      // and LDD.year < ?
+      // left join hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id
+      // left join hims_d_designation as DS on DS.hims_d_designation_id = EM.employee_designation_id
+      // left join hims_f_salary as SL on SL.employee_id = LH.employee_id and SL.year=? and SL.month=? and salary_paid='Y'
+      // left join hims_d_employee_earnings as EE on EE.employee_id = EM.hims_d_employee_id and earnings_id=(select basic_earning_component from hims_d_hrms_options limit 1)
+      // left join hims_f_leave_encash_header LEC on LEC.employee_id=EM.hims_d_employee_id and LEC.year=? and MONTH(CONCAT(LEC.encashment_date))=? and LEC.leave_id = (select hims_d_leave_id from hims_d_leave where leave_category='A')
+      // left join hims_f_employee_monthly_leave as ML on ML.employee_id = EM.hims_d_employee_id and ML.year=? and ML.leave_id=(select hims_d_leave_id from hims_d_leave where leave_category='A')
+      // where EM.employee_status <> 'I' and SL.salary_paid='Y' ${str}
+      // group by LD.month, LD.leave_salary_amount,LD.leave_days,LD.airticket_amount, LH.employee_id, LH.hims_f_employee_leave_salary_header_id
+      // -- ,LH.utilized_leave_days,LH.utilized_leave_salary_amount,LH.utilized_airticket_amount
+      // -- ,LH.opening_leave_days,LH.opening_leave_salary,LH.opening_airticket
+      // order by LH.employee_id,LD.month;
+      //           `,
+
+      //           values: [
+      //             input.year,
+      //             parseInt(input.month),
+      //             input.year,
+      //             input.year,
+      //             parseInt(input.month),
+      //             input.year,
+      //             parseInt(input.month),
+      //             input.year,
+      //           ],
+      //           printQuery: true,
+      //         })
       options.mysql
         .executeQuery({
           query: `
-SELECT LH.employee_id,EM.employee_code, EM.full_name,DS.designation,
-EM.date_of_joining,EE.amount as basic_salary, max(LD.year) as year,
-MONTHNAME(CONCAT('2011-',LD.month,'-01')) as deducting_month,
-LD.leave_salary_amount,
-LD.leave_days,
-LD.airticket_amount,
-LD.month,
-COALESCE(sum(LDD.leave_salary_amount),0) as last_leave_salary_amount,
-COALESCE(sum(LDD.leave_days),0) as last_leave_days,
-COALESCE(sum(LDD.airticket_amount),0) as last_airticket_amount,
-LH.opening_leave_days,
-LH.opening_leave_salary,
-LH.opening_airticket,
-LH.utilized_leave_days,
-LH.utilized_leave_salary_amount,
-LH.utilized_airticket_amount,  
-case when 
-LD.month ='1' then ML.january when
-LD.month ='2' then ML.february when
-LD.month ='3' then ML.march when
-LD.month ='4' then ML.april when
-LD.month ='5' then ML.may when
-LD.month ='6' then ML.june when
-LD.month ='7' then ML.july when
-LD.month ='8' then ML.august when
-LD.month ='9' then ML.september when
-LD.month ='10' then ML.october when
-LD.month ='11' then ML.november
-else ML.december end as ml_month,
-COALESCE (LEC.leave_days,0) as enc_leave_days,LEC.leave_amount as enc_leave_amount,LEC.airfare_amount as enc_airfare_amount
-FROM hims_f_employee_leave_salary_header LH
-left join hims_f_employee_leave_salary_detail LD on LD.employee_leave_salary_header_id = LH.hims_f_employee_leave_salary_header_id 
-and LD.year = ?  and LD.month <= ?
-left join hims_f_employee_leave_salary_detail LDD on LDD.employee_leave_salary_header_id = LH.hims_f_employee_leave_salary_header_id 
-and LDD.year < ?
-left join hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id
-left join hims_d_designation as DS on DS.hims_d_designation_id = EM.employee_designation_id
-left join hims_f_salary as SL on SL.employee_id = LH.employee_id and SL.year=? and SL.month=? and salary_paid='Y'
-left join hims_d_employee_earnings as EE on EE.employee_id = EM.hims_d_employee_id and earnings_id=(select basic_earning_component from hims_d_hrms_options limit 1)
-left join hims_f_leave_encash_header LEC on LEC.employee_id=EM.hims_d_employee_id and LEC.year=? and MONTH(CONCAT(LEC.encashment_date))=? and LEC.leave_id = (select hims_d_leave_id from hims_d_leave where leave_category='A')
-left join hims_f_employee_monthly_leave as ML on ML.employee_id = EM.hims_d_employee_id and ML.year=? and ML.leave_id=(select hims_d_leave_id from hims_d_leave where leave_category='A')
-where EM.employee_status <> 'I' and SL.salary_paid='Y' ${str}
-group by LD.month, LD.leave_salary_amount,LD.leave_days,LD.airticket_amount, LH.employee_id, LH.hims_f_employee_leave_salary_header_id
--- ,LH.utilized_leave_days,LH.utilized_leave_salary_amount,LH.utilized_airticket_amount
--- ,LH.opening_leave_days,LH.opening_leave_salary,LH.opening_airticket
-order by LH.employee_id,LD.month;
+          SELECT 
+          LH.hospital_id,LD.year, LD.month,LH.employee_id,E.employee_code,E.full_name,
+          E.date_of_joining,EE.amount as basic_salary,DS.designation,
+          LH.leave_days as total_leave_days,
+          LH.leave_salary_amount as total_leave_salary_amount,
+          LH.airticket_amount as total_airticket_amount,
+          LD.leave_days,
+          LD.leave_salary_amount,
+          LD.airticket_amount
+          FROM hims_f_employee_leave_salary_detail LD
+          inner join hims_f_employee_leave_salary_header LH on LH.hims_f_employee_leave_salary_header_id= LD.employee_leave_salary_header_id
+          inner join hims_d_employee E on E.hims_d_employee_id= LH.employee_id
+          left join hims_d_employee_earnings as EE on EE.employee_id = E.hims_d_employee_id and earnings_id=(select basic_earning_component from hims_d_hrms_options limit 1)
+          left join hims_d_designation as DS on DS.hims_d_designation_id = E.employee_designation_id
+          left join hims_f_salary as SL on SL.employee_id = LH.employee_id 
+          where LD.year >= ? and LD.month >= ?  and SL.year=? and SL.month=? and salary_paid='Y'  and E.employee_code=115;
           `,
 
           values: [
             input.year,
             parseInt(input.month),
             input.year,
-            input.year,
             parseInt(input.month),
-            input.year,
-            parseInt(input.month),
-            input.year,
           ],
           printQuery: true,
         })
         .then((result) => {
           // const header = result.length ? result[0] : {};
-
+          // debugger;
           const newResult = _.chain(result)
             .groupBy((g) => g.employee_id)
             .map((item) => {
@@ -137,6 +166,7 @@ order by LH.employee_id,LD.month;
                 last_leave_salary_amount,
                 last_leave_days,
                 last_airticket_amount,
+                total_leave_days,
                 // enc_leave_days,
                 // ml_month,
                 // utilized_leave_days,
@@ -145,7 +175,7 @@ order by LH.employee_id,LD.month;
               } = _.head(item);
 
               const lastObject = _.maxBy(item, (m) => parseInt(m.month));
-
+              const firstObject = item[0].leave_days;
               const utilized_leave_days =
                 parseFloat(lastObject.ml_month) +
                 parseFloat(lastObject.enc_leave_days);
@@ -156,20 +186,33 @@ order by LH.employee_id,LD.month;
                 parseFloat(utilized_leave_days);
 
               // Leave Days
-
+              let leavedays_opening_balance;
               const year_open_leave_days =
                 parseFloat(last_leave_days) + parseFloat(opening_leave_days);
+              let leaveDays = _.sumBy(item, (s) => parseFloat(s.leave_days));
+              if (parseFloat(leaveDays) < parseFloat(total_leave_days)) {
+                leavedays_opening_balance =
+                  parseFloat(total_leave_days) - parseFloat(leaveDays);
+              } else {
+                leavedays_opening_balance = parseFloat(total_leave_days);
+              }
+              const closing_balance =
+                leavedays_opening_balance + parseFloat(firstObject);
+              // let total_leave_days = parseFloat(total_leave_days);
+              // const total_leave_days =
+              //   parseFloat(lastObject.leave_days) +
+              //   parseFloat(leavedays_opening_balance);
 
-              const leavedays_opening_balance =
-                _.sumBy(item, (s) => parseFloat(s.leave_days)) +
-                parseFloat(year_open_leave_days) -
-                parseFloat(lastObject.leave_days) -
-                _.sumBy(item, (s) => parseFloat(s.ml_month));
+              // const leavedays_opening_balance =
+              //   _.sumBy(item, (s) => parseFloat(s.leave_days)) +
+              //   parseFloat(year_open_leave_days) -
+              //   parseFloat(lastObject.leave_days) -
+              //   _.sumBy(item, (s) => parseFloat(s.ml_month));
 
-              const total_leave_days =
-                parseFloat(lastObject.leave_days) +
-                parseFloat(leavedays_opening_balance) -
-                parseFloat(lastObject.ml_month);
+              // const total_leave_days =
+              //   parseFloat(lastObject.leave_days) +
+              //   parseFloat(leavedays_opening_balance) -
+              //   parseFloat(lastObject.ml_month);
 
               // Leave Salary
 
@@ -203,12 +246,13 @@ order by LH.employee_id,LD.month;
 
               return {
                 ...lastObject,
+                leave_days: firstObject,
                 leavesalary_opening_balance,
                 leavedays_opening_balance,
                 airefare_opening_balance,
                 total_leave_salary_amount,
                 total_airticket_amount,
-                total_leave_days,
+                total_leave_days: closing_balance,
                 year_open_leave_salary_amount,
                 year_open_airticket_amount,
                 year_open_leave_days,

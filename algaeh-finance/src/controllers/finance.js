@@ -1,6 +1,9 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import finance, { getSalesOrderAndPersonId } from "../models/finance";
+import finance, {
+  getSalesOrderAndPersonId,
+  getAccountForDashBoard,
+} from "../models/finance";
 import {
   getYearEndData,
   getAccountsForYearEnd,
@@ -227,6 +230,20 @@ export default () => {
         .end();
     }
   });
+
+  api.get(
+    "/getAccountForDashBoard",
+    getAccountForDashBoard,
+    (req, res, next) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records,
+        })
+        .end();
+    }
+  );
   api.get("/previewDayEndEntries", previewDayEndEntries, (req, res, next) => {
     res
       .status(utlities.AlgaehUtilities().httpStatus().ok)

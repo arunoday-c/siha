@@ -277,6 +277,29 @@ export default function DashBoardEvents() {
         },
       });
     },
+    getAccountDetails: ($this) => {
+      algaehApiCall({
+        uri: "/finance/getAccountHeads",
+        module: "finance",
+        data: { getAll: "Y" },
+        method: "GET",
+
+        onSuccess: (response) => {
+          if (response.data.success) {
+            debugger;
+            $this.setState({
+              accountsDetails: response.data.result,
+            });
+          }
+        },
+        onFailure: (error) => {
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+    },
 
     getEmployeeProjectWise: ($this) => {
       algaehApiCall({

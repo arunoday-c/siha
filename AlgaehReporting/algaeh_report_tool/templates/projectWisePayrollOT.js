@@ -6,8 +6,10 @@ const executePDF = function executePDFMethod(options) {
       const _ = options.loadash;
 
       let input = {};
-      let params = options.args.reportParams;
-      const decimal_places = options.args.crypto.decimal_places;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
+      const params = options.args.reportParams;
+
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
@@ -61,9 +63,26 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((result) => {
-          // console.log("resut", result);
-
-          resolve({ result });
+          const data = {
+            details: result,
+            net_basic_cost: _.sumBy(result, (s) => parseFloat(s.basic_cost)),
+            net_ot_cost: _.sumBy(result, (s) => parseFloat(s.ot_cost)),
+            net_wot_cost: _.sumBy(result, (s) => parseFloat(s.wot_cost)),
+            net_hot_cost: _.sumBy(result, (s) => parseFloat(s.hot_cost)),
+            net_total_ot_cost: _.sumBy(result, (s) =>
+              parseFloat(s.total_ot_cost)
+            ),
+            net_cost: _.sumBy(result, (s) => parseFloat(s.cost)),
+          };
+          resolve({
+            ...data,
+            currencyOnly: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
+          });
         })
         .catch((error) => {
           options.mysql.releaseConnection();

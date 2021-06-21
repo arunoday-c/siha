@@ -27,9 +27,9 @@ const executePDF = function executePDFMethod(options) {
           GRN.grn_number,GRN.inovice_number, GRN.invoice_date,PO.purchase_number
           from hims_f_procurement_po_return_header H
           inner join hims_f_procurement_po_return_detail D on H.hims_f_procurement_return_po_header_id =D.po_return_header_id
-          inner join hims_f_procurement_grn_header GRN on GRN.hims_f_procurement_grn_header_id = H.grn_header_id
-          inner join hims_f_procurement_po_header PO on PO.hims_f_procurement_po_header_id = GRN.po_id
-          inner join hims_d_inventory_item_master IM on D.inv_item_id=IM.hims_d_inventory_item_master_id
+          left join hims_f_procurement_grn_header GRN on GRN.hims_f_procurement_grn_header_id = H.grn_header_id
+          left join hims_f_procurement_po_header PO on PO.hims_f_procurement_po_header_id = GRN.po_id
+          left join hims_d_inventory_item_master IM on D.inv_item_id=IM.hims_d_inventory_item_master_id
           left join hims_d_inventory_location L on H.inventory_location_id=L.hims_d_inventory_location_id
           left join hims_d_vendor V on H.vendor_id=V.hims_d_vendor_id
           left join hims_d_inventory_uom U on D.inventory_uom_id=U.hims_d_inventory_uom_id

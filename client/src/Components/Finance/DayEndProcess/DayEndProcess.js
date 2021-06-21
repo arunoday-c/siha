@@ -516,7 +516,7 @@ class DayEndProcess extends Component {
 
   ClearData() {
     this.setState({
-      dayEnd: [{}],
+      dayEnd: [],
       from_date: undefined,
       to_date: undefined,
       openPopup: false,
