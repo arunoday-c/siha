@@ -124,17 +124,19 @@ class RadResultEntry extends Component {
     let message;
     const startAndCancel = (
       <Fragment>
-        <div className="col-lg-6">
+        <div className="col">
           <button
             className="btn btn-primary"
+            style={{ marginTop: 21 }}
             onClick={handleExamStatus.bind(this, this, "start")}
           >
             Start
           </button>
         </div>
-        <div className="col-lg-6">
+        <div className="col">
           <button
             className="btn"
+            style={{ marginTop: 21 }}
             onClick={handleExamStatus.bind(this, this, "cancel")}
           >
             Cancel
@@ -143,9 +145,10 @@ class RadResultEntry extends Component {
       </Fragment>
     );
     const completeActived = (
-      <div className="col-lg-6">
+      <div className="col">
         <button
           className="btn btn-primary"
+          style={{ marginTop: 21 }}
           onClick={handleExamStatus.bind(this, this, "completed")}
         >
           Complete
@@ -192,7 +195,166 @@ class RadResultEntry extends Component {
           openPopup={this.props.open}
         >
           <div className="popupInner RadResultEntryPopupInner">
-            <div className="patientInfo-Top box-shadow-normal">
+            <div className="col-12 topbarPatientDetails">
+              <div className="row">
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Patient Name",
+                    }}
+                  />
+
+                  <h6>
+                    {this.state.full_name ? this.state.full_name : "------"}
+                    <small style={{ display: "block", fontStyle: "italic" }}>
+                      {this.state.patient_code}
+                    </small>
+                  </h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Investigation Name",
+                    }}
+                  />
+
+                  <h6>
+                    {this.state.service_name
+                      ? this.state.service_name
+                      : "------"}
+                    <small style={{ display: "block", fontStyle: "italic" }}>
+                      {this.state.service_code}
+                    </small>
+                  </h6>
+                </div>
+
+                <div className="col-2">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Ordered By",
+                    }}
+                  />
+                  <h6>
+                    {this.state.ordered_by_name
+                      ? this.state.ordered_by_name
+                      : "------"}
+
+                    {this.state.ordered_by_name ? (
+                      <small style={{ display: "block", fontStyle: "italic" }}>
+                        On{" "}
+                        {moment(this.state.ordered_date).format(
+                          `${Options.dateFormat} ${Options.timeFormat}`
+                        )}
+                      </small>
+                    ) : (
+                      <small style={{ display: "block", fontStyle: "italic" }}>
+                        -------
+                      </small>
+                    )}
+                  </h6>
+                </div>
+                <div className="col-2">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Scheduled By",
+                    }}
+                  />
+
+                  <h6>
+                    {this.state.entered_by_name
+                      ? this.state.entered_by_name
+                      : "------"}
+
+                    {this.state.entered_by_name ? (
+                      <small style={{ display: "block", fontStyle: "italic" }}>
+                        On{" "}
+                        {moment(this.state.entered_date).format(
+                          `${Options.dateFormat} ${Options.timeFormat}`
+                        )}
+                      </small>
+                    ) : (
+                      <small style={{ display: "block", fontStyle: "italic" }}>
+                        -------
+                      </small>
+                    )}
+                  </h6>
+                </div>
+                {/* 
+                <div className="col-2">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Confirmed By",
+                    }}
+                  />
+
+                  <h6>
+                    {this.state.confirm_by_name
+                      ? this.state.confirm_by_name
+                      : "------"}
+
+                    {this.state.confirm_by_name ? (
+                      <small style={{ display: "block", fontStyle: "italic" }}>
+                        On{" "}
+                        {moment(this.state.confirmed_date).format(
+                          `${Options.dateFormat} ${Options.timeFormat}`
+                        )}
+                      </small>
+                    ) : (
+                      <small style={{ display: "block", fontStyle: "italic" }}>
+                        -------
+                      </small>
+                    )}
+                  </h6>
+                </div> */}
+
+                <div className="col-2">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Validated By",
+                    }}
+                  />
+
+                  <h6>
+                    {this.state.validate_by_name
+                      ? this.state.validate_by_name
+                      : "------"}
+
+                    {this.state.validate_by_name ? (
+                      <small style={{ display: "block", fontStyle: "italic" }}>
+                        On{" "}
+                        {moment(this.state.validated_date).format(
+                          `${Options.dateFormat} ${Options.timeFormat}`
+                        )}
+                      </small>
+                    ) : (
+                      <small style={{ display: "block", fontStyle: "italic" }}>
+                        -------
+                      </small>
+                    )}
+                  </h6>
+                </div>
+                {/* <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Critical Result",
+                        }}
+                      />
+
+                      <h6>
+                        <small
+                          className={`badge ${
+                            isCritical ? "badge-danger" : "badge-primary"
+                          }`}
+                        >
+                          {" "}
+                          {isCritical ? "Yes" : "No"}
+                        </small>
+                      </h6>
+                    </div> */}
+              </div>
+            </div>
+
+            {/* <div className="patientInfo-Top box-shadow-normal">
               <div className="patientName">
                 <h6>{this.state.full_name}</h6>
                 <p>{this.state.gender}</p>
@@ -228,14 +390,14 @@ class RadResultEntry extends Component {
                   </b>
                 </span>
               </div>
-            </div>
+            </div> */}
             <div className="col-12">
               <div className="row">
-                <div className="col-4 popLeftDiv">
-                  <div className="row form-row-gap">{this.renderAction()}</div>
-                  <div className="row form-row-gap">
+                <div className="col-12 popRightDiv">
+                  {/* <div className="row form-row-gap">{this.renderAction()}</div> */}
+                  <div className="row">
                     <AlgaehDateHandler
-                      div={{ className: "col-lg-7" }}
+                      div={{ className: "col" }}
                       label={{ forceLabel: "Start Date" }}
                       textBox={{ className: "txt-fld" }}
                       events={{
@@ -245,7 +407,7 @@ class RadResultEntry extends Component {
                       value={this.state.exam_start_date_time}
                     />
 
-                    <div className="col-lg-5">
+                    <div className="col-1">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Start Time",
@@ -261,10 +423,8 @@ class RadResultEntry extends Component {
                           : "00:00:00"}
                       </time>
                     </div>
-                  </div>
-                  <div className="row form-row-gap">
                     <AlgaehDateHandler
-                      div={{ className: "col-lg-7" }}
+                      div={{ className: "col" }}
                       label={{ forceLabel: "End Date" }}
                       textBox={{ className: "txt-fld" }}
                       events={{
@@ -274,7 +434,7 @@ class RadResultEntry extends Component {
                       value={this.state.exam_end_date_time}
                     />
 
-                    <div className="col-lg-5">
+                    <div className="col-1">
                       <AlgaehLabel
                         label={{
                           forceLabel: "End Time    ",
@@ -290,11 +450,9 @@ class RadResultEntry extends Component {
                           : "00:00:00"}
                       </time>
                     </div>
-                  </div>
 
-                  <div className="row form-row-gap">
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-12" }}
+                      div={{ className: "col" }}
                       label={{
                         forceLabel: "Technician",
                       }}
@@ -313,12 +471,11 @@ class RadResultEntry extends Component {
                         },
                       }}
                     />
-                  </div>
-                  <div className="row">
+
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-12" }}
+                      div={{ className: "col" }}
                       label={{
-                        forceLabel: "Test Status",
+                        forceLabel: "Work Status",
                       }}
                       selector={{
                         name: "status",
@@ -335,11 +492,10 @@ class RadResultEntry extends Component {
                         },
                       }}
                     />
-                  </div>
-
+                    {/* </div>
                   <div className="row form-row-gap">
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-6" }}
+                      div={{ className: "col" }}
                       label={{
                         forceLabel: "Attended By",
                       }}
@@ -359,7 +515,7 @@ class RadResultEntry extends Component {
                       }}
                     />
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-6" }}
+                      div={{ className: "col" }}
                       label={{
                         forceLabel: "Validate By",
                       }}
@@ -377,9 +533,9 @@ class RadResultEntry extends Component {
                           disabled: true,
                         },
                       }}
-                    />
+                    /> */}
                     <AlagehAutoComplete
-                      div={{ className: "col-12" }}
+                      div={{ className: "col" }}
                       label={{
                         forceLabel: "Report Type",
                       }}
@@ -395,51 +551,48 @@ class RadResultEntry extends Component {
                         onChange: texthandle.bind(this, this),
                       }}
                     />
-
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Comments",
-                        }}
-                      />
-
-                      <textarea
-                        value={this.state.comments}
-                        name="comments"
-                        onChange={this.textAreaEvent.bind(this)}
-                      >
-                        {this.state.comments}
-                      </textarea>
+                    {this.renderAction()}
+                  </div>
+                  <hr></hr>
+                  <div className="row">
+                    <div className="col-4">
+                      <div className="row">
+                        <AlagehAutoComplete
+                          div={{ className: "col-lg-12" }}
+                          label={{
+                            forceLabel: "Select Template",
+                          }}
+                          selector={{
+                            name: "template_id",
+                            className: "select-fld",
+                            value: this.state.template_id,
+                            dataSource: {
+                              textField: "template_name",
+                              valueField: "hims_d_rad_template_detail_id",
+                              data: this.state.Templatelist,
+                            },
+                            onChange: templatehandle.bind(this, this),
+                          }}
+                        />
+                        <div className="col-12" style={{ marginTop: 10 }}>
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "General Comments/Feedback",
+                            }}
+                          />
+                          <textarea
+                            className="radExtraComment"
+                            value={this.state.comments}
+                            name="comments"
+                            onChange={this.textAreaEvent.bind(this)}
+                            rows="11"
+                          >
+                            {this.state.comments}
+                          </textarea>
+                        </div>
+                      </div>{" "}
                     </div>
-                  </div>
-                </div>
-                <div className="col-8 popRightDiv">
-                  <h5 style={{ color: "gray" }}>
-                    {this.state.service_code} - {this.state.service_name}
-                  </h5>
-                  <hr />
-                  <div className="row">
-                    <AlagehAutoComplete
-                      div={{ className: "col-lg-4" }}
-                      label={{
-                        forceLabel: "Select Template",
-                      }}
-                      selector={{
-                        name: "template_id",
-                        className: "select-fld",
-                        value: this.state.template_id,
-                        dataSource: {
-                          textField: "template_name",
-                          valueField: "hims_d_rad_template_detail_id",
-                          data: this.state.Templatelist,
-                        },
-                        onChange: templatehandle.bind(this, this),
-                      }}
-                    />
-                  </div>
-
-                  <div className="row">
-                    <div className="col-lg-12 editor">
+                    <div className="col-8 editor">
                       <RichTextEditor
                         value={this.state.result_html}
                         onChange={rtehandle.bind(this, this)}
