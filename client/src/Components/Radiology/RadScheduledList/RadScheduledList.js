@@ -310,13 +310,12 @@ class RadScheduledList extends Component {
               </button>
             </div>,
           ]}
-          className={`algaehNewModal investigationAttachmentModal`}
+          className={`algaehNewModal radInvestigationAttachmentModal`}
         >
           <div className="portlet-body">
             <div className="col-12">
               <div className="row">
                 <div className="col-3 investigationAttachmentDrag">
-                  {" "}
                   <Dragger
                     accept=".doc,.docx,application/msword,.jpg,.png,.pdf"
                     name="attached_files"
