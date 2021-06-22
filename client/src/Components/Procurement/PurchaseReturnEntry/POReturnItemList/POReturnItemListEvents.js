@@ -915,7 +915,6 @@ const onchangegridcol = ($this, context, row, e) => {
 const onchhangegriddiscount = ($this, context, row, e) => {
   let extended_cost = 0;
 
-  let tax_amount = 0;
   let _stock_detail =
     $this.state.po_return_from === "PHR"
       ? $this.state.pharmacy_stock_detail
@@ -925,18 +924,23 @@ const onchhangegriddiscount = ($this, context, row, e) => {
   extended_cost = (
     parseFloat(row.return_qty) * parseFloat(row.unit_cost)
   ).toFixed($this.state.decimal_places);
-
-  tax_amount = (
-    (parseFloat(extended_cost) * parseFloat(row.tax_percentage)) /
+  debugger;
+  row["extended_cost"] = parseFloat(extended_cost);
+  row["discount_amount"] = (
+    (parseFloat(extended_cost) * parseFloat(row.discount_percentage)) /
     100
   ).toFixed($this.state.decimal_places);
 
-  row["extended_cost"] = parseFloat(extended_cost);
-  row["tax_amount"] =
-    (parseFloat(extended_cost) * parseFloat(row.tax_percentage)) / 100;
-  row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
+  row["net_extended_cost"] =
+    parseFloat(extended_cost) + parseFloat(row["discount_amount"]);
 
-  row["net_extended_cost"] = parseFloat(extended_cost);
+  row["tax_amount"] = (
+    (parseFloat(row["net_extended_cost"]) * parseFloat(row.tax_percentage)) /
+    100
+  ).toFixed($this.state.decimal_places);
+  row["total_amount"] =
+    parseFloat(row["tax_amount"]) + parseFloat(row["net_extended_cost"]);
+
   _stock_detail[_index] = row;
 
   if ($this.state.po_return_from === "PHR") {
