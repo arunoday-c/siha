@@ -396,13 +396,77 @@ function HassanNumber() {
                       return row.hassan_number_updated_date;
                     },
                   },
+
+                  {
+                    fieldName: "status",
+                    label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                    displayTemplate: (row) => {
+                      return row.status === "CL" ? (
+                        <span className="badge badge-secondary">Collected</span>
+                      ) : row.status === "CN" ? (
+                        <span className="badge badge-danger">Cancelled</span>
+                      ) : row.status === "CF" ? (
+                        <span className="badge badge-primary">Confirmed</span>
+                      ) : (
+                        <span className="badge badge-success">Validated</span>
+                      );
+                    },
+                    editorTemplate: (row) => {
+                      return row.status === "CL" ? (
+                        <span className="badge badge-secondary">Collected</span>
+                      ) : row.status === "CN" ? (
+                        <span className="badge badge-danger">Cancelled</span>
+                      ) : row.status === "CF" ? (
+                        <span className="badge badge-primary">Confirmed</span>
+                      ) : (
+                        <span className="badge badge-success">Validated</span>
+                      );
+                    },
+                    // sortable: true,
+                    // filterable: true,
+                    disabled: true,
+                    others: {
+                      maxWidth: 130,
+                      // resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  // {
+                  //   fieldName: "critical_status",
+                  //   label: (
+                  //     <AlgaehLabel
+                  //       label={{ forceLabel: "Critical Result" }}
+                  //     />
+                  //   ),
+                  //   displayTemplate: (row) => {
+                  //     return row.critical_status === "N" ? (
+                  //       <span className="badge badge-primary">No</span>
+                  //     ) : (
+                  //       <span className="badge badge-danger">Yes</span>
+                  //     );
+                  //   },
+                  //   disabled: true,
+                  //   others: {
+                  //     maxWidth: 130,
+                  //     resizable: false,
+                  //     style: { textAlign: "center" },
+                  //   },
+                  // },
                 ]}
                 keyId="patient_code"
                 data={isPCRRecords ?? []}
                 isEditable={"editOnly"}
                 events={{
                   onSave: (row) => {
-                    updateHassanNo(row);
+                    if (row.hassan_number) {
+                      updateHassanNo(row);
+                    } else {
+                      AlgaehMessagePop({
+                        type: "error",
+                        display: "Please Enter Hassan Number",
+                      });
+                      return;
+                    }
                   },
                 }}
                 isFilterable={true}

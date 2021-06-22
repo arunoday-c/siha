@@ -347,6 +347,7 @@ class BatchWiseStock extends Component {
               </div>
               <div className="col-3">
                 <img
+                  alt=""
                   className="itemStockBigImg"
                   src={
                     this.props.currentRow?.item_master_img_unique_id

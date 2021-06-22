@@ -174,16 +174,22 @@ class ItemMomentEnquiry extends Component {
                         </section>
                       );
                     }}
-                    name={"item_id"}
+                    name={"item_code_id"}
                     columns={spotlightSearch.Items.Pharmacyitemmaster}
                     displayField="item_description"
                     value={this.state.item_description}
                     searchName={"PharmacyforMaterialRequesition"}
                     onClick={itemchangeText.bind(this, this)}
+                    onClear={() => {
+                      this.setState({
+                        item_code_id: null,
+                        item_description: "",
+                      });
+                    }}
                     // others={{
                     //   disabled: this.state.ItemDisable,
                     // }}
-                  />{" "}
+                  />
                   {/* <AlagehAutoComplete
                     div={{ className: "col" }}
                     label={{ forceLabel: "Item Name" }}

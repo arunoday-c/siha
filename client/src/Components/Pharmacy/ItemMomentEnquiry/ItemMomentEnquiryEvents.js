@@ -218,7 +218,7 @@ const generateReports = ($this) => {
 
 const itemchangeText = ($this, e, ctrl) => {
   let name = ctrl;
-  let value = e.hims_d_inventory_item_master_id;
+  let value = e.hims_d_item_master_id;
 
   $this.setState({
     [name]: value,

@@ -136,6 +136,7 @@ class InvItemMaster extends Component {
                                         <div className="image-drop-area">
                                           <span className="image-drop-area">
                                             <img
+                                              alt=""
                                               src={`${
                                                 window.location.protocol
                                               }//${window.location.hostname}${
@@ -176,6 +177,7 @@ class InvItemMaster extends Component {
                                             >
                                               View
                                               <img
+                                                alt=""
                                                 className="invItemThumbnail animated slideInLeft faster"
                                                 src={`${
                                                   window.location.protocol
