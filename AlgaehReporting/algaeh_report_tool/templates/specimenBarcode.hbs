@@ -1,24 +1,20 @@
 {{{importStyle "css/algaehReportStyles.css"}}}
-
 <style>
   .texttruncate{ text-overflow: ellipsis; overflow: hidden;white-space: nowrap;
   } @page { margin: 0; size: landscape; } .sheet { margin: 0; overflow: hidden;
   position: relative; box-sizing: border-box; page-break-after: always; }
-  img.specimenBarcode { height:18px; margin-bottom: 3px; /* margin-top: 4px; */
-  }
+  img.specimenBarcode { height:18px; margin-bottom: 3px;}
 </style>
-
 <body style="width: 100%;">
   <div
     class="print-body"
     style="page-break-before: always; page-break-after: always;margin: 0;"
   >
     <div class="barcodeLine" style="">
-      {{!-- <small class="small-right">{{header.description}}</div> --}}
       <small
         class="small-left texttruncate"
         style="width:
-  48%; font-size:8.5px; margin-top: 2px; text-align:left;"
+            48%; font-size:8.5px; margin-top: 2px; text-align:left;"
       >Lab ID:
         <b>{{header.lab_id_number}}</b></small>
       <small class="small-right" style="margin-top: 4px;"><b
@@ -30,7 +26,7 @@
       <small
         class="small-center texttruncate"
         style="width:
-  98%; font-size:8.5px;"
+            98%; font-size:8.5px;"
       ><b>{{header.full_name}}</b></small>
       <small class="small-left"><b>{{header.patient_code}}</b></small>
       <small class="small-right"><b>{{header.date_of_birth}}
@@ -40,12 +36,20 @@
       <small
         class="small-left texttruncate"
         style="width:
-  77%; line-height:12px;text-align:left;"
+            77%; line-height:12px;text-align:left;"
       ><b>{{header.description}}</b></small>
-      <small
+      {{!-- <small
         class="small-right"
         style="border-radius:2px;padding:1px 3px;border: 1px dashed {{header.color_code}}"
-      ><b>{{header.color_name}}</b></small>
+      ><b>{{header.color_name}}</b></small> --}}
+
+      {{#ifExist header.color_name}}
+        <small
+          class="small-right"
+          style="border-radius:2px;padding:1px 3px;border: 1px dashed {{header.color_code}}"
+        ><b>{{header.color_name}}</b></small>
+      {{/ifExist}}
+
       {{!-- <small class="small-center"><b>{{header.lab_id_number}}</b></small> --}}
     </div>
   </div>

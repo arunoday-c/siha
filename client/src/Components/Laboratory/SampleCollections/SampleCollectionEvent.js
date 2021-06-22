@@ -196,12 +196,18 @@ const printBarcode = ($this, row) => {
           outputFileType: "PDF",
         },
       },
+
       onSuccess: (res) => {
         const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Specimen Barcode`;
-        window.open(origin, "Specimen Barcode");
-        // window.document.title = "Specimen Barcode";
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+        window.open(origin);
       },
+      // onSuccess: (res) => {
+      //   const urlBlob = URL.createObjectURL(res.data);
+      //   const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Specimen Barcode`;
+      //   window.open(origin);
+      //   window.document.title = "Specimen Barcode";
+      // },
     });
   } else {
     let inputobj = {
@@ -261,12 +267,19 @@ const printBarcode = ($this, row) => {
                 outputFileType: "PDF",
               },
             },
+
             onSuccess: (res) => {
               const urlBlob = URL.createObjectURL(res.data);
-              const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Specimen Barcode`;
+              const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
               window.open(origin);
-              window.document.title = "Specimen Barcode";
             },
+
+            // onSuccess: (res) => {
+            //   const urlBlob = URL.createObjectURL(res.data);
+            //   const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Specimen Barcode`;
+            //   window.open(origin);
+            //    window.document.title = "Specimen Barcode";
+            // },
           });
         }
         AlgaehLoader({ show: false });

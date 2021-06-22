@@ -86,6 +86,10 @@ hbs.registerHelper("if", function (value1, value2, options) {
   if (value1 == value2) return options.fn(this);
   else return options.inverse(this);
 });
+hbs.registerHelper("ifExist", function (value1, options) {
+  if (value1) return options.fn(this);
+  else return options.inverse(this);
+});
 hbs.registerHelper("ifCond", function (v1, operator, v2, options) {
   switch (operator) {
     case "==":
