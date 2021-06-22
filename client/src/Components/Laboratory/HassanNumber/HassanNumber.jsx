@@ -254,7 +254,7 @@ function HassanNumber() {
                     filterable: true,
                     others: {
                       maxWidth: 150,
-                      resizable: false,
+                      // resizable: false,
                       style: { textAlign: "center" },
                     },
                     editorTemplate: (row) => {
@@ -272,7 +272,7 @@ function HassanNumber() {
                     disabled: true,
                     others: {
                       maxWidth: 130,
-                      resizable: false,
+                      // resizable: false,
                       style: { textAlign: "center" },
                     },
                     editorTemplate: (row) => {
@@ -289,7 +289,7 @@ function HassanNumber() {
                     disabled: false,
                     others: {
                       maxWidth: 150,
-                      resizable: false,
+                      // resizable: false,
                       style: { textAlign: "center" },
                     },
                     editorTemplate: (row) => {
@@ -306,7 +306,7 @@ function HassanNumber() {
                     disabled: false,
                     others: {
                       maxWidth: 150,
-                      resizable: false,
+                      // resizable: false,
                       style: { textAlign: "center" },
                     },
                     editorTemplate: (row) => {
@@ -322,7 +322,7 @@ function HassanNumber() {
                     filterable: true,
                     disabled: true,
                     others: {
-                      resizable: false,
+                      // resizable: false,
                       style: { textAlign: "left" },
                     },
                     editorTemplate: (row) => {
@@ -337,7 +337,7 @@ function HassanNumber() {
                     sortable: true,
                     filterable: true,
                     others: {
-                      resizable: false,
+                      // resizable: false,
                       style: { textAlign: "center" },
                     },
                     editorTemplate: (row) => {
@@ -351,7 +351,7 @@ function HassanNumber() {
                     filterable: true,
                     disabled: true,
                     others: {
-                      resizable: false,
+                      // resizable: false,
                       style: { textAlign: "center" },
                     },
                     editorTemplate: (row) => {
@@ -390,7 +390,7 @@ function HassanNumber() {
                     filterable: true,
                     disabled: true,
                     others: {
-                      resizable: false,
+                      // resizable: false,
                       style: { textAlign: "center" },
                     },
                     editorTemplate: (row) => {
@@ -408,7 +408,7 @@ function HassanNumber() {
                     filterable: true,
                     disabled: true,
                     others: {
-                      resizable: false,
+                      // resizable: false,
                       style: { textAlign: "center" },
                     },
                     editorTemplate: (row) => {
@@ -446,7 +446,7 @@ function HassanNumber() {
                     disabled: true,
                     others: {
                       maxWidth: 130,
-                      resizable: false,
+                      // resizable: false,
                       style: { textAlign: "center" },
                     },
                   },
@@ -488,7 +488,15 @@ function HassanNumber() {
                   //   setDisabledSave(true);
                   // },
                   onSave: (row) => {
-                    updateHassanNo(row);
+                    if (row.hassan_number) {
+                      updateHassanNo(row);
+                    } else {
+                      AlgaehMessagePop({
+                        type: "error",
+                        display: "Please Enter Hassan Number",
+                      });
+                      return;
+                    }
                   },
                   // onDelete: (row) => {
                   //   if (row.isInserted === 1) {
