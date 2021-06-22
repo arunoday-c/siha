@@ -211,9 +211,12 @@ class SampleCollectionPatient extends PureComponent {
                                 ),
                                 displayTemplate: (row) => {
                                   return (
-                                    <span>
+                                    <>
                                       {row.collected !== "Y" ? (
-                                        <Tooltip title="Collect Specimen">
+                                        <Tooltip
+                                          title="Collect Specimen"
+                                          zIndex={9999}
+                                        >
                                           <i
                                             style={{
                                               pointerEvents:
@@ -233,7 +236,10 @@ class SampleCollectionPatient extends PureComponent {
                                           />
                                         </Tooltip>
                                       ) : (
-                                        <Tooltip title="Generate Barcode">
+                                        <Tooltip
+                                          title="Generate Barcode"
+                                          zIndex={9999}
+                                        >
                                           <i
                                             style={{
                                               pointerEvents:
@@ -252,7 +258,7 @@ class SampleCollectionPatient extends PureComponent {
                                           />
                                         </Tooltip>
                                       )}
-                                    </span>
+                                    </>
                                   );
                                 },
                                 editorTemplate: (row) => {

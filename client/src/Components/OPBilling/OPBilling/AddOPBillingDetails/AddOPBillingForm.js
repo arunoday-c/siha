@@ -116,17 +116,17 @@ class AddOPBillingForm extends Component {
                           insured: this.state.insured,
                           vat_applicable: this.state.vat_applicable,
                           hims_d_services_id: this.state.s_service,
-                          primary_insurance_provider_id: this.state
-                            .insurance_provider_id,
-                          primary_network_office_id: this.state
-                            .hims_d_insurance_network_office_id,
+                          primary_insurance_provider_id:
+                            this.state.insurance_provider_id,
+                          primary_network_office_id:
+                            this.state.hims_d_insurance_network_office_id,
                           primary_network_id: this.state.network_id,
                           sec_insured: this.state.sec_insured,
-                          secondary_insurance_provider_id: this.state
-                            .secondary_insurance_provider_id,
+                          secondary_insurance_provider_id:
+                            this.state.secondary_insurance_provider_id,
                           secondary_network_id: this.state.secondary_network_id,
-                          secondary_network_office_id: this.state
-                            .secondary_network_office_id,
+                          secondary_network_office_id:
+                            this.state.secondary_network_office_id,
                           test_id: this.state.test_id,
                         },
                       ];
@@ -153,6 +153,8 @@ class AddOPBillingForm extends Component {
 
                               if (data.billdetails.length !== 0) {
                                 data.billdetails[0].created_date = new Date();
+                                data.billdetails[0].send_out_test =
+                                  this.state.send_out_test;
                                 existingservices.splice(
                                   0,
                                   0,
@@ -270,17 +272,17 @@ class AddOPBillingForm extends Component {
                       insured: this.state.insured,
                       vat_applicable: this.state.vat_applicable,
                       hims_d_services_id: this.state.s_service,
-                      primary_insurance_provider_id: this.state
-                        .insurance_provider_id,
-                      primary_network_office_id: this.state
-                        .hims_d_insurance_network_office_id,
+                      primary_insurance_provider_id:
+                        this.state.insurance_provider_id,
+                      primary_network_office_id:
+                        this.state.hims_d_insurance_network_office_id,
                       primary_network_id: this.state.network_id,
                       sec_insured: this.state.sec_insured,
-                      secondary_insurance_provider_id: this.state
-                        .secondary_insurance_provider_id,
+                      secondary_insurance_provider_id:
+                        this.state.secondary_insurance_provider_id,
                       secondary_network_id: this.state.secondary_network_id,
-                      secondary_network_office_id: this.state
-                        .secondary_network_office_id,
+                      secondary_network_office_id:
+                        this.state.secondary_network_office_id,
                       test_id: this.state.test_id,
                     },
                   ];
@@ -307,6 +309,8 @@ class AddOPBillingForm extends Component {
 
                           if (data.billdetails.length !== 0) {
                             data.billdetails[0].created_date = new Date();
+                            data.billdetails[0].send_out_test =
+                              this.state.send_out_test;
                             existingservices.splice(0, 0, data.billdetails[0]);
                           }
 

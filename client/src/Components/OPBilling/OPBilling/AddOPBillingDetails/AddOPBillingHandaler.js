@@ -29,6 +29,7 @@ const serviceHandeler = ($this, context, e) => {
     s_service: e.hims_d_services_id,
     s_service_type: e.service_type_id,
     test_id: e.hims_d_investigation_test_id,
+    send_out_test: e.send_out_test,
     visittypeselect: false,
   });
   if (context !== null) {
