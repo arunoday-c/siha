@@ -519,11 +519,6 @@ body {
   text-align: center;
 }
 
-img.specimenBarcode {
-  height: 22px;
-  margin-bottom: 3px;
-  /* margin-top: 4px; */
-}
 .barcodeLine p {
   margin: 0;
   padding: 0;
