@@ -35,67 +35,45 @@
             <td> <span>{{header.ordered_date}}</span></td>
          </tr>
          <tr>
-            <td><label>Collected Date & Time</label></td>
-            <td> <span>{{header.collected_date}}</span></td>
+            <td><label>Scheduled Date & Time</label></td>
+            <td> <span>{{header.scheduled_date_time}}</span></td>
+            <td><label>Arrived Date & Time</label></td>
+            <td> <span>{{header.arrived_date}}</span></td>
+         </tr>
+          <tr>
+          
             <td><label>Validated Date & Time</label></td>
-            <td> <span>{{header.validated_date}}</span></td>
+            <td colspan="4"> <span>{{header.validate_date_time}}</span></td>
          </tr>
          <tr>
             <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
          </tr>
          <tr>
             <td><label>Test Name</label></td>
-            <td> <span>{{header.service_name}} </span></td>
-            <td><label>Test Category</label></td>
-            <td> <span>{{header.category_name}} </span></td>
-            {{!-- {{#if header.critical_status "Y"}} <b style="color:red;">
-            (Critical Result)
-            </b> {{/if}} --}}
+            <td colspan="3"> <span>{{header.service_name}} </span></td>
+          
          </tr>
       </table>
    </section>
    <section>
               <p style="text-align: center;"><b> {{firstElement result 0 "template_name"}}</b></p>
-  <table class="tableNoBorder" cell-padding="0">
-      
-     <tr><td>{{{firstElement result 0 "result_html"}}}</td></tr>
-     </table>
-   <p> <label> Comments: </label> <span> <strong> {{firstElement result 0 "comments"}} </strong></p>
+<div style="border:1px solid rgb(197, 197, 197); padding:15px">{{{firstElement result 0 "result_html"}}} <p> <label> Comments: </label> <span> <strong> {{firstElement result 0 "comments"}} </strong></p></div>
+   
    </section>
 
-    <table class="tableForLabel" cell-padding="0">
-
+    <table class="tableNoBorder" cell-padding="0">
             <tr>
                 <td><label>Performed by</label><p><b>{{firstElement result 0 "perform_by"}}</b></p></td>
                 <td><label>Report Prepared by</label><p><b>{{firstElement result 0 "scheduled_by"}}</b></p></td>
-               <td><label>Reviewed by</label><p><b>{{firstElement result 0 "attended_by"}}</b></p></td>
-            </tr>
-              <tr>
-                <td><label>Signed by</label><p><b>{{firstElement result 0 "validate_by"}}</b></p></td>
-                <td><label>Seal</label><p><b></b></p></td>
+               {{!-- <td><label>Reviewed by</label><p><b>{{firstElement result 0 "attended_by"}}</b></p></td> --}}
+                 <td><label>Signed by</label><p><b>{{firstElement result 0 "validate_by"}}</b></p></td>
+              
                <td><label>Date</label><p><b>{{firstElement result 0 "validate_date_time"}}</b></p></td>
             </tr>
+            
         </table>
-      {{!-- <table class="tableForData">
-         <tbody>
-            <tr>
-               <td class="txtFld">
-                  Comments:
-                  <ol>
-                     {{#each (commentBreakUp header.comments commentBreakUp)}}
-                     <li>{{this}}</li>
-                     {{/each}}
-                  </ol>
-               </td>
-            </tr>
-            <tr>
-               <td class="txtFld">Validated By: <b>{{header.validated_by}}</b></td>
-            </tr>
-         </tbody>
-      </table> --}}
+      
    </section>
-   {{!-- 
-   <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer>
-   --}}
+   
 </div>
 

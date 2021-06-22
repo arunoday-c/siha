@@ -86,6 +86,10 @@ hbs.registerHelper("if", function (value1, value2, options) {
   if (value1 == value2) return options.fn(this);
   else return options.inverse(this);
 });
+hbs.registerHelper("ifExist", function (value1, options) {
+  if (value1) return options.fn(this);
+  else return options.inverse(this);
+});
 hbs.registerHelper("ifCond", function (v1, operator, v2, options) {
   switch (operator) {
     case "==":
@@ -374,6 +378,7 @@ export default {
       }
 
       const qrUrl = process.env.QR_CODE_CLIENT ?? "http://localhost:3024/";
+      const portalUrl = process.env.PORTAL_HOST ?? "http://localhost:4402/";
       _mysql
         .executeQuery({
           query:
@@ -814,26 +819,26 @@ export default {
                               _fs.on("end", async () => {
                                 const rptPath = _reportOutput[0];
                                 if (qrCodeReport) {
-                                  const form = new FormData();
-                                  form.append(
-                                    "file",
-                                    fs.createReadStream(rptPath)
-                                  );
-                                  form.append("shortUrl", shortUrl);
-                                  await axios
-                                    .post(`${qrUrl}uploadFile`, form, {
-                                      headers: { ...form.getHeaders() },
-                                    })
-                                    .catch((error) => {
-                                      console.error(error.message);
-                                    });
-                                  // await axios.post(
-                                  //   "http://localhost:3024/fileShare",
-                                  //   {
-                                  //     filePath: rptPath,
-                                  //     shortUrl: shortUrl,
-                                  //   }
-                                  // );
+                                  try {
+                                    const form = new FormData();
+                                    form.append(
+                                      "file",
+                                      fs.createReadStream(rptPath)
+                                    );
+                                    form.append("shortUrl", shortUrl);
+                                    await axios
+                                      .post(`${qrUrl}uploadFile`, form, {
+                                        headers: { ...form.getHeaders() },
+                                      })
+                                      .catch((error) => {
+                                        console.error(error.message);
+                                      });
+                                  } catch (e) {
+                                    console.error(
+                                      "QR Code Server issue===>",
+                                      e
+                                    );
+                                  }
                                 }
                                 if (reportToPortal === "true") {
                                   const rptParameters =
@@ -848,24 +853,52 @@ export default {
                                   const portal_visit_code = rptParameters.find(
                                     (f) => f.name === "visit_code"
                                   ).value;
+
+                                  const formD = new FormData();
+                                  formD.append(
+                                    "file",
+                                    fs.createReadStream(rptPath)
+                                  );
+                                  formD.append(
+                                    "details",
+                                    JSON.stringify({
+                                      patient_identity: portal_patient_identity,
+                                      service_id: portal_service_id,
+                                      visit_code: portal_visit_code,
+                                      hospital_id:
+                                        req.userIdentity["hospital_id"],
+                                    })
+                                  );
+                                  formD.append(
+                                    "rpt_type",
+                                    rpt_type ?? "PATIENT_REPORT"
+                                  );
+
                                   await axios
+                                    // .post(
+                                    //   `${portalUrl}api/v1/report/upload`,
+                                    //   {
+                                    //     fileCompletePath: rptPath,
+                                    //     details: {
+                                    //       patient_identity:
+                                    //         portal_patient_identity,
+                                    //       service_id: portal_service_id,
+                                    //       visit_code: portal_visit_code,
+                                    //       hospital_id:
+                                    //         req.userIdentity["hospital_id"],
+                                    //     },
+                                    //     rpt_type: rpt_type ?? "PATIENT_REPORT",
+                                    //   }
+                                    // )
                                     .post(
-                                      "http://localhost:4402/api/v1/report/upload",
+                                      `${portalUrl}api/v1/report/upload`,
+                                      formD,
                                       {
-                                        fileCompletePath: rptPath,
-                                        details: {
-                                          patient_identity:
-                                            portal_patient_identity,
-                                          service_id: portal_service_id,
-                                          visit_code: portal_visit_code,
-                                          hospital_id:
-                                            req.userIdentity["hospital_id"],
-                                        },
-                                        rpt_type: rpt_type ?? "PATIENT_REPORT",
+                                        headers: { ...formD.getHeaders() },
                                       }
                                     )
                                     .catch((error) => {
-                                      // console.log("error ====> ", error);
+                                      console.log("error ====> ", error);
                                       // console.error(error.message);
                                     });
                                 }

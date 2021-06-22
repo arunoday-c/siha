@@ -1593,7 +1593,8 @@ let getPatientProfile = (req, res, next) => {
       .executeQuery({
         query:
           "SELECT P.hims_d_patient_id,P.full_name,P.arabic_name,P.patient_code,ID.identity_document_name,\
-          P.primary_id_no,P.vat_applicable,P.gender,P.date_of_birth,P.tel_code,P.contact_number,\
+          P.primary_id_no, CASE WHEN H.default_nationality = P.nationality_id THEN local_vat_applicable ELSE 'Y' END as vat_applicable, \
+          P.gender,P.date_of_birth,P.tel_code,P.contact_number,\
           P.secondary_contact_number,P.email,P.emergency_contact_name,P.emergency_contact_number,\
           P.relationship_with_patient,P.blood_group,P.marital_status,P.address1 AS patient_address,\
           P.address2 AS emergency_address,P.postal_code,N.nationality,PV.age_in_years, PV.age_in_months, \
@@ -1602,6 +1603,7 @@ let getPatientProfile = (req, res, next) => {
           INNER JOIN hims_d_nationality N ON N.hims_d_nationality_id = P.nationality_id) \
           INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id = PE.visit_id \
           INNER JOIN hims_d_identity_document ID ON ID.hims_d_identity_document_id = P.primary_identity_id \
+          INNER JOIN hims_d_hospital H ON H.hims_d_hospital_id = P.hospital_id \
           WHERE P.hims_d_patient_id = ? AND PE.episode_id = ? AND visit_id = ? ORDER BY PE.created_date DESC LIMIT 1;\
           select PE.created_date from hims_f_patient_encounter PE INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id = PE.visit_id \
           INNER JOIN hims_d_visit_type VT ON VT.hims_d_visit_type_id = PV.visit_type and VT.consultation='Y'  \
@@ -1613,7 +1615,7 @@ let getPatientProfile = (req, res, next) => {
           inputData.patient_id,
           inputData.visit_id,
         ],
-        // printQuery: true,
+        printQuery: true,
       })
       .then((visit_result) => {
         // console.log("visit_result", visit_result)
@@ -1663,8 +1665,12 @@ let getPatientVitals = (req, res, next) => {
         const vitals = _.chain(result)
           .groupBy((g) => g.created_date)
           .map((details, key) => {
-            const { created_date, user_display_name, visit_date, visit_time } =
-              _.head(details);
+            const {
+              created_date,
+              user_display_name,
+              visit_date,
+              visit_time,
+            } = _.head(details);
             const recorded_dt = `${moment(visit_date).format(
               "YYYY-MM-DD"
             )} ${visit_time}`;
@@ -4133,8 +4139,13 @@ export const getNurseNotes = (req, res, next) => {
 
 export const addNurseNote = (req, res, next) => {
   const _mysql = new algaehMysql();
-  const { patient_id, visit_id, episode_id, nursing_notes, visit_date } =
-    req.body;
+  const {
+    patient_id,
+    visit_id,
+    episode_id,
+    nursing_notes,
+    visit_date,
+  } = req.body;
   try {
     _mysql
       .executeQuery({
