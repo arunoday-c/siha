@@ -19,11 +19,14 @@ import Options from "../../../../Options.json";
 import moment from "moment";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-
+import ItemBatchs from "../ItemBatchs/ItemBatchs";
 class ConsumptionItems extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      selectBatch: false,
+      selectBatchButton: true,
+    };
   }
 
   UNSAFE_componentWillMount() {
@@ -103,6 +106,12 @@ class ConsumptionItems extends Component {
   deleteConsumptionDetail(context, row) {
     ConsumptionItemsEvents().deleteConsumptionDetail(this, context, row);
   }
+  ShowItemBatch() {
+    ConsumptionItemsEvents().ShowItemBatch(this);
+  }
+  CloseItemBatch(context, e) {
+    ConsumptionItemsEvents().CloseItemBatch(this, context, e);
+  }
 
   render() {
     return (
@@ -176,6 +185,7 @@ class ConsumptionItems extends Component {
                             qtyhand: null,
                             barcode: null,
                             ItemUOM: [],
+                            Batch_Items: [],
                           });
                           context.updateState({
                             item_description: "",
@@ -192,6 +202,7 @@ class ConsumptionItems extends Component {
                             qtyhand: null,
                             barcode: null,
                             ItemUOM: [],
+                            Batch_Items: [],
                           });
                         }}
                         others={{
@@ -300,6 +311,16 @@ class ConsumptionItems extends Component {
                     </div>
                   </div>
                   <div className="row">
+                    <ItemBatchs
+                      show={this.state.selectBatch}
+                      onClose={this.CloseItemBatch.bind(this, context)}
+                      selectedLang={this.state.selectedLang}
+                      inputsparameters={{
+                        item_id: this.state.item_id,
+                        location_id: this.state.location_id,
+                        Batch_Items: this.state.Batch_Items,
+                      }}
+                    />
                     <div className="col-lg-12 subFooter-btn">
                       <button
                         className="btn btn-primary"
@@ -308,6 +329,21 @@ class ConsumptionItems extends Component {
                       >
                         Add Item
                       </button>
+                      <button
+                        className="btn btn-default"
+                        onClick={this.ShowItemBatch.bind(this)}
+                        disabled={this.state.addItemButton}
+                      >
+                        Select Batch
+                      </button>
+                      {this.state.Batch_Items.length > 1 ? (
+                        <span
+                          className="badge badge-warning animated flash slower"
+                          style={{ marginTop: 9, float: "right" }}
+                        >
+                          More Batch Available
+                        </span>
+                      ) : null}
                     </div>
                   </div>
                 </div>

@@ -291,39 +291,39 @@ export function PatientRegistration() {
     },
   });
 
-  const {
-    isLoading,
-    data: patientData,
-    refetch,
-  } = useQuery(["patient", { patient_code }], getPatient, {
-    enabled: !!patient_code,
-    initialData: {
-      bill_criedt: [],
-      patientRegistration: null,
-      identities: [],
-    },
-    retry: 0,
-    initialStale: true,
-    onSuccess: (data) => {
-      if (data?.patientRegistration) {
-        let patientRegistration = data?.patientRegistration;
+  const { isLoading, data: patientData, refetch } = useQuery(
+    ["patient", { patient_code }],
+    getPatient,
+    {
+      enabled: !!patient_code,
+      initialData: {
+        bill_criedt: [],
+        patientRegistration: null,
+        identities: [],
+      },
+      retry: 0,
+      initialStale: true,
+      onSuccess: (data) => {
+        if (data?.patientRegistration) {
+          let patientRegistration = data?.patientRegistration;
 
-        setIdentityType(patientRegistration.identity_type);
-        reset({
-          ...patientRegistration,
-          // consultation: "Y",
-          visit_type: default_visit_type?.hims_d_visit_type_id,
+          setIdentityType(patientRegistration.identity_type);
+          reset({
+            ...patientRegistration,
+            // consultation: "Y",
+            visit_type: default_visit_type?.hims_d_visit_type_id,
+          });
+        }
+      },
+      onError: (err) => {
+        AlgaehMessagePop({
+          display: err?.message,
+          type: "error",
         });
-      }
-    },
-    onError: (err) => {
-      AlgaehMessagePop({
-        display: err?.message,
-        type: "error",
-      });
-      history.push(location.pathname);
-    },
-  });
+        history.push(location.pathname);
+      },
+    }
+  );
 
   const [save, { isLoading: saveLoading }] = useMutation(savePatient, {
     onSuccess: (data) => {
@@ -611,17 +611,19 @@ export function PatientRegistration() {
         }
       }
     }
-    receiptdetails.push({
-      amount: input.cash_amount,
-      card_check_number: null,
-      card_type: null,
-      expiry_date: null,
-      hims_f_receipt_header_id: null,
-      pay_type: "CA",
-      updated_date: null,
-    });
 
-    if (input?.card_amount > 0) {
+    if (parseFloat(input?.cash_amount) > 0) {
+      receiptdetails.push({
+        amount: input.cash_amount,
+        card_check_number: null,
+        card_type: null,
+        expiry_date: null,
+        hims_f_receipt_header_id: null,
+        pay_type: "CA",
+        updated_date: null,
+      });
+    }
+    if (parseFloat(input?.card_amount) > 0) {
       receiptdetails.push({
         amount: input.card_amount,
         card_check_number: cardData.card_number || null,
@@ -1269,6 +1271,10 @@ export function PatientRegistration() {
                           AlgaehMessagePop({
                             type: "Warning",
                             display: errors?.unbalanced?.message,
+                          });
+                          setError("unbalanced", {
+                            type: "manual",
+                            message: "Unbalanced Amount should be zero",
                           });
                           return null;
                         } else if (Object.keys(errors).length) {

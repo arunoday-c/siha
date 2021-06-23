@@ -139,8 +139,13 @@ export function Demographics({
             const initialValue = identities.filter(
               (f) =>
                 f.hims_d_identity_document_id === res[0]?.identity_document_id
-            )[0].initial_value_identity;
-            setValue("primary_id_no", initialValue);
+            );
+            setValue(
+              "primary_id_no",
+              initialValue.length > 0
+                ? initialValue[0].initial_value_identity
+                : null
+            );
           }
         } else {
           setValue("primary_identity_id", "");

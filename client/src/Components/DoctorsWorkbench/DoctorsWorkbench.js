@@ -685,7 +685,7 @@ class DoctorsWorkbench extends Component {
                         .toArray().length
                     }
                   </span>
-                  <a
+                  <span
                     className="btn btn-primary btn-circle active"
                     style={{ marginLeft: 10 }}
                     onClick={() => {
@@ -693,7 +693,7 @@ class DoctorsWorkbench extends Component {
                     }}
                   >
                     <i className="fas fa-flask" />
-                  </a>
+                  </span>
                 </div>
               </div>
               <div className="portlet-body">

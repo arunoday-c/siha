@@ -83,7 +83,7 @@ export default {
             left join hims_d_lab_specimen as DLS on DLS.hims_d_lab_specimen_id = LS.sample_id \
             left join hims_d_test_category as TC on TC.hims_d_test_category_id = IT.category_id \
             left join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LO.entered_by or \
-            CL.algaeh_d_app_user_id=LO.validated_by or CL.algaeh_d_app_user_id=LO.confirmed_by) \
+            CL.algaeh_d_app_user_id=LO.validated_by or CL.algaeh_d_app_user_id=LO.confirmed_by or CL.algaeh_d_app_user_id=LO.hassan_number_updated_by) \
             left join hims_d_employee EM on EM.hims_d_employee_id=CL.employee_id WHERE " +
             _stringData +
             " group by hims_f_lab_order_id order by hims_f_lab_order_id desc",
@@ -579,8 +579,6 @@ export default {
           ? req.body.billdetails
           : req.records.ResultOfFetchOrderIds;
 
-      // console.log("Services", req.body.credit_amount);
-      // consol.log("Services", req.body.credit_amount);
       const labServices = Services.filter(
         (f) =>
           f.service_type_id ==
@@ -598,6 +596,7 @@ export default {
           ordered_date: s.created_date,
           test_type: s.test_type,
           test_id: s.test_id,
+          send_out_test: s.send_out_test === "Y" ? "Y" : "N",
           credit_order: parseFloat(req.body.credit_amount) > 0 ? "Y" : "N",
         };
       });
@@ -619,6 +618,7 @@ export default {
           "test_type",
           "test_id",
           "credit_order",
+          "send_out_test",
         ];
 
         _mysql
@@ -2339,6 +2339,7 @@ export default {
           updated_date=?,updated_by=? where ordered_services_id=?;",
             [
               req.body.hims_f_billing_header_id,
+
               OrderServices[i].billed,
               credit_order,
               moment().format("YYYY-MM-DD HH:mm"),

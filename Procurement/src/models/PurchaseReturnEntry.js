@@ -1,6 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import mysql from "mysql";
 import moment from "moment";
+import _ from "lodash";
 
 export default {
   getPurchaseReturnEntry: (req, res, next) => {
@@ -95,18 +96,20 @@ export default {
   getReceiptEntryItems: (req, res, next) => {
     const _mysql = new algaehMysql();
     const inputParam = req.query;
+    const { decimal_places } = req.userIdentity;
     try {
       _mysql
         .executeQuery({
           query:
-            "SELECT *, sub_total as receipt_net_total, net_payable as receipt_net_payable, net_payable as return_total, \
-            total_tax as tax_amount \
+            "SELECT hims_f_procurement_grn_header_id, grn_number, grn_for, receipt_mode, vendor_id, grn_date, year, \
+            period, pharmcy_location_id, inventory_location_id, location_type, po_id, payment_terms, comment, description \
             FROM hims_f_procurement_grn_header where hims_f_procurement_grn_header_id=?",
           values: [req.query.grn_header_id],
           printQuery: true,
         })
         .then((headerResult) => {
           let strQuery = "";
+
           if (inputParam.po_return_from == "INV") {
             strQuery = mysql.format(
               "SELECT dn_header_id, DNB.*, PIL.hims_m_inventory_item_location_id, PIL.qtyhand, PIL.expirydt, PIL.batchno, \
@@ -143,10 +146,102 @@ export default {
               query: strQuery,
               printQuery: true,
             })
-            .then((receipt_entry_detail) => {
+            .then((entry_detail) => {
               let result = {};
+              const receipt_entry_detail = entry_detail.map((item) => {
+                const extended_cost =
+                  parseFloat(item.unit_cost) * parseFloat(item.return_qty);
+                // console.log("extended_cost", extended_cost);
+                const discount_amount = (
+                  (extended_cost * parseFloat(item.discount_percentage)) /
+                  100
+                ).toFixed(decimal_places);
+                // console.log("discount_amount", discount_amount);
+                const net_extended_cost = (
+                  parseFloat(extended_cost) + parseFloat(discount_amount)
+                ).toFixed(decimal_places);
+                // console.log("net_extended_cost", net_extended_cost);
+                const tax_amount = (
+                  (parseFloat(net_extended_cost) *
+                    parseFloat(item.tax_percentage)) /
+                  100
+                ).toFixed(decimal_places);
+                // console.log("item.tax_percentage", item.tax_percentage);
+                // console.log("tax_amount", tax_amount);
+                return {
+                  item_description: item.item_description,
+                  sales_uom_id: item.sales_uom_id,
+                  category_desc: item.category_desc,
+                  group_description: item.group_description,
+                  conversion_factor: item.conversion_factor,
+
+                  phar_item_category: item.phar_item_category,
+                  pharmacy_uom_id: item.pharmacy_uom_id,
+                  phar_item_group: item.phar_item_group,
+                  phar_item_id: item.phar_item_id,
+                  dn_quantity: item.dn_quantity,
+
+                  inv_item_category_id: item.inv_item_category_id,
+                  inv_item_group_id: item.inv_item_group_id,
+                  inv_item_id: item.inv_item_id,
+                  inventory_uom_id: item.inventory_uom_id,
+                  qtyhand: item.qtyhand,
+                  return_qty: item.return_qty,
+                  batchno: item.batchno,
+                  expiry_date: item.expirydt,
+                  dn_header_id: item.dn_header_id,
+
+                  vendor_batchno: item.vendor_batchno,
+
+                  unit_cost: item.unit_cost,
+                  extended_cost: extended_cost,
+                  discount_percentage: item.discount_percentage,
+                  discount_amount: discount_amount,
+                  net_extended_cost: net_extended_cost,
+                  tax_percentage: item.tax_percentage,
+                  tax_amount: tax_amount,
+                  total_amount:
+                    parseFloat(net_extended_cost) + parseFloat(tax_amount),
+                };
+              });
+              // console.log("receipt_entry_detail", receipt_entry_detail);
+              // consol.log("receipt_entry_detail", receipt_entry_detail);
+
+              headerResult[0].sub_total = _.sumBy(receipt_entry_detail, (s) =>
+                parseFloat(s.extended_cost)
+              );
+              headerResult[0].discount_amount = _.sumBy(
+                receipt_entry_detail,
+                (s) => parseFloat(s.discount_amount)
+              );
+              headerResult[0].net_total = _.sumBy(receipt_entry_detail, (s) =>
+                parseFloat(s.net_extended_cost)
+              );
+              headerResult[0].tax_amount = _.sumBy(receipt_entry_detail, (s) =>
+                parseFloat(s.tax_amount)
+              );
+              headerResult[0].return_total = _.sumBy(
+                receipt_entry_detail,
+                (s) => parseFloat(s.total_amount)
+              );
+              headerResult[0].receipt_net_total = _.sumBy(
+                receipt_entry_detail,
+                (s) => parseFloat(s.extended_cost)
+              );
+
+              headerResult[0].receipt_net_payable = _.sumBy(
+                receipt_entry_detail,
+                (s) => parseFloat(s.total_amount)
+              );
+              headerResult[0].return_total = _.sumBy(
+                receipt_entry_detail,
+                (s) => parseFloat(s.total_amount)
+              );
+              //  net_payable as receipt_net_payable, net_payable as return_total, \
+              //   total_tax as tax_amount
               if (inputParam.po_return_from == "INV") {
                 let inventory_stock_detail = receipt_entry_detail;
+
                 result = {
                   ...headerResult[0],
                   ...{ inventory_stock_detail },

@@ -22,7 +22,7 @@ const executePDF = function executePDFMethod(options) {
           SCH.user_display_name as scheduled_by,
           PREP.user_display_name as attended_by,
           REV.user_display_name as validate_by,
-          RO.comments
+          RO.comments,IT.description as service_name
           from hims_f_rad_order RO
           inner join hims_d_rad_template_detail RD  on RO.template_id= RD.hims_d_rad_template_detail_id
           inner join hims_f_patient P on P.hims_d_patient_id= RO.patient_id

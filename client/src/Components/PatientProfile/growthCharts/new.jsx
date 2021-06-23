@@ -81,24 +81,28 @@ export default function GrowthChartsNew() {
         <div className="row">
           <div className="col-3">
             <img
+              alt=""
               src={require("../../../assets/images/pview/weights/Female 4-12yrs UNDERWEIGHT.png")}
             ></img>
             <h4>Underweight</h4>
           </div>
           <div className="col-3">
             <img
+              alt=""
               src={require("../../../assets/images/pview/weights/Female 4-12yrs HEALTHY.png")}
             ></img>
             <h4>Healthy</h4>
           </div>
           <div className="col-3">
             <img
+              alt=""
               src={require("../../../assets/images/pview/weights/Female 4-12yrs OVERWEIGHT.png")}
             ></img>
             <h4>Overweight</h4>
           </div>
           <div className="col-3">
             <img
+              alt=""
               src={require("../../../assets/images/pview/weights/Female 4-12yrs OBESE.png")}
             ></img>
             <h4>Obese</h4>

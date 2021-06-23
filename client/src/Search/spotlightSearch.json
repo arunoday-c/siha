@@ -962,7 +962,13 @@
       },
       {
         "fieldName": "final_settlement_status",
-        "label": "Status"
+        "label": "Status",
+        "Children": [
+          { "label": "All", "value": "" },
+          { "label": "Pending", "value": "PEN" },
+          { "label": "Authorized", "value": "AUT" },
+          { "label": "Settled", "value": "SET" }
+        ]
       },
       {
         "fieldName": "employee_status",

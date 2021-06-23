@@ -629,13 +629,13 @@ let insertOrderedServices = (req, res, next) => {
                         // }
                       });
 
-                      console.log("services", services)
+                      console.log("services", services);
                       if (services.length > 0) {
                         _mysql
                           .executeQueryWithTransaction({
                             query:
                               // delete_str +
-                              "SELECT OS.hims_f_ordered_services_id, OS.services_id, OS.created_date, OS.service_type_id, \
+                              "SELECT OS.hims_f_ordered_services_id,IT.send_out_test, OS.services_id, OS.created_date, OS.service_type_id, \
                               OS.test_type, S.physiotherapy_service, S.service_name, hims_d_investigation_test_id as test_id \
                               from hims_f_ordered_services OS \
                               inner join hims_d_services S on  S.hims_d_services_id = OS.services_id\
@@ -706,7 +706,8 @@ let insertOrderedServices = (req, res, next) => {
                                 .then((resultPreAprvl) => {
                                   req.records = {
                                     resultPreAprvl,
-                                    ResultOfFetchOrderIds: ResultOfFetchOrderIds,
+                                    ResultOfFetchOrderIds:
+                                      ResultOfFetchOrderIds,
                                   };
                                   next();
                                 })

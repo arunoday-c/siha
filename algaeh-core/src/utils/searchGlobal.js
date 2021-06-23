@@ -459,7 +459,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "exit_employees_final_settlement",
         searchQuery: `select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, E.arabic_name, 
-        S.sub_department_name,FSH.hims_f_final_settlement_header_id,E.sub_department_id,D.designation,FSH.final_settlement_number,CASE WHEN FSH.final_settlement_status = 'AUT' THEN 'Authorised' WHEN FSH.final_settlement_status = 'SET' THEN 'Settled' else 'Pending' END as final_settlement_status,
+        S.sub_department_name,FSH.hims_f_final_settlement_header_id,E.sub_department_id,D.designation,FSH.final_settlement_number,CASE WHEN FSH.final_settlement_status = 'AUT' THEN 'Authorised' WHEN FSH.final_settlement_status = 'SET' THEN 'Settled' WHEN FSH.final_settlement_status = 'PEN' THEN 'Pending' END as final_settlement_status,
         CASE WHEN E.employee_status ='T' THEN 'Terminated' WHEN E.employee_status ='R' THEN 'Resigned' else 'Retirement' END as employee_status
         from hims_d_employee as E
         left join hims_f_final_settlement_header as FSH on FSH.employee_id=E.hims_d_employee_id
@@ -817,7 +817,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "insservicemaster",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS service_name,service_type_id,hims_d_services_id,'N' as covered,'N' as pre_approval, \
-            IT.service_type , TEST.hims_d_investigation_test_id\
+            IT.service_type ,TEST.hims_d_investigation_test_id,TEST.send_out_test\
             from hims_d_services as S inner join hims_d_service_type AS IT on S.service_type_id = IT.hims_d_service_type_id \
             left join hims_d_investigation_test TEST on TEST.services_id = S.hims_d_services_id\
             where hims_d_services_id not in\
@@ -827,7 +827,7 @@ let algaehSearchConfig = (searchName, req) => {
             and S.service_type_id in (1,2,5,11,15,6) \
             union all\
             SELECT service_name,service_type_id,I.services_id as hims_d_services_id, covered,pre_approval, \
-            T.service_type, TEST.hims_d_investigation_test_id FROM hims_d_services_insurance as I \
+            T.service_type, TEST.hims_d_investigation_test_id,TEST.send_out_test FROM hims_d_services_insurance as I \
             inner join hims_d_service_type AS T on I.service_type_id = T.hims_d_service_type_id \
             left join hims_d_investigation_test TEST on TEST.services_id = I.services_id\
             where  insurance_id=? and {mapper} and I.service_type_id in (1,2,5,11,15,6)",

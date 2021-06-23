@@ -229,10 +229,10 @@ class LabInvestigation extends Component {
                 }}
               />
               <AlagehAutoComplete
-                div={{ className: "col-12 mandatory form-group" }}
+                div={{ className: "col-12  form-group" }}
                 label={{
                   fieldName: "available_in_house",
-                  isImp: true,
+                  // isImp: true,
                 }}
                 selector={{
                   name: "available_in_house",
@@ -251,9 +251,10 @@ class LabInvestigation extends Component {
                 }}
               />
               <AlagehAutoComplete
-                div={{ className: "col-12 form-group" }}
+                div={{ className: "col-12 mandatory form-group " }}
                 label={{
                   fieldName: "send_out_test",
+                  isImp: true,
                 }}
                 selector={{
                   name: "send_out_test",
