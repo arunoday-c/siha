@@ -5,6 +5,7 @@
   "dependencies": {
     "@ant-design/charts": "^0.9.13",
     "@ant-design/icons": "^4.4.0",
+    "@beam-australia/react-env": "^3.1.1",
     "@craco/craco": "^5.4.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",

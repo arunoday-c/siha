@@ -22,7 +22,7 @@ export default {
              from hims_m_item_location IL \
              inner join hims_d_pharmacy_uom PU on IL.sales_uom = PU.hims_d_pharmacy_uom_id \
              inner join hims_d_item_master IM on IL.item_id = IM.hims_d_item_master_id  \
-             inner join hims_d_pharmacy_uom SPU on IM.stocking_uom_id = PU.hims_d_pharmacy_uom_id \
+             inner join hims_d_pharmacy_uom SPU on IM.stocking_uom_id = SPU.hims_d_pharmacy_uom_id \
              where IL.record_status='A'  and item_id=? and pharmacy_location_id=? and qtyhand>0 \
              and (date(expirydt) > date(CURDATE())|| exp_date_required='N') order by date(expirydt);",
           values: [req.query.item_id, req.query.item_id, req.query.location_id],
