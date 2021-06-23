@@ -3,7 +3,7 @@ import path from "path";
 import hbs from "handlebars";
 import axios from "axios";
 import dotenv from "dotenv";
-dotenv.config();
+if (process.env.NODE_ENV !== "production") dotenv.config();
 import { updateLabSMSStatus } from "./db/lab_sms";
 
 const {
