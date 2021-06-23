@@ -459,7 +459,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "exit_employees_final_settlement",
         searchQuery: `select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, E.arabic_name, 
-        S.sub_department_name,FSH.hims_f_final_settlement_header_id,E.sub_department_id,D.designation,FSH.final_settlement_number,CASE WHEN FSH.final_settlement_status = 'AUT' THEN 'Authorised' WHEN FSH.final_settlement_status = 'SET' THEN 'Settled' else 'Pending' END as final_settlement_status,
+        S.sub_department_name,FSH.hims_f_final_settlement_header_id,E.sub_department_id,D.designation,FSH.final_settlement_number,CASE WHEN FSH.final_settlement_status = 'AUT' THEN 'Authorised' WHEN FSH.final_settlement_status = 'SET' THEN 'Settled' WHEN FSH.final_settlement_status = 'PEN' THEN 'Pending' END as final_settlement_status,
         CASE WHEN E.employee_status ='T' THEN 'Terminated' WHEN E.employee_status ='R' THEN 'Resigned' else 'Retirement' END as employee_status
         from hims_d_employee as E
         left join hims_f_final_settlement_header as FSH on FSH.employee_id=E.hims_d_employee_id

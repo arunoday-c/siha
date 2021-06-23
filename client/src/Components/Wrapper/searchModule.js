@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "../Wrapper/spotlight.scss";
 import { AlgaehDataGrid } from "../Wrapper/algaehWrapper";
+import { Select } from "algaeh-react-components";
 import { algaehApiCall, getCookie } from "../../utils/algaehApiCall";
 import ReactDOM from "react-dom";
 var intervalId;
@@ -19,6 +20,7 @@ class SearchModule extends Component {
       isSpeakEnable: false,
       stop: false,
       start: false,
+      children: [],
     };
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.searchRef = React.createRef();
@@ -142,6 +144,9 @@ class SearchModule extends Component {
 
   handleOnchnageSearchBy(e) {
     let _value = e.target.value;
+    const children = this.props.searchGrid.columns.filter(
+      (f) => f.fieldName === _value
+    )[0].Children;
     let _name =
       e.target.children !== undefined
         ? e.target.children[e.target.selectedIndex].text
@@ -155,7 +160,11 @@ class SearchModule extends Component {
         filterBy: this.state.filterBy,
       },
       (response) => {
-        this.setState({ searchBy: _value, title: _title });
+        this.setState({
+          searchBy: _value,
+          title: _title,
+          children: children ?? [],
+        });
       }
     );
   }
@@ -183,7 +192,9 @@ class SearchModule extends Component {
   handleSpotLightContains(e) {
     let contains = e.target.value;
     this.setState({ contains: contains });
-
+    if (this.state.children.length > 0) {
+      this.setState({ secondLevelFilter: contains });
+    }
     let $this = this;
     clearInterval(intervalId);
     intervalId = setInterval(() => {
@@ -350,20 +361,71 @@ class SearchModule extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-8" id="spotlightFilterBy">
+              <div
+                className="col-8"
+                id="spotlightFilterBy"
+                style={{
+                  position: "relative",
+                }}
+              >
                 <div className="row">
                   <div className="col">
-                    <input
-                      type="text"
-                      autoComplete="off"
-                      ref={this.searchRef}
-                      id="spotlightInput"
-                      tabIndex="1"
-                      placeholder={this.state.title}
-                      value={this.state.contains}
-                      onChange={this.handleSpotLightContains.bind(this)}
-                      autoFocus
-                    />
+                    {this.state.children.length > 0 ? (
+                      <Select
+                        {...{
+                          // mode: "multiple",
+                          style: {
+                            width: "100%",
+                            zIndex: 99999,
+                          },
+                          // data_role: "multipleSelectList",
+                          name: "secondLevelFilter",
+                          value: this.state.secondLevelFilter,
+                          options: this.state.children,
+                          onChange: this.handleSpotLightContains.bind(this),
+                          optionFilterProp: "children",
+                          // onSearch: onSearch,
+                          filterOption: (input, option) => {
+                            return (
+                              option.label
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          },
+
+                          placeholder: "Select Item...",
+                          // maxTagCount: "responsive",
+                        }}
+                      />
+                    ) : (
+                      // <select
+                      //   className="searchBySelect"
+                      //   onChange={this.handleSpotLightContains.bind(this)}
+                      //   value={this.state.secondLevelFilter}
+                      //   ref={this.searchRef}
+                      // >
+                      //   {this.state.children.map((row, index) => (
+                      //     <option
+                      //       key={index}
+                      //       // datafieldtype={row.fieldType}
+                      //       value={row["value"]}
+                      //     >
+                      //       {row["label"]}
+                      //     </option>
+                      //   ))}
+                      // </select>
+                      <input
+                        type="text"
+                        autoComplete="off"
+                        ref={this.searchRef}
+                        id="spotlightInput"
+                        tabIndex="1"
+                        placeholder={this.state.title}
+                        value={this.state.contains}
+                        onChange={this.handleSpotLightContains.bind(this)}
+                        autoFocus
+                      />
+                    )}
                   </div>
                   <div
                     className="col-1 speckCntr"
