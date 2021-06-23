@@ -285,7 +285,7 @@ export default function Patient({ hospital_id, COMPARISON, spotlightSearch }) {
             displayField: "service_name",
             primaryDesc: "service_name",
             secondaryDesc: "service_code",
-            value: null,
+            // value: null,
             searchName: "hospitalserviceonly",
             label: "Services List",
           },

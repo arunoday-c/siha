@@ -142,11 +142,11 @@ export default function Pharmacy({
           },
 
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "Location",
             link: {
               uri: "/pharmacy/getPharmacyLocation",
@@ -184,7 +184,7 @@ export default function Pharmacy({
             primaryDesc: "item_description",
             secondaryDesc: "uom_description",
             searchName: "PurchaseOrderForPharmacy",
-            value: "item_description",
+            // value: null,
             label: "Item Name",
             // link: {
             //   uri: "/pharmacy/getItemMaster",
@@ -366,7 +366,7 @@ export default function Pharmacy({
             primaryDesc: "item_description",
             secondaryDesc: "uom_description",
             searchName: "PurchaseOrderForPharmacy",
-            value: "item_description",
+            // value: null,
             label: "Item Name",
             // link: {
             //   uri: "/pharmacy/getItemMaster",
@@ -947,7 +947,7 @@ export default function Pharmacy({
             primaryDesc: "item_description",
             secondaryDesc: "uom_description",
             searchName: "PurchaseOrderForPharmacy",
-            value: "item_description",
+            // value: null,
             label: "Item Name",
             // link: {
             //   uri: "/pharmacy/getItemMaster",
@@ -1242,7 +1242,7 @@ export default function Pharmacy({
             primaryDesc: "item_description",
             secondaryDesc: "uom_description",
             searchName: "PurchaseOrderForPharmacy",
-            value: "item_description",
+            // value: null,
             label: "Item Name",
             // link: {
             //   uri: "/pharmacy/getItemMaster",
@@ -1791,7 +1791,7 @@ export default function Pharmacy({
             primaryDesc: "item_description",
             secondaryDesc: "uom_description",
             searchName: "PurchaseOrderForPharmacy",
-            value: "item_description",
+            // value: null,
             label: "Item Name",
             // link: {
             //   uri: "/pharmacy/getItemMaster",
