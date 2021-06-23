@@ -29,8 +29,9 @@ export default {
       grn_no: null,
       saveEnable: true,
       inventory_stock_detail: [],
-      item_description: ""
+      item_description: "",
+      Batch_Items: [],
     };
     return output;
-  }
+  },
 };
