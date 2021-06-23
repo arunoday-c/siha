@@ -2443,12 +2443,15 @@ input.autoselect-input:disabled {
 }
 .ant-calendar-picker-container,
 .ant-select-dropdown {
-  z-index: 99999 !important;
+  z-index: 999999999 !important;
 }
 .patientUpdateModal {
   .ant-modal-body {
     padding: 0 15px;
   }
+}
+.globalEnumSelect {
+  margin-top: 23px !important;
 }
 
 .calcSybmbol {

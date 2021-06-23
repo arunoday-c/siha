@@ -958,7 +958,7 @@
       },
       {
         "fieldName": "final_settlement_number",
-        "label": "SETTLEMENT NO."
+        "label": "Settlement No."
       },
       {
         "fieldName": "final_settlement_status",
