@@ -1,56 +1,54 @@
-
-<style type="text/css">
-
-    .reportHeaderCntr {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 10px 0;
-        font-family: Arial, sans-serif;
-        font-weight: normal;
-        overflow: hidden;
-        padding: 0;
-        border-bottom: 1px dashed #000;
-    }
-
-
-
-    .col-center {
-        width: 100%;
-        text-align: center;
-        float: none;
-        margin: 0 auto;
-    }
-
-
-    .hospitalLogo img {
-        margin: 0;
-        padding: 0;
-        border: none;
-        height: 35px;
-        width: auto;
-        text-align: center;
-    }
-    .reportHeaderCntr p {
-        margin: 2px 0;
-        padding: 0;
-        font-size: 8px;
-        line-height: 10px;
-    }
-
-    .reportHeaderCntr p b {
-        font-size: 8px;
-    }
+<style>
+  body{width: 100%; font-style: 10px;} .texttruncate{ text-overflow: ellipsis;
+  overflow: hidden;white-space: nowrap; background-color: red; }
 </style>
 <body>
+  <div
+    class="print-body"
+    {{! style="page-break-before: always; page-break-after: always;margin: 0;" }}
+  >
+    <div class="col-center">
+      <p class="hospitalLogo"><img src="{{logoUrl "ORG" identity}}" /></p>
 
-    
-    <div>
-        <div class="reportHeaderCntr" >
-        <div class="col-center">
-            <p class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></p>
-            <p><b>{{organization_name}}</b></p>
-            <p>Tel: <span>{{phone1}}</span>, Vat No: <span>{{tax_number}}</span></p>
-        </div>
-        </div>
     </div>
+    <div>
+      <small
+        class="small-left texttruncate"
+        style="width:
+            48%; margin-top: 2px; text-align:left;"
+      >
+        <b>{{organization_name}}</b></small>
+      <small
+        class="small-right texttruncate"
+        style="width:
+            48%; margin-top: 2px; text-align:right;"
+      ><b>{{legal_name}}</b></small>
+    </div>
+  </div>
 </body>
+
+{{!-- <div class="reportHeaderCntr">
+  <div class="col-left">
+    <p><b>{{organization_name}}</b></p>
+    <p>{{address1}}</p>
+    <p>Tel: <span>{{phone1}}</span></p>
+    <p>Vat No: <span>{{tax_number}}</span></p>
+  </div>
+  <div class="col-right">
+    <p><b>{{legal_name}}</b></p>
+    <p>{{address2}}</p>
+    <p><span style="display: inline-block; text-align:left;">{{phone2}}
+        :</span>رقم الهاتف</p>
+    <p>رقم الضريبة المضافة: <span>{{tax_number}}</span></p>
+  </div>
+
+  <div class="col-center">
+    <p class="hospitalLogo"><img src="{{logoUrl "ORG" identity}}" /></p>
+
+  </div>
+  <div class="headerFooterStyle">
+    <p class="showFilterValue">
+
+    </p>
+  </div>
+</div> --}}

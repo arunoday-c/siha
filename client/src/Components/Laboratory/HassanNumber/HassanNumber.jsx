@@ -71,7 +71,7 @@ function HassanNumber() {
     getLabOrderedServices,
     {
       onSuccess: (data) => {
-        debugger;
+        // debugger;
       },
       onError: (err) => {
         AlgaehMessagePop({
@@ -231,7 +231,7 @@ function HassanNumber() {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Result Entry List</h3>
+                <h3 className="caption-subject">Hassan PCR List</h3>
               </div>
             </div>
 
@@ -329,21 +329,7 @@ function HassanNumber() {
                       return row.full_name;
                     },
                   },
-                  {
-                    fieldName: "service_name",
-                    label: <AlgaehLabel label={{ forceLabel: "Test Name" }} />,
 
-                    disabled: true,
-                    sortable: true,
-                    filterable: true,
-                    others: {
-                      // resizable: false,
-                      style: { textAlign: "center" },
-                    },
-                    editorTemplate: (row) => {
-                      return row.service_name;
-                    },
-                  },
                   {
                     fieldName: "hassan_number",
                     label: <AlgaehLabel label={{ forceLabel: "Hassan No." }} />,
@@ -353,6 +339,7 @@ function HassanNumber() {
                     others: {
                       // resizable: false,
                       style: { textAlign: "center" },
+                      maxWidth: 150,
                     },
                     editorTemplate: (row) => {
                       return (
@@ -381,11 +368,7 @@ function HassanNumber() {
 
                   {
                     fieldName: "haasan_updated_by_name",
-                    label: (
-                      <AlgaehLabel
-                        label={{ forceLabel: "Hassan No. Updated By" }}
-                      />
-                    ),
+                    label: <AlgaehLabel label={{ forceLabel: "Updated By" }} />,
                     sortable: true,
                     filterable: true,
                     disabled: true,
@@ -400,9 +383,7 @@ function HassanNumber() {
                   {
                     fieldName: "hassan_number_updated_date",
                     label: (
-                      <AlgaehLabel
-                        label={{ forceLabel: "Hassan No. Updated Date" }}
-                      />
+                      <AlgaehLabel label={{ forceLabel: "Updated Date" }} />
                     ),
                     sortable: true,
                     filterable: true,
@@ -473,20 +454,9 @@ function HassanNumber() {
                   // },
                 ]}
                 keyId="patient_code"
-                // dataSource={{
                 data={isPCRRecords ?? []}
-                // data: this.state.sample_collection
-                // }}
-                // filter={true}
-
                 isEditable={"editOnly"}
                 events={{
-                  // onCancel: (row) => {},
-                  // onDeleteShow: (row) => {},
-                  // onSaveShow: (row) => {},
-                  // onEdit: (row) => {
-                  //   setDisabledSave(true);
-                  // },
                   onSave: (row) => {
                     if (row.hassan_number) {
                       updateHassanNo(row);
@@ -498,31 +468,6 @@ function HassanNumber() {
                       return;
                     }
                   },
-                  // onDelete: (row) => {
-                  //   if (row.isInserted === 1) {
-                  //     onDeleteDetails(row);
-                  //     setWardDetailsData((data: any) => {
-                  //       const otherDetails = data.filter(
-                  //         (f: any) =>
-                  //           f.hims_adm_ward_detail_id !==
-                  //           row["hims_adm_ward_detail_id"]
-                  //       );
-                  //       return [...otherDetails];
-                  //     });
-                  //     getWardHeaderData();
-                  //   } else {
-                  //     setWardDetailsData((data: any) => {
-                  //       const otherDetails = data
-                  //         .filter(
-                  //           (f: any) => f.rIndex !== row["rIndex"]
-                  //         )
-                  //         .map((m: any, i: number) => {
-                  //           return { ...m, rIndex: i + 1 };
-                  //         });
-                  //       return [...otherDetails];
-                  //     });
-                  //   }
-                  // },
                 }}
                 isFilterable={true}
                 pagination={true}

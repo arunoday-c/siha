@@ -83,7 +83,7 @@ export default {
             left join hims_d_lab_specimen as DLS on DLS.hims_d_lab_specimen_id = LS.sample_id \
             left join hims_d_test_category as TC on TC.hims_d_test_category_id = IT.category_id \
             left join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LO.entered_by or \
-            CL.algaeh_d_app_user_id=LO.validated_by or CL.algaeh_d_app_user_id=LO.confirmed_by) \
+            CL.algaeh_d_app_user_id=LO.validated_by or CL.algaeh_d_app_user_id=LO.confirmed_by or CL.algaeh_d_app_user_id=LO.hassan_number_updated_by) \
             left join hims_d_employee EM on EM.hims_d_employee_id=CL.employee_id WHERE " +
             _stringData +
             " group by hims_f_lab_order_id order by hims_f_lab_order_id desc",

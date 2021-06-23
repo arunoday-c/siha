@@ -473,7 +473,7 @@ class Allergies extends Component {
                                       },
                                     }}
                                   />
-                                  <a
+                                  <span
                                     style={{
                                       flex: "none",
                                       padding: "8px",
@@ -483,7 +483,7 @@ class Allergies extends Component {
                                     onClick={this.addItem}
                                   >
                                     <PlusOutlined /> Add New Allergy
-                                  </a>
+                                  </span>
                                 </div>
                               </div>
                             )}
