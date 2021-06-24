@@ -30,6 +30,13 @@ export default {
         _stringData += " and date(ordered_date) <= date(now())";
       }
 
+      if (req.query.hassanShow === "withhassan") {
+        _stringData += " and LO.hassan_number is not null";
+      }
+      if (req.query.hassanShow === "withOuthassan") {
+        _stringData += " and LO.hassan_number is null";
+      }
+
       if (req.query.patient_id != null) {
         _stringData += " and LO.patient_id=?";
         inputValues.push(req.query.patient_id);

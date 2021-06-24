@@ -376,13 +376,14 @@ class SearchModule extends Component {
                           // mode: "multiple",
                           style: {
                             width: "100%",
-                            zIndex: 99999,
+                            // zIndex: 999999999,
                           },
                           // data_role: "multipleSelectList",
                           name: "secondLevelFilter",
                           value: this.state.secondLevelFilter,
                           options: this.state.children,
                           onChange: this.handleSpotLightContains.bind(this),
+                          className: "globalEnumSelect",
                           optionFilterProp: "children",
                           // onSearch: onSearch,
                           filterOption: (input, option) => {

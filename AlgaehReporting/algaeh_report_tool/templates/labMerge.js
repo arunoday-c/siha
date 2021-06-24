@@ -32,7 +32,7 @@ const executePDF = function executePDFMethod(options) {
              select LO.hims_f_lab_order_id, MS.hims_d_lab_specimen_id,LA.reference_range_required, 
              LM.analyte_report_group,
              MS.description as investigation_name,LA.description as analyte_name,
-             LO.ordered_date,LO.entered_date,LO.validated_date, 
+             LO.ordered_date,LS.collected_date,LO.entered_date,LO.validated_date, 
              LO.critical_status,LO.comments,OA.result,OA.result_unit,
              CASE WHEN OA.result_unit = 'NULL'  THEN '--' WHEN OA.result_unit IS NULL THEN '--' ELSE OA.result_unit END result_unit,
              TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_low)) as normal_low,
@@ -62,11 +62,16 @@ const executePDF = function executePDFMethod(options) {
           let records = _.chain(result[1])
             .groupBy((g) => g.hims_f_lab_order_id)
             .map((details) => {
-              const { investigation_name, service_name, category_name } =
-                _.head(details);
+              const {
+                investigation_name,
+                collected_date,
+                service_name,
+                category_name,
+              } = _.head(details);
               testRequestName += `${service_name},`;
               return {
                 investigation_name,
+                collected_date,
                 service_name,
                 category_name,
                 details: _.chain(details)

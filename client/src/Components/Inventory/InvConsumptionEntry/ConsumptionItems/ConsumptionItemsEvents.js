@@ -4,6 +4,12 @@ import _ from "lodash";
 
 export default function ConsumptionItemsEvents() {
   return {
+    ShowItemBatch: ($this) => {
+      $this.setState({
+        ...$this.state,
+        selectBatch: !$this.state.selectBatch,
+      });
+    },
     UomchangeTexts: ($this, context, e) => {
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
@@ -100,6 +106,7 @@ export default function ConsumptionItemsEvents() {
                   barcode: data.locationResult[0].barcode,
 
                   ItemUOM: data.uomResult,
+                  Batch_Items: data.locationResult,
                   uom_description: uom_array[0].uom_description,
                   extended_cost: parseFloat(data.locationResult[0].avgcost),
                 });
@@ -124,6 +131,7 @@ export default function ConsumptionItemsEvents() {
                     extended_cost: parseFloat(data.locationResult[0].avgcost),
 
                     ItemUOM: data.uomResult,
+                    Batch_Items: data.locationResult,
                   });
                 }
               } else {
@@ -252,6 +260,61 @@ export default function ConsumptionItemsEvents() {
         context.updateState({
           inventory_stock_detail: inventory_stock_detail,
           saveEnable: saveEnable,
+        });
+      }
+    },
+
+    CloseItemBatch: ($this, context, e) => {
+      let batchno =
+        e !== undefined
+          ? e.selected === true
+            ? e.batchno
+            : $this.state.batchno
+          : $this.state.batchno;
+      let expiry_date =
+        e !== undefined
+          ? e.selected === true
+            ? moment(e.expirydt)._d
+            : $this.state.expiry_date
+          : $this.state.expiry_date;
+
+      let grn_no =
+        e !== undefined
+          ? e.selected === true
+            ? e.grnno
+            : $this.state.grn_no
+          : $this.state.grn_no;
+      let qtyhand =
+        e !== undefined
+          ? e.selected === true
+            ? e.qtyhand
+            : $this.state.qtyhand
+          : $this.state.qtyhand;
+
+      let sale_price =
+        e !== undefined
+          ? e.selected === true
+            ? e.sale_price
+            : $this.state.unit_cost
+          : $this.state.unit_cost;
+
+      $this.setState({
+        ...$this.state,
+        selectBatch: !$this.state.selectBatch,
+        batchno: batchno,
+        expiry_date: expiry_date,
+        grn_no: grn_no,
+        qtyhand: qtyhand,
+        unit_cost: sale_price,
+      });
+
+      if (context !== null) {
+        context.updateState({
+          batchno: batchno,
+          expiry_date: expiry_date,
+          grn_no: grn_no,
+          qtyhand: qtyhand,
+          unit_cost: sale_price,
         });
       }
     },

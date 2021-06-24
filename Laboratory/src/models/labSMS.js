@@ -1,19 +1,20 @@
-import Keys from "algaeh-keys";
+import dotenv from "dotenv";
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-
-const enableSMS = Keys.default?.enableSMS;
-let SMSPublisher;
-if (enableSMS === "true") SMSPublisher = require("../rabbitMQ/publisher");
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
+const enableSMS = process.env.enableSMS;
 const TEMPLATES = {
   LAB_TEST: "LAB_TEST",
   PCR_TEST: "PCR_TEST",
 };
 export async function processLabSMS(req, res, next) {
-  if (enableSMS !== true) {
+  if (enableSMS !== "true") {
     next(new Error("SMS is not enabled..."));
     return;
   }
+  const { publisher } = require("../rabbitMQ/publisher");
   const _mysql = new algaehMysql();
   const { list } = req.body;
   const { username } = req.userIdentity;
@@ -36,7 +37,7 @@ export async function processLabSMS(req, res, next) {
           visit_id,
           patient_id,
         } = list[i];
-        await SMSPublisher.publisher("SMS", {
+        await publisher("SMS", {
           template: isPCR === "Y" ? TEMPLATES.PCR_TEST : TEMPLATES.LAB_TEST,
           patient_code,
           full_name,

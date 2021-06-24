@@ -1,17 +1,9 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
-
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <style type="text/css">
-@media print {
-  .print-body {
-  font: 13pt Georgia, "Times New Roman", Times, serif;
-  line-height: 1.3;
-  background: #fff !important;
-  color: #000;
-  }  
-}
+  @media print { .print-body { font: 13pt "Calibri", sans-serif; line-height:
+  1.3; background: #fff !important; color: #000; } }
 </style>
-
 
 <div class="print-body">
   {{!-- {{#each header}} --}}
@@ -26,12 +18,12 @@
           <td>{{dispense_date}}</td>
           <td>تاريخ صرف الدواء</td>
         </tr>
-        <tr>
+        {{!-- <tr>
           <td>Pharmacy Name</td>
           <td>{{hospital_name}}</td>
           <td> {{arabic_hospital_name}}</td>
           <td>اسم الصيدلية</td>
-        </tr>
+        </tr> --}}
         <tr>
           <td>Patient Name</td>
           <td>{{patient_name}}</td>

@@ -199,7 +199,7 @@ export function algaehApiCall(options) {
             const { status, data } = err.response;
             if (status === 423) {
               showOtherPopup = false;
-              reLoginPopup(data);
+              reLoginPopup(data, userTokenDetails.hims_d_hospital_id);
               return;
             }
           }
@@ -299,7 +299,7 @@ export function algaehApiCall(options) {
     });
 }
 
-export function reLoginPopup({ message, username }) {
+export function reLoginPopup({ message, username }, item_id) {
   if (username === undefined) {
     window.location.href = window.location.origin + "/#";
     return;
@@ -329,7 +329,7 @@ export function reLoginPopup({ message, username }) {
         return;
       }
       if (value !== undefined && value !== "") {
-        const item_id = getCookie("HospitalId");
+        // const item_id = getCookie("HospitalId");
         getLocalIP((identity) => {
           const dataSent = encrypter(
             JSON.stringify({
@@ -345,11 +345,12 @@ export function reLoginPopup({ message, username }) {
             data: { post: dataSent },
             method: "POST",
             onSuccess: (response) => {
-              const { success, message } = response.data;
+              const { success, err_message } = response.data;
               if (success === true) {
                 swalMessage({ type: "success", title: "Continue" });
               } else {
-                swalMessage({ type: "warning", title: message });
+                reLoginPopup({ message, username }, item_id);
+                swalMessage({ type: "warning", title: err_message });
               }
             },
           });
