@@ -102,6 +102,21 @@ const handleExamStatus = ($this, value) => {
       if (typeof functionToCall === "function") {
         functionToCall($this);
       }
+      algaehApiCall({
+        uri: "/radiology/getRadOrderedBy",
+        module: "radiology",
+        method: "GET",
+        data: { hims_f_rad_order_id: $this.state.hims_f_rad_order_id },
+        onSuccess: (response) => {
+          $this.setState(response.data.records);
+        },
+        onFailure: (error) => {
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
     }
   });
 };

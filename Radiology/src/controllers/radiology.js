@@ -5,7 +5,8 @@ import radModels from "../models/radiology";
 const {
   getRadOrderedServices,
   updateRadOrderedServices,
-  getRadTemplateList
+  getRadTemplateList,
+  getRadOrderedBy,
 } = radModels;
 
 export default () => {
@@ -14,7 +15,14 @@ export default () => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records,
-      user_id: req.userIdentity.algaeh_d_app_user_id
+      user_id: req.userIdentity.algaeh_d_app_user_id,
+    });
+  });
+  api.get("/getRadOrderedBy", getRadOrderedBy, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+      user_id: req.userIdentity.algaeh_d_app_user_id,
     });
   });
 
@@ -24,7 +32,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -32,7 +40,7 @@ export default () => {
   api.get("/getRadTemplateList", getRadTemplateList, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 

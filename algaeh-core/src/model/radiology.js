@@ -50,8 +50,8 @@ let getRadOrderedServices = (req, res, next) => {
         PAT.patient_code,PAT.full_name,PAT.date_of_birth,PAT.gender\
         from ((hims_f_rad_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join \
         hims_d_services SR on SR.hims_d_services_id=SA.service_id) WHERE " +
-        whereOrder +
-        (where.condition == "" ? "" : " AND " + where.condition),
+          whereOrder +
+          (where.condition == "" ? "" : " AND " + where.condition),
         where.values,
 
         (error, result) => {
@@ -83,17 +83,17 @@ let insertRadOrderedServices = (req, res, next) => {
       "billed",
       "ordered_date",
       "ordered_by",
-      "test_type"
+      "test_type",
     ];
     let Services = req.records.ResultOfFetchOrderIds || req.body.billdetails;
 
     const radServices = new LINQ(Services)
       .Where(
-        w =>
+        (w) =>
           w.service_type_id ==
           appsettings.hims_d_service_type.service_type_id.Radiology
       )
-      .Select(s => {
+      .Select((s) => {
         return {
           ordered_services_id: s.hims_f_ordered_services_id || null,
           patient_id: req.body.patient_id,
@@ -102,8 +102,8 @@ let insertRadOrderedServices = (req, res, next) => {
           service_id: s.services_id,
           billed: req.body.billed,
           ordered_date: new Date(),
-          ordered_by: s.ordered_by,
-          test_type: s.test_type
+          // ordered_by: s.ordered_by,
+          test_type: s.test_type,
         };
       })
       .ToArray();
@@ -116,19 +116,20 @@ let insertRadOrderedServices = (req, res, next) => {
           includeValues: IncludeValues,
           extraValues: {
             created_by: req.userIdentity.algaeh_d_app_user_id,
-            updated_by: req.userIdentity.algaeh_d_app_user_id
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
+            ordered_by: req.userIdentity.algaeh_d_app_user_id,
           },
           bulkInsertOrUpdate: true,
-          printQuery: true
+          printQuery: true,
         })
-        .then(insert_rad_order => {
+        .then((insert_rad_order) => {
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
             req.records = insert_rad_order;
             next();
           });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -156,18 +157,18 @@ let insertRadOrderedServicesBackUp = (req, res, next) => {
     "billed",
     "ordered_date",
     "ordered_by",
-    "test_type"
+    "test_type",
   ];
   debugLog("ResultOfFetchOrderIds: ", req.records.ResultOfFetchOrderIds);
 
   let Services = req.records.ResultOfFetchOrderIds || req.body.billdetails;
   const radServices = new LINQ(Services)
     .Where(
-      w =>
+      (w) =>
         w.service_type_id ==
         appsettings.hims_d_service_type.service_type_id.Radiology
     )
-    .Select(s => {
+    .Select((s) => {
       return {
         ordered_services_id: s.hims_f_ordered_services_id || null,
         patient_id: req.body.patient_id,
@@ -177,7 +178,7 @@ let insertRadOrderedServicesBackUp = (req, res, next) => {
         billed: req.body.billed,
         ordered_date: s.created_date,
         ordered_by: req.userIdentity.algaeh_d_app_user_id,
-        test_type: s.test_type
+        test_type: s.test_type,
       };
     })
     .ToArray();
@@ -193,8 +194,8 @@ let insertRadOrderedServicesBackUp = (req, res, next) => {
     debugLog("radServices", radServices);
     connection.query(
       "INSERT INTO hims_f_rad_order(" +
-      insurtColumns.join(",") +
-      ",created_by,updated_by)  VALUES ?",
+        insurtColumns.join(",") +
+        ",created_by,updated_by)  VALUES ?",
       [
         jsonArrayToObject({
           sampleInputObject: insurtColumns,
@@ -202,9 +203,9 @@ let insertRadOrderedServicesBackUp = (req, res, next) => {
           req: req,
           newFieldToInsert: [
             req.userIdentity.algaeh_d_app_user_id,
-            req.userIdentity.algaeh_d_app_user_id
-          ]
-        })
+            req.userIdentity.algaeh_d_app_user_id,
+          ],
+        }),
       ],
       (error, result) => {
         if (error) {
@@ -239,7 +240,7 @@ let updateRadOrderedServices = (req, res, next) => {
     exam_end_date_time: null,
     exam_status: null,
     report_type: null,
-    template_id: null
+    template_id: null,
   };
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
@@ -294,7 +295,7 @@ let updateRadOrderedServices = (req, res, next) => {
         inputParam.report_type,
         inputParam.technician_id,
         inputParam.template_id,
-        inputParam.hims_f_rad_order_id
+        inputParam.hims_f_rad_order_id,
       ],
       (error, result) => {
         releaseDBConnection(db, connection);
@@ -310,7 +311,7 @@ let updateRadOrderedServices = (req, res, next) => {
 
 let getRadTemplateList = (req, res, next) => {
   let whereStatement = {
-    services_id: "ALL"
+    services_id: "ALL",
   };
   try {
     if (req.db == null) {
@@ -328,7 +329,7 @@ let getRadTemplateList = (req, res, next) => {
         "SELECT distinct TD.template_name, TD.template_html, IT.hims_d_investigation_test_id,TD.hims_d_rad_template_detail_id \
          FROM hims_d_investigation_test IT, \
         hims_d_rad_template_detail TD  WHERE IT.hims_d_investigation_test_id = TD.test_id AND " +
-        where.condition,
+          where.condition,
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -352,17 +353,17 @@ let updateRadOrderedBilled = (req, res, next) => {
   debugLog("Bill Data: ", req.body.billdetails);
   let OrderServices = new LINQ(req.body.billdetails)
     .Where(
-      w =>
+      (w) =>
         w.hims_f_ordered_services_id != null &&
         w.service_type_id ==
-        appsettings.hims_d_service_type.service_type_id.Radiology
+          appsettings.hims_d_service_type.service_type_id.Radiology
     )
-    .Select(s => {
+    .Select((s) => {
       return {
         ordered_services_id: s.hims_f_ordered_services_id,
         billed: "Y",
         updated_date: new Date(),
-        updated_by: req.userIdentity.algaeh_d_app_user_id
+        updated_by: req.userIdentity.algaeh_d_app_user_id,
       };
     })
     .ToArray();
@@ -386,7 +387,7 @@ let updateRadOrderedBilled = (req, res, next) => {
           OrderServices[i].billed,
           moment().format("YYYY-MM-DD HH:mm"),
           OrderServices[i].updated_by,
-          OrderServices[i].ordered_services_id
+          OrderServices[i].ordered_services_id,
         ]
       );
     }
@@ -415,5 +416,5 @@ export default {
   getRadTemplateList,
   insertRadOrderedServices,
   updateRadOrderedServices,
-  updateRadOrderedBilled
+  updateRadOrderedBilled,
 };

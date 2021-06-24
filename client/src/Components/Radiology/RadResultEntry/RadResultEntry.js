@@ -261,14 +261,14 @@ class RadResultEntry extends Component {
                   />
 
                   <h6>
-                    {this.state.entered_by_name
-                      ? this.state.entered_by_name
+                    {this.state.scheduled_by_name
+                      ? this.state.scheduled_by_name
                       : "------"}
 
-                    {this.state.entered_by_name ? (
+                    {this.state.scheduled_by_name ? (
                       <small style={{ display: "block", fontStyle: "italic" }}>
                         On{" "}
-                        {moment(this.state.entered_date).format(
+                        {moment(this.state.scheduled_date_time).format(
                           `${Options.dateFormat} ${Options.timeFormat}`
                         )}
                       </small>

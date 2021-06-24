@@ -84,6 +84,53 @@ export default {
       next(e);
     }
   },
+  getRadOrderedBy: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      // utilities.logger().log("getRadOrderedServices: ");
+
+      _mysql
+        .executeQuery({
+          query: `SELECT  hims_f_rad_order_id,
+            if(CL.algaeh_d_app_user_id=SA.scheduled_by, EM.full_name,'') as scheduled_by_name,
+            if(CL.algaeh_d_app_user_id=SA.validate_by, EM.full_name,'') as validate_by_name,
+            if(CL.algaeh_d_app_user_id=SA.ordered_by, EM.full_name,'') as ordered_by_name
+            from hims_f_rad_order SA 
+            left join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=SA.scheduled_by or
+            CL.algaeh_d_app_user_id=SA.validate_by or CL.algaeh_d_app_user_id=SA.ordered_by )
+            left join hims_d_employee EM on EM.hims_d_employee_id=CL.employee_id
+             WHERE hims_f_rad_order_id=?  `,
+          values: [req.query.hims_f_rad_order_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          let list = result.reduce(function (acc, item) {
+            let obj = { ...item };
+            Object.keys(obj).forEach(function (item) {
+              if (acc[item]) {
+                //if a property with the the key, 'item' already exists, then append to that
+                Object.assign(acc[item], obj[item]);
+              } else {
+                // else add the key-value pair to the accumulator object.
+                acc[item] = obj[item];
+              }
+            });
+            return acc;
+          }, {});
+
+          _mysql.releaseConnection();
+          req.records = list;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   // getRadOrderedServices: (req, res, next) => {
   //   return new Promise((resolve, reject) => {
   //     const _mysql = new algaehMysql();
@@ -155,7 +202,7 @@ export default {
           service_id: s.services_id,
           billed: req.body.billed,
           ordered_date: new Date(),
-          ordered_by: s.ordered_by,
+          // ordered_by: s.ordered_by,
           test_type: s.test_type,
         };
       });
@@ -169,6 +216,7 @@ export default {
             extraValues: {
               created_by: req.userIdentity.algaeh_d_app_user_id,
               updated_by: req.userIdentity.algaeh_d_app_user_id,
+              ordered_by: req.userIdentity.algaeh_d_app_user_id,
             },
             bulkInsertOrUpdate: true,
             printQuery: true,
