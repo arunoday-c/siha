@@ -96,6 +96,7 @@ export default function ConsumptionItemsEvents() {
                   batchno: data.locationResult[0].batchno,
                   grn_no: data.locationResult[0].grnno,
                   qtyhand: data.locationResult[0].qtyhand,
+                  unit_cost: data.locationResult[0].avgcost,
                   barcode: data.locationResult[0].barcode,
 
                   ItemUOM: data.uomResult,
@@ -119,6 +120,7 @@ export default function ConsumptionItemsEvents() {
                     batchno: data.locationResult[0].batchno,
                     grn_no: data.locationResult[0].grnno,
                     qtyhand: data.locationResult[0].qtyhand,
+                    unit_cost: data.locationResult[0].avgcost,
                     barcode: data.locationResult[0].barcode,
                     extended_cost: parseFloat(data.locationResult[0].avgcost),
                     ItemUOM: data.uomResult,
@@ -203,6 +205,7 @@ export default function ConsumptionItemsEvents() {
           grn_no: null,
           unit_cost: 0,
           extended_cost: 0,
+          item_description: "",
         });
 
         if (context !== undefined) {
@@ -221,6 +224,9 @@ export default function ConsumptionItemsEvents() {
             expiry_date: null,
             batchno: null,
             grn_no: null,
+            unit_cost: 0,
+            extended_cost: 0,
+            item_description: "",
           });
         }
       }
