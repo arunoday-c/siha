@@ -16,12 +16,8 @@ const {
   changePasswordRequest,
 } = account;
 const { releaseConnection } = utils;
-const {
-  generateAccessToken,
-  respond,
-  authenticate,
-  createJWTToken,
-} = authmiddleware;
+const { generateAccessToken, respond, authenticate, createJWTToken } =
+  authmiddleware;
 const { encryption } = cryptography;
 import {
   getTables,
