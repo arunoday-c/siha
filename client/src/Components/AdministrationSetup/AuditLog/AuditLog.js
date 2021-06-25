@@ -53,6 +53,7 @@ export default class AuditLog extends Component {
   handleClear() {
     this.setState({
       employee_name: undefined,
+      employee_id: undefined,
       from_date: undefined,
       to_date: undefined,
       levels: null,
@@ -266,18 +267,24 @@ export default class AuditLog extends Component {
                           <AlgaehTable
                             columns={[
                               {
-                                fieldName: "date_time_stamp",
-                                label: "Date Time",
-                                filterable: true,
-                              },
-                              {
-                                fieldName: "table_name",
-                                label: "Schema",
-                                filterable: true,
-                              },
-                              {
                                 fieldName: "table_frendly_name",
                                 label: "Friendly Name",
+                                filterable: true,
+                              },
+
+                              {
+                                fieldName: "reference_id",
+                                label: "Ref Code",
+                                filterable: true,
+                              },
+                              {
+                                fieldName: "reference_name",
+                                label: "Ref Name",
+                                filterable: true,
+                              },
+                              {
+                                fieldName: "date_time_stamp",
+                                label: "Updated Date Time",
                                 filterable: true,
                               },
                               {
@@ -295,10 +302,10 @@ export default class AuditLog extends Component {
                                 label: "New Value",
                                 filterable: true,
                               },
-                              {
-                                fieldName: "user_type",
-                                label: "User Type",
-                              },
+                              // {
+                              //   fieldName: "user_type",
+                              //   label: "User Type",
+                              // },
                             ]}
                             data={item.details}
                             isFilterable={true}

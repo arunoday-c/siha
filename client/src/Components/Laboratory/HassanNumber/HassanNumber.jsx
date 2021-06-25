@@ -414,7 +414,39 @@ function HassanNumber() {
                       );
                     },
                   },
+                  {
+                    fieldName: "hesn_upload",
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "File Updated in HESN" }}
+                      />
+                    ),
+                    displayTemplate: (row) => {
+                      return (
+                        <span>{row.hesn_upload === "Y" ? "YES" : "NO"}</span>
+                      );
+                    },
+                    editorTemplate: (row) => {
+                      return (
+                        <input
+                          type="checkbox"
+                          defaultChecked={
+                            row.hesn_upload === "Y" ? true : false
+                          }
+                          onChange={(e) => {
+                            const status = e.target.checked;
+                            row["hesn_upload"] = status === true ? "Y" : "N";
 
+                            // row.update();
+                          }}
+                        />
+                      );
+                    },
+                    others: {
+                      // minWidth: 130,
+                      style: { textAlign: "center" },
+                    },
+                  },
                   {
                     fieldName: "haasan_updated_by_name",
                     label: <AlgaehLabel label={{ forceLabel: "Updated By" }} />,

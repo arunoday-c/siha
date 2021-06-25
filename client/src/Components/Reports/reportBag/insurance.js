@@ -201,7 +201,7 @@ export default function Insurance({
             displayField: "insurance_statement_number",
             primaryDesc: "insurance_statement_number",
             secondaryDesc: "insurance_sub_name",
-            value: null,
+            // value: null,
             searchName: "InsuranceStatementReport",
             label: "Statement No",
           },

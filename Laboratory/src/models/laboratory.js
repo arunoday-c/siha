@@ -65,7 +65,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            " select hims_f_lab_order_id,V.episode_id, LO.patient_id,hassan_number_updated_date,hassan_number, entered_by, confirmed_by, validated_by, visit_id, critical_status,\
+            " select hims_f_lab_order_id,V.episode_id, LO.patient_id,hassan_number_updated_date,hassan_number,hesn_upload, entered_by, confirmed_by, validated_by, visit_id, critical_status,\
             group_id, organism_type, bacteria_name, bacteria_type, V.visit_code, provider_id, LO.send_out_test,\
             E.full_name as doctor_name, billed, service_id,  S.service_code, S.service_name, \
             LO.status, cancelled, provider_id, ordered_date, test_type, concat(V.age_in_years,'Y')years, \
@@ -975,11 +975,12 @@ export default {
       // cancelled
       _mysql
         .executeQuery({
-          query: `update hims_f_lab_order set hassan_number=?, hassan_number_updated_date=?,hassan_number_updated_by=? where hims_f_lab_order_id=?;`,
+          query: `update hims_f_lab_order set hassan_number=?, hassan_number_updated_date=?,hassan_number_updated_by=?, hesn_upload=? where hims_f_lab_order_id=?;`,
           values: [
             inputParam.hassan_number,
             new Date(),
             req["userIdentity"].algaeh_d_app_user_id,
+            inputParam.hesn_upload,
             inputParam.hims_f_lab_order_id,
           ],
           printQuery: true,

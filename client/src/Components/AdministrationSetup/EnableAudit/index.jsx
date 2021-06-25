@@ -24,6 +24,8 @@ const triggerActions = [
 export default function EnableAudit() {
   const [tables, setTables] = useState([]);
   const [friendlyName, setFriendlyName] = useState("");
+  const [reference_id, setReferenceId] = useState("");
+  const [reference_name, setReferenceName] = useState("");
   const [action, setAction] = useState(undefined);
   const [loading, setLoading] = useState(false);
 
@@ -68,6 +70,8 @@ export default function EnableAudit() {
           trigger_action: action,
           table_name: tables,
           friendly_name: friendlyName,
+          reference_id,
+          reference_name,
         },
       });
       setLoading(false);
@@ -99,7 +103,7 @@ export default function EnableAudit() {
             onChange: onChangeHandler,
             onClear: onClearHandler,
           }}
-        />
+        />{" "}
         <AlgaehAutoComplete
           div={{ className: "col-2 form-group mandatory" }}
           label={{
@@ -125,7 +129,7 @@ export default function EnableAudit() {
           }}
         />
         <AlgaehFormGroup
-          div={{ className: "col-6 form-group" }}
+          div={{ className: "col form-group" }}
           label={{
             forceLabel: "Friendly Name",
             isImp: true,
@@ -134,15 +138,43 @@ export default function EnableAudit() {
             className: "txt-fld",
             name: "friendly_name",
             onChange: (e) => {
-              debugger;
               const { value } = e.target;
               setFriendlyName(value);
             },
           }}
         />
+        <AlgaehFormGroup
+          div={{ className: "col form-group" }}
+          label={{
+            forceLabel: "Refrence ID",
+            isImp: true,
+          }}
+          textBox={{
+            className: "txt-fld",
+            name: "reference_id",
+            onChange: (e) => {
+              const { value } = e.target;
+              setReferenceId(value);
+            },
+          }}
+        />
+        <AlgaehFormGroup
+          div={{ className: "col-6 form-group" }}
+          label={{
+            forceLabel: "Refrence ID Name",
+            isImp: true,
+          }}
+          textBox={{
+            className: "txt-fld",
+            name: "reference_name",
+            onChange: (e) => {
+              const { value } = e.target;
+              setReferenceName(value);
+            },
+          }}
+        />
         <AlgaehButton loading={loading} onClick={onClickLoading}>
-          {" "}
-          Generate{" "}
+          Generate
         </AlgaehButton>
       </div>
       <div className="row">
