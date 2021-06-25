@@ -68,6 +68,7 @@ export default function loadActiveReports(
             algaehApiCall,
             FORMAT_YESNO,
             spotlightSearch,
+            SENDOUT_TYPE,
           });
           break;
         case "hr":
