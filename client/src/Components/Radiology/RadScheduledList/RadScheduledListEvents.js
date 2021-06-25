@@ -10,7 +10,7 @@ const texthandle = ($this, e) => {
 
   $this.setState(
     {
-      [name]: value
+      [name]: value,
     },
     () => {
       getRadTestList($this);
@@ -21,24 +21,24 @@ const texthandle = ($this, e) => {
 const PatientSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: FrontDesk
+      columns: FrontDesk,
     },
     searchName: "patients",
     uri: "/gloabelSearch/get",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       $this.setState(
         {
           patient_code: row.patient_code,
-          patient_id: row.hims_d_patient_id
+          patient_id: row.hims_d_patient_id,
         },
         () => {
           getRadTestList($this);
         }
       );
-    }
+    },
   });
 };
 
@@ -49,7 +49,7 @@ const datehandle = ($this, ctrl, e) => {
       intFailure = true;
       swalMessage({
         title: "From Date cannot be grater than To Date.",
-        type: "warning"
+        type: "warning",
       });
     }
   } else if (e === "to_date") {
@@ -57,7 +57,7 @@ const datehandle = ($this, ctrl, e) => {
       intFailure = true;
       swalMessage({
         title: "To Date cannot be less than From Date.",
-        type: "warning"
+        type: "warning",
       });
     }
   }
@@ -65,7 +65,7 @@ const datehandle = ($this, ctrl, e) => {
   if (intFailure === false) {
     $this.setState(
       {
-        [e]: moment(ctrl)._d
+        [e]: moment(ctrl)._d,
       },
       () => {
         getRadTestList($this);
@@ -74,7 +74,7 @@ const datehandle = ($this, ctrl, e) => {
   }
 };
 
-const getRadTestList = $this => {
+const getRadTestList = ($this) => {
   let inputobj = {};
 
   if ($this.state.from_date !== null) {
@@ -106,20 +106,20 @@ const getRadTestList = $this => {
     method: "GET",
     data: inputobj,
 
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
           radtestlist: response.data.records,
-          user_id: response.data.user_id
+          user_id: response.data.user_id,
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
   // $this.props.getRadiologyTestList({
   //   uri: "/radiology/getRadOrderedServices",
@@ -140,30 +140,45 @@ const openResultEntry = ($this, row) => {
       module: "radiology",
       method: "GET",
       data: { services_id: row.service_id },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
-          let Template = row;
-          Template.technician_id =
-            Template.technician_id === null
-              ? $this.state.user_id
-              : Template.technician_id;
+          let template = response.data.records;
+          algaehApiCall({
+            uri: "/radiology/getRadOrderedBy",
+            module: "radiology",
+            method: "GET",
+            data: { hims_f_rad_order_id: row.hims_f_rad_order_id },
+            onSuccess: (response) => {
+              let Template = { ...row, ...response.data.records };
+              Template.technician_id =
+                Template.technician_id === null
+                  ? $this.state.user_id
+                  : Template.technician_id;
 
-          row.exam_start_date_time = row.exam_start_date_time
-            ? new Date(row.exam_start_date_time)
-            : null;
-          Template.Templatelist = response.data.records;
-          $this.setState({
-            resultEntry: !$this.state.resultEntry,
-            selectedPatient: Template
+              row.exam_start_date_time = row.exam_start_date_time
+                ? new Date(row.exam_start_date_time)
+                : null;
+              Template.Templatelist = template;
+              $this.setState({
+                resultEntry: !$this.state.resultEntry,
+                selectedPatient: Template,
+              });
+            },
+            onFailure: (error) => {
+              swalMessage({
+                title: error.message,
+                type: "error",
+              });
+            },
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
     // $this.props.getTemplateList({
     //   uri: "/radiology/getRadTemplateList",
@@ -191,15 +206,15 @@ const openResultEntry = ($this, row) => {
   } else {
     swalMessage({
       title: "Please make the payment.",
-      type: "warning"
+      type: "warning",
     });
   }
 };
 
-const closeResultEntry = $this => {
+const closeResultEntry = ($this) => {
   $this.setState(
     {
-      resultEntry: !$this.state.resultEntry
+      resultEntry: !$this.state.resultEntry,
     },
     () => {
       getRadTestList($this);
@@ -207,7 +222,7 @@ const closeResultEntry = $this => {
   );
 };
 
-const Refresh = $this => {
+const Refresh = ($this) => {
   let month = moment().format("MM");
   let year = moment().format("YYYY");
 
@@ -218,7 +233,7 @@ const Refresh = $this => {
       patient_id: null,
       patient_code: null,
       status: null,
-      proiorty: null
+      proiorty: null,
     },
     () => {
       getRadTestList($this);
@@ -233,5 +248,5 @@ export {
   getRadTestList,
   openResultEntry,
   closeResultEntry,
-  Refresh
+  Refresh,
 };

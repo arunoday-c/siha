@@ -18,7 +18,8 @@ export function getDispatchNote(req, res, next) {
     }
     _mysql
       .executeQuery({
-        query: `SELECT DH.*, E.full_name, SO.sales_order_number, C.customer_name, P.project_desc as project_name, H.hospital_name 
+        query: `SELECT DH.*, E.full_name, SO.sales_order_number, C.customer_name, P.project_desc as project_name, 
+          H.hospital_name, location_type 
           from  hims_f_sales_dispatch_note_header DH 
           inner join hims_f_sales_order SO on SO.hims_f_sales_order_id = DH.sales_order_id
           inner join hims_d_customer C on C.hims_d_customer_id = DH.customer_id
@@ -26,6 +27,7 @@ export function getDispatchNote(req, res, next) {
           inner join hims_d_hospital H on H.hims_d_hospital_id = DH.hospital_id
           inner join algaeh_d_app_user U on DH.created_by = U.algaeh_d_app_user_id 
           inner join hims_d_employee E on E.hims_d_employee_id = U.employee_id 
+          inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = DH.location_id 
           where ${strQty} ;
           select D.*,IM.item_description, IU.uom_description from  hims_f_sales_dispatch_note_header H inner join 
           hims_f_sales_dispatch_note_detail D on H.hims_f_dispatch_note_header_id = D.dispatch_note_header_id 
