@@ -1022,7 +1022,9 @@ let getReferringMaster = (req, res, next) => {
   try {
     _mysql
       .executeQuery({
-        query: `SELECT RI.*,U.user_display_name FROM hims_d_referring_institute RI left join algaeh_d_app_user U on RI.created_by=U.employee_id  where  RI.institute_status='A' order by hims_d_referring_institute_id desc;        `,
+        query: `SELECT RI.*,U.user_display_name FROM hims_d_referring_institute RI 
+        inner join algaeh_d_app_user U on RI.created_by=U.algaeh_d_app_user_id  
+        where  RI.institute_status='A' order by hims_d_referring_institute_id desc;        `,
         printQuery: true,
       })
       .then((result) => {
@@ -1665,12 +1667,8 @@ let getPatientVitals = (req, res, next) => {
         const vitals = _.chain(result)
           .groupBy((g) => g.created_date)
           .map((details, key) => {
-            const {
-              created_date,
-              user_display_name,
-              visit_date,
-              visit_time,
-            } = _.head(details);
+            const { created_date, user_display_name, visit_date, visit_time } =
+              _.head(details);
             const recorded_dt = `${moment(visit_date).format(
               "YYYY-MM-DD"
             )} ${visit_time}`;
@@ -4139,13 +4137,8 @@ export const getNurseNotes = (req, res, next) => {
 
 export const addNurseNote = (req, res, next) => {
   const _mysql = new algaehMysql();
-  const {
-    patient_id,
-    visit_id,
-    episode_id,
-    nursing_notes,
-    visit_date,
-  } = req.body;
+  const { patient_id, visit_id, episode_id, nursing_notes, visit_date } =
+    req.body;
   try {
     _mysql
       .executeQuery({
