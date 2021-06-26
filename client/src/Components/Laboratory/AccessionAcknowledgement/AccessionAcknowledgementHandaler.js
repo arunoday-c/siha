@@ -128,8 +128,10 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
           return;
         }
       }
+
       swal({
         title: "Are you sure you want to Proceed?",
+        text: ` For Lab ID : ${row.lab_id_number} `,
         type: "warning",
         showCancelButton: true,
         confirmButtonText: "Yes",

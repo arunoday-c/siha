@@ -114,6 +114,8 @@ const updateLabOrderServiceStatus = ($this, row) => {
     data: {
       hims_f_lab_order_id: row.hims_f_lab_order_id,
       hims_d_lab_sample_id: row.hims_d_lab_sample_id,
+      send_in_test: row.send_in_test,
+      collected_date: row.collected_date,
     },
     method: "PUT",
     onSuccess: (response) => {
@@ -341,6 +343,17 @@ const onchangegridcol = ($this, row, e) => {
   }
 };
 
+const onchangegridcoldatehandle = ($this, row, ctrl, e) => {
+  if (Date.parse(moment(ctrl)._d) < Date.parse(new Date())) {
+    swalMessage({
+      title: "Expiry date cannot be past Date.",
+      type: "warning",
+    });
+  } else {
+    row[e] = moment(ctrl)._d;
+    $this.setState({ append: !$this.state.append });
+  }
+};
 export {
   CollectSample,
   printBarcode,
@@ -348,4 +361,5 @@ export {
   updateLabOrderServiceMultiple,
   dateFormater,
   onchangegridcol,
+  onchangegridcoldatehandle,
 };

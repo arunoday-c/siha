@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 
 // import Enumerable from "linq";
-
+import swal from "sweetalert2";
 import "./HassanNumber.scss";
 import "./../../../styles/site.scss";
 import {
@@ -407,6 +407,7 @@ function HassanNumber() {
                             name: "hassan_number",
                             updateInternally: true,
                             onChange: (e) => {
+                              if (e.target.value) row["isDirty"] = true;
                               row.hassan_number = e.target.value;
                             },
                           }}
@@ -462,6 +463,39 @@ function HassanNumber() {
                     },
                   },
                   {
+                    fieldName: "hesn_upload_updated_date",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Updated Date" }} />
+                    ),
+                    sortable: true,
+                    filterable: true,
+                    disabled: true,
+                    others: {
+                      // resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                    editorTemplate: (row) => {
+                      return row.hesn_upload_updated_date;
+                    },
+                  },
+
+                  {
+                    fieldName: "hesn_upload_updated_by_name",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Uploaded By" }} />
+                    ),
+                    sortable: true,
+                    filterable: true,
+                    disabled: true,
+                    others: {
+                      // resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                    editorTemplate: (row) => {
+                      return row.hesn_upload_updated_by_name;
+                    },
+                  },
+                  {
                     fieldName: "hassan_number_updated_date",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Updated Date" }} />
@@ -483,15 +517,33 @@ function HassanNumber() {
                 isEditable={"editOnly"}
                 events={{
                   onSave: (row) => {
-                    if (row.hassan_number) {
-                      updateHassanNo(row);
-                    } else {
-                      AlgaehMessagePop({
-                        type: "error",
-                        display: "Please Enter HESN Number",
-                      });
-                      return;
-                    }
+                    // if (row.hassan_number) {
+                    swal({
+                      title: "Are you sure?",
+                      text: `Patient :  ${row.full_name} 
+                     
+                        HESN No: ${row.hassan_number ? row.hassan_number : ""}
+                     
+                        File Updated in HESN:  ${row.hesn_upload}
+                        `,
+                      type: "warning",
+                      showCancelButton: true,
+                      confirmButtonText: "Yes",
+                      confirmButtonColor: "#44b8bd",
+                      cancelButtonColor: "#d33",
+                      cancelButtonText: "No",
+                    }).then((willProceed) => {
+                      if (willProceed.value) {
+                        updateHassanNo(row);
+                        // } else {
+                        //   AlgaehMessagePop({
+                        //     type: "error",
+                        //     display: "Please Enter HESN Number",
+                        //   });
+                        //   return;
+                        // }
+                      }
+                    });
                   },
                 }}
                 isFilterable={true}

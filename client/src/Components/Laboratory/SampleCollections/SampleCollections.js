@@ -12,6 +12,7 @@ import {
   onchangegridcol,
   updateLabOrderServiceStatus,
   updateLabOrderServiceMultiple,
+  onchangegridcoldatehandle,
 } from "./SampleCollectionEvent";
 import { Tooltip } from "antd";
 import {
@@ -19,6 +20,7 @@ import {
   // AlgaehDataGrid,
   AlgaehModalPopUp,
   AlagehAutoComplete,
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehDataGrid } from "algaeh-react-components";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -652,6 +654,86 @@ class SampleCollectionPatient extends PureComponent {
                                 },
                               },
                               {
+                                fieldName: "send_in_test",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Send In Test" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return row.collected === "Y" ||
+                                    row.billed === "N" ? (
+                                    row.send_in_test === "Y" ? (
+                                      <span className="badge badge-success">
+                                        Yes
+                                      </span>
+                                    ) : (
+                                      <span className="badge badge-danger">
+                                        No
+                                      </span>
+                                    )
+                                  ) : (
+                                    <AlagehAutoComplete
+                                      div={{ className: "noLabel" }}
+                                      selector={{
+                                        name: "send_in_test",
+                                        className: "select-fld",
+                                        value: row.send_in_test,
+                                        dataSource: {
+                                          textField: "name",
+                                          valueField: "value",
+                                          data: variableJson.FORMAT_YESNO,
+                                        },
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
+                                      }}
+                                    />
+                                  );
+                                },
+                                editorTemplate: (row) => {
+                                  return row.collected === "Y" ||
+                                    row.billed === "N" ? (
+                                    row.send_in_test === "Y" ? (
+                                      <span className="badge badge-success">
+                                        Yes
+                                      </span>
+                                    ) : (
+                                      <span className="badge badge-danger">
+                                        No
+                                      </span>
+                                    )
+                                  ) : (
+                                    <AlagehAutoComplete
+                                      div={{ className: "noLabel" }}
+                                      selector={{
+                                        name: "send_in_test",
+                                        className: "select-fld",
+                                        value: row.send_in_test,
+                                        dataSource: {
+                                          textField: "name",
+                                          valueField: "value",
+                                          data: variableJson.FORMAT_YESNO,
+                                        },
+                                        updateInternally: true,
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
+                                      }}
+                                    />
+                                  );
+                                },
+                                others: {
+                                  maxWidth: 200,
+                                  resizable: false,
+                                  style: { textAlign: "center" },
+                                },
+                              },
+                              {
                                 fieldName: "collected",
                                 label: (
                                   <AlgaehLabel
@@ -679,6 +761,67 @@ class SampleCollectionPatient extends PureComponent {
                                       No
                                     </span>
                                   );
+                                },
+                              },
+                              {
+                                fieldName: "collected_date",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "collected_date" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return (
+                                    <span>
+                                      {moment(row.collected_date).isValid()
+                                        ? moment(row.collected_date).format(
+                                            "DD-MM-YYYY hh:mm"
+                                          )
+                                        : "------"}
+                                    </span>
+                                  );
+                                },
+                                editorTemplate: (row) => {
+                                  if (row.send_in_test === "Y") {
+                                    return (
+                                      <AlgaehDateHandler
+                                        div={{}}
+                                        textBox={{
+                                          className: "txt-fld hidden",
+                                          name: "collected_date",
+                                        }}
+                                        minDate={new Date()}
+                                        disabled={
+                                          this.state.posted === "Y"
+                                            ? true
+                                            : false
+                                        }
+                                        events={{
+                                          onChange:
+                                            onchangegridcoldatehandle.bind(
+                                              this,
+                                              this,
+                                              row
+                                            ),
+                                        }}
+                                        value={row.collected_date}
+                                      />
+                                    );
+                                  } else {
+                                    return (
+                                      <span>
+                                        {moment(row.collected_date).isValid()
+                                          ? moment(row.collected_date).format(
+                                              "DD-MM-YYYY hh:mm"
+                                            )
+                                          : "------"}
+                                      </span>
+                                    );
+                                  }
+                                },
+                                others: {
+                                  resizable: false,
+                                  style: { textAlign: "center" },
                                 },
                               },
                               {
@@ -799,40 +942,7 @@ class SampleCollectionPatient extends PureComponent {
                                   style: { textAlign: "center" },
                                 },
                               },
-                              {
-                                fieldName: "collected_date",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{ fieldName: "collected_date" }}
-                                  />
-                                ),
-                                displayTemplate: (row) => {
-                                  return (
-                                    <span>
-                                      {moment(row.collected_date).isValid()
-                                        ? moment(row.collected_date).format(
-                                            "DD-MM-YYYY hh:mm"
-                                          )
-                                        : "------"}
-                                    </span>
-                                  );
-                                },
-                                editorTemplate: (row) => {
-                                  return (
-                                    <span>
-                                      {moment(row.collected_date).isValid()
-                                        ? moment(row.collected_date).format(
-                                            "DD-MM-YYYY hh:mm"
-                                          )
-                                        : "------"}
-                                    </span>
-                                  );
-                                },
-                                others: {
-                                  resizable: false,
-                                  style: { textAlign: "center" },
-                                },
-                              },
+
                               {
                                 fieldName: "barcode_gen",
                                 label: (
