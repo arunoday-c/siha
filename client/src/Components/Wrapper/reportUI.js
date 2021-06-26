@@ -43,6 +43,7 @@ export default class ReportUI extends Component {
       multipleValue: [],
       pageOrentation: "landscape",
       pageSize: "A4",
+      searchCollection: {},
     };
 
     if (props.options !== undefined && props.options.plotUI !== undefined) {
@@ -574,6 +575,10 @@ export default class ReportUI extends Component {
         callBack(text);
       },
       onRowSelect: (row) => {
+        debugger;
+        this.setState({
+          searchCollection: { ...row },
+        });
         if (
           _hasSearch.search.schema !== undefined &&
           _hasSearch.search.schema.length > 0
@@ -861,7 +866,34 @@ export default class ReportUI extends Component {
           case "search":
             _controls.push(
               <React.Fragment key={i}>
-                <AlagehFormGroup
+                <div
+                  className={`${_param.className}`}
+                  style={{
+                    cursor: "pointer",
+                    // pointerEvents: true,
+                  }}
+                >
+                  <Label
+                    label={{
+                      fieldName: _param.name,
+                      forceLabel: _param.label,
+                      isImp: _param.isImp !== undefined ? false : _param.isImp,
+                    }}
+                  />
+                  <h6
+                    onClick={this.searchButton.bind(this)}
+                    surrounds={_param.name}
+                  >
+                    {this.state.searchCollection[_param.displayField] ? (
+                      this.state.searchCollection[_param.displayField]
+                    ) : (
+                      <Label label={{ fieldName: "patient_code" }} />
+                    )}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
+                </div>
+
+                {/* <AlagehFormGroup
                   div={{ className: _className }}
                   label={{
                     fieldName: _param.name,
@@ -886,7 +918,7 @@ export default class ReportUI extends Component {
                       marginTop: "28px",
                     }}
                   />
-                </div>
+                </div> */}
               </React.Fragment>
             );
             break;
