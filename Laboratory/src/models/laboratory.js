@@ -1343,7 +1343,7 @@ export default {
           printQuery: true,
         })
         .then((result) => {
-          _mysql.releaseConnection();
+          console.log("result", result);
           const arrangedData = _.chain(result)
             .groupBy((g) => moment(g.ordered_date).format("YYYY-MM-DD"))
             .map((details, key) => {
@@ -1353,7 +1353,7 @@ export default {
                 detailsOf: _.chain(details)
                   .groupBy((it) => it.send_out_test)
                   .map((detail, index) => {
-                    const head = _.head(detail);
+                    const { send_out_test } = _.head(detail);
                     return {
                       send_out_test: send_out_test,
                       detail: detail,
@@ -1365,6 +1365,7 @@ export default {
             })
             .value();
           req.records = arrangedData;
+          _mysql.releaseConnection();
           next();
         })
         .catch((error) => {

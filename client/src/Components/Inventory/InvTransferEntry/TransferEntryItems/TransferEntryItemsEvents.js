@@ -7,16 +7,103 @@ import swal from "sweetalert2";
 
 let texthandlerInterval = null;
 
-const UomchangeTexts = ($this, ctrl, e) => {
+// const UomchangeTexts = ($this, ctrl, e) => {
+//   e = ctrl || e;
+//   let name = e.name || e.target.name;
+//   let value = e.value || e.target.value;
+//   let unit_cost = e.selected.conversion_factor * $this.state.unit_cost;
+//   $this.setState({
+//     [name]: value,
+//     conversion_factor: e.selected.conversion_factor,
+//     unit_cost: unit_cost,
+//   });
+// };
+const UomchangeTexts = ($this, context, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  let unit_cost = e.selected.conversion_factor * $this.state.unit_cost;
-  $this.setState({
-    [name]: value,
-    conversion_factor: e.selected.conversion_factor,
-    unit_cost: unit_cost,
-  });
+
+  if ($this.state.uom_id !== value) {
+    let qtyhand = 0;
+    let unit_cost = 0;
+
+    debugger;
+    if ($this.state.sales_uom_id === $this.state.stocking_uom_id) {
+      if (
+        parseFloat($this.state.sales_conversion_factor) ===
+        parseFloat(e.selected.conversion_factor)
+      ) {
+        unit_cost = $this.state.Real_unit_cost;
+        qtyhand = parseFloat($this.state.sales_qtyhand);
+      } else if (
+        parseFloat($this.state.sales_conversion_factor) >
+        parseFloat(e.selected.conversion_factor)
+      ) {
+        unit_cost =
+          parseFloat($this.state.Real_unit_cost) /
+          parseFloat($this.state.sales_conversion_factor);
+        qtyhand =
+          parseFloat($this.state.sales_qtyhand) *
+          parseFloat(e.selected.conversion_factor);
+      } else {
+        qtyhand =
+          parseFloat($this.state.sales_qtyhand) /
+          parseFloat(e.selected.conversion_factor);
+        unit_cost =
+          parseFloat(e.selected.conversion_factor) *
+          parseFloat($this.state.Real_unit_cost);
+      }
+    } else {
+      if (
+        parseFloat($this.state.sales_conversion_factor) ===
+        parseFloat(e.selected.conversion_factor)
+      ) {
+        unit_cost = $this.state.Real_unit_cost;
+        qtyhand = parseFloat($this.state.sales_qtyhand);
+      } else if (
+        parseFloat($this.state.sales_conversion_factor) >
+        parseFloat(e.selected.conversion_factor)
+      ) {
+        unit_cost =
+          parseFloat($this.state.Real_unit_cost) /
+          parseFloat($this.state.sales_conversion_factor);
+        qtyhand =
+          parseFloat($this.state.sales_qtyhand) *
+          parseFloat($this.state.sales_conversion_factor);
+      } else {
+        qtyhand =
+          parseFloat($this.state.sales_qtyhand) /
+          parseFloat($this.state.sales_conversion_factor);
+        unit_cost =
+          parseFloat(e.selected.conversion_factor) *
+          parseFloat($this.state.Real_unit_cost);
+      }
+    }
+
+    $this.setState({
+      [name]: value,
+      conversion_factor: e.selected.conversion_factor,
+      unit_cost: unit_cost,
+      qtyhand: qtyhand,
+      uom_description: e.selected.text,
+      quantity: 0,
+    });
+
+    clearInterval(texthandlerInterval);
+    texthandlerInterval = setInterval(() => {
+      if (context !== undefined) {
+        context.updateState({
+          [name]: value,
+          conversion_factor: e.selected.conversion_factor,
+          unit_cost: unit_cost,
+          qtyhand: qtyhand,
+          uom_description: e.selected.text,
+          quantity: 0,
+        });
+      }
+      clearInterval(texthandlerInterval);
+    }, 500);
+  }
 };
 
 const numberchangeTexts = ($this, context, e) => {
@@ -119,7 +206,8 @@ const AddItems = ($this, context) => {
     sales_price: $this.state.sales_price,
     vendor_batchno: $this.state.vendor_batchno,
     git_qty: $this.state.quantity,
-    ack_quantity: 0,
+    ack_quantity:
+      $this.state.trans_ack_required === "N" ? $this.state.quantity : 0,
   };
 
   if (Item_Exists !== undefined) {
@@ -606,6 +694,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
               addItemButton: false,
               item_description: e.item_description,
               sales_uom_id: e.sales_uom_id,
+              stocking_uom_id: e.stocking_uom_id,
               sales_conversion_factor:
                 sales_conversion_factor.conversion_factor,
               uom_description: e.uom_description,
@@ -614,6 +703,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
               sales_qtyhand: sales_qtyhand,
               sales_price: e.sale_price,
               unit_cost: data.locationResult[0].avgcost,
+              Real_unit_cost: data.locationResult[0].avgcost,
             });
 
             if (context !== undefined) {
@@ -635,6 +725,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 addItemButton: false,
                 item_description: e.item_description,
                 sales_uom_id: e.sales_uom_id,
+                stocking_uom_id: e.stocking_uom_id,
                 sales_conversion_factor:
                   sales_conversion_factor.conversion_factor,
                 uom_description: e.uom_description,
@@ -643,6 +734,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 sales_qtyhand: sales_qtyhand,
                 sales_price: e.sale_price,
                 unit_cost: data.locationResult[0].avgcost,
+                Real_unit_cost: data.locationResult[0].avgcost,
               });
             }
           } else {

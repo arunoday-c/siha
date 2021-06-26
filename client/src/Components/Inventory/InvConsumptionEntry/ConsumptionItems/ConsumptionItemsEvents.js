@@ -11,6 +11,7 @@ export default function ConsumptionItemsEvents() {
       });
     },
     UomchangeTexts: ($this, context, e) => {
+      debugger;
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
       let unit_cost = e.selected.conversion_factor * $this.state.unit_cost;
@@ -127,6 +128,8 @@ export default function ConsumptionItemsEvents() {
                     batchno: data.locationResult[0].batchno,
                     grn_no: data.locationResult[0].grnno,
                     qtyhand: data.locationResult[0].qtyhand,
+                    unit_cost: data.locationResult[0].avgcost,
+
                     barcode: data.locationResult[0].barcode,
                     extended_cost: parseFloat(data.locationResult[0].avgcost),
 

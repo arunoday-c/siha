@@ -190,7 +190,8 @@ export function getUploadedCommonFile(req, res, next) {
   }
 }
 export const deleteCommonFile = (req, res) => {
-  const { id, docUploadedFolder, doc_number } = req.body;
+  const { _id, docUploadedFolder, doc_number } = req.body;
+  const id = _id;
   uploadDocumentSchema.findByIdAndDelete(id.trim(), (err, docs) => {
     if (err) {
       res.status(400).json({ error: err.message });
