@@ -9,6 +9,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
+  AlagehAutoComplete,
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import {
@@ -25,6 +26,7 @@ import {
   CloseItemBatch,
   AddItems,
   onchangegridcolauthqty,
+  UomchangeTexts,
 } from "./TransferEntryItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import _ from "lodash";
@@ -208,6 +210,33 @@ class TransferEntryItems extends Component {
                           }}
                           others={{ disabled: this.state.dataExitst }}
                         />
+                        <AlagehAutoComplete
+                          div={{ className: "col" }}
+                          label={{ forceLabel: "UOM", isImp: true }}
+                          selector={{
+                            name: "uom_id",
+                            className: "select-fld",
+                            value: this.state.uom_id,
+                            dataSource: {
+                              textField: "uom_description",
+                              valueField: "uom_id",
+                              data: this.state.ItemUOM,
+                            },
+                            onChange: UomchangeTexts.bind(this, this, context),
+                            onClear: () => {
+                              this.setState({
+                                uom_id: null,
+                              });
+                              context.updateState({
+                                uom_id: null,
+                              });
+                            },
+                            others: {
+                              disabled: this.state.dataExitst,
+                              tabIndex: "2",
+                            },
+                          }}
+                        />
                         <div className="col">
                           <AlgaehLabel
                             label={{
@@ -250,7 +279,7 @@ class TransferEntryItems extends Component {
                           </h6>
                         </div>
 
-                        <div className="col">
+                        {/* <div className="col">
                           <AlgaehLabel
                             label={{
                               forceLabel: "Transfered UOM",
@@ -261,7 +290,7 @@ class TransferEntryItems extends Component {
                               ? this.state.uom_description
                               : "-----------"}
                           </h6>
-                        </div>
+                        </div> */}
                         {/*<AlagehAutoComplete
                           div={{ className: "col" }}
                           label={{ forceLabel: "UOM", isImp: true }}
