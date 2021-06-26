@@ -157,6 +157,42 @@ class ConsumptionItems extends Component {
                         value={this.state.item_description}
                         searchName={"PharmacyforMaterialRequesition"}
                         onClick={this.itemchangeText.bind(this, context)}
+                        onClear={() => {
+                          this.setState({
+                            item_description: "",
+                            item_code: null,
+                            item_category_id: null,
+                            uom_id: null,
+                            sales_uom: null,
+                            item_group_id: null,
+                            quantity: null,
+                            addItemButton: true,
+                            expiry_date: null,
+                            batchno: null,
+                            grn_no: null,
+                            qtyhand: null,
+                            barcode: null,
+                            ItemUOM: [],
+                            Batch_Items: [],
+                          });
+                          context.updateState({
+                            item_description: "",
+                            item_code: null,
+                            item_category_id: null,
+                            uom_id: null,
+                            sales_uom: null,
+                            item_group_id: null,
+                            quantity: null,
+                            addItemButton: true,
+                            expiry_date: null,
+                            batchno: null,
+                            grn_no: null,
+                            qtyhand: null,
+                            barcode: null,
+                            ItemUOM: [],
+                            Batch_Items: [],
+                          });
+                        }}
                         // others={{
                         //   disabled: this.state.ItemDisable,
                         // }}
