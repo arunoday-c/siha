@@ -1,8 +1,14 @@
 import amqpConnection from "./connection";
+let channel = undefined;
+
 export async function publisher(queueName, data) {
   try {
-    const connection = await amqpConnection;
-    const channel = await connection.createChannel();
+    if (!channel) {
+      const connection = await amqpConnection;
+      channel = await connection.createChannel();
+    }
+    // const connection = await amqpConnection;
+    // const channel = await connection.createChannel();
     await channel.assertQueue(queueName, {
       durable: true,
       exclusive: false,
