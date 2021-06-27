@@ -4,7 +4,9 @@ import { AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 import { Select } from "algaeh-react-components";
 import { algaehApiCall, getCookie } from "../../utils/algaehApiCall";
 import ReactDOM from "react-dom";
+
 var intervalId;
+
 window.SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition || null;
 class SearchModule extends Component {
@@ -211,6 +213,29 @@ class SearchModule extends Component {
     }, 1000);
   }
 
+  searchEnumGlobal(e) {
+    debugger;
+    let contains = e;
+    this.setState({ contains: contains });
+    if (this.state.children.length > 0) {
+      this.setState({ secondLevelFilter: contains });
+    }
+    let $this = this;
+    clearInterval(intervalId);
+    intervalId = setInterval(() => {
+      if (typeof $this.props.onContainsChange === "function") {
+        $this.props.onContainsChange(
+          contains,
+          $this.state.searchBy,
+          (value) => {
+            return value;
+          }
+        );
+      }
+      clearInterval(intervalId);
+    }, 1000);
+  }
+
   /*
     soptlight content loaded area where grid is going to load with data
  */
@@ -372,32 +397,50 @@ class SearchModule extends Component {
                   <div className="col">
                     {this.state.children.length > 0 ? (
                       <Select
-                        {...{
-                          // mode: "multiple",
-                          style: {
-                            width: "100%",
-                            zIndex: 99999,
-                          },
-                          // data_role: "multipleSelectList",
-                          name: "secondLevelFilter",
-                          value: this.state.secondLevelFilter,
-                          options: this.state.children,
-                          onChange: this.handleSpotLightContains.bind(this),
-                          optionFilterProp: "children",
-                          // onSearch: onSearch,
-                          filterOption: (input, option) => {
-                            return (
-                              option.label
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            );
-                          },
-
-                          placeholder: "Select Item...",
-                          // maxTagCount: "responsive",
-                        }}
-                      />
+                        className="searchBySelect globalEnumSelect"
+                        onChange={this.searchEnumGlobal.bind(this)}
+                        value={this.state.secondLevelFilter}
+                        ref={this.searchRef}
+                        options={this.state.children}
+                      >
+                        {/* {this.state.children.map((row, index) => ( */}
+                        {/* <Option
+                          key={index}
+                          // datafieldtype={row.fieldType}
+                          value={row["value"]}
+                        >
+                          {row["label"]}
+                        </Option> */}
+                        {/* ))} */}
+                      </Select>
                     ) : (
+                      // <Select
+                      //   {...{
+                      //     // mode: "multiple",
+                      //     style: {
+                      //       width: "100%",
+                      //       // zIndex: 999999999,
+                      //     },
+                      //     // data_role: "multipleSelectList",
+                      //     name: "secondLevelFilter",
+                      //     value: this.state.secondLevelFilter,
+                      //     options: this.state.children,
+                      //     onChange: this.handleSpotLightContains.bind(this),
+                      //     className: "globalEnumSelect",
+                      //     optionFilterProp: "children",
+                      //     // onSearch: onSearch,
+                      //     filterOption: (input, option) => {
+                      //       return (
+                      //         option.label
+                      //           .toLowerCase()
+                      //           .indexOf(input.toLowerCase()) >= 0
+                      //       );
+                      //     },
+
+                      //     placeholder: "Select Item...",
+                      //     // maxTagCount: "responsive",
+                      //   }}
+                      // />
                       // <select
                       //   className="searchBySelect"
                       //   onChange={this.handleSpotLightContains.bind(this)}

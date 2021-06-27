@@ -16,12 +16,8 @@ const {
   changePasswordRequest,
 } = account;
 const { releaseConnection } = utils;
-const {
-  generateAccessToken,
-  respond,
-  authenticate,
-  createJWTToken,
-} = authmiddleware;
+const { generateAccessToken, respond, authenticate, createJWTToken } =
+  authmiddleware;
 const { encryption } = cryptography;
 import {
   getTables,
@@ -196,7 +192,12 @@ export default ({ config, db }) => {
     (req, res, next) => {
       let result = req.records;
       if (result[0].length === 0) {
-        next(httpStatus.generateError(httpStatus.notFound, "No record found"));
+        next(
+          httpStatus.generateError(
+            httpStatus.notFound,
+            "The password is incorrect. Try again."
+          )
+        );
       } else {
         if (result[0][0]["locked"] === "N") {
           let rowDetails = result[0][0];

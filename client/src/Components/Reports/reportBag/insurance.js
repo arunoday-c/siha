@@ -35,6 +35,68 @@ export default function Insurance({
             },
           },
           {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "insurance_provider_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Company",
+            link: {
+              uri: "/insurance/getInsuranceProviders",
+              module: "insurance",
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                reportState.setState({
+                  insurance_provider_id: null,
+                  sub_insurance_id: null,
+                  claims: [],
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  insurance_provider_id: null,
+                  sub_insurance_id: null,
+                  claims: [],
+                });
+              },
+            },
+            dataSource: {
+              textField: "insurance_provider_name",
+              valueField: "hims_d_insurance_provider_id",
+              data: undefined,
+            },
+          },
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "primary_sub_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Sub Company",
+          //   link: {
+          //     uri: "/insurance/getSubInsurance",
+          //     module: "insurance",
+          //   },
+          //   dataSource: {
+          //     textField: "insurance_sub_name",
+          //     valueField: "hims_d_insurance_sub_id",
+          //   },
+          // },
+          // {
+          //   className: "col-3 form-group mandatory",
+          //   type: "dropdown",
+          //   name: "",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Sub Company",
+          //   dataSource: {
+          //     textField: "insurance_sub_name",
+          //     valueField: "hims_d_insurance_sub_id",
+          //     data: undefined,
+          //   },
+          // },
+          {
             className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
@@ -52,6 +114,31 @@ export default function Insurance({
             others: {
               maxDate: new Date(),
               minDate: null,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Company Price List",
+        reportName: "insuranceCompanyPriceListReport",
+        requireIframe: true,
+        componentCode: "RPT_INS_COM_PST_LST",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
             },
           },
           {
@@ -88,20 +175,22 @@ export default function Insurance({
             },
           },
           // {
-          //   className: "col-3 form-group mandatory",
+          //   className: "col-3 form-group",
           //   type: "dropdown",
-          //   name: "",
+          //   name: "primary_sub_id",
           //   initialLoad: true,
           //   isImp: false,
           //   label: "Sub Company",
+          //   link: {
+          //     uri: "/insurance/getSubInsurance",
+          //     module: "insurance",
+          //   },
           //   dataSource: {
           //     textField: "insurance_sub_name",
           //     valueField: "hims_d_insurance_sub_id",
-          //     data: undefined,
           //   },
           // },
         ],
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Statement Detail Report",
@@ -201,7 +290,7 @@ export default function Insurance({
             displayField: "insurance_statement_number",
             primaryDesc: "insurance_statement_number",
             secondaryDesc: "insurance_sub_name",
-            value: null,
+            // value: null,
             searchName: "InsuranceStatementReport",
             label: "Statement No",
           },

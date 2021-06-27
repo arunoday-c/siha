@@ -1,0 +1,53 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div class="print-body">
+
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Primary ID</th>
+            <th>Patient Code</th>
+            <th>Patient Name</th>
+            <th>Bill No.</th>
+            <th>Bill Date</th>
+            <th>Bill Amt.</th>
+            <th>Credit Amt.</th>
+            <th>Balance Amt.</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          {{#hasElement result}}
+            <tr class="numberFldTotalBottom">
+              <td class="txtFld" colspan="8"></td>
+              <td class="txtFld" colspan="8">{{net_balance_credit}}</td>
+              {{!-- <td class="numberFld" colspan="3">Age: {{return_age}}</td> --}}
+            </tr>
+            {{#each result}}
+              <tr>
+                <td>{{inc @index}}</td>
+                <td>{{primary_id_no}}</td>
+                <td>{{patient_code}}</td>
+                <td style="text-align: left;">{{full_name}}</td>
+                <td>{{bill_number}}</td>
+                <td>{{bill_date}}</td>
+                <td>{{net_total}}</td>
+                <td>{{credit_amount}}</td>
+                <td>{{balance_credit}}</td>
+              </tr>
+            {{/each}}
+          {{else}}
+            <tr>
+              <td colspan="8" class="noResultTextReport">No Records Found</td>
+            </tr>{{/hasElement}}
+        </tbody>
+
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+  </div>
+</body>

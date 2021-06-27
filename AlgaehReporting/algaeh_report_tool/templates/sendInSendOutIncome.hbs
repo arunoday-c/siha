@@ -1,0 +1,113 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div class="print-body">
+
+    <section>
+      {{!-- <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Total Employees</label>:<span class="valueText">{{no_employees}}</span>
+                    </td>
+                </tr>
+            </table> --}}
+
+    </section>
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Service Code</th>
+            <th>Service Name</th>
+            <th>Unit Cost</th>
+            <th>Qty</th>
+            <th>Patient Tax</th>
+            <th>Patient Payable</th>
+            <th>Company Tax</th>
+            <th>Company Payable</th>
+            <th>Net Amount</th>
+          </tr>
+
+        </thead>
+        <tbody>
+          {{!-- <tr>
+                        <td colspan="10"></td>
+                        <td colspan="1"><span class="textFloatRight">Total No.
+                                Employees: <b>{{no_employees}}</b></span></td>
+
+                    </tr> --}}
+          {{#hasElement result}}
+
+            {{#each result}}
+              <tr>
+                <td colspan="5" class="tableSubHdg">{{doctor_name}}</td>
+                <td class="tableSubHdg numberFld">
+                  {{!-- <b
+                  >{{numberFormating net_pat_tax_total ../currencyOnly}}</b> --}}
+                  </td>
+
+             
+                <td class="tableSubHdg numberFld">
+                  {{!-- <b> {{numberFormating net_pat_pay_total ../currencyOnly}}</b> --}}
+                </td>
+                <td class="tableSubHdg numberFld">
+                  {{!-- <b> {{numberFormating net_comp_tax_total ../currencyOnly}}</b> --}}
+                </td>
+                <td class="tableSubHdg numberFld">
+                  {{!-- <b> {{numberFormating net_comp_pay_total ../currencyOnly}}</b> --}}
+                </td>
+                <td class="tableSubHdg numberFld"><b
+                  > {{numberFormating net_net_amount_total ../currencyOnly}}</b></td>
+
+              </tr>
+              {{#each doctors}}
+                <tr>
+                  <td colspan="9" class="tableSubHdg2">
+
+                    {{bill_number}}/{{bill_date}}
+                  </td>
+                  {{!-- <td class="tableSubHdg2 numberFld">
+                    {{pat_tax_total}}
+                   
+                    </td>
+                  <td class="tableSubHdg2 numberFld">
+                    <b>{{pat_pay_total}}</b>
+                    </td>
+                  <td class="tableSubHdg2 numberFld">
+                    <b>{{comp_tax_total}}</b>
+                  </td>
+                  <td class="tableSubHdg2 numberFld">
+                    <b>{{comp_pay_total}}</b>
+                  </td> --}}
+                  <td class="tableSubHdg2 numberFld"><b>{{numberFormating net_amount_total ../../decimalOnly}}</b></td>
+                </tr>
+                {{#each docs}}
+                  <tr>
+                    <td>{{inc @index}}</td>
+                    <td class="">{{service_code}}</td>
+                    <td class="txtFld">{{service_name}}</td>
+                    <td class="numberFld">{{unit_cost}}</td>
+                    <td class="numberFld">{{quantity}}</td>
+                    <td class="numberFld">{{patient_tax}}</td>
+                    <td class="numberFld">{{patient_resp}}</td>
+                    <td class="numberFld">{{company_tax}}</td>
+                    <td class="numberFld">{{comapany_resp}}</td>
+                    <td class="numberFld"><b>{{net_amout}}</b></td>
+                  </tr>
+                {{/each}}{{/each}}{{/each}}
+            {{!-- <tr class="numberFldTotalBottom">
+              <td colspan="8"></td>
+              <td class="numberFld">{{net_total}}</td>
+            </tr> --}}
+          {{else}}
+            <tr>
+              <td colspan="10" class="noResultTextReport">No Records Found</td>
+            </tr>{{/hasElement}}
+        </tbody>
+
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+  </div>
+</body>

@@ -1,0 +1,52 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div class="print-body">
+
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Service Code</th>
+            <th>Service Name</th>
+            <th>Gross Amt.</th>
+            <th>Discount %</th>
+            <th>Discount Amt.</th>
+            <th>Net Amt.</th>
+            <th>Pre Approval</th>
+            <th>Covered</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          {{#hasElement result}}
+            {{!-- <tr class="numberFldTotalBottom">
+              <td class="txtFld" colspan="8"></td>
+              <td class="txtFld" colspan="8">{{net_balance_credit}}</td>
+            </tr> --}}
+            {{#each result}}
+              <tr>
+                <td>{{inc @index}}</td>
+                <td>{{service_code}}</td>
+                <td style="text-align: left;">{{insurance_service_name}}</td>
+                <td>{{gross_amt}}</td>
+                <td>{{corporate_discount_percent}}</td>
+                <td>{{corporate_discount_amt}}</td>
+                <td>{{net_amount}}</td>
+                <td>{{covered}}</td>
+                <td>{{pre_approval}}</td>
+              </tr>
+            {{/each}}
+          {{else}}
+            <tr>
+              <td colspan="8" class="noResultTextReport">No Records Found</td>
+            </tr>{{/hasElement}}
+        </tbody>
+
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+  </div>
+</body>

@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -28,8 +28,11 @@ export default {
       batchno: null,
       grn_no: null,
       saveEnable: true,
-      pharmacy_stock_detail: []
+      pharmacy_stock_detail: [],
+
+      barcode: null,
+      item_description: "",
     };
     return output;
-  }
+  },
 };

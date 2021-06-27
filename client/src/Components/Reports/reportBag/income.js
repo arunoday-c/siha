@@ -4,6 +4,7 @@ export default function Income({
   cashier_id,
   FORMAT_YESNO,
   spotlightSearch,
+  SENDOUT_TYPE,
 }) {
   return {
     name: "Income",
@@ -471,6 +472,66 @@ export default function Income({
             value: null,
             data: undefined,
             label: "Services List",
+          },
+        ],
+      },
+      {
+        subitem: "Income by Lab Send In/Out",
+        reportName: "sendInSendOutIncome",
+        // componentCode: "RPT_INC_SEND_IN_OUT",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "portrait", //"portrait",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "is_SendOut",
+            initialLoad: true,
+            isImp: true,
+            label: "Send Out Type",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: SENDOUT_TYPE,
+            },
           },
         ],
       },

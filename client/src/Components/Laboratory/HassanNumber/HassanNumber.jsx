@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 
 // import Enumerable from "linq";
-
-import "./ResultEntryList.scss";
+import swal from "sweetalert2";
+import "./HassanNumber.scss";
 import "./../../../styles/site.scss";
 import {
   AlgaehDataGrid,
@@ -37,7 +37,7 @@ function HassanNumber() {
   const { userToken } = useContext(MainContext);
   console.log("userToken", userToken);
 
-  // const [days, setDays] = useState(null);
+  const [hassanShow, setHassanShow] = useState("all");
   // const [avgMtdIncome, setAvgMtdIncome] = useState(null);
   // const [avgMtdExpense, setAvgMtdExpense] = useState(null);
   const {
@@ -67,7 +67,7 @@ function HassanNumber() {
   // }
 
   const { data: labOrdersPCR, refetch } = useQuery(
-    ["getLabOrderedServices"],
+    ["getLabOrderedServices", { hassanShow: hassanShow }],
     getLabOrderedServices,
     {
       onSuccess: (data) => {
@@ -81,7 +81,7 @@ function HassanNumber() {
       },
     }
   );
-  async function getLabOrderedServices(key) {
+  async function getLabOrderedServices(key, { hassanShow }) {
     const date = getValues().start_date;
     const from_date = moment(date[0]).format("YYYY-MM-DD");
     const to_date = moment(date[1]).format("YYYY-MM-DD");
@@ -90,10 +90,15 @@ function HassanNumber() {
       uri: "/laboratory/getLabOrderedServices",
       module: "laboratory",
       method: "GET",
-      data: { from_date, to_date, status: "V" },
+      data: { from_date, to_date, status: "V", hassanShow },
     });
     return result?.data?.records;
   }
+
+  const radioChangeEvent = (value) => {
+    setHassanShow(value);
+    refetch();
+  };
 
   // useEffect(() => {
   //   if (accountsForDash?.length >= 4) {
@@ -148,7 +153,7 @@ function HassanNumber() {
       refetch();
       AlgaehMessagePop({
         type: "success",
-        display: "Hassan No Updated successfully",
+        display: "HESN No Updated successfully",
       });
     },
     onError: (err) => {
@@ -176,7 +181,7 @@ function HassanNumber() {
             <AlgaehDateHandler
               div={{ className: "col-3" }}
               label={{
-                fieldName: "effective_start_date",
+                forceLabel: "ORDERED DATE & TIME",
                 isImp: true,
               }}
               error={errors}
@@ -204,13 +209,57 @@ function HassanNumber() {
             />
           )}
         />
+
+        <div className="col">
+          <label>Filter By</label>
+          <div className="customRadio">
+            <label className="radio inline">
+              <input
+                type="radio"
+                value="all"
+                name="hassanShow"
+                checked={hassanShow === "all" ? true : false}
+                onChange={(e) => {
+                  radioChangeEvent(e.target.value);
+                }}
+              />
+              <span>All</span>
+            </label>
+
+            <label className="radio inline">
+              <input
+                type="radio"
+                value="withhassan"
+                checked={hassanShow === "withhassan" ? true : false}
+                name="hassanShow"
+                onChange={(e) => {
+                  radioChangeEvent(e.target.value);
+                }}
+              />
+              <span>with HESN No.</span>
+            </label>
+            <label className="radio inline">
+              <input
+                type="radio"
+                value="withOuthassan"
+                checked={hassanShow === "withOuthassan" ? true : false}
+                name="hassanShow"
+                onChange={(e) => {
+                  radioChangeEvent(e.target.value);
+                }}
+              />
+              <span>without HESN No.</span>
+            </label>
+          </div>
+        </div>
+
         <div className="col" style={{ marginTop: "21px" }}>
           <button
             className="btn btn-default btn-sm"
             type="button"
             onClick={() => {
               reset({ start_date: [moment(new Date()), moment(new Date())] });
-              refetch();
+              radioChangeEvent("all");
             }}
           >
             Clear
@@ -231,7 +280,7 @@ function HassanNumber() {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Hassan PCR List</h3>
+                <h3 className="caption-subject">HESN PCR List</h3>
               </div>
             </div>
 
@@ -332,7 +381,7 @@ function HassanNumber() {
 
                   {
                     fieldName: "hassan_number",
-                    label: <AlgaehLabel label={{ forceLabel: "Hassan No." }} />,
+                    label: <AlgaehLabel label={{ forceLabel: "HESN No." }} />,
                     sortable: true,
                     filterable: true,
                     disabled: true,
@@ -358,6 +407,7 @@ function HassanNumber() {
                             name: "hassan_number",
                             updateInternally: true,
                             onChange: (e) => {
+                              if (e.target.value) row["isDirty"] = true;
                               row.hassan_number = e.target.value;
                             },
                           }}
@@ -365,7 +415,39 @@ function HassanNumber() {
                       );
                     },
                   },
+                  {
+                    fieldName: "hesn_upload",
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "File Updated in HESN" }}
+                      />
+                    ),
+                    displayTemplate: (row) => {
+                      return (
+                        <span>{row.hesn_upload === "Y" ? "YES" : "NO"}</span>
+                      );
+                    },
+                    editorTemplate: (row) => {
+                      return (
+                        <input
+                          type="checkbox"
+                          defaultChecked={
+                            row.hesn_upload === "Y" ? true : false
+                          }
+                          onChange={(e) => {
+                            const status = e.target.checked;
+                            row["hesn_upload"] = status === true ? "Y" : "N";
 
+                            // row.update();
+                          }}
+                        />
+                      );
+                    },
+                    others: {
+                      // minWidth: 130,
+                      style: { textAlign: "center" },
+                    },
+                  },
                   {
                     fieldName: "haasan_updated_by_name",
                     label: <AlgaehLabel label={{ forceLabel: "Updated By" }} />,
@@ -378,6 +460,39 @@ function HassanNumber() {
                     },
                     editorTemplate: (row) => {
                       return row.haasan_updated_by_name;
+                    },
+                  },
+                  {
+                    fieldName: "hesn_upload_updated_date",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Updated Date" }} />
+                    ),
+                    sortable: true,
+                    filterable: true,
+                    disabled: true,
+                    others: {
+                      // resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                    editorTemplate: (row) => {
+                      return row.hesn_upload_updated_date;
+                    },
+                  },
+
+                  {
+                    fieldName: "hesn_upload_updated_by_name",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Uploaded By" }} />
+                    ),
+                    sortable: true,
+                    filterable: true,
+                    disabled: true,
+                    others: {
+                      // resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                    editorTemplate: (row) => {
+                      return row.hesn_upload_updated_by_name;
                     },
                   },
                   {
@@ -396,77 +511,39 @@ function HassanNumber() {
                       return row.hassan_number_updated_date;
                     },
                   },
-
-                  {
-                    fieldName: "status",
-                    label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                    displayTemplate: (row) => {
-                      return row.status === "CL" ? (
-                        <span className="badge badge-secondary">Collected</span>
-                      ) : row.status === "CN" ? (
-                        <span className="badge badge-danger">Cancelled</span>
-                      ) : row.status === "CF" ? (
-                        <span className="badge badge-primary">Confirmed</span>
-                      ) : (
-                        <span className="badge badge-success">Validated</span>
-                      );
-                    },
-                    editorTemplate: (row) => {
-                      return row.status === "CL" ? (
-                        <span className="badge badge-secondary">Collected</span>
-                      ) : row.status === "CN" ? (
-                        <span className="badge badge-danger">Cancelled</span>
-                      ) : row.status === "CF" ? (
-                        <span className="badge badge-primary">Confirmed</span>
-                      ) : (
-                        <span className="badge badge-success">Validated</span>
-                      );
-                    },
-                    // sortable: true,
-                    // filterable: true,
-                    disabled: true,
-                    others: {
-                      maxWidth: 130,
-                      // resizable: false,
-                      style: { textAlign: "center" },
-                    },
-                  },
-                  // {
-                  //   fieldName: "critical_status",
-                  //   label: (
-                  //     <AlgaehLabel
-                  //       label={{ forceLabel: "Critical Result" }}
-                  //     />
-                  //   ),
-                  //   displayTemplate: (row) => {
-                  //     return row.critical_status === "N" ? (
-                  //       <span className="badge badge-primary">No</span>
-                  //     ) : (
-                  //       <span className="badge badge-danger">Yes</span>
-                  //     );
-                  //   },
-                  //   disabled: true,
-                  //   others: {
-                  //     maxWidth: 130,
-                  //     resizable: false,
-                  //     style: { textAlign: "center" },
-                  //   },
-                  // },
                 ]}
                 keyId="patient_code"
                 data={isPCRRecords ?? []}
                 isEditable={"editOnly"}
                 events={{
                   onSave: (row) => {
-                    if (row.hassan_number) {
-                      updateHassanNo(row);
-                    } else {
-                      AlgaehMessagePop({
-                        type: "error",
-                        display: "Please Enter Hassan Number",
-                      });
-                      return;
-                    }
+                    // if (row.hassan_number) {
+                    swal({
+                      title: "Are you sure?",
+                      text: `Patient :  ${row.full_name} 
+                     
+                        HESN No: ${row.hassan_number ? row.hassan_number : ""}
+                     
+                        File Updated in HESN:  ${row.hesn_upload}
+                        `,
+                      type: "warning",
+                      showCancelButton: true,
+                      confirmButtonText: "Yes",
+                      confirmButtonColor: "#44b8bd",
+                      cancelButtonColor: "#d33",
+                      cancelButtonText: "No",
+                    }).then((willProceed) => {
+                      if (willProceed.value) {
+                        updateHassanNo(row);
+                        // } else {
+                        //   AlgaehMessagePop({
+                        //     type: "error",
+                        //     display: "Please Enter HESN Number",
+                        //   });
+                        //   return;
+                        // }
+                      }
+                    });
                   },
                 }}
                 isFilterable={true}

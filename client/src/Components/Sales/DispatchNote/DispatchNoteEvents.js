@@ -287,6 +287,7 @@ const SaveDispatchNote = ($this) => {
 };
 
 const getCtrlCode = ($this, docNumber, row) => {
+  AlgaehLoader({ show: true });
   $this.setState($this.baseState, () => {
     algaehApiCall({
       uri: "/DispatchNote/getDispatchNote",

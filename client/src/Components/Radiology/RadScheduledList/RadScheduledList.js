@@ -22,17 +22,18 @@ import {
   AlgaehLabel,
   AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
-import { newAlgaehApi } from "../../../hooks";
-import { swalMessage } from "../../../utils/algaehApiCall";
+// import { newAlgaehApi } from "../../../hooks";
+// import { swalMessage } from "../../../utils/algaehApiCall";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
-import { AlgaehModal } from "algaeh-react-components";
+// import { AlgaehModal } from "algaeh-react-components";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { Upload, Modal, Tooltip } from "antd";
+import { Tooltip } from "antd";
 import moment from "moment";
 import Options from "../../../Options.json";
 import _ from "lodash";
-const { Dragger } = Upload;
-const { confirm } = Modal;
+import RadAttachDocument from "./RadAttachDocument";
+// const { Dragger } = Upload;
+// const { confirm } = Modal;
 class RadScheduledList extends Component {
   constructor(props) {
     super(props);
@@ -54,12 +55,13 @@ class RadScheduledList extends Component {
       proiorty: null,
       status: null,
       radtestlist: [],
-      openUploadModal: false,
+      openModal: false,
       attached_files: [],
       attached_docs: [],
       hims_f_rad_order_id: null,
       visit_id: null,
       openMrdModal: false,
+      activeRow: [],
     };
   }
 
@@ -71,7 +73,11 @@ class RadScheduledList extends Component {
       return moment(date).format(Options.datetimeFormat);
     }
   };
-
+  CloseModal(e) {
+    this.setState({
+      openModal: !this.state.openModal,
+    });
+  }
   generateReport(row) {
     algaehApiCall({
       uri: "/report",
@@ -101,121 +107,121 @@ class RadScheduledList extends Component {
       },
     });
   }
-  getDocuments(e) {
-    newAlgaehApi({
-      uri: "/getRadiologyDoc",
-      module: "documentManagement",
-      method: "GET",
-      data: {
-        hims_f_rad_order_id: this.state.hims_f_rad_order_id,
-      },
-    })
-      .then((res) => {
-        if (res.data.success) {
-          let { data } = res.data;
-          this.setState({
-            attached_docs: data,
-            attached_files: [],
-            // saveEnable: $this.state.saveEnable,
-            // docChanged: false,
-          });
-        }
-      })
-      .catch((e) => {
-        // AlgaehLoader({ show: false });
-        swalMessage({
-          title: e.message,
-          type: "error",
-        });
-      });
-  }
-  saveDocument = (files = [], number, id) => {
-    if (this.state.hims_f_rad_order_id) {
-      const formData = new FormData();
-      formData.append(
-        "hims_f_rad_order_id",
-        number || this.state.hims_f_rad_order_id
-      );
-      formData.append("visit_id", id || this.state.visit_id);
-      if (files.length) {
-        files.forEach((file, index) => {
-          formData.append(`file_${index}`, file, file.name);
-        });
-      } else {
-        this.state.attached_files.forEach((file, index) => {
-          formData.append(`file_${index}`, file, file.name);
-        });
-      }
-      newAlgaehApi({
-        uri: "/saveRdiologyDoc",
-        data: formData,
-        extraHeaders: { "Content-Type": "multipart/form-data" },
-        method: "POST",
-        module: "documentManagement",
-      })
-        .then((value) => this.getDocuments(this))
-        .catch((e) => console.log(e));
-    } else {
-      swalMessage({
-        title: "Can't upload attachments for unsaved Receipt Entry",
-        type: "error",
-      });
-    }
-  };
-  downloadDoc(doc, isPreview) {
-    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-    const link = document.createElement("a");
-    if (!isPreview) {
-      link.download = doc.filename;
-      link.href = fileUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      fetch(fileUrl)
-        .then((res) => res.blob())
-        .then((fblob) => {
-          const newUrl = URL.createObjectURL(fblob);
-          window.open(newUrl);
-        });
-    }
-  }
+  // getDocuments(e) {
+  //   newAlgaehApi({
+  //     uri: "/getRadiologyDoc",
+  //     module: "documentManagement",
+  //     method: "GET",
+  //     data: {
+  //       hims_f_rad_order_id: this.state.hims_f_rad_order_id,
+  //     },
+  //   })
+  //     .then((res) => {
+  //       if (res.data.success) {
+  //         let { data } = res.data;
+  //         this.setState({
+  //           attached_docs: data,
+  //           attached_files: [],
+  //           // saveEnable: $this.state.saveEnable,
+  //           // docChanged: false,
+  //         });
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       // AlgaehLoader({ show: false });
+  //       swalMessage({
+  //         title: e.message,
+  //         type: "error",
+  //       });
+  //     });
+  // }
+  // saveDocument = (files = [], number, id) => {
+  //   if (this.state.hims_f_rad_order_id) {
+  //     const formData = new FormData();
+  //     formData.append(
+  //       "hims_f_rad_order_id",
+  //       number || this.state.hims_f_rad_order_id
+  //     );
+  //     formData.append("visit_id", id || this.state.visit_id);
+  //     if (files.length) {
+  //       files.forEach((file, index) => {
+  //         formData.append(`file_${index}`, file, file.name);
+  //       });
+  //     } else {
+  //       this.state.attached_files.forEach((file, index) => {
+  //         formData.append(`file_${index}`, file, file.name);
+  //       });
+  //     }
+  //     newAlgaehApi({
+  //       uri: "/saveRdiologyDoc",
+  //       data: formData,
+  //       extraHeaders: { "Content-Type": "multipart/form-data" },
+  //       method: "POST",
+  //       module: "documentManagement",
+  //     })
+  //       .then((value) => this.getDocuments(this))
+  //       .catch((e) => console.log(e));
+  //   } else {
+  //     swalMessage({
+  //       title: "Can't upload attachments for unsaved Receipt Entry",
+  //       type: "error",
+  //     });
+  //   }
+  // };
+  // downloadDoc(doc, isPreview) {
+  //   const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+  //   const link = document.createElement("a");
+  //   if (!isPreview) {
+  //     link.download = doc.filename;
+  //     link.href = fileUrl;
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     document.body.removeChild(link);
+  //   } else {
+  //     fetch(fileUrl)
+  //       .then((res) => res.blob())
+  //       .then((fblob) => {
+  //         const newUrl = URL.createObjectURL(fblob);
+  //         window.open(newUrl);
+  //       });
+  //   }
+  // }
 
-  deleteDoc = (doc) => {
-    const self = this;
-    confirm({
-      title: `Are you sure you want to delete this file?`,
-      content: `${doc.filename}`,
-      icon: "",
-      okText: "Yes",
-      okType: "danger",
-      cancelText: "No",
-      onOk() {
-        self.onDelete(doc);
-      },
-      onCancel() {
-        console.log("Cancel");
-      },
-    });
-  };
+  // deleteDoc = (doc) => {
+  //   const self = this;
+  //   confirm({
+  //     title: `Are you sure you want to delete this file?`,
+  //     content: `${doc.filename}`,
+  //     icon: "",
+  //     okText: "Yes",
+  //     okType: "danger",
+  //     cancelText: "No",
+  //     onOk() {
+  //       self.onDelete(doc);
+  //     },
+  //     onCancel() {
+  //       console.log("Cancel");
+  //     },
+  //   });
+  // };
 
-  onDelete = (doc) => {
-    newAlgaehApi({
-      uri: "/deleteRadiologyDoc",
-      method: "DELETE",
-      module: "documentManagement",
-      data: { id: doc._id },
-    }).then((res) => {
-      if (res.data.success) {
-        this.setState((state) => {
-          const attached_docs = state.attached_docs.filter(
-            (item) => item._id !== doc._id
-          );
-          return { attached_docs };
-        });
-      }
-    });
-  };
+  // onDelete = (doc) => {
+  //   newAlgaehApi({
+  //     uri: "/deleteRadiologyDoc",
+  //     method: "DELETE",
+  //     module: "documentManagement",
+  //     data: { id: doc._id },
+  //   }).then((res) => {
+  //     if (res.data.success) {
+  //       this.setState((state) => {
+  //         const attached_docs = state.attached_docs.filter(
+  //           (item) => item._id !== doc._id
+  //         );
+  //         return { attached_docs };
+  //       });
+  //     }
+  //   });
+  // };
   ShowCollectionModel(row, e) {
     this.setState({
       isOpen: !this.state.isOpen,
@@ -274,7 +280,14 @@ class RadScheduledList extends Component {
     //   this.state.billdetails === null ? [{}] : this.state.billdetails;
     return (
       <React.Fragment>
-        <AlgaehModal
+        {this.state.openModal ? (
+          <RadAttachDocument
+            openModal={this.state.openModal}
+            row={this.state.activeRow}
+            CloseModal={() => this.CloseModal()}
+          />
+        ) : null}
+        {/* <AlgaehModal
           title="Attach Report"
           visible={this.state.openUploadModal}
           mask={true}
@@ -387,7 +400,7 @@ class RadScheduledList extends Component {
               </div>
             </div>
           </div>
-        </AlgaehModal>
+        </AlgaehModal> */}
         <div className="hptl-phase1-rad-work-list-form">
           <div
             className="row inner-top-search"
@@ -566,18 +579,22 @@ class RadScheduledList extends Component {
                                   className="fas fa-paperclip"
                                   aria-hidden="true"
                                   onClick={(e) => {
-                                    this.setState(
-                                      {
-                                        openUploadModal: true,
-                                        visit_id: row.visit_id,
-                                        hims_f_rad_order_id:
-                                          row.hims_f_rad_order_id,
-                                      },
+                                    this.setState({
+                                      openModal: true,
+                                      activeRow: row,
+                                    });
+                                    // this.setState(
+                                    //   {
+                                    //     openUploadModal: true,
+                                    //     visit_id: row.visit_id,
+                                    //     hims_f_rad_order_id:
+                                    //       row.hims_f_rad_order_id,
+                                    //   },
 
-                                      () => {
-                                        this.getDocuments();
-                                      }
-                                    );
+                                    //   () => {
+                                    //     this.getDocuments();
+                                    //   }
+                                    // );
                                   }}
                                 />
                               </Tooltip>

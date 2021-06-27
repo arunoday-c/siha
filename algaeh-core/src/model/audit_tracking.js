@@ -27,7 +27,13 @@ export function getTables(req, res, next) {
 export function generateTrigger(req, res, next) {
   const _mysql = new algaehMysql();
   try {
-    const { trigger_action, table_name, friendly_name } = req.query;
+    const {
+      trigger_action,
+      table_name,
+      friendly_name,
+      reference_id,
+      reference_name,
+    } = req.query;
     _mysql
       .executeQuery({
         query: `select C.TABLE_NAME,C.COLUMN_NAME,C.DATA_TYPE,C.COLUMN_COMMENT,CU.REFERENCED_TABLE_NAME,CU.REFERENCED_COLUMN_NAME,CU.CONSTRAINT_NAME from INFORMATION_SCHEMA.COLUMNS as C left join INFORMATION_SCHEMA.KEY_COLUMN_USAGE  as CU
@@ -123,9 +129,9 @@ export function generateTrigger(req, res, next) {
               IF NEW.${COLUMN_NAME} <> OLD.${COLUMN_NAME}
               THEN
                 INSERT INTO algaeh_audit_log(user_id,action,table_name,column_name,table_frendly_name,old_row,new_row,branch_id,
-                  old_update_by,old_update_date,old_row_desc,new_row_desc,reference_table,field_desc,record_id)
+                  old_update_by,old_update_date,old_row_desc,new_row_desc,reference_table,field_desc,record_id,reference_id,reference_name)
                 VALUES(NEW.updated_by,'${trigger_action}','${table_name_key}','${COLUMN_NAME}','${friendly_name}',OLD.${COLUMN_NAME},NEW.${COLUMN_NAME},NEW.hospital_id,OLD.updated_by,
-               OLD.updated_date,${dataValue},${refTable},'${column_desc}',${primaryKey});
+               OLD.updated_date,${dataValue},${refTable},'${column_desc}',${primaryKey},OLD.${reference_id},OLD.${reference_name});
               END IF;
                 `;
             });
@@ -191,7 +197,7 @@ export function getAuditList(req, res, next) {
     _mysql
       .executeQuery({
         query: `SELECT AL.user_id, AL.action,AL.table_name,AL.column_name,AL.table_frendly_name,
-          AL.old_row,AL.new_row,AL.date_time_stamp,AL.branch_id,
+          AL.old_row,AL.new_row,AL.date_time_stamp,AL.branch_id,AL.reference_id,AL.reference_name,
           AU.user_display_name,AU.username,AU.locked,
          case AU.user_type when 'SU' then 'SUPER USER' when 'AD' then 'ADMIN'
         when 'D' then 'DOCTOR' when 'N' then 'NURSE' when 'C' then 'CASHIER' when 'L' then 'LAB TECHNICIAN' when 'HR'
@@ -206,12 +212,12 @@ export function getAuditList(req, res, next) {
       .then((result) => {
         _mysql.releaseConnection();
         const records = _.chain(result)
-          .groupBy((g) => g.table_name)
+          .groupBy((g) => g.username)
           .map((item) => {
-            const { table_frendly_name, table_name } = _.head(item);
+            const { username, user_display_name } = _.head(item);
             return {
-              table_frendly_name,
-              table_name,
+              username,
+              user_display_name,
               details: item,
             };
           });

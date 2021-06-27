@@ -11,6 +11,77 @@ export default function Patient({ hospital_id, COMPARISON, spotlightSearch }) {
         reportParameters: [
           {
             className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group globalSearchCntr",
+            type: "search",
+            name: "hims_d_patient_id",
+            label: "Patient",
+            displayField: "patient_code",
+            isImp: false,
+            search: {
+              searchName: "patients",
+              columns: [
+                {
+                  fieldName: "patient_code",
+                  label: "Patient Code",
+                },
+                {
+                  fieldName: "full_name",
+                  label: "Name",
+                },
+                {
+                  fieldName: "arabic_name",
+                  label: "Arabic Name",
+                },
+                {
+                  fieldName: "contact_number",
+                  label: "Contact Number",
+                },
+              ],
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Patient Credit",
+        reportName: "patCreditSum",
+        componentCode: "RPT_PAT_CRDT",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "till_date",
             label: "Till Date",
@@ -21,14 +92,32 @@ export default function Patient({ hospital_id, COMPARISON, spotlightSearch }) {
             },
           },
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group globalSearchCntr",
             type: "search",
-            name: "patient",
+            name: "hims_d_patient_id",
             label: "Patient",
-            isImp: true,
+            displayField: "patient_code",
+            isImp: false,
             search: {
               searchName: "onlycreditpatients",
-              columns: ["full_name", "patient_code", "contact_number"],
+              columns: [
+                {
+                  fieldName: "patient_code",
+                  label: "Patient Code",
+                },
+                {
+                  fieldName: "full_name",
+                  label: "Name",
+                },
+                {
+                  fieldName: "arabic_name",
+                  label: "Arabic Name",
+                },
+                {
+                  fieldName: "contact_number",
+                  label: "Contact Number",
+                },
+              ],
             },
           },
         ],
@@ -285,7 +374,7 @@ export default function Patient({ hospital_id, COMPARISON, spotlightSearch }) {
             displayField: "service_name",
             primaryDesc: "service_name",
             secondaryDesc: "service_code",
-            value: null,
+            // value: null,
             searchName: "hospitalserviceonly",
             label: "Services List",
           },

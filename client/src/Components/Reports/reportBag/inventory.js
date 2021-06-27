@@ -161,11 +161,11 @@ export default function Inventory({
           },
 
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "Location",
             dataSource: {
               textField: "location_description",
@@ -232,7 +232,7 @@ export default function Inventory({
             primaryDesc: "item_description",
             secondaryDesc: "uom_description",
             searchName: "PurchaseOrderForInventry",
-            value: "item_description",
+            value: null,
             label: "Item Name",
             // link: {
             //   uri: "/pharmacy/getItemMaster",
@@ -1049,7 +1049,7 @@ export default function Inventory({
             primaryDesc: "item_description",
             secondaryDesc: "uom_description",
             searchName: "PurchaseOrderForInventry",
-            value: "item_description",
+            // value: "item_description",
             label: "Item Name",
             // link: {
             //   uri: "/pharmacy/getItemMaster",
@@ -1325,7 +1325,7 @@ export default function Inventory({
             primaryDesc: "item_description",
             secondaryDesc: "uom_description",
             searchName: "PurchaseOrderForInventry",
-            value: "item_description",
+            // value: "item_description",
             label: "Item Name",
             // link: {
             //   uri: "/pharmacy/getItemMaster",

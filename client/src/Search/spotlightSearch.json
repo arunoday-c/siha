@@ -958,7 +958,7 @@
       },
       {
         "fieldName": "final_settlement_number",
-        "label": "SETTLEMENT NO."
+        "label": "Settlement No."
       },
       {
         "fieldName": "final_settlement_status",
@@ -971,8 +971,14 @@
         ]
       },
       {
-        "fieldName": "employee_status",
-        "label": "Type Of Exit"
+        "fieldName": "FSH.employee_status",
+        "label": "Type Of Exit",
+        "Children": [
+          { "label": "All", "value": "" },
+          { "label": "Terminated", "value": "T" },
+          { "label": "Resigned", "value": "R" },
+          { "label": "Retirement", "value": "E" }
+        ]
       }
     ],
     "loginNewEmployee": [

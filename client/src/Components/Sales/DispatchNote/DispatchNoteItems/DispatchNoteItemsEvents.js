@@ -35,7 +35,7 @@ const onchangegridcol = ($this, context, row, e) => {
       return s.dispatch_quantity !== null ? parseFloat(s.dispatch_quantity) : 0;
     });
 
-    row.sale_price = item_details.unit_cost
+    row.sale_price = item_details.unit_cost;
 
     const _index = item_details.batches.indexOf(row);
     item_details.batches[_index] = row;
@@ -127,33 +127,33 @@ const dateFormater = ($this, value) => {
   }
 };
 
-const getItemLocationStock = ($this, value) => {
-  $this.props.getItemLocationStock({
-    uri: "/pharmacyGlobal/getItemLocationStock",
-    module: "pharmacy",
-    method: "GET",
-    data: {
-      pharmacy_location_id: $this.state.from_location_id,
-      item_id: value.item_id,
-    },
-    redux: {
-      type: "ITEMS_BATCH_GET_DATA",
-      mappingName: "itemBatch",
-    },
-    afterSuccess: (data) => {
-      if (data.length !== 0) {
-        let total_quantity = 0;
-        for (let i = 0; i < data.length; i++) {
-          let qtyhand = data[i].qtyhand;
-          total_quantity = total_quantity + qtyhand;
-        }
-        $this.setState({
-          total_quantity: total_quantity,
-        });
-      }
-    },
-  });
-};
+// const getItemLocationStock = ($this, value) => {
+//   $this.props.getItemLocationStock({
+//     uri: "/inventoryGlobal/getItemLocationStock",
+//     module: "inventory",
+//     method: "GET",
+//     data: {
+//       pharmacy_location_id: $this.state.from_location_id,
+//       item_id: value.item_id,
+//     },
+//     redux: {
+//       type: "ITEMS_BATCH_GET_DATA",
+//       mappingName: "itemBatch",
+//     },
+//     afterSuccess: (data) => {
+//       if (data.length !== 0) {
+//         let total_quantity = 0;
+//         for (let i = 0; i < data.length; i++) {
+//           let qtyhand = data[i].qtyhand;
+//           total_quantity = total_quantity + qtyhand;
+//         }
+//         $this.setState({
+//           total_quantity: total_quantity,
+//         });
+//       }
+//     },
+//   });
+// };
 
 const AddSelectedBatches = ($this, context) => {
   if (
@@ -165,7 +165,7 @@ const AddSelectedBatches = ($this, context) => {
       type: "warning",
     });
   } else {
-    debugger
+    debugger;
     if (context !== null) {
       let saveEnable = true;
       let _inventory_stock_detail = $this.state.inventory_stock_detail;
@@ -293,7 +293,7 @@ export {
   datehandle,
   onchangegridcol,
   dateFormater,
-  getItemLocationStock,
+  // getItemLocationStock,
   AddSelectedBatches,
   RequestPO,
 };

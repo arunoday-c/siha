@@ -30,6 +30,13 @@ export default {
         _stringData += " and date(ordered_date) <= date(now())";
       }
 
+      if (req.query.hassanShow === "withhassan") {
+        _stringData += " and LO.hassan_number is not null";
+      }
+      if (req.query.hassanShow === "withOuthassan") {
+        _stringData += " and LO.hassan_number is null";
+      }
+
       if (req.query.patient_id != null) {
         _stringData += " and LO.patient_id=?";
         inputValues.push(req.query.patient_id);
@@ -58,8 +65,8 @@ export default {
       _mysql
         .executeQuery({
           query:
-            " select hims_f_lab_order_id,V.episode_id, LO.patient_id,hassan_number_updated_date,hassan_number, entered_by, confirmed_by, validated_by, visit_id, critical_status,\
-            group_id, organism_type, bacteria_name, bacteria_type, V.visit_code, provider_id, LO.send_out_test,\
+            " select hims_f_lab_order_id,V.episode_id, LO.patient_id,hassan_number_updated_date,hesn_upload_updated_date,hassan_number,hesn_upload, entered_by, confirmed_by, validated_by, visit_id, critical_status,\
+            group_id, organism_type, bacteria_name, bacteria_type, V.visit_code, provider_id, LO.send_out_test,LO.send_in_test,\
             E.full_name as doctor_name, billed, service_id,  S.service_code, S.service_name, \
             LO.status, cancelled, provider_id, ordered_date, test_type, concat(V.age_in_years,'Y')years, \
             concat(V.age_in_months,'M')months, concat(V.age_in_days,'D')days, \
@@ -71,7 +78,8 @@ export default {
             max(if(CL.algaeh_d_app_user_id=LO.entered_by, EM.full_name,'' )) as entered_by_name, \
             max(if(CL.algaeh_d_app_user_id=LO.confirmed_by, EM.full_name,'')) as confirm_by_name, \
             max(if(CL.algaeh_d_app_user_id=LO.validated_by, EM.full_name,'')) as validate_by_name,\
-            max(if(CL.algaeh_d_app_user_id=LO.hassan_number_updated_by, EM.full_name,'')) as haasan_updated_by_name, \
+            max(if(CL.algaeh_d_app_user_id=LO.hassan_number_updated_by, EM.full_name,'')) as haasan_updated_by_name,\
+            max(if(CL.algaeh_d_app_user_id=LO.hesn_upload_updated_by, EM.full_name,'')) as hesn_upload_updated_by_name,  \
             LO.entered_date,LO.confirmed_date,LO.validated_date, LO.credit_order  from hims_f_lab_order LO \
             inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
             inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id \
@@ -83,7 +91,7 @@ export default {
             left join hims_d_lab_specimen as DLS on DLS.hims_d_lab_specimen_id = LS.sample_id \
             left join hims_d_test_category as TC on TC.hims_d_test_category_id = IT.category_id \
             left join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LO.entered_by or \
-            CL.algaeh_d_app_user_id=LO.validated_by or CL.algaeh_d_app_user_id=LO.confirmed_by or CL.algaeh_d_app_user_id=LO.hassan_number_updated_by) \
+            CL.algaeh_d_app_user_id=LO.validated_by or CL.algaeh_d_app_user_id=LO.confirmed_by or CL.algaeh_d_app_user_id=LO.hassan_number_updated_by or CL.algaeh_d_app_user_id=LO.hesn_upload_updated_by) \
             left join hims_d_employee EM on EM.hims_d_employee_id=CL.employee_id WHERE " +
             _stringData +
             " group by hims_f_lab_order_id order by hims_f_lab_order_id desc",
@@ -933,12 +941,15 @@ export default {
       // cancelled
       _mysql
         .executeQuery({
-          query: `update hims_f_lab_order set status='O', updated_by=?,updated_date=? where hims_f_lab_order_id=?;
-          update hims_f_lab_sample set status='N',collected='N', updated_by=?,updated_date=? where hims_d_lab_sample_id=?;`,
+          query: `update hims_f_lab_order set status='O',send_in_test=?, updated_by=?,updated_date=? where hims_f_lab_order_id=?;
+          update hims_f_lab_sample set status='N',collected='N',collected_date=?, updated_by=?,updated_date=? where hims_d_lab_sample_id=?;`,
           values: [
+            inputParam.send_in_test,
+
             req["userIdentity"].algaeh_d_app_user_id,
             new Date(),
             inputParam.hims_f_lab_order_id,
+            inputParam.collected ? inputParam.collected : null,
             req["userIdentity"].algaeh_d_app_user_id,
             new Date(),
             inputParam.hims_d_lab_sample_id,
@@ -966,13 +977,22 @@ export default {
     try {
       let inputParam = { ...req.body };
       // cancelled
+
+      let strQuery = "";
+      if (inputParam.isDirty === true) {
+        strQuery = `,hassan_number_updated_date= ${new Date()},hassan_number_updated_by=${
+          req["userIdentity"].algaeh_d_app_user_id
+        } `;
+      }
       _mysql
         .executeQuery({
-          query: `update hims_f_lab_order set hassan_number=?, hassan_number_updated_date=?,hassan_number_updated_by=? where hims_f_lab_order_id=?;`,
+          query: `update hims_f_lab_order set hassan_number=?,hesn_upload=?,hesn_upload_updated_date=?,hesn_upload_updated_by=? ${strQuery} where hims_f_lab_order_id=?;`,
           values: [
             inputParam.hassan_number,
+            inputParam.hesn_upload,
             new Date(),
             req["userIdentity"].algaeh_d_app_user_id,
+
             inputParam.hims_f_lab_order_id,
           ],
           printQuery: true,
@@ -1335,7 +1355,7 @@ export default {
           printQuery: true,
         })
         .then((result) => {
-          _mysql.releaseConnection();
+          console.log("result", result);
           const arrangedData = _.chain(result)
             .groupBy((g) => moment(g.ordered_date).format("YYYY-MM-DD"))
             .map((details, key) => {
@@ -1345,7 +1365,7 @@ export default {
                 detailsOf: _.chain(details)
                   .groupBy((it) => it.send_out_test)
                   .map((detail, index) => {
-                    const head = _.head(detail);
+                    const { send_out_test } = _.head(detail);
                     return {
                       send_out_test: send_out_test,
                       detail: detail,
@@ -1357,6 +1377,7 @@ export default {
             })
             .value();
           req.records = arrangedData;
+          _mysql.releaseConnection();
           next();
         })
         .catch((error) => {
