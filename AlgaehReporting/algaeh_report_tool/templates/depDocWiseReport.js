@@ -37,7 +37,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_department D on PV.department_id=D.hims_d_department_id
           inner join hims_d_employee E on PV.doctor_id=E.hims_d_employee_id
           inner join hims_f_patient P on PV.patient_id=P.hims_d_patient_id
-          where BH.adjusted='N' and BD.cancel_yes_no='N' and date(PV.visit_date) between date(?) and date(?) and PV.hospital_id=? ${strQuery};`,
+          where BH.adjusted='N' and BD.cancel_yes_no='N' and date(BH.bill_date) between date(?) and date(?) and PV.hospital_id=? ${strQuery};`,
           values: [input.from_date, input.to_date, input.hospital_id],
           printQuery: true,
         })

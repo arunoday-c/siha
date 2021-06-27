@@ -5,11 +5,8 @@ const executePDF = function executePDFMethod(options) {
       const _ = options.loadash;
       const moment = options.moment;
 
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
 
       let input = {};
       let params = options.args.reportParams;
@@ -44,7 +41,10 @@ const executePDF = function executePDFMethod(options) {
             left join hims_m_patient_insurance_mapping PI on BH.visit_id = PI.patient_visit_id
             left join hims_d_insurance_sub SI on PI.primary_sub_id = SI.hims_d_insurance_sub_id
             where BD.cancel_yes_no='N' and adjusted='N' and date(BH.bill_date) between date(?) and date(?) and BH.hospital_id=? ${strData};\
-            SELECT PH.pos_number as doc_number,PH.pos_date as bill_date, V.visit_date, P.hims_d_patient_id as patient_id,P.full_name, P.patient_code, N.nationality,CASE WHEN PD.insurance_yesno='Y' THEN 'Insurance' else 'Cash' END as insurance_yesno,"Pharmacy" as data_from,PD.net_extended_cost as total_before_vat, (coalesce(PD.patient_payable,0)+coalesce(PD.company_payable,0)) as total_after_vat, PD.patient_tax,PD.company_tax,S.service_name,PH.hims_f_pharmacy_pos_header_id as bill_id, SI.insurance_sub_name as company_name
+            SELECT PH.pos_number as doc_number,PH.pos_date as bill_date, V.visit_date, P.hims_d_patient_id as patient_id,
+            P.full_name, P.patient_code, N.nationality,CASE WHEN PD.insurance_yesno='Y' THEN 'Insurance' else 'Cash' END as insurance_yesno,"Pharmacy" as data_from,
+            PD.net_extended_cost as total_before_vat,  (coalesce(PD.patient_payable,0)+coalesce(PD.company_payable,0)) as total_after_vat,
+            (PD.patient_tax + PD.company_tax) as total_tax,PD.patient_tax,PD.company_tax,S.service_name,PH.hims_f_pharmacy_pos_header_id as bill_id, SI.insurance_sub_name as company_name
             FROM hims_f_pharmacy_pos_detail as PD
             left join hims_f_pharmacy_pos_header PH on PD.pharmacy_pos_header_id = PH.hims_f_pharmacy_pos_header_id
             left join hims_f_patient P on P.hims_d_patient_id = PH.patient_id
@@ -101,10 +101,9 @@ const executePDF = function executePDFMethod(options) {
               };
             })
             .value();
-
+          console.log(final_result);
           resolve({
             result: BillWise,
-
             sum_total_before_vat: _.sumBy(final_result, (s) =>
               parseFloat(s.total_before_vat)
             ),
