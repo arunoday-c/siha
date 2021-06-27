@@ -1,9 +1,15 @@
+import { Channel } from "amqplib";
 import amqpConnection from "./rabbitMQ";
 import { sendSMS } from "./send";
+let channel: Channel | undefined = undefined;
 const consumeSMS = async (queueName) => {
   try {
-    const connection = await amqpConnection;
-    const channel = await connection.createChannel();
+    if (!channel) {
+      const connection = await amqpConnection;
+      channel = await connection.createChannel();
+    }
+    // const connection = await amqpConnection;
+    // const channel = await connection.createChannel();
     await channel.assertQueue(queueName, { durable: true });
     channel.prefetch(1);
     channel.consume(queueName, async (message) => {
