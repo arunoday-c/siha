@@ -58,6 +58,7 @@ const getInvestigations = ($this) => {
               facility_description: firstRecordSet.facility_description,
               film_category: firstRecordSet.film_category,
               film_used: firstRecordSet.film_used,
+              isPCR: firstRecordSet.isPCR,
               hims_d_investigation_test_id:
                 firstRecordSet.hims_d_investigation_test_id,
               investigation_type: firstRecordSet.investigation_type,

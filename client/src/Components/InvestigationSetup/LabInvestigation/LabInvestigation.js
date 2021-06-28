@@ -269,6 +269,29 @@ class LabInvestigation extends Component {
                   onChange: this.texthandle,
                 }}
               />
+              <AlagehAutoComplete
+                div={{ className: "col-12  form-group mandatory" }}
+                label={{
+                  fieldName: "lab_report_type",
+                  isImp: true,
+                }}
+                selector={{
+                  name: "isPCR",
+                  className: "select-fld",
+                  value: state.isPCR,
+                  dataSource: {
+                    textField:
+                      state.selectedLang === "en" ? "name" : "arabic_name",
+                    valueField: "value",
+                    data: variableJson.LAB_REPORT_TYPE,
+                  },
+                  onChange: this.texthandle,
+                  others: {
+                    tabIndex: "7",
+                  },
+                }}
+              />
+
               <AlagehFormGroup
                 div={{ className: "col-12 form-group" }}
                 label={{

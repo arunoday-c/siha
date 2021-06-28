@@ -46,6 +46,7 @@ export default {
       screening_test: "N",
       culture_test: "N",
       film_used: "N",
+      isPCR: "N",
       clear: false,
       analytes_required: true,
 

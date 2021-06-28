@@ -39,7 +39,7 @@ export default {
             "select hims_d_investigation_test_id, T.test_code, T.description, services_id, \
             R.hims_d_rad_template_detail_id, R.template_name, R.template_html, T.investigation_type, lab_section_id, \
             send_out_test, available_in_house, restrict_order, restrict_by, external_facility_required, \
-            facility_description,  priority, cpt_id, category_id, film_category, screening_test, film_used, \
+            facility_description,  priority, cpt_id, category_id, film_category, screening_test, film_used,isPCR, \
             A.analyte_id,A.analyte_report_group,A.includeInReport,  A.hims_m_lab_analyte_id, A.critical_low, A.gender, A.from_age, \
             A.to_age, A.age_type, A.critical_high,  TC.test_section, A.normal_low, A.normal_high,LA.analyte_type, \
             S.specimen_id, S.hims_m_lab_specimen_id, S.container_id,SER.service_name,A.formula,A.display_formula,A.decimals, \
@@ -123,8 +123,8 @@ export default {
             "insert into hims_d_investigation_test(test_code, short_description,description,investigation_type,\
             lab_section_id, send_out_test,available_in_house,restrict_order,restrict_by,\
             external_facility_required,facility_description,services_id,priority,cpt_id,category_id,\
-            film_category, screening_test, film_used, tat_standard_time, culture_test, created_by,updated_by)\
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            film_category, screening_test, film_used,isPCR, tat_standard_time, culture_test, created_by,updated_by)\
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.test_code,
             input.short_description,
@@ -144,6 +144,7 @@ export default {
             input.film_category,
             input.screening_test,
             input.film_used,
+            input.isPCR,
             input.tat_standard_time,
             input.culture_test,
             req.userIdentity.algaeh_d_app_user_id,
@@ -302,7 +303,7 @@ export default {
             "UPDATE `hims_d_investigation_test` SET test_code=?, short_description=?,description=?,investigation_type=?,\
             lab_section_id=?, send_out_test=?,available_in_house=?,restrict_order=?,restrict_by=?,\
             external_facility_required=?,facility_description=?,services_id=?,priority=?,cpt_id=?,\
-            category_id=?,film_category=?,screening_test=?,film_used=?,tat_standard_time=?,culture_test=?, \
+            category_id=?,film_category=?,screening_test=?,film_used=?,isPCR=?,tat_standard_time=?,culture_test=?, \
             updated_date=?,updated_by=?\
             WHERE record_status='A' AND `hims_d_investigation_test_id`=?;",
           values: [
@@ -324,6 +325,7 @@ export default {
             inputParam.film_category,
             inputParam.screening_test,
             inputParam.film_used,
+            inputParam.isPCR,
             inputParam.tat_standard_time,
             inputParam.culture_test,
             new Date(),

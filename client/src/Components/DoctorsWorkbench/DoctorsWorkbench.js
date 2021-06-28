@@ -18,7 +18,10 @@ import {
   persistStorageOnRemove,
   persistStageOnGet,
   persistStateOnBack,
+  Input,
+  Select,
 } from "algaeh-react-components";
+import { debounce } from "lodash";
 // import { useHistory } from "react-router-dom";
 
 class DoctorsWorkbench extends Component {
@@ -35,13 +38,53 @@ class DoctorsWorkbench extends Component {
       toDate: moment()._d,
       activeDateHeader: moment()._d,
       persistence: null,
+      searchText: "",
+      filterList: [],
+      sortAsc: true,
     };
 
     // this.moveToEncounterList = this.moveToEncounterList.bind(this);
     this.socket = sockets;
     this.loadListofData = this.loadListofData.bind(this);
+    this.handleSearch = debounce(() => {
+      const value = this.searchTextRef.state.value;
+      let filterd = [];
+      if (value !== "") {
+        const eArray = this.itemRef.children;
+        for (let i = 0; i < eArray.length; i++) {
+          eArray[i].setAttribute("style", "");
+        }
+        filterd = this.state.data.filter(
+          (f) =>
+            f.full_name.toLowerCase().includes(value.toLowerCase()) ||
+            f.patient_code.toLowerCase().includes(value.toLowerCase()) ||
+            f.primary_id_no.toLowerCase().includes(value.toLowerCase())
+        );
+      }
+      this.setState({ searchText: value, filterList: filterd });
+    }, 500);
   }
+  sortAscending = () => {
+    const { sortBy, sortAsc } = this.state;
+    const myData = []
+      .concat(this.state.data)
+      .sort((a, b) =>
+        sortAsc
+          ? a[sortBy] > b[sortBy]
+            ? 1
+            : -1
+          : a[sortBy] < b[sortBy]
+          ? 1
+          : -1
+      );
+    this.setState({ data: myData });
+  };
 
+  // sortDescending = () => {
+  //   const { data } = this.state;
+  //   data.sort((a, b) => a - b).reverse();
+  //   this.setState({ data });
+  // };
   dropDownHandle(value) {
     this.setState({ [value.name]: value.value });
   }
@@ -451,6 +494,14 @@ class DoctorsWorkbench extends Component {
   }
 
   render() {
+    const patientListArray =
+      this.state.searchText === "" ? this.state.data : this.state.filterList;
+    const sortByArray = [
+      { label: "Patient Name", value: "full_name" },
+      { label: "Patient Code", value: "patient_code" },
+      { label: "Primary ID", value: "primary_id_no" },
+      { label: "Encounter Time", value: "encountered_date" },
+    ];
     return (
       <div className="doctor_workbench">
         <div className="row">
@@ -508,53 +559,67 @@ class DoctorsWorkbench extends Component {
                       <small>Cancelled</small>10
                     </span>
                   </div> */}
-                  <ul className="appList">
+                  <ul
+                    className="appList"
+                    ref={(c) => {
+                      this.itemRef = c;
+                    }}
+                  >
                     {this.state.appointments.length !== 0 ? (
-                      this.state.appointments.map((data, index) => (
-                        <li
-                          key={index}
-                          //className="abcd"   {data.color_code}
-                          style={{
-                            border: `2px solid ${data.color_code}`,
-                          }}
-                        >
-                          <span className="app-sec-1">
-                            <i className="appointment-icon" />
-                            <small
-                              className="opTime"
-                              style={{
-                                borderTop: "1px dashed #e6e6e6",
-                                width: "100%",
-                                paddingTop: 0,
-                                display: "inline-block",
-                                marginTop: 5,
-                              }}
-                            >
-                              {data.is_stand_by === "Y" ? "Stand By" : "Appt."}
-                            </small>
-                          </span>
-                          <span className="app-sec-2">
-                            <span className="appPatientName">
-                              {data.pat_name}
+                      this.state.appointments.map((data, index) => {
+                        debugger;
+                        return (
+                          <li
+                            key={index}
+                            //className="abcd"   {data.color_code}
+                            style={{
+                              border: `2px solid ${data.color_code}`,
+                            }}
+                          >
+                            <span className="app-sec-1">
+                              <i className="appointment-icon" />
+                              <small
+                                className="opTime"
+                                style={{
+                                  borderTop: "1px dashed #e6e6e6",
+                                  width: "100%",
+                                  paddingTop: 0,
+                                  display: "inline-block",
+                                  marginTop: 5,
+                                }}
+                              >
+                                {data.is_stand_by === "Y"
+                                  ? "Stand By"
+                                  : "Appt."}
+                              </small>
                             </span>
-                            <span className="appStatus nursing">
-                              {data.age} Yrs - {data.gender}
+                            <span className="app-sec-2">
+                              <span className="appPatientName">
+                                {data.pat_name}
+                              </span>
+                              <span className="appStatus nursing">
+                                {data.age} Yrs - {data.gender}
+                              </span>
+                              <span className="appStatus newVisit">
+                                {data.app_status} /{" "}
+                                {moment(
+                                  data.appointment_from_time,
+                                  "HH:mm:ss"
+                                ).format("hh:mm A")}{" "}
+                                -
+                                {moment(
+                                  data.appointment_to_time,
+                                  "HH:mm:ss"
+                                ).format("hh:mm A")}
+                              </span>
+                              Appointment Date:
+                              {moment(data.appointment_date).format(
+                                "DD-MM-YYYY"
+                              )}
                             </span>
-                            <span className="appStatus newVisit">
-                              {data.app_status} /{" "}
-                              {moment(
-                                data.appointment_from_time,
-                                "HH:mm:ss"
-                              ).format("hh:mm A")}{" "}
-                              -
-                              {moment(
-                                data.appointment_to_time,
-                                "HH:mm:ss"
-                              ).format("hh:mm A")}
-                            </span>
-                          </span>
-                        </li>
-                      ))
+                          </li>
+                        );
+                      })
                     ) : (
                       <li className="col noPatientDiv">
                         {/* <h4>Relax</h4> */}
@@ -584,14 +649,54 @@ class DoctorsWorkbench extends Component {
                   </a>
                 </div> */}
               </div>
+              <div className="col">
+                <AlgaehLabel label={{ forceLabel: "Search Patient" }} />
+                <Input
+                  placeholder="Search Name/Code or ID"
+                  defaultValue={this.state.searchText}
+                  onChange={this.handleSearch.bind(this)}
+                  ref={(c) => {
+                    this.searchTextRef = c;
+                  }}
+                />
+              </div>
+              <div>
+                <Select
+                  value={this.state.sortBy}
+                  onChange={(e) => {
+                    debugger;
+                    return this.setState({ sortBy: e });
+                  }}
+                  virtual={true}
+                  // disabled={disabled}
+                  // disabled={props.state.fromSearch || false}
+                  showSearch
+                  filterOption={(input, option) => {
+                    return (
+                      option.value.toLowerCase().indexOf(input.toLowerCase()) >=
+                      0
+                    );
+                  }}
+                  options={sortByArray}
+                ></Select>
 
+                <button
+                  onClick={() =>
+                    this.setState({ sortAsc: !this.state.sortAsc }, () =>
+                      this.sortAscending()
+                    )
+                  }
+                >
+                  {this.state.sortAsc ? "ASC" : "DSC"}
+                </button>
+              </div>
               <div className="portlet-body">
                 <div className="opPatientList">
                   <ul className="opList">
-                    {Enumerable.from(this.state.data)
+                    {Enumerable.from(patientListArray)
                       .where((w) => w.status === "V")
                       .toArray().length !== 0 ? (
-                      Enumerable.from(this.state.data)
+                      Enumerable.from(patientListArray)
                         .where((w) => w.status === "V")
                         .toArray()
                         .map((data, index) => (
@@ -619,6 +724,10 @@ class DoctorsWorkbench extends Component {
                               </span>
                             </span>
                             <span className="op-sec-2">
+                              <small style={{ display: "block" }}>
+                                {" "}
+                                {data.patient_code}/ {data.primary_id_no}
+                              </small>
                               <span className="opPatientName">
                                 {data.full_name}
                               </span>
