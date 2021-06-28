@@ -40,7 +40,7 @@ const executePDF = function executePDFMethod(options) {
              OA.critical_low,OA.critical_high,S.service_name,   
              E.full_name as validated_by,OA.critical_type, TC.category_name, OA.text_value, 
              OA.analyte_type,
-             CASE WHEN OA.analyte_type = 'QU' THEN OA.normal_qualitative_value WHEN OA.analyte_type = 'T' THEN OA.text_value ELSE CONCAT(TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_low)), '-',  TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_high))) END AS analyte_ranges
+             CASE WHEN OA.analyte_type = 'QU' THEN OA.normal_qualitative_value WHEN OA.analyte_type = 'T' THEN OA.text_value ELSE CONCAT(TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_low)), ' -- ',  TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_high))) END AS analyte_ranges
              from hims_f_lab_order LO   inner join hims_f_lab_sample LS on LO.hims_f_lab_order_id = LS.order_id    
              inner join hims_f_ord_analytes OA on LO.hims_f_lab_order_id = OA.order_id    
              inner join hims_d_lab_specimen MS on LS.sample_id = MS.hims_d_lab_specimen_id    
@@ -67,6 +67,7 @@ const executePDF = function executePDFMethod(options) {
                 collected_date,
                 service_name,
                 category_name,
+                comments,
               } = _.head(details);
               testRequestName += `${service_name},`;
               return {
@@ -74,6 +75,7 @@ const executePDF = function executePDFMethod(options) {
                 collected_date,
                 service_name,
                 category_name,
+                comments,
                 details: _.chain(details)
                   .groupBy((gt) => gt.analyte_report_group)
                   .map((dtl, gkey) => {
