@@ -21,9 +21,11 @@ const CollectSample = ($this, context, row) => {
     });
     return;
   }
+
   let inputobj = {
     hims_f_lab_order_id: row.hims_f_lab_order_id,
     hims_d_lab_sample_id: row.hims_d_lab_sample_id,
+    visit_id: row.visit_id,
     order_id: row.hims_f_lab_order_id,
     sample_id: row.sample_id,
     collected: "Y",
@@ -68,7 +70,8 @@ const CollectSample = ($this, context, row) => {
 
         for (let i = 0; i < test_details.length; i++) {
           if (
-            test_details[i].hims_d_lab_sample_id === row.hims_d_lab_sample_id
+            test_details[i].visit_id === row.visit_id &&
+            test_details[i].sample_id === row.sample_id
           ) {
             test_details[i].collected = response.data.records.collected;
             test_details[i].collected_by = response.data.records.collected_by;
