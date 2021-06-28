@@ -116,10 +116,10 @@ export default {
                 PIL.vendor_batchno, IM.item_description, IM.sales_uom_id, IC.category_desc, IG.group_description, IU.conversion_factor, \
                 (PIL.qtyhand / IU.conversion_factor) as return_qty from hims_f_procurement_grn_detail GD \
                 inner join hims_f_procurement_dn_detail DND on DND.hims_f_procurement_dn_header_id = GD.dn_header_id \
-                inner join hims_f_procurement_dn_batches DNB on DNB.hims_f_procurement_dn_detail_id = DND.hims_f_procurement_dn_detail_id \
+                inner join hims_f_procurement_dn_batches DNB on DNB.hims_f_procurement_dn_detail_id = DND.hims_f_procurement_dn_detail_id and DNB.return_done='N'\
                 inner join hims_m_inventory_item_location PIL on PIL.item_id = DNB.inv_item_id and DNB.batchno = PIL.batchno \
                 inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = DNB.inv_item_id \
-                inner join hims_m_inventory_item_uom IU on IM.hims_d_inventory_item_master_id = IU.item_master_id and DNB.inventory_uom_id = IU.uom_id \
+                inner join hims_m_inventory_item_uom IU on IM.hims_d_inventory_item_master_id = IU.item_master_id and DNB.inventory_uom_id = IU.uom_id and IU.record_status='A'\
                 inner join hims_d_inventory_tem_category IC on IC.hims_d_inventory_tem_category_id = DNB.inv_item_category_id \
                 inner join hims_d_inventory_item_group IG on IG.hims_d_inventory_item_group_id = DNB.inv_item_group_id \
                 where grn_header_id=? and inventory_location_id=?;",
@@ -131,7 +131,7 @@ export default {
                 PIL.vendor_batchno, IM.item_description, IM.sales_uom_id, IC.category_desc, IG.group_description,IU.conversion_factor, \
                 (PIL.qtyhand / IU.conversion_factor) as return_qty  from hims_f_procurement_grn_detail GD \
                 inner join hims_f_procurement_dn_detail DND on DND.hims_f_procurement_dn_header_id = GD.dn_header_id \
-                inner join hims_f_procurement_dn_batches DNB on DNB.hims_f_procurement_dn_detail_id = DND.hims_f_procurement_dn_detail_id \
+                inner join hims_f_procurement_dn_batches DNB on DNB.hims_f_procurement_dn_detail_id = DND.hims_f_procurement_dn_detail_id and DNB.return_done='N' \
                 inner join hims_m_item_location PIL on PIL.item_id = DNB.phar_item_id and DNB.batchno = PIL.batchno \
                 inner join hims_d_item_master IM on IM.hims_d_item_master_id = DNB.phar_item_id \
                 inner join hims_m_item_uom IU on IM.hims_d_item_master_id = IU.item_master_id and DNB.pharmacy_uom_id = IU.uom_id \
@@ -190,6 +190,7 @@ export default {
                   batchno: item.batchno,
                   expiry_date: item.expirydt,
                   dn_header_id: item.dn_header_id,
+                  dn_detail_id: item.hims_f_procurement_dn_batches_id,
 
                   vendor_batchno: item.vendor_batchno,
 
@@ -348,16 +349,42 @@ export default {
                 "vendor_batchno",
               ];
 
-              let strGrnQry = mysql.format(
-                "UPDATE hims_f_procurement_grn_header set return_done ='Y' where hims_f_procurement_grn_header_id=?",
-                [input.grn_header_id]
-              );
+              let strDnBatches = "";
+              for (let i = 0; i < input.po_return_entry_detail.length; i++) {
+                const return_done =
+                  parseFloat(input.po_return_entry_detail[i].return_qty) *
+                    parseFloat(
+                      input.po_return_entry_detail[i].conversion_factor
+                    ) ===
+                  parseFloat(input.po_return_entry_detail[i].qtyhand)
+                    ? "Y"
+                    : "N";
+                // console.log("return_done", return_done);
+                strDnBatches += mysql.format(
+                  "UPDATE `hims_f_procurement_dn_batches` SET return_qty=return_qty + ?, return_done=? \
+                  where hims_f_procurement_dn_batches_id=?;",
+                  [
+                    input.po_return_entry_detail[i].return_qty,
+                    return_done,
+                    input.po_return_entry_detail[i].dn_detail_id,
+                  ]
+                );
+              }
+
+              let dn_header_id = [];
+              _.chain(input.po_return_entry_detail)
+                .groupBy((g) => g.dn_header_id)
+                .map((details) => {
+                  const _head = _.head(details);
+                  dn_header_id.push(_head.dn_header_id);
+                })
+                .value();
 
               _mysql
                 .executeQuery({
                   query:
-                    "INSERT INTO hims_f_procurement_po_return_detail(??) VALUES ? ; " +
-                    strGrnQry,
+                    "INSERT INTO hims_f_procurement_po_return_detail(??) VALUES ? ;" +
+                    strDnBatches,
                   values: input.po_return_entry_detail,
                   includeValues: IncludeValues,
                   extraValues: {
@@ -367,15 +394,57 @@ export default {
                   printQuery: true,
                 })
                 .then((detailResult) => {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = {
-                      purchase_return_number: purchase_return_number,
-                      hims_f_procurement_return_po_header_id:
-                        headerResult.insertId,
-                    };
-                    next();
-                  });
+                  _mysql
+                    .executeQuery({
+                      query: `select H.hims_f_procurement_dn_header_id, return_done from hims_f_procurement_dn_header H 
+                      inner join hims_f_procurement_dn_detail D on H.hims_f_procurement_dn_header_id=D.hims_f_procurement_dn_header_id
+                      inner join hims_f_procurement_dn_batches B on D.hims_f_procurement_dn_detail_id=B.hims_f_procurement_dn_detail_id where 
+                      H.hims_f_procurement_dn_header_id in (?);`,
+                      values: [dn_header_id],
+                      printQuery: true,
+                    })
+                    .then((detailResult) => {
+                      const complete_return = detailResult.filter(
+                        (f) => f.return_done === "N"
+                      );
+                      let strGrnQry = "SELECT 1=1;";
+
+                      if (complete_return.length === 0) {
+                        strGrnQry = mysql.format(
+                          "UPDATE hims_f_procurement_grn_header set return_done ='Y' where hims_f_procurement_grn_header_id=?",
+                          [input.grn_header_id]
+                        );
+                      }
+
+                      // console.log("strGrnQry", strGrnQry);
+                      // consol.log("strGrnQry", strGrnQry);
+                      _mysql
+                        .executeQuery({
+                          query: strGrnQry,
+                          printQuery: true,
+                        })
+                        .then((detailResult) => {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = {
+                              purchase_return_number: purchase_return_number,
+                              hims_f_procurement_return_po_header_id:
+                                headerResult.insertId,
+                            };
+                            next();
+                          });
+                        })
+                        .catch((error) => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                        });
+                    })
+                    .catch((error) => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
+                    });
                 })
                 .catch((error) => {
                   _mysql.rollBackTransaction(() => {
