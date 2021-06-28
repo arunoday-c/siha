@@ -106,7 +106,7 @@ class ListofItems extends PureComponent {
                     },
                   },
                   {
-                    fieldName: "item_id",
+                    fieldName: "item_description",
                     label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
                     displayTemplate: (row) => {
                       let display =
