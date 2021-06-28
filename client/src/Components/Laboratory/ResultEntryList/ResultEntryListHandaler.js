@@ -345,6 +345,42 @@ const reloadAnalytesMaster = ($this, row) => {
   });
 };
 
+const printLabWorkListReport = ($this, row) => {
+  debugger;
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "LabWorkListReport",
+        reportParams: [
+          {
+            name: "hims_d_patient_id",
+            value: row.patient_id,
+          },
+          {
+            name: "visit_id",
+            value: row.visit_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Work List Report`;
+      window.open(origin);
+      // window.document.title = "";
+    },
+  });
+};
+
 export {
   texthandle,
   PatientSearch,
@@ -355,4 +391,5 @@ export {
   Refresh,
   closeMicroResultEntry,
   reloadAnalytesMaster,
+  printLabWorkListReport,
 };

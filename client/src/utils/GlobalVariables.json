@@ -5897,5 +5897,19 @@
       "name": "Cash",
       "value": "N"
     }
+  ],
+  "LAB_REPORT_TYPE": [
+    {
+      "name": "Others",
+      "value": "N"
+    },
+    {
+      "name": "PCR",
+      "value": "Y"
+    },
+    {
+      "name": "Microbiology",
+      "value": "MI"
+    }
   ]
 }

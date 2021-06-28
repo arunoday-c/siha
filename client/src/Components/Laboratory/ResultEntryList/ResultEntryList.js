@@ -21,6 +21,7 @@ import {
   saveDocumentCheck,
   getSavedDocument,
   reloadAnalytesMaster,
+  printLabWorkListReport,
 } from "./ResultEntryListHandaler";
 import { Upload, Modal, Tooltip } from "antd";
 import {
@@ -440,6 +441,27 @@ class ResultEntryList extends Component {
                         displayTemplate: (row) => {
                           return (
                             <>
+                              <Tooltip title="Print Work List">
+                                <span>
+                                  <i
+                                    style={{
+                                      pointerEvents:
+                                        row.status === "O"
+                                          ? ""
+                                          : row.sample_status === "N"
+                                          ? "none"
+                                          : "",
+                                    }}
+                                    className="fas fa-file-alt"
+                                    aria-hidden="true"
+                                    onClick={printLabWorkListReport.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )}
+                                  />
+                                </span>
+                              </Tooltip>
                               <Tooltip title="Enter Result">
                                 <span>
                                   <i
@@ -524,7 +546,7 @@ class ResultEntryList extends Component {
                         },
                         others: {
                           filterable: false,
-                          maxWidth: 150,
+                          minWidth: 140,
                           resizable: false,
                           style: { textAlign: "center" },
                         },

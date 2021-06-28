@@ -184,13 +184,13 @@ class PrescriptionList extends Component {
                           label={{ forceLabel: "Prescription Date" }}
                         />
                       ),
-                      displayTemplate: (row) => {
-                        return (
-                          <span>
-                            {this.changeDateFormat(row.prescription_date)}
-                          </span>
-                        );
-                      },
+                      // displayTemplate: (row) => {
+                      //   return (
+                      //     <span>
+                      //       {this.changeDateFormat(row.prescription_date)}
+                      //     </span>
+                      //   );
+                      // },
                       disabled: true,
                       others: {
                         maxWidth: 150,

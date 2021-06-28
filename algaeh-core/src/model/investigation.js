@@ -27,7 +27,7 @@ let addInvestigationTest = (req, res, next) => {
     container_id: null,
     container_code: null,
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_by: req.userIdentity.algaeh_d_app_user_id
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
   };
 
   debugFunction("addInvestigation");
@@ -42,7 +42,7 @@ let addInvestigationTest = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -53,8 +53,8 @@ let addInvestigationTest = (req, res, next) => {
         connection.query(
           "insert into hims_d_investigation_test(short_description,description,investigation_type,lab_section_id,\
           send_out_test,available_in_house,restrict_order,restrict_by,\
-          external_facility_required,facility_description,services_id,priority,cpt_id,category_id,film_category, screening_test, film_used,created_by,updated_by)values(\
-          ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          external_facility_required,facility_description,services_id,priority,cpt_id,category_id,film_category, screening_test, film_used,isPCR,created_by,updated_by)values(\
+          ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             input.short_description,
             input.description,
@@ -73,8 +73,9 @@ let addInvestigationTest = (req, res, next) => {
             input.film_category,
             input.screening_test,
             input.film_used,
+            input.isPCR,
             input.created_by,
-            input.updated_by
+            input.updated_by,
           ],
           (error, results) => {
             if (error) {
@@ -99,7 +100,7 @@ let addInvestigationTest = (req, res, next) => {
                   input.container_id,
                   input.container_code,
                   input.created_by,
-                  input.updated_by
+                  input.updated_by,
                 ],
                 (error, spResult) => {
                   if (error) {
@@ -122,7 +123,7 @@ let addInvestigationTest = (req, res, next) => {
                       "normal_low",
                       "normal_high",
                       "created_by",
-                      "updated_by"
+                      "updated_by",
                     ];
 
                     connection.query(
@@ -134,8 +135,8 @@ let addInvestigationTest = (req, res, next) => {
                           sampleInputObject: insurtColumns,
                           arrayObj: req.body.analytes,
                           newFieldToInsert: [req.body.test_id],
-                          req: req
-                        })
+                          req: req,
+                        }),
                       ],
                       (error, analyteResult) => {
                         if (error) {
@@ -145,7 +146,7 @@ let addInvestigationTest = (req, res, next) => {
                           });
                         }
 
-                        connection.commit(error => {
+                        connection.commit((error) => {
                           if (error) {
                             releaseDBConnection(db, connection);
                             next(error);
@@ -168,7 +169,7 @@ let addInvestigationTest = (req, res, next) => {
                 "template_html",
                 "template_status",
                 "created_by",
-                "updated_by"
+                "updated_by",
               ];
 
               connection.query(
@@ -180,8 +181,8 @@ let addInvestigationTest = (req, res, next) => {
                     sampleInputObject: insurtColumns,
                     arrayObj: req.body.RadTemplate,
                     newFieldToInsert: [req.body.test_id],
-                    req: req
-                  })
+                    req: req,
+                  }),
                 ],
                 (error, radiolgyResult) => {
                   if (error) {
@@ -191,7 +192,7 @@ let addInvestigationTest = (req, res, next) => {
                     });
                   }
 
-                  connection.commit(error => {
+                  connection.commit((error) => {
                     if (error) {
                       connection.rollback(() => {
                         releaseDBConnection(db, connection);
@@ -220,7 +221,7 @@ let getInvestigTestList = (req, res, next) => {
     hims_d_investigation_test_id: "ALL",
     lab_section_id: "ALL",
     category_id: "ALL",
-    investigation_type: "ALL"
+    investigation_type: "ALL",
   };
 
   debugFunction("getListOfInsurenceProvider");
@@ -241,7 +242,7 @@ let getInvestigTestList = (req, res, next) => {
         "select hims_d_investigation_test_id, description, services_id,R.hims_d_rad_template_detail_id,R.template_name,\
         R.template_html,investigation_type,lab_section_id, send_out_test, available_in_house, restrict_order, restrict_by,\
         external_facility_required,facility_description, priority, cpt_id, category_id, film_category, screening_test,\
-        film_used, A.analyte_id, A.hims_m_lab_analyte_id,A.critical_low,A.critical_high, A.normal_low,A.normal_high, \
+        film_used,isPCR,A.analyte_id, A.hims_m_lab_analyte_id,A.critical_low,A.critical_high, A.normal_low,A.normal_high, \
         S.specimen_id,S.hims_m_lab_specimen_id \
         from hims_d_investigation_test T left  join  hims_d_rad_template_detail R on\
         T.hims_d_investigation_test_id = R.test_id left join hims_m_lab_specimen S on \
@@ -285,7 +286,7 @@ let updateInvestigationTest = (req, res, next) => {
     container_id: null,
     container_code: null,
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_by: req.userIdentity.algaeh_d_app_user_id
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
   };
 
   try {
@@ -301,7 +302,7 @@ let updateInvestigationTest = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -312,7 +313,7 @@ let updateInvestigationTest = (req, res, next) => {
           "UPDATE `hims_d_investigation_test`\
         SET   short_description=?,description=?,investigation_type=?,lab_section_id=?,send_out_test=?,available_in_house=?,\
         restrict_order=?,restrict_by=?,external_facility_required=?,facility_description=?,\
-        services_id=?,priority=?,cpt_id=?,category_id=?,film_category=?,screening_test=?,film_used=?,updated_date=?,updated_by=?\
+        services_id=?,priority=?,cpt_id=?,category_id=?,film_category=?,screening_test=?,film_used=?,isPCR=?,updated_date=?,updated_by=?\
         WHERE record_status='A' AND `hims_d_investigation_test_id`=?;";
         let inputs = [
           investigationDetails.short_description,
@@ -332,9 +333,10 @@ let updateInvestigationTest = (req, res, next) => {
           investigationDetails.film_category,
           investigationDetails.screening_test,
           investigationDetails.film_used,
+          investigationDetails.isPCR,
           new Date(),
           investigationDetails.updated_by,
-          investigationDetails.hims_d_investigation_test_id
+          investigationDetails.hims_d_investigation_test_id,
         ];
 
         connection.query(queryBuilder, inputs, (error, result) => {
@@ -362,7 +364,7 @@ let updateInvestigationTest = (req, res, next) => {
                 investigationDetails.container_code,
                 new Date(),
                 investigationDetails.updated_by,
-                investigationDetails.hims_m_lab_specimen_id
+                investigationDetails.hims_m_lab_specimen_id,
               ],
               (error, resultSpc) => {
                 if (error) {
@@ -385,7 +387,7 @@ let updateInvestigationTest = (req, res, next) => {
                         "normal_low",
                         "normal_high",
                         "created_by",
-                        "updated_by"
+                        "updated_by",
                       ];
 
                       connection.query(
@@ -396,8 +398,8 @@ let updateInvestigationTest = (req, res, next) => {
                           jsonArrayToObject({
                             sampleInputObject: insurtColumns,
                             arrayObj: investigationDetails.insert_analytes,
-                            req: req
-                          })
+                            req: req,
+                          }),
                         ],
                         (error, InsAnalyteResult) => {
                           if (error) {
@@ -415,7 +417,7 @@ let updateInvestigationTest = (req, res, next) => {
                   } catch (e) {
                     reject(e);
                   }
-                }).then(results => {
+                }).then((results) => {
                   debugLog("inside LAB then");
 
                   //bulk analytes update
@@ -456,7 +458,7 @@ let updateInvestigationTest = (req, res, next) => {
                         });
                       }
                       debugLog("analyte,deleted or update as Inactive ");
-                      connection.commit(error => {
+                      connection.commit((error) => {
                         if (error) {
                           connection.rollback(() => {
                             releaseDBConnection(db, connection);
@@ -469,7 +471,7 @@ let updateInvestigationTest = (req, res, next) => {
                       });
                     });
                   } else {
-                    connection.commit(error => {
+                    connection.commit((error) => {
                       if (error) {
                         connection.rollback(() => {
                           releaseDBConnection(db, connection);
@@ -497,7 +499,7 @@ let updateInvestigationTest = (req, res, next) => {
                     "test_id",
                     "template_html",
                     "created_by",
-                    "updated_by"
+                    "updated_by",
                   ];
 
                   connection.query(
@@ -508,8 +510,8 @@ let updateInvestigationTest = (req, res, next) => {
                       jsonArrayToObject({
                         sampleInputObject: insurtColumns,
                         arrayObj: investigationDetails.insert_rad_temp,
-                        req: req
-                      })
+                        req: req,
+                      }),
                     ],
                     (error, radiolgyResult) => {
                       if (error) {
@@ -528,7 +530,7 @@ let updateInvestigationTest = (req, res, next) => {
               } catch (e) {
                 reject(e);
               }
-            }).then(result => {
+            }).then((result) => {
               debugLog("inside RAD then");
               if (investigationDetails.update_rad_temp.length != 0) {
                 let inputParam = extend([], req.body.update_rad_temp);
@@ -562,7 +564,7 @@ let updateInvestigationTest = (req, res, next) => {
                       next(error);
                     });
                   }
-                  connection.commit(error => {
+                  connection.commit((error) => {
                     if (error) {
                       connection.rollback(() => {
                         releaseDBConnection(db, connection);
@@ -575,7 +577,7 @@ let updateInvestigationTest = (req, res, next) => {
                   });
                 });
               } else {
-                connection.commit(error => {
+                connection.commit((error) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
@@ -599,5 +601,5 @@ let updateInvestigationTest = (req, res, next) => {
 export default {
   addInvestigationTest,
   getInvestigTestList,
-  updateInvestigationTest
+  updateInvestigationTest,
 };
