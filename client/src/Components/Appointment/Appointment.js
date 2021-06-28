@@ -383,7 +383,9 @@ class Appointment extends PureComponent {
                 appointment_status_id: this.state.appointment_status_id,
                 patient_name: this.state.patient_name,
                 arabic_name: this.state.arabic_name,
-                date_of_birth: this.state.date_of_birth,
+                date_of_birth: moment(this.state.date_of_birth).format(
+                  "YYYY-MM-DD"
+                ),
                 age: this.state.age,
                 contact_number: this.state.contact_number,
                 tel_code: this.state.tel_code,

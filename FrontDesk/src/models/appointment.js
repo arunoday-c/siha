@@ -2690,11 +2690,11 @@ export function getPatientAppointmentClinicalDesk(req, res, next) {
     const { hospital_id } = req.userIdentity;
     _mysql
       .executeQuery({
-        query: `select concat(T.title," ",PA.patient_name) as pat_name, concat(T.arabic_title,". ",PA.arabic_name)as pat_name_arabic,
-      PA.appointment_from_time,PA.appointment_to_time,PA.age,PA.is_stand_by,SA.color_code,SA.description as app_status,PA.gender
+        query: `select concat(T.title," ",PA.patient_name) as pat_name,PA.patient_code, concat(T.arabic_title,". ",PA.arabic_name)as pat_name_arabic,P.primary_id_no,
+      PA.appointment_from_time,PA.appointment_to_time,PA.age,PA.is_stand_by,SA.color_code,SA.description as app_status,PA.gender,appointment_date
        from hims_f_patient_appointment as PA inner join hims_d_appointment_status as SA
       on SA.hims_d_appointment_status_id=PA.appointment_status_id inner join hims_d_title as T
-      on T.his_d_title_id = PA.title_id
+      on T.his_d_title_id = PA.title_id inner join hims_f_patient as P on P.hims_d_patient_id=PA.patient_id 
        where provider_id=? and PA.hospital_id=? and PA.sub_department_id=?
       and Date(appointment_date) =Date(?) and PA.visit_created ='N' and PA.cancelled='N' ;`,
         values: [provider_id, hospital_id, sub_dept_id, schedule_date],
