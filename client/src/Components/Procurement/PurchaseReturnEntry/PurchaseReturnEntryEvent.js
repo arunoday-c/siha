@@ -169,6 +169,7 @@ const ReceiptSearch = ($this, e) => {
         method: "GET",
         onSuccess: (response) => {
           if (response.data.success) {
+            debugger;
             let data = response.data.records;
 
             data.saveEnable = false;
