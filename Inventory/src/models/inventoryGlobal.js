@@ -14,8 +14,8 @@ export default {
               where IIU.record_status='A' and IIU.uom_id = IU.hims_d_inventory_uom_id and IIU.item_master_id=? ;\
               SELECT hims_m_inventory_item_location_id, item_id, inventory_location_id, item_location_status, \
               batchno, expirydt, barcode, qtyhand, qtypo, cost_uom, avgcost, last_purchase_cost, IL.item_type, \
-              grn_id, grnno, sale_price, mrp_price, sales_uom, IU.uom_description, IL.vendor_batchno, IM.item_description  \
-              from hims_m_inventory_item_location IL, hims_d_inventory_uom IU, hims_d_inventory_item_master IM \
+              grn_id, grnno, sale_price, mrp_price, sales_uom, IU.uom_description, IL.vendor_batchno, IM.item_description,  \
+              IM.purchase_cost from hims_m_inventory_item_location IL, hims_d_inventory_uom IU, hims_d_inventory_item_master IM \
               where IL.sales_uom = IU.hims_d_inventory_uom_id and IL.item_id = IM.hims_d_inventory_item_master_id\
               and IL.record_status='A'  and item_id=? and inventory_location_id=? and qtyhand>0 \
               and (date(expirydt) > date(CURDATE()) || exp_date_required='N') order by date(expirydt)",
@@ -28,6 +28,32 @@ export default {
             uomResult: result[0],
             locationResult: result[1],
           };
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getItemUoms: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_m_inventory_item_uom_id, item_master_id, uom_id, stocking_uom, conversion_factor,\
+              IIU.uom_status, IU.uom_description  from hims_m_inventory_item_uom IIU,hims_d_inventory_uom IU \
+              where IIU.record_status='A' and IIU.uom_id = IU.hims_d_inventory_uom_id and IIU.item_master_id=? ;",
+          values: [req.query.item_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
           next();
         })
         .catch((error) => {

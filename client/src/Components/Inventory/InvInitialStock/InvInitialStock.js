@@ -32,6 +32,7 @@ import {
   onChamgeGridQuantity,
   EditGrid,
   getDrilDownData,
+  UomchangeTexts,
 } from "./InvInitialStockEvents";
 import "./InvInitialStock.scss";
 import "../../../styles/site.scss";
@@ -71,6 +72,7 @@ class InvInitialStock extends Component {
       dataExitst: false,
       stock_uom_desc: null,
       sales_uom_desc: null,
+      ItemUOM: [],
     };
   }
 
@@ -389,6 +391,31 @@ class InvInitialStock extends Component {
                   />
 
                   <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "UOM", isImp: true }}
+                    selector={{
+                      name: "uom_id",
+                      className: "select-fld",
+                      value: this.state.uom_id,
+                      dataSource: {
+                        textField: "uom_description",
+                        valueField: "uom_id",
+                        data: this.state.ItemUOM,
+                      },
+                      onChange: UomchangeTexts.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          uom_id: null,
+                        });
+                      },
+                      others: {
+                        disabled: this.state.dataExitst,
+                        tabIndex: "2",
+                      },
+                    }}
+                  />
+
+                  {/* <AlagehAutoComplete
                     div={{ className: "col-lg-3 form-group" }}
                     label={{ forceLabel: "UOM", isImp: true }}
                     selector={{
@@ -400,13 +427,10 @@ class InvInitialStock extends Component {
                         valueField: "hims_d_inventory_uom_id",
                         data: this.props.inventoryitemuom,
                       },
-                      others: {
-                        disabled: true,
-                      },
                       onChange: itemchangeText.bind(this, this),
                       autoComplete: "off",
                     }}
-                  />
+                  /> */}
                   <AlagehFormGroup
                     div={{ className: "col-lg-3 form-group" }}
                     label={{
@@ -683,6 +707,14 @@ class InvInitialStock extends Component {
                       },
                       others: {
                         minWidth: 250,
+                      },
+                    },
+                    {
+                      fieldName: "uom_description",
+                      label: <AlgaehLabel label={{ forceLabel: "UOM" }} />,
+                      others: {
+                        minWidth: 100,
+                        filterable: false,
                       },
                     },
                     {

@@ -492,7 +492,11 @@ class InvItemMomentEnquiry extends Component {
                     },
                     {
                       fieldName: "average_cost",
-                      label: <AlgaehLabel label={{ forceLabel: "Cost" }} />,
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Cost As Stocking UOM" }}
+                        />
+                      ),
                       displayTemplate: (row) => {
                         return (
                           <span>
