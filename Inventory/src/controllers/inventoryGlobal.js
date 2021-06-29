@@ -13,11 +13,19 @@ const {
   getConsumptionSelectedMonth,
   getListUomSelectedItem,
   getItemLocationStockConsumtion,
+  getItemUoms,
 } = invModels;
 
 export default () => {
   const api = Router();
   api.get("/getUomLocationStock", getUomLocationStock, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+
+  api.get("/getItemUoms", getItemUoms, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records,

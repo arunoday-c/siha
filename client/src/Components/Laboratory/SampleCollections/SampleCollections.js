@@ -13,6 +13,10 @@ import {
   updateLabOrderServiceStatus,
   updateLabOrderServiceMultiple,
   onchangegridcoldatehandle,
+  // selectToGenerateBarcode,
+  BulkSampleCollection,
+  printBulkBarcode,
+  // selectAll,
 } from "./SampleCollectionEvent";
 import { Tooltip } from "antd";
 import {
@@ -31,7 +35,11 @@ import {
   RawSecurityComponent,
 } from "algaeh-react-components";
 import variableJson from "../../../utils/GlobalVariables.json";
-
+const STATUS = {
+  CHECK: true,
+  UNCHECK: false,
+  INDETERMINATE: true,
+};
 class SampleCollectionPatient extends PureComponent {
   constructor(props) {
     super(props);
@@ -40,7 +48,10 @@ class SampleCollectionPatient extends PureComponent {
       hospital_id: null,
       send_out_test: "N",
       editableGrid: false,
+      bulkGenerate: [],
+      checkAll: STATUS.UNCHECK,
     };
+    this.allChecked = undefined;
   }
 
   static contextType = MainContext;
@@ -50,6 +61,7 @@ class SampleCollectionPatient extends PureComponent {
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
       portal_exists: userToken.portal_exists,
+      checkAll: STATUS.UNCHECK,
     });
     if (
       this.props.deptanddoctors === undefined ||
@@ -130,7 +142,102 @@ class SampleCollectionPatient extends PureComponent {
   onClose = (e) => {
     this.props.onClose && this.props.onClose(e);
   };
+  selectAll = (context, e) => {
+    const staus = e.target.checked;
+    const myState = this.state.test_details.map((f) => {
+      return { ...f, checked: staus };
+    });
 
+    // const hasProcessed = myState.find((f) => f.collected === "Y");
+    // if (hasProcessed !== undefined && staus === true) {
+    //   this.allChecked.indeterminate = true;
+    // } else {
+    //   this.allChecked.indeterminate = false;
+    // }
+    const hasUncheck = myState.filter((f) => {
+      return f.checked === undefined || f.checked === false;
+    });
+
+    // const hasProceesed = hasUncheck.find((f) => f.checked);
+    const totalRecords = myState.length;
+    // context.updateState({ test_details: [...myState] });
+    this.setState({
+      test_details: [...myState],
+      checkAll:
+        totalRecords === hasUncheck.length
+          ? "UNCHECK"
+          : hasUncheck.length === 0
+          ? "CHECK"
+          : "INDETERMINATE",
+    });
+  };
+  selectToGenerateBarcode = (dol, row, e) => {
+    const status = e.target.checked;
+    // const currentRow = row;
+    row.checked = status;
+    const records = this.state.test_details;
+    const hasUncheck = records.filter((f) => {
+      return f.checked === undefined || f.checked === false;
+    });
+
+    // const hasProceesed = hasUncheck.find((f) => f.checked);
+    const totalRecords = records.length;
+    let ckStatus =
+      totalRecords === hasUncheck.length
+        ? "UNCHECK"
+        : hasUncheck.length === 0
+        ? "CHECK"
+        : "INDETERMINATE";
+    // if (hasProceesed !== undefined) {
+    //   ckStatus = "INDETERMINATE";
+    // }
+    if (ckStatus === "INDETERMINATE") {
+      this.allChecked.indeterminate = true;
+    } else {
+      this.allChecked.indeterminate = false;
+    }
+    // let list = result.reduce(function (acc, item) {
+    //   let obj = { ...item };
+    //   Object.keys(obj).forEach(function (item) {
+    //     if (acc[item]) {
+    //       //if a property with the the key, 'item' already exists, then append to that
+    //       Object.assign(acc[item], obj[item]);
+    //     } else {
+    //       // else add the key-value pair to the accumulator object.
+    //       acc[item] = obj[item];
+    //     }
+    //   });
+    //   return acc;
+    // }, {});
+    this.setState({
+      checkAll: ckStatus,
+      test_details: [...records],
+    });
+
+    // let _generateBarcode = $this.state.test_details;
+    //
+    // // let paysalaryBtn = true;
+    // if (e.target.checked === true) {
+    //   row["select_to_generate"] = "Y";
+    // } else if (e.target.checked === false) {
+    //   row["select_to_generate"] = "N";
+    // }
+    // const idx = $this.state.test_details.findIndex(
+    //   (item) =>
+    //     item !== undefined && item.hims_f_lab_order_id === row.hims_f_lab_order_id
+    // );
+    // _generateBarcode[idx] = row;
+
+    // // let listOfinclude = Enumerable.from(_generateBarcode)
+    // //   .where((w) => w.select_to_generate === "Y")
+    // //   .toArray();
+    // // if (listOfinclude.length > 0) {
+    // //   paysalaryBtn = false;
+    // // }
+    // $this.setState({
+    //   test_details: _generateBarcode,
+    // });
+  };
   render() {
     return (
       <React.Fragment>
@@ -315,7 +422,87 @@ class SampleCollectionPatient extends PureComponent {
                                   style: { textAlign: "center" },
                                 },
                               },
+                              // {
+                              //   fieldName: "multipleBarCode_checkBox",
 
+                              //   label: (
+                              //     <AlgaehLabel
+                              //       label={{
+                              //         forceLabel: "Select To Generate",
+                              //       }}
+                              //     />
+                              //   ),
+                              //   //disabled: true
+                              //   displayTemplate: (row) => {
+                              //     return (
+                              //       <span>
+                              //         <input
+                              //           type="checkbox"
+                              //           value="Front Desk"
+                              //           onChange={selectToGenerateBarcode.bind(
+                              //             this,
+                              //             this,
+                              //             row
+                              //           )}
+                              //           checked={
+                              //             row.select_to_generate === "Y"
+                              //               ? true
+                              //               : false
+                              //           }
+                              //           disabled={
+                              //             row.collected === "Y" ||
+                              //             row.billed === "N"
+                              //               ? true
+                              //               : false
+                              //           }
+                              //         />
+                              //       </span>
+                              //     );
+                              //   },
+                              //   others: {
+                              //     maxWidth: 100,
+                              //     filterable: false,
+                              //   },
+                              // },
+                              {
+                                label: (
+                                  <input
+                                    type="checkbox"
+                                    defaultChecked={
+                                      this.state.checkAll === "CHECK"
+                                        ? true
+                                        : false
+                                    }
+                                    ref={(input) => {
+                                      this.allChecked = input;
+                                    }}
+                                    onChange={this.selectAll.bind(
+                                      this,
+                                      context
+                                    )}
+                                  />
+                                ),
+                                fieldName: "select",
+                                displayTemplate: (row) => (
+                                  <input
+                                    type="checkbox"
+                                    checked={row.checked}
+                                    // disabled={
+                                    //   row.collected === "Y" ? true : false
+                                    // }
+                                    onChange={this.selectToGenerateBarcode.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )}
+                                  />
+                                ),
+                                others: {
+                                  minWidth: 50,
+                                  filterable: false,
+                                  sortable: false,
+                                },
+                              },
                               {
                                 fieldName: "billed",
                                 label: (
@@ -1040,7 +1227,50 @@ class SampleCollectionPatient extends PureComponent {
                                 }}
                               />
                             </button>
+                            <button
+                              className="btn btn-other"
+                              onClick={BulkSampleCollection.bind(
+                                this,
+                                this,
+                                context
+                              )}
+                            >
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Bulk Sample Collection",
+                                }}
+                              />
+                            </button>
+                            <button
+                              className="btn btn-other"
+                              onClick={printBulkBarcode.bind(
+                                this,
+                                this,
+                                context
+                              )}
+                            >
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Print Bulk Barcode",
+                                }}
+                              />
+                            </button>
                           </AlgaehSecurityComponent>
+                          {/* <div className="customCheckbox">
+                            <label
+                              className="checkbox inline"
+                              style={{ marginRight: 20 }}
+                            >
+                              <input
+                                type="checkbox"
+                                value=""
+                                name=""
+                                checked={this.state.checkAll}
+                                onChange={selectAll.bind(this, this)}
+                              />
+                              <span>Select All</span>
+                            </label>
+                          </div> */}
                         </div>
                       </div>
                     </div>

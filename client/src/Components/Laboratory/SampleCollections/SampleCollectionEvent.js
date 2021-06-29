@@ -5,6 +5,8 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import sockets from "../../../sockets";
 import swal from "sweetalert2";
 import axios from "axios";
+
+// import Enumerable from "linq";
 // import swal from "sweetalert2";
 const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 const CollectSample = ($this, context, row) => {
@@ -95,7 +97,8 @@ const CollectSample = ($this, context, row) => {
         });
 
         if (context !== undefined) {
-          context.updateState({ test_details: test_details });
+          context.updateState({ test_details: [...test_details] });
+          $this.setState({ test_details: [...test_details] });
         }
       }
       AlgaehLoader({ show: false });
@@ -107,6 +110,69 @@ const CollectSample = ($this, context, row) => {
         type: "error",
       });
     },
+  });
+};
+
+const BulkSampleCollection = ($this, context) => {
+  // if ($this.state.test_details.length > 0) {
+  const data = $this.state.test_details;
+
+  const filterData = data.filter((f) => f.checked && f.collected === "N");
+
+  console.log("filterData", filterData);
+  if (filterData.length > 0) {
+    // return;
+    filterData.map((row) => CollectSample($this, context, row));
+  } else {
+    swalMessage({
+      title: "No sample to collect",
+      type: "warning",
+    });
+  }
+};
+const printBulkBarcode = ($this, context) => {
+  const data = $this.state.test_details;
+  const filterData = data.filter((f) => f.checked);
+  const labOrderId = filterData.map((item) => item.hims_f_lab_order_id);
+
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        others: {
+          width: "50mm",
+          height: "20mm",
+          showHeaderFooter: false,
+        },
+        reportName: "specimenBarcodeBulk",
+        reportParams: [
+          {
+            name: "hims_f_lab_order_id",
+            value: labOrderId,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+    },
+
+    // onSuccess: (res) => {
+    //   const urlBlob = URL.createObjectURL(res.data);
+    //   const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Specimen Barcode`;
+    //   window.open(origin);
+    //    window.document.title = "Specimen Barcode";
+    // },
   });
 };
 const updateLabOrderServiceStatus = ($this, row) => {
@@ -140,6 +206,7 @@ const updateLabOrderServiceStatus = ($this, row) => {
   //   return;
   // }
 };
+
 const updateLabOrderServiceMultiple = ($this) => {
   swal({
     title: `Are you sure to change all specimen not collected?`,
@@ -365,4 +432,6 @@ export {
   dateFormater,
   onchangegridcol,
   onchangegridcoldatehandle,
+  BulkSampleCollection,
+  printBulkBarcode,
 };
