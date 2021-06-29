@@ -31,6 +31,7 @@ export default function ConsumptionItemsEvents() {
       }
     },
     numberchangeTexts: ($this, context, e) => {
+      debugger;
       let name = e.name || e.target.name;
       let value =
         e.value === ""
@@ -49,7 +50,8 @@ export default function ConsumptionItemsEvents() {
           type: "warning",
         });
       } else {
-        let extended_cost = $this.state.unit_cost * value;
+        let extended_cost =
+          parseFloat($this.state.unit_cost) * parseFloat(value);
         $this.setState({ [name]: value, extended_cost: extended_cost });
         if (context !== undefined) {
           context.updateState({
