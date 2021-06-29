@@ -1,12 +1,10 @@
 import moment from "moment";
 import Options from "../../../Options.json";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import Enumerable from "linq";
+import _ from "lodash";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
-// import AlgaehReport from "../../Wrapper/printReports";
 
-// var intervalId;
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
@@ -35,30 +33,31 @@ const numberchangeTexts = ($this, e) => {
   $this.setState({ [name]: value, extended_cost: extended_cost });
 };
 
-const getItemUom = ($this, purchase_cost) => {
+const getItemUom = ($this, purchase_cost, value, purchase_uom_id) => {
   algaehApiCall({
-    uri: "/inventory/getItemMasterAndItemUom",
+    uri: "/inventoryGlobal/getItemUoms",
     module: "inventory",
     method: "GET",
-
+    data: {
+      item_id: value,
+    },
     onSuccess: (response) => {
       if (response.data.success) {
-        if (response.data.records.length > 0) {
-          let itemuomlist = Enumerable.from(response.data.records)
-            .where(
-              (w) => w.hims_d_inventory_item_master_id === $this.state.item_id,
-              (w) => w.uom_id === $this.state.purchase_uom_id
-            )
-            .firstOrDefault();
-
-          let unit_cost =
-            parseFloat(purchase_cost) /
-            parseFloat(itemuomlist.conversion_factor);
-          $this.setState({
-            conversion_factor: itemuomlist.conversion_factor,
-            unit_cost: unit_cost,
-          });
-        }
+        let data = response.data.records;
+        const itemuomlist = _.find(data, (f) => f.uom_id === purchase_uom_id);
+        let unit_cost =
+          parseFloat(purchase_cost) / parseFloat(itemuomlist.conversion_factor);
+        $this.setState({
+          conversion_factor: itemuomlist.conversion_factor,
+          unit_cost: unit_cost,
+          Real_unit_cost: unit_cost,
+          ItemUOM: data,
+        });
+      } else {
+        swalMessage({
+          title: response.data.message,
+          type: "error",
+        });
       }
     },
     onFailure: (error) => {
@@ -68,36 +67,49 @@ const getItemUom = ($this, purchase_cost) => {
       });
     },
   });
-  // $this.props.getItemMasterAndItemUom({
+
+  // algaehApiCall({
   //   uri: "/inventory/getItemMasterAndItemUom",
   //   module: "inventory",
   //   method: "GET",
-  //   redux: {
-  //     type: "ITEMS_GET_DATA",
-  //     mappingName: "inventoryitemuomlist"
-  //   },
-  //   afterSuccess: data => {
-  //     let itemuomlist = Enumerable.from(data)
-  //       .where(
-  //         w => w.hims_d_inventory_item_master_id === $this.state.item_id,
-  //         w => w.uom_id === $this.state.purchase_uom_id
-  //       )
-  //       .firstOrDefault();
+  //   data: { hims_d_inventory_item_master_id: value },
+
+  //   onSuccess: (response) => {
   //
-  //     let unit_cost =
-  //       parseFloat(purchase_cost) / parseFloat(itemuomlist.conversion_factor);
-  //     $this.setState({
-  //       conversion_factor: itemuomlist.conversion_factor,
-  //       unit_cost: unit_cost
+  //     if (response.data.success) {
+  //       if (response.data.records.length > 0) {
+  //         let itemuomlist = Enumerable.from(response.data.records)
+  //           .where(
+  //             (w) => w.hims_d_inventory_item_master_id === $this.state.item_id,
+  //             (w) => w.uom_id === $this.state.purchase_uom_id
+  //           )
+  //           .firstOrDefault();
+
+  //         let unit_cost =
+  //           parseFloat(purchase_cost) /
+  //           parseFloat(itemuomlist.conversion_factor);
+  //         $this.setState({
+  //           conversion_factor: itemuomlist.conversion_factor,
+  //           unit_cost: unit_cost,
+  //           Real_unit_cost: unit_cost,
+  //           ItemUOM: itemuomlist,
+  //         });
+  //       }
+  //     }
+  //   },
+  //   onFailure: (error) => {
+  //     swalMessage({
+  //       title: error.message,
+  //       type: "error",
   //     });
-  //   }
+  //   },
   // });
 };
 
 const itemchangeText = ($this, e, ctrl) => {
   let name = ctrl;
   let value = e.hims_d_inventory_item_master_id;
-  getItemUom($this, e.purchase_cost);
+  getItemUom($this, e.purchase_cost, value, e.purchase_uom_id);
 
   $this.setState({
     [name]: value,
@@ -112,6 +124,7 @@ const itemchangeText = ($this, e, ctrl) => {
     sales_price: e.sales_price,
     purchase_uom_id: e.purchase_uom_id,
     stock_uom_desc: e.stock_uom_desc,
+    uom_description: e.stock_uom_desc,
     sales_uom_desc: e.sales_uom_desc,
   });
 };
@@ -166,6 +179,7 @@ const AddItems = ($this) => {
           noorecords: inventory_stock_detail.length + 1,
           required_batchno: $this.state.required_batchno,
           operation: "+",
+          uom_description: $this.state.uom_description,
         };
 
         inventory_stock_detail.push(itemObj);
@@ -243,7 +257,6 @@ const getDrilDownData = ($this, transaction_id) => {
         }
         data.dataExitst = true;
 
-
         $this.setState(data);
         AlgaehLoader({ show: false });
       }
@@ -256,7 +269,6 @@ const getDrilDownData = ($this, transaction_id) => {
       });
     },
   });
-
 };
 
 const getCtrlCode = ($this, docNumber) => {
@@ -575,6 +587,61 @@ const EditGrid = ($this, cancelRow) => {
   });
 };
 
+const UomchangeTexts = ($this, ctrl, e) => {
+  e = ctrl || e;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  if ($this.state.uom_id !== value) {
+    let unit_cost = 0;
+
+    if ($this.state.purchase_uom_id === $this.state.stocking_uom_id) {
+      if (
+        parseFloat($this.state.sales_conversion_factor) ===
+        parseFloat(e.selected.conversion_factor)
+      ) {
+        unit_cost = $this.state.Real_unit_cost;
+      } else if (
+        parseFloat($this.state.sales_conversion_factor) >
+        parseFloat(e.selected.conversion_factor)
+      ) {
+        unit_cost =
+          parseFloat($this.state.Real_unit_cost) /
+          parseFloat($this.state.sales_conversion_factor);
+      } else {
+        unit_cost =
+          parseFloat(e.selected.conversion_factor) *
+          parseFloat($this.state.Real_unit_cost);
+      }
+    } else {
+      if (
+        parseFloat($this.state.sales_conversion_factor) ===
+        parseFloat(e.selected.conversion_factor)
+      ) {
+        unit_cost = $this.state.Real_unit_cost;
+      } else if (
+        parseFloat($this.state.sales_conversion_factor) >
+        parseFloat(e.selected.conversion_factor)
+      ) {
+        unit_cost =
+          parseFloat($this.state.Real_unit_cost) /
+          parseFloat($this.state.sales_conversion_factor);
+      } else {
+        unit_cost =
+          parseFloat(e.selected.conversion_factor) *
+          parseFloat($this.state.Real_unit_cost);
+      }
+    }
+
+    $this.setState({
+      [name]: value,
+      conversion_factor: e.selected.conversion_factor,
+      unit_cost: unit_cost,
+      uom_description: e.selected.text,
+      quantity: 0,
+    });
+  }
+};
 export {
   changeTexts,
   itemchangeText,
@@ -594,5 +661,6 @@ export {
   updateInitialStock,
   onChamgeGridQuantity,
   EditGrid,
-  getDrilDownData
+  getDrilDownData,
+  UomchangeTexts,
 };

@@ -258,6 +258,7 @@ class DoctorsWorkbench extends Component {
         onSuccess: (response) => {
           if (response.data.success) {
             const _selecDate = new Date(dateRange.activeDateHeader).setDate(1);
+            debugger;
             if (Array.isArray(response.data.records)) {
               this.setState(
                 {
@@ -500,7 +501,7 @@ class DoctorsWorkbench extends Component {
       { label: "Patient Name", value: "full_name" },
       { label: "Patient Code", value: "patient_code" },
       { label: "Primary ID", value: "primary_id_no" },
-      { label: "Encounter Time", value: "encountered_date" },
+      { label: "Time", value: "encountered_date" },
     ];
     return (
       <div className="doctor_workbench">
@@ -638,7 +639,10 @@ class DoctorsWorkbench extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Checked-In Patients</h3>
+                  <h3 className="caption-subject">
+                    Checked-In Patients{" "}
+                    <small> - {patientListArray.length}</small>
+                  </h3>
                 </div>
                 {/* <div className="actions">
                   <a
@@ -649,48 +653,61 @@ class DoctorsWorkbench extends Component {
                   </a>
                 </div> */}
               </div>
-              <div className="col">
-                <AlgaehLabel label={{ forceLabel: "Search Patient" }} />
-                <Input
-                  placeholder="Search Name/Code or ID"
-                  defaultValue={this.state.searchText}
-                  onChange={this.handleSearch.bind(this)}
-                  ref={(c) => {
-                    this.searchTextRef = c;
-                  }}
-                />
-              </div>
-              <div>
-                <Select
-                  value={this.state.sortBy}
-                  onChange={(e) => {
-                    debugger;
-                    return this.setState({ sortBy: e });
-                  }}
-                  virtual={true}
-                  // disabled={disabled}
-                  // disabled={props.state.fromSearch || false}
-                  showSearch
-                  filterOption={(input, option) => {
-                    return (
-                      option.value.toLowerCase().indexOf(input.toLowerCase()) >=
-                      0
-                    );
-                  }}
-                  options={sortByArray}
-                ></Select>
 
-                <button
-                  onClick={() =>
-                    this.setState({ sortAsc: !this.state.sortAsc }, () =>
-                      this.sortAscending()
-                    )
-                  }
-                >
-                  {this.state.sortAsc ? "ASC" : "DSC"}
-                </button>
-              </div>
               <div className="portlet-body">
+                <div className="row">
+                  <div className="col-6" style={{ paddingRight: 0 }}>
+                    <AlgaehLabel label={{ forceLabel: "Search Patient" }} />
+                    <Input
+                      placeholder="Search Name/Code or ID"
+                      defaultValue={this.state.searchText}
+                      onChange={this.handleSearch.bind(this)}
+                      ref={(c) => {
+                        this.searchTextRef = c;
+                      }}
+                    />
+                  </div>
+                  <div className="col-4" style={{ paddingRight: 0 }}>
+                    <AlgaehLabel
+                      label={{ forceLabel: "Sort BY" }}
+                      style={{ display: "block" }}
+                    />
+                    <Select
+                      style={{ width: "100%" }}
+                      value={this.state.sortBy}
+                      onChange={(e) => {
+                        debugger;
+                        return this.setState({ sortBy: e });
+                      }}
+                      virtual={true}
+                      showSearch
+                      filterOption={(input, option) => {
+                        return (
+                          option.value
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      options={sortByArray}
+                    ></Select>
+                  </div>
+                  <div className="col-2" style={{ marginTop: 21 }}>
+                    <button
+                      className="btn btn-default btn-small"
+                      onClick={() =>
+                        this.setState({ sortAsc: !this.state.sortAsc }, () =>
+                          this.sortAscending()
+                        )
+                      }
+                    >
+                      {this.state.sortAsc ? (
+                        <i className="fas fa-sort-alpha-down"></i>
+                      ) : (
+                        <i className="fas fa-sort-alpha-up"></i>
+                      )}
+                    </button>
+                  </div>
+                </div>
                 <div className="opPatientList">
                   <ul className="opList">
                     {Enumerable.from(patientListArray)

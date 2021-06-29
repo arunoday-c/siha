@@ -11,7 +11,7 @@ import {
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
-import MaskedInput from "react-maskedinput";
+// import MaskedInput from "react-maskedinput";
 
 class CustomerSetup extends Component {
   constructor(props) {
@@ -648,7 +648,27 @@ class CustomerSetup extends Component {
                       }}
                     />
 
-                    <div
+                    <AlagehFormGroup
+                      div={{
+                        className: `col  ${
+                          this.state.payment_mode === "BT" ? "mandatory" : ""
+                        }`,
+                      }}
+                      label={{
+                        forceLabel: "IBAN No.",
+                        isImp: this.state.payment_mode === "BT" ? true : false,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "iban_number",
+                        value: this.state.iban_number,
+                        events: {
+                          onChange: this.changeTexts.bind(this),
+                        },
+                      }}
+                    />
+
+                    {/* <div
                       className={`col-2 no-padding-left-right cardMaskFld ${
                         this.state.payment_mode === "BT" ? "mandatory" : ""
                       }`}
@@ -670,9 +690,8 @@ class CustomerSetup extends Component {
                         id="my-input-id"
                         onBlur={() => {}}
                         onChange={this.changeTexts.bind(this)}
-                        // disabled={isLoading || disabled}
                       />
-                    </div>
+                    </div> */}
                     <AlagehFormGroup
                       div={{
                         className: `col ${

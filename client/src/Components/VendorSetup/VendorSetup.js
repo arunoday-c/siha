@@ -11,7 +11,7 @@ import {
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
-import MaskedInput from "react-maskedinput";
+// import MaskedInput from "react-maskedinput";
 
 class VendorSetup extends Component {
   constructor(props) {
@@ -650,7 +650,7 @@ class VendorSetup extends Component {
                       },
                     }}
                   />
-                  <div
+                  {/* <div
                     className={`col-1 no-padding-left-right cardMaskFld ${
                       this.state.payment_mode === "BT" ? "mandatory" : ""
                     }`}
@@ -662,18 +662,37 @@ class VendorSetup extends Component {
                       }}
                     />
                     <MaskedInput
-                      mask={"AA11111111"}
+                      mask={"AA1111111111111111111111"}
                       className="txt-fld"
-                      placeholder={"eg: AA11111111"}
+                      placeholder={"eg: AA1111111111111111111111"}
                       name="iban_number"
                       value={this.state.iban_number}
                       guide={true}
                       id="my-input-id"
                       onBlur={() => {}}
                       onChange={this.changeTexts.bind(this)}
-                      // disabled={isLoading || disabled}
+                      
                     />
-                  </div>
+                  </div> */}
+                  <AlagehFormGroup
+                    div={{
+                      className: `col  ${
+                        this.state.payment_mode === "BT" ? "mandatory" : ""
+                      }`,
+                    }}
+                    label={{
+                      forceLabel: "IBAN No.",
+                      isImp: this.state.payment_mode === "BT" ? true : false,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "iban_number",
+                      value: this.state.iban_number,
+                      events: {
+                        onChange: this.changeTexts.bind(this),
+                      },
+                    }}
+                  />
                   <AlagehFormGroup
                     div={{
                       className: `col  ${
