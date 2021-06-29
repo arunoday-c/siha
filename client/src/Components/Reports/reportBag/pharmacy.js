@@ -172,33 +172,6 @@ export default function Pharmacy({
               },
             },
           },
-          {
-            className: "col-6 form-group AutosearchClass",
-            type: "Autosearch",
-            name: "item_id",
-            // initialLoad: true,
-            isImp: false,
-            // label: "Item",
-            columns: spotlightSearch.Items.Pharmacyitemmaster,
-            displayField: "item_description",
-            primaryDesc: "item_description",
-            secondaryDesc: "uom_description",
-            searchName: "PurchaseOrderForPharmacy",
-            // value: null,
-            label: "Item Name",
-            // link: {
-            //   uri: "/pharmacy/getItemMaster",
-            //   module: "pharmacy",
-            // },
-
-            // events: {
-            //   onClear: (reportState, currentName) => {
-            //     reportState.setState({
-            //       [currentName]: undefined,
-            //     });
-            //   },
-            // },
-          },
           // {
           //   className: "col-3 form-group",
           //   type: "dropdown",
@@ -263,6 +236,33 @@ export default function Pharmacy({
                 });
               },
             },
+          },
+          {
+            className: "col-6 form-group AutosearchClass",
+            type: "Autosearch",
+            name: "item_id",
+            // initialLoad: true,
+            isImp: false,
+            // label: "Item",
+            columns: spotlightSearch.Items.Pharmacyitemmaster,
+            displayField: "item_description",
+            primaryDesc: "item_description",
+            secondaryDesc: "uom_description",
+            searchName: "PurchaseOrderForPharmacy",
+            // value: null,
+            label: "Item Name",
+            // link: {
+            //   uri: "/pharmacy/getItemMaster",
+            //   module: "pharmacy",
+            // },
+
+            // events: {
+            //   onClear: (reportState, currentName) => {
+            //     reportState.setState({
+            //       [currentName]: undefined,
+            //     });
+            //   },
+            // },
           },
         ],
       },

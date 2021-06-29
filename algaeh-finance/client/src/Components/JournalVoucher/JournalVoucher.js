@@ -1138,6 +1138,7 @@ export default function JournalVoucher() {
   };
 
   const AmountInput = (row, records) => {
+    debugger;
     // const isDisabled = records
     //   ? records.disabled
     //     ? { disabled: records.disabled }
@@ -1151,6 +1152,8 @@ export default function JournalVoucher() {
           value: row,
           type: "number",
           onChange: (e) => {
+            console.log(journerList);
+            debugger;
             records["amount"] = e.target.value === "" ? "" : e.target.value;
             const credit_data = _.filter(journerList, (f) => {
               return f.payment_type === "CR";
@@ -1543,10 +1546,15 @@ export default function JournalVoucher() {
                     className="btn btn-primary btn-small"
                     onClick={() => {
                       setJournerList((result) => {
+                        debugger;
                         const serialNo = result.length + 1;
                         const disabledPaymentType =
                           voucherType === "expense_voucher"
-                            ? { paytypedisable: true, payment_type: "DR" }
+                            ? {
+                                paytypedisable: true,
+                                payment_type: "DR",
+                                payment_mode: "CA",
+                              }
                             : {};
                         result.push({
                           child_id: undefined,
