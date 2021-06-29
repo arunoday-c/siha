@@ -381,6 +381,64 @@ const printLabWorkListReport = ($this, row) => {
   });
 };
 
+const generateLabResultReport = ($this, data) => {
+  return new Promise((resolve, reject) => {
+    let portalParams = {};
+
+    debugger;
+    portalParams["reportToPortal"] = "true";
+
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          // reportName: "hematologyTestReport",
+          ...portalParams,
+          reportName:
+            data?.isPCR === "Y" ? "pcrTestReport" : "hematologyTestReport",
+          reportParams: [
+            { name: "hims_d_patient_id", value: data.patient_id },
+            {
+              name: "visit_id",
+              value: data.visit_id,
+            },
+            {
+              name: "hims_f_lab_order_id",
+              value: data.hims_f_lab_order_id,
+            },
+            {
+              name: "visit_code",
+              value: data.visit_code,
+            },
+            {
+              name: "patient_identity",
+              value: data.primary_id_no,
+            },
+            {
+              name: "service_id",
+              value: data.service_id,
+            },
+          ],
+          qrCodeReport: true,
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        resolve();
+      },
+      onCatch: (err) => {
+        reject(err);
+      },
+    });
+  });
+};
+
 export {
   texthandle,
   PatientSearch,
@@ -392,4 +450,5 @@ export {
   closeMicroResultEntry,
   reloadAnalytesMaster,
   printLabWorkListReport,
+  generateLabResultReport,
 };

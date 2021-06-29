@@ -22,6 +22,7 @@ import {
   getSavedDocument,
   reloadAnalytesMaster,
   printLabWorkListReport,
+  generateLabResultReport,
 } from "./ResultEntryListHandaler";
 import { Upload, Modal, Tooltip } from "antd";
 import {
@@ -455,6 +456,27 @@ class ResultEntryList extends Component {
                                     className="fas fa-file-alt"
                                     aria-hidden="true"
                                     onClick={printLabWorkListReport.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )}
+                                  />
+                                </span>
+                              </Tooltip>
+                              <Tooltip title="Print Report">
+                                <span>
+                                  <i
+                                    style={{
+                                      pointerEvents:
+                                        row.status === "O"
+                                          ? ""
+                                          : row.sample_status === "N"
+                                          ? "none"
+                                          : "",
+                                    }}
+                                    className="fas fa-file-alt"
+                                    aria-hidden="true"
+                                    onClick={generateLabResultReport.bind(
                                       this,
                                       this,
                                       row
