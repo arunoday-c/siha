@@ -41,6 +41,7 @@ class DoctorsWorkbench extends Component {
       searchText: "",
       filterList: [],
       sortAsc: true,
+      checkedInData: [],
     };
 
     // this.moveToEncounterList = this.moveToEncounterList.bind(this);
@@ -54,7 +55,7 @@ class DoctorsWorkbench extends Component {
         for (let i = 0; i < eArray.length; i++) {
           eArray[i].setAttribute("style", "");
         }
-        filterd = this.state.data.filter(
+        filterd = this.state.checkedInData.filter(
           (f) =>
             f.full_name.toLowerCase().includes(value.toLowerCase()) ||
             f.patient_code.toLowerCase().includes(value.toLowerCase()) ||
@@ -77,7 +78,7 @@ class DoctorsWorkbench extends Component {
           ? 1
           : -1
       );
-    this.setState({ data: myData });
+    this.setState({ checkedInData: myData });
   };
 
   // sortDescending = () => {
@@ -264,6 +265,7 @@ class DoctorsWorkbench extends Component {
                 {
                   selectedHDate: _selecDate,
                   data: response.data.records,
+                  checkedInData: response.data.records,
                   activeDateHeader: dateRange.activeDateHeader,
                   provider_id: response.data.records[0].provider_id,
                   sub_department_id: response.data.records[0].sub_department_id,
@@ -280,6 +282,7 @@ class DoctorsWorkbench extends Component {
                   sub_department_id: response.data.records.sub_department_id,
                   activeDateHeader: dateRange.activeDateHeader,
                   data: [],
+                  checkedInData: [],
                 },
                 () => {
                   this.getAppointments();
@@ -496,7 +499,9 @@ class DoctorsWorkbench extends Component {
 
   render() {
     const patientListArray =
-      this.state.searchText === "" ? this.state.data : this.state.filterList;
+      this.state.searchText === ""
+        ? this.state.checkedInData
+        : this.state.filterList;
     const sortByArray = [
       { label: "Patient Name", value: "full_name" },
       { label: "Patient Code", value: "patient_code" },
