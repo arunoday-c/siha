@@ -38,7 +38,7 @@ import ResultEntry from "../ResultEntry/ResultEntry";
 import MicrobiologyResultEntry from "../MicrobiologyResultEntry/MicrobiologyResultEntry";
 import _ from "lodash";
 import sockets from "../../../sockets";
-// import { AlgaehMessagePop } from "algaeh-react-components";
+import { AlgaehSecurityComponent } from "algaeh-react-components";
 const { Dragger } = Upload;
 const { confirm } = Modal;
 class ResultEntryList extends Component {
@@ -463,27 +463,7 @@ class ResultEntryList extends Component {
                                   />
                                 </span>
                               </Tooltip>
-                              <Tooltip title="Print Report">
-                                <span>
-                                  <i
-                                    style={{
-                                      pointerEvents:
-                                        row.status === "O"
-                                          ? ""
-                                          : row.sample_status === "N"
-                                          ? "none"
-                                          : "",
-                                    }}
-                                    className="fas fa-file-alt"
-                                    aria-hidden="true"
-                                    onClick={generateLabResultReport.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )}
-                                  />
-                                </span>
-                              </Tooltip>
+
                               <Tooltip title="Enter Result">
                                 <span>
                                   <i
@@ -550,6 +530,29 @@ class ResultEntryList extends Component {
                                   />
                                 </span>
                               </Tooltip>
+                              <AlgaehSecurityComponent componentCode="RE_PRI_LAB_RES">
+                                <Tooltip title="Print Report">
+                                  <span>
+                                    <i
+                                      style={{
+                                        pointerEvents:
+                                          row.status === "O"
+                                            ? ""
+                                            : row.sample_status === "N"
+                                            ? "none"
+                                            : "",
+                                      }}
+                                      className="fas fa-print"
+                                      aria-hidden="true"
+                                      onClick={generateLabResultReport.bind(
+                                        this,
+                                        this,
+                                        row
+                                      )}
+                                    />
+                                  </span>
+                                </Tooltip>
+                              </AlgaehSecurityComponent>
                               {/* {row.status === "V" ? null : 
                               <span>
                                 <i
