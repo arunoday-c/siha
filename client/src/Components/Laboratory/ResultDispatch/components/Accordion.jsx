@@ -396,13 +396,15 @@ export default memo(function ({ details }) {
                           {send_out_test === "Y" ? "Yes" : "No"}
                         </td>
                         <td width="70">
-                          <i
-                            style={{ fontSize: 30 }}
-                            className="fas fa-print fa-3x"
-                            onClick={(e) => {
-                              showReportPcr(e, item);
-                            }}
-                          ></i>
+                          {status === "V" ? (
+                            <i
+                              style={{ fontSize: 30 }}
+                              className="fas fa-print fa-3x"
+                              onClick={(e) => {
+                                showReportPcr(e, item);
+                              }}
+                            ></i>
+                          ) : null}
                         </td>
                       </tr>
                     );
