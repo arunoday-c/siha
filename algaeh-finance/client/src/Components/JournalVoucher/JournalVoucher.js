@@ -416,6 +416,7 @@ export default function JournalVoucher() {
         });
         setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
         setTotalDebit(_.sumBy(debit_data, (s) => parseFloat(s.amount)));
+
         setJournerList(data);
         setFinanceVoucherHeaderID(location.state.finance_voucher_header_id);
         setVoucherType(data[0].voucher_type);
@@ -454,6 +455,7 @@ export default function JournalVoucher() {
           });
           setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
           setTotalDebit(_.sumBy(debit_data, (s) => parseFloat(s.amount)));
+
           setJournerList(records);
         } else {
           const {
@@ -485,6 +487,7 @@ export default function JournalVoucher() {
             .then((res) => {
               if (res.data.success) {
                 const [defaultAC] = res.data.result;
+
                 setJournerList((state) => {
                   const first = state[0];
                   const second = state[1];
@@ -1138,7 +1141,6 @@ export default function JournalVoucher() {
   };
 
   const AmountInput = (row, records) => {
-    debugger;
     // const isDisabled = records
     //   ? records.disabled
     //     ? { disabled: records.disabled }
@@ -1152,8 +1154,8 @@ export default function JournalVoucher() {
           value: row,
           type: "number",
           onChange: (e) => {
-            console.log(journerList);
-            debugger;
+            // console.log(journerList);
+
             records["amount"] = e.target.value === "" ? "" : e.target.value;
             const credit_data = _.filter(journerList, (f) => {
               return f.payment_type === "CR";
@@ -1496,7 +1498,48 @@ export default function JournalVoucher() {
                 <div className="col-12">
                   <AlgaehDataGrid
                     // className="JLVoucherListGrid"
-                    columns={columns}
+                    columns={[
+                      voucherType === "payment" || voucherType === "receipt"
+                        ? null
+                        : costCenterField,
+                      {
+                        fieldName: "sourceName",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "accounts" }} />
+                        ),
+                        // align: "left",
+                        displayTemplate: gridTree,
+                        others: {
+                          width: 250,
+                        },
+                      },
+                      {
+                        fieldName: "payment_type",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "payment_type" }} />
+                        ),
+                        // filtered: true,
+                        displayTemplate: PaymentInput,
+                        others: {
+                          width: 120,
+                        },
+                      },
+                      {
+                        fieldName: "amount",
+                        label: <AlgaehLabel label={{ fieldName: "amount" }} />,
+                        displayTemplate: AmountInput,
+                        others: {
+                          width: 100,
+                        },
+                      },
+                      {
+                        fieldName: "narration",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "narration" }} />
+                        ),
+                        displayTemplate: NarrationBox,
+                      },
+                    ]}
                     direction={language}
                     loading={false}
                     data={journerList}
@@ -1525,6 +1568,7 @@ export default function JournalVoucher() {
                               parseFloat(amount) - parseFloat(result.amount)
                           );
                         }
+
                         setJournerList((data) => {
                           const otherDetals = data
                             .filter((f) => f.slno !== result["slno"])
@@ -1546,7 +1590,6 @@ export default function JournalVoucher() {
                     className="btn btn-primary btn-small"
                     onClick={() => {
                       setJournerList((result) => {
-                        debugger;
                         const serialNo = result.length + 1;
                         const disabledPaymentType =
                           voucherType === "expense_voucher"
