@@ -1120,6 +1120,7 @@ export default function JournalVoucher() {
             const debit_data = _.filter(journerList, (f) => {
               return f.payment_type === "DR";
             });
+
             setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
             setTotalDebit(_.sumBy(debit_data, (s) => parseFloat(s.amount)));
           },
@@ -1163,7 +1164,9 @@ export default function JournalVoucher() {
             const debit_data = _.filter(journerList, (f) => {
               return f.payment_type === "DR";
             });
-            setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
+            if (voucherType !== "expense_voucher") {
+              setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
+            }
             setTotalDebit(_.sumBy(debit_data, (s) => parseFloat(s.amount)));
             // if (records["payment_type"] === "DR")
             //   records["debit_amount"] = records["amount"];
@@ -1474,7 +1477,7 @@ export default function JournalVoucher() {
                       {getAmountFormart(total_credit, {
                         appendSymbol: false,
                       })}
-                    </b>{" "}
+                    </b>
                   </span>
                   <span className="notEqual">
                     <AlgaehLabel label={{ fieldName: "TDebit" }} />
@@ -1482,7 +1485,7 @@ export default function JournalVoucher() {
                       {getAmountFormart(total_debit, {
                         appendSymbol: false,
                       })}
-                    </b>{" "}
+                    </b>
                   </span>
                   <button
                     className="btn btn-default"
