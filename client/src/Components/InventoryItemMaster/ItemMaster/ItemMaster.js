@@ -96,7 +96,7 @@ class InvItemMaster extends Component {
   UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.itemPop.hims_d_inventory_item_master_id !== undefined) {
       let IOputs = newProps.itemPop;
-      debugger;
+
       let disable = IOputs.detail_item_uom.map((item) => {
         return item.item_master_img_unique_id ? true : false;
       })[0];
@@ -109,6 +109,7 @@ class InvItemMaster extends Component {
   };
 
   render() {
+    const doc = this.state.detail_item_uom[0];
     return (
       <div className="hptl-phase1-Display-patient-details">
         <AlgaehModalPopUp
@@ -128,29 +129,28 @@ class InvItemMaster extends Component {
                         <div className="col-12 imgUploadCntr">
                           <div className="imgPreviewSingle">
                             {this.state.detail_item_uom.length > 0 ? (
-                              this.state.detail_item_uom.map((doc) => (
-                                <>
-                                  {doc.item_master_img_unique_id ? (
-                                    <>
-                                      <div>
-                                        <div className="image-drop-area">
-                                          <span className="image-drop-area">
-                                            <img
-                                              alt=""
-                                              src={`${
-                                                window.location.protocol
-                                              }//${window.location.hostname}${
-                                                window.location.port === ""
-                                                  ? "/docserver"
-                                                  : `:3006`
-                                              }/UPLOAD/InvItemMasterImages/thumbnail/${
-                                                doc.item_master_img_unique_id
-                                              }`}
-                                            />
-                                          </span>
-                                        </div>
-                                        <span className="textActionSec">
-                                          {/* <small>
+                              <>
+                                {doc.item_master_img_unique_id ? (
+                                  <>
+                                    <div>
+                                      <div className="image-drop-area">
+                                        <span className="image-drop-area">
+                                          <img
+                                            alt=""
+                                            src={`${
+                                              window.location.protocol
+                                            }//${window.location.hostname}${
+                                              window.location.port === ""
+                                                ? "/docserver"
+                                                : `:3006`
+                                            }/UPLOAD/InvItemMasterImages/thumbnail/${
+                                              doc.item_master_img_unique_id
+                                            }`}
+                                          />
+                                        </span>
+                                      </div>
+                                      <span className="textActionSec">
+                                        {/* <small>
                                         {" "}
                                         {doc.item_master_img_unique_id.split(
                                           "__ALGAEH__"
@@ -160,61 +160,57 @@ class InvItemMaster extends Component {
                                               "__ALGAEH__"
                                             )[1]}{" "}
                                       </small> */}
-                                          <p className="diagramActions">
-                                            <button
-                                              className="btn btn-default btn-sm viewBtn"
-                                              type="button"
-                                              // href={`${
-                                              //   window.location.protocol
-                                              // }//${window.location.hostname}${
-                                              //   window.location.port === ""
-                                              //     ? "/docserver"
-                                              //     : `:3006`
-                                              // }/UPLOAD/InvItemMasterImages/${
-                                              //   doc.item_master_img_unique_id
-                                              // }`}
-                                              // target="_blank"
-                                            >
-                                              View
-                                              <img
-                                                alt=""
-                                                className="invItemThumbnail animated slideInLeft faster"
-                                                src={`${
-                                                  window.location.protocol
-                                                }//${window.location.hostname}${
-                                                  window.location.port === ""
-                                                    ? "/docserver"
-                                                    : `:3006`
-                                                }/UPLOAD/InvItemMasterImages/${
-                                                  doc.item_master_img_unique_id
-                                                }`}
-                                              />
-                                            </button>
-                                            <button
-                                              className="btn btn-default btn-sm deleteBtn"
-                                              type="button"
-                                              onClick={deleteDoc.bind(
-                                                this,
-                                                this,
-                                                doc
-                                              )}
-                                            >
-                                              Delete
-                                            </button>
-                                          </p>
-                                        </span>
-                                      </div>
-                                    </>
-                                  ) : (
-                                    <div
-                                      className="col-12 noAttachment"
-                                      key={1}
-                                    >
-                                      <p>No Image Attached</p>
+                                        <p className="diagramActions">
+                                          <button
+                                            className="btn btn-default btn-sm viewBtn"
+                                            type="button"
+                                            // href={`${
+                                            //   window.location.protocol
+                                            // }//${window.location.hostname}${
+                                            //   window.location.port === ""
+                                            //     ? "/docserver"
+                                            //     : `:3006`
+                                            // }/UPLOAD/InvItemMasterImages/${
+                                            //   doc.item_master_img_unique_id
+                                            // }`}
+                                            // target="_blank"
+                                          >
+                                            View
+                                            <img
+                                              alt=""
+                                              className="invItemThumbnail animated slideInLeft faster"
+                                              src={`${
+                                                window.location.protocol
+                                              }//${window.location.hostname}${
+                                                window.location.port === ""
+                                                  ? "/docserver"
+                                                  : `:3006`
+                                              }/UPLOAD/InvItemMasterImages/${
+                                                doc.item_master_img_unique_id
+                                              }`}
+                                            />
+                                          </button>
+                                          <button
+                                            className="btn btn-default btn-sm deleteBtn"
+                                            type="button"
+                                            onClick={deleteDoc.bind(
+                                              this,
+                                              this,
+                                              doc
+                                            )}
+                                          >
+                                            Delete
+                                          </button>
+                                        </p>
+                                      </span>
                                     </div>
-                                  )}
-                                </>
-                              ))
+                                  </>
+                                ) : (
+                                  <div className="col-12 noAttachment" key={1}>
+                                    <p>No Image Attached</p>
+                                  </div>
+                                )}
+                              </>
                             ) : (
                               <div className="col-12 noAttachment" key={1}>
                                 <p>No Image Attached</p>
