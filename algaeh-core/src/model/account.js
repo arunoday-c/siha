@@ -283,8 +283,11 @@ const resetPassword = (req, res, next) => {
               url: "http://localhost:3006/api/v1//Document/getEmailConfig",
             }).then((res) => {
               const options = res.data;
-
-              new algaehMail(options.data[0])
+              // console.log("email options", options.data, options.data[0]);
+              new algaehMail({
+                ...options.data[0],
+                smtp: options.data[0]["host"],
+              })
                 .to(work_email)
                 .subject("Password reset PIN")
                 .templateHbs("userPasswodReset.hbs", {
@@ -307,7 +310,7 @@ const resetPassword = (req, res, next) => {
             _mysql.releaseConnection();
             next(e);
           }
-          new algaehMail();
+          // new algaehMail();
         } else {
           next(new Error("No record found for this userid"));
         }
