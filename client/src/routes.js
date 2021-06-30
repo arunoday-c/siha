@@ -161,6 +161,9 @@ const FrontDesk = React.lazy(() =>
 // const FrontDeskBeta = React.lazy(() =>
 //   retry(() => import("./Components/FrontDesk/FrontDeskBeta"))
 // );
+const PortalLabList = React.lazy(() =>
+  retry(() => import("./Components/Laboratory/PortalLabList/PortalLabList"))
+);
 const ResultEntryList = React.lazy(() =>
   retry(() => import("./Components/Laboratory/ResultEntryList/ResultEntryList"))
 );
@@ -1269,6 +1272,12 @@ const privateRoutes = [
     path: "/ResultEntryList",
     isExactPath: true,
     component: <ResultEntryList />,
+  },
+
+  {
+    path: "/PortalLabList",
+    isExactPath: true,
+    component: <PortalLabList />,
   },
 
   {
