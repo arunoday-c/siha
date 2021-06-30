@@ -383,7 +383,7 @@ export default {
         .executeQuery({
           query:
             "SELECT report_type,report_name_for_header,report_name,report_query,report_input_series,data_manupulation,\
-            report_header_file_name,report_footer_file_name,report_props from algaeh_d_reports where status='A' and report_name in (?);\
+            report_header_file_name,report_footer_file_name,report_props,report_thermal_header_file_name,report_thermal_footer_file_name,thermal_report_props from algaeh_d_reports where status='A' and report_name in (?);\
             select H.hospital_name,H.hospital_address,H.arabic_hospital_name, \
             O.organization_name,O.business_registration_number,O.* from hims_d_hospital H,hims_d_organization O \
             where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
@@ -564,7 +564,11 @@ export default {
                     } else {
                       if (_data.report_type) {
                         header_format = await compile(
-                          "Header" + _data.report_type,
+                          `${
+                            _data.report_thermal_header_file_name
+                              ? _data.report_thermal_header_file_name
+                              : `Header${_data.report_type}`
+                          }`,
                           {
                             reqHeader: _header,
                             ...data[1][0],
@@ -631,14 +635,21 @@ export default {
                       }
                     } else {
                       if (_data.report_type) {
+                        const thermalFooterFromDB = `${
+                          _data.report_thermal_footer_file_name
+                            ? _data.report_thermal_footer_file_name
+                            : `Footer${_data.report_type}`
+                        }`;
+
                         const filePath = path.join(
                           process.cwd(),
                           "algaeh_report_tool/templates",
-                          `Footer${_data.report_type}.hbs`
+                          `${thermalFooterFromDB}.hbs`
                         );
                         if (fs.existsSync(filePath)) {
                           footerFormat = await compile(
-                            "Footer" + _data.report_type,
+                            // "Footer" + _data.report_type,
+                            thermalFooterFromDB,
                             {
                               reqHeader: _header,
                               ...data[1][0],
