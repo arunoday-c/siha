@@ -56,6 +56,7 @@ class VendorSetup extends Component {
       openModal: false,
       bank_account_no: null,
       vat_number: null,
+      iban_number: null,
     });
   }
 
