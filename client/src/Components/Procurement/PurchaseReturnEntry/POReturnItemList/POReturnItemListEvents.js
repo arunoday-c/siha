@@ -869,10 +869,7 @@ const onchangegridcol = ($this, context, row, e) => {
 
   // IU.conversion_factor
   if (name === "return_qty") {
-    if (
-      parseFloat(value) >
-      parseFloat(row.qtyhand) / parseFloat(row.conversion_factor)
-    ) {
+    if (parseFloat(value) > parseFloat(row.qtyhand)) {
       swalMessage({
         title:
           "Return Quantity cannot be Greater than Qty In Hand / Deliverd Quantity.",

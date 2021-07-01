@@ -299,20 +299,18 @@ class POReturnItemList extends Component {
                                 />
                               ),
                               others: {
+                                minWidth: 250,
+                              },
+                            },
+                            {
+                              fieldName: "uom_description",
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "UOM" }} />
+                              ),
+                              others: {
                                 minWidth: 150,
                               },
                             },
-                            // {
-                            //   fieldName: "category_desc",
-                            //   label: (
-                            //     <AlgaehLabel
-                            //       label={{ forceLabel: "Item Category" }}
-                            //     />
-                            //   ),
-                            //   others: {
-                            //     minWidth: 250,
-                            //   },
-                            // },
                             // {
                             //   fieldName: "group_description",
                             //   label: (
