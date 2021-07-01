@@ -70,7 +70,18 @@ export function getSalesOrder(req, res, next) {
               printQuery: true,
             })
             .then((order_detail) => {
+              console.log("order_detail", order_detail);
               _mysql.releaseConnection();
+              if (headerResult[0].sales_order_mode == "I") {
+                const partially_dispatch = order_detail.filter(
+                  (f) =>
+                    parseFloat(f.quantity) !==
+                    parseFloat(f.quantity_outstanding)
+                );
+                headerResult[0].partially_dispatch =
+                  partially_dispatch.length > 0 ? "Y" : "N";
+                // console.log("abc", abc);
+              }
               req.records = {
                 ...headerResult[0],
                 ...{ order_detail },
@@ -414,11 +425,12 @@ export function postSalesOrder(req, res, next) {
           if (upd_sales_order_items.length > 0) {
             for (let i = 0; i < upd_sales_order_items.length; i++) {
               strQuery += mysql.format(
-                "UPDATE hims_f_sales_order_items SET `quantity`=?, extended_cost = ?, \
+                "UPDATE hims_f_sales_order_items SET `quantity`=?, unit_cost = ?, extended_cost = ?, \
                                 discount_percentage= ?,discount_amount= ?, net_extended_cost= ?, tax_percentage=?, tax_amount= ?,\
                                 total_amount=?, quantity_outstanding=? where `hims_f_sales_order_items_id`=?;",
                 [
                   upd_sales_order_items[i].quantity,
+                  upd_sales_order_items[i].unit_cost,
                   upd_sales_order_items[i].extended_cost,
                   upd_sales_order_items[i].discount_percentage,
                   upd_sales_order_items[i].discount_amount,

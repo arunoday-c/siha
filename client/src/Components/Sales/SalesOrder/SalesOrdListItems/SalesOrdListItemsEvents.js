@@ -208,8 +208,9 @@ const AddItems = ($this, context) => {
   } else {
     let sales_order_items = $this.state.sales_order_items;
 
-    const extended_cost = (parseFloat($this.state.unit_cost) * parseFloat($this.state.quantity))
-      .toFixed($this.state.decimal_place);
+    const extended_cost = (
+      parseFloat($this.state.unit_cost) * parseFloat($this.state.quantity)
+    ).toFixed($this.state.decimal_place);
     const discount_amount = (
       (parseFloat(extended_cost) *
         parseFloat($this.state.discount_percentage)) /
@@ -293,7 +294,7 @@ const deleteSalesDetail = ($this, context, row) => {
   let sales_order_items = $this.state.sales_order_items;
   const _index = sales_order_items.indexOf(row);
   sales_order_items.splice(_index, 1);
-  let delete_sales_order_items = $this.state.delete_sales_order_items
+  let delete_sales_order_items = $this.state.delete_sales_order_items;
 
   if (row.hims_f_sales_order_items_id !== null) {
     delete_sales_order_items.push(row.hims_f_sales_order_items_id);
@@ -492,6 +493,8 @@ const onchangegridcol = ($this, context, row, e) => {
     } else {
       row[name] = value;
     }
+  } else {
+    row[name] = value;
   }
   calculateAmount($this, context, row, _index);
 };
