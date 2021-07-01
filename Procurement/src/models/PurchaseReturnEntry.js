@@ -26,21 +26,25 @@ export default {
 
             if (headerResult[0].po_return_from == "INV") {
               strQuery = mysql.format(
-                "select PD.*, IM.item_description, IM.exp_date_required, IM.sales_uom_id, IC.category_desc, IG.group_description \
+                "select PD.*, IM.item_description, IM.exp_date_required, IM.sales_uom_id, IC.category_desc, \
+                IG.group_description, IUM.uom_description \
                 from hims_f_procurement_po_return_detail PD \
                 inner join hims_d_inventory_item_master IM on PD.inv_item_id = IM.hims_d_inventory_item_master_id \
                 inner join hims_d_inventory_tem_category IC on PD.inv_item_category_id = IC.hims_d_inventory_tem_category_id \
                 inner join hims_d_inventory_item_group IG on PD.inv_item_group_id = IG.hims_d_inventory_item_group_id \
+                inner join hims_d_inventory_uom IUM on PD.inventory_uom_id = IUM.hims_d_inventory_uom_id \
                 where po_return_header_id=?;",
                 [headerResult[0].hims_f_procurement_return_po_header_id]
               );
             } else if (headerResult[0].po_return_from == "PHR") {
               strQuery = mysql.format(
-                "select PD.*, IM.item_description, IM.exp_date_required, IM.sales_uom_id, IC.category_desc, IG.group_description \
+                "select PD.*, IM.item_description, IM.exp_date_required, IM.sales_uom_id, IC.category_desc, \
+                IG.group_description, IUM.uom_description \
                 from hims_f_procurement_po_return_detail PD  \
                 inner join hims_d_item_master IM on PD.phar_item_id = IM.hims_d_item_master_id \
                 inner join hims_d_item_category IC on PD.phar_item_category = IC.hims_d_item_category_id \
                 inner join hims_d_item_group IG on PD.phar_item_group = IG.hims_d_item_group_id \
+                inner join hims_d_pharmacy_uom IUM on PD.pharmacy_uom_id = IUM.hims_d_pharmacy_uom_id \
                 where po_return_header_id=?;",
                 [headerResult[0].hims_f_procurement_return_po_header_id]
               );
@@ -112,14 +116,16 @@ export default {
 
           if (inputParam.po_return_from == "INV") {
             strQuery = mysql.format(
-              "SELECT dn_header_id, DNB.*, PIL.hims_m_inventory_item_location_id, PIL.qtyhand, PIL.expirydt, PIL.batchno, \
+              "SELECT dn_header_id, DNB.*, PIL.hims_m_inventory_item_location_id, PIL.expirydt, PIL.batchno, \
                 PIL.vendor_batchno, IM.item_description, IM.sales_uom_id, IC.category_desc, IG.group_description, IU.conversion_factor, \
-                (PIL.qtyhand / IU.conversion_factor) as return_qty from hims_f_procurement_grn_detail GD \
+                (PIL.qtyhand / IU.conversion_factor) as return_qty, (PIL.qtyhand / IU.conversion_factor) as qtyhand, \
+                IUM.uom_description from hims_f_procurement_grn_detail GD \
                 inner join hims_f_procurement_dn_detail DND on DND.hims_f_procurement_dn_header_id = GD.dn_header_id \
                 inner join hims_f_procurement_dn_batches DNB on DNB.hims_f_procurement_dn_detail_id = DND.hims_f_procurement_dn_detail_id and DNB.return_done='N'\
                 inner join hims_m_inventory_item_location PIL on PIL.item_id = DNB.inv_item_id and DNB.batchno = PIL.batchno \
                 inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = DNB.inv_item_id \
                 inner join hims_m_inventory_item_uom IU on IM.hims_d_inventory_item_master_id = IU.item_master_id and DNB.inventory_uom_id = IU.uom_id and IU.record_status='A'\
+                inner join hims_d_inventory_uom IUM on DNB.inventory_uom_id = IUM.hims_d_inventory_uom_id \
                 inner join hims_d_inventory_tem_category IC on IC.hims_d_inventory_tem_category_id = DNB.inv_item_category_id \
                 inner join hims_d_inventory_item_group IG on IG.hims_d_inventory_item_group_id = DNB.inv_item_group_id \
                 where grn_header_id=? and inventory_location_id=?;",
@@ -127,14 +133,16 @@ export default {
             );
           } else if (inputParam.po_return_from == "PHR") {
             strQuery = mysql.format(
-              "SELECT dn_header_id, DNB.*, PIL.hims_m_item_location_id, PIL.qtyhand, PIL.expirydt, PIL.batchno, \
+              "SELECT dn_header_id, DNB.*, PIL.hims_m_item_location_id, PIL.expirydt, PIL.batchno, \
                 PIL.vendor_batchno, IM.item_description, IM.sales_uom_id, IC.category_desc, IG.group_description,IU.conversion_factor, \
-                (PIL.qtyhand / IU.conversion_factor) as return_qty  from hims_f_procurement_grn_detail GD \
+                (PIL.qtyhand / IU.conversion_factor) as return_qty, (PIL.qtyhand / IU.conversion_factor) as qtyhand, \
+                IUM.uom_description from hims_f_procurement_grn_detail GD \
                 inner join hims_f_procurement_dn_detail DND on DND.hims_f_procurement_dn_header_id = GD.dn_header_id \
                 inner join hims_f_procurement_dn_batches DNB on DNB.hims_f_procurement_dn_detail_id = DND.hims_f_procurement_dn_detail_id and DNB.return_done='N' \
                 inner join hims_m_item_location PIL on PIL.item_id = DNB.phar_item_id and DNB.batchno = PIL.batchno \
                 inner join hims_d_item_master IM on IM.hims_d_item_master_id = DNB.phar_item_id \
                 inner join hims_m_item_uom IU on IM.hims_d_item_master_id = IU.item_master_id and DNB.pharmacy_uom_id = IU.uom_id \
+                inner join hims_d_pharmacy_uom IUM on DNB.pharmacy_uom_id = IUM.hims_d_pharmacy_uom_id \
                 inner join hims_d_item_category IC on IC.hims_d_item_category_id = DNB.phar_item_category \
                 inner join hims_d_item_group IG on IG.hims_d_item_group_id = DNB.phar_item_group \
                 where grn_header_id=? and pharmacy_location_id=?;",
@@ -170,6 +178,7 @@ export default {
                 // console.log("tax_amount", tax_amount);
                 return {
                   item_description: item.item_description,
+                  uom_description: item.uom_description,
                   sales_uom_id: item.sales_uom_id,
                   category_desc: item.category_desc,
                   group_description: item.group_description,
@@ -352,10 +361,7 @@ export default {
               let strDnBatches = "";
               for (let i = 0; i < input.po_return_entry_detail.length; i++) {
                 const return_done =
-                  parseFloat(input.po_return_entry_detail[i].return_qty) *
-                    parseFloat(
-                      input.po_return_entry_detail[i].conversion_factor
-                    ) ===
+                  parseFloat(input.po_return_entry_detail[i].return_qty) ===
                   parseFloat(input.po_return_entry_detail[i].qtyhand)
                     ? "Y"
                     : "N";

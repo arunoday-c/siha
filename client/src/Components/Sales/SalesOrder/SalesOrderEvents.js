@@ -24,7 +24,7 @@ const texthandle = ($this, ctrl, e) => {
         sales_order_date: new Date(),
         reference_number: null,
         customer_id: null,
-        customerDetails:null,
+        customerDetails: null,
         quote_validity: null,
         sales_man: null,
         payment_terms: null,
@@ -89,7 +89,7 @@ const customerTexthandle = ($this, e) => {
     $this.setState({
       [name]: value,
       payment_terms: e.selected.payment_terms,
-      customerDetails:e.selected,
+      customerDetails: e.selected,
     });
   } else {
     AlgaehLoader({ show: true });
@@ -103,7 +103,7 @@ const customerTexthandle = ($this, e) => {
           $this.setState({
             [name]: value,
             payment_terms: e.selected.payment_terms,
-            customerDetails:e.selected,
+            customerDetails: e.selected,
           });
         } else {
           $this.setState({
@@ -119,11 +119,6 @@ const customerTexthandle = ($this, e) => {
         AlgaehLoader({ show: false });
       },
     });
-
-    
-
-
-
   }
 };
 
@@ -556,13 +551,15 @@ const getCtrlCode = ($this, saveDocument, docNumber) => {
         let data = response.data.records;
 
         data.grid_edit = true;
-
+        data.edit_price = false;
+        debugger;
         if (queryParams.get("sales_order_number")) {
           if (queryParams.get("disable_all")) {
             data.authBtnEnable = true;
             data.ItemDisable = true;
             data.ClearDisable = true;
             data.cancelDisable = true;
+            data.revertDisable = true;
             data.order_auth = true;
             data.grid_edit = true;
             data.from_invoice = true;
@@ -572,12 +569,18 @@ const getCtrlCode = ($this, saveDocument, docNumber) => {
             data.ItemDisable = true;
             data.ClearDisable = true;
             data.cancelDisable =
-              data.cancelled === "Y" || data.is_posted === "N" ? true : false;
+              data.cancelled === "Y" ||
+              data.partially_dispatch === "Y" ||
+              data.invoice_generated === "Y"
+                ? true
+                : false;
+            data.revertDisable =
+              data.cancelled === "Y" ||
+              data.is_posted === "N" ||
+              (data.authorize1 === "Y" && data.authorize2 === "Y")
+                ? true
+                : false;
             data.order_auth = true;
-            // for (let i = 0; i < data.order_detail.length; i++) {
-            //   data.order_detail[i].quantity_outstanding =
-            //     data.order_detail[i].quantity;
-            // }
             if (data.authorize1 === "N" || data.authorize2 === "N") {
               data.grid_edit = false;
             }
@@ -611,7 +614,7 @@ const getCtrlCode = ($this, saveDocument, docNumber) => {
           data.dataPosted = false;
           data.serviceAdd = false;
         }
-        if (data.authorize1 === "Y" && data.authorize2 === "Y") {
+        if (data.is_completed === "Y") {
           data.cancelDisable = true;
         }
         // let project_details = $this.state.cost_projects.find(
