@@ -8,6 +8,7 @@ import merge from "easy-pdf-merge";
 import hbs from "handlebars";
 import shortid from "shortid";
 import xtype from "xtypejs";
+import { v4 as uuidv4 } from "uuid";
 // import "babel-polyfill";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
@@ -379,6 +380,7 @@ export default {
 
       const qrUrl = process.env.QR_CODE_CLIENT ?? "http://localhost:3024/";
       const portalUrl = process.env.PORTAL_HOST ?? "http://localhost:4402/";
+
       _mysql
         .executeQuery({
           query:
@@ -398,7 +400,6 @@ export default {
           let considerSameReport = false;
           let reportValues = {};
           if (multiMerdgeReport) {
-            // console.log("multiMerdgeReport", multiMerdgeReport);
             considerSameReport = true;
             _reportCount =
               typeof multiMerdgeReport === "string"
@@ -463,7 +464,7 @@ export default {
                   const _path = path.join(
                     process.cwd(),
                     "algaeh_report_tool/templates/Output",
-                    `${_data.report_name + moment().format("YYYYMMDDHHmmss")}${
+                    `${_data.report_name}_${uuidv4()}_${
                       multiMerdgeReport ? "_" + r : ""
                     }`
                   );
@@ -621,7 +622,7 @@ export default {
                           <span class="pageNumber"></span> / <span class="totalPages"></span>
                           <span class="showcompay">Powered by Algaeh Techonologies</span>
                         </div>`;
-                        // console.log("singleHeaderFooter", singleHeaderFooter);
+
                         // if (singleHeaderFooter === false) {
                         _pdfTemplating["footerTemplate"] = footerFormat;
                         // }
@@ -747,11 +748,9 @@ export default {
                     });
 
                     await browser.close();
-                    // console.log("r", r);
+
                     if (r == _reportCount - 1) {
-                      // console.log("last r value", r);
-                      let _outfileName =
-                        "merdge_" + moment().format("YYYYMMDDHHmmss") + ".pdf";
+                      let _outfileName = "merdge_" + uuidv4() + ".pdf";
                       let _rOut = path.join(
                         process.cwd(),
                         "algaeh_report_tool/templates/Output",
@@ -827,13 +826,18 @@ export default {
                               });
                               const _fs = fs.createReadStream(_reportOutput[0]);
                               _fs.on("end", async () => {
-                                const rptPath = _reportOutput[0];
+                                const rptPath = fs.createReadStream(
+                                  _reportOutput[0]
+                                );
+                                //  = _reportOutput[0];
+
                                 if (qrCodeReport) {
                                   try {
                                     const form = new FormData();
                                     form.append(
                                       "file",
-                                      fs.createReadStream(rptPath)
+                                      rptPath
+                                      // fs.createReadStream(rptPath)
                                     );
                                     form.append("shortUrl", shortUrl);
                                     await axios
@@ -850,24 +854,32 @@ export default {
                                     );
                                   }
                                 }
-                                if (reportToPortal === "true") {
-                                  const rptParameters =
-                                    _inputParam.reportParams;
-                                  const portal_patient_identity =
-                                    rptParameters.find(
-                                      (f) => f.name === "patient_identity"
-                                    ).value;
-                                  const portal_service_id = rptParameters.find(
-                                    (f) => f.name === "service_id"
-                                  )?.value;
-                                  const portal_visit_code = rptParameters.find(
-                                    (f) => f.name === "visit_code"
-                                  ).value;
 
+                                // fs.unlink(_reportOutput[0]);
+                              });
+                              if (reportToPortal === "true") {
+                                const rptParameters = _inputParam.reportParams;
+                                const portal_patient_identity =
+                                  rptParameters.find(
+                                    (f) => f.name === "patient_identity"
+                                  ).value;
+                                const portal_service_id = rptParameters.find(
+                                  (f) => f.name === "service_id"
+                                )?.value;
+                                const portal_visit_code = rptParameters.find(
+                                  (f) => f.name === "visit_code"
+                                ).value;
+
+                                if (
+                                  portal_patient_identity &&
+                                  portal_service_id &&
+                                  portal_visit_code
+                                ) {
                                   const formD = new FormData();
                                   formD.append(
                                     "file",
-                                    fs.createReadStream(rptPath)
+                                    _fs
+                                    // fs.createReadStream(rptPath)
                                   );
                                   formD.append(
                                     "details",
@@ -884,22 +896,7 @@ export default {
                                     rpt_type ?? "PATIENT_REPORT"
                                   );
 
-                                  await axios
-                                    // .post(
-                                    //   `${portalUrl}api/v1/report/upload`,
-                                    //   {
-                                    //     fileCompletePath: rptPath,
-                                    //     details: {
-                                    //       patient_identity:
-                                    //         portal_patient_identity,
-                                    //       service_id: portal_service_id,
-                                    //       visit_code: portal_visit_code,
-                                    //       hospital_id:
-                                    //         req.userIdentity["hospital_id"],
-                                    //     },
-                                    //     rpt_type: rpt_type ?? "PATIENT_REPORT",
-                                    //   }
-                                    // )
+                                  axios
                                     .post(
                                       `${portalUrl}api/v1/report/upload`,
                                       formD,
@@ -907,13 +904,15 @@ export default {
                                         headers: { ...formD.getHeaders() },
                                       }
                                     )
+                                    .then(() => {
+                                      console.log("report updated succesfully");
+                                    })
                                     .catch((error) => {
                                       console.log("error ====> ", error);
                                       // console.error(error.message);
                                     });
                                 }
-                                fs.unlink(_reportOutput[0]);
-                              });
+                              }
                               _fs.pipe(res);
                             } else {
                               _mysql.releaseConnection();
