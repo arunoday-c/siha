@@ -1,13 +1,14 @@
 {{{importStyle "css/algaehReportStyles.css"}}}
 <style>
   .texttruncate{ text-overflow: ellipsis; overflow: hidden;white-space: nowrap;
-  } @page { margin: 0; size: landscape; } .sheet { margin: 0; overflow: hidden;
-  position: relative; box-sizing: border-box; page-break-after: always; }
+  } 
+
   img.specimenBarcode { height:18px; margin-bottom: 3px;}
 </style>
-<body style="width: 100%;">
-  {{#each header}}<div class="print-body" style="page-break-before: always; page-break-after: always;margin: 0;">
-    <div class="barcodeLine" style="">
+<body>
+ 
+    {{#each header}}
+    <div class="barcodeLine" style="page-break-before: always; page-break-after: always;margin: 0;">
       <small
         class="small-left texttruncate"
         style="width:
@@ -48,7 +49,8 @@
       {{/ifExist}}
 
       {{!-- <small class="small-center"><b>{{lab_id_number}}</b></small> --}}
+       {{/each }}
     </div>
-     {{/each }}
-  </div>
+    
+  
 </body>

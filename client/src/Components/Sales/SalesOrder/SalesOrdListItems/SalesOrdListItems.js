@@ -388,7 +388,37 @@ class SalesOrdListItems extends Component {
                                 label={{ forceLabel: "Unit Cost" }}
                               />
                             ),
-                            disabled: true,
+                            displayTemplate: (row) => {
+                              debugger;
+                              return this.state.edit_price === true &&
+                                parseFloat(row.quantity_outstanding) ===
+                                  parseFloat(row.quantity) ? (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    decimal: { allowNegative: false },
+                                    value: row.unit_cost,
+                                    className: "txt-fld",
+                                    name: "unit_cost",
+                                    events: {
+                                      onChange: onchangegridcol.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      ),
+                                    },
+                                    others: {
+                                      onFocus: (e) => {
+                                        e.target.oldvalue = e.target.value;
+                                      },
+                                    },
+                                  }}
+                                />
+                              ) : (
+                                row.unit_cost
+                              );
+                            },
                             others: {
                               minWidth: 90,
                             },

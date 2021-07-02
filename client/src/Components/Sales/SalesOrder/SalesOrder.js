@@ -108,6 +108,8 @@ class SalesOrder extends Component {
       loading: false,
       is_posted: "N",
       is_revert: "N",
+      edit_price: false,
+      revertDisable: true,
     };
   }
 
@@ -1248,7 +1250,7 @@ class SalesOrder extends Component {
                     <button
                       type="button"
                       className="btn btn-danger"
-                      disabled={this.state.cancelDisable}
+                      disabled={this.state.revertDisable}
                       onClick={() => {
                         this.setState({ rejectVisible: true });
                       }}
@@ -1258,18 +1260,37 @@ class SalesOrder extends Component {
                       />
                     </button>
                   </AlgaehSecurityComponent>
-                  {this.state.sales_order_mode === "S" ? (
-                    <AlgaehSecurityComponent componentCode="SALES_ORD_CANCEL">
+
+                  <AlgaehSecurityComponent componentCode="SALES_ORD_CANCEL">
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      disabled={this.state.cancelDisable}
+                      onClick={() => {
+                        this.setState({ cancelVisible: true });
+                      }}
+                    >
+                      <AlgaehLabel
+                        label={{ forceLabel: "Cancel", returnText: true }}
+                      />
+                    </button>
+                  </AlgaehSecurityComponent>
+
+                  {this.state.invoice_generated === "N" ? (
+                    <AlgaehSecurityComponent componentCode="SALES_ORD_EDIT_PRICE">
                       <button
                         type="button"
-                        className="btn btn-danger"
-                        disabled={this.state.cancelDisable}
+                        className="btn btn-other"
+                        disabled={this.state.edit_price}
                         onClick={() => {
-                          this.setState({ cancelVisible: true });
+                          this.setState({
+                            edit_price: true,
+                            saveEnable: false,
+                          });
                         }}
                       >
                         <AlgaehLabel
-                          label={{ forceLabel: "Cancel", returnText: true }}
+                          label={{ forceLabel: "Edit Price", returnText: true }}
                         />
                       </button>
                     </AlgaehSecurityComponent>
