@@ -118,11 +118,89 @@ const BulkSampleCollection = ($this, context) => {
   const data = $this.state.test_details;
 
   const filterData = data.filter((f) => f.checked && f.collected === "N");
-
-  console.log("filterData", filterData);
+  const addedData = filterData.map((item) => {
+    return {
+      hims_f_lab_order_id: item.hims_f_lab_order_id,
+      hims_d_lab_sample_id: item.hims_d_lab_sample_id,
+      visit_id: item.visit_id,
+      order_id: item.hims_f_lab_order_id,
+      sample_id: item.sample_id,
+      collected: "Y",
+      status: "N",
+      hims_d_hospital_id: $this.state.hospital_id,
+      service_id: item.service_id,
+      service_code: item.service_code,
+      send_out_test: item.send_out_test,
+      container_id: item.container_id,
+      test_id: item.hims_d_investigation_test_id,
+      container_code: item.container_code,
+      lab_id_number: item.lab_id_number,
+    };
+  });
+  debugger;
+  console.log(
+    "filterData",
+    filterData,
+    process.env.REACT_APP_PORTAL_HOST,
+    PORTAL_HOST
+  );
   if (filterData.length > 0) {
     // return;
-    filterData.map((row) => CollectSample($this, context, row));
+    algaehApiCall({
+      uri: "/laboratory/bulkSampleCollection",
+      module: "laboratory",
+      data: {
+        bulkCollection: addedData,
+        portal_exists: $this.state.portal_exists,
+        PORTAL_HOST: "http://1http://124.40.244.150//publisher/api/v1",
+      },
+      method: "PUT",
+      onSuccess: (response) => {
+        if (response.data.success === true) {
+          debugger;
+          // let test_details = $this.state.test_details;
+
+          // for (let i = 0; i < test_details.length; i++) {
+          //   if (
+          //     test_details[i].visit_id === row.visit_id &&
+          //     test_details[i].sample_id === row.sample_id
+          //   ) {
+          //     test_details[i].collected = response.data.records.collected;
+          //     test_details[i].collected_by = response.data.records.collected_by;
+          //     test_details[i].collected_date =
+          //       response.data.records.collected_date;
+          //     test_details[i].barcode_gen = response.data.records.barcode_gen;
+          //   }
+          // }
+
+          // $this.setState({ test_details: test_details }, () => {
+          //   if (sockets.connected) {
+          //     sockets.emit("specimen_acknowledge", {
+          //       test_details: test_details,
+          //       collected_date: response.data.records.collected_date,
+          //     });
+          //   }
+          //   swalMessage({
+          //     title: "Collected Successfully",
+          //     type: "success",
+          //   });
+          // });
+
+          // if (context !== undefined) {
+          //   context.updateState({ test_details: [...test_details] });
+          //   $this.setState({ test_details: [...test_details] });
+          // }
+        }
+        AlgaehLoader({ show: false });
+      },
+      onFailure: (error) => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.response.data.message || error.message,
+          type: "error",
+        });
+      },
+    });
   } else {
     swalMessage({
       title: "No sample to collect",

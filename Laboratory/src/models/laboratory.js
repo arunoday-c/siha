@@ -9,7 +9,10 @@ import _ from "lodash";
 import newAxios from "algaeh-utilities/axios";
 import algaehMail from "algaeh-utilities/mail-send";
 
-export default {
+import axios from "axios";
+
+// export default
+const labModal = {
   getLabOrderedServices: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
@@ -1052,12 +1055,11 @@ export default {
       next(e);
     }
   },
-
-  updateLabOrderServices: (req, res, next) => {
+  updateLabOrderServices: async (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       let inputParam = { ...req.body };
-      console.log("updateLabOrderServices");
+      console.log("updateLabOrderServices", inputParam);
       // consol.log("updateLabOrderServices");
 
       return new Promise((resolve, reject) => {
@@ -1252,13 +1254,18 @@ export default {
                   })
                   .then((result) => {
                     _mysql.commitTransaction(() => {
+                      console.log("completedddddddddddd");
                       _mysql.releaseConnection();
                       req.records = {
                         collected: inputParam.collected,
                         collected_by: req.userIdentity.algaeh_d_app_user_id,
                         collected_date: new Date(),
                       };
+                      // if (inputParam.bulkBarcode) {
+                      //   return;
+                      // } else {
                       next();
+                      // }
                     });
                   })
                   .catch((e) => {
@@ -2711,3 +2718,125 @@ export default {
     }
   },
 };
+export default labModal;
+
+export async function bulkSampleCollection(req, res, next) {
+  const _mysql = new algaehMysql();
+
+  try {
+    const input = req.body;
+    console.log("inputttttttttt", input.bulkCollection);
+    // for (let i = 0; i < input.bulkCollection.length; i++) {
+    //   req.body = {
+    //     ...input.bulkCollection[i],
+    //     bulkBarcode:
+    //       parseInt(i) + 1 === input.bulkCollection.length ? false : true,
+    //     // portal_exits: input.portal_exits,
+    //   };
+    //   console.log("inputttttttttt", req.body);
+    //   (function (i) {
+    input.bulkCollection.forEach((item, i) => {
+      req.body = {
+        ...item,
+
+        // portal_exits: input.portal_exits,
+      };
+      setTimeout(async () => {
+        //   console.log("inputttttttttt", i);
+
+        await labModal.updateLabOrderServices(req, res, next);
+        // .then((res) => {
+
+        // const portal_data = {
+        //   service_id: item.service_id,
+        //   visit_code: item.visit_code,
+        //   patient_identity: item.primary_id_no,
+        //   service_status: "SAMPLE COLLECTED",
+        // };
+        // axios
+        //   .post(`${input.PORTAL_HOST}/info/deletePatientService`, portal_data)
+        //   .then(function (response) {
+        //     //handle success
+        //     console.log(response);
+        //   })
+        //   .catch(function (response) {
+        //     //handle error
+        //     _mysql.releaseConnection();
+        //     next();
+        //     console.log(response);
+        //   });
+      }, 3000 * i);
+    });
+    // setTimeout(async () => {
+    //   //   console.log("inputttttttttt", i);
+
+    //   await labModal.updateLabOrderServices(req, res, next);
+    //   // .then((res) => {
+
+    //   // const portal_data = {
+    //   //   service_id: input.bulkCollection[i].service_id,
+    //   //   visit_code: input.bulkCollection[i].visit_code,
+    //   //   patient_identity: input.bulkCollection[i].primary_id_no,
+    //   //   service_status: "SAMPLE COLLECTED",
+    //   // };
+    //   // axios
+    //   //   .post(
+    //   //     `${input.PORTAL_HOST}/info/deletePatientService`,
+    //   //     portal_data
+    //   //   )
+    //   //   .then(function (response) {
+    //   //     //handle success
+    //   //     console.log(response);
+    //   //   })
+    //   //   .catch(function (response) {
+    //   //     //handle error
+    //   //     _mysql.releaseConnection();
+    //   //     next();
+    //   //     console.log(response);
+    //   //   });
+    //   // });
+    // }, 3000);
+    // })(i);
+
+    // setTimeout(
+    //   async () => {
+    //     //   console.log("inputttttttttt", i);
+    //     await labModal.updateLabOrderServices(req, res, next).then((res) => {
+    //       console.log("hererererererererer hererererrere");
+    //       const portal_data = {
+    //         service_id: input.bulkCollection[i].service_id,
+    //         visit_code: input.bulkCollection[i].visit_code,
+    //         patient_identity: input.bulkCollection[i].primary_id_no,
+    //         service_status: "SAMPLE COLLECTED",
+    //       };
+    //       axios
+    //         .post(
+    //           `${input.PORTAL_HOST}/info/deletePatientService`,
+    //           portal_data
+    //         )
+    //         .then(function (response) {
+    //           //handle success
+    //           console.log(response);
+    //         })
+    //         .catch(function (response) {
+    //           //handle error
+    //           _mysql.releaseConnection();
+    //           next();
+    //           console.log(response);
+    //         });
+    //     });
+    //   },
+    //   2000,
+    //   [i]
+    // );
+
+    _mysql.releaseConnection();
+    console.log("hererererererererer hererererrere");
+    // next();
+  } catch (e) {
+    // _mysql.releaseConnection();
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+}

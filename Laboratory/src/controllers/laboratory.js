@@ -1,6 +1,6 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import labModels from "../models/laboratory";
+import labModels, { bulkSampleCollection } from "../models/laboratory";
 import { labResultDispatch } from "../models/labDispatch";
 const {
   getLabOrderedServices,
@@ -71,6 +71,13 @@ export default () => {
     }
   );
   api.get("/top10LabOrders", top10LabOrders, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+
+  api.put("/bulkSampleCollection", bulkSampleCollection, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records,
