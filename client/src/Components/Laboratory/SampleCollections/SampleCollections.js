@@ -48,6 +48,7 @@ class SampleCollectionPatient extends PureComponent {
       hospital_id: null,
       send_out_test: "N",
       editableGrid: false,
+      // showCheckBoxColumn: false,
       bulkGenerate: [],
       checkAll: STATUS.UNCHECK,
     };
@@ -57,6 +58,27 @@ class SampleCollectionPatient extends PureComponent {
   static contextType = MainContext;
   componentDidMount() {
     const userToken = this.context.userToken;
+
+    // RawSecurityComponent({ componentCode: "ID_NOTIFY_EXP" }).then((result) => {
+
+    //   if (result === "hide") {
+    //     this.setState({ showCheckBoxColumn: true });
+    //   }
+    // });
+
+    // RawSecurityComponent({ componentCode: "BTN_BLK_SAM_BAR_COL" }).then(
+    //   (result) => {
+    //     debugger;
+    //     console.log("result===", result);
+    //     if (result === "hide") {
+
+    //       this.setState({ showCheckBoxColumn: false });
+    //     } else {
+
+    //       this.setState({ showCheckBoxColumn: true });
+    //     }
+    //   }
+    // );
 
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
@@ -131,6 +153,21 @@ class SampleCollectionPatient extends PureComponent {
         }
       }
     );
+
+    // RawSecurityComponent({ componentCode: "BTN_BLK_SAM_BAR_COL" }).then(
+    //   (result) => {
+    //     console.log("result===", result);
+    //     if (result === "hide") {
+    //       console.log("1===", result);
+    //       this.setState({ showCheckBoxColumn: false });
+    //     } else {
+    //       console.log("2===", result);
+    //       this.setState({
+    //         showCheckBoxColumn: "true",
+    //       });
+    //     }
+    //   }
+    // );
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.selected_patient !== null) {
@@ -416,9 +453,10 @@ class SampleCollectionPatient extends PureComponent {
                                     </span>
                                   );
                                 },
+
                                 others: {
                                   maxWidth: 100,
-                                  resizable: false,
+                                  // resizable: false,
                                   style: { textAlign: "center" },
                                 },
                               },
@@ -464,45 +502,44 @@ class SampleCollectionPatient extends PureComponent {
                               //     filterable: false,
                               //   },
                               // },
-                              {
-                                label: (
-                                  <input
-                                    type="checkbox"
-                                    defaultChecked={
-                                      this.state.checkAll === "CHECK"
-                                        ? true
-                                        : false
-                                    }
-                                    ref={(input) => {
-                                      this.allChecked = input;
-                                    }}
-                                    onChange={this.selectAll.bind(
-                                      this,
-                                      context
-                                    )}
-                                  />
-                                ),
-                                fieldName: "select",
-                                displayTemplate: (row) => (
-                                  <input
-                                    type="checkbox"
-                                    checked={row.checked}
-                                    // disabled={
-                                    //   row.collected === "Y" ? true : false
-                                    // }
-                                    onChange={this.selectToGenerateBarcode.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )}
-                                  />
-                                ),
-                                others: {
-                                  minWidth: 50,
-                                  filterable: false,
-                                  sortable: false,
-                                },
-                              },
+                              // {
+                              //   label: (
+                              //     <input
+                              //       type="checkbox"
+                              //       defaultChecked={
+                              //         this.state.checkAll === "CHECK"
+                              //           ? true
+                              //           : false
+                              //       }
+                              //       ref={(input) => {
+                              //         this.allChecked = input;
+                              //       }}
+                              //       onChange={this.selectAll.bind(
+                              //         this,
+                              //         context
+                              //       )}
+                              //     />
+                              //   ),
+                              //   fieldName: "select",
+                              //   displayTemplate: (row) => {
+                              //     return (
+                              //       <input
+                              //         type="checkbox"
+                              //         checked={row.checked}
+                              //         onChange={this.selectToGenerateBarcode.bind(
+                              //           this,
+                              //           this,
+                              //           row
+                              //         )}
+                              //       />
+                              //     );
+                              //   },
+                              //   others: {
+                              //     minWidth: 50,
+                              //     filterable: false,
+                              //     sortable: false,
+                              //   },
+                              // },
                               {
                                 fieldName: "billed",
                                 label: (
@@ -521,7 +558,7 @@ class SampleCollectionPatient extends PureComponent {
                                     : "Billed";
                                 },
                                 others: {
-                                  resizable: false,
+                                  // resizable: false,
                                   style: { textAlign: "center" },
                                 },
                               },
@@ -552,7 +589,7 @@ class SampleCollectionPatient extends PureComponent {
                                 },
                                 disabled: true,
                                 others: {
-                                  resizable: false,
+                                  // resizable: false,
                                   style: { textAlign: "center" },
                                 },
                               },
@@ -567,7 +604,7 @@ class SampleCollectionPatient extends PureComponent {
                                   return row.service_code;
                                 },
                                 others: {
-                                  resizable: false,
+                                  // resizable: false,
                                   style: { textAlign: "center" },
                                 },
                               },
@@ -583,7 +620,7 @@ class SampleCollectionPatient extends PureComponent {
                                 },
                                 others: {
                                   minWidth: 250,
-                                  resizable: false,
+                                  // resizable: false,
                                   style: { textAlign: "center" },
                                 },
                               },
@@ -670,7 +707,7 @@ class SampleCollectionPatient extends PureComponent {
                                 },
                                 others: {
                                   maxWidth: 200,
-                                  resizable: false,
+                                  // resizable: false,
                                   style: { textAlign: "center" },
                                 },
                               },
@@ -757,7 +794,7 @@ class SampleCollectionPatient extends PureComponent {
                                 },
                                 others: {
                                   maxWidth: 200,
-                                  resizable: false,
+                                  // resizable: false,
                                   style: { textAlign: "center" },
                                 },
                               },
@@ -836,7 +873,7 @@ class SampleCollectionPatient extends PureComponent {
                                 },
                                 others: {
                                   maxWidth: 200,
-                                  resizable: false,
+                                  // resizable: false,
                                   style: { textAlign: "center" },
                                 },
                               },
@@ -916,7 +953,7 @@ class SampleCollectionPatient extends PureComponent {
                                 },
                                 others: {
                                   maxWidth: 200,
-                                  resizable: false,
+                                  // resizable: false,
                                   style: { textAlign: "center" },
                                 },
                               },
@@ -1007,7 +1044,7 @@ class SampleCollectionPatient extends PureComponent {
                                   }
                                 },
                                 others: {
-                                  resizable: false,
+                                  // resizable: false,
                                   style: { textAlign: "center" },
                                 },
                               },
@@ -1020,7 +1057,7 @@ class SampleCollectionPatient extends PureComponent {
                                 ),
                                 displayTemplate: (row) => {
                                   return row.status === "O"
-                                    ? "ordered"
+                                    ? "Ordered"
                                     : row.status === "CL"
                                     ? "Collected"
                                     : row.status === "CN"
@@ -1076,7 +1113,7 @@ class SampleCollectionPatient extends PureComponent {
                                   );
                                 },
                                 // others: {
-                                //   resizable: false,
+                                //   // resizable: false,
                                 //   style: { textAlign: "center" }
                                 // }
                               },
@@ -1125,7 +1162,7 @@ class SampleCollectionPatient extends PureComponent {
                                   );
                                 },
                                 others: {
-                                  resizable: false,
+                                  // resizable: false,
                                   style: { textAlign: "center" },
                                 },
                               },
@@ -1160,7 +1197,7 @@ class SampleCollectionPatient extends PureComponent {
                                   );
                                 },
                                 others: {
-                                  resizable: false,
+                                  // resizable: false,
                                   style: { textAlign: "center" },
                                 },
                               },
@@ -1176,7 +1213,7 @@ class SampleCollectionPatient extends PureComponent {
                                 },
                                 others: {
                                   maxWidth: 200,
-                                  resizable: false,
+                                  // resizable: false,
                                   style: { textAlign: "center" },
                                 },
                               },
@@ -1190,7 +1227,7 @@ class SampleCollectionPatient extends PureComponent {
                               ),
                             }}
                             noDataText="No sample for collection"
-                            isEditable={this.state.editableGrid}
+                            // isEditable={this.state.editableGrid}
                             pageOptions={{ rows: 20, page: 1 }}
                             isFilterable={true}
                             pagination={true}
@@ -1227,6 +1264,8 @@ class SampleCollectionPatient extends PureComponent {
                                 }}
                               />
                             </button>
+                          </AlgaehSecurityComponent>
+                          <AlgaehSecurityComponent componentCode="BTN_BLK_SAM_BAR_COL">
                             <button
                               className="btn btn-other"
                               onClick={BulkSampleCollection.bind(
@@ -1241,6 +1280,8 @@ class SampleCollectionPatient extends PureComponent {
                                 }}
                               />
                             </button>
+                          </AlgaehSecurityComponent>
+                          <AlgaehSecurityComponent componentCode="BTN_BLK_SAM_BAR_COL">
                             <button
                               className="btn btn-other"
                               onClick={printBulkBarcode.bind(
