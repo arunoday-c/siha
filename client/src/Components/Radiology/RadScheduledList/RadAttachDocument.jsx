@@ -6,7 +6,12 @@ import { swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 const { Dragger } = Upload;
 
-export default function RadAttachDocument({ row, openModal, CloseModal }) {
+export default function RadAttachDocument({
+  row,
+  openModal,
+  state,
+  CloseModal,
+}) {
   useEffect(() => {
     getDocuments(row.hims_f_rad_order_id);
   }, []);
@@ -45,13 +50,14 @@ export default function RadAttachDocument({ row, openModal, CloseModal }) {
     const formData = new FormData();
     formData.append("doc_number", contract_no);
     formData.append("nameOfTheFolder", "RadiologyDocuments");
+    formData.append("PatientFolderName", row.patient_code);
     files.forEach((file, index) => {
       formData.append(`file_${index}`, file, file.name);
       formData.append("fileName", file.name);
     });
 
     newAlgaehApi({
-      uri: "/uploadDocumentCommon",
+      uri: "/uploadPatientDoc",
       data: formData,
       extraHeaders: { "Content-Type": "multipart/form-data" },
       method: "POST",
@@ -74,13 +80,44 @@ export default function RadAttachDocument({ row, openModal, CloseModal }) {
         });
       });
   };
+  const downloadDoc = (doc) => {
+    newAlgaehApi({
+      uri: "/downloadPatDocument",
+      module: "documentManagement",
+      method: "GET",
+      extraHeaders: {
+        Accept: "blob",
+      },
+      others: {
+        responseType: "blob",
+      },
+      data: {
+        fileName: doc.value,
+      },
+    })
+      .then((resp) => {
+        const urlBlob = URL.createObjectURL(resp.data);
+        const link = document.createElement("a");
+        link.download = doc.name;
+        link.href = urlBlob;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((error) => {
+        console.log(error);
+        // setLoading(false);
+      });
+  };
+
   const getDocuments = (doc_no) => {
     newAlgaehApi({
-      uri: "/getUploadedCommonFile",
+      uri: "/getUploadedPatientFiles",
       module: "documentManagement",
       method: "GET",
       data: {
         doc_number: doc_no,
+        filePath: `PatientDocuments/${row.patient_code}/RadiologyDocuments/${doc_no}/`,
       },
     })
       .then((res) => {
@@ -100,25 +137,29 @@ export default function RadAttachDocument({ row, openModal, CloseModal }) {
   };
   const onDelete = (doc) => {
     newAlgaehApi({
-      uri: "/deleteCommonFile",
+      uri: "/deletePatientDocs",
       method: "DELETE",
       module: "documentManagement",
       data: {
-        ...doc,
-        doc_number: row.hims_f_rad_order_id,
-        docUploadedFolder: "RadiologyDocuments",
+        completePath: doc.value,
       },
     })
       .then((res) => {
         if (res.data.success) {
-          const radiologyDocuments = radiologyDoc.filter(
-            (item) => item._id !== doc._id
+          const radiologyDocuments = radiologyDocList.filter(
+            (item) => item.value !== doc.value
           );
-          return setRadiologyDoc(radiologyDocuments);
+
+          swalMessage({
+            type: "success",
+            title: "Document Deleted Successfully",
+          });
+          // getDocuments(row.hims_f_rad_order_id);
+          return setRadiologyDocList(radiologyDocuments);
         }
       })
       .catch((e) => {});
-    getDocuments(row.hims_f_rad_order_id);
+    // getDocuments(row.hims_f_rad_order_id);
   };
   return (
     <div>
@@ -224,24 +265,12 @@ export default function RadAttachDocument({ row, openModal, CloseModal }) {
                         radiologyDocList.map((doc) => {
                           return (
                             <li>
-                              <b> {doc.filename} </b>
+                              <b> {doc.name} </b>
                               <span>
-                                <a
-                                  href={`${window.location.protocol}//${
-                                    window.location.hostname
-                                  }${
-                                    window.location.port === ""
-                                      ? "/docserver"
-                                      : `:3006`
-                                  }/UPLOAD/RadiologyDocuments/${
-                                    row.hims_f_rad_order_id
-                                  }/${doc._id}__ALGAEH__${doc.filename}`}
-                                  download
-                                  target="_blank"
-                                >
+                                <a>
                                   <i
                                     className="fas fa-download"
-                                    // onClick={() => downloadDoc(doc)}
+                                    onClick={() => downloadDoc(doc)}
                                   ></i>
                                 </a>
 

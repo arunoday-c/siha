@@ -38,6 +38,13 @@ import {
   uploadFromFilePath,
 } from "../files/docUploadingCommon";
 import {
+  uploadPatientDoc,
+  getUploadedPatientFiles,
+  downloadPatDocument,
+  deletePatientDocs,
+} from "../files/patientDocumentsUpload";
+
+import {
   getAllNotifications,
   deleteNotification,
   seenNotification,
@@ -56,6 +63,11 @@ initializedDb((db) => {
   router.delete("/deleteInvItemImg", deleteInvItemImg);
   router.get("/uploadFromFilePath", uploadFromFilePath);
   router.post("/uploadDocumentCommon", uploadDocumentCommon);
+  router.post("/uploadPatientDoc", uploadPatientDoc);
+  router.get("/getUploadedPatientFiles", getUploadedPatientFiles);
+  router.get("/downloadPatDocument", downloadPatDocument);
+  router.delete("/deletePatientDocs", deletePatientDocs);
+
   router.get("/getUploadedCommonFile", getUploadedCommonFile);
   router.delete("/deleteCommonFile", deleteCommonFile);
   router.get("/getUploadedSubFile", getUploadedSubFile);
