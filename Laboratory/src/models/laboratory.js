@@ -1111,7 +1111,7 @@ const labModal = {
             UPDATE hims_f_lab_sample S \
             INNER JOIN hims_f_lab_order L ON S.order_id = L.hims_f_lab_order_id \
             SET S.`container_id`=?, S.`sample_id`=?, S.`collected`=?, S.`status`=?, S.`collected_by`=?,\
-            S.`collected_date` =now(), S.`barcode_gen` = now() WHERE L.visit_id=? and S.sample_id=?;",
+            S.`collected_date` =now(), S.`barcode_gen` = now() WHERE S.collected='N' and S.status='N' and L.billed='Y' and L.visit_id=? and S.sample_id=?;",
             [
               inputParam.container_id,
               inputParam.hims_d_hospital_id,
@@ -1255,7 +1255,8 @@ const labModal = {
                       inputParam.visit_id +
                       " and S.sample_id=" +
                       inputParam.sample_id +
-                      " and S.status='N';",
+                      " and L.billed='Y' and S.status='N' and S.collected='N' ;",
+
                     values: condition,
                     printQuery: true,
                   })
