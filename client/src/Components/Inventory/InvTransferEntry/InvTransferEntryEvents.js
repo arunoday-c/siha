@@ -294,6 +294,8 @@ const SaveTransferEntry = ($this) => {
 
   InputObj.stock_detail = stock_detail;
 
+  debugger;
+
   const settings = { header: undefined, footer: undefined };
   algaehApiCall({
     uri: "/inventorytransferEntry/addtransferEntry",

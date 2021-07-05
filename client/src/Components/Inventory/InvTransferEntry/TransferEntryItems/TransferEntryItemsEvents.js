@@ -27,20 +27,18 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
     let qtyhand = 0;
     let unit_cost = 0;
 
-    debugger;
-
     if (
       parseFloat($this.state.sales_conversion_factor) ===
       parseFloat(e.selected.conversion_factor)
     ) {
-      unit_cost = $this.state.Real_unit_cost;
+      unit_cost = $this.state.unit_cost;
       qtyhand = parseFloat($this.state.sales_qtyhand);
     } else if (
       parseFloat($this.state.sales_conversion_factor) >
       parseFloat(e.selected.conversion_factor)
     ) {
       unit_cost =
-        parseFloat($this.state.Real_unit_cost) /
+        parseFloat($this.state.unit_cost) /
         parseFloat(e.selected.conversion_factor);
       qtyhand =
         parseFloat($this.state.sales_qtyhand) *
@@ -51,7 +49,7 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
         parseFloat(e.selected.conversion_factor);
       unit_cost =
         parseFloat(e.selected.conversion_factor) *
-        parseFloat($this.state.Real_unit_cost);
+        parseFloat($this.state.unit_cost);
     }
 
     $this.setState({
@@ -630,7 +628,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
       onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
-          debugger;
+
           if (data.locationResult.length > 0) {
             const sales_conversion_factor = _.find(
               data.uomResult,

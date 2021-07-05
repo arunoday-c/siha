@@ -115,7 +115,7 @@ export default {
             INNER JOIN hims_d_inventory_uom IU ON (IU.hims_d_inventory_uom_id = IM.stocking_uom_id or IU.hims_d_inventory_uom_id = H.transaction_uom)\
             WHERE H.record_status = 'A' " +
             _strAppend +
-            " GROUP BY hims_f_inventory_trans_history_id",
+            " GROUP BY hims_f_inventory_trans_history_id ORDER BY hims_f_inventory_trans_history_id",
           printQuery: true,
         })
         .then((result) => {
