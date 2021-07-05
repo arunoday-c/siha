@@ -51,17 +51,6 @@ class InvItemMomentEnquiry extends Component {
   }
 
   componentDidMount() {
-    this.props.getItems({
-      uri: "/inventory/getItemMaster",
-      module: "inventory",
-      method: "GET",
-      data: { item_status: "A" },
-      redux: {
-        type: "ITEM_GET_DATA",
-        mappingName: "inventoryitemlist",
-      },
-    });
-
     this.props.getLocation({
       uri: "/inventory/getInventoryLocation",
       module: "inventory",
@@ -181,26 +170,6 @@ class InvItemMomentEnquiry extends Component {
                       this.attReg = attReg;
                     }}
                   />
-                  {/* <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "Item Name" }}
-                    selector={{
-                      name: "item_code_id",
-                      className: "select-fld",
-                      value: this.state.item_code_id,
-                      dataSource: {
-                        textField: "item_description",
-                        valueField: "hims_d_inventory_item_master_id",
-                        data: this.props.inventoryitemlist,
-                      },
-                      onChange: changeTexts.bind(this, this),
-                      onClear: () => {
-                        this.setState({
-                          item_code_id: null,
-                        });
-                      },
-                    }}
-                  /> */}
 
                   <AlagehFormGroup
                     div={{ className: "col" }}
@@ -383,59 +352,36 @@ class InvItemMomentEnquiry extends Component {
                       },
                     },
                     {
-                      fieldName: "item_code_id",
+                      fieldName: "item_description",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                       ),
-                      displayTemplate: (row) => {
-                        let display =
-                          this.props.inventoryitemlist === undefined
-                            ? []
-                            : this.props.inventoryitemlist.filter(
-                                (f) =>
-                                  f.hims_d_inventory_item_master_id ===
-                                  row.item_code_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== null && display.length !== 0
-                              ? display[0].item_description
-                              : ""}
-                            {/* {display !== null && display.length !== 0 ? (
-                             
-                            ) : (
-                              ""
-                            )} */}
-                          </span>
-                        );
-                      },
                     },
                     {
-                      fieldName: "transaction_uom",
+                      fieldName: "trans_uom",
                       label: (
                         <AlgaehLabel
-                          label={{ forceLabel: "Unit of Measure" }}
+                          label={{ forceLabel: "Transaction UOM" }}
                         />
                       ),
-                      displayTemplate: (row) => {
-                        let display =
-                          this.props.inventoryitemuom === undefined
-                            ? []
-                            : this.props.inventoryitemuom.filter(
-                                (f) =>
-                                  f.hims_d_inventory_uom_id ===
-                                  row.transaction_uom
-                              );
+                      // displayTemplate: (row) => {
+                      //   let display =
+                      //     this.props.inventoryitemuom === undefined
+                      //       ? []
+                      //       : this.props.inventoryitemuom.filter(
+                      //           (f) =>
+                      //             f.hims_d_inventory_uom_id ===
+                      //             row.transaction_uom
+                      //         );
 
-                        return (
-                          <span>
-                            {display !== null && display.length !== 0
-                              ? display[0].uom_description
-                              : ""}
-                          </span>
-                        );
-                      },
+                      //   return (
+                      //     <span>
+                      //       {display !== null && display.length !== 0
+                      //         ? display[0].uom_description
+                      //         : ""}
+                      //     </span>
+                      //   );
+                      // },
                       others: {
                         filterable: false,
                       },
@@ -515,7 +461,9 @@ class InvItemMomentEnquiry extends Component {
                         />
                       ),
                       displayTemplate: (row) => {
-                        return parseFloat(row.qtyhand);
+                        return (
+                          parseFloat(row.qtyhand) + "(" + row.stock_uom + ")"
+                        );
                       },
                       others: {
                         filterable: false,
@@ -568,7 +516,6 @@ class InvItemMomentEnquiry extends Component {
 
 function mapStateToProps(state) {
   return {
-    inventoryitemlist: state.inventoryitemlist,
     inventorylocations: state.inventorylocations,
     insuranceitemmoment: state.insuranceitemmoment,
     inventoryitemuom: state.inventoryitemuom,
@@ -578,7 +525,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getItems: AlgaehActions,
       getLocation: AlgaehActions,
       getItemMoment: AlgaehActions,
       getItemUOM: AlgaehActions,
