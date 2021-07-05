@@ -36,52 +36,27 @@
                                 Employees: <b>{{no_employees}}</b></span></td>
 
                     </tr> --}}
-          {{#hasElement result}}
+          {{#hasElement detail}}
 
-            {{#each result}}
-              <tr>
-                <td colspan="5" class="tableSubHdg">{{doctor_name}}</td>
-                <td class="tableSubHdg numberFld">
-                  {{!-- <b
-                  >{{numberFormating net_pat_tax_total ../currencyOnly}}</b> --}}
+           
+  <tr class="numberFld numberFldTotalBottom">
+                  <td class="numberFld" colspan="9">
+                  
                   </td>
-
+                   <td class="numberFld">
+                   {{total_net_amount_total}}
+                  </td>
+           {{#each detail}}
              
-                <td class="tableSubHdg numberFld">
-                  {{!-- <b> {{numberFormating net_pat_pay_total ../currencyOnly}}</b> --}}
-                </td>
-                <td class="tableSubHdg numberFld">
-                  {{!-- <b> {{numberFormating net_comp_tax_total ../currencyOnly}}</b> --}}
-                </td>
-                <td class="tableSubHdg numberFld">
-                  {{!-- <b> {{numberFormating net_comp_pay_total ../currencyOnly}}</b> --}}
-                </td>
-                <td class="tableSubHdg numberFld"><b
-                  > {{numberFormating net_net_amount_total ../currencyOnly}}</b></td>
-
-              </tr>
-              {{#each doctors}}
+           
                 <tr>
                   <td colspan="9" class="tableSubHdg2">
 
                     {{bill_number}}/{{bill_date}}
                   </td>
-                  {{!-- <td class="tableSubHdg2 numberFld">
-                    {{pat_tax_total}}
-                   
-                    </td>
-                  <td class="tableSubHdg2 numberFld">
-                    <b>{{pat_pay_total}}</b>
-                    </td>
-                  <td class="tableSubHdg2 numberFld">
-                    <b>{{comp_tax_total}}</b>
-                  </td>
-                  <td class="tableSubHdg2 numberFld">
-                    <b>{{comp_pay_total}}</b>
-                  </td> --}}
-                  <td class="tableSubHdg2 numberFld"><b>{{numberFormating net_amount_total ../../decimalOnly}}</b></td>
+                  <td class="tableSubHdg2 numberFld"><b>{{net_amount_total}}</b></td>
                 </tr>
-                {{#each docs}}
+                {{#each detailList}}
                   <tr>
                     <td>{{inc @index}}</td>
                     <td class="">{{service_code}}</td>
@@ -94,11 +69,16 @@
                     <td class="numberFld">{{comapany_resp}}</td>
                     <td class="numberFld"><b>{{net_amout}}</b></td>
                   </tr>
-                {{/each}}{{/each}}{{/each}}
-            {{!-- <tr class="numberFldTotalBottom">
+                {{/each}}
+                  {{!-- <tr class="footerTotalDown">
+                        <td colspan="4" class="numberFld"></td>
+                        <td class="numberFld">{{sum_amount}}</td>
+                    </tr> --}}
+                {{/each}}
+            <tr class="numberFldTotalBottom">
               <td colspan="8"></td>
               <td class="numberFld">{{net_total}}</td>
-            </tr> --}}
+            </tr>
           {{else}}
             <tr>
               <td colspan="10" class="noResultTextReport">No Records Found</td>

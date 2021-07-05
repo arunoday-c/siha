@@ -15,18 +15,17 @@ const executePDF = function executePDFMethod(options) {
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
-      let is_SendOut = "";
 
+      let is_SendOut = "";
       if (input.is_SendOut === "Y") {
         is_SendOut = " and LO.send_out_test = 'Y'";
-      } else if (input.SENDOUT_TYPE === "N") {
+      } else if (input.is_SendOut === "N") {
         is_SendOut = " and LO.send_out_test ='N'";
       }
 
       options.mysql
         .executeQuery({
           query: `
-          
           SELECT 
 BH.hims_f_billing_header_id,BH.bill_number,BH.bill_date,
 LO.send_out_test,LO.provider_id,
@@ -46,80 +45,27 @@ BD.service_type_id='5' and BD.cancel_yes_no='N' ${is_SendOut};`,
           values: [input.hospital_id, input.from_date, input.to_date],
           printQuery: true,
         })
-        .then((res) => {
-          options.mysql.releaseConnection();
-          const result = res;
-          const subDepartmentWise = _.chain(result)
-            .groupBy((g) => g.provider_id)
-            .map((subDept) => {
-              const { doctor_name } = subDept[0];
-              const doctors = _.chain(subDept)
-                .groupBy((g) => g.hims_f_billing_header_id)
-                .map((docs) => {
-                  const { bill_number, bill_date } = docs[0];
-
-                  return {
-                    bill_number,
-                    bill_date,
-                    net_amount_total: _.sumBy(docs, (s) =>
-                      parseFloat(s.net_amout)
-                    ),
-                    // totalPatient: patient.length,
-                    // pat_tax_total: _.sumBy(docs, (s) =>
-                    //   parseFloat(s.patient_tax)
-                    // ),
-                    // pat_pay_total: _.sumBy(docs, (s) =>
-                    //   parseFloat(s.patient_resp)
-                    // ),
-                    // comp_tax_total: _.sumBy(docs, (s) =>
-                    //   parseFloat(s.company_tax)
-                    // ),
-                    // comp_pay_total: _.sumBy(docs, (s) =>
-                    //   parseFloat(s.comapany_resp)
-                    // ),
-
-                    docs: docs.map((n) => {
-                      return {
-                        ...n,
-                        // patient_tax: n.patient_tax,
-                        // patient_resp: n.patient_resp,
-                        // company_tax: n.company_tax,
-                        // comapany_resp: n.comapany_resp,
-                        net_amout: n.net_amout,
-                      };
-                    }),
-                  };
-                })
-                .sortBy((s) => s.bill_date)
-                .value();
-
-              console.log(doctors);
-
+        //  const { bill_number, bill_date } = billNo[0];
+        .then((results) => {
+          const result = _.chain(results)
+            .groupBy((g) => g.hims_f_billing_header_id)
+            .map(function (dtl) {
               return {
-                doctor_name,
-                doctors: doctors,
-                // net_pat_tax_total: _.sumBy(doctors, (s) =>
-                //   parseFloat(s.pat_tax_total)
-                // ),
-                // net_pat_pay_total: _.sumBy(doctors, (s) =>
-                //   parseFloat(s.pat_pay_total)
-                // ),
-                // net_comp_tax_total: _.sumBy(doctors, (s) =>
-                //   parseFloat(s.comp_tax_total)
-                // ),
-                // net_comp_pay_total: _.sumBy(doctors, (s) =>
-                //   parseFloat(s.comp_pay_total)
-                // ),
-                net_net_amount_total: _.sumBy(doctors, (s) =>
-                  parseFloat(s.net_amount_total)
-                ),
+                bill_number: dtl[0].bill_number,
+                bill_date: dtl[0].bill_date,
+                net_amount_total: _.sumBy(dtl, (s) => parseFloat(s.net_amout)),
+                detailList: dtl,
               };
             })
+            .sortBy((s) => s.bill_date)
             .value();
+          const total_net_amount_total = _.sumBy(result, (s) =>
+            parseFloat(s.net_amount_total)
+          );
 
           resolve({
-            result: subDepartmentWise,
-
+            detail: result,
+            total_net_amount_total,
             decimalOnly: {
               decimal_places,
               addSymbol: false,
@@ -134,11 +80,8 @@ BD.service_type_id='5' and BD.cancel_yes_no='N' ${is_SendOut};`,
             },
           });
         })
-        .catch((e) => {
-          // console.log("e:", e);
-
+        .catch((error) => {
           options.mysql.releaseConnection();
-          reject(e);
         });
     } catch (e) {
       reject(e);
