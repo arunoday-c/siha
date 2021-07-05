@@ -399,7 +399,7 @@ function HassanNumber() {
                     editorTemplate: (row) => {
                       return (
                         <AlgaehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "" }}
                           label={
                             {
                               // forceLabel: "BED NO.",
@@ -419,6 +419,39 @@ function HassanNumber() {
                           }}
                         />
                       );
+                    },
+                  },
+
+                  {
+                    fieldName: "haasan_updated_by_name",
+                    label: <AlgaehLabel label={{ forceLabel: "Updated By" }} />,
+                    sortable: true,
+                    filterable: true,
+                    disabled: true,
+                    others: {
+                      // resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                    editorTemplate: (row) => {
+                      return row.haasan_updated_by_name;
+                    },
+                  },
+
+                  {
+                    fieldName: "hassan_number_updated_date",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Updated Date" }} />
+                    ),
+                    sortable: true,
+                    filterable: true,
+                    disabled: true,
+                    others: {
+                      // resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                    editorTemplate: (row) => {
+                      debugger;
+                      return row.hassan_number_updated_date;
                     },
                   },
                   {
@@ -455,20 +488,6 @@ function HassanNumber() {
                     },
                   },
                   {
-                    fieldName: "haasan_updated_by_name",
-                    label: <AlgaehLabel label={{ forceLabel: "Updated By" }} />,
-                    sortable: true,
-                    filterable: true,
-                    disabled: true,
-                    others: {
-                      // resizable: false,
-                      style: { textAlign: "center" },
-                    },
-                    editorTemplate: (row) => {
-                      return row.haasan_updated_by_name;
-                    },
-                  },
-                  {
                     fieldName: "hesn_upload_updated_by_name",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Uploaded By" }} />
@@ -482,23 +501,6 @@ function HassanNumber() {
                     },
                     editorTemplate: (row) => {
                       return row.hesn_upload_updated_by_name;
-                    },
-                  },
-                  {
-                    fieldName: "hassan_number_updated_date",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Updated Date" }} />
-                    ),
-                    sortable: true,
-                    filterable: true,
-                    disabled: true,
-                    others: {
-                      // resizable: false,
-                      style: { textAlign: "center" },
-                    },
-                    editorTemplate: (row) => {
-                      debugger;
-                      return row.hassan_number_updated_date;
                     },
                   },
                   {
@@ -525,13 +527,18 @@ function HassanNumber() {
                   onSave: (row) => {
                     if (row.isDirty || row.isDirtyUpdate) {
                       swal({
-                        title: "Are you sure?",
-                        text: `Patient :  ${row.full_name} 
-                     
-                        HESN No: ${row.hassan_number ? row.hassan_number : ""}
-                     
-                        File Updated in HESN:  ${row.hesn_upload}
-                        `,
+                        title: "Please Confirm!",
+                        html:
+                          "Name: " +
+                          row.full_name +
+                          "<br/><br/> ID No.:" +
+                          row.primary_id_no +
+                          "<br/><br/> HESN No.: " +
+                          (row.hassan_number ? row.hassan_number : ""),
+                        //  +
+                        // "<br/> File Updated in HESN:" +
+                        // row.hesn_upload,
+
                         type: "warning",
                         showCancelButton: true,
                         confirmButtonText: "Yes",
