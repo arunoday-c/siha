@@ -983,18 +983,25 @@ const labModal = {
 
       let strQuery = "";
       if (inputParam.isDirty === true) {
-        strQuery = `,hassan_number_updated_date= ${new Date()},hassan_number_updated_by=${
+        strQuery += `,hassan_number_updated_date='${moment(new Date()).format(
+          "YYYY-MM-DD HH:mm:ss"
+        )}',hassan_number_updated_by=${
+          req["userIdentity"].algaeh_d_app_user_id
+        } `;
+      }
+      if (inputParam.isDirtyUpdate === true) {
+        strQuery += `,hesn_upload_updated_date='${moment(new Date()).format(
+          "YYYY-MM-DD HH:mm:ss"
+        )}',hesn_upload_updated_by=${
           req["userIdentity"].algaeh_d_app_user_id
         } `;
       }
       _mysql
         .executeQuery({
-          query: `update hims_f_lab_order set hassan_number=?,hesn_upload=?,hesn_upload_updated_date=?,hesn_upload_updated_by=? ${strQuery} where hims_f_lab_order_id=?;`,
+          query: `update hims_f_lab_order set hassan_number=?,hesn_upload=? ${strQuery} where hims_f_lab_order_id=?;`,
           values: [
             inputParam.hassan_number,
             inputParam.hesn_upload,
-            new Date(),
-            req["userIdentity"].algaeh_d_app_user_id,
 
             inputParam.hims_f_lab_order_id,
           ],

@@ -510,21 +510,21 @@ class SampleCollection extends Component {
               },
             }}
           >
-            {this.state.isOpen ? (
-              <SampleCollectionModal
-                HeaderCaption={
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "sample_collection",
-                      align: "ltr",
-                    }}
-                  />
-                }
-                open={this.state.isOpen}
-                onClose={this.CloseCollectionModel.bind(this)}
-                selected_patient={this.state.selected_patient}
-              />
-            ) : null}
+            {/* {this.state.isOpen ? ( */}
+            <SampleCollectionModal
+              HeaderCaption={
+                <AlgaehLabel
+                  label={{
+                    fieldName: "sample_collection",
+                    align: "ltr",
+                  }}
+                />
+              }
+              open={this.state.isOpen}
+              onClose={this.CloseCollectionModel.bind(this)}
+              selected_patient={this.state.selected_patient}
+            />
+            {/* ) : null} */}
           </MyContext.Provider>
         </div>
       </React.Fragment>
