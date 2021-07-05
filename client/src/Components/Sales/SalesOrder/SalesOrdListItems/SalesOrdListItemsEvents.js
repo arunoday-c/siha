@@ -207,18 +207,23 @@ const AddItems = ($this, context) => {
     });
   } else {
     let sales_order_items = $this.state.sales_order_items;
+    const discount_percentage =
+      $this.state.discount_percentage === undefined
+        ? 0
+        : $this.state.discount_percentage;
 
+    const tax_percentage =
+      $this.state.tax_percentage === undefined ? 0 : $this.state.tax_percentage;
     const extended_cost = (
       parseFloat($this.state.unit_cost) * parseFloat($this.state.quantity)
     ).toFixed($this.state.decimal_place);
     const discount_amount = (
-      (parseFloat(extended_cost) *
-        parseFloat($this.state.discount_percentage)) /
+      (parseFloat(extended_cost) * parseFloat(discount_percentage)) /
       100
     ).toFixed($this.state.decimal_place);
     const net_extended_cost = extended_cost - discount_amount;
     const tax_amount = (
-      (parseFloat(net_extended_cost) * parseFloat($this.state.tax_percentage)) /
+      (parseFloat(net_extended_cost) * parseFloat(tax_percentage)) /
       100
     ).toFixed($this.state.decimal_place);
 
@@ -230,12 +235,12 @@ const AddItems = ($this, context) => {
       quantity: $this.state.quantity,
       uom_id: $this.state.uom_id,
       uom_description: $this.state.uom_description,
-      discount_percentage: $this.state.discount_percentage,
+      discount_percentage: discount_percentage,
       unit_cost: $this.state.unit_cost,
       extended_cost: extended_cost,
       net_extended_cost: net_extended_cost,
       discount_amount: discount_amount,
-      tax_percentage: $this.state.tax_percentage,
+      tax_percentage: tax_percentage,
       tax_amount: tax_amount,
       total_amount: total_amount,
       quantity_outstanding: $this.state.quantity, //0
@@ -445,6 +450,9 @@ const onchangegridcol = ($this, context, row, e) => {
         type: "warning",
       });
       // return;
+    } else if (value === "") {
+      row[name] = 0;
+      row["discount_amount"] = 0;
     } else {
       row[name] = value;
     }
@@ -473,13 +481,16 @@ const onchangegridcol = ($this, context, row, e) => {
         type: "warning",
       });
       // return;
+    } else if (value === "") {
+      row[name] = 0;
+      row["discount_percentage"] = 0;
     } else {
       row[name] = value;
     }
   } else if (name === "tax_percentage") {
     if (parseFloat(value) > 100) {
       row[name] = 0;
-      row["discount_amount"] = 0;
+      // row["discount_amount"] = 0;
       sales_order_items[_index] = row;
       $this.setState({
         sales_order_items: sales_order_items,
@@ -490,9 +501,13 @@ const onchangegridcol = ($this, context, row, e) => {
       });
 
       // return;
+    } else if (value === "") {
+      row[name] = 0;
     } else {
       row[name] = value;
     }
+  } else if (value === "") {
+    row[name] = 0;
   } else {
     row[name] = value;
   }
