@@ -89,7 +89,12 @@ function HassanNumber() {
       uri: "/laboratory/getLabOrderedServices",
       module: "laboratory",
       method: "GET",
-      data: { from_date, to_date, status: "V", hassanShow },
+      data: {
+        from_date,
+        to_date,
+        // status: "V",
+        hassanShow,
+      },
     });
     return result?.data?.records;
   }
