@@ -656,7 +656,9 @@ class OPBilling extends Component {
                   )}
                 </div>
               ) : (
-                <QuickRegistration />
+                <AlgaehSecurityComponent componentCode="QCK_PAT_REG">
+                  <QuickRegistration />
+                </AlgaehSecurityComponent>
               )}
             </div>
           }
