@@ -2,7 +2,8 @@ import { newAlgaehApi } from "../../../hooks";
 import axios from "axios";
 export async function getPatientDetails(options) {
   const BASE_URL =
-    process.env.QUICK_PATIENT_SERVER ?? "http://localhost:3025/api/v1";
+    process.env.REACT_APP_QUICK_PATIENT_SERVER ??
+    "http://localhost:3025/api/v1";
   const { data } = await axios
     .get("/patient/details", {
       baseURL: BASE_URL,
