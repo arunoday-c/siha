@@ -1233,11 +1233,21 @@ const labModal = {
                       query +
                       `;UPDATE hims_f_lab_order L 
                       INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id 
-                      SET S.container_id=${inputParam.container_id}, S.sample_id=${inputParam.sample_id}, 
-                      S.collected='${inputParam.collected}', S.status='${inputParam.status}', 
+                      SET S.container_id=${
+                        inputParam.container_id
+                      }, S.sample_id=${inputParam.sample_id}, 
+                      S.collected='${inputParam.collected}', S.status='${
+                        inputParam.status
+                      }', 
                       S.collected_by=${req.userIdentity.algaeh_d_app_user_id},
-                      S.collected_date =now(), S.barcode_gen = now(), lab_id_number =${labIdNumber}
-                      ,L.status='CL', send_out_test='${inputParam.send_out_test}'
+                      S.collected_date =${
+                        inputParam.collected_date
+                          ? `'${inputParam.collected_date}'`
+                          : `now()`
+                      }, S.barcode_gen = now(), lab_id_number =${labIdNumber}
+                      ,L.status='CL', send_out_test='${
+                        inputParam.send_out_test
+                      }',send_in_test='${inputParam.send_in_test}'
                       where L.visit_id=${inputParam.visit_id}
                       and S.sample_id=${inputParam.sample_id}
                       and L.billed='Y' and S.status='N' and S.collected='N' ;`,
@@ -1252,7 +1262,10 @@ const labModal = {
                       req.records = {
                         collected: inputParam.collected,
                         collected_by: req.userIdentity.algaeh_d_app_user_id,
-                        collected_date: new Date(),
+                        collected_date: inputParam.collected_date
+                          ? inputParam.collected_date
+                          : new Date(),
+                        send_in_test: inputParam.send_in_test,
                         lab_id_number: labIdNumber,
                       };
                       // if (inputParam.bulkBarcode) {
