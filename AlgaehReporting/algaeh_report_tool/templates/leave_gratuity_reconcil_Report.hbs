@@ -1,107 +1,130 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
 <style>
-
-.sepBrdr {
-border-left: 2px dotted #999 !important;
-}
-
+    .sepBrdr {
+        border-left: 2px dotted #999 !important;
+    }
 </style>
 
 <body>
-<div class="print-body">
+    <div class="print-body">
 
-<section>
-<table class="tableForData" cell-padding="0">
-<h3>Reconciliation Report For: {{deducting_month}}-{{year}}</h3>
-<thead>
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <h3>Reconciliation Report For: {{deducting_month}}-{{year}}</h3>
+                <thead>
 
-<tr>
-<th>Sl No.</th>
-<th>Employee Code</th>
-<th>Employee Name</th>
-<th>Designation</th>
-<th>Date of Joining</th>
-<th>Basic Salary</th>
-{{!-- <th class="sepBrdr"  >Year Opening Leave</th> --}}
-<th class="sepBrdr"  >Month Opening Leave</th>
-<th>Utlized Leave</th>
-<th>Total Utlized Leave</th>
-<th>Accured Leave</th>
-<th>Closing Leave</th>
-<th  class="sepBrdr" >Opening Leave Salary</th>
-{{!-- <th>Utlized Leave Salary</th> --}}
-<th>Accured Leave Salary</th>
-<th>Closing Leave Salary</th>
-<th class="sepBrdr"  >Opening Airfare</th>
-{{!-- <th>Utlized Airfare</th> --}}
-<th>Accured Airfare</th>
-<th>Closing Airfare</th>
-</tr>
-</thead>
-<tbody>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <th>Designation</th>
+                        <th>Date of Joining</th>
+                        <th>Basic Salary</th>
+                        {{!-- <th class="sepBrdr"  >Year Opening Leave</th> --}}
+                        <th class="sepBrdr">Month Opening Leave</th>
+                        <th>Utlized Leave</th>
+                        {{!-- <th>Total Utlized Leave</th> --}}
+                        <th>Accured Leave</th>
+                        <th>Closing Leave</th>
+                        <th class="sepBrdr">Opening Leave Salary</th>
+                        {{!-- <th>Utlized Leave Salary</th> --}}
+                        <th>Accured Leave Salary</th>
+                        <th>Closing Leave Salary</th>
+                        <th class="sepBrdr">Opening Airfare</th>
+                        {{!-- <th>Utlized Airfare</th> --}}
+                        <th>Accured Airfare</th>
+                        <th>Closing Airfare</th>
+                    </tr>
+                </thead>
+                <tbody>
 
-<tr class="numberFld numberFldTotalBottom">
-<td colspan="5"></td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_basic_salary currencyOnly}}</td>
-{{!-- <th class="sepBrdr"  >Year Opening Leave</th> --}}
-{{!-- <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_opening_leave decimalOnly}}</td> --}}
-<td colspan="5"></td>
-{{!-- <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_accured_leave decimalOnly}}</td>
+                    <tr class="numberFld numberFldTotalBottom">
+                        <td colspan="5"></td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating grand_total_basic_salary currencyOnly}}</td>
+                        {{!-- <th class="sepBrdr"  >Year Opening Leave</th> --}}
+                        {{!-- <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_opening_leave decimalOnly}}</td> --}}
+                        <td colspan="4"></td>
+                        {{!-- <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_accured_leave decimalOnly}}</td>
 <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_leave_days decimalOnly}}</td> --}}
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_opening_leave_salary currencyOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_accured_leave_salary currencyOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_leave_salary currencyOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_airfare_opening_balance currencyOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_airticket_amount currencyOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_balance_airticket_amount currencyOnly}}</td>                    
-</tr>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating grand_opening_leave_salary currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating grand_total_accured_leave_salary currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating grand_total_leave_salary currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating grand_total_airfare_opening_balance currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating grand_total_airticket_amount currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating grand_total_balance_airticket_amount currencyOnly}}</td>
+                    </tr>
 
-{{#each result}}
-<tr>
-<td>{{inc @index}}</td>
-<td>{{employee_code}}</td>
-<td>{{full_name}}</td>
-<td>{{designation}}</td>
-<td>{{date_of_joining}}</td>                        
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating basic_salary ../decimalOnly}}</td>
-{{!-- <td class="numberFld sepBrdr" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating year_open_leave_days ../decimalOnly}}</td> --}}
-<td class="numberFld sepBrdr" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating leavedays_opening_balance ../decimalOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating utilized_leave_days ../decimalOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating total_utilized_leave_days ../decimalOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating leave_days ../decimalOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating total_leave_days ../decimalOnly}}</td>
+                    {{#each result}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{full_name}}</td>
+                        <td>{{designation}}</td>
+                        <td>{{date_of_joining}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating basic_salary ../decimalOnly}}</td>
+                        {{!-- <td class="numberFld sepBrdr" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating year_open_leave_days ../decimalOnly}}</td> --}}
+                        <td class="numberFld sepBrdr" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating leavedays_opening_balance ../decimalOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating utilized_leave_days ../decimalOnly}}</td>
+                        {{!-- <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating total_utilized_leave_days ../decimalOnly}}</td> --}}
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating leave_days ../decimalOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating total_leave_days ../decimalOnly}}</td>
 
-<td class="numberFld sepBrdr" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating leavesalary_opening_balance ../decimalOnly}}</td>  
-{{!-- <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating utilized_leave_salary_amount ../decimalOnly}}</td>    --}}
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating leave_salary_amount ../decimalOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating total_leave_salary_amount ../decimalOnly}}</td>
+                        <td class="numberFld sepBrdr" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating leavesalary_opening_balance ../decimalOnly}}</td>
+                        {{!-- <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating utilized_leave_salary_amount ../decimalOnly}}</td>    --}}
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating leave_salary_amount ../decimalOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating total_leave_salary_amount ../decimalOnly}}</td>
 
-<td class="numberFld sepBrdr" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating airefare_opening_balance ../decimalOnly}}</td>   
-{{!-- <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating utilized_airticket_amount ../decimalOnly}}</td>    --}}
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating airticket_amount ../decimalOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating total_airticket_amount ../decimalOnly}}</td>
-</tr>
-{{/each }}
-<tr class="numberFld numberFldTotalBottom">
-<td colspan="5"></td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_basic_salary currencyOnly}}</td>
-{{!-- <th class="sepBrdr"  >Year Opening Leave</th> --}}
-{{!-- <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_opening_leave decimalOnly}}</td> --}}
-<td colspan="5"></td>
-{{!-- <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_accured_leave decimalOnly}}</td>
+                        <td class="numberFld sepBrdr" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating airefare_opening_balance ../decimalOnly}}</td>
+                        {{!-- <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating utilized_airticket_amount ../decimalOnly}}</td>    --}}
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating airticket_amount ../decimalOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating total_airticket_amount ../decimalOnly}}</td>
+                    </tr>
+                    {{/each }}
+                    <tr class="numberFld numberFldTotalBottom">
+                        <td colspan="5"></td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating grand_total_basic_salary currencyOnly}}</td>
+                        {{!-- <th class="sepBrdr"  >Year Opening Leave</th> --}}
+                        {{!-- <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_opening_leave decimalOnly}}</td> --}}
+                        <td colspan="4"></td>
+                        {{!-- <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_accured_leave decimalOnly}}</td>
 <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_leave_days decimalOnly}}</td> --}}
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_opening_leave_salary currencyOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_accured_leave_salary currencyOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_leave_salary currencyOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_airfare_opening_balance currencyOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_airticket_amount currencyOnly}}</td>
-<td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating grand_total_balance_airticket_amount currencyOnly}}</td>                    
-</tr>
-</tbody>
-</table>
-</section>
-{{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-</div>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating grand_opening_leave_salary currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating grand_total_accured_leave_salary currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating grand_total_leave_salary currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating grand_total_airfare_opening_balance currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating grand_total_airticket_amount currencyOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{numberFormating grand_total_balance_airticket_amount currencyOnly}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
 </body>
 
 {{!-- excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"fffff5"},"bgColor":{"argb":"000000"}}' --}}
