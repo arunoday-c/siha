@@ -27,57 +27,29 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
     let qtyhand = 0;
     let unit_cost = 0;
 
-    debugger;
-    if ($this.state.sales_uom_id === $this.state.stocking_uom_id) {
-      if (
-        parseFloat($this.state.sales_conversion_factor) ===
-        parseFloat(e.selected.conversion_factor)
-      ) {
-        unit_cost = $this.state.Real_unit_cost;
-        qtyhand = parseFloat($this.state.sales_qtyhand);
-      } else if (
-        parseFloat($this.state.sales_conversion_factor) >
-        parseFloat(e.selected.conversion_factor)
-      ) {
-        unit_cost =
-          parseFloat($this.state.Real_unit_cost) /
-          parseFloat($this.state.sales_conversion_factor);
-        qtyhand =
-          parseFloat($this.state.sales_qtyhand) *
-          parseFloat(e.selected.conversion_factor);
-      } else {
-        qtyhand =
-          parseFloat($this.state.sales_qtyhand) /
-          parseFloat(e.selected.conversion_factor);
-        unit_cost =
-          parseFloat(e.selected.conversion_factor) *
-          parseFloat($this.state.Real_unit_cost);
-      }
+    if (
+      parseFloat($this.state.sales_conversion_factor) ===
+      parseFloat(e.selected.conversion_factor)
+    ) {
+      unit_cost = $this.state.unit_cost;
+      qtyhand = parseFloat($this.state.sales_qtyhand);
+    } else if (
+      parseFloat($this.state.sales_conversion_factor) >
+      parseFloat(e.selected.conversion_factor)
+    ) {
+      unit_cost =
+        parseFloat($this.state.unit_cost) /
+        parseFloat(e.selected.conversion_factor);
+      qtyhand =
+        parseFloat($this.state.sales_qtyhand) *
+        parseFloat(e.selected.conversion_factor);
     } else {
-      if (
-        parseFloat($this.state.sales_conversion_factor) ===
-        parseFloat(e.selected.conversion_factor)
-      ) {
-        unit_cost = $this.state.Real_unit_cost;
-        qtyhand = parseFloat($this.state.sales_qtyhand);
-      } else if (
-        parseFloat($this.state.sales_conversion_factor) >
-        parseFloat(e.selected.conversion_factor)
-      ) {
-        unit_cost =
-          parseFloat($this.state.Real_unit_cost) /
-          parseFloat($this.state.sales_conversion_factor);
-        qtyhand =
-          parseFloat($this.state.sales_qtyhand) *
-          parseFloat($this.state.sales_conversion_factor);
-      } else {
-        qtyhand =
-          parseFloat($this.state.sales_qtyhand) /
-          parseFloat($this.state.sales_conversion_factor);
-        unit_cost =
-          parseFloat(e.selected.conversion_factor) *
-          parseFloat($this.state.Real_unit_cost);
-      }
+      qtyhand =
+        parseFloat($this.state.sales_qtyhand) /
+        parseFloat(e.selected.conversion_factor);
+      unit_cost =
+        parseFloat(e.selected.conversion_factor) *
+        parseFloat($this.state.unit_cost);
     }
 
     $this.setState({
@@ -656,10 +628,11 @@ const itemchangeText = ($this, context, e, ctrl) => {
       onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
+
           if (data.locationResult.length > 0) {
             const sales_conversion_factor = _.find(
               data.uomResult,
-              (f) => f.uom_id === e.sales_uom_id
+              (f) => f.uom_id === e.stocking_uom_id
             );
             const qtyhand =
               parseFloat(data.locationResult[0].qtyhand) /
@@ -679,7 +652,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
             $this.setState({
               [name]: value,
               item_category: e.category_id,
-              uom_id: e.sales_uom_id,
+              uom_id: e.stocking_uom_id,
               service_id: e.service_id,
               item_group_id: e.group_id,
               quantity: 0,
@@ -710,7 +683,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
               context.updateState({
                 [name]: value,
                 item_category: e.category_id,
-                uom_id: e.sales_uom_id,
+                uom_id: e.stocking_uom_id,
                 service_id: e.service_id,
                 item_group_id: e.group_id,
                 quantity: 0,
@@ -846,6 +819,20 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.quantity
       : $this.state.quantity;
 
+  let uom_description =
+    e !== undefined
+      ? e.selected === true
+        ? e.uom_description
+        : $this.state.uom_description
+      : $this.state.uom_description;
+
+  let uom_id =
+    e !== undefined
+      ? e.selected === true
+        ? e.sales_uom
+        : $this.state.uom_id
+      : $this.state.uom_id;
+
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
@@ -857,6 +844,9 @@ const CloseItemBatch = ($this, context, e) => {
     sales_price: sale_price,
     barcode: barcode,
     quantity: quantity,
+    uom_id: uom_id,
+    uom_description: uom_description,
+    sales_qtyhand: quantity,
   });
 
   if (context !== null) {
@@ -869,6 +859,9 @@ const CloseItemBatch = ($this, context, e) => {
       sales_price: sale_price,
       barcode: barcode,
       quantity: quantity,
+      uom_id: uom_id,
+      uom_description: uom_description,
+      sales_qtyhand: qtyhand,
     });
   }
 };

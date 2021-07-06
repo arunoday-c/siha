@@ -76,8 +76,7 @@ export default {
   gettransferEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-
-      // if (input.from_location_id > 0 && input.to_location_id > 0) {      
+      // if (input.from_location_id > 0 && input.to_location_id > 0) {
       let strQty = "";
       if (req.query.transfer_number != null) {
         strQty += ` and transfer_number= '${req.query.transfer_number}'`;
@@ -381,7 +380,8 @@ export default {
                 printQuery: true,
               })
               .then((headerResult) => {
-                req.body.hims_f_inventory_transfer_header_id = headerResult.insertId;
+                req.body.hims_f_inventory_transfer_header_id =
+                  headerResult.insertId;
                 req.body.transaction_id = headerResult.insertId;
                 req.body.year = year;
                 req.body.period = period;
@@ -737,7 +737,11 @@ export default {
                       item_description,
                       uom_description,
                       unit_cost,
-                      batches: detail.filter((f) => f.qtyhand > 0 && f.inventory_location_id == inputParam.from_location_id),
+                      batches: detail.filter(
+                        (f) =>
+                          f.qtyhand > 0 &&
+                          f.inventory_location_id == inputParam.from_location_id
+                      ),
                     };
                   })
                   .value();
@@ -943,7 +947,7 @@ export default {
               })
               .then((result_data) => {
                 const headerResult = result_data[0];
-                console.log("headerResult", headerResult)
+                console.log("headerResult", headerResult);
                 const sub_department_id =
                   result_data[1].length > 0
                     ? result_data[1][0].hims_d_sub_department_id
@@ -1003,12 +1007,12 @@ export default {
                   })
                   .then((header_result) => {
                     let project_id = null;
-                    let day_end_header = []
+                    let day_end_header = [];
                     if (header_result.length > 1) {
-                      day_end_header = header_result[0]
-                      project_id = header_result[1][0].project_id
+                      day_end_header = header_result[0];
+                      project_id = header_result[1][0].project_id;
                     } else {
-                      day_end_header = header_result
+                      day_end_header = header_result;
                     }
 
                     let insertSubDetail = [];
@@ -1036,7 +1040,10 @@ export default {
                     });
 
                     // Non Recived Entry
-                    if (inputParam.ack_done == "N" && non_reviced_transfer_cost > 0) {
+                    if (
+                      inputParam.ack_done == "N" &&
+                      non_reviced_transfer_cost > 0
+                    ) {
                       non_reviced_transfer_cost = utilities.decimalPoints(
                         non_reviced_transfer_cost,
                         decimal_places
@@ -1058,7 +1065,8 @@ export default {
                       payment_date: new Date(),
                       head_id: headerResult[0].to_head_id,
                       child_id: headerResult[0].to_child_id,
-                      debit_amount: inputParam.ack_done == "Y" ? transfered_cost : ack_cost,
+                      debit_amount:
+                        inputParam.ack_done == "Y" ? transfered_cost : ack_cost,
                       payment_type: "DR",
                       credit_amount: 0,
                       hospital_id: headerResult[0].to_hospital_id,

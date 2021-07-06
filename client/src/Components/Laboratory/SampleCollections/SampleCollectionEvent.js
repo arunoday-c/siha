@@ -80,6 +80,7 @@ const CollectSample = ($this, context, row) => {
             test_details[i].collected_date =
               response.data.records.collected_date;
             test_details[i].barcode_gen = response.data.records.barcode_gen;
+            test_details[i].lab_id_number = response.data.records.lab_id_number;
           }
         }
 

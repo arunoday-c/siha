@@ -107,8 +107,15 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT * from hims_f_inventory_trans_history  WHERE record_status = 'A' " +
-            _strAppend,
+            "SELECT H.*, IM.item_description, \
+            MAX(if(IU.hims_d_inventory_uom_id = IM.stocking_uom_id , IU.uom_description,'' )) as stock_uom, \
+            MAX(if(IU.hims_d_inventory_uom_id = H.transaction_uom , IU.uom_description,'' )) as trans_uom \
+            from hims_f_inventory_trans_history H \
+            INNER JOIN hims_d_inventory_item_master IM ON  IM.hims_d_inventory_item_master_id = H.item_code_id\
+            INNER JOIN hims_d_inventory_uom IU ON (IU.hims_d_inventory_uom_id = IM.stocking_uom_id or IU.hims_d_inventory_uom_id = H.transaction_uom)\
+            WHERE H.record_status = 'A' " +
+            _strAppend +
+            " GROUP BY hims_f_inventory_trans_history_id ORDER BY hims_f_inventory_trans_history_id",
           printQuery: true,
         })
         .then((result) => {

@@ -52,10 +52,15 @@ class DispatchNoteItems extends Component {
   }
 
   CloseOrent(context) {
+    let saveEnable = true;
+
+    saveEnable = this.state.inventory_stock_detail.length > 0 ? false : true;
+
     this.setState({
       dispatched_quantity: 0,
       item_details: null,
       batch_detail_view: false,
+      saveEnable: saveEnable,
     });
 
     if (context !== undefined) {
@@ -63,6 +68,7 @@ class DispatchNoteItems extends Component {
         dispatched_quantity: 0,
         item_details: null,
         batch_detail_view: false,
+        saveEnable: saveEnable,
       });
     }
   }
@@ -88,6 +94,7 @@ class DispatchNoteItems extends Component {
       item_details: item,
       batch_detail_view: true,
       stock_enable: stock_enable,
+      saveEnable: true,
     });
 
     if (context !== undefined) {
@@ -96,6 +103,7 @@ class DispatchNoteItems extends Component {
         item_details: item,
         batch_detail_view: true,
         stock_enable: stock_enable,
+        saveEnable: true,
       });
     }
   }

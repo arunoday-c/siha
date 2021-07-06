@@ -983,18 +983,25 @@ const labModal = {
 
       let strQuery = "";
       if (inputParam.isDirty === true) {
-        strQuery = `,hassan_number_updated_date= ${new Date()},hassan_number_updated_by=${
+        strQuery += `,hassan_number_updated_date='${moment(new Date()).format(
+          "YYYY-MM-DD HH:mm:ss"
+        )}',hassan_number_updated_by=${
+          req["userIdentity"].algaeh_d_app_user_id
+        } `;
+      }
+      if (inputParam.isDirtyUpdate === true) {
+        strQuery += `,hesn_upload_updated_date='${moment(new Date()).format(
+          "YYYY-MM-DD HH:mm:ss"
+        )}',hesn_upload_updated_by=${
           req["userIdentity"].algaeh_d_app_user_id
         } `;
       }
       _mysql
         .executeQuery({
-          query: `update hims_f_lab_order set hassan_number=?,hesn_upload=?,hesn_upload_updated_date=?,hesn_upload_updated_by=? ${strQuery} where hims_f_lab_order_id=?;`,
+          query: `update hims_f_lab_order set hassan_number=?,hesn_upload=? ${strQuery} where hims_f_lab_order_id=?;`,
           values: [
             inputParam.hassan_number,
             inputParam.hesn_upload,
-            new Date(),
-            req["userIdentity"].algaeh_d_app_user_id,
 
             inputParam.hims_f_lab_order_id,
           ],
@@ -1100,22 +1107,8 @@ const labModal = {
           strQuery = mysql.format(
             "SELECT container_id as container_code FROM hims_d_lab_container \
             where hims_d_lab_container_id=?;\
-            SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;\
-            UPDATE hims_f_lab_sample S \
-            INNER JOIN hims_f_lab_order L ON S.order_id = L.hims_f_lab_order_id \
-            SET S.`container_id`=?, S.`sample_id`=?, S.`collected`=?, S.`status`=?, S.`collected_by`=?,\
-            S.`collected_date` =now(), S.`barcode_gen` = now() WHERE L.visit_id=? and S.sample_id=?;",
-            [
-              inputParam.container_id,
-              inputParam.hims_d_hospital_id,
-              inputParam.container_id,
-              inputParam.sample_id,
-              inputParam.collected,
-              inputParam.status,
-              req.userIdentity.algaeh_d_app_user_id,
-              inputParam.visit_id,
-              inputParam.sample_id,
-            ]
+            SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;",
+            [inputParam.container_id, inputParam.hims_d_hospital_id]
           );
         }
         _mysql
@@ -1238,17 +1231,17 @@ const labModal = {
                   .executeQuery({
                     query:
                       query +
-                      ";UPDATE hims_f_lab_order L \
-                      INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id \
-                      set lab_id_number ='" +
-                      labIdNumber +
-                      "',L.status='CL', send_out_test='" +
-                      inputParam.send_out_test +
-                      "' where L.visit_id=" +
-                      inputParam.visit_id +
-                      " and S.sample_id=" +
-                      inputParam.sample_id +
-                      " and S.status='N';",
+                      `;UPDATE hims_f_lab_order L 
+                      INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id 
+                      SET S.container_id=${inputParam.container_id}, S.sample_id=${inputParam.sample_id}, 
+                      S.collected='${inputParam.collected}', S.status='${inputParam.status}', 
+                      S.collected_by=${req.userIdentity.algaeh_d_app_user_id},
+                      S.collected_date =now(), S.barcode_gen = now(), lab_id_number =${labIdNumber}
+                      ,L.status='CL', send_out_test='${inputParam.send_out_test}'
+                      where L.visit_id=${inputParam.visit_id}
+                      and S.sample_id=${inputParam.sample_id}
+                      and L.billed='Y' and S.status='N' and S.collected='N' ;`,
+
                     values: condition,
                     printQuery: true,
                   })
@@ -1260,6 +1253,7 @@ const labModal = {
                         collected: inputParam.collected,
                         collected_by: req.userIdentity.algaeh_d_app_user_id,
                         collected_date: new Date(),
+                        lab_id_number: labIdNumber,
                       };
                       // if (inputParam.bulkBarcode) {
                       //   return;

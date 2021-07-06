@@ -389,7 +389,6 @@ class SalesOrdListItems extends Component {
                               />
                             ),
                             displayTemplate: (row) => {
-                              debugger;
                               return this.state.edit_price === true &&
                                 parseFloat(row.quantity_outstanding) ===
                                   parseFloat(row.quantity) ? (
@@ -466,6 +465,12 @@ class SalesOrdListItems extends Component {
                                       onFocus: (e) => {
                                         e.target.oldvalue = e.target.value;
                                       },
+                                      onBlur: onchangegridcol.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      ),
                                     },
                                   }}
                                 />
@@ -527,6 +532,12 @@ class SalesOrdListItems extends Component {
                                       onFocus: (e) => {
                                         e.target.oldvalue = e.target.value;
                                       },
+                                      onBlur: onchangegridcol.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      ),
                                     },
                                   }}
                                 />
