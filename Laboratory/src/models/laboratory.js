@@ -1107,22 +1107,8 @@ const labModal = {
           strQuery = mysql.format(
             "SELECT container_id as container_code FROM hims_d_lab_container \
             where hims_d_lab_container_id=?;\
-            SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;\
-            UPDATE hims_f_lab_sample S \
-            INNER JOIN hims_f_lab_order L ON S.order_id = L.hims_f_lab_order_id \
-            SET S.`container_id`=?, S.`sample_id`=?, S.`collected`=?, S.`status`=?, S.`collected_by`=?,\
-            S.`collected_date` =now(), S.`barcode_gen` = now() WHERE S.collected='N' and S.status='N' and L.billed='Y' and L.visit_id=? and S.sample_id=?;",
-            [
-              inputParam.container_id,
-              inputParam.hims_d_hospital_id,
-              inputParam.container_id,
-              inputParam.sample_id,
-              inputParam.collected,
-              inputParam.status,
-              req.userIdentity.algaeh_d_app_user_id,
-              inputParam.visit_id,
-              inputParam.sample_id,
-            ]
+            SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;",
+            [inputParam.container_id, inputParam.hims_d_hospital_id]
           );
         }
         _mysql
@@ -1245,17 +1231,16 @@ const labModal = {
                   .executeQuery({
                     query:
                       query +
-                      ";UPDATE hims_f_lab_order L \
-                      INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id \
-                      set lab_id_number ='" +
-                      labIdNumber +
-                      "',L.status='CL', send_out_test='" +
-                      inputParam.send_out_test +
-                      "' where L.visit_id=" +
-                      inputParam.visit_id +
-                      " and S.sample_id=" +
-                      inputParam.sample_id +
-                      " and L.billed='Y' and S.status='N' and S.collected='N' ;",
+                      `;UPDATE hims_f_lab_order L 
+                      INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id 
+                      SET S.container_id=${inputParam.container_id}, S.sample_id=${inputParam.sample_id}, 
+                      S.collected='${inputParam.collected}', S.status='${inputParam.status}', 
+                      S.collected_by=${req.userIdentity.algaeh_d_app_user_id},
+                      S.collected_date =now(), S.barcode_gen = now(), lab_id_number =${labIdNumber}
+                      ,L.status='CL', send_out_test='${inputParam.send_out_test}'
+                      where L.visit_id=${inputParam.visit_id}
+                      and S.sample_id=${inputParam.sample_id}
+                      and L.billed='Y' and S.status='N' and S.collected='N' ;`,
 
                     values: condition,
                     printQuery: true,
@@ -1268,6 +1253,7 @@ const labModal = {
                         collected: inputParam.collected,
                         collected_by: req.userIdentity.algaeh_d_app_user_id,
                         collected_date: new Date(),
+                        lab_id_number: labIdNumber,
                       };
                       // if (inputParam.bulkBarcode) {
                       //   return;
