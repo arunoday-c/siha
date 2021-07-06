@@ -1,5 +1,5 @@
 import React, { memo, useState, useContext, useEffect } from "react";
-import { Button, Drawer, Badge, Divider, Skeleton } from "antd";
+import { Button, Drawer, Badge, Skeleton } from "antd";
 import {
   AlgaehFormGroup,
   AlgaehDateHandler,
@@ -7,6 +7,7 @@ import {
   MainContext,
   AlgaehLabel,
 } from "algaeh-react-components";
+import "../OPBilling.scss";
 import {
   /*nationality,*/ getPatientDetails,
   getDefaults,
@@ -191,6 +192,7 @@ export default memo(function SideDrawer(props) {
       closable={false}
       onClose={props.onClose}
       visible={props.visible}
+      className="quickRegDrawer"
     >
       <div className="row">
         <AlgaehFormGroup
@@ -209,7 +211,9 @@ export default memo(function SideDrawer(props) {
           }}
         />
         <Button
-          type="primary"
+          className="btn btn-default btn-small"
+          style={{ marginTop: 21 }}
+          type="button"
           size="middle"
           onClick={findDetails}
           loading={loading}
@@ -227,15 +231,54 @@ export default memo(function SideDrawer(props) {
           placement="start"
           color={patient_id && patient_id !== "" ? "teal" : "orange"}
         >
-          <div style={{ marginTop: 10 }}>
-            <Divider />
-            <br />
-            <label>{visit_date}</label>
-            <div className="row">
+          <div className="quickRegFormCntr">
+            <div className="row ">
+              <div className="col-4">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Registerd Date",
+                  }}
+                />
+                <h6>{visit_date ? visit_date : "------"}</h6>
+              </div>
+              <div className="col-4">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Nationality",
+                  }}
+                />
+                <h6>{nationality_name ? nationality_name : "------"}</h6>
+              </div>
+              {/* <div className="col-4">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Nationality",
+                  }}
+                />
+                <h6>{nationality_name ? nationality_name : "------"}</h6>
+              </div> */}
+
               <AlgaehFormGroup
-                div={{ className: "col-12" }}
+                div={{ className: "col-4 form-group mandatory" }}
                 label={{
-                  forceLabel: "Patient Full Name",
+                  forceLabel: "Patient Code",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "patient_code",
+                  value: patient_code,
+                  disabled: true,
+                  "data-patId": patient_id,
+                  "data-identity_type": identity_type,
+                  "data-nationality_id": nationality_id,
+                }}
+              />
+
+              <AlgaehFormGroup
+                div={{ className: "col-12 form-group mandatory" }}
+                label={{
+                  forceLabel: "Full Name",
                   isImp: true,
                 }}
                 textBox={{
@@ -247,71 +290,9 @@ export default memo(function SideDrawer(props) {
                   },
                 }}
               />
-            </div>
-            <div className="row">
-              <AlgaehFormGroup
-                div={{ className: "col-6" }}
-                label={{
-                  forceLabel: "Primary Identity",
-                  isImp: true,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "patient_identity",
-                  value: patient_identity,
-                  onChange: (e) => {
-                    setPatientIdentity(e.target.value);
-                  },
-                }}
-              />
-              <AlgaehFormGroup
-                div={{ className: "col-6" }}
-                label={{
-                  forceLabel: "Passport",
-                  isImp: true,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "patient_passport_no",
-                  value: patient_passport_no,
-                  onChange: (e) => {
-                    setPatientPassportNo(e.target.value);
-                  },
-                }}
-              />
-            </div>
-            <div className="row">
-              <AlgaehFormGroup
-                div={{ className: "col-6" }}
-                label={{
-                  forceLabel: "Mobile Number",
-                  isImp: true,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "mobile_no",
-                  disabled: true,
-                  value: mobile_no,
-                }}
-              />
-              <AlgaehFormGroup
-                div={{ className: "col-6" }}
-                label={{
-                  forceLabel: "Email ID",
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "email_id",
-                  value: email_id,
-                  onChange: (e) => {
-                    setEmailID(e.target.value);
-                  },
-                }}
-              />
-            </div>
-            <div className="row">
+
               <AlgaehAutoComplete
-                div={{ className: "col-6" }}
+                div={{ className: "col-6 form-group mandatory" }}
                 label={{
                   forceLabel: "Gender",
                   isImp: true,
@@ -336,7 +317,7 @@ export default memo(function SideDrawer(props) {
                 }}
               />
               <AlgaehDateHandler
-                div={{ className: "col-6" }}
+                div={{ className: "col-6 form-group mandatory" }}
                 label={{
                   forceLabel: "Date Of Birth",
                   isImp: true,
@@ -356,41 +337,105 @@ export default memo(function SideDrawer(props) {
                   },
                 }}
               />
-            </div>
-            <div className="row">
-              <AlgaehLabel
-                label={{
-                  forceLabel: `Nationality : ${nationality_name}`,
-                  className: "col-6",
-                }}
-              />
+              <hr />
+
               <AlgaehFormGroup
-                div={{ className: "col-6" }}
+                div={{ className: "col-6 form-group mandatory" }}
                 label={{
-                  forceLabel: "Patient Code",
+                  forceLabel: "Primary Identity",
                   isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "patient_code",
-                  value: patient_code,
-                  disabled: true,
-                  "data-patId": patient_id,
-                  "data-identity_type": identity_type,
-                  "data-nationality_id": nationality_id,
+                  name: "patient_identity",
+                  value: patient_identity,
+                  onChange: (e) => {
+                    setPatientIdentity(e.target.value);
+                  },
                 }}
               />
+              <AlgaehFormGroup
+                div={{ className: "col-6 form-group mandatory" }}
+                label={{
+                  forceLabel: "Passport",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "patient_passport_no",
+                  value: patient_passport_no,
+                  onChange: (e) => {
+                    setPatientPassportNo(e.target.value);
+                  },
+                }}
+              />
+
+              <AlgaehFormGroup
+                div={{ className: "col-6 form-group mandatory" }}
+                label={{
+                  forceLabel: "Mobile Number",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "mobile_no",
+                  disabled: true,
+                  value: mobile_no,
+                }}
+              />
+              <AlgaehFormGroup
+                div={{ className: "col-6 form-group" }}
+                label={{
+                  forceLabel: "Email ID",
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "email_id",
+                  value: email_id,
+                  onChange: (e) => {
+                    setEmailID(e.target.value);
+                  },
+                }}
+              />
+              <div className="col-12">
+                <div className="alert alert-warning" role="alert">
+                  Note:- Please Validate all data before continue{" "}
+                  <b>Create visit</b>. As this data will come in Lab Reports
+                </div>
+              </div>
+
+              {/* <AlgaehLabel
+                label={{
+                  forceLabel: `Nationality : ${nationality_name}`,
+                  className: "col-6",
+                }}
+              /> */}
             </div>
           </div>
-          <br />{" "}
-          <Button
-            type="primary"
-            onClick={onClickProceed}
-            loading={loadingProceed}
-          >
-            {" "}
-            Create Visit{" "}
-          </Button>
+          <div className="row">
+            <div
+              className="col-12"
+              style={{ textAlign: "right", paddingTop: 15 }}
+            >
+              <Button
+                style={{ marginRight: 8 }}
+                className="btn btn-default btn-xl"
+                type="button"
+                // onClick={onClickProceed}
+                // loading={loadingProceed}
+              >
+                Close
+              </Button>
+              <Button
+                className="btn btn-primary btn-xl"
+                type="button"
+                onClick={onClickProceed}
+                loading={loadingProceed}
+              >
+                Create Visit
+              </Button>
+            </div>
+          </div>
         </Badge.Ribbon>
       )}
     </Drawer>
