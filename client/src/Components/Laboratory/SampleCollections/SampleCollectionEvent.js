@@ -23,7 +23,6 @@ const CollectSample = ($this, context, row) => {
     });
     return;
   }
-
   let inputobj = {
     hims_f_lab_order_id: row.hims_f_lab_order_id,
     hims_d_lab_sample_id: row.hims_d_lab_sample_id,
@@ -36,6 +35,8 @@ const CollectSample = ($this, context, row) => {
     service_id: row.service_id,
     service_code: row.service_code,
     send_out_test: row.send_out_test,
+    send_in_test: row.send_in_test,
+    collected_date: row.collected_date,
     container_id: row.container_id,
     test_id: row.hims_d_investigation_test_id,
     container_code: row.container_code,
@@ -80,6 +81,7 @@ const CollectSample = ($this, context, row) => {
             test_details[i].collected_date =
               response.data.records.collected_date;
             test_details[i].barcode_gen = response.data.records.barcode_gen;
+            test_details[i].send_in_test = response.data.records.send_in_test;
             test_details[i].lab_id_number = response.data.records.lab_id_number;
           }
         }
@@ -484,7 +486,16 @@ const onchangegridcol = ($this, row, e) => {
       test_details[_index] = row;
       $this.setState({ test_details: test_details });
       break;
-
+    case "send_in_test":
+      row["send_in_test"] = value;
+      test_details[_index] = row;
+      $this.setState(
+        {
+          test_details: test_details,
+        },
+        () => $this.forceUpdate()
+      );
+      break;
     default:
       test_details[_index] = row;
       $this.setState({ test_details: test_details });
@@ -493,14 +504,21 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const onchangegridcoldatehandle = ($this, row, ctrl, e) => {
+  let test_details = $this.state.test_details;
   if (Date.parse(moment(ctrl)._d) < Date.parse(new Date())) {
     swalMessage({
       title: "Expiry date cannot be past Date.",
       type: "warning",
     });
   } else {
-    row[e] = moment(ctrl)._d;
-    $this.setState({ append: !$this.state.append });
+    debugger;
+    let _index = test_details.indexOf(row);
+
+    row["collected_date"] = moment(ctrl)._d;
+    test_details[_index] = row;
+    $this.setState({
+      test_details: test_details,
+    });
   }
 };
 export {

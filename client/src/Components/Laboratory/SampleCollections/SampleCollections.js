@@ -6,6 +6,7 @@ import moment from "moment";
 import MyContext from "../../../utils/MyContext.js";
 import "./SampleCollections.scss";
 import "../../../styles/site.scss";
+// import DateTimePicker from "react-datetime-picker";
 import {
   CollectSample,
   printBarcode,
@@ -33,6 +34,7 @@ import {
   MainContext,
   AlgaehSecurityComponent,
   RawSecurityComponent,
+  DatePicker,
 } from "algaeh-react-components";
 import variableJson from "../../../utils/GlobalVariables.json";
 const STATUS = {
@@ -51,6 +53,7 @@ class SampleCollectionPatient extends PureComponent {
       // showCheckBoxColumn: false,
       bulkGenerate: [],
       checkAll: STATUS.UNCHECK,
+      enableColumn: false,
     };
     this.allChecked = undefined;
   }
@@ -66,19 +69,16 @@ class SampleCollectionPatient extends PureComponent {
     //   }
     // });
 
-    // RawSecurityComponent({ componentCode: "BTN_BLK_SAM_BAR_COL" }).then(
-    //   (result) => {
-    //     debugger;
-    //     console.log("result===", result);
-    //     if (result === "hide") {
-
-    //       this.setState({ showCheckBoxColumn: false });
-    //     } else {
-
-    //       this.setState({ showCheckBoxColumn: true });
-    //     }
-    //   }
-    // );
+    RawSecurityComponent({ componentCode: "BTN_BLK_SAM_BAR_COL" }).then(
+      (result) => {
+        console.log("result===", result);
+        if (result === "hide") {
+          this.setState({ showCheckBoxColumn: false });
+        } else {
+          this.setState({ showCheckBoxColumn: true });
+        }
+      }
+    );
 
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
@@ -276,6 +276,8 @@ class SampleCollectionPatient extends PureComponent {
     // });
   };
   render() {
+    // const testDetails = this.state.test_details;
+
     return (
       <React.Fragment>
         <div>
@@ -953,7 +955,7 @@ class SampleCollectionPatient extends PureComponent {
                                 },
                                 others: {
                                   maxWidth: 200,
-                                  // resizable: false,
+                                  // show: false,
                                   style: { textAlign: "center" },
                                 },
                               },
@@ -995,15 +997,61 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: (row) => {
-                                  return (
-                                    <span>
-                                      {moment(row.collected_date).isValid()
-                                        ? moment(row.collected_date).format(
-                                            "DD-MM-YYYY hh:mm"
-                                          )
-                                        : "------"}
-                                    </span>
-                                  );
+                                  debugger;
+                                  if (
+                                    row.send_in_test === "Y" &&
+                                    row.collected === "N"
+                                  ) {
+                                    return (
+                                      <DatePicker
+                                        name="collected_date"
+                                        // minDate={new Date()}
+                                        showTime
+                                        onChange={onchangegridcoldatehandle.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )}
+                                        onOk={onchangegridcoldatehandle.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )}
+                                      />
+                                      // <AlgaehDateHandler
+                                      //   div={{}}
+                                      //   textBox={{
+                                      //     className: "txt-fld hidden",
+                                      //     name: "collected_date",
+                                      //   }}
+                                      //   minDate={new Date()}
+                                      //   disabled={
+                                      //     this.state.posted === "Y"
+                                      //       ? true
+                                      //       : false
+                                      //   }
+                                      //   events={{
+                                      //     onChange:
+                                      //       onchangegridcoldatehandle.bind(
+                                      //         this,
+                                      //         this,
+                                      //         row
+                                      //       ),
+                                      //   }}
+                                      //   value={row.collected_date}
+                                      // />
+                                    );
+                                  } else {
+                                    return (
+                                      <span>
+                                        {moment(row.collected_date).isValid()
+                                          ? moment(row.collected_date).format(
+                                              "DD-MM-YYYY hh:mm"
+                                            )
+                                          : "------"}
+                                      </span>
+                                    );
+                                  }
                                 },
                                 editorTemplate: (row) => {
                                   if (row.send_in_test === "Y") {
