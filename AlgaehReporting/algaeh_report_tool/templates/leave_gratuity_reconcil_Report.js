@@ -96,7 +96,7 @@ const executePDF = function executePDFMethod(options) {
           FROM hims_f_employee_leave_salary_header LH
           INNER JOIN hims_f_employee_leave_salary_detail LD ON LH.hims_f_employee_leave_salary_header_id=LD.employee_leave_salary_header_id
           INNER JOIN hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id
-          where LD.year<2021 ${str} GROUP BY LH.employee_id;`,
+          where LD.year<? ${str} GROUP BY LH.employee_id;`,
 
           values: [
             input.year,
@@ -107,6 +107,7 @@ const executePDF = function executePDFMethod(options) {
             parseInt(input.month),
             input.year,
             parseInt(input.month),
+            input.year,
           ],
           printQuery: true,
         })
