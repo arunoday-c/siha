@@ -128,6 +128,7 @@ const ClearData = ($this, e) => {
 const SaveDispatchNote = ($this) => {
   let InputObj = $this.state;
 
+  debugger;
   if ($this.state.hims_f_dispatch_note_header_id === null) {
     AlgaehLoader({ show: true });
     InputObj.transaction_type = "SDN";
@@ -157,7 +158,10 @@ const SaveDispatchNote = ($this) => {
     delete InputObj.item_details;
 
     for (let j = 0; j < InputObj.stock_detail.length; j++) {
-      if (InputObj.stock_detail[j].inventory_stock_detail === undefined) {
+      if (
+        InputObj.stock_detail[j].inventory_stock_detail === undefined ||
+        InputObj.stock_detail[j].inventory_stock_detail.length === 0
+      ) {
         InputObj.stock_detail[j].removed = "Y";
       } else {
         delete InputObj.stock_detail[j].batches;
