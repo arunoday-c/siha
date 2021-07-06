@@ -67,7 +67,7 @@ const executePDF = function executePDFMethod(options) {
           INNER JOIN hims_d_employee_earnings as EE on EE.employee_id = EM.hims_d_employee_id and earnings_id=(select basic_earning_component from hims_d_hrms_options limit 1)
           and ML.leave_id=(select hims_d_leave_id from hims_d_leave where leave_category='A')
           where LD.year=? and LD.month < ? ${str};
-          SELECT LH.employee_id,LD.leave_days,
+          SELECT LH.employee_id,LD.leave_days,LD.leave_salary_amount, LD.airticket_amount,
           case when 
           LD.month ='1' then ML.january when
           LD.month ='2' then ML.february when
@@ -118,7 +118,7 @@ const executePDF = function executePDFMethod(options) {
           const leave_encash = result[2];
           const last_year_balance = result[3];
 
-          console.log("result", result);
+          // console.log("result", result);
           // consol.log("result", result);
           const newResult = _.chain(opening_balance)
             .groupBy((g) => g.employee_id)
@@ -135,41 +135,46 @@ const executePDF = function executePDFMethod(options) {
                 basic_salary,
               } = _.head(item);
 
-              const last_year_emp_bal = last_year_balance.find(
+              let last_year_emp_bal = last_year_balance.find(
                 (f) => f.employee_id === employee_id
               );
+              // last_year_emp_bal =
+              //   last_year_emp_bal === undefined ? 0 : last_year_emp_bal;
+              // console.log("last_year_emp_bal", last_year_emp_bal);
 
-              console.log("last_year_emp_bal", last_year_emp_bal);
-              const last_leave_days = last_year_emp_bal.leave_days;
-              const last_leave_salary_amount =
-                last_year_emp_bal.leave_salary_amount;
-              const last_airticket_amount = last_year_emp_bal.airticket_amount;
-
-              const current_month = current_balance.find(
+              let current_month = current_balance.find(
                 (f) => f.employee_id === employee_id
               );
               const current_month_encash = leave_encash.filter(
                 (f) => f.employee_id === employee_id
               );
 
-              console.log("current_month", current_month);
-              console.log("current_month_encash", current_month_encash);
+              // current_month = current_month === undefined ? 0 : current_month;
+
+              // console.log("current_month", current_month);
+              // console.log("current_month_encash", current_month_encash);
               console.log(
                 "item",
                 _.sumBy(item, (s) => parseFloat(s.ml_month)),
                 parseFloat(current_month.ml_month),
                 _.sumBy(current_month_encash, (s) => parseFloat(s.leave_days))
               );
-              // const lastObject = _.maxBy(item, (m) => parseInt(m.month));
+              const lastObject = _.maxBy(item, (m) => parseInt(m.month));
 
               const utilized_leave_days =
-                _.sumBy(item, (s) => parseFloat(s.ml_month)) +
-                _.sumBy(current_month, (s) => parseFloat(s.ml_month)) +
-                _.sumBy(current_month_encash, (s) => parseFloat(s.leave_days));
+                _.sumBy(item, (s) => parseFloat(s.ml_month)) + current_month ===
+                undefined
+                  ? 0
+                  : parseFloat(current_month.ml_month) +
+                    _.sumBy(current_month_encash, (s) =>
+                      parseFloat(s.leave_days)
+                    );
+
+              // console.log("11");
               // parseFloat(lastObject.ml_month) +
               //   parseFloat(lastObject.enc_leave_days);
 
-              console.log("utilized_leave_days", utilized_leave_days);
+              // console.log("utilized_leave_days", utilized_leave_days);
               // const total_utilized_leave_days =
               //   _.sumBy(item, (s) => parseFloat(s.ml_month)) +
               //   _.sumBy(item, (s) => parseFloat(s.enc_leave_days)) -
@@ -177,35 +182,59 @@ const executePDF = function executePDFMethod(options) {
 
               // Leave Days
 
-              console.log("opening_leave_days", opening_leave_days);
-              console.log("last_leave_days", last_leave_days);
+              // console.log("opening_leave_days", opening_leave_days);
+              // console.log("last_leave_days", last_leave_days);
+              // console.log("12");
               const year_open_leave_days =
-                parseFloat(last_leave_days) + parseFloat(opening_leave_days);
+                last_year_emp_bal === undefined
+                  ? 0
+                  : parseFloat(last_year_emp_bal.leave_days) +
+                    parseFloat(opening_leave_days);
 
-              console.log("year_open_leave_days", year_open_leave_days);
-              console.log(
-                "leave_days",
-                _.sumBy(item, (s) => parseFloat(s.leave_days))
-              );
-              console.log("current_month", current_month.leave_days);
-              console.log(
-                "ml_month",
-                _.sumBy(item, (s) => parseFloat(s.ml_month))
-              );
+              // console.log("year_open_leave_days", year_open_leave_days);
+              // console.log(
+              //   "leave_days",
+              //   _.sumBy(item, (s) => parseFloat(s.leave_days))
+              // );
+              // console.log("current_month", current_month.leave_days);
+              // console.log(
+              //   "ml_month",
+              //   _.sumBy(item, (s) => parseFloat(s.ml_month))
+              // );
+              // console.log("13");
               const leavedays_opening_balance =
                 _.sumBy(item, (s) => parseFloat(s.leave_days)) +
                 parseFloat(year_open_leave_days);
 
               const total_leave_days =
-                parseFloat(current_month.leave_days) +
-                parseFloat(leavedays_opening_balance) -
-                parseFloat(utilized_leave_days);
+                current_month === undefined
+                  ? 0
+                  : parseFloat(current_month.leave_days) +
+                    parseFloat(leavedays_opening_balance) -
+                    parseFloat(utilized_leave_days);
 
               // Leave Salary
 
+              // console.log(
+              //   "last_year_emp_bal.leave_salary_amount",
+              //   last_year_emp_bal.leave_salary_amount
+              // );
+              // console.log("opening_leave_salary", opening_leave_salary);
               const year_open_leave_salary_amount =
-                parseFloat(last_leave_salary_amount) +
-                parseFloat(opening_leave_salary);
+                last_year_emp_bal === undefined
+                  ? 0
+                  : parseFloat(last_year_emp_bal.leave_salary_amount) +
+                    parseFloat(opening_leave_salary);
+
+              // console.log(
+              //   "leave_salary_amount",
+              //   _.sumBy(item, (s) => parseFloat(s.leave_salary_amount))
+              // );
+              // console.log("opening_leave_salary", opening_leave_salary);
+              // console.log(
+              //   "leave_salary_amount",
+              //   current_month.leave_salary_amount
+              // );
 
               const leavesalary_opening_balance =
                 _.sumBy(item, (s) => parseFloat(s.leave_salary_amount)) +
@@ -219,18 +248,23 @@ const executePDF = function executePDFMethod(options) {
               // Airfare
 
               const year_open_airticket_amount =
-                parseFloat(last_airticket_amount) +
-                parseFloat(opening_airticket);
+                last_year_emp_bal === undefined
+                  ? 0
+                  : parseFloat(last_year_emp_bal.airticket_amount) +
+                    parseFloat(opening_airticket);
 
               const airefare_opening_balance =
                 _.sumBy(item, (s) => parseFloat(s.airticket_amount)) +
-                parseFloat(opening_airticket) -
-                parseFloat(current_month.airticket_amount);
+                  parseFloat(opening_airticket) -
+                  current_month ===
+                undefined
+                  ? 0
+                  : parseFloat(current_month.airticket_amount);
 
               const total_airticket_amount =
                 _.sumBy(item, (s) => parseFloat(s.airticket_amount)) +
                 parseFloat(opening_airticket);
-
+              // console.log("14");
               return {
                 ...current_month,
                 employee_code,
