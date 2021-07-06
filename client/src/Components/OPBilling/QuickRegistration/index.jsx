@@ -16,7 +16,7 @@ export default memo(function QuickRegistration(props) {
       <Button type="primary" size="middle" onClick={onOpen}>
         Quick Registration
       </Button>
-      <SideDrawer onClose={onClose} visible={visible} />
+      <SideDrawer {...props} onClose={onClose} visible={visible} />
     </div>
   );
 });

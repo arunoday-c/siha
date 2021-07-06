@@ -45,7 +45,6 @@ import {
 import sockets from "../../sockets";
 import axios from "axios";
 import swal from "sweetalert2";
-import QuickRegistration from "./QuickRegistration";
 const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 class OPBilling extends Component {
   constructor(props) {
@@ -655,9 +654,7 @@ class OPBilling extends Component {
                     </div>
                   )}
                 </div>
-              ) : (
-                <QuickRegistration />
-              )}
+              ) : null}
             </div>
           }
           printArea={

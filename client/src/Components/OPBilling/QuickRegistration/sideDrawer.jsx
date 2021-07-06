@@ -1,12 +1,20 @@
-import React, { memo, useState } from "react";
+import React, { memo, useState, useContext, useEffect } from "react";
 import { Button, Drawer, Badge, Divider, Skeleton } from "antd";
 import {
   AlgaehFormGroup,
   AlgaehDateHandler,
   AlgaehAutoComplete,
+  MainContext,
+  AlgaehLabel,
 } from "algaeh-react-components";
-import { /*nationality,*/ getPatientDetails } from "./services";
+import {
+  /*nationality,*/ getPatientDetails,
+  getDefaults,
+  updatePatient,
+  addPatient,
+} from "./services";
 export default memo(function SideDrawer(props) {
+  const { titles, nationalities } = useContext(MainContext);
   const [reference_no, setReferenceNo] = useState("");
   const [patient_code, setPatientCode] = useState("");
   const [date_of_birth, setDOB] = useState("");
@@ -20,7 +28,20 @@ export default memo(function SideDrawer(props) {
   const [patient_passport_no, setPatientPassportNo] = useState("");
   const [email_id, setEmailID] = useState("");
   const [visit_date, setVisitDate] = useState("");
+  const [nationality_name, setNationalityName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [defaultsData, setDefaultData] = useState({});
+  const [loadingProceed, setLoadingProceed] = useState(false);
+  useEffect(() => {
+    (async () => {
+      try {
+        const dtls = await getDefaults();
+        setDefaultData(dtls);
+      } catch (e) {
+        console.error("Error====>", e);
+      }
+    })();
+  }, []);
   async function findDetails() {
     try {
       setLoading(true);
@@ -44,12 +65,124 @@ export default memo(function SideDrawer(props) {
       setPatientPassportNo(patient.patient_passport_no);
       setVisitDate(patient_visit_date);
       setEmailID(patient.email_id);
+      setNationalityName(
+        nationalities.find(
+          (f) => f.hims_d_nationality_id === patient.nationality_id
+        )?.nationality
+      );
     } catch (e) {
       console.error(e);
       //   AlgaehMessagePop({ type: "error", display: e });
     } finally {
       setLoading(false);
     }
+  }
+  async function onClickProceed() {
+    try {
+      setLoadingProceed(true);
+      if (!reference_no || reference_no === "") {
+      }
+
+      const tel_code = "+" + mobile_no.substring(0, 3);
+      const contact_number = mobile_no.substring(3, 12);
+      const commonData = {
+        visit_type: defaultsData?.hims_d_visit_type_id,
+        data_of_birth: date_of_birth,
+        date_of_birth,
+        insured: "N",
+        from_package: false,
+        service_name: "service_name",
+        department_id: defaultsData?.department_id,
+        sub_department_id: defaultsData?.hims_d_sub_department_id,
+        doctor_id: defaultsData?.hims_d_employee_id,
+        consultation: "N",
+        maternity_patient: "N",
+        is_mlc: "N",
+        existing_plan: "N",
+        incharge_or_provider: defaultsData?.hims_d_employee_id,
+        ScreenCode: "BL0001",
+        tel_code,
+        contact_number,
+        receiptdetails: [
+          {
+            amount: 0,
+            card_check_number: null,
+            card_type: null,
+            expiry_date: null,
+            hims_f_receipt_header_id: null,
+            pay_type: "CA",
+            updated_date: null,
+          },
+        ],
+      };
+      let pat_code = "";
+      if (patient_id && patient_id !== "") {
+        const result = await updatePatient({
+          patient_code,
+          hims_d_patient_id: patient_id,
+          hims_f_patient_id: patient_id,
+          patient_id,
+          patient_type: defaultsData?.default_patient_type,
+          country_id: defaultsData?.default_country,
+          nationality_id: nationality_id,
+          primary_identity_id: identity_type,
+          primary_id_no: patient_identity,
+          secondary_identity_id: defaultsData?.default_secondary_id_quick_req,
+          secondary_id_no: patient_passport_no,
+          ...commonData,
+        }).catch((e) => {
+          throw e;
+        });
+        pat_code = result.patient_code;
+      } else {
+        const title_id =
+          gender.toLowerCase() === "male"
+            ? titles.find((f) => f.title.toLowerCase() === "mr")?.his_d_title_id
+            : titles.find((f) => f.title.toLowerCase() === "ms")
+                ?.his_d_title_id;
+        const result = await addPatient({
+          full_name: patient_full_name,
+          arabic_name: patient_full_name,
+          gender,
+          title_id,
+          primary_identity_id: identity_type,
+          primary_id_no: patient_identity,
+          secondary_identity_id: defaultsData?.default_secondary_id_quick_req,
+          secondary_id_no: patient_passport_no,
+          ...commonData,
+        }).catch((e) => {
+          throw e;
+        });
+        pat_code = result.patient_code;
+      }
+
+      if (typeof props.onComplete === "function") {
+        props.onComplete({
+          patient_code: pat_code,
+        });
+      }
+      onClearState();
+    } catch (e) {
+      console.error("Error====>", e);
+    } finally {
+      setLoadingProceed(false);
+    }
+  }
+  function onClearState() {
+    setReferenceNo("");
+    setPatientCode("");
+    setDOB("");
+    setFullName("");
+    setGender("");
+    setIdentityType("");
+    setMobileNo("");
+    setNationality("");
+    setPatientID("");
+    setPatientIdentity("");
+    setPatientPassportNo("");
+    setEmailID("");
+    setVisitDate("");
+    setNationalityName("");
   }
   return (
     <Drawer
@@ -225,27 +358,10 @@ export default memo(function SideDrawer(props) {
               />
             </div>
             <div className="row">
-              <AlgaehAutoComplete
-                div={{ className: "col-6" }}
+              <AlgaehLabel
                 label={{
-                  forceLabel: "Identity Type",
-                  isImp: true,
-                }}
-                selector={{
-                  name: "gender",
-                  className: "select-fld",
-                  onChange: (_, selected) => setGender(selected),
-                  value: gender,
-                  onClear: () => setGender(""),
-                  dataSource: {
-                    textField: "text",
-                    valueField: "value",
-                    data: [
-                      { text: "Male", value: "Male" },
-                      { text: "Female", value: "Female" },
-                      { text: "Trans", value: "Trans" },
-                    ],
-                  },
+                  forceLabel: `Nationality : ${nationality_name}`,
+                  className: "col-6",
                 }}
               />
               <AlgaehFormGroup
@@ -266,7 +382,15 @@ export default memo(function SideDrawer(props) {
               />
             </div>
           </div>
-          <br /> <Button type="primary"> Create Visit </Button>
+          <br />{" "}
+          <Button
+            type="primary"
+            onClick={onClickProceed}
+            loading={loadingProceed}
+          >
+            {" "}
+            Create Visit{" "}
+          </Button>
         </Badge.Ribbon>
       )}
     </Drawer>

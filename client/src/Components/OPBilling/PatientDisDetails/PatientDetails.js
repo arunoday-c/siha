@@ -9,8 +9,9 @@ import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
 import { PatientSearch, selectVisit } from "./DisPatientHandlers";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
-
 import moment from "moment";
+import QuickRegistration from "../QuickRegistration";
+
 class DisPatientForm extends Component {
   constructor(props) {
     super(props);
@@ -178,7 +179,24 @@ class DisPatientForm extends Component {
                           )}
                         </h6>
                       </div>
-                    ) : null}
+                    ) : (
+                      <QuickRegistration
+                        onComplete={({ patient_code }) => {
+                          this.setState({
+                            patient_code: patient_code,
+                            // visit_id: visit_id,
+                            // visitDetails: visitList,
+                          });
+
+                          if (context !== null) {
+                            context.updateState({
+                              patient_code: patient_code,
+                              // visit_id: visit_id,
+                            });
+                          }
+                        }}
+                      />
+                    )}
                     {this.state.due_amount > 0 ? (
                       <div className="col-2">
                         <AlgaehLabel label={{ forceLabel: "Due Amount" }} />

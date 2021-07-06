@@ -1,7 +1,7 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
 import shiftModels from "../models/shiftAndCounter";
-
+import { getDefaults } from "../models/quickBilling";
 const {
   addShiftMaster,
   addCounterMaster,
@@ -139,6 +139,14 @@ export default () => {
       next();
     }
   );
-
+  api.get("/getDefaults", getDefaults, (req, res) => {
+    res
+      .status(utlities.httpStatus().ok)
+      .json({
+        success: true,
+        records: req["records"],
+      })
+      .end();
+  });
   return api;
 };
