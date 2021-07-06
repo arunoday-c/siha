@@ -6,11 +6,8 @@ const executePDF = function executePDFMethod(options) {
       let str = "";
       let input = {};
       let params = options.args.reportParams;
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
 
       params.forEach((para) => {
         input[para["name"]] = para["value"];
@@ -164,7 +161,7 @@ const executePDF = function executePDFMethod(options) {
 
               const utilized_leave_days =
                 _.sumBy(item, (s) => parseFloat(s.ml_month)) +
-                _.sumBy(current_month, (s) => parseFloat(s.ml_month)) +
+                parseFloat(current_month.ml_month) +
                 _.sumBy(current_month_encash, (s) => parseFloat(s.leave_days));
               // parseFloat(lastObject.ml_month) +
               //   parseFloat(lastObject.enc_leave_days);
