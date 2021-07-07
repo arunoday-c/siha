@@ -21,8 +21,8 @@ export async function getPatientDetails(options) {
 export async function updatePatientDetails(options) {
   const { data } = await axios
     .put("/patient/updatePatient", options, {
-      // baseURL: BASE_URL,
-      baseURL: "http://localhost:3025/api/v1",
+      baseURL: BASE_URL,
+      // baseURL: "http://localhost:3025/api/v1",
     })
     .catch((e) => {
       throw e;
