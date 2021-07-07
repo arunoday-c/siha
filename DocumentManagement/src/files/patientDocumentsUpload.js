@@ -1,7 +1,7 @@
 import path from "path";
 // import stream from "stream";
 import fs from "fs-extra";
-// import mime from "mime-types";
+import mime from "mime-types";
 
 // import imageThumbnail from "image-thumbnail";
 // import PatientDocModel from "./patientDoc";
@@ -231,14 +231,17 @@ export const downloadPatDocument = (req, res) => {
   });
   fs.readFile(fileName, (err, content) => {
     if (err) {
-      // console.log("Error in reading====>", err);
+      console.log("Error in reading====>", err);
       res.status(400).json({ error: err.message });
       // throw err;
     } else {
-      res.writeHead(200, { "Content-type": "application/pdf" });
-      res.end(content, () => {
-        fs.unlinkSync(fileName);
+      const extension = mime.contentType(path.extname(fileName));
+
+      // console.log(" reading====>", extension);
+      res.writeHead(200, {
+        "Content-type": extension,
       });
+      res.end(content);
     }
   });
 };
