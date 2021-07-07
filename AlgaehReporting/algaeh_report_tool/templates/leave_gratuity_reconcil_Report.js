@@ -6,8 +6,11 @@ const executePDF = function executePDFMethod(options) {
       let str = "";
       let input = {};
       let params = options.args.reportParams;
-      const { decimal_places, symbol_position, currency_symbol } =
-        options.args.crypto;
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
 
       params.forEach((para) => {
         input[para["name"]] = para["value"];
@@ -39,10 +42,9 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `
-          SELECT LH.employee_id, opening_leave_salary, opening_airticket, opening_leave_days, LD.leave_days, 
-          LD.leave_salary_amount, LD.airticket_amount,
-          EM.employee_code, EM.full_name,DS.designation,
-        EM.date_of_joining,
+          SELECT LH.employee_id,LD.leave_days,LD.leave_salary_amount, LD.airticket_amount,
+          EM.employee_code, EM.full_name, DS.designation, EM.date_of_joining,
+          opening_leave_salary, opening_airticket, opening_leave_days,
           case when 
           LD.month ='1' then ML.january when
           LD.month ='2' then ML.february when
@@ -55,17 +57,19 @@ const executePDF = function executePDFMethod(options) {
           LD.month ='9' then ML.september when
           LD.month ='10' then ML.october when
           LD.month ='11' then ML.november
-          else ML.december end as ml_month, EE.amount as basic_salary
+          else ML.december end as ml_month,EE.amount as basic_salary
           FROM hims_f_employee_leave_salary_header LH 
           INNER JOIN hims_f_employee_leave_salary_detail LD ON LH.hims_f_employee_leave_salary_header_id=LD.employee_leave_salary_header_id
-          INNER JOIN hims_f_salary S ON LH.employee_id = S.employee_id
-          INNER JOIN hims_f_employee_monthly_leave ML ON ML.employee_id = LH.employee_id and ML.year=? 
+          INNER JOIN hims_f_salary S ON S.employee_id = LH.employee_id and S.year = LD.year and S.month = LD.month
           INNER JOIN hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id
           INNER JOIN hims_d_designation as DS on DS.hims_d_designation_id = EM.employee_designation_id
           INNER JOIN hims_d_employee_earnings as EE on EE.employee_id = EM.hims_d_employee_id and earnings_id=(select basic_earning_component from hims_d_hrms_options limit 1)
+          INNER JOIN hims_f_employee_monthly_leave ML ON ML.employee_id = LH.employee_id and ML.year=? 
           and ML.leave_id=(select hims_d_leave_id from hims_d_leave where leave_category='A')
-          where LD.year=? and LD.month < ? and EM.leave_salary_process='Y' ${str};
-          SELECT LH.employee_id,LD.leave_days,LD.leave_salary_amount, LD.airticket_amount,
+          where LD.year=? and LD.month = ? and EM.leave_salary_process='Y' and S.salary_processed ='Y' ${str};
+
+          SELECT LH.employee_id,  LD.leave_days, 
+          LD.leave_salary_amount, LD.airticket_amount,        
           case when 
           LD.month ='1' then ML.january when
           LD.month ='2' then ML.february when
@@ -78,13 +82,14 @@ const executePDF = function executePDFMethod(options) {
           LD.month ='9' then ML.september when
           LD.month ='10' then ML.october when
           LD.month ='11' then ML.november
-          else ML.december end as ml_month
+          else ML.december end as ml_month 
           FROM hims_f_employee_leave_salary_header LH 
-          INNER JOIN hims_f_employee_leave_salary_detail LD ON LH.hims_f_employee_leave_salary_header_id=LD.employee_leave_salary_header_id
-          INNER JOIN hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id          
+          INNER JOIN hims_f_employee_leave_salary_detail LD ON LH.hims_f_employee_leave_salary_header_id=LD.employee_leave_salary_header_id          
           INNER JOIN hims_f_employee_monthly_leave ML ON ML.employee_id = LH.employee_id and ML.year=? 
           and ML.leave_id=(select hims_d_leave_id from hims_d_leave where leave_category='A')
-          where LD.year=? and LD.month = ? and EM.leave_salary_process='Y' ${str};
+          INNER JOIN hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id          
+          where LD.year=? and LD.month < ? and EM.leave_salary_process='Y' ${str};          
+
           SELECT employee_id,leave_days,leave_amount,airfare_amount FROM hims_f_leave_encash_header LH 
           INNER JOIN hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id 
           where year=? and MONTH(CONCAT(encashment_date))<=?
@@ -112,14 +117,14 @@ const executePDF = function executePDFMethod(options) {
         .then((result) => {
           // const header = result.length ? result[0] : {};
 
-          const opening_balance = result[0];
-          const current_balance = result[1];
+          const current_balance = result[0];
+          const opening_balance = result[1];
           const leave_encash = result[2];
           const last_year_balance = result[3];
 
-          // console.log("result", result);
+          // console.log("opening_balance", opening_balance);
           // consol.log("result", result);
-          const newResult = _.chain(opening_balance)
+          const newResult = _.chain(current_balance)
             .groupBy((g) => g.employee_id)
             .map((item) => {
               const {
@@ -138,10 +143,11 @@ const executePDF = function executePDFMethod(options) {
                 (f) => f.employee_id === employee_id
               );
               // console.log("last_year_emp_bal", last_year_emp_bal);
-              let current_month = current_balance.find(
+              let previous_trans_data = opening_balance.filter(
                 (f) => f.employee_id === employee_id
               );
-              current_month = current_month === undefined ? 0 : current_month;
+              // console.log("item", item);
+              // console.log("previous_trans_data", previous_trans_data);
               const current_month_encash = leave_encash.filter(
                 (f) => f.employee_id === employee_id
               );
@@ -149,21 +155,15 @@ const executePDF = function executePDFMethod(options) {
               console.log(
                 "item",
                 _.sumBy(item, (s) => parseFloat(s.ml_month)),
-                current_month === undefined
-                  ? 0
-                  : parseFloat(current_month.ml_month),
+                _.sumBy(previous_trans_data, (s) => parseFloat(s.ml_month)),
                 _.sumBy(current_month_encash, (s) => parseFloat(s.leave_days))
               );
               // const lastObject = _.maxBy(item, (m) => parseInt(m.month));
               // console.log("current_month", current_month);
               const utilized_leave_days =
-                _.sumBy(item, (s) => parseFloat(s.ml_month)) + current_month ===
-                undefined
-                  ? 0
-                  : parseFloat(current_month.ml_month) +
-                    _.sumBy(current_month_encash, (s) =>
-                      parseFloat(s.leave_days)
-                    );
+                _.sumBy(item, (s) => parseFloat(s.ml_month)) +
+                _.sumBy(previous_trans_data, (s) => parseFloat(s.ml_month)) +
+                _.sumBy(current_month_encash, (s) => parseFloat(s.leave_days));
 
               // console.log("22");
               // Leave Days
@@ -185,15 +185,13 @@ const executePDF = function executePDFMethod(options) {
               // );
               // console.log("13");
               const leavedays_opening_balance =
-                _.sumBy(item, (s) => parseFloat(s.leave_days)) +
+                _.sumBy(previous_trans_data, (s) => parseFloat(s.leave_days)) +
                 parseFloat(year_open_leave_days);
 
               const total_leave_days =
-                current_month === undefined
-                  ? 0
-                  : parseFloat(current_month.leave_days) +
-                    parseFloat(leavedays_opening_balance) -
-                    parseFloat(utilized_leave_days);
+                _.sumBy(item, (s) => parseFloat(s.leave_days)) +
+                parseFloat(leavedays_opening_balance) -
+                parseFloat(utilized_leave_days);
 
               // Leave Salary
               const year_open_leave_salary_amount =
@@ -203,9 +201,13 @@ const executePDF = function executePDFMethod(options) {
                     parseFloat(opening_leave_salary);
               // console.log("14");
               const leavesalary_opening_balance =
-                _.sumBy(item, (s) => parseFloat(s.leave_salary_amount)) +
+                _.sumBy(previous_trans_data, (s) =>
+                  parseFloat(s.leave_salary_amount)
+                ) +
                 parseFloat(opening_leave_salary) -
-                parseFloat(current_month.leave_salary_amount);
+                _.sumBy(previous_trans_data, (s) =>
+                  parseFloat(s.leave_salary_amount)
+                );
               // console.log("15");
               const total_leave_salary_amount =
                 _.sumBy(item, (s) => parseFloat(s.leave_salary_amount)) +
@@ -223,12 +225,13 @@ const executePDF = function executePDFMethod(options) {
                     parseFloat(opening_airticket);
 
               const airefare_opening_balance =
-                _.sumBy(item, (s) => parseFloat(s.airticket_amount)) +
-                  parseFloat(opening_airticket) -
-                  current_month ===
-                undefined
-                  ? 0
-                  : parseFloat(current_month.airticket_amount);
+                _.sumBy(previous_trans_data, (s) =>
+                  parseFloat(s.airticket_amount)
+                ) +
+                parseFloat(opening_airticket) -
+                _.sumBy(previous_trans_data, (s) =>
+                  parseFloat(s.airticket_amount)
+                );
               // console.log("17");
               const total_airticket_amount =
                 _.sumBy(item, (s) => parseFloat(s.airticket_amount)) +
@@ -237,7 +240,7 @@ const executePDF = function executePDFMethod(options) {
                   parseFloat(s.airfare_amount)
                 );
               return {
-                ...current_month,
+                ...item[0],
                 employee_code,
                 full_name,
                 designation,
