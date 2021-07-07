@@ -597,9 +597,13 @@ const onchangegridresult = ($this, row, e) => {
           }
         }
       }
+      debugger;
       let otherValue = eval(executableFormula);
       if (decimals) {
-        otherValue = parseFloat(otherValue).toFixed(decimals);
+        otherValue =
+          otherValue === undefined
+            ? ""
+            : parseFloat(otherValue).toFixed(decimals);
       }
       // console.log("otherValue", otherValue);
       const analyte_index = test_analytes.findIndex(
