@@ -7,15 +7,19 @@ import {
   MainContext,
   AlgaehLabel,
 } from "algaeh-react-components";
+import moment from "moment";
 import {
   /*nationality,*/ getPatientDetails,
   getDefaults,
   updatePatient,
   addPatient,
+  updatePatientDetails,
 } from "./services";
 export default memo(function SideDrawer(props) {
   const { titles, nationalities } = useContext(MainContext);
-  const [reference_no, setReferenceNo] = useState("");
+  const [reference_no, setReferenceNo] = useState(
+    `REF-${moment().format("YYYYMMDD")}-`
+  );
   const [patient_code, setPatientCode] = useState("");
   const [date_of_birth, setDOB] = useState("");
   const [patient_full_name, setFullName] = useState("");
@@ -23,6 +27,7 @@ export default memo(function SideDrawer(props) {
   const [identity_type, setIdentityType] = useState("");
   const [mobile_no, setMobileNo] = useState("");
   const [nationality_id, setNationality] = useState("");
+  const [patient_visit_id, setPatientVisit] = useState("");
   const [patient_id, setPatientID] = useState("");
   const [patient_identity, setPatientIdentity] = useState("");
   const [patient_passport_no, setPatientPassportNo] = useState("");
@@ -30,6 +35,7 @@ export default memo(function SideDrawer(props) {
   const [visit_date, setVisitDate] = useState("");
   const [nationality_name, setNationalityName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [reference_in_use, setReferenceInUSe] = useState(false);
   const [defaultsData, setDefaultData] = useState({});
   const [loadingProceed, setLoadingProceed] = useState(false);
   useEffect(() => {
@@ -48,7 +54,12 @@ export default memo(function SideDrawer(props) {
       const details = await getPatientDetails({ reference_no }).catch((err) => {
         throw err;
       });
-      const { patient, patient_visit_date } = details;
+      const {
+        patient,
+        patient_visit_date,
+        patient_visit_id: pat_visit,
+        reference_in_use,
+      } = details;
       setPatientCode(patient.patient_code);
       setDOB(patient.date_of_birth);
       setFullName(
@@ -63,7 +74,9 @@ export default memo(function SideDrawer(props) {
       setPatientID(patient.patient_id);
       setPatientIdentity(patient.patient_identity);
       setPatientPassportNo(patient.patient_passport_no);
+      setPatientVisit(pat_visit);
       setVisitDate(patient_visit_date);
+      setReferenceInUSe(reference_in_use);
       setEmailID(patient.email_id);
       setNationalityName(
         nationalities.find(
@@ -115,7 +128,7 @@ export default memo(function SideDrawer(props) {
           },
         ],
       };
-      let pat_code = "";
+      let pat_result = {};
       if (patient_id && patient_id !== "") {
         const result = await updatePatient({
           patient_code,
@@ -133,7 +146,7 @@ export default memo(function SideDrawer(props) {
         }).catch((e) => {
           throw e;
         });
-        pat_code = result.patient_code;
+        pat_result = result; //.patient_code;
       } else {
         const title_id =
           gender.toLowerCase() === "male"
@@ -149,16 +162,28 @@ export default memo(function SideDrawer(props) {
           primary_id_no: patient_identity,
           secondary_identity_id: defaultsData?.default_secondary_id_quick_req,
           secondary_id_no: patient_passport_no,
+          patient_type: defaultsData?.default_patient_type,
+          country_id: defaultsData?.default_country,
+          nationality_id: nationality_id,
           ...commonData,
         }).catch((e) => {
           throw e;
         });
-        pat_code = result.patient_code;
+        // pat_code = result.patient_code;
+        pat_result = result;
       }
-
+      await updatePatientDetails({
+        patient_visit_id: patient_visit_id,
+        patient_identity,
+        patient_code: pat_result.patient_code,
+        patient_id: pat_result.hims_d_patient_id,
+      }).catch((e) => {
+        console.error("Error===>", e);
+      });
+      props.onClose();
       if (typeof props.onComplete === "function") {
         props.onComplete({
-          patient_code: pat_code,
+          patient_code: pat_result.patient_code,
         });
       }
       onClearState();
@@ -169,7 +194,7 @@ export default memo(function SideDrawer(props) {
     }
   }
   function onClearState() {
-    setReferenceNo("");
+    setReferenceNo(`REF-${moment().format("YYYYMMDD")}-`);
     setPatientCode("");
     setDOB("");
     setFullName("");
@@ -231,6 +256,12 @@ export default memo(function SideDrawer(props) {
             <Divider />
             <br />
             <label>{visit_date}</label>
+
+            <Badge
+              count={reference_in_use === 1 ? "Already in use" : 0}
+              style={{ backgroundColor: "#52c41a" }}
+            />
+
             <div className="row">
               <AlgaehFormGroup
                 div={{ className: "col-12" }}
@@ -330,7 +361,6 @@ export default memo(function SideDrawer(props) {
                     data: [
                       { text: "Male", value: "Male" },
                       { text: "Female", value: "Female" },
-                      { text: "Trans", value: "Trans" },
                     ],
                   },
                 }}
