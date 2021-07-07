@@ -46,17 +46,21 @@ class LabResult extends Component {
     }
   };
   getDocuments(e) {
+    const patCode = this.props.radresult[0].patient_code;
     newAlgaehApi({
-      uri: "/getRadiologyDoc",
+      uri: "/getUploadedPatientFiles",
       module: "documentManagement",
       method: "GET",
       data: {
-        hims_f_rad_order_id: this.state.hims_f_rad_order_id,
+        doc_number: this.state.hims_f_rad_order_id,
+        filePath: `PatientDocuments/${patCode}/RadiologyDocuments/${this.state.hims_f_rad_order_id}/`,
       },
     })
       .then((res) => {
         if (res.data.success) {
           let { data } = res.data;
+          // setRadiologyDocList(data);
+          // setRadiologyDoc([]);
           this.setState({
             attached_docs: data,
             attached_files: [],
@@ -66,12 +70,38 @@ class LabResult extends Component {
         }
       })
       .catch((e) => {
-        // AlgaehLoader({ show: false });
         swalMessage({
-          title: e.message,
           type: "error",
+          title: e.message,
         });
       });
+
+    // newAlgaehApi({
+    //   uri: "/getRadiologyDoc",
+    //   module: "documentManagement",
+    //   method: "GET",
+    //   data: {
+    //     hims_f_rad_order_id: this.state.hims_f_rad_order_id,
+    //   },
+    // })
+    //   .then((res) => {
+    //     if (res.data.success) {
+    //       let { data } = res.data;
+    //       this.setState({
+    //         attached_docs: data,
+    //         attached_files: [],
+    //         // saveEnable: $this.state.saveEnable,
+    //         // docChanged: false,
+    //       });
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     // AlgaehLoader({ show: false });
+    //     swalMessage({
+    //       title: e.message,
+    //       type: "error",
+    //     });
+    //   });
   }
   generateReport(row) {
     algaehApiCall({
@@ -122,23 +152,68 @@ class LabResult extends Component {
       isOpen: !this.state.isOpen,
     });
   }
+
   downloadDoc(doc, isPreview) {
-    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-    const link = document.createElement("a");
-    if (!isPreview) {
-      link.download = doc.filename;
-      link.href = fileUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      fetch(fileUrl)
-        .then((res) => res.blob())
-        .then((fblob) => {
-          const newUrl = URL.createObjectURL(fblob);
-          window.open(newUrl);
-        });
-    }
+    newAlgaehApi({
+      uri: "/downloadPatDocument",
+      module: "documentManagement",
+      method: "GET",
+      extraHeaders: {
+        Accept: "blob",
+      },
+      others: {
+        responseType: "blob",
+      },
+      data: {
+        fileName: doc.value,
+      },
+    })
+      .then((resp) => {
+        const urlBlob = URL.createObjectURL(resp.data);
+        if (!isPreview) {
+          // if (!isPreview) {
+
+          const link = document.createElement("a");
+          link.download = doc.name;
+          link.href = urlBlob;
+          // link.target = "_blank";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          // fetch(urlBlob)
+          //   .then((res) => res.blob())
+          //   .then((fblob) => {
+          //     const newUrl = URL.createObjectURL(fblob);
+          window.open(urlBlob);
+          // });
+        }
+
+        // } else {
+        //   window.open(urlBlob);
+        // }
+      })
+      .catch((error) => {
+        console.log(error);
+        // setLoading(false);
+      });
+
+    // const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+    // const link = document.createElement("a");
+    // if (!isPreview) {
+    //   link.download = doc.filename;
+    //   link.href = fileUrl;
+    //   document.body.appendChild(link);
+    //   link.click();
+    //   document.body.removeChild(link);
+    // } else {
+    //   fetch(fileUrl)
+    //     .then((res) => res.blob())
+    //     .then((fblob) => {
+    //       const newUrl = URL.createObjectURL(fblob);
+    //       window.open(newUrl);
+    //     });
+    // }
   }
 
   render() {
@@ -188,21 +263,29 @@ class LabResult extends Component {
                     <div className="col-12">
                       <ul className="investigationAttachmentList">
                         {this.state.attached_docs.length ? (
-                          this.state.attached_docs.map((doc) => (
-                            <li>
-                              <b> {doc.filename} </b>
-                              <span>
-                                <i
-                                  className="fas fa-download"
-                                  onClick={() => this.downloadDoc(doc)}
-                                ></i>
-                                <i
-                                  className="fas fa-eye"
-                                  onClick={() => this.downloadDoc(doc, true)}
-                                ></i>
-                              </span>
-                            </li>
-                          ))
+                          this.state.attached_docs.map((doc) => {
+                            return (
+                              <>
+                                {" "}
+                                <li>
+                                  <b> {doc.name} </b>
+                                  <span>
+                                    <i
+                                      className="fas fa-download"
+                                      onClick={() => this.downloadDoc(doc)}
+                                    ></i>
+
+                                    <i
+                                      className="fas fa-eye"
+                                      onClick={() =>
+                                        this.downloadDoc(doc, true)
+                                      }
+                                    ></i>
+                                  </span>
+                                </li>
+                              </>
+                            );
+                          })
                         ) : (
                           <div className="col-12 noAttachment" key={1}>
                             <p>No Attachments Available</p>
