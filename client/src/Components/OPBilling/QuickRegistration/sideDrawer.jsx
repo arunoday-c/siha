@@ -1,5 +1,5 @@
 import React, { memo, useState, useContext, useEffect } from "react";
-import { Button, Drawer, Badge, Divider, Skeleton } from "antd";
+import { Button, Drawer, Badge, Skeleton } from "antd";
 import {
   AlgaehFormGroup,
   AlgaehDateHandler,
@@ -7,15 +7,20 @@ import {
   MainContext,
   AlgaehLabel,
 } from "algaeh-react-components";
+import moment from "moment";
+import "../OPBilling.scss";
 import {
   /*nationality,*/ getPatientDetails,
   getDefaults,
   updatePatient,
   addPatient,
+  updatePatientDetails,
 } from "./services";
 export default memo(function SideDrawer(props) {
   const { titles, nationalities } = useContext(MainContext);
-  const [reference_no, setReferenceNo] = useState("");
+  const [reference_no, setReferenceNo] = useState(
+    `REF-${moment().format("YYYYMMDD")}-`
+  );
   const [patient_code, setPatientCode] = useState("");
   const [date_of_birth, setDOB] = useState("");
   const [patient_full_name, setFullName] = useState("");
@@ -23,6 +28,7 @@ export default memo(function SideDrawer(props) {
   const [identity_type, setIdentityType] = useState("");
   const [mobile_no, setMobileNo] = useState("");
   const [nationality_id, setNationality] = useState("");
+  const [patient_visit_id, setPatientVisit] = useState("");
   const [patient_id, setPatientID] = useState("");
   const [patient_identity, setPatientIdentity] = useState("");
   const [patient_passport_no, setPatientPassportNo] = useState("");
@@ -30,6 +36,7 @@ export default memo(function SideDrawer(props) {
   const [visit_date, setVisitDate] = useState("");
   const [nationality_name, setNationalityName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [reference_in_use, setReferenceInUSe] = useState(false);
   const [defaultsData, setDefaultData] = useState({});
   const [loadingProceed, setLoadingProceed] = useState(false);
   useEffect(() => {
@@ -48,7 +55,12 @@ export default memo(function SideDrawer(props) {
       const details = await getPatientDetails({ reference_no }).catch((err) => {
         throw err;
       });
-      const { patient, patient_visit_date } = details;
+      const {
+        patient,
+        patient_visit_date,
+        patient_visit_id: pat_visit,
+        reference_in_use,
+      } = details;
       setPatientCode(patient.patient_code);
       setDOB(patient.date_of_birth);
       setFullName(
@@ -63,7 +75,9 @@ export default memo(function SideDrawer(props) {
       setPatientID(patient.patient_id);
       setPatientIdentity(patient.patient_identity);
       setPatientPassportNo(patient.patient_passport_no);
+      setPatientVisit(pat_visit);
       setVisitDate(patient_visit_date);
+      setReferenceInUSe(reference_in_use);
       setEmailID(patient.email_id);
       setNationalityName(
         nationalities.find(
@@ -115,7 +129,7 @@ export default memo(function SideDrawer(props) {
           },
         ],
       };
-      let pat_code = "";
+      let pat_result = {};
       if (patient_id && patient_id !== "") {
         const result = await updatePatient({
           patient_code,
@@ -133,7 +147,7 @@ export default memo(function SideDrawer(props) {
         }).catch((e) => {
           throw e;
         });
-        pat_code = result.patient_code;
+        pat_result = result; //.patient_code;
       } else {
         const title_id =
           gender.toLowerCase() === "male"
@@ -149,16 +163,28 @@ export default memo(function SideDrawer(props) {
           primary_id_no: patient_identity,
           secondary_identity_id: defaultsData?.default_secondary_id_quick_req,
           secondary_id_no: patient_passport_no,
+          patient_type: defaultsData?.default_patient_type,
+          country_id: defaultsData?.default_country,
+          nationality_id: nationality_id,
           ...commonData,
         }).catch((e) => {
           throw e;
         });
-        pat_code = result.patient_code;
+        // pat_code = result.patient_code;
+        pat_result = result;
       }
-
+      await updatePatientDetails({
+        patient_visit_id: patient_visit_id,
+        patient_identity,
+        patient_code: pat_result.patient_code,
+        patient_id: pat_result.hims_d_patient_id,
+      }).catch((e) => {
+        console.error("Error===>", e);
+      });
+      props.onClose();
       if (typeof props.onComplete === "function") {
         props.onComplete({
-          patient_code: pat_code,
+          patient_code: pat_result.patient_code,
         });
       }
       onClearState();
@@ -169,7 +195,7 @@ export default memo(function SideDrawer(props) {
     }
   }
   function onClearState() {
-    setReferenceNo("");
+    setReferenceNo(`REF-${moment().format("YYYYMMDD")}-`);
     setPatientCode("");
     setDOB("");
     setFullName("");
@@ -191,6 +217,7 @@ export default memo(function SideDrawer(props) {
       closable={false}
       onClose={props.onClose}
       visible={props.visible}
+      className="quickRegDrawer"
     >
       <div className="row">
         <AlgaehFormGroup
@@ -209,7 +236,9 @@ export default memo(function SideDrawer(props) {
           }}
         />
         <Button
-          type="primary"
+          className="btn btn-default btn-small"
+          style={{ marginTop: 21 }}
+          type="button"
           size="middle"
           onClick={findDetails}
           loading={loading}
@@ -227,15 +256,55 @@ export default memo(function SideDrawer(props) {
           placement="start"
           color={patient_id && patient_id !== "" ? "teal" : "orange"}
         >
-          <div style={{ marginTop: 10 }}>
-            <Divider />
-            <br />
-            <label>{visit_date}</label>
-            <div className="row">
+          <div className="quickRegFormCntr">
+            <div className="row ">
+              <div className="col-4">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Registerd Date",
+                  }}
+                />
+                <h6>{visit_date ? visit_date : "------"}</h6>
+              </div>
+              <div className="col-4">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Nationality",
+                  }}
+                />
+                <h6>{nationality_name ? nationality_name : "------"}</h6>
+              </div>
+
+              {/* <div className="col-4">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Nationality",
+                  }}
+                />
+                <h6>{nationality_name ? nationality_name : "------"}</h6>
+              </div> */}
+
               <AlgaehFormGroup
-                div={{ className: "col-12" }}
+                div={{ className: "col-4 form-group mandatory" }}
                 label={{
-                  forceLabel: "Patient Full Name",
+                  forceLabel: "Patient Code",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "patient_code",
+                  value: patient_code,
+                  disabled: true,
+                  "data-patId": patient_id,
+                  "data-identity_type": identity_type,
+                  "data-nationality_id": nationality_id,
+                }}
+              />
+
+              <AlgaehFormGroup
+                div={{ className: "col-12 form-group mandatory" }}
+                label={{
+                  forceLabel: "Full Name",
                   isImp: true,
                 }}
                 textBox={{
@@ -247,71 +316,9 @@ export default memo(function SideDrawer(props) {
                   },
                 }}
               />
-            </div>
-            <div className="row">
-              <AlgaehFormGroup
-                div={{ className: "col-6" }}
-                label={{
-                  forceLabel: "Primary Identity",
-                  isImp: true,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "patient_identity",
-                  value: patient_identity,
-                  onChange: (e) => {
-                    setPatientIdentity(e.target.value);
-                  },
-                }}
-              />
-              <AlgaehFormGroup
-                div={{ className: "col-6" }}
-                label={{
-                  forceLabel: "Passport",
-                  isImp: true,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "patient_passport_no",
-                  value: patient_passport_no,
-                  onChange: (e) => {
-                    setPatientPassportNo(e.target.value);
-                  },
-                }}
-              />
-            </div>
-            <div className="row">
-              <AlgaehFormGroup
-                div={{ className: "col-6" }}
-                label={{
-                  forceLabel: "Mobile Number",
-                  isImp: true,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "mobile_no",
-                  disabled: true,
-                  value: mobile_no,
-                }}
-              />
-              <AlgaehFormGroup
-                div={{ className: "col-6" }}
-                label={{
-                  forceLabel: "Email ID",
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "email_id",
-                  value: email_id,
-                  onChange: (e) => {
-                    setEmailID(e.target.value);
-                  },
-                }}
-              />
-            </div>
-            <div className="row">
+
               <AlgaehAutoComplete
-                div={{ className: "col-6" }}
+                div={{ className: "col-6 form-group mandatory" }}
                 label={{
                   forceLabel: "Gender",
                   isImp: true,
@@ -330,13 +337,12 @@ export default memo(function SideDrawer(props) {
                     data: [
                       { text: "Male", value: "Male" },
                       { text: "Female", value: "Female" },
-                      { text: "Trans", value: "Trans" },
                     ],
                   },
                 }}
               />
               <AlgaehDateHandler
-                div={{ className: "col-6" }}
+                div={{ className: "col-6 form-group mandatory" }}
                 label={{
                   forceLabel: "Date Of Birth",
                   isImp: true,
@@ -356,41 +362,109 @@ export default memo(function SideDrawer(props) {
                   },
                 }}
               />
-            </div>
-            <div className="row">
-              <AlgaehLabel
-                label={{
-                  forceLabel: `Nationality : ${nationality_name}`,
-                  className: "col-6",
-                }}
-              />
+              <hr />
+
               <AlgaehFormGroup
-                div={{ className: "col-6" }}
+                div={{ className: "col-6 form-group mandatory" }}
                 label={{
-                  forceLabel: "Patient Code",
+                  forceLabel: "Primary Identity",
                   isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "patient_code",
-                  value: patient_code,
-                  disabled: true,
-                  "data-patId": patient_id,
-                  "data-identity_type": identity_type,
-                  "data-nationality_id": nationality_id,
+                  name: "patient_identity",
+                  value: patient_identity,
+                  onChange: (e) => {
+                    setPatientIdentity(e.target.value);
+                  },
                 }}
               />
+              <AlgaehFormGroup
+                div={{ className: "col-6 form-group mandatory" }}
+                label={{
+                  forceLabel: "Passport",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "patient_passport_no",
+                  value: patient_passport_no,
+                  onChange: (e) => {
+                    setPatientPassportNo(e.target.value);
+                  },
+                }}
+              />
+
+              <AlgaehFormGroup
+                div={{ className: "col-6 form-group mandatory" }}
+                label={{
+                  forceLabel: "Mobile Number",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "mobile_no",
+                  disabled: true,
+                  value: mobile_no,
+                }}
+              />
+              <AlgaehFormGroup
+                div={{ className: "col-6 form-group" }}
+                label={{
+                  forceLabel: "Email ID",
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "email_id",
+                  value: email_id,
+                  onChange: (e) => {
+                    setEmailID(e.target.value);
+                  },
+                }}
+              />
+              <div className="col-12">
+                <div className="alert alert-warning" role="alert">
+                  Note:- Please Validate all data before continue{" "}
+                  <b>Create visit</b>. As this data will come in Lab Reports
+                </div>
+              </div>
+
+              {/* <AlgaehLabel
+                label={{
+                  forceLabel: `Nationality : ${nationality_name}`,
+                  className: "col-6",
+                }}
+              /> */}
+            </div>
+            <Badge
+              count={reference_in_use === 1 ? "Already used." : 0}
+              style={{ backgroundColor: "#52c41a" }}
+            />
+          </div>
+          <div className="row">
+            <div
+              className="col-12"
+              style={{ textAlign: "right", paddingTop: 15 }}
+            >
+              <Button
+                style={{ marginRight: 8 }}
+                className="btn btn-default btn-xl"
+                type="button"
+                // onClick={onClickProceed}
+                // loading={loadingProceed}
+              >
+                Close
+              </Button>
+              <Button
+                className="btn btn-primary btn-xl"
+                type="button"
+                onClick={onClickProceed}
+                loading={loadingProceed}
+              >
+                Create Visit
+              </Button>
             </div>
           </div>
-          <br />{" "}
-          <Button
-            type="primary"
-            onClick={onClickProceed}
-            loading={loadingProceed}
-          >
-            {" "}
-            Create Visit{" "}
-          </Button>
         </Badge.Ribbon>
       )}
     </Drawer>
