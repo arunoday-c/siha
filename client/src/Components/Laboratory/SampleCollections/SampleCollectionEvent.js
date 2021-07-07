@@ -140,7 +140,6 @@ const BulkSampleCollection = ($this, context) => {
       lab_id_number: item.lab_id_number,
     };
   });
-  debugger;
   console.log(
     "filterData",
     filterData,
@@ -160,9 +159,7 @@ const BulkSampleCollection = ($this, context) => {
       method: "PUT",
       onSuccess: (response) => {
         if (response.data.success === true) {
-          debugger;
           // let test_details = $this.state.test_details;
-
           // for (let i = 0; i < test_details.length; i++) {
           //   if (
           //     test_details[i].visit_id === row.visit_id &&
@@ -175,7 +172,6 @@ const BulkSampleCollection = ($this, context) => {
           //     test_details[i].barcode_gen = response.data.records.barcode_gen;
           //   }
           // }
-
           // $this.setState({ test_details: test_details }, () => {
           //   if (sockets.connected) {
           //     sockets.emit("specimen_acknowledge", {
@@ -188,7 +184,6 @@ const BulkSampleCollection = ($this, context) => {
           //     type: "success",
           //   });
           // });
-
           // if (context !== undefined) {
           //   context.updateState({ test_details: [...test_details] });
           //   $this.setState({ test_details: [...test_details] });
@@ -505,15 +500,13 @@ const onchangegridcol = ($this, row, e) => {
 
 const onchangegridcoldatehandle = ($this, row, ctrl, e) => {
   let test_details = $this.state.test_details;
-  if (Date.parse(moment(ctrl)._d) < Date.parse(new Date())) {
+  if (Date.parse(moment(ctrl)._d) > Date.parse(new Date())) {
     swalMessage({
-      title: "Expiry date cannot be past Date.",
+      title: "Collected date cannot be future Date.",
       type: "warning",
     });
   } else {
-    debugger;
     let _index = test_details.indexOf(row);
-
     row["collected_date"] = moment(ctrl)._d;
     test_details[_index] = row;
     $this.setState({
