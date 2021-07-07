@@ -21,9 +21,13 @@ export default memo(function SideDrawer(props) {
   const [reference_no, setReferenceNo] = useState(
     `REF-${moment().format("YYYYMMDD")}-`
   );
+
   const [patient_code, setPatientCode] = useState("");
   const [date_of_birth, setDOB] = useState("");
   const [patient_full_name, setFullName] = useState("");
+  const [first_name, setFirstName] = useState("");
+  const [middle_name, setMiddleName] = useState("");
+  const [last_name, setLastName] = useState("");
   const [gender, setGender] = useState("");
   const [identity_type, setIdentityType] = useState("");
   const [mobile_no, setMobileNo] = useState("");
@@ -68,6 +72,9 @@ export default memo(function SideDrawer(props) {
           patient.last_name ?? ""
         }`
       );
+      setFirstName(patient.first_name);
+      setMiddleName(patient.middle_name);
+      setLastName(patient.last_name);
       setGender(patient.gender);
       setIdentityType(patient.identity_type);
       setMobileNo(patient.mobile_no);
@@ -96,6 +103,9 @@ export default memo(function SideDrawer(props) {
       setLoadingProceed(true);
       if (!reference_no || reference_no === "") {
       }
+
+      // default_nationality,
+      // local_vat_applicable,
 
       const tel_code = "+" + mobile_no.substring(0, 3);
       const contact_number = mobile_no.substring(3, 12);
@@ -156,6 +166,9 @@ export default memo(function SideDrawer(props) {
                 ?.his_d_title_id;
         const result = await addPatient({
           full_name: patient_full_name,
+          first_name,
+          middle_name,
+          last_name,
           arabic_name: patient_full_name,
           gender,
           title_id,
@@ -166,6 +179,10 @@ export default memo(function SideDrawer(props) {
           patient_type: defaultsData?.default_patient_type,
           country_id: defaultsData?.default_country,
           nationality_id: nationality_id,
+          vat_applicable:
+            defaultsData?.default_nationality === nationality_id
+              ? defaultsData?.local_vat_applicable
+              : "Y",
           ...commonData,
         }).catch((e) => {
           throw e;
@@ -450,7 +467,7 @@ export default memo(function SideDrawer(props) {
                 style={{ marginRight: 8 }}
                 className="btn btn-default btn-xl"
                 type="button"
-                // onClick={onClickProceed}
+                onClick={props.onClose}
                 // loading={loadingProceed}
               >
                 Close

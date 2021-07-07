@@ -5,7 +5,7 @@ export function getDefaults(req, res, next) {
   try {
     _mysql
       .executeQuery({
-        query: `select default_country,default_patient_type,default_secondary_id_quick_req from hims_d_hospital limit 1;
+        query: `select default_country,default_patient_type,default_secondary_id_quick_req,default_nationality,local_vat_applicable from hims_d_hospital limit 1;
          select hims_d_visit_type_id from hims_d_visit_type where consultation='N' limit 1;
          select E.hims_d_employee_id,SD.hims_d_sub_department_id,SD.department_id from hims_d_employee as E inner join hims_d_sub_department as SD on 
 SD.hims_d_sub_department_id = E.sub_department_id 
@@ -21,6 +21,8 @@ and  E.record_status='A'; `,
           default_country,
           default_patient_type,
           default_secondary_id_quick_req,
+          default_nationality,
+          local_vat_applicable,
         } = _.head(result[0]);
         const { hims_d_visit_type_id } = _.head(result[1]);
         const { hims_d_sub_department_id, department_id, hims_d_employee_id } =
@@ -34,6 +36,8 @@ and  E.record_status='A'; `,
           hims_d_sub_department_id,
           hims_d_employee_id,
           department_id,
+          default_nationality,
+          local_vat_applicable,
         };
         next();
       })
