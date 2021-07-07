@@ -49,7 +49,7 @@ class SampleCollectionPatient extends PureComponent {
       collected: true,
       hospital_id: null,
       send_out_test: "N",
-      editableGrid: false,
+      editableGrid: undefined,
       // showCheckBoxColumn: false,
       bulkGenerate: [],
       checkAll: STATUS.UNCHECK,
@@ -142,17 +142,17 @@ class SampleCollectionPatient extends PureComponent {
         },
       });
     }
-    RawSecurityComponent({ componentCode: "SPEC_COLL_STATUS_CHANGE" }).then(
-      (result) => {
-        if (result === "hide") {
-          this.setState({ editableGrid: false });
-        } else {
-          this.setState({
-            editableGrid: "editOnly",
-          });
-        }
-      }
-    );
+    // RawSecurityComponent({ componentCode: "SPEC_COLL_STATUS_CHANGE" }).then(
+    //   (result) => {
+    //     if (result === "hide") {
+    //       this.setState({ editableGrid: false });
+    //     } else {
+    //       this.setState({
+    //         editableGrid: "editOnly",
+    //       });
+    //     }
+    //   }
+    // );
 
     // RawSecurityComponent({ componentCode: "BTN_BLK_SAM_BAR_COL" }).then(
     //   (result) => {
@@ -171,8 +171,20 @@ class SampleCollectionPatient extends PureComponent {
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.selected_patient !== null) {
+      debugger;
       let InputOutput = nextProps.selected_patient;
       this.setState({ ...this.state, ...InputOutput });
+      RawSecurityComponent({ componentCode: "SPEC_COLL_STATUS_CHANGE" }).then(
+        (result) => {
+          if (result === "hide") {
+            this.setState({ editableGrid: undefined });
+          } else {
+            this.setState({
+              editableGrid: "editOnly",
+            });
+          }
+        }
+      );
     }
   }
 
@@ -1275,7 +1287,7 @@ class SampleCollectionPatient extends PureComponent {
                               ),
                             }}
                             noDataText="No sample for collection"
-                            // isEditable={this.state.editableGrid}
+                            isEditable={this.state.editableGrid}
                             pageOptions={{ rows: 20, page: 1 }}
                             isFilterable={true}
                             pagination={true}
