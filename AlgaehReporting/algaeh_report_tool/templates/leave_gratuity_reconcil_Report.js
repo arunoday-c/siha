@@ -58,7 +58,6 @@ const executePDF = function executePDFMethod(options) {
           else ML.december end as ml_month, EE.amount as basic_salary
           FROM hims_f_employee_leave_salary_header LH 
           INNER JOIN hims_f_employee_leave_salary_detail LD ON LH.hims_f_employee_leave_salary_header_id=LD.employee_leave_salary_header_id
-          INNER JOIN hims_f_salary S ON LH.employee_id = S.employee_id
           INNER JOIN hims_f_employee_monthly_leave ML ON ML.employee_id = LH.employee_id and ML.year=? 
           INNER JOIN hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id
           INNER JOIN hims_d_designation as DS on DS.hims_d_designation_id = EM.employee_designation_id
@@ -87,7 +86,7 @@ const executePDF = function executePDFMethod(options) {
           where LD.year=? and LD.month = ? and EM.leave_salary_process='Y' ${str};
           SELECT employee_id,leave_days,leave_amount,airfare_amount FROM hims_f_leave_encash_header LH 
           INNER JOIN hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id 
-          where year=? and MONTH(CONCAT(encashment_date))<=?
+          where LH.authorized='APR' and year=? and MONTH(CONCAT(encashment_date))<=?
           and leave_id=(select hims_d_leave_id from hims_d_leave where leave_category='A') and EM.leave_salary_process='Y' ${str};
           SELECT LH.employee_id, SUM(LD.leave_days) as leave_days,
           SUM(LD.leave_salary_amount) as leave_salary_amount, SUM(LD.airticket_amount) as airticket_amount
@@ -157,14 +156,15 @@ const executePDF = function executePDFMethod(options) {
               // const lastObject = _.maxBy(item, (m) => parseInt(m.month));
               // console.log("current_month", current_month);
               const utilized_leave_days =
-                _.sumBy(item, (s) => parseFloat(s.ml_month)) + current_month ===
-                undefined
+                current_month === undefined
                   ? 0
                   : parseFloat(current_month.ml_month) +
+                    _.sumBy(item, (s) => parseFloat(s.ml_month)) +
                     _.sumBy(current_month_encash, (s) =>
                       parseFloat(s.leave_days)
                     );
 
+              console.log("utilized_leave_days", utilized_leave_days);
               // console.log("22");
               // Leave Days
               const year_open_leave_days =
