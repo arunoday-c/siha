@@ -296,6 +296,7 @@ export default {
                       "barcode",
                       "sales_price",
                       "free_qty",
+                      "actual_unit_cost",
                     ];
 
                     _mysql
@@ -661,7 +662,6 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-
       let input = req.body;
 
       let hospital_id = req.userIdentity.hospital_id;
@@ -700,7 +700,6 @@ export default {
                 const options = result[0][0];
                 const grni_required = options["grni_required"];
                 if (grni_required == "Y") {
-
                   const GRNI = result[1][0];
                   const inventory = result[2][0];
                   const pharmacy = result[3][0];
@@ -713,7 +712,6 @@ export default {
                   } else if (input.dn_from == "INV") {
                     sub_department_id = inventory["hims_d_sub_department_id"];
                   }
-
 
                   if (GRNI.head_id > 0 && GRNI.child_id > 0) {
                     _mysql
@@ -835,7 +833,6 @@ export default {
                   //   next();
                   // });
                 }
-
               })
               .catch((e) => {
                 _mysql.rollBackTransaction(() => {
@@ -877,8 +874,7 @@ export default {
 
       _mysql
         .executeQuery({
-          query:
-            `select H.*, PH.purchase_number, CASE PH.po_from WHEN 'INV' then IL.location_description \
+          query: `select H.*, PH.purchase_number, CASE PH.po_from WHEN 'INV' then IL.location_description \
             else PL.location_description end as location_name, V.vendor_name, E.full_name\
             from hims_f_procurement_dn_header H \
             inner join hims_f_procurement_po_header PH on H.purchase_order_id=PH.hims_f_procurement_po_header_id  \
