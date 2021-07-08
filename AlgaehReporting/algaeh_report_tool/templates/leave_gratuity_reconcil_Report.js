@@ -6,11 +6,8 @@ const executePDF = function executePDFMethod(options) {
       let str = "";
       let input = {};
       let params = options.args.reportParams;
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
 
       params.forEach((para) => {
         input[para["name"]] = para["value"];
@@ -66,7 +63,7 @@ const executePDF = function executePDFMethod(options) {
           INNER JOIN hims_d_employee_earnings as EE on EE.employee_id = EM.hims_d_employee_id and earnings_id=(select basic_earning_component from hims_d_hrms_options limit 1)
           INNER JOIN hims_f_employee_monthly_leave ML ON ML.employee_id = LH.employee_id and ML.year=? 
           and ML.leave_id=(select hims_d_leave_id from hims_d_leave where leave_category='A')
-          where LD.year=? and LD.month = ? and EM.leave_salary_process='Y' and S.salary_processed ='Y' ${str};
+          where LD.year=? and LD.month = ? and EM.leave_salary_process='Y' and S.salary_processed ='Y' ${str} group by LH.employee_id;
 
           SELECT LH.employee_id,  LD.leave_days, 
           LD.leave_salary_amount, LD.airticket_amount,        
