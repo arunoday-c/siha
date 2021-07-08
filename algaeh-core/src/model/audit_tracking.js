@@ -223,7 +223,7 @@ export function getAuditList(req, res, next) {
           })
           .value();
         req.records = records;
-        console.log("records", records);
+
         next();
       })
       .catch((e) => {
