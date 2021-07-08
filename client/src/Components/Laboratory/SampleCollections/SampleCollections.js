@@ -50,7 +50,7 @@ class SampleCollectionPatient extends PureComponent {
       hospital_id: null,
       send_out_test: "N",
       editableGrid: undefined,
-      // showCheckBoxColumn: false,
+      showCheckBoxColumn: false,
       bulkGenerate: [],
       checkAll: STATUS.UNCHECK,
       enableColumn: false,
@@ -68,17 +68,6 @@ class SampleCollectionPatient extends PureComponent {
     //     this.setState({ showCheckBoxColumn: true });
     //   }
     // });
-
-    RawSecurityComponent({ componentCode: "BTN_BLK_SAM_BAR_COL" }).then(
-      (result) => {
-        console.log("result===", result);
-        if (result === "hide") {
-          this.setState({ showCheckBoxColumn: false });
-        } else {
-          this.setState({ showCheckBoxColumn: true });
-        }
-      }
-    );
 
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
@@ -174,6 +163,17 @@ class SampleCollectionPatient extends PureComponent {
       debugger;
       let InputOutput = nextProps.selected_patient;
       this.setState({ ...this.state, ...InputOutput });
+      RawSecurityComponent({ componentCode: "BTN_BLK_SAM_BAR_COL" }).then(
+        (result) => {
+          console.log("result===", result);
+          if (result === "hide") {
+            this.setState({ showCheckBoxColumn: false });
+          } else {
+            this.setState({ showCheckBoxColumn: true });
+          }
+        }
+      );
+
       RawSecurityComponent({ componentCode: "SPEC_COLL_STATUS_CHANGE" }).then(
         (result) => {
           if (result === "hide") {
@@ -191,7 +191,7 @@ class SampleCollectionPatient extends PureComponent {
   onClose = (e) => {
     this.props.onClose && this.props.onClose(e);
   };
-  selectAll = (context, e) => {
+  selectAll = (e) => {
     const staus = e.target.checked;
     const myState = this.state.test_details.map((f) => {
       return { ...f, checked: staus };
@@ -289,7 +289,35 @@ class SampleCollectionPatient extends PureComponent {
   };
   render() {
     // const testDetails = this.state.test_details;
-
+    const manualColumns = this.state.showCheckBoxColumn
+      ? {
+          label: (
+            <input
+              type="checkbox"
+              defaultChecked={this.state.checkAll === "CHECK" ? true : false}
+              ref={(input) => {
+                this.allChecked = input;
+              }}
+              onChange={this.selectAll.bind(this)}
+            />
+          ),
+          fieldName: "select",
+          displayTemplate: (row) => {
+            return (
+              <input
+                type="checkbox"
+                checked={row.checked}
+                onChange={this.selectToGenerateBarcode.bind(this, this)}
+              />
+            );
+          },
+          others: {
+            minWidth: 50,
+            filterable: false,
+            sortable: false,
+          },
+        }
+      : null;
     return (
       <React.Fragment>
         <div>
@@ -516,44 +544,7 @@ class SampleCollectionPatient extends PureComponent {
                               //     filterable: false,
                               //   },
                               // },
-                              // {
-                              //   label: (
-                              //     <input
-                              //       type="checkbox"
-                              //       defaultChecked={
-                              //         this.state.checkAll === "CHECK"
-                              //           ? true
-                              //           : false
-                              //       }
-                              //       ref={(input) => {
-                              //         this.allChecked = input;
-                              //       }}
-                              //       onChange={this.selectAll.bind(
-                              //         this,
-                              //         context
-                              //       )}
-                              //     />
-                              //   ),
-                              //   fieldName: "select",
-                              //   displayTemplate: (row) => {
-                              //     return (
-                              //       <input
-                              //         type="checkbox"
-                              //         checked={row.checked}
-                              //         onChange={this.selectToGenerateBarcode.bind(
-                              //           this,
-                              //           this,
-                              //           row
-                              //         )}
-                              //       />
-                              //     );
-                              //   },
-                              //   others: {
-                              //     minWidth: 50,
-                              //     filterable: false,
-                              //     sortable: false,
-                              //   },
-                              // },
+                              manualColumns,
                               {
                                 fieldName: "billed",
                                 label: (
