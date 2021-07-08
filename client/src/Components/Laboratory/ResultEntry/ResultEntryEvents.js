@@ -205,7 +205,7 @@ const UpdateLabOrder = ($this, value, status) => {
 
 const onvalidate = ($this) => {
   console.time("valid");
-  debugger;
+
   let test_analytes = $this.state.test_analytes;
 
   let strTitle = "Are you sure want to Validate?";
@@ -557,7 +557,6 @@ const onReRun = ($this) => {
 };
 
 const onchangegridresult = ($this, row, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let { test_analytes } = $this.state;
@@ -569,6 +568,11 @@ const onchangegridresult = ($this, row, e) => {
   const indexOfArray = test_analytes.findIndex(
     (f) => f.hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
   );
+  row["normal_low"] = test_analytes[indexOfArray].normal_low;
+  row["normal_high"] = test_analytes[indexOfArray].normal_high;
+  row["critical_low"] = test_analytes[indexOfArray].critical_low;
+  row["critical_high"] = test_analytes[indexOfArray].critical_high;
+
   row["critical_type"] = checkRange(row);
   if (row["critical_type"] !== "N") {
     row["critical_status"] = "Y";
@@ -597,7 +601,7 @@ const onchangegridresult = ($this, row, e) => {
           }
         }
       }
-      debugger;
+
       let otherValue = eval(executableFormula);
       if (decimals) {
         otherValue =
@@ -617,7 +621,7 @@ const onchangegridresult = ($this, row, e) => {
     }
   }
   $this.setState({
-    test_analytes,
+    test_analytes: test_analytes,
   });
 };
 
