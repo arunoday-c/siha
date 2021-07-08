@@ -131,12 +131,8 @@ export default {
       default:
         voucher_type = input.voucher_type.toUpperCase();
     }
-    const {
-      merdgeRecords,
-      partial_amount,
-      debitNoteTotal,
-      debitNoteList,
-    } = input;
+    const { merdgeRecords, partial_amount, debitNoteTotal, debitNoteList } =
+      input;
     if (voucher_type == "") {
       req.records = {
         invalid_input: true,
@@ -596,7 +592,8 @@ export default {
                               _mysql.releaseConnection();
                               req.records = {
                                 voucher_no: numgen[voucher_type],
-                                finance_voucher_header_id: finance_voucher_header_id,
+                                finance_voucher_header_id:
+                                  finance_voucher_header_id,
                               };
                               next();
                             });
@@ -1858,11 +1855,13 @@ export default {
                                         let head_amount = result[0]["amount"];
 
                                         if (hasMultiple === "M") {
-                                          const oneRecord = subHeaderResult.find(
-                                            (f) =>
-                                              f.invoice_ref_no === voucher_no ||
-                                              f.invoice_ref_no === invoice_no
-                                          );
+                                          const oneRecord =
+                                            subHeaderResult.find(
+                                              (f) =>
+                                                f.invoice_ref_no ===
+                                                  voucher_no ||
+                                                f.invoice_ref_no === invoice_no
+                                            );
 
                                           head_amount = oneRecord.amount;
                                         }
@@ -2183,7 +2182,7 @@ export default {
            from finance_voucher_header H
           inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id
           left join algaeh_d_app_user U on VD.entered_by=U.algaeh_d_app_user_id
-          where posted_from='V'  ${onlyCreditAccounts}  ${strQry}; group by finance_voucher_header_id`,
+          where posted_from='V'  ${onlyCreditAccounts}  ${strQry} group by finance_voucher_header_id;`,
           printQuery: true,
         })
         .then((result) => {
