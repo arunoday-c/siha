@@ -1,0 +1,42 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div class="print-body">
+
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Updated Date and Time</th>
+            <th>Ref. ID</th>
+            <th>Ref. Name</th>
+            <th>Changed Field</th>
+            <th>Previous Data</th>
+            <th>Data Updated By</th>
+            <th>Username</th>
+            <th>User Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each result}}
+            <tr>
+              <td>{{inc @index}}</td>
+              <td>{{date_time_stamp}}</td>
+              <td>{{reference_id}}</td>
+              <td>{{column_name}}</td>
+              <td>{{old_row}}</td>
+              <td>{{new_row}}</td>
+              <td>{{user_display_name}}</td>
+              <td>{{username}}</td>
+              <td>{{user_type}}</td>
+
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
+</body>

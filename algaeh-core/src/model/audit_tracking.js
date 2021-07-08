@@ -212,7 +212,7 @@ export function getAuditList(req, res, next) {
       .then((result) => {
         _mysql.releaseConnection();
         const records = _.chain(result)
-          .groupBy((g) => g.username)
+          .groupBy((g) => g.user_id)
           .map((item) => {
             const { username, user_display_name } = _.head(item);
             return {
@@ -220,8 +220,10 @@ export function getAuditList(req, res, next) {
               user_display_name,
               details: item,
             };
-          });
+          })
+          .value();
         req.records = records;
+        console.log("records", records);
         next();
       })
       .catch((e) => {

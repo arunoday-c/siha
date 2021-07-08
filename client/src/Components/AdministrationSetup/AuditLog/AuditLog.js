@@ -143,6 +143,118 @@ export default class AuditLog extends Component {
     });
   }
 
+  generateAuditLogPDFReport = () => {
+    algaehApiCall({
+      uri: "/report",
+      // uri: "/excelReport",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "auditLogReport",
+          pageOrentation: "landscape",
+          // excelTabName: `${$this.state.inputs.hospital_name} | ${moment(
+          //   $this.state.inputs.month,
+          //   "MM"
+          // ).format("MMM")}-${$this.state.inputs.year}`,
+          excelHeader: false,
+          reportParams: [
+            {
+              name: "hospital_id",
+              value: this.state.hospital_id,
+            },
+            {
+              name: "from_date",
+              value: this.state.from_date,
+            },
+            {
+              name: "to_date",
+              value: this.state.to_date,
+            },
+            {
+              name: "employee_id",
+              value: this.state.employee_id,
+            },
+          ],
+          outputFileType: "PDF", //"EXCEL", //"PDF",
+        },
+      },
+      onSuccess: (res) => {
+        // const urlBlob = URL.createObjectURL(res.data);
+        // const a = document.createElement("a");
+        // a.href = urlBlob;
+        // a.download = `Audit Log Report.${"xlsx"}`;
+        // a.click();
+
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Audit Log Report`;
+        window.open(origin);
+      },
+    });
+  };
+
+  generateAuditLogExcelReport = () => {
+    algaehApiCall({
+      // uri: "/report",
+      uri: "/excelReport",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "auditLogReport",
+          pageOrentation: "landscape",
+          excelTabName: "Audit Log Report",
+          excelHeader: false,
+          reportParams: [
+            {
+              name: "hospital_id",
+              value: this.state.hospital_id,
+            },
+            {
+              name: "from_date",
+              value: this.state.from_date,
+            },
+            {
+              name: "to_date",
+              value: this.state.to_date,
+            },
+            {
+              name: "employee_id",
+              value: this.state.employee_id,
+            },
+          ],
+          outputFileType: "EXCEL", //"EXCEL", //"PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const a = document.createElement("a");
+        a.href = urlBlob;
+        a.download = `Audit Log Report.${"xlsx"}`;
+        a.click();
+
+        // const urlBlob = URL.createObjectURL(res.data);
+        // const origin = `${
+        //   window.location.origin
+        // }/reportviewer/web/viewer.html?file=${urlBlob}&filename=${
+        //   $this.state.inputs.hospital_name
+        // } Leave and Airfare Reconciliation - ${moment(
+        //   $this.state.inputs.month,
+        //   "MM"
+        // ).format("MMM")}-${$this.state.inputs.year}`;
+        // window.open(origin);
+      },
+    });
+  };
+
   render() {
     return (
       <div className="AuditLogScreen">
@@ -469,10 +581,18 @@ export default class AuditLog extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              <button type="button" className="btn btn-default">
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={this.generateAuditLogPDFReport.bind(this)}
+              >
                 <AlgaehLabel label={{ forceLabel: "Export as PDF" }} />
               </button>
-              <button type="button" className="btn btn-default">
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={this.generateAuditLogExcelReport.bind(this)}
+              >
                 <AlgaehLabel label={{ forceLabel: "Export as Excel" }} />
               </button>
             </div>
