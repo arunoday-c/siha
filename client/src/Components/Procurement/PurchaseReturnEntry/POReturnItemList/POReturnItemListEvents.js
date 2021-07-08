@@ -929,7 +929,7 @@ const onchhangegriddiscount = ($this, context, row, e) => {
   ).toFixed($this.state.decimal_places);
 
   row["net_extended_cost"] =
-    parseFloat(extended_cost) + parseFloat(row["discount_amount"]);
+    parseFloat(extended_cost) - parseFloat(row["discount_amount"]);
 
   row["tax_amount"] = (
     (parseFloat(row["net_extended_cost"]) * parseFloat(row.tax_percentage)) /
