@@ -158,7 +158,8 @@ export default {
               let result = {};
               const receipt_entry_detail = entry_detail.map((item) => {
                 const extended_cost =
-                  parseFloat(item.unit_cost) * parseFloat(item.return_qty);
+                  parseFloat(item.actual_unit_cost) *
+                  parseFloat(item.return_qty);
                 // console.log("extended_cost", extended_cost);
                 const discount_amount = (
                   (extended_cost * parseFloat(item.discount_percentage)) /
@@ -166,7 +167,7 @@ export default {
                 ).toFixed(decimal_places);
                 // console.log("discount_amount", discount_amount);
                 const net_extended_cost = (
-                  parseFloat(extended_cost) + parseFloat(discount_amount)
+                  parseFloat(extended_cost) - parseFloat(discount_amount)
                 ).toFixed(decimal_places);
                 // console.log("net_extended_cost", net_extended_cost);
                 const tax_amount = (
@@ -203,7 +204,7 @@ export default {
 
                   vendor_batchno: item.vendor_batchno,
 
-                  unit_cost: item.unit_cost,
+                  unit_cost: item.actual_unit_cost,
                   extended_cost: extended_cost,
                   discount_percentage: item.discount_percentage,
                   discount_amount: discount_amount,

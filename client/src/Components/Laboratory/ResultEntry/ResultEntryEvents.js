@@ -205,15 +205,26 @@ const UpdateLabOrder = ($this, value, status) => {
 
 const onvalidate = ($this) => {
   console.time("valid");
+
   let test_analytes = $this.state.test_analytes;
-  let intNoofAnalytes = 0;
+
   let strTitle = "Are you sure want to Validate?";
+
+  const intNoofAnalytes = test_analytes.filter(
+    (f) => f.result === null || f.result === ""
+  );
+  if (test_analytes.length === intNoofAnalytes.length) {
+    swalMessage({
+      type: "warning",
+      title: "Atleast one Analyte result to be entered.",
+    });
+    return;
+  }
 
   for (let k = 0; k < test_analytes.length; k++) {
     if (test_analytes[k].result === null || test_analytes[k].result === "") {
       strTitle =
         "Are you sure want to Validate, for few Analytes no Result Entered?";
-      intNoofAnalytes = intNoofAnalytes + 1;
 
       test_analytes[k].status = "V";
       test_analytes[k].validate = "Y";
@@ -223,14 +234,6 @@ const onvalidate = ($this) => {
     // test_analytes[k].validate = "Y";
     test_analytes[k].isre_run = false;
     test_analytes[k].comments = $this.state.comments;
-  }
-
-  if (test_analytes.length === intNoofAnalytes) {
-    swalMessage({
-      type: "warning",
-      title: "Atleast one Analyte result to be entered.",
-    });
-    return;
   }
 
   swal({
@@ -469,14 +472,22 @@ const resultEntryUpdate = ($this) => {
 const onconfirm = ($this) => {
   let test_analytes = $this.state.test_analytes;
 
-  let intNoofAnalytes = 0;
+  const intNoofAnalytes = test_analytes.filter(
+    (f) => f.result === null || f.result === ""
+  );
+  if (test_analytes.length === intNoofAnalytes.length) {
+    swalMessage({
+      type: "warning",
+      title: "Atleast one Analyte result to be entered.",
+    });
+    return;
+  }
 
   let strTitle = "Are you sure want to Confirm?";
   for (let k = 0; k < test_analytes.length; k++) {
     if (test_analytes[k].result === null || test_analytes[k].result === "") {
       strTitle =
         "Are you sure want to Confirm, for few Analytes no Result Entered?";
-      intNoofAnalytes = intNoofAnalytes + 1;
     } else {
       test_analytes[k].status = "C";
       test_analytes[k].confirm = "Y";
@@ -488,14 +499,6 @@ const onconfirm = ($this) => {
       }
     }
     test_analytes[k].comments = $this.state.comments;
-  }
-
-  if (test_analytes.length === intNoofAnalytes) {
-    swalMessage({
-      type: "warning",
-      title: "Atleast one Analyte result to be entered.",
-    });
-    return;
   }
 
   swal({
@@ -565,6 +568,11 @@ const onchangegridresult = ($this, row, e) => {
   const indexOfArray = test_analytes.findIndex(
     (f) => f.hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
   );
+  row["normal_low"] = test_analytes[indexOfArray].normal_low;
+  row["normal_high"] = test_analytes[indexOfArray].normal_high;
+  row["critical_low"] = test_analytes[indexOfArray].critical_low;
+  row["critical_high"] = test_analytes[indexOfArray].critical_high;
+
   row["critical_type"] = checkRange(row);
   if (row["critical_type"] !== "N") {
     row["critical_status"] = "Y";
@@ -593,9 +601,13 @@ const onchangegridresult = ($this, row, e) => {
           }
         }
       }
+
       let otherValue = eval(executableFormula);
       if (decimals) {
-        otherValue = parseFloat(otherValue).toFixed(decimals);
+        otherValue =
+          otherValue === undefined
+            ? ""
+            : parseFloat(otherValue).toFixed(decimals);
       }
       // console.log("otherValue", otherValue);
       const analyte_index = test_analytes.findIndex(
@@ -609,7 +621,7 @@ const onchangegridresult = ($this, row, e) => {
     }
   }
   $this.setState({
-    test_analytes,
+    test_analytes: test_analytes,
   });
 };
 

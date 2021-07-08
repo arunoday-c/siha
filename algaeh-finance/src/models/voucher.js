@@ -2182,7 +2182,7 @@ export default {
            from finance_voucher_header H
           inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id
           left join algaeh_d_app_user U on VD.entered_by=U.algaeh_d_app_user_id
-          where posted_from='V'  ${onlyCreditAccounts}  ${strQry};`,
+          where posted_from='V'  ${onlyCreditAccounts}  ${strQry} group by finance_voucher_header_id;`,
           printQuery: true,
         })
         .then((result) => {

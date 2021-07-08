@@ -44,8 +44,9 @@
                   
                   </td>
                    <td class="numberFld">
-                   {{total_net_amount_total}}
+                   {{numberFormating total_net_amount_total ./currencyOnly}}
                   </td>
+                 </tr>
            {{#each detail}}
              
            
@@ -54,7 +55,7 @@
 
                     {{bill_number}}/{{bill_date}}
                   </td>
-                  <td class="tableSubHdg2 numberFld"><b>{{net_amount_total}}</b></td>
+                  <td class="tableSubHdg2 numberFld"><b>{{numberFormating net_amount_total ../decimalOnly}} </b></td>
                 </tr>
                 {{#each detailList}}
                   <tr>
@@ -75,10 +76,14 @@
                         <td class="numberFld">{{sum_amount}}</td>
                     </tr> --}}
                 {{/each}}
-            <tr class="numberFldTotalBottom">
-              <td colspan="8"></td>
-              <td class="numberFld">{{net_total}}</td>
-            </tr>
+           <tr class="numberFld numberFldTotalBottom">
+                  <td class="numberFld" colspan="9">
+                  
+                  </td>
+                   <td class="numberFld">
+                   {{numberFormating total_net_amount_total ./currencyOnly}}
+                  </td>
+                 </tr>
           {{else}}
             <tr>
               <td colspan="10" class="noResultTextReport">No Records Found</td>

@@ -762,6 +762,7 @@ const AddtoList = ($this, context) => {
     dn_item_details.total_amount = 0;
     dn_item_details.net_extended_cost = 0;
 
+    debugger;
     $this.setState({
       dn_entry_detail: dn_entry_detail,
       item_details: dn_item_details,

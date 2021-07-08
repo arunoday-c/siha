@@ -198,7 +198,7 @@ export default memo(function SideDrawer(props) {
       }).catch((e) => {
         console.error("Error===>", e);
       });
-      props.onClose();
+      // props.onClose();
       if (typeof props.onComplete === "function") {
         props.onComplete({
           patient_code: pat_result.patient_code,
@@ -226,6 +226,7 @@ export default memo(function SideDrawer(props) {
     setEmailID("");
     setVisitDate("");
     setNationalityName("");
+    props.onClose();
   }
   return (
     <Drawer
@@ -292,16 +293,16 @@ export default memo(function SideDrawer(props) {
                 <h6>{nationality_name ? nationality_name : "------"}</h6>
               </div>
 
-              {/* <div className="col-4">
+              <div className="col-4">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Nationality",
+                    forceLabel: "Patient Code",
                   }}
                 />
-                <h6>{nationality_name ? nationality_name : "------"}</h6>
-              </div> */}
+                <h6>{patient_code ? patient_code : "------"}</h6>
+              </div>
 
-              <AlgaehFormGroup
+              {/* <AlgaehFormGroup
                 div={{ className: "col-4 form-group mandatory" }}
                 label={{
                   forceLabel: "Patient Code",
@@ -316,7 +317,7 @@ export default memo(function SideDrawer(props) {
                   "data-identity_type": identity_type,
                   "data-nationality_id": nationality_id,
                 }}
-              />
+              /> */}
 
               <AlgaehFormGroup
                 div={{ className: "col-12 form-group mandatory" }}
@@ -454,8 +455,12 @@ export default memo(function SideDrawer(props) {
               /> */}
             </div>
             <Badge
-              count={reference_in_use === 1 ? "Already used." : 0}
-              style={{ backgroundColor: "#52c41a" }}
+              count={
+                reference_in_use === 1
+                  ? "Patient already registered with this Ref No."
+                  : 0
+              }
+              style={{ backgroundColor: "#ff7272" }}
             />
           </div>
           <div className="row">
@@ -467,7 +472,9 @@ export default memo(function SideDrawer(props) {
                 style={{ marginRight: 8 }}
                 className="btn btn-default btn-xl"
                 type="button"
-                onClick={props.onClose}
+                onClick={() => {
+                  onClearState();
+                }}
                 // loading={loadingProceed}
               >
                 Close
@@ -477,6 +484,7 @@ export default memo(function SideDrawer(props) {
                 type="button"
                 onClick={onClickProceed}
                 loading={loadingProceed}
+                disabled={reference_in_use === 1 ? true : false}
               >
                 Create Visit
               </Button>
