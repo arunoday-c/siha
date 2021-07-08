@@ -25,16 +25,13 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `
-          SELECT 
-BH.hims_f_billing_header_id,BH.bill_number,BH.bill_date,
-LO.send_out_test,LO.provider_id,
-BD.unit_cost,BD.quantity,BD.patient_tax,BD.patient_resp,BD.company_tax,BD.comapany_resp,
-(BD.patient_payable + BD.company_payble) as net_amout,
- P.primary_id_no,P.patient_code, P.full_name,
- E.full_name as doctor_name,S.service_code,
- S.service_name
- FROM hims_f_billing_header BH
+          query: `SELECT BH.hims_f_billing_header_id,BH.bill_number,BH.bill_date, LO.send_out_test,LO.provider_id,
+          BD.unit_cost,BD.quantity,BD.patient_tax,BD.patient_resp,BD.company_tax,BD.comapany_resp,
+          (BD.patient_payable + BD.company_payble) as net_amout,
+          P.primary_id_no,P.patient_code, P.full_name,
+          E.full_name as doctor_name,S.service_code,
+          S.service_name
+          FROM hims_f_billing_header BH
  inner join hims_f_lab_order LO on LO.billing_header_id = BH.hims_f_billing_header_id
 inner join hims_f_billing_details BD on BD.hims_f_billing_header_id=BH.hims_f_billing_header_id and BD.services_id=LO.service_id
  inner join hims_d_services S on S.hims_d_services_id=LO.service_id
