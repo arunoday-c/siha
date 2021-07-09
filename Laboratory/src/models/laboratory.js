@@ -1107,8 +1107,20 @@ const labModal = {
           strQuery = mysql.format(
             "SELECT container_id as container_code FROM hims_d_lab_container \
             where hims_d_lab_container_id=?;\
-            SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;",
-            [inputParam.container_id, inputParam.hims_d_hospital_id]
+            SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;\
+            UPDATE hims_f_lab_order L \
+            INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id \
+            SET S.container_id=?, S.sample_id= ? where L.visit_id=? and S.sample_id=? and S.container_id=? \
+            and L.billed='Y' and S.status='N' and S.collected='N' ;",
+            [
+              inputParam.container_id,
+              inputParam.hims_d_hospital_id,
+              inputParam.container_id,
+              inputParam.sample_id,
+              inputParam.visit_id,
+              inputParam.sample_id,
+              inputParam.container_id,
+            ]
           );
         }
         _mysql
@@ -1166,11 +1178,16 @@ const labModal = {
                 .executeQuery({
                   query:
                     "select number,hims_m_hospital_container_mapping_id from hims_m_hospital_container_mapping \
-                  where hospital_id =? and container_id=? and date =?",
+                  where hospital_id =? and container_id=? and date =?; SELECT lab_id_number FROM hims_f_lab_order L \
+                  INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id \
+                  where L.visit_id=? and S.sample_id=? and S.container_id=? and L.billed='Y' and S.collected='Y' ",
                   values: [
                     inputParam.hims_d_hospital_id,
                     inputParam.container_id,
                     _date,
+                    inputParam.visit_id,
+                    inputParam.sample_id,
+                    inputParam.container_id,
                   ],
                   printQuery: true,
                 })
@@ -1184,59 +1201,66 @@ const labModal = {
                   });
                 });
             })
-              .then((record) => {
+              .then((result_data) => {
+                const record = result_data[0];
+                const test_exists = result_data[1];
                 let query = "";
                 let condition = [];
                 let padNum = "";
+                let labIdNumber = "";
                 let _newNumber = 1;
-                if (record != null && record.length > 0) {
-                  _newNumber = parseInt(record[0].number, 10);
-                  _newNumber = _newNumber + 1;
+                // console.log("test_exists", test_exists);
+                if (test_exists.length === 0) {
+                  if (record != null && record.length > 0) {
+                    _newNumber = parseInt(record[0].number, 10);
+                    _newNumber = _newNumber + 1;
+                    padNum = pad(String(_newNumber), 3, "LEFT", "0");
+                    condition.push(
+                      _newNumber,
+                      req.userIdentity.algaeh_d_app_user_id,
+                      record[0].hims_m_hospital_container_mapping_id
+                    );
+
+                    condition.push;
+                    query =
+                      "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() \
+                  where hims_m_hospital_container_mapping_id =?;";
+                  } else {
+                    condition.push(
+                      inputParam.hims_d_hospital_id,
+                      inputParam.container_id,
+                      _date,
+                      1,
+                      req.userIdentity.algaeh_d_app_user_id,
+                      req.userIdentity.algaeh_d_app_user_id
+                    );
+
+                    query =
+                      "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,\
+                  `number`,`created_by`,`updated_by`) values (?,?,?,?,?,?);";
+                  }
                   padNum = pad(String(_newNumber), 3, "LEFT", "0");
-                  condition.push(
-                    _newNumber,
-                    req.userIdentity.algaeh_d_app_user_id,
-                    record[0].hims_m_hospital_container_mapping_id
-                  );
-
-                  condition.push;
-                  query =
-                    "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() \
-                  where hims_m_hospital_container_mapping_id =?";
+                  const dayOfYear = moment().dayOfYear();
+                  labIdNumber =
+                    inputParam.lab_location_code +
+                    moment().format("YY") +
+                    dayOfYear +
+                    inputParam.container_code +
+                    padNum;
                 } else {
-                  condition.push(
-                    inputParam.hims_d_hospital_id,
-                    inputParam.container_id,
-                    _date,
-                    1,
-                    req.userIdentity.algaeh_d_app_user_id,
-                    req.userIdentity.algaeh_d_app_user_id
-                  );
-
-                  query =
-                    "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,\
-                  `number`,`created_by`,`updated_by`) values (?,?,?,?,?,?)";
+                  labIdNumber = test_exists[0].lab_id_number;
                 }
 
-                padNum = pad(String(_newNumber), 3, "LEFT", "0");
-                const dayOfYear = moment().dayOfYear();
-                const labIdNumber =
-                  inputParam.lab_location_code +
-                  moment().format("YY") +
-                  dayOfYear +
-                  inputParam.container_code +
-                  padNum;
+                // console.log("labIdNumber", labIdNumber);
+                // consol.log("labIdNumber", labIdNumber);
 
                 _mysql
                   .executeQuery({
                     query:
                       query +
-                      `;UPDATE hims_f_lab_order L 
+                      `UPDATE hims_f_lab_order L 
                       INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id 
-                      SET S.container_id=${
-                        inputParam.container_id
-                      }, S.sample_id=${inputParam.sample_id}, 
-                      S.collected='${inputParam.collected}', S.status='${
+                      SET S.collected='${inputParam.collected}', S.status='${
                         inputParam.status
                       }', 
                       S.collected_by=${req.userIdentity.algaeh_d_app_user_id},
@@ -1250,6 +1274,7 @@ const labModal = {
                       }',send_in_test='${inputParam.send_in_test}'
                       where L.visit_id=${inputParam.visit_id}
                       and S.sample_id=${inputParam.sample_id}
+                      and S.container_id=${inputParam.container_id}
                       and L.billed='Y' and S.status='N' and S.collected='N' ;`,
 
                     values: condition,

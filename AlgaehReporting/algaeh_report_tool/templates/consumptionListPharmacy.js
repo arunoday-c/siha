@@ -35,7 +35,7 @@ const executePDF = function executePDFMethod(options) {
             inner join hims_d_pharmacy_uom IU on IU.hims_d_pharmacy_uom_id = PTH.transaction_uom \
             inner join hims_d_pharmacy_location INVL on INVL.hims_d_pharmacy_location_id = PTH.from_location_id\
             inner join hims_f_pharmacy_consumption_header CH on CH.hims_f_pharmacy_consumption_header_id = PTH.transaction_id \
-            where  operation='-' and date(PTH.transaction_date)  between date(?) and date(?) and PTH.hospital_id=?  " +
+            where  transaction_type='CS' and  operation='-' and date(PTH.transaction_date)  between date(?) and date(?) and PTH.hospital_id=?  " +
             str +
             " group by item_code_id",
           values: [input.stockUsed, current_date, input.hospital_id],
