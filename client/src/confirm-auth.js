@@ -39,7 +39,7 @@ export const ConfirmAuth = () => {
           setUserMenu(result[1]);
           setElementsItems(result[2]);
           setSelectedMenuItem(result[3]);
-          setUserPreferencesData([4]);
+          setUserPreferencesData(result[4]);
           setVerified(true);
           setLoading(false);
         } else {

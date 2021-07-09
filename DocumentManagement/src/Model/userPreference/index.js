@@ -2,60 +2,45 @@ import userPrefernce from "./userPreferencesSchema";
 export function setUserPreference(req, res, next) {
   const {
     user_id,
-    screenCode,
+    screen_code,
     language,
     theme,
     controlName,
+    preferenceData,
     controlValue,
   } = req.body;
+
   userPrefernce
     .findOne({
       userID: user_id,
     })
     .then((result) => {
       let newDetails = { userID: user_id };
-      if (result !== null && Object.keys(result).length > 0) {
-        let details = result["preferences"];
-        const screens = details.find((f) => f.screenCode === screenCode);
-        const indexS = details.indexOf(screens);
-        if (screens !== undefined) {
-          const preference = screens["preference"].find(
-            (f) => f.controlName === controlName
-          );
-
-          if (preference !== undefined) {
-            const index = screens["preference"].indexOf(preference);
-            screens["preference"][index] = {
-              controlName: controlName,
-              controlValue: controlValue,
-            };
-          } else {
-            screens["preference"].push({
-              controlName: controlName,
-              controlValue: controlValue,
-            });
-          }
-          details[indexS] = screens;
-        } else {
-          details.push({
-            screenCode: screenCode,
-            preference: [{ controlName, controlValue }],
+      const keysArray = Object.keys(preferenceData);
+      if (result !== null) {
+        let details = [result._doc[screen_code]];
+        let updateArray = [];
+        for (let i = 0; i < keysArray.length; i++) {
+          updateArray = details.map((item) => {
+            if (item[keysArray[i]] === preferenceData[keysArray[i]]) {
+              return { ...item };
+            } else {
+              item[keysArray[i]] = preferenceData[keysArray[i]];
+              return item;
+            }
           });
         }
         newDetails = {
-          userID: result.userID,
+          userID: user_id,
           language: result.language,
           theme: result.theme,
-          preferences: details,
         };
+        newDetails[screen_code] = updateArray[0];
+        console.log("screen_code", newDetails);
       } else {
-        newDetails["preferences"] = [
-          {
-            screenCode: screenCode,
-            preference: [{ controlName, controlValue }],
-          },
-        ];
+        newDetails[screen_code] = [preferenceData];
       }
+
       const _lan = language !== undefined ? { language: language } : {};
       const _theme = theme !== undefined ? { theme: theme } : {};
       newDetails = { ...newDetails, ..._lan, ..._theme };
