@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { useQuery, useMutation } from "react-query";
 import { useForm } from "react-hook-form";
 import moment from "moment";
@@ -26,12 +26,13 @@ import { InsuranceDetails } from "./InsuranceDetails";
 import { VisitDetails } from "./VisitDetail";
 import { BillDetails } from "./BillDetails";
 import { AdvanceModal } from "./AdvanceRefundModal";
-import { algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall, getCookie } from "../../utils/algaehApiCall";
 import axios from "axios";
 import sockets from "../../sockets";
 import swal from "sweetalert2";
 
 // import _ from "lodash";
+
 export const getPatient = async (key, { patient_code }) => {
   const result = await newAlgaehApi({
     uri: "/frontDesk/get",
@@ -210,6 +211,7 @@ export function PatientRegistration() {
     userLanguage,
     userToken,
     default_visit_type,
+    userPreferences,
     countries = [],
   } = useContext(MainContext);
   const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
@@ -290,6 +292,18 @@ export function PatientRegistration() {
       tel_code: currentCountry?.tel_code,
     },
   });
+
+  useEffect(() => {
+    debugger;
+
+    const screenCode = getCookie("ScreenCode");
+
+    const preference = userPreferences[0][screenCode][0];
+
+    console.log(userPreferences, screenCode, preference);
+    setValue("visit_type", preference.visit_type);
+    setValue("doctor", preference.doctor);
+  }, []);
 
   const {
     isLoading,
