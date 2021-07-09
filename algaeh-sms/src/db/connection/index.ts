@@ -2,16 +2,16 @@ import dotenv from "dotenv";
 import { Sequelize } from "sequelize";
 if (process.env.NODE_ENV !== "production") dotenv.config();
 
-const { DB_DIALECT, DB_HOST, SMS_DB_CONN_LMT, DB_USER, DB_PASSWORD, DB_NAME } =
+const { SQL_TYPE, SQL_DB, SMS_DB_CONN_LMT, SQL_USER, SQL_PASSWORD, SQL_HOST } =
   process.env;
 const sequelize = new Sequelize(
-  DB_NAME ?? "",
-  DB_USER ?? "",
-  DB_PASSWORD ?? "",
+  SQL_DB ?? "",
+  SQL_USER ?? "",
+  SQL_PASSWORD ?? "",
   {
-    host: DB_HOST ?? "localhost",
+    host: SQL_HOST ?? "localhost",
     //@ts-ignore
-    dialect: DB_DIALECT,
+    dialect: SQL_TYPE ?? "mysql",
     logging: process.env.NODE_ENV === "production" ? false : false,
     logQueryParameters: true,
     pool: {
