@@ -280,11 +280,12 @@ function Login(props) {
     return new Promise((resolve, reject) => {
       try {
         algaehApiCall({
-          uri: "/getPreferences/",
+          uri: "/getPreferences",
+          data: { ...input },
           method: "POST",
           timeout: 20000,
-          data: input,
           module: "documentManagement",
+
           onSuccess: (response) => {
             const { data } = response;
             resolve(data.records);
