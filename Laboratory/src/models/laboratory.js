@@ -1066,12 +1066,13 @@ const labModal = {
     const _mysql = new algaehMysql();
     try {
       let inputParam = { ...req.body };
-      console.log("updateLabOrderServices", inputParam);
+      // console.log("updateLabOrderServices", inputParam);
       // consol.log("updateLabOrderServices");
 
       return new Promise((resolve, reject) => {
         let strQuery = "";
 
+        // console.log("hims_d_lab_sample_id", inputParam.hims_d_lab_sample_id);
         if (inputParam.hims_d_lab_sample_id === null) {
           strQuery = mysql.format(
             "SELECT hims_d_lab_container_id AS container_id, container_id AS container_code \
@@ -1130,6 +1131,7 @@ const labModal = {
           });
       })
         .then((result) => {
+          // console.log("inputParam.lab_id_number", inputParam.lab_id_number);
           if (inputParam.lab_id_number != null) {
             _mysql
               .executeQuery({
@@ -1168,7 +1170,7 @@ const labModal = {
                     "select number,hims_m_hospital_container_mapping_id from hims_m_hospital_container_mapping \
                   where hospital_id =? and container_id=? and date =?; SELECT lab_id_number FROM hims_f_lab_order L \
                   INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id \
-                  where L.visit_id=? and S.sample_id=? and S.container_id=? and L.billed='Y' and S.collected='Y' ",
+                  where L.visit_id=? and S.sample_id=? and S.container_id=? and L.billed='Y' and S.collected='Y';",
                   values: [
                     inputParam.hims_d_hospital_id,
                     inputParam.container_id,
@@ -1198,7 +1200,11 @@ const labModal = {
                 let labIdNumber = "";
                 let _newNumber = 1;
                 // console.log("test_exists", test_exists);
-                if (test_exists.length === 0) {
+                if (
+                  test_exists.length === 0 ||
+                  test_exists[0].labIdNumber === null
+                ) {
+                  // console.log("11");
                   if (record != null && record.length > 0) {
                     _newNumber = parseInt(record[0].number, 10);
                     _newNumber = _newNumber + 1;
@@ -1225,8 +1231,9 @@ const labModal = {
 
                     query =
                       "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,\
-                  `number`,`created_by`,`updated_by`) values (?,?,?,?,?,?);";
+                        `number`,`created_by`,`updated_by`) values (?,?,?,?,?,?);";
                   }
+                  // console.log("query", query);
                   padNum = pad(String(_newNumber), 3, "LEFT", "0");
                   const dayOfYear = moment().dayOfYear();
                   labIdNumber =
@@ -1239,6 +1246,8 @@ const labModal = {
                   labIdNumber = test_exists[0].lab_id_number;
                 }
 
+                // console.log("labIdNumber", labIdNumber);
+                // consol.log("labIdNumber", labIdNumber);
                 _mysql
                   .executeQuery({
                     query:
@@ -1268,7 +1277,7 @@ const labModal = {
                   })
                   .then((result) => {
                     _mysql.commitTransaction(() => {
-                      console.log("completedddddddddddd");
+                      // console.log("completedddddddddddd");
                       _mysql.releaseConnection();
                       req.records = {
                         collected: inputParam.collected,
