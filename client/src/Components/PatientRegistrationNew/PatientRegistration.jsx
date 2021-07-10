@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { useQuery, useMutation } from "react-query";
 import { useForm } from "react-hook-form";
 import moment from "moment";
@@ -211,9 +211,9 @@ export function PatientRegistration() {
     userLanguage,
     userToken,
     default_visit_type,
-    // userPreferences,
+    userPreferences,
     countries = [],
-    // selectedMenu,
+    selectedMenu,
   } = useContext(MainContext);
   const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
   const [openPopup, setOpenPopup] = useState(false);
@@ -289,20 +289,22 @@ export function PatientRegistration() {
       nationality_id: userToken?.default_nationality,
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
-      visit_type: default_visit_type?.hims_d_visit_type_id,
+      // visit_type: default_visit_type?.hims_d_visit_type_id,
       tel_code: currentCountry?.tel_code,
     },
   });
-  // const preferenceFunction = () => {
-  //   const { screen_code } = selectedMenu;
-  //   const preference = userPreferences[0][screen_code];
-  //   console.log(userPreferences, screen_code, preference);
-  //   setValue("visit_type", preference.visit_type);
-  //   setValue("doctor", preference.doctor);
-  // };
-  // useEffect(() => {
-  //   preferenceFunction();
-  // }, []);
+  const preferenceFunction = async () => {
+    const { screen_code } = selectedMenu;
+    const preference = await userPreferences[0][screen_code];
+    return preference;
+  };
+  useEffect(() => {
+    preferenceFunction().then((result) => {
+      setValue("visit_type", result.visit_type);
+      setValue("doctor", result.doctor);
+      setServiceInfo(result.doctor);
+    });
+  }, []);
 
   const {
     isLoading,
@@ -321,11 +323,21 @@ export function PatientRegistration() {
       if (data?.patientRegistration) {
         let patientRegistration = data?.patientRegistration;
 
+        // const { screen_code } = selectedMenu;
+        // const preference = userPreferences[0][screen_code];
+
         setIdentityType(patientRegistration.identity_type);
         reset({
           ...patientRegistration,
+          // visit_type: preference.visit_type,
+          // doctor: preference.doctor,
           // consultation: "Y",
-          visit_type: default_visit_type?.hims_d_visit_type_id,
+          // visit_type: default_visit_type?.hims_d_visit_type_id,
+        });
+        preferenceFunction().then((result) => {
+          setValue("visit_type", result.visit_type);
+          setValue("doctor", result.doctor);
+          setServiceInfo(result.doctor);
         });
       }
     },
@@ -419,10 +431,13 @@ export function PatientRegistration() {
           reset({
             ...data,
             consultation: "Y",
-            visit_type: default_visit_type?.hims_d_visit_type_id,
+            // visit_type: default_visit_type?.hims_d_visit_type_id,
             full_name: data?.patient_name,
             doctor_id: data?.provider_id,
             doctor,
+          });
+          preferenceFunction().then((result) => {
+            setValue("visit_type", result.visit_type);
           });
           setServiceInfo(doctor);
         } else {
@@ -804,7 +819,7 @@ export function PatientRegistration() {
 
       date_of_birth: "",
       department_type: "",
-      doctor: "",
+      // doctor: "",
       doctor_id: "",
       existing_plan: "",
       full_name: "",
@@ -835,7 +850,7 @@ export function PatientRegistration() {
       nationality_id: userToken?.default_nationality,
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
-      visit_type: default_visit_type?.hims_d_visit_type_id,
+      // visit_type: default_visit_type?.hims_d_visit_type_id,
       tel_code: currentCountry?.tel_code,
       promo_code: "",
       discount_percentage: 0,
@@ -843,8 +858,11 @@ export function PatientRegistration() {
       user_id: "",
     });
     clearState();
-
-    // preferenceFunction();
+    preferenceFunction().then((result) => {
+      setValue("visit_type", result.visit_type);
+      setValue("doctor", result.doctor);
+      setServiceInfo(result.doctor);
+    });
     setConsultationInfo(default_visit_type);
     setIsInsurance(false);
     if (patientImage.current) {
@@ -892,6 +910,7 @@ export function PatientRegistration() {
       );
     }
     setLoadFromReader(!loadFromReader);
+
     reset({
       full_name: EnglishFullName,
       arabic_name: ArabicFullName,
@@ -902,10 +921,13 @@ export function PatientRegistration() {
       nationality_id: userToken?.default_nationality,
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
-      visit_type: default_visit_type?.hims_d_visit_type_id,
+      // visit_type: default_visit_type?.hims_d_visit_type_id,
       tel_code: currentCountry?.tel_code,
       title_id: Gender === "M" ? 1 : 2,
       contact_number: ContactNo,
+    });
+    preferenceFunction().then((result) => {
+      setValue("visit_type", result.visit_type);
     });
   };
   const ClosePackageUtilize = (e) => {
