@@ -1,25 +1,18 @@
-.hptl-sample-coll-details {
-  background: #ffff;
+.sampleCollectionModal {
+  .algaeh-modal {
+    width: 98vw;
+    #sampleCollectionGrid_Cntr {
+      .newStickyGrid {
+        .table-scroll {
+          min-height: 62vh !important;
+          max-height: 62vh !important;
+          overflow: auto !important;
+        }
+      }
+    }
 
-  .form-details {
-    padding-bottom: 0px;
-  }
-
-  .grid-details {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-}
-#sampleCollectionGrid_Cntr {
-  .newStickyGrid {
-    .table-scroll {
-      min-height: 50vh !important;
-      max-height: 50vh !important;
-      overflow: auto !important;
+    .badge {
+      margin-top: 5px;
     }
   }
-}
-
-.badge {
-  margin-top: 5px;
 }

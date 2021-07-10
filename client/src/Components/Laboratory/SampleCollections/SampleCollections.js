@@ -314,7 +314,7 @@ class SampleCollectionPatient extends PureComponent {
             );
           },
           others: {
-            minWidth: 50,
+            maxWidth: 50,
             filterable: false,
             sortable: false,
           },
@@ -329,12 +329,13 @@ class SampleCollectionPatient extends PureComponent {
             }}
             title="Specimen Collections"
             openPopup={this.props.open}
+            class={"sampleCollectionModal"}
           >
             <MyContext.Consumer>
               {(context) => (
                 <div>
                   <div className="col-lg-12 popupInner">
-                    <div className="row form-details">
+                    <div className="row">
                       <div className="col-lg-2">
                         <AlgaehLabel
                           label={{
@@ -504,48 +505,6 @@ class SampleCollectionPatient extends PureComponent {
                                   style: { textAlign: "center" },
                                 },
                               },
-                              // {
-                              //   fieldName: "multipleBarCode_checkBox",
-
-                              //   label: (
-                              //     <AlgaehLabel
-                              //       label={{
-                              //         forceLabel: "Select To Generate",
-                              //       }}
-                              //     />
-                              //   ),
-                              //   //disabled: true
-                              //   displayTemplate: (row) => {
-                              //     return (
-                              //       <span>
-                              //         <input
-                              //           type="checkbox"
-                              //           value="Front Desk"
-                              //           onChange={selectToGenerateBarcode.bind(
-                              //             this,
-                              //             this,
-                              //             row
-                              //           )}
-                              //           checked={
-                              //             row.select_to_generate === "Y"
-                              //               ? true
-                              //               : false
-                              //           }
-                              //           disabled={
-                              //             row.collected === "Y" ||
-                              //             row.billed === "N"
-                              //               ? true
-                              //               : false
-                              //           }
-                              //         />
-                              //       </span>
-                              //     );
-                              //   },
-                              //   others: {
-                              //     maxWidth: 100,
-                              //     filterable: false,
-                              //   },
-                              // },
                               manualColumns,
                               {
                                 fieldName: "billed",
@@ -554,19 +513,86 @@ class SampleCollectionPatient extends PureComponent {
                                     label={{ fieldName: "billed" }}
                                   />
                                 ),
+
                                 displayTemplate: (row) => {
-                                  return row.billed === "N"
-                                    ? "Not Billed"
-                                    : "Billed";
+                                  return row.billed === "Y" ? (
+                                    <span className="badge badge-success">
+                                      Billed
+                                    </span>
+                                  ) : (
+                                    <span className="badge badge-danger">
+                                      Not Billed
+                                    </span>
+                                  );
                                 },
+
+                                // displayTemplate: (row) => {
+                                //   return row.billed === "N"
+                                //     ? "Not Billed"
+                                //     : "Billed";
+                                // },
                                 editorTemplate: (row) => {
                                   return row.billed === "N"
                                     ? "Not Billed"
                                     : "Billed";
                                 },
+                                filterable: true,
+                                filterType: "choices",
+                                choices: [
+                                  {
+                                    name: "Not Billed",
+                                    value: "N",
+                                  },
+                                  {
+                                    name: "Billed",
+                                    value: "Y",
+                                  },
+                                ],
                                 others: {
                                   // resizable: false,
                                   style: { textAlign: "center" },
+                                },
+                              },
+                              {
+                                fieldName: "collected",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "collected" }}
+                                  />
+                                ),
+                                filterable: true,
+                                filterType: "choices",
+                                choices: [
+                                  {
+                                    name: "No",
+                                    value: "N",
+                                  },
+                                  {
+                                    name: "Yes",
+                                    value: "Y",
+                                  },
+                                ],
+                                displayTemplate: (row) => {
+                                  return row.collected === "Y" ? (
+                                    <span className="badge badge-success">
+                                      Yes
+                                    </span>
+                                  ) : (
+                                    <span className="badge badge-danger">
+                                      No
+                                    </span>
+                                  );
+                                },
+                                editorTemplate: (row) => {
+                                  return row.collected === "Y" ? (
+                                    <span className="badge badge-success">
+                                      Yes
+                                    </span>
+                                  ) : (
+                                    <span className="badge badge-danger">
+                                      No
+                                    </span>
+                                  );
                                 },
                               },
                               {
@@ -595,6 +621,18 @@ class SampleCollectionPatient extends PureComponent {
                                   );
                                 },
                                 disabled: true,
+                                filterable: true,
+                                filterType: "choices",
+                                choices: [
+                                  {
+                                    name: "Stat",
+                                    value: "S",
+                                  },
+                                  {
+                                    name: "Routine",
+                                    value: "R",
+                                  },
+                                ],
                                 others: {
                                   // resizable: false,
                                   style: { textAlign: "center" },
@@ -604,14 +642,14 @@ class SampleCollectionPatient extends PureComponent {
                                 fieldName: "service_code",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ fieldName: "investigation_code" }}
+                                    label={{ forceLabel: "Test Code" }}
                                   />
                                 ),
                                 editorTemplate: (row) => {
                                   return row.service_code;
                                 },
+                                filterable: true,
                                 others: {
-                                  // resizable: false,
                                   style: { textAlign: "center" },
                                 },
                               },
@@ -619,16 +657,17 @@ class SampleCollectionPatient extends PureComponent {
                                 fieldName: "service_name",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ fieldName: "investigation_name" }}
+                                    label={{ forceLabel: "Test Name" }}
                                   />
                                 ),
                                 editorTemplate: (row) => {
                                   return row.service_name;
                                 },
+                                filterable: true,
                                 others: {
                                   minWidth: 250,
-                                  // resizable: false,
-                                  style: { textAlign: "center" },
+
+                                  style: { textAlign: "left" },
                                 },
                               },
                               {
@@ -909,7 +948,7 @@ class SampleCollectionPatient extends PureComponent {
                                   );
                                 },
                                 others: {
-                                  maxWidth: 200,
+                                  maxWidth: 150,
                                   // resizable: false,
                                   style: { textAlign: "center" },
                                 },
@@ -918,7 +957,7 @@ class SampleCollectionPatient extends PureComponent {
                                 fieldName: "send_in_test",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ forceLabel: "Send In Test" }}
+                                    label={{ forceLabel: "Send In" }}
                                   />
                                 ),
                                 displayTemplate: (row) => {
@@ -999,39 +1038,9 @@ class SampleCollectionPatient extends PureComponent {
                                   );
                                 },
                                 others: {
-                                  maxWidth: 200,
+                                  maxWidth: 150,
                                   // show: false,
                                   style: { textAlign: "center" },
-                                },
-                              },
-                              {
-                                fieldName: "collected",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{ fieldName: "collected" }}
-                                  />
-                                ),
-                                displayTemplate: (row) => {
-                                  return row.collected === "Y" ? (
-                                    <span className="badge badge-success">
-                                      Yes
-                                    </span>
-                                  ) : (
-                                    <span className="badge badge-danger">
-                                      No
-                                    </span>
-                                  );
-                                },
-                                editorTemplate: (row) => {
-                                  return row.collected === "Y" ? (
-                                    <span className="badge badge-success">
-                                      Yes
-                                    </span>
-                                  ) : (
-                                    <span className="badge badge-danger">
-                                      No
-                                    </span>
-                                  );
                                 },
                               },
                               {
@@ -1113,11 +1122,12 @@ class SampleCollectionPatient extends PureComponent {
                                             : false
                                         }
                                         events={{
-                                          onChange: onchangegridcoldatehandle.bind(
-                                            this,
-                                            this,
-                                            row
-                                          ),
+                                          onChange:
+                                            onchangegridcoldatehandle.bind(
+                                              this,
+                                              this,
+                                              row
+                                            ),
                                         }}
                                         value={row.collected_date}
                                       />
@@ -1135,8 +1145,9 @@ class SampleCollectionPatient extends PureComponent {
                                   }
                                 },
                                 others: {
-                                  // resizable: false,
-                                  style: { textAlign: "center" },
+                                  minWidth: 200,
+                                  // show: false,
+                                  style: { textAlign: "left" },
                                 },
                               },
                               {
@@ -1253,8 +1264,9 @@ class SampleCollectionPatient extends PureComponent {
                                   );
                                 },
                                 others: {
-                                  // resizable: false,
-                                  style: { textAlign: "center" },
+                                  minWidth: 200,
+                                  // show: false,
+                                  style: { textAlign: "left" },
                                 },
                               },
 
@@ -1288,8 +1300,9 @@ class SampleCollectionPatient extends PureComponent {
                                   );
                                 },
                                 others: {
-                                  // resizable: false,
-                                  style: { textAlign: "center" },
+                                  minWidth: 200,
+                                  // show: false,
+                                  style: { textAlign: "left" },
                                 },
                               },
                               {
@@ -1303,7 +1316,7 @@ class SampleCollectionPatient extends PureComponent {
                                   return row.remarks;
                                 },
                                 others: {
-                                  maxWidth: 200,
+                                  minWidth: 200,
                                   // resizable: false,
                                   style: { textAlign: "center" },
                                 },
@@ -1319,7 +1332,7 @@ class SampleCollectionPatient extends PureComponent {
                             }}
                             noDataText="No sample for collection"
                             isEditable={this.state.editableGrid}
-                            pageOptions={{ rows: 20, page: 1 }}
+                            pageOptions={{ rows: 50, page: 1 }}
                             isFilterable={true}
                             pagination={true}
                           />
