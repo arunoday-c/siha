@@ -1,127 +1,135 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 <div class="print-body">
-   <section>
-      <table class="tableForLabel" cell-padding="0">
-         <tr>
-            <td><label>MRN Number</label></td>
-            <td> <span>{{header.patient_code}}</span></td>
-            <td><label>Identity No.</label></td>
-            <td><span>{{header.primary_id_no}}</span></td>
-         </tr>
-         <tr>
-            <td><label>Patient Name</label></td>
-            <td><span>{{header.patient_name}}</span></td>
-            <td><label>Company name</label></td>
-            <td> <span>{{header.insurance_provider_name}}</span></td>
-         </tr>
-         <tr>
-            <td><label>Age</label></td>
-            <td><span>{{header.age_in_years}}Y/ {{header.age_in_months}}M/ {{header.age_in_days}}D</span></td>
-            <td><label>Doctor Ordered by</label></td>
-            <td> <span>{{header.doctor_name}}</span></td>
-            {{!--  {{header.sub_department_name}} --}}
-         </tr>
-         <tr>
-            <td><label>Gender</label></td>
-            <td> <span>{{header.gender}}</span></td>
-            <td><label>Ordered Date & Time</label></td>
-            <td> <span>{{header.ordered_date}}</span></td>
-         </tr>
-         <tr>
-            <td><label>Collected Date & Time</label></td>
-            <td> <span>{{header.collected_date}}</span></td>
-            <td><label>Validated Date & Time</label></td>
-            <td> <span>{{header.validated_date}}</span></td>
-         </tr>
-         <tr>
-            <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-         </tr>
-         <tr>
-            <td><label>Test Name</label></td>
-            <td> <span>{{header.service_name}} </span></td>
-            <td><label>Test Category</label></td>
-            <td> <span>{{header.category_name}} </span></td>
-            {{!-- {{#if header.critical_status "Y"}} <b style="color:red;">
+  <section>
+    <table class="tableForLabel" cell-padding="0">
+      <tr>
+        <td><label>MRN Number</label></td>
+        <td> <span>{{header.patient_code}}</span></td>
+        <td><label>Identity No.</label></td>
+        <td><span>{{header.primary_id_no}}</span></td>
+      </tr>
+      <tr>
+        <td><label>Patient Name</label></td>
+        <td><span>{{header.patient_name}}</span></td>
+        <td><label>Company name</label></td>
+        <td> <span>{{header.insurance_provider_name}}</span></td>
+      </tr>
+      <tr>
+        <td><label>Age</label></td>
+        <td><span>{{header.age_in_years}}Y/
+            {{header.age_in_months}}M/
+            {{header.age_in_days}}D</span></td>
+        <td><label>Doctor Ordered by</label></td>
+        <td> <span>{{header.doctor_name}}</span></td>
+        {{!--  {{header.sub_department_name}} --}}
+      </tr>
+      <tr>
+        <td><label>Gender</label></td>
+        <td> <span>{{header.gender}}</span></td>
+        <td><label>Ordered Date & Time</label></td>
+        <td> <span>{{header.ordered_date}}</span></td>
+      </tr>
+      <tr>
+        <td><label>Collected Date & Time</label></td>
+        <td> <span>{{header.collected_date}}</span></td>
+        <td><label>Validated Date & Time</label></td>
+        <td> <span>{{header.validated_date}}</span></td>
+      </tr>
+      <tr>
+        <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+      </tr>
+      <tr>
+        <td><label>Test Name</label></td>
+        <td> <span>{{header.service_name}} </span></td>
+        <td><label>Test Category</label></td>
+        <td> <span>{{header.category_name}} </span></td>
+        {{!-- {{#if header.critical_status "Y"}} <b style="color:red;">
             (Critical Result)
             </b> {{/if}} --}}
-         </tr>
-      </table>
-   </section>
-   
-   <section>
-      <table class="tableForLabel" cell-padding="0">
-         <tr>
-            <td><small>Growth Type</small> <span style="display: block;">{{header.bacteria_type}}</span></td>
-            <td><small>Contaminated Culture</small> <span style="display: block;">{{header.contaminated_culture}}</span></td>
-            <td><small>Organism Type</small><span style="display: block;">{{header.organism_type}}</span></td>
-            <td><small>Bacteria Name</small><span style="display: block;">{{header.bacteria_name}}</span></td>
-         </tr>
-      </table>
-   </section>
-   <section>
-      <table class="tableForDataNoBorder" cell-padding="0">
-         <thead>
-            <tr>
-               <th class="txtFld">Antibiotic Name</th>
-               <th>Susceptible</th>
-               <th>Intermediate</th>
-               <th>Resistant</th>
-            </tr>
-         </thead>
-         <tbody>
-            {{#hasElement result}}
-            <tr>
-               <td colspan="6" class="tableSubHdg">
-                  {{header.specimen}}
-               </td>
-            </tr>
-            {{#each result}}
-                {{#if susceptible "Y"}}
-                 <tr>
-                        <td class="txtFld">{{antibiotic_name}}</td>
-                        <td>{{susceptibleText}}</td>
-                        <td>{{intermediateText}}</td>
-                        <td>{{resistantText}}</td>
-                    </tr> {{/if}}
-                {{#if intermediate "Y"}}
-                 <tr>
-                        <td class="txtFld">{{antibiotic_name}}</td>
-                        <td>{{susceptibleText}}</td>
-                        <td>{{intermediateText}}</td>
-                        <td>{{resistantText}}</td>
-                    </tr>{{/if}}
-                {{#if resistant "Y"}}
-                 <tr>
-                        <td class="txtFld">{{antibiotic_name}}</td>
-                        <td>{{susceptibleText}}</td>
-                        <td>{{intermediateText}}</td>
-                        <td>{{resistantText}}</td>
-                    </tr>{{/if}}
-                   
-               
-            {{/each}}
-            {{/hasElement }}
-         </tbody>
-      </table>
-      <table class="tableForData">
-         <tbody>
-            <tr>
-               <td class="txtFld">
-                  Comments:
-                  <ol>
-                     {{#each (commentBreakUp header.comments commentBreakUp)}}
-                     <li>{{this}}</li>
-                     {{/each}}
-                  </ol>
-               </td>
-            </tr>
-            <tr>
-               <td class="txtFld">Validated By: <b>{{header.validated_by}}</b></td>
-            </tr>
-         </tbody>
-      </table>
-   </section>
-   {{!-- 
+      </tr>
+    </table>
+  </section>
+
+  <section>
+    <table class="tableForLabel" cell-padding="0">
+      <tr>
+        <td><small>Growth Type</small>
+          <span style="display: block;">{{header.bacteria_type}}</span></td>
+        <td><small>Contaminated Culture</small>
+          <span
+            style="display: block;"
+          >{{header.contaminated_culture}}</span></td>
+        {{!-- <td><small>Organism Type</small><span style="display: block;">{{header.organism_type}}</span></td> --}}
+        <td colspan="2"><small>Bacteria Name</small><span
+            style="display: block;"
+          >{{header.bacteria_name}}</span></td>
+      </tr>
+    </table>
+  </section>
+  <section>
+    <table class="tableForDataNoBorder" cell-padding="0">
+      <thead>
+        <tr>
+          <th class="txtFld">Antibiotic Name</th>
+          <th>Susceptible</th>
+          <th>Intermediate</th>
+          <th>Resistant</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#hasElement result}}
+          <tr>
+            <td colspan="6" class="tableSubHdg">
+              {{header.specimen}}
+            </td>
+          </tr>
+          {{#each result}}
+            {{#if susceptible "Y"}}
+              <tr>
+                <td class="txtFld">{{antibiotic_name}}</td>
+                <td>{{susceptibleText}}</td>
+                <td>{{intermediateText}}</td>
+                <td>{{resistantText}}</td>
+              </tr>
+            {{/if}}
+            {{#if intermediate "Y"}}
+              <tr>
+                <td class="txtFld">{{antibiotic_name}}</td>
+                <td>{{susceptibleText}}</td>
+                <td>{{intermediateText}}</td>
+                <td>{{resistantText}}</td>
+              </tr>{{/if}}
+            {{#if resistant "Y"}}
+              <tr>
+                <td class="txtFld">{{antibiotic_name}}</td>
+                <td>{{susceptibleText}}</td>
+                <td>{{intermediateText}}</td>
+                <td>{{resistantText}}</td>
+              </tr>{{/if}}
+
+          {{/each}}
+        {{/hasElement}}
+      </tbody>
+    </table>
+    <table class="tableForData">
+      <tbody>
+        <tr>
+          <td class="txtFld">
+            Comments:
+            <ol>
+              {{#each (commentBreakUp header.comments commentBreakUp)}}
+                <li>{{this}}</li>
+              {{/each}}
+            </ol>
+          </td>
+        </tr>
+        <tr>
+          <td class="txtFld">Validated By: <b>{{header.validated_by}}</b></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  {{!-- 
    <footer>{{{loadPage 'doctor_signature_footer.hbs' details}}}</footer>
    --}}
 </div>
