@@ -21,7 +21,7 @@ import connection from "./connectionManager";
 const EXCHANGE_NAME = "PATIENT";
 const channelWrapper = connection.createChannel({
   json: true,
-  setup: (channel: Channel) => channel.assertExchange(EXCHANGE_NAME, "direct"),
+  setup: (channel) => channel.assertExchange(EXCHANGE_NAME, "direct"),
   name: "Portal-Publisher",
 });
 
