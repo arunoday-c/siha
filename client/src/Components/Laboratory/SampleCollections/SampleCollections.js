@@ -17,6 +17,7 @@ import {
   // selectToGenerateBarcode,
   BulkSampleCollection,
   printBulkBarcode,
+  onCleargridcol,
   // selectAll,
 } from "./SampleCollectionEvent";
 import { Tooltip } from "antd";
@@ -220,7 +221,8 @@ class SampleCollectionPatient extends PureComponent {
           : "INDETERMINATE",
     });
   };
-  selectToGenerateBarcode = (dol, row, e) => {
+  selectToGenerateBarcode = (row, e) => {
+    debugger;
     const status = e.target.checked;
     // const currentRow = row;
     row.checked = status;
@@ -307,7 +309,7 @@ class SampleCollectionPatient extends PureComponent {
               <input
                 type="checkbox"
                 checked={row.checked}
-                onChange={this.selectToGenerateBarcode.bind(this, this)}
+                onChange={this.selectToGenerateBarcode.bind(this, row)}
               />
             );
           },
@@ -669,6 +671,11 @@ class SampleCollectionPatient extends PureComponent {
                                           this,
                                           row
                                         ),
+                                        onClear: onCleargridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
                                       }}
                                     />
                                   );
@@ -702,6 +709,11 @@ class SampleCollectionPatient extends PureComponent {
                                           data: this.props.labspecimen,
                                         },
                                         onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
+                                        onClear: onCleargridcol.bind(
                                           this,
                                           this,
                                           row
@@ -756,6 +768,11 @@ class SampleCollectionPatient extends PureComponent {
                                           this,
                                           row
                                         ),
+                                        onClear: onCleargridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
                                       }}
                                     />
                                   );
@@ -789,6 +806,11 @@ class SampleCollectionPatient extends PureComponent {
                                           data: this.props.labcontainer,
                                         },
                                         onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
+                                        onClear: onCleargridcol.bind(
                                           this,
                                           this,
                                           row
@@ -839,6 +861,11 @@ class SampleCollectionPatient extends PureComponent {
                                           this,
                                           row
                                         ),
+                                        onClear: onCleargridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
                                       }}
                                     />
                                   );
@@ -868,6 +895,11 @@ class SampleCollectionPatient extends PureComponent {
                                           data: variableJson.FORMAT_YESNO,
                                         },
                                         onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
+                                        onClear: onCleargridcol.bind(
                                           this,
                                           this,
                                           row
@@ -918,6 +950,11 @@ class SampleCollectionPatient extends PureComponent {
                                           this,
                                           row
                                         ),
+                                        onClear: onCleargridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
                                       }}
                                     />
                                   );
@@ -948,6 +985,11 @@ class SampleCollectionPatient extends PureComponent {
                                         },
                                         updateInternally: true,
                                         onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
+                                        onClear: onCleargridcol.bind(
                                           this,
                                           this,
                                           row
@@ -1000,7 +1042,6 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: (row) => {
-                                  debugger;
                                   if (
                                     row.send_in_test === "Y" &&
                                     row.collected === "N"
@@ -1072,12 +1113,11 @@ class SampleCollectionPatient extends PureComponent {
                                             : false
                                         }
                                         events={{
-                                          onChange:
-                                            onchangegridcoldatehandle.bind(
-                                              this,
-                                              this,
-                                              row
-                                            ),
+                                          onChange: onchangegridcoldatehandle.bind(
+                                            this,
+                                            this,
+                                            row
+                                          ),
                                         }}
                                         value={row.collected_date}
                                       />
