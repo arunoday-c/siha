@@ -1,0 +1,54 @@
+<style>
+  body{width: 100%; font-style: 10px;} .texttruncate{ text-overflow: ellipsis;
+  overflow: hidden;white-space: nowrap; background-color: red; }
+</style>
+<body>
+  <div
+    class="print-body"
+    {{! style="page-break-before: always; page-break-after: always;margin: 0;" }}
+  >
+    <div class="col-center">
+      <p class="hospitalLogo"><img src="{{logoUrl "ORG" identity}}" /></p>
+
+    </div>
+    <div>
+      <small
+        class="small-left texttruncate"
+        style="width:
+            48%; margin-top: 2px; text-align:left;"
+      >
+        <b>{{organization_name}}</b></small>
+      <small
+        class="small-right texttruncate"
+        style="width:
+            48%; margin-top: 2px; text-align:right;"
+      ><b>{{legal_name}}</b></small>
+    </div>
+  </div>
+</body>
+
+{{!-- <div class="reportHeaderCntr">
+  <div class="col-left">
+    <p><b>{{organization_name}}</b></p>
+    <p>{{address1}}</p>
+    <p>Tel: <span>{{phone1}}</span></p>
+    <p>Vat No: <span>{{tax_number}}</span></p>
+  </div>
+  <div class="col-right">
+    <p><b>{{legal_name}}</b></p>
+    <p>{{address2}}</p>
+    <p><span style="display: inline-block; text-align:left;">{{phone2}}
+        :</span>رقم الهاتف</p>
+    <p>رقم الضريبة المضافة: <span>{{tax_number}}</span></p>
+  </div>
+
+  <div class="col-center">
+    <p class="hospitalLogo"><img src="{{logoUrl "ORG" identity}}" /></p>
+
+  </div>
+  <div class="headerFooterStyle">
+    <p class="showFilterValue">
+
+    </p>
+  </div>
+</div> --}}
