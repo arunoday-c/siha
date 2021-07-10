@@ -1058,6 +1058,15 @@ class SampleCollectionPatient extends PureComponent {
                                     return (
                                       <DatePicker
                                         name="collected_date"
+                                        disabledDate={(d) =>
+                                          !d ||
+                                          d.isAfter(
+                                            moment()
+                                              .add(1, "days")
+                                              .format("YYYY-MM-DD")
+                                          )
+                                        }
+                                        format="YYYY-MM-DD HH:mm:ss"
                                         // minDate={new Date()}
                                         showTime
                                         onChange={onchangegridcoldatehandle.bind(
