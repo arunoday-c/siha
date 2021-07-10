@@ -26,7 +26,7 @@ import { InsuranceDetails } from "./InsuranceDetails";
 import { VisitDetails } from "./VisitDetail";
 import { BillDetails } from "./BillDetails";
 import { AdvanceModal } from "./AdvanceRefundModal";
-import { algaehApiCall, getCookie } from "../../utils/algaehApiCall";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 import axios from "axios";
 import sockets from "../../sockets";
 import swal from "sweetalert2";
@@ -213,6 +213,7 @@ export function PatientRegistration() {
     default_visit_type,
     userPreferences,
     countries = [],
+    selectedMenu,
   } = useContext(MainContext);
   const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
   const [openPopup, setOpenPopup] = useState(false);
@@ -288,21 +289,19 @@ export function PatientRegistration() {
       nationality_id: userToken?.default_nationality,
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
-      visit_type: default_visit_type?.hims_d_visit_type_id,
+      // visit_type: default_visit_type?.hims_d_visit_type_id,
       tel_code: currentCountry?.tel_code,
     },
   });
-
-  useEffect(() => {
-    debugger;
-
-    const screenCode = getCookie("ScreenCode");
-
-    const preference = userPreferences[0][screenCode][0];
-
-    console.log(userPreferences, screenCode, preference);
+  const preferenceFunction = () => {
+    const { screen_code } = selectedMenu;
+    const preference = userPreferences[0][screen_code];
+    console.log(userPreferences, screen_code, preference);
     setValue("visit_type", preference.visit_type);
     setValue("doctor", preference.doctor);
+  };
+  useEffect(() => {
+    preferenceFunction();
   }, []);
 
   const {
@@ -326,7 +325,7 @@ export function PatientRegistration() {
         reset({
           ...patientRegistration,
           // consultation: "Y",
-          visit_type: default_visit_type?.hims_d_visit_type_id,
+          // visit_type: default_visit_type?.hims_d_visit_type_id,
         });
       }
     },
@@ -805,7 +804,7 @@ export function PatientRegistration() {
 
       date_of_birth: "",
       department_type: "",
-      doctor: "",
+      // doctor: "",
       doctor_id: "",
       existing_plan: "",
       full_name: "",
@@ -836,7 +835,7 @@ export function PatientRegistration() {
       nationality_id: userToken?.default_nationality,
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
-      visit_type: default_visit_type?.hims_d_visit_type_id,
+      // visit_type: default_visit_type?.hims_d_visit_type_id,
       tel_code: currentCountry?.tel_code,
       promo_code: "",
       discount_percentage: 0,
@@ -844,6 +843,8 @@ export function PatientRegistration() {
       user_id: "",
     });
     clearState();
+    debugger;
+    preferenceFunction();
     setConsultationInfo(default_visit_type);
     setIsInsurance(false);
     if (patientImage.current) {

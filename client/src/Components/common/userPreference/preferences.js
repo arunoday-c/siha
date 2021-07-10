@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { Controller } from "react-hook-form";
 import { newAlgaehApi } from "../../../hooks";
 import { MainContext } from "algaeh-react-components";
-import { swalMessage, getCookie } from "../../../utils/algaehApiCall";
+import { swalMessage } from "../../../utils/algaehApiCall";
 const getDoctorData = async () => {
   const result = await Promise.all([
     newAlgaehApi({
@@ -46,7 +46,8 @@ export default memo(function () {
   const [notificationSound, setNotificationSound] = useState(true);
   const [screens, setScreens] = useState([]);
   const [language, setLanguage] = useState([]);
-  const { userMenu, userToken, userPreferences } = useContext(MainContext);
+  const { userMenu, userToken, userPreferences, selectedMenu } =
+    useContext(MainContext);
   const {
     control,
     handleSubmit,
@@ -90,8 +91,8 @@ export default memo(function () {
       { lang_short: other_lang_short, lang: other_lang },
     ]);
     setScreens(scrns);
-    const screenCode = getCookie("ScreenCode");
-    const preference = userPreferences[0][screenCode][0];
+    const { screen_code } = selectedMenu;
+    const preference = userPreferences[0][screen_code];
     if (getValues().screen_code === "FD0002") {
       setValue("visit_type", preference.visit_type);
       setValue("doctor", preference.doctor);

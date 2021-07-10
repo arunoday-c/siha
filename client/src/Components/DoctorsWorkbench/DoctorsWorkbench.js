@@ -508,6 +508,9 @@ class DoctorsWorkbench extends Component {
       { label: "Primary ID", value: "primary_id_no" },
       { label: "Time", value: "encountered_date" },
     ];
+    const dataGrid = []
+      .concat(this.state.data)
+      .sort((a, b) => (a["encountered_date"] < b["encountered_date"] ? 1 : -1));
     return (
       <div className="doctor_workbench">
         <div className="row">
@@ -681,7 +684,6 @@ class DoctorsWorkbench extends Component {
                       style={{ width: "100%" }}
                       value={this.state.sortBy}
                       onChange={(e) => {
-                        debugger;
                         return this.setState({ sortBy: e });
                       }}
                       virtual={true}
@@ -871,14 +873,12 @@ class DoctorsWorkbench extends Component {
                               </span>
                             );
                           },
-                          // className: (row) => {
-                          //   return "greenCell";
-                          // },
                           others: {
                             width: 130,
                             style: { textAlign: "center" },
                           },
                           filterable: true,
+                          sortable: true,
                         },
                         {
                           fieldName: "full_name",
@@ -888,6 +888,7 @@ class DoctorsWorkbench extends Component {
                             />
                           ),
                           filterable: true,
+                          sortable: true,
                         },
                         {
                           fieldName: "icd_description",
@@ -897,6 +898,7 @@ class DoctorsWorkbench extends Component {
                             />
                           ),
                           filterable: true,
+                          sortable: true,
                         },
                         // {
                         //   fieldName: "encountered_date",
@@ -931,6 +933,7 @@ class DoctorsWorkbench extends Component {
                             width: 70,
                             style: { textAlign: "center" },
                           },
+                          sortable: true,
                         },
                         {
                           fieldName: "patient_type",
@@ -950,6 +953,7 @@ class DoctorsWorkbench extends Component {
                             width: 80,
                             style: { textAlign: "center" },
                           },
+                          // sortable: true,
                         },
                         // ,
                         // {
@@ -978,7 +982,7 @@ class DoctorsWorkbench extends Component {
                       //   onEdit: (row) => {},
                       //   onDone: (row) => {},
                       // }}
-                      data={Enumerable.from(this.state.data)
+                      data={Enumerable.from(dataGrid)
                         .where((w) => w.status !== "V")
                         .toArray()}
                       // height="80vh"
