@@ -377,7 +377,7 @@ function HassanNumber() {
                     filterable: true,
                     disabled: true,
                     others: {
-                      // resizable: false,
+                      minWidth: 250,
                       style: { textAlign: "left" },
                     },
                     editorTemplate: (row) => {
@@ -517,6 +517,22 @@ function HassanNumber() {
                     },
                     editorTemplate: (row) => {
                       return row.hesn_upload_updated_date;
+                    },
+                  },
+                  {
+                    fieldName: "service_name",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "service_name" }} />
+                    ),
+                    sortable: true,
+                    filterable: true,
+                    disabled: true,
+                    others: {
+                      minWidth: 250,
+                      style: { textAlign: "left" },
+                    },
+                    editorTemplate: (row) => {
+                      return row.service_name;
                     },
                   },
                 ]}

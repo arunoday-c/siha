@@ -164,9 +164,9 @@ class SampleCollectionPatient extends PureComponent {
       debugger;
       let InputOutput = nextProps.selected_patient;
       this.setState({ ...this.state, ...InputOutput });
-      RawSecurityComponent({ componentCode: "BTN_BLK_SAM_BAR_COL" }).then(
+      RawSecurityComponent({ componentCode: "SPEC_COLL_STATUS_CHANGE" }).then(
         (result) => {
-          console.log("result===", result);
+          // console.log("result===", result);
           if (result === "hide") {
             this.setState({ showCheckBoxColumn: false });
           } else {
