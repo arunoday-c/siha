@@ -92,8 +92,10 @@ export default memo(function () {
     ]);
     setScreens(scrns);
     const { screen_code } = selectedMenu;
-    const preference = userPreferences[0][screen_code];
-    if (getValues().screen_code === "FD0002") {
+    const preference = userPreferences[0]
+      ? userPreferences[0][screen_code]
+      : {};
+    if (getValues().screen_code === "FD0002" && userPreferences[0]) {
       setValue("visit_type", preference.visit_type);
       setValue("doctor", preference.doctor);
     }
