@@ -4,7 +4,7 @@ import { Channel } from "amqplib";
 import { channelWrapper, EXCHANGE_NAME } from "./";
 export async function publisher(queueName, data) {
   try {
-    await channelWrapper.addSetup(async (channel: Channel) => {
+    await channelWrapper.addSetup(async (channel) => {
       await channel.assertQueue(queueName, { durable: true });
       await channel.bindQueue(queueName, EXCHANGE_NAME, queueName);
       return;
