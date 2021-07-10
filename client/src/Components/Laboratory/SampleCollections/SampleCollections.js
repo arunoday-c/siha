@@ -161,7 +161,6 @@ class SampleCollectionPatient extends PureComponent {
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.selected_patient !== null) {
-      debugger;
       let InputOutput = nextProps.selected_patient;
       this.setState({ ...this.state, ...InputOutput });
       RawSecurityComponent({ componentCode: "BTN_BLK_SAM_BAR_COL" }).then(
@@ -222,7 +221,6 @@ class SampleCollectionPatient extends PureComponent {
     });
   };
   selectToGenerateBarcode = (row, e) => {
-    debugger;
     const status = e.target.checked;
     // const currentRow = row;
     row.checked = status;
@@ -1051,6 +1049,7 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: (row) => {
+                                  debugger;
                                   if (
                                     row.send_in_test === "Y" &&
                                     row.collected === "N"
