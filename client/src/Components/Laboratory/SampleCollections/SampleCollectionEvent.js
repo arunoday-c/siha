@@ -13,13 +13,25 @@ const CollectSample = ($this, context, row) => {
   if (row.container_id === null || row.container_id === undefined) {
     swalMessage({
       title: "Please select Container",
-      type: "warining",
+      type: "warning",
     });
     return;
   } else if (row.sample_id === null || row.sample_id === undefined) {
     swalMessage({
       title: "Please select Sample",
-      type: "warining",
+      type: "warning",
+    });
+    return;
+  } else if (row.send_out_test === null || row.send_out_test === undefined) {
+    swalMessage({
+      title: "Please select Send Out",
+      type: "warning",
+    });
+    return;
+  } else if (row.send_in_test === null || row.send_in_test === undefined) {
+    swalMessage({
+      title: "Please select Send In",
+      type: "warning",
     });
     return;
   }
@@ -72,10 +84,7 @@ const CollectSample = ($this, context, row) => {
         }
 
         for (let i = 0; i < test_details.length; i++) {
-          if (
-            test_details[i].visit_id === row.visit_id &&
-            test_details[i].sample_id === row.sample_id
-          ) {
+          if (test_details[i].hims_f_lab_order_id === row.hims_f_lab_order_id) {
             test_details[i].collected = response.data.records.collected;
             test_details[i].collected_by = response.data.records.collected_by;
             test_details[i].collected_date =
@@ -120,7 +129,42 @@ const BulkSampleCollection = ($this, context) => {
   // if ($this.state.test_details.length > 0) {
   const data = $this.state.test_details;
 
-  const filterData = data.filter((f) => f.checked && f.collected === "N");
+  const filterData = data.filter(
+    (f) => f.checked && (f.collected === "N" || f.collected === null)
+  );
+
+  debugger;
+  const sample_validate = filterData.find((f) => f.sample_id === null);
+
+  const container_validate = filterData.find((f) => f.container_id === null);
+  const send_out_validate = filterData.find((f) => f.send_out_test === null);
+  const send_in_validate = filterData.find((f) => f.send_in_test === null);
+
+  if (sample_validate) {
+    swalMessage({
+      title: "Please select Sample in " + sample_validate.service_name,
+      type: "warning",
+    });
+    return;
+  } else if (container_validate) {
+    swalMessage({
+      title: "Please select Container in " + container_validate.service_name,
+      type: "warning",
+    });
+    return;
+  } else if (send_out_validate) {
+    swalMessage({
+      title: "Please select Send Out in " + send_out_validate.service_name,
+      type: "warning",
+    });
+    return;
+  } else if (send_in_validate) {
+    swalMessage({
+      title: "Please select Send In in " + send_in_validate.service_name,
+      type: "warning",
+    });
+    return;
+  }
   const addedData = filterData.map((item) => {
     return {
       hims_f_lab_order_id: item.hims_f_lab_order_id,
@@ -134,6 +178,7 @@ const BulkSampleCollection = ($this, context) => {
       service_id: item.service_id,
       service_code: item.service_code,
       send_out_test: item.send_out_test,
+      send_in_test: item.send_in_test,
       container_id: item.container_id,
       test_id: item.hims_d_investigation_test_id,
       container_code: item.container_code,
@@ -468,6 +513,14 @@ const dateFormater = (value) => {
   }
 };
 
+const onCleargridcol = ($this, row, e) => {
+  let test_details = $this.state.test_details;
+  let _index = test_details.indexOf(row);
+  row[e] = null;
+  test_details[_index] = row;
+  $this.setState({ test_details: test_details });
+};
+
 const onchangegridcol = ($this, row, e) => {
   let test_details = $this.state.test_details;
   let name = e.name || e.target.name;
@@ -524,4 +577,5 @@ export {
   onchangegridcoldatehandle,
   BulkSampleCollection,
   printBulkBarcode,
+  onCleargridcol,
 };

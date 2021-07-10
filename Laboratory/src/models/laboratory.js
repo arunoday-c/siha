@@ -1107,20 +1107,8 @@ const labModal = {
           strQuery = mysql.format(
             "SELECT container_id as container_code FROM hims_d_lab_container \
             where hims_d_lab_container_id=?;\
-            SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;\
-            UPDATE hims_f_lab_order L \
-            INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id \
-            SET S.container_id=?, S.sample_id= ? where L.visit_id=? and S.sample_id=? and S.container_id=? \
-            and L.billed='Y' and S.status='N' and S.collected='N' ;",
-            [
-              inputParam.container_id,
-              inputParam.hims_d_hospital_id,
-              inputParam.container_id,
-              inputParam.sample_id,
-              inputParam.visit_id,
-              inputParam.sample_id,
-              inputParam.container_id,
-            ]
+            SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;",
+            [inputParam.container_id, inputParam.hims_d_hospital_id]
           );
         }
         _mysql
@@ -1251,16 +1239,16 @@ const labModal = {
                   labIdNumber = test_exists[0].lab_id_number;
                 }
 
-                // console.log("labIdNumber", labIdNumber);
-                // consol.log("labIdNumber", labIdNumber);
-
                 _mysql
                   .executeQuery({
                     query:
                       query +
                       `UPDATE hims_f_lab_order L 
                       INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id 
-                      SET S.collected='${inputParam.collected}', S.status='${
+                      SET S.container_id=${
+                        inputParam.container_id
+                      }, S.sample_id=${inputParam.sample_id}, 
+                      S.collected='${inputParam.collected}', S.status='${
                         inputParam.status
                       }', 
                       S.collected_by=${req.userIdentity.algaeh_d_app_user_id},
@@ -1268,15 +1256,13 @@ const labModal = {
                         inputParam.collected_date
                           ? `'${inputParam.collected_date}'`
                           : `now()`
-                      }, S.barcode_gen = now(), lab_id_number =${labIdNumber}
+                      }, S.barcode_gen = now(), lab_id_number ='${labIdNumber}'
                       ,L.status='CL', send_out_test='${
                         inputParam.send_out_test
                       }',send_in_test='${inputParam.send_in_test}'
-                      where L.visit_id=${inputParam.visit_id}
-                      and S.sample_id=${inputParam.sample_id}
-                      and S.container_id=${inputParam.container_id}
-                      and L.billed='Y' and S.status='N' and S.collected='N' ;`,
-
+                      where L.hims_f_lab_order_id=${
+                        inputParam.hims_f_lab_order_id
+                      };`,
                     values: condition,
                     printQuery: true,
                   })
@@ -2758,6 +2744,7 @@ export async function bulkSampleCollection(req, res, next) {
   try {
     const input = req.body;
     console.log("inputttttttttt", input.bulkCollection);
+    // consol.log("inputttttttttt", input.bulkCollection);
     // for (let i = 0; i < input.bulkCollection.length; i++) {
     //   req.body = {
     //     ...input.bulkCollection[i],
