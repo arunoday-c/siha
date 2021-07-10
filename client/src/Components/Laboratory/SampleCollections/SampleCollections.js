@@ -26,7 +26,7 @@ import {
   // AlgaehDataGrid,
   AlgaehModalPopUp,
   AlagehAutoComplete,
-  AlgaehDateHandler,
+  // AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehDataGrid } from "algaeh-react-components";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -164,9 +164,9 @@ class SampleCollectionPatient extends PureComponent {
       debugger;
       let InputOutput = nextProps.selected_patient;
       this.setState({ ...this.state, ...InputOutput });
-      RawSecurityComponent({ componentCode: "SPEC_COLL_STATUS_CHANGE" }).then(
+      RawSecurityComponent({ componentCode: "BTN_BLK_SAM_BAR_COL" }).then(
         (result) => {
-          // console.log("result===", result);
+          console.log("result===", result);
           if (result === "hide") {
             this.setState({ showCheckBoxColumn: false });
           } else {
@@ -1071,28 +1071,6 @@ class SampleCollectionPatient extends PureComponent {
                                           row
                                         )}
                                       />
-                                      // <AlgaehDateHandler
-                                      //   div={{}}
-                                      //   textBox={{
-                                      //     className: "txt-fld hidden",
-                                      //     name: "collected_date",
-                                      //   }}
-                                      //   minDate={new Date()}
-                                      //   disabled={
-                                      //     this.state.posted === "Y"
-                                      //       ? true
-                                      //       : false
-                                      //   }
-                                      //   events={{
-                                      //     onChange:
-                                      //       onchangegridcoldatehandle.bind(
-                                      //         this,
-                                      //         this,
-                                      //         row
-                                      //       ),
-                                      //   }}
-                                      //   value={row.collected_date}
-                                      // />
                                     );
                                   } else {
                                     return (
@@ -1107,43 +1085,17 @@ class SampleCollectionPatient extends PureComponent {
                                   }
                                 },
                                 editorTemplate: (row) => {
-                                  if (row.send_in_test === "Y") {
-                                    return (
-                                      <AlgaehDateHandler
-                                        div={{}}
-                                        textBox={{
-                                          className: "txt-fld hidden",
-                                          name: "collected_date",
-                                        }}
-                                        minDate={new Date()}
-                                        disabled={
-                                          this.state.posted === "Y"
-                                            ? true
-                                            : false
-                                        }
-                                        events={{
-                                          onChange:
-                                            onchangegridcoldatehandle.bind(
-                                              this,
-                                              this,
-                                              row
-                                            ),
-                                        }}
-                                        value={row.collected_date}
-                                      />
-                                    );
-                                  } else {
-                                    return (
-                                      <span>
-                                        {moment(row.collected_date).isValid()
-                                          ? moment(row.collected_date).format(
-                                              "DD-MM-YYYY hh:mm"
-                                            )
-                                          : "------"}
-                                      </span>
-                                    );
-                                  }
+                                  return (
+                                    <span>
+                                      {moment(row.collected_date).isValid()
+                                        ? moment(row.collected_date).format(
+                                            "DD-MM-YYYY hh:mm"
+                                          )
+                                        : "------"}
+                                    </span>
+                                  );
                                 },
+
                                 others: {
                                   minWidth: 200,
                                   // show: false,
