@@ -295,14 +295,23 @@ export function PatientRegistration() {
   });
   const preferenceFunction = async () => {
     const { screen_code } = selectedMenu;
-    const preference = await userPreferences[0][screen_code];
-    return preference;
+    if (userPreferences[0]) {
+      const preference = await userPreferences[0][screen_code];
+      return preference;
+    } else {
+      return null;
+    }
   };
   useEffect(() => {
     preferenceFunction().then((result) => {
-      setValue("visit_type", result.visit_type);
-      setValue("doctor", result.doctor);
-      setServiceInfo(result.doctor);
+      if (result) {
+        setValue("visit_type", result.visit_type);
+
+        setValue("doctor", result.doctor);
+        setServiceInfo(result.doctor);
+      } else {
+        setValue("visit_type", default_visit_type?.hims_d_visit_type_id);
+      }
     });
   }, []);
 
@@ -335,9 +344,14 @@ export function PatientRegistration() {
           // visit_type: default_visit_type?.hims_d_visit_type_id,
         });
         preferenceFunction().then((result) => {
-          setValue("visit_type", result.visit_type);
-          setValue("doctor", result.doctor);
-          setServiceInfo(result.doctor);
+          if (result) {
+            setValue("visit_type", result.visit_type);
+
+            setValue("doctor", result.doctor);
+            setServiceInfo(result.doctor);
+          } else {
+            setValue("visit_type", default_visit_type?.hims_d_visit_type_id);
+          }
         });
       }
     },
@@ -437,7 +451,14 @@ export function PatientRegistration() {
             doctor,
           });
           preferenceFunction().then((result) => {
-            setValue("visit_type", result.visit_type);
+            if (result) {
+              setValue("visit_type", result.visit_type);
+
+              setValue("doctor", result.doctor);
+              setServiceInfo(result.doctor);
+            } else {
+              setValue("visit_type", default_visit_type?.hims_d_visit_type_id);
+            }
           });
           setServiceInfo(doctor);
         } else {
@@ -859,9 +880,14 @@ export function PatientRegistration() {
     });
     clearState();
     preferenceFunction().then((result) => {
-      setValue("visit_type", result.visit_type);
-      setValue("doctor", result.doctor);
-      setServiceInfo(result.doctor);
+      if (result) {
+        setValue("visit_type", result.visit_type);
+
+        setValue("doctor", result.doctor);
+        setServiceInfo(result.doctor);
+      } else {
+        setValue("visit_type", default_visit_type?.hims_d_visit_type_id);
+      }
     });
     setConsultationInfo(default_visit_type);
     setIsInsurance(false);
@@ -927,7 +953,11 @@ export function PatientRegistration() {
       contact_number: ContactNo,
     });
     preferenceFunction().then((result) => {
-      setValue("visit_type", result.visit_type);
+      if (result) {
+        setValue("visit_type", result.visit_type);
+      } else {
+        setValue("visit_type", default_visit_type?.hims_d_visit_type_id);
+      }
     });
   };
   const ClosePackageUtilize = (e) => {
