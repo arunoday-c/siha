@@ -92,6 +92,7 @@ const CollectSample = ($this, context, row) => {
             test_details[i].barcode_gen = response.data.records.barcode_gen;
             test_details[i].send_in_test = response.data.records.send_in_test;
             test_details[i].lab_id_number = response.data.records.lab_id_number;
+            test_details[i].status = response.data.records.status;
           }
         }
 

@@ -1,10 +1,10 @@
 // import amqpConnection from "./connection";
 // let channel = undefined;
-import { Channel } from "amqplib";
-import { channelWrapper, EXCHANGE_NAME } from "./";
+// import { Channel } from "amqplib";
+import { channelWrapper, EXCHANGE_NAME } from "./connection";
 export async function publisher(queueName, data) {
   try {
-    await channelWrapper.addSetup(async (channel: Channel) => {
+    await channelWrapper.addSetup(async (channel) => {
       await channel.assertQueue(queueName, { durable: true });
       await channel.bindQueue(queueName, EXCHANGE_NAME, queueName);
       return;

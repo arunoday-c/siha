@@ -1131,15 +1131,24 @@ const labModal = {
           });
       })
         .then((result) => {
-          // console.log("inputParam.lab_id_number", inputParam.lab_id_number);
+          console.log("inputParam.lab_id_number", inputParam.lab_id_number);
           if (inputParam.lab_id_number != null) {
             _mysql
               .executeQuery({
-                query:
-                  "update hims_f_lab_order set status='CL', send_out_test='" +
-                  inputParam.send_out_test +
-                  "' ,barcode_gen = now() where hims_f_lab_order_id=" +
-                  inputParam.hims_f_lab_order_id,
+                query: `update hims_f_lab_order L  \
+                  INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id SET S.container_id=${
+                    inputParam.container_id
+                  }, S.sample_id=${inputParam.sample_id},S.collected='${
+                  inputParam.collected
+                }', L.status='CL', send_out_test='${
+                  inputParam.send_out_test
+                }',send_in_test='${inputParam.send_in_test}',S.collected_by=${
+                  req.userIdentity.algaeh_d_app_user_id
+                }, S.collected_date ='${
+                  inputParam.collected_date ? inputParam.collected_date : now()
+                }', L.barcode_gen = now() where hims_f_lab_order_id=${
+                  inputParam.hims_f_lab_order_id
+                }`,
                 // values: condition,
                 printQuery: true,
               })
@@ -1151,6 +1160,7 @@ const labModal = {
                     collected_by: req.userIdentity.algaeh_d_app_user_id,
                     collected_date: new Date(),
                     barcode_gen: new Date(),
+                    status: "CL",
                   };
                   next();
                 });
@@ -1287,6 +1297,7 @@ const labModal = {
                           : new Date(),
                         send_in_test: inputParam.send_in_test,
                         lab_id_number: labIdNumber,
+                        status: "CL",
                       };
                       // if (inputParam.bulkBarcode) {
                       //   return;
