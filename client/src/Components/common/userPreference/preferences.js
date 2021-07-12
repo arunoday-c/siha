@@ -46,8 +46,7 @@ export default memo(function () {
   const [notificationSound, setNotificationSound] = useState(true);
   const [screens, setScreens] = useState([]);
   const [language, setLanguage] = useState([]);
-  const { userMenu, userToken, userPreferences, selectedMenu } =
-    useContext(MainContext);
+  const { userMenu, userToken, userPreferences } = useContext(MainContext);
   const {
     control,
     handleSubmit,
@@ -91,13 +90,14 @@ export default memo(function () {
       { lang_short: other_lang_short, lang: other_lang },
     ]);
     setScreens(scrns);
-    const { screen_code } = selectedMenu;
-    const preference = userPreferences[0]
-      ? userPreferences[0][screen_code]
-      : {};
-    if (getValues().screen_code === "FD0002" && userPreferences[0]) {
-      setValue("visit_type", preference.visit_type);
-      setValue("doctor", preference.doctor);
+
+    if (userPreferences.length > 0 && userPreferences) {
+      debugger;
+      const preference = userPreferences[0]["FD0002"];
+      if (getValues().screen_code === "FD0002") {
+        setValue("visit_type", preference.visit_type);
+        setValue("doctor", preference.doctor);
+      }
     }
   }, []); //eslint-disable-line
 
@@ -109,8 +109,7 @@ export default memo(function () {
     },
     initialStale: true,
     onSuccess: (data) => {
-      const res = data?.visitTypes?.filter((item) => item.consultation === "Y");
-      setValue("visit_type", res[0]?.hims_d_visit_type_id);
+      // const res = data?.visitTypes?.filter((item) => item.consultation === "Y");
     },
   });
 

@@ -55,9 +55,8 @@ export function VisitDetails({
 
   const { fieldNameFn } = useLangFieldName();
   const { setVisitType } = useContext(MainContext);
-  const { setServiceInfo, setConsultationInfo, disabled } = useContext(
-    FrontdeskContext
-  );
+  const { setServiceInfo, setConsultationInfo, disabled } =
+    useContext(FrontdeskContext);
   const { data, isLoading } = useQuery("doctors-data", getDoctorData, {
     cacheTime: Infinity,
     initialData: {
@@ -68,7 +67,7 @@ export function VisitDetails({
     onSuccess: (data) => {
       const res = data?.visitTypes?.filter((item) => item.consultation === "Y");
       setConsultationInfo(res[0]);
-      setValue("visit_type", res[0]?.hims_d_visit_type_id);
+      // setValue("visit_type", res[0]?.hims_d_visit_type_id);
       setVisitType(res[0]);
     },
   });
