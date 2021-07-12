@@ -294,8 +294,10 @@ export function PatientRegistration() {
     },
   });
   const preferenceFunction = async () => {
+    debugger;
     const { screen_code } = selectedMenu;
-    if (userPreferences[0]) {
+
+    if (userPreferences.length > 0 && userPreferences) {
       const preference = await userPreferences[0][screen_code];
       return preference;
     } else {
@@ -306,7 +308,7 @@ export function PatientRegistration() {
     preferenceFunction().then((result) => {
       if (result) {
         setValue("visit_type", result.visit_type);
-
+        debugger;
         setValue("doctor", result.doctor);
         setServiceInfo(result.doctor);
       } else {
@@ -346,7 +348,7 @@ export function PatientRegistration() {
         preferenceFunction().then((result) => {
           if (result) {
             setValue("visit_type", result.visit_type);
-
+            debugger;
             setValue("doctor", result.doctor);
             setServiceInfo(result.doctor);
           } else {
@@ -453,7 +455,7 @@ export function PatientRegistration() {
           preferenceFunction().then((result) => {
             if (result) {
               setValue("visit_type", result.visit_type);
-
+              debugger;
               setValue("doctor", result.doctor);
               setServiceInfo(result.doctor);
             } else {
@@ -882,7 +884,7 @@ export function PatientRegistration() {
     preferenceFunction().then((result) => {
       if (result) {
         setValue("visit_type", result.visit_type);
-
+        debugger;
         setValue("doctor", result.doctor);
         setServiceInfo(result.doctor);
       } else {

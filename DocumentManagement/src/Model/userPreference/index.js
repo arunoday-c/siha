@@ -36,9 +36,8 @@ export function setUserPreference(req, res, next) {
           theme: result.theme,
         };
         newDetails[screen_code] = updateArray[0];
-        console.log("screen_code", newDetails);
       } else {
-        newDetails[screen_code] = [preferenceData];
+        newDetails[screen_code] = preferenceData;
       }
 
       const _lan = language !== undefined ? { language: language } : {};
