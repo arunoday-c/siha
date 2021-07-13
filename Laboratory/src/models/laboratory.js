@@ -115,6 +115,32 @@ const labModal = {
       next(e);
     }
   },
+
+  patientPortalData: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputValues = req.query;
+
+      _mysql
+        .executeQuery({
+          query: `select * from hims_f_portal_patient where  date(created_date) between date(?) AND date(?)`,
+          values: [inputValues.from_date, inputValues.to_date],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   updateLabOrderServiceForDoc: (req, res, next) => {
     const _mysql = new algaehMysql();
 
