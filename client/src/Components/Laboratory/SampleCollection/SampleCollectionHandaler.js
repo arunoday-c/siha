@@ -16,7 +16,7 @@ const texthandle = ($this, e) => {
       [name]: value,
     },
     () => {
-      getSampleCollectionDetails($this);
+      getTestDetails($this);
     }
   );
   if ((name = "location_id")) {
@@ -42,7 +42,7 @@ const PatientSearch = ($this, e) => {
           patient_id: row.hims_d_patient_id,
         },
         () => {
-          getSampleCollectionDetails($this);
+          getTestDetails($this);
         }
       );
     },
@@ -75,13 +75,13 @@ const datehandle = ($this, ctrl, e) => {
         [e]: moment(ctrl)._d,
       },
       () => {
-        getSampleCollectionDetails($this);
+        getTestDetails($this);
       }
     );
   }
 };
 
-const getSampleCollectionDetails = ($this) => {
+const getTestDetails = ($this) => {
   let inputobj = {};
 
   if ($this.state.from_date !== null) {
@@ -117,16 +117,13 @@ const getSampleCollectionDetails = ($this) => {
           .groupBy("$.visit_id", null, (k, g) => {
             let firstRecordSet = Enumerable.from(g).firstOrDefault();
             return {
+              patient_id: firstRecordSet.patient_id,
+              visit_id: firstRecordSet.visit_id,
               primary_id_no: firstRecordSet.primary_id_no,
               patient_code: firstRecordSet.patient_code,
               full_name: firstRecordSet.full_name,
               ordered_date: firstRecordSet.ordered_date,
               number_of_tests: g.getSource().length,
-              test_details: g.getSource(),
-              provider_id: firstRecordSet.provider_id,
-              billed: firstRecordSet.billed,
-              visit_code: firstRecordSet.visit_code,
-              doctor_name: firstRecordSet.doctor_name,
               status: firstRecordSet.status,
               test_type: firstRecordSet.test_type,
             };
@@ -143,40 +140,6 @@ const getSampleCollectionDetails = ($this) => {
       });
     },
   });
-
-  // $this.props.getSampleCollection({
-  //   uri: "/laboratory/getLabOrderedServices",
-  //   module: "laboratory",
-  //   method: "GET",
-  //   data: inputobj,
-  //   redux: {
-  //     type: "SAMPLE_COLLECT_GET_DATA",
-  //     mappingName: "samplecollection"
-  //   },
-  //   afterSuccess: data => {
-  //
-  //     let sample_collection = Enumerable.from(data)
-  //       .groupBy("$.visit_id", null, (k, g) => {
-  //         let firstRecordSet = Enumerable.from(g).firstOrDefault();
-  //         return {
-  //           patient_code: firstRecordSet.patient_code,
-  //           full_name: firstRecordSet.full_name,
-  //           ordered_date: firstRecordSet.ordered_date,
-  //           number_of_tests: g.getSource().length,
-  //           test_details: g.getSource(),
-  //           provider_id: firstRecordSet.provider_id,
-  //           billed: firstRecordSet.billed,
-  //           visit_code: firstRecordSet.visit_code,
-  //           doctor_name: firstRecordSet.doctor_name,
-  //           status: firstRecordSet.status,
-  //           test_type: firstRecordSet.test_type
-  //         };
-  //       })
-  //       .toArray();
-
-  //     $this.setState({ sample_collection: sample_collection });
-  //   }
-  // });
 };
 
 const Refresh = ($this) => {
@@ -194,10 +157,4 @@ const Refresh = ($this) => {
   });
 };
 
-export {
-  texthandle,
-  PatientSearch,
-  datehandle,
-  getSampleCollectionDetails,
-  Refresh,
-};
+export { texthandle, PatientSearch, datehandle, getTestDetails, Refresh };
