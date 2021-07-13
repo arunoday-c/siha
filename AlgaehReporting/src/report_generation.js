@@ -386,8 +386,7 @@ export default {
           query:
             "SELECT report_type,report_name_for_header,report_name,report_query,report_input_series,data_manupulation,\
             report_header_file_name,report_footer_file_name,report_props,report_thermal_header_file_name,report_thermal_footer_file_name,thermal_report_props from algaeh_d_reports where status='A' and report_name in (?);\
-            select H.hospital_name,H.hospital_address,H.arabic_hospital_name, \
-            O.organization_name,O.business_registration_number,O.* from hims_d_hospital H,hims_d_organization O \
+            select H.*,O.* from hims_d_hospital H,hims_d_organization O \
             where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
           values: [_inputParam.reportName, req.userIdentity["hospital_id"]],
           printQuery: true,
@@ -1012,7 +1011,7 @@ export default {
           query:
             "SELECT report_name_for_header,report_name,report_query,report_input_series,data_manupulation,\
             report_header_file_name,report_footer_file_name from algaeh_d_reports where status='A' and report_name in (?);\
-            select H.hospital_name,H.hospital_address,H.arabic_hospital_name, O.* from hims_d_hospital H,hims_d_organization O \
+            select H.*, O.* from hims_d_hospital H,hims_d_organization O \
             where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
           values: [_inputParam.reportName, req.userIdentity.hospital_id],
           printQuery: true,
@@ -1311,7 +1310,7 @@ export default {
           query:
             "SELECT report_name_for_header,report_name,report_query,report_input_series,data_manupulation,\
       report_header_file_name,report_footer_file_name from algaeh_d_reports where status='A' and report_name in (?);\
-      select H.hospital_name,H.hospital_address,H.arabic_hospital_name,O.* from hims_d_hospital H,hims_d_organization O \
+      select H.*,O.* from hims_d_hospital H,hims_d_organization O \
       where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
           values: [_inputParam.reportName, req.userIdentity["hospital_id"]],
           printQuery: true,
@@ -1732,7 +1731,7 @@ export default {
           query:
             "SELECT report_name_for_header,report_name,report_query,report_input_series,data_manupulation,\
             report_header_file_name,report_footer_file_name from algaeh_d_reports where status='A' and report_name in (?);\
-            select H.hospital_name,H.hospital_address,H.arabic_hospital_name,O.* from hims_d_hospital H,hims_d_organization O \
+            select H.*,O.* from hims_d_hospital H,hims_d_organization O \
             where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
           values: [_inputParam.reportName, req.userIdentity["hospital_id"]],
           printQuery: true,

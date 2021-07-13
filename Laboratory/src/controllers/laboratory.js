@@ -29,6 +29,7 @@ const {
   top10LabOrders,
   labDashBoardWithAttachment,
   updateHassanNo,
+  getHESNServices,
 } = labModels;
 import { processLabSMS, getValidatedResults } from "../models/labSMS";
 export default () => {
@@ -60,6 +61,14 @@ export default () => {
       });
     }
   );
+
+  api.get("/getHESNServices", getHESNServices, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+
   api.get(
     "/getSendInAndSendOutTestDetails",
     getSendInAndSendOutTestDetails,

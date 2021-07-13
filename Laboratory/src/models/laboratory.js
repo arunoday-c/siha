@@ -367,6 +367,63 @@ const labModal = {
     }
   },
 
+  getHESNServices: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputValues = [];
+      let _stringData = "";
+
+      _stringData += " and LO.hospital_id=?";
+      inputValues.push(req.userIdentity.hospital_id);
+
+      if (req.query.from_date != null) {
+        _stringData +=
+          " and date(ordered_date) between date('" +
+          req.query.from_date +
+          "') AND date('" +
+          req.query.to_date +
+          "')";
+      } else {
+        _stringData += " and date(ordered_date) <= date(now())";
+      }
+
+      if (req.query.hassanShow === "withhassan") {
+        _stringData += " and LO.hassan_number is not null";
+      }
+      if (req.query.hassanShow === "withOuthassan") {
+        _stringData += " and LO.hassan_number is null";
+      }
+      _mysql
+        .executeQuery({
+          query:
+            "select LO.ordered_date,LO.lab_id_number,LO.hassan_number,LO.hassan_number_updated_date, \
+            LO.hesn_upload,LO.hesn_upload_updated_date,P.patient_code,P.full_name,P.primary_id_no, \
+            INV.description,USR.user_display_name as hesn_no_updated_by,USRR.user_display_name as hesn_file_updated_by \
+            from hims_f_lab_order LO \
+            inner join hims_d_investigation_test INV on INV.hims_d_investigation_test_id=LO.test_id \
+            inner join hims_f_patient P on P.hims_d_patient_id=LO.patient_id \
+            left join algaeh_d_app_user USR on USR.algaeh_d_app_user_id=LO.hassan_number_updated_by \
+            left join algaeh_d_app_user USRR on USRR.algaeh_d_app_user_id=LO.hesn_upload_updated_by WHERE INV.isPCR='Y' and LO.billed='Y' " +
+            _stringData +
+            ";",
+          values: inputValues,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
   insertLadOrderedServices_BAKP_JAN_30_2020: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
