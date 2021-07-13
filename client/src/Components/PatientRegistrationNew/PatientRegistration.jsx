@@ -297,7 +297,7 @@ export function PatientRegistration() {
     debugger;
     const { screen_code } = selectedMenu;
 
-    if (userPreferences.length > 0 && userPreferences) {
+    if (userPreferences?.length > 0 && userPreferences) {
       const preference = await userPreferences[0][screen_code];
       return preference;
     } else {

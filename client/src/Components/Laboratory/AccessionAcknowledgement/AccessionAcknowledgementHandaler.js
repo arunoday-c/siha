@@ -141,7 +141,7 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
       }).then((willProceed) => {
         if (willProceed.value) {
           let inputobj = {
-            test_id: row.hims_d_investigation_test_id,
+            test_id: row.test_id,
             hims_d_lab_sample_id: row.hims_d_lab_sample_id,
             order_id: row.hims_f_lab_order_id,
             sample_id: row.sample_id,
@@ -154,7 +154,6 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
             status: AccRej,
           };
 
-          debugger;
           algaehApiCall({
             uri: "/laboratory/updateLabSampleStatus",
             module: "laboratory",
