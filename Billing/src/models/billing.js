@@ -2599,7 +2599,7 @@ export default {
                       f.hims_d_services_id ===
                       servicesDetails.hims_d_services_id
                   );
-
+                  console.log("promotion_dis", promotion_dis);
                   if (promotion_dis !== undefined) {
                     if (
                       servicesDetails.promo_code === promotion_dis.offer_code
@@ -2624,8 +2624,7 @@ export default {
                         _mysql.releaseConnection();
                         req.records = {
                           invalid_input: true,
-                          message:
-                            "Enterted Promo Code either not valid nor Expired",
+                          message: "Promo code either invalid or expired.",
                         };
 
                         next();
@@ -2635,8 +2634,7 @@ export default {
                       _mysql.releaseConnection();
                       req.records = {
                         invalid_input: true,
-                        message:
-                          "Enterted Promo Code either not valid nor Expired",
+                        message: "Promo code either invalid or expired.",
                       };
 
                       next();
