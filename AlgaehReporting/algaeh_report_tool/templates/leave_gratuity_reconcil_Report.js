@@ -6,11 +6,8 @@ const executePDF = function executePDFMethod(options) {
       let str = "";
       let input = {};
       let params = options.args.reportParams;
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
 
       params.forEach((para) => {
         input[para["name"]] = para["value"];
@@ -68,7 +65,7 @@ const executePDF = function executePDFMethod(options) {
           INNER JOIN hims_d_employee_earnings as EE on EE.employee_id = EM.hims_d_employee_id and earnings_id=(select basic_earning_component from hims_d_hrms_options limit 1)
           INNER JOIN hims_f_employee_monthly_leave ML ON ML.employee_id = LH.employee_id and ML.year=? 
           and ML.leave_id=(select hims_d_leave_id from hims_d_leave where leave_category='A')
-          where LD.year=? and LD.month = ? and EM.leave_salary_process='Y' and S.salary_processed ='Y' ${str} group by LH.employee_id;
+          where EM.employee_status <> 'I' and LD.year=? and LD.month = ? and EM.leave_salary_process='Y' and S.salary_processed ='Y' ${str} group by LH.employee_id order by EM.employee_code;
 
           SELECT LH.employee_id,  LD.leave_days, 
           LD.leave_salary_amount, LD.airticket_amount,        
@@ -93,7 +90,7 @@ const executePDF = function executePDFMethod(options) {
           INNER JOIN hims_f_salary S ON S.employee_id = LH.employee_id and S.year = LD.year and S.month = LD.month
           LEFT JOIN hims_f_leave_salary_header SH ON SH.employee_id= LH.employee_id and S.year = LD.year and S.month = LD.month
           INNER JOIN hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id          
-          where LD.year=? and LD.month < ? and EM.leave_salary_process='Y' ${str};          
+          where LD.year=? and LD.month < ? and EM.leave_salary_process='Y' ${str} group by LD.hims_f_employee_leave_salary_detail_id;       
 
           SELECT employee_id,leave_days,leave_amount,airfare_amount FROM hims_f_leave_encash_header LH 
           INNER JOIN hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id 
@@ -104,7 +101,7 @@ const executePDF = function executePDFMethod(options) {
           FROM hims_f_employee_leave_salary_header LH
           INNER JOIN hims_f_employee_leave_salary_detail LD ON LH.hims_f_employee_leave_salary_header_id=LD.employee_leave_salary_header_id
           INNER JOIN hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id
-          where LD.year<? and EM.leave_salary_process='Y' ${str} GROUP BY LH.employee_id;`,
+          where LD.year<? and EM.leave_salary_process='Y' ${str} GROUP BY LH.employee_id ;`,
 
           values: [
             input.year,
@@ -223,14 +220,23 @@ const executePDF = function executePDFMethod(options) {
               const leavesalary_opening_balance =
                 _.sumBy(previous_trans_data, (s) =>
                   parseFloat(s.leave_salary_amount)
-                ) +
-                parseFloat(opening_leave_salary) -
-                _.sumBy(previous_trans_data, (s) =>
-                  parseFloat(s.leave_salary_amount)
-                );
-              // console.log("15");
+                ) + parseFloat(opening_leave_salary);
+
+              // console.log(
+              //   "15",
+              //   _.sumBy(previous_trans_data, (s) =>
+              //     parseFloat(s.leave_salary_amount)
+              //   ),
+              //   _.sumBy(item, (s) => parseFloat(s.leave_salary_amount)),
+              //   parseFloat(opening_leave_salary),
+              //   utilized_leave_salary_amount
+              // );
+
               const total_leave_salary_amount =
                 _.sumBy(item, (s) => parseFloat(s.leave_salary_amount)) +
+                _.sumBy(previous_trans_data, (s) =>
+                  parseFloat(s.leave_salary_amount)
+                ) +
                 parseFloat(opening_leave_salary) -
                 utilized_leave_salary_amount;
 
@@ -253,14 +259,13 @@ const executePDF = function executePDFMethod(options) {
               const airefare_opening_balance =
                 _.sumBy(previous_trans_data, (s) =>
                   parseFloat(s.airticket_amount)
-                ) +
-                parseFloat(opening_airticket) -
-                _.sumBy(previous_trans_data, (s) =>
-                  parseFloat(s.airticket_amount)
-                );
+                ) + parseFloat(opening_airticket);
               // console.log("17");
               const total_airticket_amount =
                 _.sumBy(item, (s) => parseFloat(s.airticket_amount)) +
+                _.sumBy(previous_trans_data, (s) =>
+                  parseFloat(s.airticket_amount)
+                ) +
                 parseFloat(opening_airticket) -
                 utilized_airticket_amount;
               return {
