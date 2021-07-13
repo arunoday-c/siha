@@ -1466,7 +1466,7 @@ export default function JournalVoucher() {
                 </div>
                 <div
                   className={`actions arAction ${
-                    parseFloat(total_credit) != parseFloat(total_debit)
+                    parseFloat(total_credit) !== parseFloat(total_debit)
                       ? "notEqualPar"
                       : ""
                   } `}
