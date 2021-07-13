@@ -9,7 +9,7 @@ import axios from "axios";
 // import Enumerable from "linq";
 // import swal from "sweetalert2";
 const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
-const CollectSample = ($this, context, row) => {
+const CollectSample = ($this, row) => {
   if (row.container_id === null || row.container_id === undefined) {
     swalMessage({
       title: "Please select Container",
@@ -50,7 +50,7 @@ const CollectSample = ($this, context, row) => {
     send_in_test: row.send_in_test,
     collected_date: row.collected_date,
     container_id: row.container_id,
-    test_id: row.hims_d_investigation_test_id,
+    test_id: row.test_id,
     container_code: row.container_code,
     lab_id_number: row.lab_id_number,
   };
@@ -63,7 +63,6 @@ const CollectSample = ($this, context, row) => {
     method: "PUT",
     onSuccess: (response) => {
       if (response.data.success === true) {
-        let test_details = $this.state.test_details;
         if ($this.state.portal_exists === "Y") {
           const portal_data = {
             service_id: row.service_id,
@@ -83,36 +82,29 @@ const CollectSample = ($this, context, row) => {
             });
         }
 
-        for (let i = 0; i < test_details.length; i++) {
-          if (test_details[i].hims_f_lab_order_id === row.hims_f_lab_order_id) {
-            test_details[i].collected = response.data.records.collected;
-            test_details[i].collected_by = response.data.records.collected_by;
-            test_details[i].collected_date =
-              response.data.records.collected_date;
-            test_details[i].barcode_gen = response.data.records.barcode_gen;
-            test_details[i].send_in_test = response.data.records.send_in_test;
-            test_details[i].lab_id_number = response.data.records.lab_id_number;
-            test_details[i].status = response.data.records.status;
-          }
-        }
+        // for (let i = 0; i < test_details.length; i++) {
+        //   if (test_details[i].hims_f_lab_order_id === row.hims_f_lab_order_id) {
+        //     test_details[i].collected = response.data.records.collected;
+        //     test_details[i].collected_by = response.data.records.collected_by;
+        //     test_details[i].collected_date =
+        //       response.data.records.collected_date;
+        //     test_details[i].barcode_gen = response.data.records.barcode_gen;
+        //     test_details[i].send_in_test = response.data.records.send_in_test;
+        //     test_details[i].lab_id_number = response.data.records.lab_id_number;
+        //     test_details[i].status = response.data.records.status;
+        //   }
+        // }
 
-        $this.setState({ test_details: test_details }, () => {
-          if (sockets.connected) {
-            sockets.emit("specimen_acknowledge", {
-              test_details: test_details,
-              collected_date: response.data.records.collected_date,
-            });
-          }
-          swalMessage({
-            title: "Collected Successfully",
-            type: "success",
-          });
+        getSampleCollectionDetails($this, {
+          patient_id: row.patient_id,
+          visit_id: row.visit_id,
+          collected: "Y",
         });
 
-        if (context !== undefined) {
-          context.updateState({ test_details: [...test_details] });
-          $this.setState({ test_details: [...test_details] });
-        }
+        swalMessage({
+          title: "Collected Successfully",
+          type: "success",
+        });
       }
       AlgaehLoader({ show: false });
     },
@@ -126,7 +118,7 @@ const CollectSample = ($this, context, row) => {
   });
 };
 
-const BulkSampleCollection = ($this, context) => {
+const BulkSampleCollection = ($this) => {
   // if ($this.state.test_details.length > 0) {
   const data = $this.state.test_details;
 
@@ -134,7 +126,6 @@ const BulkSampleCollection = ($this, context) => {
     (f) => f.checked && (f.collected === "N" || f.collected === null)
   );
 
-  debugger;
   const sample_validate = filterData.find((f) => f.sample_id === null);
 
   const container_validate = filterData.find((f) => f.container_id === null);
@@ -230,10 +221,6 @@ const BulkSampleCollection = ($this, context) => {
           //     type: "success",
           //   });
           // });
-          // if (context !== undefined) {
-          //   context.updateState({ test_details: [...test_details] });
-          //   $this.setState({ test_details: [...test_details] });
-          // }
         }
         AlgaehLoader({ show: false });
       },
@@ -252,7 +239,7 @@ const BulkSampleCollection = ($this, context) => {
     });
   }
 };
-const printBulkBarcode = ($this, context) => {
+const printBulkBarcode = ($this) => {
   const data = $this.state.test_details;
   const filterData = data.filter((f) => f.checked);
   const labOrderId = filterData.map((item) => item.hims_f_lab_order_id);
@@ -568,6 +555,43 @@ const onchangegridcoldatehandle = ($this, row, ctrl, e) => {
     });
   }
 };
+
+const getSampleCollectionDetails = ($this, selected_patient) => {
+  let inputobj = {};
+
+  if (selected_patient.patient_id !== null) {
+    inputobj.patient_id = selected_patient.patient_id;
+  }
+  if (selected_patient.visit_id !== null) {
+    inputobj.visit_id = selected_patient.visit_id;
+  }
+  algaehApiCall({
+    uri: "/laboratory/getLabOrderedServices",
+    module: "laboratory",
+    method: "GET",
+    data: inputobj,
+    onSuccess: (response) => {
+      selected_patient.test_details = response.data.records;
+      if (response.data.success) {
+        $this.setState({ ...selected_patient });
+      }
+      if (selected_patient.collected === "Y") {
+        if (sockets.connected) {
+          sockets.emit("specimen_acknowledge", {
+            test_details: response.data.records,
+            collected_date: selected_patient.collected_date,
+          });
+        }
+      }
+    },
+    onFailure: (error) => {
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
+};
 export {
   CollectSample,
   printBarcode,
@@ -579,4 +603,5 @@ export {
   BulkSampleCollection,
   printBulkBarcode,
   onCleargridcol,
+  getSampleCollectionDetails,
 };

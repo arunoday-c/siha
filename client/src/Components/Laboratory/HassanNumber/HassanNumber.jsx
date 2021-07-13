@@ -1,76 +1,43 @@
-import React, { useContext, useState } from "react";
-
-// import Enumerable from "linq";
+import React, { useContext, useState, useEffect } from "react";
 import swal from "sweetalert2";
 import "./HassanNumber.scss";
 import "./../../../styles/site.scss";
 import {
   AlgaehDataGrid,
-  // AlgaehModal,
-  // AlgaehButton,
   AlgaehLabel,
   AlgaehDateHandler,
   AlgaehMessagePop,
   MainContext,
   AlgaehFormGroup,
 } from "algaeh-react-components";
+
+import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { useQuery, useMutation } from "react-query";
-// import {
-//   AlgaehDataGrid,
-//   AlgaehLabel,
-//   AlgaehDateHandler,
-// } from "../../Wrapper/algaehWrapper";
 import { newAlgaehApi } from "../../../hooks";
 import { Controller, useForm } from "react-hook-form";
-// import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
-// import Options from "../../../Options.json";
-// import ResultEntry from "../ResultEntry/ResultEntry";
-// import MicrobiologyResultEntry from "../MicrobiologyResultEntry/MicrobiologyResultEntry";
-// import _ from "lodash";
-// import sockets from "../../../sockets";
-// import { AlgaehMessagePop } from "algaeh-react-components";
-// const { Dragger } = Upload;
-// const { confirm } = Modal;
-
 function HassanNumber() {
   const { userToken } = useContext(MainContext);
-
+  const [enabledHESN, setEnabledHESN] = useState(false);
   const [hassanShow, setHassanShow] = useState("all");
-  // const [avgMtdIncome, setAvgMtdIncome] = useState(null);
-  // const [avgMtdExpense, setAvgMtdExpense] = useState(null);
-  const {
-    control,
-    errors,
-    // register,
-    reset,
-    // handleSubmit,
-    // // setValue,
-    getValues,
-    // watch,
-  } = useForm({
+  const { control, errors, reset, getValues } = useForm({
     defaultValues: {
       hospital_id: userToken.hims_d_hospital_id,
       start_date: [moment(new Date()), moment(new Date())],
     },
   });
-
-  // async function getAccountHeads(key) {
-  //   const result = await newAlgaehApi({
-  //     uri: "/finance/getAccountHeads",
-  //     module: "finance",
-  //     data: { getAll: "Y" },
-  //     method: "GET",
-  //   });
-  //   return result?.data?.result;
-  // }
-
-  const { data: labOrdersPCR, refetch } = useQuery(
-    ["getLabOrderedServices", { hassanShow: hassanShow }],
-    getLabOrderedServices,
+  useEffect(() => {
+    setEnabledHESN(true);
+  }, []);
+  const { data: labOrdersPCR } = useQuery(
+    ["getHESNServicesData", { hassanShow: hassanShow }],
+    getHESNServicesData,
     {
+      // initialStale: true,
+      cacheTime: Infinity,
+      enabled: enabledHESN,
       onSuccess: (data) => {
-        // debugger;
+        setEnabledHESN(false);
       },
       onError: (err) => {
         AlgaehMessagePop({
@@ -80,68 +47,23 @@ function HassanNumber() {
       },
     }
   );
-  async function getLabOrderedServices(key, { hassanShow }) {
+  async function getHESNServicesData(key, { hassanShow }) {
     const date = getValues().start_date;
     const from_date = moment(date[0]).format("YYYY-MM-DD");
     const to_date = moment(date[1]).format("YYYY-MM-DD");
 
     const result = await newAlgaehApi({
-      uri: "/laboratory/getLabOrderedServices",
+      uri: "/laboratory/getHESNServices",
       module: "laboratory",
       method: "GET",
       data: {
         from_date,
         to_date,
-        // status: "V",
         hassanShow,
       },
     });
     return result?.data?.records;
   }
-
-  const radioChangeEvent = (value) => {
-    setHassanShow(value);
-    refetch();
-  };
-
-  // useEffect(() => {
-  //   if (accountsForDash?.length >= 4) {
-  //     const expenseAccount = accountsForDash.filter((f) => f.root_id === 5);
-  //     if (expenseAccount.length > 0) {
-  //       const expense =
-  //         parseFloat(
-  //           expenseAccount[0].amount ? expenseAccount[0].amount : 0.0
-  //         ) / parseInt(days);
-  //       setAvgMtdExpense(expense);
-  //     }
-  //     const incomeAccount = accountsForDash.filter((f) => f.root_id === 4);
-  //     if (incomeAccount.length) {
-  //       const income =
-  //         parseFloat(incomeAccount[0].amount ? incomeAccount[0].amount : 0.0) /
-  //         parseInt(days);
-  //       setAvgMtdIncome(income);
-  //     }
-  //   }
-  // }, [days, accountsForDash]);
-  // async function getOrganization(key) {
-  //   const result = await newAlgaehApi({
-  //     uri: "/organization/getOrganizationByUser",
-  //     method: "GET",
-  //   });
-  //   return result?.data?.records;
-  // }
-
-  // const { data: organizations } = useQuery("getOrganization", getOrganization, {
-  //   refetchOnWindowFocus: false,
-
-  //   onSuccess: (data) => {},
-  //   onError: (err) => {
-  //     AlgaehMessagePop({
-  //       display: err?.message,
-  //       type: "error",
-  //     });
-  //   },
-  // });
 
   async function update(input = {}) {
     const res = await newAlgaehApi({
@@ -154,7 +76,7 @@ function HassanNumber() {
   }
   const [updateHassanNo] = useMutation(update, {
     onSuccess: (data) => {
-      refetch();
+      setEnabledHESN(true);
       AlgaehMessagePop({
         type: "success",
         display: "HESN No Updated successfully",
@@ -168,8 +90,63 @@ function HassanNumber() {
     },
   });
 
-  const isPCRRecords =
-    labOrdersPCR?.length > 0 ? labOrdersPCR.filter((f) => f.isPCR === "Y") : [];
+  const generateHesnStatusReport = () => {
+    const date = getValues().start_date;
+    const from_date = moment(date[0]).format("YYYY-MM-DD");
+    const to_date = moment(date[1]).format("YYYY-MM-DD");
+    algaehApiCall({
+      // uri: "/report",
+      uri: "/excelReport",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "hesnStatusReport",
+          pageOrentation: "landscape",
+          excelTabName: "HESN Status Report",
+          excelHeader: false,
+          reportParams: [
+            {
+              name: "from_date",
+              value: from_date,
+            },
+            {
+              name: "to_date",
+              value: to_date,
+            },
+            {
+              name: "hassanShow",
+              value: hassanShow,
+            },
+          ],
+          outputFileType: "EXCEL", //"EXCEL", //"PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const a = document.createElement("a");
+        a.href = urlBlob;
+        a.download = `Audit Log Report.${"xlsx"}`;
+        a.click();
+
+        // const urlBlob = URL.createObjectURL(res.data);
+        // const origin = `${
+        //   window.location.origin
+        // }/reportviewer/web/viewer.html?file=${urlBlob}&filename=${
+        //   $this.state.inputs.hospital_name
+        // } Leave and Airfare Reconciliation - ${moment(
+        //   $this.state.inputs.month,
+        //   "MM"
+        // ).format("MMM")}-${$this.state.inputs.year}`;
+        // window.open(origin);
+      },
+    });
+  };
+
   return (
     <div className="hptl-phase1-result-entry-form">
       <div className="row inner-top-search" style={{ paddingBottom: "10px" }}>
@@ -200,8 +177,6 @@ function HassanNumber() {
                 onChange: (mdate) => {
                   if (mdate) {
                     onChange(mdate);
-
-                    // refetch();
                   } else {
                     onChange(undefined);
                   }
@@ -224,7 +199,7 @@ function HassanNumber() {
                 name="hassanShow"
                 checked={hassanShow === "all" ? true : false}
                 onChange={(e) => {
-                  radioChangeEvent(e.target.value);
+                  setHassanShow(e.target.value);
                 }}
               />
               <span>All</span>
@@ -237,7 +212,7 @@ function HassanNumber() {
                 checked={hassanShow === "withhassan" ? true : false}
                 name="hassanShow"
                 onChange={(e) => {
-                  radioChangeEvent(e.target.value);
+                  setHassanShow(e.target.value);
                 }}
               />
               <span>with HESN No.</span>
@@ -249,7 +224,7 @@ function HassanNumber() {
                 checked={hassanShow === "withOuthassan" ? true : false}
                 name="hassanShow"
                 onChange={(e) => {
-                  radioChangeEvent(e.target.value);
+                  setHassanShow(e.target.value);
                 }}
               />
               <span>without HESN No.</span>
@@ -263,7 +238,7 @@ function HassanNumber() {
             type="button"
             onClick={() => {
               reset({ start_date: [moment(new Date()), moment(new Date())] });
-              radioChangeEvent("all");
+              setHassanShow("all");
             }}
           >
             Clear
@@ -273,7 +248,7 @@ function HassanNumber() {
             style={{ marginLeft: "10px" }}
             type="button"
             onClick={() => {
-              refetch();
+              setEnabledHESN(true);
             }}
           >
             Load
@@ -450,7 +425,6 @@ function HassanNumber() {
                       style: { textAlign: "center" },
                     },
                     editorTemplate: (row) => {
-                      debugger;
                       return row.hassan_number_updated_date;
                     },
                   },
@@ -537,7 +511,7 @@ function HassanNumber() {
                   },
                 ]}
                 keyId="patient_code"
-                data={isPCRRecords ?? []}
+                data={labOrdersPCR}
                 isEditable={"editOnly"}
                 events={{
                   onSave: (row) => {
@@ -564,21 +538,8 @@ function HassanNumber() {
                       }).then((willProceed) => {
                         if (willProceed.value) {
                           updateHassanNo(row);
-                          // } else {
-                          //   AlgaehMessagePop({
-                          //     type: "error",
-                          //     display: "Please Enter HESN Number",
-                          //   });
-                          //   return;
-                          // }
                         } else {
-                          // const filter = isPCRRecords.filter(
-                          //   (f) => f.visit_id === row.visit_id
-                          // )[0];
-                          // Object.keys(row).forEach((item) => {
-                          //   row[item] = filter[item];
-                          // });
-                          refetch();
+                          setEnabledHESN(true);
                         }
                       });
                     } else {
@@ -599,349 +560,21 @@ function HassanNumber() {
           </div>
         </div>
       </div>
+      <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col-lg-12">
+            <button
+              type="button"
+              className="btn btn-default"
+              onClick={generateHesnStatusReport}
+            >
+              <AlgaehLabel label={{ forceLabel: "Export as Excel" }} />
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
 export default HassanNumber;
-
-// class HassanNumber extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.socket = sockets;
-//     this.state = {
-//       to_date: new Date(),
-//       from_date: new Date(),
-//       patient_code: null,
-//       patient_name: null,
-//       patient_id: null,
-//       sample_collection: [],
-//       selected_patient: null,
-//       isOpen: false,
-//       proiorty: null,
-//       status: null,
-//       isMicroOpen: false,
-//       comments_data: [],
-//       openUploadModal: false,
-//       attached_files: [],
-//       attached_docs: [],
-//       saveEnable: true,
-//       // currentRow: [],
-//       lab_id_number: "",
-//       investigation_test_id: null,
-//       disableUploadButton: true,
-//     };
-//   }
-
-//   changeDateFormat = (date) => {
-//     if (date != null) {
-//       return moment(date).format(Options.datetimeFormat);
-//     }
-//   };
-
-//   changeTimeFormat = (date) => {
-//     if (date != null) {
-//       return moment(date).format(Options.timeFormat);
-//     }
-//   };
-
-//   ShowCollectionModel(row, e) {
-//     this.setState({
-//       isOpen: !this.state.isOpen,
-//       selected_patient: row,
-//     });
-//   }
-
-//   componentDidMount() {
-//     getSampleCollectionDetails(this, this);
-//     this.socket.on("reload_result_entry", (specimenData) => {
-//       const { collected_date } = specimenData;
-//       const date = new Date(moment(collected_date).format("YYYY-MM-DD"));
-
-//       const start = new Date(moment(this.state.from_date).format("YYYY-MM-DD"));
-//       const end = new Date(moment(this.state.to_date).format("YYYY-MM-DD"));
-
-//       if (date >= start && date <= end) {
-//         getSampleCollectionDetails(this, this);
-//       } else {
-//         return;
-//       }
-//     });
-//   }
-//   downloadDoc(doc, isPreview) {
-//     if (doc.fromPath === true) {
-//       this.setState({ pdfLoading: true }, () => {
-//         newAlgaehApi({
-//           uri: "/getContractDoc",
-//           module: "documentManagement",
-//           method: "GET",
-//           extraHeaders: {
-//             Accept: "blon",
-//           },
-//           others: {
-//             responseType: "blob",
-//           },
-//           data: {
-//             contract_no: doc.contract_no,
-//             filename: doc.filename,
-//             download: true,
-//           },
-//         })
-//           .then((resp) => {
-//             const urlBlob = URL.createObjectURL(resp.data);
-//             if (isPreview) {
-//               window.open(urlBlob);
-//             } else {
-//               const link = document.createElement("a");
-//               link.download = doc.filename;
-//               link.href = urlBlob;
-//               document.body.appendChild(link);
-//               link.click();
-//               document.body.removeChild(link);
-//             }
-//             this.setState({ pdfLoading: false });
-//           })
-//           .catch((error) => {
-//             console.log(error);
-//             this.setState({ pdfLoading: false });
-//           });
-//       });
-//     } else {
-//       const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-//       const link = document.createElement("a");
-//       if (!isPreview) {
-//         link.download = doc.filename;
-//         link.href = fileUrl;
-//         document.body.appendChild(link);
-//         link.click();
-//         document.body.removeChild(link);
-//       } else {
-//         fetch(fileUrl)
-//           .then((res) => res.blob())
-//           .then((fblob) => {
-//             const newUrl = URL.createObjectURL(fblob);
-//             window.open(newUrl);
-//           });
-//       }
-//     }
-//   }
-//   deleteDoc = (doc) => {
-//     const self = this;
-//     confirm({
-//       title: `Are you sure you want to delete this file?`,
-//       content: `${doc.filename}`,
-//       icon: "",
-//       okText: "Yes",
-//       okType: "danger",
-//       cancelText: "No",
-//       onOk() {
-//         self.onDelete(doc);
-//       },
-//       onCancel() {
-//         console.log("Cancel");
-//       },
-//     });
-//   };
-
-//   onDelete = (doc) => {
-//     newAlgaehApi({
-//       uri: "/deleteContractDoc",
-//       method: "DELETE",
-//       module: "documentManagement",
-//       data: { id: doc._id },
-//     }).then((res) => {
-//       if (res.data.success) {
-//         this.setState((state) => {
-//           const attached_docs = state.attached_docs.filter(
-//             (item) => item._id !== doc._id
-//           );
-//           return { attached_docs };
-//         });
-//       }
-//     });
-//   };
-
-//   render() {
-//     let _Collected = [];
-
-//     let _Confirmed = [];
-//     let _Validated = [];
-
-//     let _Cancelled = [];
-//     if (this.state.sample_collection !== undefined) {
-//       _Collected = _.filter(this.state.sample_collection, (f) => {
-//         return f.status === "CL";
-//       });
-
-//       _Validated = _.filter(this.state.sample_collection, (f) => {
-//         return f.status === "V";
-//       });
-//       _Confirmed = _.filter(this.state.sample_collection, (f) => {
-//         return f.status === "CF";
-//       });
-
-//       _Cancelled = _.filter(this.state.sample_collection, (f) => {
-//         return f.status === "CN";
-//       });
-//     }
-
-//     return (
-//       <React.Fragment>
-//         <AlgaehModal
-//           title="Attach Report"
-//           visible={this.state.openUploadModal}
-//           mask={true}
-//           maskClosable={false}
-//           onCancel={() => {
-//             this.setState({
-//               openUploadModal: false,
-//               attached_files: [],
-//               attached_docs: [],
-//             });
-//           }}
-//           footer={[
-//             <div className="col-12">
-//               <button
-//                 onClick={saveDocumentCheck.bind(this, this)}
-//                 className="btn btn-primary btn-sm"
-//                 // disabled={this.state.disableUploadButton}
-//               >
-//                 Attach Document
-//               </button>
-//               <button
-//                 onClick={() => {
-//                   this.setState({
-//                     openUploadModal: false,
-//                     attached_files: [],
-//                     attached_docs: [],
-//                   });
-//                 }}
-//                 className="btn btn-default btn-sm"
-//               >
-//                 Cancel
-//               </button>
-//             </div>,
-//           ]}
-//           className={`algaehNewModal investigationAttachmentModal`}
-//         >
-//           <div className="portlet-body">
-//             <div className="col-12">
-//               <div className="row">
-//                 <div className="col-3 investigationAttachmentDrag">
-//                   {" "}
-//                   <Dragger
-//                     accept=".doc,.docx,application/msword,.jpg,.png,.pdf"
-//                     name="attached_files"
-//                     onRemove={(file) => {
-//                       this.setState((state) => {
-//                         const index = state.attached_filess.indexOf(file);
-//                         const newFileList = [...state.attached_files];
-//                         newFileList.splice(index, 1);
-//                         return {
-//                           attached_files: newFileList,
-//                           // saveEnable: state.dataExists && !newFileList.length,
-//                         };
-//                       });
-//                     }}
-//                     // disabled={this.state.disableUploadButton}
-//                     beforeUpload={(file) => {
-//                       this.setState((state) => ({
-//                         attached_files: [...state.attached_files, file],
-//                         // saveEnable: false,
-//                       }));
-//                       return false;
-//                     }}
-//                     // disabled={this.state.dataExists && !this.state.editMode}
-//                     fileList={this.state.attached_files}
-//                   >
-//                     <p className="upload-drag-icon">
-//                       <i className="fas fa-file-upload"></i>
-//                     </p>
-//                     <p className="ant-upload-text">
-//                       {this.state.attached_files
-//                         ? `Click or Drag a file to replace the current file`
-//                         : `Click or Drag a file to this area to upload`}
-//                     </p>
-//                   </Dragger>
-//                 </div>
-//                 <div className="col-3"></div>
-//                 <div className="col-6">
-//                   <div className="row">
-//                     <div className="col-12">
-//                       <ul className="investigationAttachmentList">
-//                         {this.state.attached_docs.length ? (
-//                           this.state.attached_docs.map((doc) => (
-//                             <li>
-//                               <b> {doc.filename} </b>
-
-//                               <span>
-//                                 <i
-//                                   className="fas fa-download"
-//                                   onClick={() => this.downloadDoc(doc)}
-//                                 ></i>
-//                               </span>
-
-//                               <span>
-//                                 <i
-//                                   className="fas fa-eye"
-//                                   onClick={() => this.downloadDoc(doc, true)}
-//                                 ></i>
-//                               </span>
-//                               <span>
-//                                 <i
-//                                   className="fas fa-trash"
-//                                   onClick={() => this.deleteDoc(doc)}
-//                                 ></i>
-//                               </span>
-//                             </li>
-//                           ))
-//                         ) : (
-//                           <div className="col-12 noAttachment" key={1}>
-//                             <p>No Attachments Available</p>
-//                           </div>
-//                         )}
-//                       </ul>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </AlgaehModal>
-//
-//           <ResultEntry
-//             open={this.state.isOpen}
-//             onClose={closeResultEntry.bind(this, this)}
-//             selectedPatient={this.state.selectedPatient}
-//             comments_data={this.state.comments_data}
-//           />
-
-//           <MicrobiologyResultEntry
-//             open={this.state.isMicroOpen}
-//             onClose={closeMicroResultEntry.bind(this, this)}
-//             selectedPatient={this.state.selectedPatient}
-//           />
-//         </div>
-//       </React.Fragment>
-//     );
-//   }
-// }
-
-// function mapStateToProps(state) {
-//   return {
-//     samplecollection: state.samplecollection,
-//   };
-// }
-
-// function mapDispatchToProps(dispatch) {
-//   return bindActionCreators(
-//     {
-//       getSampleCollection: AlgaehActions,
-//     },
-//     dispatch
-//   );
-// }
-
-// export default withRouter(
-//   connect(mapStateToProps, mapDispatchToProps)(ResultEntryList)
-// );

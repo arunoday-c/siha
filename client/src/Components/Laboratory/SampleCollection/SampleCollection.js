@@ -8,7 +8,7 @@ import "./../../../styles/site.scss";
 
 import {
   datehandle,
-  getSampleCollectionDetails,
+  getTestDetails,
   Refresh,
 } from "./SampleCollectionHandaler";
 
@@ -23,7 +23,6 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
 import SampleCollectionModal from "../SampleCollections/SampleCollections";
-import MyContext from "../../../utils/MyContext.js";
 import _ from "lodash";
 import sockets from "../../../sockets";
 class SampleCollection extends Component {
@@ -70,13 +69,13 @@ class SampleCollection extends Component {
         isOpen: !this.state.isOpen,
       },
       () => {
-        getSampleCollectionDetails(this, this);
+        getTestDetails(this, this);
       }
     );
   }
 
   componentDidMount() {
-    getSampleCollectionDetails(this, this);
+    getTestDetails(this, this);
     this.socket.on("reload_specimen_collection", (billData) => {
       const { bill_date } = billData;
       const date = new Date(moment(bill_date).format("YYYY-MM-DD"));
@@ -85,7 +84,7 @@ class SampleCollection extends Component {
 
       if (date >= start && date <= end) {
         // if (window.location.pathname === "/RadOrderedList")
-        getSampleCollectionDetails(this, this);
+        getTestDetails(this, this);
       } else {
         return;
       }
@@ -159,7 +158,7 @@ class SampleCollection extends Component {
                 className="btn btn-primary btn-sm"
                 style={{ marginLeft: "10px" }}
                 type="button"
-                onClick={getSampleCollectionDetails.bind(this, this)}
+                onClick={getTestDetails.bind(this, this)}
               >
                 Load
               </button>
@@ -457,37 +456,37 @@ class SampleCollection extends Component {
                       //     style: { textAlign: "center" }
                       //   }
                       // },
-                      {
-                        fieldName: "status",
-                        label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                        displayTemplate: (row) => {
-                          return row.status === "O" ? (
-                            <span className="badge badge-light">Ordered</span>
-                          ) : row.status === "CL" ? (
-                            <span className="badge badge-secondary">
-                              Collected
-                            </span>
-                          ) : row.status === "CN" ? (
-                            <span className="badge badge-danger">
-                              Cancelled
-                            </span>
-                          ) : row.status === "CF" ? (
-                            <span className="badge badge-primary">
-                              Confirmed
-                            </span>
-                          ) : (
-                            <span className="badge badge-success">
-                              Validated
-                            </span>
-                          );
-                        },
-                        disabled: true,
-                        others: {
-                          maxWidth: 90,
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
+                      // {
+                      //   fieldName: "status",
+                      //   label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                      //   displayTemplate: (row) => {
+                      //     return row.status === "O" ? (
+                      //       <span className="badge badge-light">Ordered</span>
+                      //     ) : row.status === "CL" ? (
+                      //       <span className="badge badge-secondary">
+                      //         Collected
+                      //       </span>
+                      //     ) : row.status === "CN" ? (
+                      //       <span className="badge badge-danger">
+                      //         Cancelled
+                      //       </span>
+                      //     ) : row.status === "CF" ? (
+                      //       <span className="badge badge-primary">
+                      //         Confirmed
+                      //       </span>
+                      //     ) : (
+                      //       <span className="badge badge-success">
+                      //         Validated
+                      //       </span>
+                      //     );
+                      //   },
+                      //   disabled: true,
+                      //   others: {
+                      //     maxWidth: 90,
+                      //     resizable: false,
+                      //     style: { textAlign: "center" },
+                      //   },
+                      // },
                     ]}
                     keyId="patient_code"
                     dataSource={{
@@ -502,30 +501,20 @@ class SampleCollection extends Component {
             </div>
           </div>
 
-          <MyContext.Provider
-            value={{
-              state: this.state,
-              updateState: (obj) => {
-                this.setState({ ...obj });
-              },
-            }}
-          >
-            {/* {this.state.isOpen ? ( */}
-            <SampleCollectionModal
-              HeaderCaption={
-                <AlgaehLabel
-                  label={{
-                    fieldName: "sample_collection",
-                    align: "ltr",
-                  }}
-                />
-              }
-              open={this.state.isOpen}
-              onClose={this.CloseCollectionModel.bind(this)}
-              selected_patient={this.state.selected_patient}
-            />
-            {/* ) : null} */}
-          </MyContext.Provider>
+          {/* {this.state.isOpen ? ( */}
+          <SampleCollectionModal
+            HeaderCaption={
+              <AlgaehLabel
+                label={{
+                  fieldName: "sample_collection",
+                  align: "ltr",
+                }}
+              />
+            }
+            open={this.state.isOpen}
+            onClose={this.CloseCollectionModel.bind(this)}
+            selected_patient={this.state.selected_patient}
+          />
         </div>
       </React.Fragment>
     );

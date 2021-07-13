@@ -13,7 +13,7 @@ import axios from "axios";
 
 // export default
 const labModal = {
-  getLabOrderedServices: (req, res, next) => {
+  getLabOrderedServices_old: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       let inputValues = [];
@@ -116,6 +116,92 @@ const labModal = {
     }
   },
 
+  getLabOrderedServices: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputValues = [];
+      let _stringData = "";
+
+      _stringData += " LO.hospital_id=?";
+      inputValues.push(req.userIdentity.hospital_id);
+
+      if (req.query.from_date != null) {
+        _stringData +=
+          " and date(ordered_date) between date('" +
+          req.query.from_date +
+          "') AND date('" +
+          req.query.to_date +
+          "')";
+      } else {
+        _stringData += " and date(ordered_date) <= date(now())";
+      }
+
+      if (req.query.hassanShow === "withhassan") {
+        _stringData += " and LO.hassan_number is not null";
+      }
+      if (req.query.hassanShow === "withOuthassan") {
+        _stringData += " and LO.hassan_number is null";
+      }
+
+      if (req.query.patient_id != null) {
+        _stringData += " and LO.patient_id=?";
+        inputValues.push(req.query.patient_id);
+      }
+
+      if (req.query.visit_id != null) {
+        _stringData += " and LO.visit_id=?";
+        inputValues.push(req.query.visit_id);
+      }
+
+      if (req.query.status != null) {
+        _stringData += " and LO.status=?";
+        inputValues.push(req.query.status);
+      }
+
+      if (req.query.send_sms) {
+        _stringData += " and LO.send_sms=?";
+        inputValues.push(req.query.send_sms);
+      }
+
+      if (req.query.test_type != null) {
+        _stringData += " and LO.test_type=?";
+        inputValues.push(req.query.test_type);
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT hims_f_lab_order_id, test_id, service_id, patient_id, primary_id_no, patient_code, P.full_name, \
+            P.date_of_birth, P.gender, ordered_date, LS.barcode_gen,\
+            LO.status, test_type, visit_id, LO.lab_id_number, LS.status as sample_status,S.service_code, S.service_name,\
+            case when LO.run_type='1' then '1 Time' when LO.run_type='2' then '2 Times' when LO.run_type='3' then '3 times' else '-' end as run_types, \
+            hims_d_lab_sample_id, collected_by, collected_date, billed,sample_id, container_id, collected, hesn_upload, send_in_test, send_out_test, \
+            LS.remarks, E.full_name as doctor_name FROM hims_f_lab_order LO\
+            inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
+            INNER JOIN hims_f_patient P on P.hims_d_patient_id = LO.patient_id\
+            LEFT JOIN hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A'\
+            left join hims_d_lab_specimen as DLS on DLS.hims_d_lab_specimen_id = LS.sample_id \
+            left join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
+            WHERE " +
+            _stringData +
+            " group by hims_f_lab_order_id order by hims_f_lab_order_id desc",
+          values: inputValues,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   patientPortalData: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
@@ -295,6 +381,63 @@ const labModal = {
         .then((result) => {
           _mysql.releaseConnection();
           req.records = result[0];
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  getHESNServices: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputValues = [];
+      let _stringData = "";
+
+      _stringData += " and LO.hospital_id=?";
+      inputValues.push(req.userIdentity.hospital_id);
+
+      if (req.query.from_date != null) {
+        _stringData +=
+          " and date(ordered_date) between date('" +
+          req.query.from_date +
+          "') AND date('" +
+          req.query.to_date +
+          "')";
+      } else {
+        _stringData += " and date(ordered_date) <= date(now())";
+      }
+
+      if (req.query.hassanShow === "withhassan") {
+        _stringData += " and LO.hassan_number is not null";
+      }
+      if (req.query.hassanShow === "withOuthassan") {
+        _stringData += " and LO.hassan_number is null";
+      }
+      _mysql
+        .executeQuery({
+          query:
+            "select LO.ordered_date,LO.lab_id_number,LO.hassan_number,LO.hassan_number_updated_date, \
+            LO.hesn_upload,LO.hesn_upload_updated_date,P.patient_code,P.full_name,P.primary_id_no, \
+            INV.description,USR.user_display_name as hesn_no_updated_by,USRR.user_display_name as hesn_file_updated_by \
+            from hims_f_lab_order LO \
+            inner join hims_d_investigation_test INV on INV.hims_d_investigation_test_id=LO.test_id \
+            inner join hims_f_patient P on P.hims_d_patient_id=LO.patient_id \
+            left join algaeh_d_app_user USR on USR.algaeh_d_app_user_id=LO.hassan_number_updated_by \
+            left join algaeh_d_app_user USRR on USRR.algaeh_d_app_user_id=LO.hesn_upload_updated_by WHERE INV.isPCR='Y' and LO.billed='Y' " +
+            _stringData +
+            ";",
+          values: inputValues,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
           next();
         })
         .catch((error) => {
