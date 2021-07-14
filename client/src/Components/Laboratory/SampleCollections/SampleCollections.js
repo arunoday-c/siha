@@ -2198,7 +2198,11 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
                       return (
                         <>
                           {row.collected !== "Y" ? (
-                            <Tooltip title="Collect Specimen" zIndex={99999}>
+                            <Tooltip
+                              title="Collect Specimen"
+                              zIndex={99999}
+                              placement={"right"}
+                            >
                               <i
                                 style={{
                                   pointerEvents:
@@ -2211,7 +2215,11 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
                             </Tooltip>
                           ) : (
                             <span>
-                              <Tooltip title="Generate Barcode" zIndex={99999}>
+                              <Tooltip
+                                title="Generate Barcode"
+                                zIndex={99999}
+                                placement={"right"}
+                              >
                                 <i
                                   style={{
                                     pointerEvents:
@@ -2223,7 +2231,11 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
                                 />
                               </Tooltip>
 
-                              <Tooltip title="Cancel Sample" zIndex={99999}>
+                              <Tooltip
+                                title="Cancel Sample"
+                                zIndex={99999}
+                                placement={"right"}
+                              >
                                 <i
                                   className="fa fa-times"
                                   onClick={() =>

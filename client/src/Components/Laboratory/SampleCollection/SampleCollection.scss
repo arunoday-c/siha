@@ -1,8 +1,8 @@
 #samplecollectionListGrid {
   .newStickyGrid {
     .table-scroll {
-      min-height: 62vh !important;
-      max-height: 62vh !important;
+      min-height: 67vh !important;
+      max-height: 67vh !important;
       overflow: auto !important;
     }
   }
@@ -22,5 +22,21 @@
       display: inline-block;
       font-size: 2rem;
     }
+  }
+}
+.tooltopBagde {
+  position: relative;
+  small {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0 3px;
+    position: absolute;
+    font-size: 10px;
+    height: 15px;
+    width: auto;
+    line-height: 12px;
+    text-align: center;
+    left: -6px;
+    background-color: #fff;
   }
 }

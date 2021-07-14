@@ -93,31 +93,31 @@ export default function AccessionAcknowledgement() {
 
   // let _Ordered = [];
 
-  let _Collected = [];
+  // let _Collected = [];
 
-  let _Confirmed = [];
-  let _Validated = [];
-  let _Cancelled = [];
-  if (sample_collection?.length > 0 && sample_collection !== undefined) {
-    // _Ordered = sample_collection.filter((f) => {
-    //   return f.status === "O";
-    // });
+  // let _Confirmed = [];
+  // let _Validated = [];
+  // let _Cancelled = [];
+  // if (sample_collection?.length > 0 && sample_collection !== undefined) {
+  //   _Ordered = sample_collection.filter((f) => {
+  //     return f.status === "O";
+  //   });
 
-    _Collected = sample_collection.filter((f) => {
-      return f.status === "CL";
-    });
+  //   _Collected = sample_collection.filter((f) => {
+  //     return f.status === "CL";
+  //   });
 
-    _Validated = sample_collection.filter((f) => {
-      return f.status === "V";
-    });
-    _Confirmed = sample_collection.filter((f) => {
-      return f.status === "CF";
-    });
+  //   _Validated = sample_collection.filter((f) => {
+  //     return f.status === "V";
+  //   });
+  //   _Confirmed = sample_collection.filter((f) => {
+  //     return f.status === "CF";
+  //   });
 
-    _Cancelled = sample_collection.filter((f) => {
-      return f.status === "CN";
-    });
-  }
+  //   _Cancelled = sample_collection.filter((f) => {
+  //     return f.status === "CN";
+  //   });
+  // }
   const changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.datetimeFormat);
@@ -327,7 +327,7 @@ export default function AccessionAcknowledgement() {
             </button>
           </div>
         </div>
-        <div className="row  margin-bottom-15 topResultCard">
+        {/* <div className="row  margin-bottom-15 topResultCard">
           <div className="col-12">
             <div className="card-group">
               <div className="card">
@@ -364,21 +364,21 @@ export default function AccessionAcknowledgement() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="row">
           <div className="col-lg-12">
             <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
+              {/* <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">
                     Specimen Acknowledgement List
                   </h3>
                 </div>
-              </div>
+              </div> */}
 
-              <div className="portlet-body" id="accessionAcknoweldgeGrid_Cntr">
+              <div className="portlet-body" id="accessionAcknoweldgeGrid">
                 <AlgaehDataGrid
-                  id="accessionAcknoweldgeGrid"
+                  // id="accessionAcknoweldgeGrid"
                   columns={[
                     {
                       fieldName: "action",
@@ -386,7 +386,10 @@ export default function AccessionAcknowledgement() {
                       displayTemplate: (row) => {
                         return (
                           <span>
-                            <Tooltip title="Accept Specimen">
+                            <Tooltip
+                              title="Accept Specimen"
+                              placement={"right"}
+                            >
                               <i
                                 style={{
                                   pointerEvents:
@@ -400,7 +403,10 @@ export default function AccessionAcknowledgement() {
                                 onClick={() => onSubmit(row, "A")}
                               />
                             </Tooltip>
-                            <Tooltip title="Reject Specimen">
+                            <Tooltip
+                              title="Reject Specimen"
+                              placement={"right"}
+                            >
                               <i
                                 style={{
                                   pointerEvents:
@@ -421,7 +427,7 @@ export default function AccessionAcknowledgement() {
                         );
                       },
                       others: {
-                        width: 120,
+                        width: 100,
 
                         style: { textAlign: "center" },
                         filterable: false,
@@ -439,10 +445,12 @@ export default function AccessionAcknowledgement() {
                       },
                       disabled: true,
                       others: {
-                        width: 150,
+                        width: 180,
 
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
+                      filterType: "date",
                     },
 
                     {
@@ -562,9 +570,7 @@ export default function AccessionAcknowledgement() {
                     },
                     {
                       fieldName: "status",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Test Status" }} />
-                      ),
+                      label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                       displayTemplate: (row) => {
                         return row.status === "CL" ? (
                           <span className="badge badge-secondary">
@@ -608,9 +614,10 @@ export default function AccessionAcknowledgement() {
                   ]}
                   keyId="patient_code"
                   data={sample_collection.filter((f) => f.status !== "O")}
+                  pagination={true}
+                  pageOptions={{ rows: 20, page: 1 }}
                   isFilterable={true}
                   noDataText="No data available for selected period"
-                  paging={{ page: 0, rowsPerPage: 20 }}
                 />
               </div>
             </div>

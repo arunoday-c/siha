@@ -44,6 +44,16 @@
   }
 }
 
+#accessionAcknoweldgeGrid {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 67vh !important;
+      max-height: 67vh !important;
+      overflow: auto !important;
+    }
+  }
+}
+
 .topResultCard {
   .card-body {
     padding: 0px 10px 3px;

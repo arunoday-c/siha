@@ -724,32 +724,32 @@ function SampleCollection() {
   //   }
   // };
 
-  let _Ordered = [];
+  // let _Ordered = [];
 
-  let _Collected = [];
+  // let _Collected = [];
 
-  let _Confirmed = [];
-  let _Validated = [];
-  if (sample_collection?.length > 0 && sample_collection !== undefined) {
-    _Ordered = sample_collection.filter((f) => {
-      return f.status === "O";
-    });
+  // let _Confirmed = [];
+  // let _Validated = [];
+  // if (sample_collection?.length > 0 && sample_collection !== undefined) {
+  //   _Ordered = sample_collection.filter((f) => {
+  //     return f.status === "O";
+  //   });
 
-    _Collected = sample_collection.filter((f) => {
-      return f.status === "CL";
-    });
+  //   _Collected = sample_collection.filter((f) => {
+  //     return f.status === "CL";
+  //   });
 
-    _Validated = sample_collection.filter((f) => {
-      return f.status === "V";
-    });
-    _Confirmed = sample_collection.filter((f) => {
-      return f.status === "CF";
-    });
+  //   _Validated = sample_collection.filter((f) => {
+  //     return f.status === "V";
+  //   });
+  //   _Confirmed = sample_collection.filter((f) => {
+  //     return f.status === "CF";
+  //   });
 
-    // _Cancelled = _.filter(this.state.sample_collection, f => {
-    //   return f.status === "CN";
-    // });
-  }
+  //   _Cancelled = _.filter(this.state.sample_collection, f => {
+  //     return f.status === "CN";
+  //   });
+  // }
   const changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.datetimeFormat);
@@ -819,7 +819,7 @@ function SampleCollection() {
             Load
           </button>
         </div>
-        <div className="col topResultCard" style={{ marginTop: 10 }}>
+        {/* <div className="col topResultCard" style={{ marginTop: 10 }}>
           <div className="card-group">
             <div className="card">
               <div className="card-body">
@@ -856,7 +856,7 @@ function SampleCollection() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       {/* <div className="row  margin-bottom-15 topResultCard">
        
@@ -864,11 +864,11 @@ function SampleCollection() {
       <div className="row">
         <div className="col-lg-12">
           <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
+            {/* <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Specimen Collection List</h3>
               </div>
-            </div>
+            </div> */}
             <div className="portlet-body" id="samplecollectionListGrid">
               <AlgaehDataGrid
                 columns={[
@@ -877,12 +877,13 @@ function SampleCollection() {
                     label: <AlgaehLabel label={{ fieldName: "action" }} />,
                     displayTemplate: (row) => {
                       return (
-                        <Tooltip title="Collect Specimen">
-                          <span>
+                        <Tooltip title="View Ordered Test" placement={"right"}>
+                          <span className="tooltopBagde">
                             <i
-                              className="fas fa-flask"
+                              className="fas fa-eye"
                               onClick={() => ShowCollectionModel(row)}
                             />
+                            <small>{row.number_of_tests}</small>
                           </span>
                         </Tooltip>
                       );
@@ -922,18 +923,18 @@ function SampleCollection() {
                     //   },
                     // ],
                   },
-                  {
-                    fieldName: "number_of_tests",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Tests Count" }} />
-                    ),
-                    filterable: true,
-                    others: {
-                      width: 110,
-                      resizable: false,
-                      style: { textAlign: "center" },
-                    },
-                  },
+                  // {
+                  //   fieldName: "number_of_tests",
+                  //   label: (
+                  //     <AlgaehLabel label={{ forceLabel: "Tests Count" }} />
+                  //   ),
+                  //   filterable: true,
+                  //   others: {
+                  //     width: 110,
+                  //     resizable: false,
+                  //     style: { textAlign: "center" },
+                  //   },
+                  // },
                   {
                     fieldName: "test_type",
                     label: <AlgaehLabel label={{ fieldName: "proiorty" }} />,
