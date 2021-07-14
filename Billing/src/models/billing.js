@@ -2595,11 +2595,8 @@ export default {
                 //Promotions Functionlaity
                 if (promo_data.length > 0) {
                   const promotion_dis = promo_data.find(
-                    (f) =>
-                      f.hims_d_services_id ===
-                      servicesDetails.hims_d_services_id
+                    (f) => f.offer_code === servicesDetails.promo_code
                   );
-                  console.log("promotion_dis", promotion_dis);
                   if (promotion_dis !== undefined) {
                     if (
                       servicesDetails.promo_code === promotion_dis.offer_code
