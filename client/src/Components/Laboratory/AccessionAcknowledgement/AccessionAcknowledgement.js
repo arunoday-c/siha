@@ -421,8 +421,8 @@ export default function AccessionAcknowledgement() {
                         );
                       },
                       others: {
-                        maxWidth: 120,
-                        resizable: false,
+                        width: 120,
+
                         style: { textAlign: "center" },
                         filterable: false,
                       },
@@ -439,8 +439,8 @@ export default function AccessionAcknowledgement() {
                       },
                       disabled: true,
                       others: {
-                        maxWidth: 150,
-                        resizable: false,
+                        width: 150,
+
                         style: { textAlign: "center" },
                       },
                     },
@@ -457,8 +457,8 @@ export default function AccessionAcknowledgement() {
                       },
                       disabled: true,
                       others: {
-                        maxWidth: 90,
-                        resizable: false,
+                        width: 90,
+
                         style: { textAlign: "center" },
                       },
                     },
@@ -479,9 +479,21 @@ export default function AccessionAcknowledgement() {
                         ) : null;
                       },
                       disabled: true,
+                      filterable: true,
+                      filterType: "choices",
+                      choices: [
+                        {
+                          name: "Pending",
+                          value: "N",
+                        },
+                        {
+                          name: "Accepted",
+                          value: "A",
+                        },
+                      ],
                       others: {
-                        maxWidth: 140,
-                        resizable: false,
+                        width: 140,
+
                         style: { textAlign: "center" },
                       },
                     },
@@ -492,9 +504,10 @@ export default function AccessionAcknowledgement() {
                         <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />
                       ),
                       disabled: true,
+                      filterable: true,
                       others: {
-                        maxWidth: 140,
-                        resizable: false,
+                        width: 140,
+
                         style: { textAlign: "center" },
                       },
                     },
@@ -504,9 +517,10 @@ export default function AccessionAcknowledgement() {
                         <AlgaehLabel label={{ fieldName: "primary_id_no" }} />
                       ),
                       disabled: false,
+                      filterable: true,
                       others: {
-                        maxWidth: 150,
-                        resizable: false,
+                        width: 150,
+
                         style: { textAlign: "center" },
                       },
                     },
@@ -516,9 +530,10 @@ export default function AccessionAcknowledgement() {
                         <AlgaehLabel label={{ fieldName: "patient_code" }} />
                       ),
                       disabled: false,
+                      filterable: true,
                       others: {
-                        maxWidth: 150,
-                        resizable: false,
+                        width: 150,
+
                         style: { textAlign: "center" },
                       },
                     },
@@ -528,8 +543,8 @@ export default function AccessionAcknowledgement() {
                         <AlgaehLabel label={{ fieldName: "patient_name" }} />
                       ),
                       disabled: true,
+                      filterable: true,
                       others: {
-                        resizable: false,
                         style: { textAlign: "left" },
                       },
                     },
@@ -540,8 +555,8 @@ export default function AccessionAcknowledgement() {
                       ),
 
                       disabled: true,
+                      filterable: true,
                       others: {
-                        resizable: false,
                         style: { textAlign: "center" },
                       },
                     },
@@ -564,16 +579,36 @@ export default function AccessionAcknowledgement() {
                         );
                       },
                       disabled: true,
+                      filterable: true,
+                      filterType: "choices",
+                      choices: [
+                        {
+                          name: "Collected",
+                          value: "CL",
+                        },
+                        {
+                          name: "Cancelled",
+                          value: "CN",
+                        },
+                        {
+                          name: "Confirmed",
+                          value: "CF",
+                        },
+                        {
+                          name: "Validated",
+                          value: "V",
+                        },
+                      ],
                       others: {
-                        maxWidth: 90,
-                        resizable: false,
+                        width: 90,
+
                         style: { textAlign: "center" },
                       },
                     },
                   ]}
                   keyId="patient_code"
                   data={sample_collection.filter((f) => f.status !== "O")}
-                  filter={true}
+                  isFilterable={true}
                   noDataText="No data available for selected period"
                   paging={{ page: 0, rowsPerPage: 20 }}
                 />
