@@ -1,18 +1,19 @@
-.sampleCollectionModal {
-  .algaeh-modal {
-    width: 98vw;
-    #sampleCollectionGrid_Cntr {
-      .newStickyGrid {
-        .table-scroll {
-          min-height: 62vh !important;
-          max-height: 62vh !important;
-          overflow: auto !important;
-        }
+.SpecimenModalPopup {
+  width: 98vw !important;
+  .ant-modal-footer {
+    padding: 5px 15px !important;
+  }
+  #samplecollection_grid {
+    .newStickyGrid {
+      .table-scroll {
+        min-height: 62vh !important;
+        max-height: 62vh !important;
+        overflow: auto !important;
       }
     }
+  }
 
-    .badge {
-      margin-top: 5px;
-    }
+  .badge {
+    margin-top: 5px;
   }
 }
