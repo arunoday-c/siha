@@ -1,34 +1,10 @@
-.hptl-phase1-speciman-collection-form {
-  .go-button {
-    cursor: pointer;
-    margin-bottom: -9px;
-    margin-top: 20px;
-  }
-
-  .form-group {
-    margin-bottom: 0;
-
-    padding: 0;
-    padding-top: 20px;
-    cursor: pointer;
-  }
-
-  th,
-  td {
-    border-right: 1px solid #e6e6e6;
-  }
-  #samplecollectionGrid_cntr {
-    .ReactTable {
-      max-height: 60vh !important;
+#samplecollectionListGrid {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 62vh !important;
+      max-height: 62vh !important;
+      overflow: auto !important;
     }
-  }
-  .badge {
-    margin-top: 5px;
-  }
-}
-#samplecollectionGrid_cntr {
-  .ReactTable {
-    max-height: 62vh !important;
   }
 }
 

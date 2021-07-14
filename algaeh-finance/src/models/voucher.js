@@ -288,13 +288,16 @@ export default {
               .sumBy((s) => {
                 return parseFloat(s.amount);
               })
-              .value();
+              .value()
+              .toFixed(req.userIdentity.decimal_places);
             debit_amount = _.chain(input.details)
               .filter((f) => f.payment_type === "DR")
               .sumBy((s) => {
                 return parseFloat(s.amount);
               })
-              .value();
+              .value()
+              .toFixed(req.userIdentity.decimal_places);
+
             if (credit_amount == debit_amount) {
               _mysql
                 .generateRunningNumber({

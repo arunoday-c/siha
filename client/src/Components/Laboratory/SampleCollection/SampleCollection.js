@@ -798,7 +798,7 @@ function SampleCollection() {
           )}
         />
 
-        <div className="col" style={{ marginTop: "21px" }}>
+        <div className="col-2" style={{ marginTop: "21px" }}>
           <button
             className="btn btn-default btn-sm"
             type="button"
@@ -820,10 +820,7 @@ function SampleCollection() {
             Load
           </button>
         </div>
-      </div>
-      <div className="row  margin-bottom-15 topResultCard">
-        <div className="col-12">
-          {" "}
+        <div className="col topResultCard" style={{ marginTop: 10 }}>
           <div className="card-group">
             <div className="card">
               <div className="card-body">
@@ -862,6 +859,9 @@ function SampleCollection() {
           </div>
         </div>
       </div>
+      {/* <div className="row  margin-bottom-15 topResultCard">
+       
+      </div> */}
       <div className="row">
         <div className="col-lg-12">
           <div className="portlet portlet-bordered margin-bottom-15">
@@ -870,10 +870,8 @@ function SampleCollection() {
                 <h3 className="caption-subject">Specimen Collection List</h3>
               </div>
             </div>
-
-            <div className="portlet-body" id="resultListEntryCntr">
+            <div className="portlet-body" id="samplecollectionListGrid">
               <AlgaehDataGrid
-                id="samplecollection_grid"
                 columns={[
                   {
                     fieldName: "action",
@@ -891,7 +889,7 @@ function SampleCollection() {
                       );
                     },
                     others: {
-                      maxWidth: 70,
+                      width: 50,
                       resizable: false,
                       filterable: false,
                       style: { textAlign: "center" },
@@ -907,18 +905,32 @@ function SampleCollection() {
                     },
                     disabled: true,
                     others: {
-                      maxWidth: 150,
+                      width: 180,
                       resizable: false,
                       style: { textAlign: "center" },
                     },
+
+                    filterable: true,
+                    filterType: "date",
+                    // choices: [
+                    //   {
+                    //     name: "Stat",
+                    //     value: "S",
+                    //   },
+                    //   {
+                    //     name: "Routine",
+                    //     value: "R",
+                    //   },
+                    // ],
                   },
                   {
                     fieldName: "number_of_tests",
                     label: (
-                      <AlgaehLabel label={{ forceLabel: "No. of Tests" }} />
+                      <AlgaehLabel label={{ forceLabel: "Tests Count" }} />
                     ),
+                    filterable: true,
                     others: {
-                      maxWidth: 90,
+                      width: 110,
                       resizable: false,
                       style: { textAlign: "center" },
                     },
@@ -935,10 +947,22 @@ function SampleCollection() {
                     },
                     disabled: true,
                     others: {
-                      maxWidth: 80,
+                      width: 100,
                       resizable: false,
                       style: { textAlign: "center" },
                     },
+                    filterable: true,
+                    filterType: "choices",
+                    choices: [
+                      {
+                        name: "Stat",
+                        value: "S",
+                      },
+                      {
+                        name: "Routine",
+                        value: "R",
+                      },
+                    ],
                   },
 
                   {
@@ -947,8 +971,9 @@ function SampleCollection() {
                       <AlgaehLabel label={{ fieldName: "primary_id_no" }} />
                     ),
                     disabled: false,
+                    filterable: true,
                     others: {
-                      maxWidth: 150,
+                      width: 120,
                       resizable: false,
                       style: { textAlign: "center" },
                     },
@@ -959,8 +984,9 @@ function SampleCollection() {
                       <AlgaehLabel label={{ fieldName: "patient_code" }} />
                     ),
                     disabled: false,
+                    filterable: true,
                     others: {
-                      maxWidth: 150,
+                      width: 120,
                       resizable: false,
                       style: { textAlign: "center" },
                     },
@@ -971,6 +997,7 @@ function SampleCollection() {
                       <AlgaehLabel label={{ fieldName: "patient_name" }} />
                     ),
                     disabled: true,
+                    filterable: true,
                     others: {
                       resizable: false,
                       style: { textAlign: "left" },
@@ -1021,12 +1048,13 @@ function SampleCollection() {
                   // },
                 ]}
                 keyId="patient_code"
-                // dataSource={{
                 data={sample_collection}
-                // }}
-                filter={true}
+                // filter={true}
+                pagination={true}
+                pageOptions={{ rows: 20, page: 1 }}
+                isFilterable={true}
                 noDataText="No data available for selected period"
-                paging={{ page: 0, rowsPerPage: 20 }}
+                // paging={{ page: 0, rowsPerPage: 100 }}
               />
             </div>
           </div>
