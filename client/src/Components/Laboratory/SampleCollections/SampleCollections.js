@@ -1364,7 +1364,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
   }
 
   const { refetch: labOrderRefetch } = useQuery(
-    ["getLabOrderedServices", { selected_patient }],
+    ["getSampleCollectionDetails", { selected_patient }],
     getSampleCollectionDetails,
     {
       onSuccess: (data) => {
@@ -1686,32 +1686,40 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
     setState({});
   };
   const updateLabOrderServiceStatus = (row) => {
-    // if (row.status === "N") {
-    algaehApiCall({
-      uri: "/laboratory/updateLabOrderServiceStatus",
-      module: "laboratory",
-      data: {
-        hims_f_lab_order_id: row.hims_f_lab_order_id,
-        hims_d_lab_sample_id: row.hims_d_lab_sample_id,
-        send_in_test: row.send_in_test,
-        collected_date: row.collected_date,
-      },
-      method: "PUT",
-      onSuccess: (response) => {
-        if (response.data.success === true) {
-          swalMessage({
-            title: "Record Updated Successfully",
-            type: "success",
-          });
-        }
-      },
-      onFailure: (error) => {
-        swalMessage({
-          title: error.response.data.message || error.message,
-          type: "error",
+    swal({
+      title: `Are you sure to change specimen as not collected?`,
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willDelete) => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/laboratory/updateLabOrderServiceStatus",
+          module: "laboratory",
+          data: { hims_f_lab_order_id: row.hims_f_lab_order_id },
+          method: "PUT",
+          onSuccess: (response) => {
+            if (response.data.success === true) {
+              swalMessage({
+                title: "Record Updated Successfully",
+                type: "success",
+              });
+              labOrderRefetch();
+            }
+          },
+          onFailure: (error) => {
+            swalMessage({
+              title: error.response.data.message || error.message,
+              type: "error",
+            });
+          },
         });
-      },
+      }
     });
+
     // } else {
     //   return;
     // }
@@ -1728,10 +1736,18 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
       cancelButtonText: "No",
     }).then((willDelete) => {
       if (willDelete.value) {
+        let hims_f_lab_order_id = [];
+        test_details.map((o) => {
+          if (o.checked) {
+            hims_f_lab_order_id.push(o.hims_f_lab_order_id);
+          }
+          return null;
+        });
+
         algaehApiCall({
-          uri: "/laboratory/updateLabOrderServiceMultiple",
+          uri: "/laboratory/updateLabOrderServiceStatus",
           module: "laboratory",
-          data: { labOrderArray: test_details },
+          data: { hims_f_lab_order_id: hims_f_lab_order_id },
           method: "PUT",
           onSuccess: (response) => {
             if (response.data.success === true) {
@@ -1739,6 +1755,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
                 title: "Record Updated Successfully",
                 type: "success",
               });
+              labOrderRefetch();
             }
           },
           onFailure: (error) => {
@@ -2206,20 +2223,32 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
                                   />
                                 </Tooltip>
                               ) : (
-                                <Tooltip
-                                  title="Generate Barcode"
-                                  zIndex={99999}
-                                >
-                                  <i
-                                    style={{
-                                      pointerEvents:
-                                        row.billed === "N" ? "none" : "",
-                                      opacity: row.billed === "N" ? "0.1" : "",
-                                    }}
-                                    className="fas fa-barcode"
-                                    onClick={() => printBarcode(row)}
-                                  />
-                                </Tooltip>
+                                <span>
+                                  <Tooltip
+                                    title="Generate Barcode"
+                                    zIndex={99999}
+                                  >
+                                    <i
+                                      style={{
+                                        pointerEvents:
+                                          row.billed === "N" ? "none" : "",
+                                        opacity:
+                                          row.billed === "N" ? "0.1" : "",
+                                      }}
+                                      className="fas fa-barcode"
+                                      onClick={() => printBarcode(row)}
+                                    />
+                                  </Tooltip>
+
+                                  <Tooltip title="Cancel Sample" zIndex={99999}>
+                                    <i
+                                      className="fa fa-times"
+                                      onClick={() =>
+                                        updateLabOrderServiceStatus(row)
+                                      }
+                                    />
+                                  </Tooltip>
+                                </span>
                               )}
                             </>
                           );
@@ -2987,9 +3016,9 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
                     // dataSource={{
                     data={test_details}
                     // }}
-                    events={{
-                      onSave: (row) => updateLabOrderServiceStatus(row),
-                    }}
+                    // events={{
+                    //   onSave: (row) => updateLabOrderServiceStatus(row),
+                    // }}
                     filter={true}
                     noDataText="No data available for selected period"
                     // isEditable={editableGrid}

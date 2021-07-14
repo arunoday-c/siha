@@ -1114,22 +1114,22 @@ const labModal = {
   updateLabOrderServiceStatus: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      let inputParam = { ...req.body };
       // cancelled
+      // console.log("req.body", req.body.hims_f_lab_order_id);
+
       _mysql
         .executeQuery({
-          query: `update hims_f_lab_order set status='O',send_in_test=?, updated_by=?,updated_date=? where hims_f_lab_order_id=?;
-          update hims_f_lab_sample set status='N',collected='N',collected_date=?, updated_by=?,updated_date=? where hims_d_lab_sample_id=?;`,
+          query: `
+          UPDATE hims_f_lab_order L 
+          INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id 
+          set L.status='O', L.updated_by=?, L.updated_date=?, S.status='N', S.collected='N',
+          S.updated_by=?, S.updated_date=? where L.hims_f_lab_order_id in (?);`,
           values: [
-            inputParam.send_in_test,
-
             req["userIdentity"].algaeh_d_app_user_id,
             new Date(),
-            inputParam.hims_f_lab_order_id,
-            inputParam.collected ? inputParam.collected : null,
             req["userIdentity"].algaeh_d_app_user_id,
             new Date(),
-            inputParam.hims_d_lab_sample_id,
+            req.body.hims_f_lab_order_id,
           ],
           printQuery: true,
         })
@@ -1197,45 +1197,6 @@ const labModal = {
     }
   },
 
-  updateLabOrderServiceMultiple: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    try {
-      let qry = "";
-      let updateLabOrder = req.body.labOrderArray;
-      updateLabOrder.map((item) => {
-        qry += mysql.format(
-          `update hims_f_lab_order set status='O',updated_by=?,updated_date=? where hims_f_lab_order_id=?;
-          update hims_f_lab_sample set status='N',collected='N', updated_by=?,updated_date=? where hims_d_lab_sample_id=?;`,
-          [
-            req["userIdentity"].algaeh_d_app_user_id,
-            new Date(),
-            item.hims_f_lab_order_id,
-            req["userIdentity"].algaeh_d_app_user_id,
-            new Date(),
-            item.hims_d_lab_sample_id,
-          ]
-        );
-      });
-      _mysql
-        .executeQuery({
-          query: qry,
-          bulkInsertOrUpdate: true,
-          printQuery: true,
-        })
-        .then((result) => {
-          _mysql.releaseConnection();
-          next();
-        })
-        .catch((e) => {
-          _mysql.releaseConnection();
-          next(e);
-        });
-      _mysql.releaseConnection();
-    } catch (e) {
-      _mysql.releaseConnection();
-      next(e);
-    }
-  },
   updateLabOrderServices: async (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
