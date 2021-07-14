@@ -12,7 +12,7 @@ export default {
           query:
             "INSERT INTO `hims_d_identity_document` (`identity_document_code`, `identity_document_name`,`arabic_identity_document_name`,`nationality_id`,`masked_identity`,initial_value_identity,`notify_expiry`,`notify_before`,`employees_id`  \
             , `created_by` ,`created_date`) \
-         VALUES ( ?, ?, ?, ?, ?,?,?,?,?,?)",
+         VALUES ( ?, ?, ?, ?, ?,?,?,?,?,?,?)",
           values: [
             inputParam.identity_document_code,
             inputParam.identity_document_name,

@@ -2595,11 +2595,8 @@ export default {
                 //Promotions Functionlaity
                 if (promo_data.length > 0) {
                   const promotion_dis = promo_data.find(
-                    (f) =>
-                      f.hims_d_services_id ===
-                      servicesDetails.hims_d_services_id
+                    (f) => f.offer_code === servicesDetails.promo_code
                   );
-
                   if (promotion_dis !== undefined) {
                     if (
                       servicesDetails.promo_code === promotion_dis.offer_code
@@ -2624,8 +2621,7 @@ export default {
                         _mysql.releaseConnection();
                         req.records = {
                           invalid_input: true,
-                          message:
-                            "Enterted Promo Code either not valid nor Expired",
+                          message: "Promo code either invalid or expired.",
                         };
 
                         next();
@@ -2635,8 +2631,7 @@ export default {
                       _mysql.releaseConnection();
                       req.records = {
                         invalid_input: true,
-                        message:
-                          "Enterted Promo Code either not valid nor Expired",
+                        message: "Promo code either invalid or expired.",
                       };
 
                       next();
