@@ -1,555 +1,587 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import React, { useContext, useState, useEffect } from "react";
+import { useQuery } from "react-query";
 
+import Options from "../../../Options.json";
 import "./AccessionAcknowledgement.scss";
 import "./../../../styles/site.scss";
-
-import {
-  texthandle,
-  datehandle,
-  getSampleCollectionDetails,
-  AcceptandRejectSample,
-  Refresh,
-} from "./AccessionAcknowledgementHandaler";
+import { newAlgaehApi } from "../../../hooks";
+import { AcceptandRejectSample } from "./AccessionAcknowledgementHandaler";
 
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlgaehDateHandler,
-  AlgaehModalPopUp,
-} from "../../Wrapper/algaehWrapper";
-import Enumerable from "linq";
-import { MainContext } from "algaeh-react-components";
+  AlgaehMessagePop,
+  MainContext,
+  Tooltip,
+  Modal,
+} from "algaeh-react-components";
 
-import { AlgaehActions } from "../../../actions/algaehActions";
+// import Enumerable from "linq";
 import moment from "moment";
-import Options from "../../../Options.json";
-import _ from "lodash";
 import sockets from "../../../sockets";
-import { Tooltip } from "antd";
-// import { swalMessage } from "../../../utils/algaehApiCall";
+import { Controller, useForm } from "react-hook-form";
+import axios from "axios";
 
-class AccessionAcknowledgement extends Component {
-  constructor(props) {
-    super(props);
-    this.socket = sockets;
-    this.state = {
-      to_date: new Date(),
-      // from_date: moment("01" + month + year, "DDMMYYYY")._d,
-      from_date: new Date(),
-      patient_code: null,
-      patient_name: null,
-      patient_id: null,
-      sample_collection: [],
-      selected_patient: null,
-      isOpen: false,
-      reject_popup: false,
-      selectedRow: {},
-      remarks: "",
-      proiorty: null,
-      status: null,
-    };
-  }
+const { confirm } = Modal;
 
-  changeDateFormat = (date) => {
-    if (date != null) {
-      return moment(date).format(Options.datetimeFormat);
-    }
-  };
+export default function AccessionAcknowledgement() {
+  const { userToken } = useContext(MainContext);
+  const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 
-  changeTimeFormat = (date) => {
-    if (date != null) {
-      return moment(date).format(Options.timeFormat);
-    }
-  };
+  const { control, errors, reset, getValues } = useForm({
+    defaultValues: {
+      hospital_id: userToken.hims_d_hospital_id,
+      start_date: [moment(new Date()), moment(new Date())],
+    },
+  });
 
-  ShowCollectionModel(row, e) {
-    this.setState({
-      isOpen: !this.state.isOpen,
-      selected_patient: row,
-    });
-  }
-  CloseCollectionModel(e) {
-    this.setState({
-      isOpen: !this.state.isOpen,
-    });
-  }
+  const [isOpen, setIsOpen] = useState(false);
+  const [sample_collection, setSample_collection] = useState([]);
+  const [selected_row, setSelectedRow] = useState([]);
 
-  static contextType = MainContext;
-  componentDidMount() {
-    const userToken = this.context.userToken;
+  const [remarks, setRemarks] = useState("");
 
-    this.setState({
-      portal_exists: userToken.portal_exists,
-    });
-    getSampleCollectionDetails(this, this);
-    this.socket.on("reload_specimen_acknowledge", (billData) => {
+  useEffect(() => {
+    sockets.on("reload_specimen_collection", (billData) => {
       const { bill_date } = billData;
       const date = new Date(moment(bill_date).format("YYYY-MM-DD"));
-
-      const start = new Date(moment(this.state.from_date).format("YYYY-MM-DD"));
-      const end = new Date(moment(this.state.to_date).format("YYYY-MM-DD"));
+      const start = new Date(
+        moment(getValues().from_date).format("YYYY-MM-DD")
+      );
+      const end = new Date(moment(getValues().to_date).format("YYYY-MM-DD"));
 
       if (date >= start && date <= end) {
-        getSampleCollectionDetails(this, this);
+        refetch();
       } else {
         return;
       }
     });
+  }, []);
+  const { refetch } = useQuery(
+    ["getLabOrderedServices", {}],
+    getLabOrderedServices,
+    {
+      onSuccess: (data) => {
+        setSample_collection(data);
+      },
+      onError: (err) => {
+        AlgaehMessagePop({
+          display: err?.message,
+          type: "error",
+        });
+      },
+    }
+  );
+  async function getLabOrderedServices(key) {
+    const date = getValues().start_date;
+    const from_date = moment(date[0]).format("YYYY-MM-DD");
+    const to_date = moment(date[1]).format("YYYY-MM-DD");
+
+    const result = await newAlgaehApi({
+      uri: "/laboratory/getLabOrderedServices",
+      module: "laboratory",
+      method: "GET",
+      data: {
+        hospital_id: getValues().hospital_id,
+        from_date,
+        to_date,
+      },
+    });
+    return result?.data?.records;
   }
 
-  render() {
-    // let _Ordered = [];
+  // let _Ordered = [];
 
-    let _Collected = [];
+  let _Collected = [];
 
-    let _Confirmed = [];
-    let _Validated = [];
+  let _Confirmed = [];
+  let _Validated = [];
+  let _Cancelled = [];
+  if (sample_collection?.length > 0 && sample_collection !== undefined) {
+    // _Ordered = sample_collection.filter((f) => {
+    //   return f.status === "O";
+    // });
 
-    let _Cancelled = [];
-    if (this.state.sample_collection !== undefined) {
-      // _Ordered = _.filter(this.state.sample_collection, f => {
-      //   return f.status === "O";
-      // });
+    _Collected = sample_collection.filter((f) => {
+      return f.status === "CL";
+    });
 
-      _Collected = _.filter(this.state.sample_collection, (f) => {
-        return f.status === "CL";
-      });
+    _Validated = sample_collection.filter((f) => {
+      return f.status === "V";
+    });
+    _Confirmed = sample_collection.filter((f) => {
+      return f.status === "CF";
+    });
 
-      _Validated = _.filter(this.state.sample_collection, (f) => {
-        return f.status === "V";
-      });
-      _Confirmed = _.filter(this.state.sample_collection, (f) => {
-        return f.status === "CF";
-      });
-
-      _Cancelled = _.filter(this.state.sample_collection, (f) => {
-        return f.status === "CN";
-      });
+    _Cancelled = sample_collection.filter((f) => {
+      return f.status === "CN";
+    });
+  }
+  const changeDateFormat = (date) => {
+    if (date != null) {
+      return moment(date).format(Options.datetimeFormat);
+    }
+  };
+  const onSubmit = (selected_row, strAccRej) => {
+    if (strAccRej === "R") {
+      if (remarks === "") {
+        AlgaehMessagePop({
+          display: "Remarks is mandatory",
+          type: "error",
+        });
+        return;
+      }
     }
 
-    // let sampleCollection =
-    //   this.state.billdetails === null ? [{}] : this.state.billdetails;
-    return (
-      <React.Fragment>
-        <AlgaehModalPopUp
-          title="Remarks"
-          openPopup={this.state.reject_popup}
-          class="accessionRemarkPopUp"
-          events={{
-            onClose: () => {
-              this.setState({
-                reject_popup: false,
+    const strMessage = strAccRej === "R" ? "Reject" : "Acknowledge";
+
+    confirm({
+      okText: "OK",
+      okType: "primary",
+      icon: "",
+      title: "",
+      content: "Are you sure you want to " + strMessage,
+
+      maskClosable: true,
+      onOk: async () => {
+        try {
+          let inputobj = {
+            test_id: selected_row.test_id,
+            hims_d_lab_sample_id: selected_row.hims_d_lab_sample_id,
+            order_id: selected_row.hims_f_lab_order_id,
+            sample_id: selected_row.sample_id,
+            patient_id: selected_row.patient_id,
+            visit_id: selected_row.visit_id,
+            date_of_birth: selected_row.date_of_birth,
+            gender: selected_row.gender,
+            barcode_gen: selected_row.barcode_gen,
+            remarks: remarks,
+            status: strAccRej,
+          };
+          const after_ack = await AcceptandRejectSample(inputobj).catch(
+            (error) => {
+              throw error;
+            }
+          );
+          if (after_ack.success === false) {
+            AlgaehMessagePop({
+              display: after_ack.result,
+              type: "error",
+            });
+            return;
+          }
+          if (userToken?.portal_exists === "Y" && strAccRej === "R") {
+            try {
+              const portal_data = {
+                service_id: selected_row.service_id,
+                visit_code: selected_row.visit_code,
+                patient_identity: selected_row.primary_id_no,
+                service_status: "ORDERED",
+              };
+              axios
+                .post(`${PORTAL_HOST}info/deletePatientService`, portal_data)
+                .then(function (response) {
+                  //handle success
+                  console.log(response);
+                })
+                .catch(function (response) {
+                  //handle error
+                  console.log(response);
+                });
+            } catch (error) {
+              AlgaehMessagePop({
+                display: error,
+                type: "error",
               });
-            },
-          }}
-        >
-          {/* <AlagehFormGroup
-           div={{ className: "col form-group" }}
-           label={{
-           forceLabel: "Enter Label Here",
-          isImp: false
+            }
+          }
+          setRemarks("");
+          setIsOpen(false);
+          refetch();
+          if (sockets.connected) {
+            sockets.emit("result_entry", {
+              collected_date: new Date(),
+            });
+          }
+          AlgaehMessagePop({
+            type: "success",
+            display: "Done Succesfully",
+          });
+          // await AcceptandRejectSample(inputobj);
+        } catch (e) {
+          AlgaehMessagePop({
+            type: "error",
+            display: e.message,
+          });
+        }
+      },
+    });
+  };
+
+  return (
+    <React.Fragment>
+      <Modal
+        title="Remarks"
+        visible={isOpen}
+        class="accessionRemarkPopUp"
+        footer={null}
+        onCancel={() => setIsOpen(false)}
+      >
+        <div className="popupInner">
+          <div className="col-12">
+            <label>Reason for Rejection</label>
+            <textarea
+              className="textArea"
+              name="remarks"
+              value={remarks}
+              onChange={(e) => {
+                setRemarks(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="popupFooter">
+          <div className="col-12">
+            <button
+              onClick={() => onSubmit(selected_row, "R")}
+              type="button"
+              className="btn btn-primary"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => {
+                setIsOpen(!isOpen);
+              }}
+              type="button"
+              className="btn btn-default"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      <div className="hptl-phase1-accession-acknowledgement-form">
+        <div className="row inner-top-search" style={{ paddingBottom: "10px" }}>
+          <Controller
+            control={control}
+            name="start_date"
+            rules={{
+              required: {
+                message: "Field is Required",
+              },
             }}
-           textBox={{
-          className: "txt-fld",
-          name: "remarks" ,
-          value: this.state.remarks,
-          events: {},
-          others:{{
-          type:"text"
-           }}
-          }}
-          /> */}
-          <div className="popupInner">
-            <div className="col-12">
-              <label>Reason for Rejection</label>
-              <textarea
-                className="textArea"
-                name="remarks"
-                value={this.state.remarks}
-                onChange={texthandle.bind(this, this)}
-              />
-            </div>
-          </div>
-          <div className="popupFooter">
-            <div className="col-12">
-              <button
-                onClick={AcceptandRejectSample.bind(
-                  this,
-                  this,
-                  this.state.selectedRow,
-                  "R"
-                )}
-                type="button"
-                className="btn btn-primary"
-              >
-                Save
-              </button>
-              <button
-                onClick={() => {
-                  this.setState({
-                    reject_popup: false,
-                    remarks: "",
-                  });
+            render={({ onChange, value }) => (
+              <AlgaehDateHandler
+                div={{ className: "col-3" }}
+                label={{
+                  forceLabel: "ORDERED DATE & TIME",
+                  isImp: true,
                 }}
-                type="button"
-                className="btn btn-default"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </AlgaehModalPopUp>
+                error={errors}
+                textBox={{
+                  className: "txt-fld",
+                  name: "start_date",
+                  value,
+                }}
+                type="range"
+                // others={{ disabled }}
+                events={{
+                  onChange: (mdate) => {
+                    if (mdate) {
+                      onChange(mdate);
+                    } else {
+                      onChange(undefined);
+                    }
+                  },
+                  onClear: () => {
+                    onChange(undefined);
+                  },
+                }}
+              />
+            )}
+          />
 
-        <div className="hptl-phase1-accession-acknowledgement-form">
-          <div
-            className="row inner-top-search"
-            style={{ paddingBottom: "10px" }}
-          >
-            <AlgaehDateHandler
-              div={{ className: "col-2" }}
-              label={{ fieldName: "from_date" }}
-              textBox={{ className: "txt-fld", name: "from_date" }}
-              events={{
-                onChange: datehandle.bind(this, this),
+          <div className="col" style={{ marginTop: "21px" }}>
+            <button
+              className="btn btn-default btn-sm"
+              type="button"
+              onClick={() => {
+                reset({ start_date: [moment(new Date()), moment(new Date())] });
               }}
-              value={this.state.from_date}
-            />
-            <AlgaehDateHandler
-              div={{ className: "col-2" }}
-              label={{ fieldName: "to_date" }}
-              textBox={{ className: "txt-fld", name: "to_date" }}
-              events={{
-                onChange: datehandle.bind(this, this),
+            >
+              Clear
+            </button>
+            <button
+              className="btn btn-primary btn-sm"
+              style={{ marginLeft: "10px" }}
+              type="button"
+              onClick={() => {
+                // setEnabledHESN(true)
+                refetch();
               }}
-              value={this.state.to_date}
-            />
-
-            <div className="col" style={{ marginTop: "21px" }}>
-              <button
-                className="btn btn-default btn-sm"
-                style={{ marginRight: "10px" }}
-                type="button"
-                onClick={Refresh.bind(this, this)}
-              >
-                Clear
-              </button>
-              <button
-                className="btn btn-primary btn-sm"
-                type="button"
-                onClick={getSampleCollectionDetails.bind(this, this)}
-              >
-                Load
-              </button>
-            </div>
+            >
+              Load
+            </button>
           </div>
-          <div className="row  margin-bottom-15 topResultCard">
-            <div className="col-12">
-              <div className="card-group">
-                <div className="card">
-                  <div className="card-body">
-                    <h5 className="card-title">{_Collected.length}</h5>{" "}
-                    <p className="card-text">
-                      <span className="badge badge-secondary">Collected</span>
-                    </p>
-                  </div>
-                </div>
-                <div className="card">
-                  <div className="card-body">
-                    <h5 className="card-title">{_Confirmed.length}</h5>{" "}
-                    <p className="card-text">
-                      <span className="badge badge-primary">Confirmed</span>
-                    </p>
-                  </div>
-                </div>
-                <div className="card">
-                  <div className="card-body">
-                    <h5 className="card-title">{_Cancelled.length}</h5>
-                    <p className="card-text">
-                      <span className="badge badge-danger">Cancelled</span>
-                    </p>
-                  </div>
-                </div>
-                <div className="card">
-                  <div className="card-body">
-                    <h5 className="card-title">{_Validated.length}</h5>
-                    <p className="card-text">
-                      <span className="badge badge-success">Validated</span>
-                    </p>
-                  </div>
+        </div>
+        <div className="row  margin-bottom-15 topResultCard">
+          <div className="col-12">
+            <div className="card-group">
+              <div className="card">
+                <div className="card-body">
+                  <h5 className="card-title">{_Collected.length}</h5>
+                  <p className="card-text">
+                    <span className="badge badge-secondary">Collected</span>
+                  </p>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="portlet portlet-bordered margin-bottom-15">
-                <div className="portlet-title">
-                  <div className="caption">
-                    <h3 className="caption-subject">
-                      Specimen Acknowledgement List
-                    </h3>
-                  </div>
+              <div className="card">
+                <div className="card-body">
+                  <h5 className="card-title">{_Confirmed.length}</h5>
+                  <p className="card-text">
+                    <span className="badge badge-primary">Confirmed</span>
+                  </p>
                 </div>
-
-                <div
-                  className="portlet-body"
-                  id="accessionAcknoweldgeGrid_Cntr"
-                >
-                  <AlgaehDataGrid
-                    id="accessionAcknoweldgeGrid"
-                    columns={[
-                      {
-                        fieldName: "action",
-                        label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                        displayTemplate: (row) => {
-                          return (
-                            <span>
-                              <Tooltip title="Accept Specimen">
-                                <i
-                                  style={{
-                                    pointerEvents:
-                                      row.sample_status === "A" ? "none" : "",
-
-                                    opacity:
-                                      row.sample_status === "A" ? "0.1" : "",
-                                  }}
-                                  className="fa fa-check"
-                                  aria-hidden="true"
-                                  onClick={AcceptandRejectSample.bind(
-                                    this,
-                                    this,
-                                    row,
-                                    "A"
-                                  )}
-                                />
-                              </Tooltip>
-                              <Tooltip title="Reject Specimen">
-                                <i
-                                  style={{
-                                    pointerEvents:
-                                      row.sample_status === "A" ? "none" : "",
-
-                                    opacity:
-                                      row.sample_status === "A" ? "0.1" : "",
-                                  }}
-                                  className="fa fa-times"
-                                  aria-hidden="true"
-                                  onClick={() => {
-                                    this.setState({
-                                      reject_popup: true,
-                                      selectedRow: row,
-                                    });
-                                  }}
-                                />
-                              </Tooltip>
-                            </span>
-                          );
-                        },
-                        others: {
-                          maxWidth: 120,
-                          resizable: false,
-                          style: { textAlign: "center" },
-                          filterable: false,
-                        },
-                      },
-                      {
-                        fieldName: "ordered_date",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "ordered_date" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return (
-                            <span>
-                              {this.changeDateFormat(row.ordered_date)}
-                            </span>
-                          );
-                        },
-                        disabled: true,
-                        others: {
-                          maxWidth: 150,
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-
-                      {
-                        fieldName: "test_type",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.test_type === "S" ? (
-                            <span className="badge badge-danger">Stat</span>
-                          ) : (
-                            <span className="badge badge-secondary">
-                              Routine
-                            </span>
-                          );
-                        },
-                        disabled: true,
-                        others: {
-                          maxWidth: 90,
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "sample_status",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Specimen Status" }}
-                          />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.sample_status === "N" ? (
-                            <span className="badge badge-warning">Pending</span>
-                          ) : row.sample_status === "A" ? (
-                            <span className="badge badge-success">
-                              Accepted
-                            </span>
-                          ) : row.sample_status === "R" ? (
-                            <span className="badge badge-danger">Rejected</span>
-                          ) : null;
-                        },
-                        disabled: true,
-                        others: {
-                          maxWidth: 140,
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-
-                      {
-                        fieldName: "lab_id_number",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Lab ID Number" }}
-                          />
-                        ),
-                        disabled: true,
-                        others: {
-                          maxWidth: 140,
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "primary_id_no",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "primary_id_no" }} />
-                        ),
-                        disabled: false,
-                        others: {
-                          maxWidth: 150,
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "patient_code",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "patient_code" }} />
-                        ),
-                        disabled: false,
-                        others: {
-                          maxWidth: 150,
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "full_name",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "patient_name" }} />
-                        ),
-                        disabled: true,
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "left" },
-                        },
-                      },
-                      {
-                        fieldName: "service_name",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Test Name" }} />
-                        ),
-
-                        disabled: true,
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "status",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Test Status" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.status === "CL" ? (
-                            <span className="badge badge-secondary">
-                              Collected
-                            </span>
-                          ) : row.status === "CN" ? (
-                            <span className="badge badge-danger">
-                              Cancelled
-                            </span>
-                          ) : row.status === "CF" ? (
-                            <span className="badge badge-primary">
-                              Confirmed
-                            </span>
-                          ) : (
-                            <span className="badge badge-success">
-                              Validated
-                            </span>
-                          );
-                        },
-                        disabled: true,
-                        others: {
-                          maxWidth: 90,
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                    ]}
-                    keyId="patient_code"
-                    dataSource={{
-                      data: Enumerable.from(this.state.sample_collection)
-                        .where((w) => w.status !== "O")
-                        .toArray(),
-                    }}
-                    filter={true}
-                    noDataText="No data available for selected period"
-                    paging={{ page: 0, rowsPerPage: 20 }}
-                  />
+              </div>
+              <div className="card">
+                <div className="card-body">
+                  <h5 className="card-title">{_Cancelled.length}</h5>
+                  <p className="card-text">
+                    <span className="badge badge-danger">Cancelled</span>
+                  </p>
+                </div>
+              </div>
+              <div className="card">
+                <div className="card-body">
+                  <h5 className="card-title">{_Validated.length}</h5>
+                  <p className="card-text">
+                    <span className="badge badge-success">Validated</span>
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </React.Fragment>
-    );
-  }
-}
+        <div className="row">
+          <div className="col-lg-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">
+                    Specimen Acknowledgement List
+                  </h3>
+                </div>
+              </div>
 
-function mapStateToProps(state) {
-  return {
-    samplecollection: state.samplecollection,
-  };
-}
+              <div className="portlet-body" id="accessionAcknoweldgeGrid_Cntr">
+                <AlgaehDataGrid
+                  id="accessionAcknoweldgeGrid"
+                  columns={[
+                    {
+                      fieldName: "action",
+                      label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                      displayTemplate: (row) => {
+                        return (
+                          <span>
+                            <Tooltip title="Accept Specimen">
+                              <i
+                                style={{
+                                  pointerEvents:
+                                    row.sample_status === "A" ? "none" : "",
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getSampleCollection: AlgaehActions,
-    },
-    dispatch
+                                  opacity:
+                                    row.sample_status === "A" ? "0.1" : "",
+                                }}
+                                className="fa fa-check"
+                                aria-hidden="true"
+                                onClick={() => onSubmit(row, "A")}
+                              />
+                            </Tooltip>
+                            <Tooltip title="Reject Specimen">
+                              <i
+                                style={{
+                                  pointerEvents:
+                                    row.sample_status === "A" ? "none" : "",
+
+                                  opacity:
+                                    row.sample_status === "A" ? "0.1" : "",
+                                }}
+                                className="fa fa-times"
+                                aria-hidden="true"
+                                onClick={() => {
+                                  setIsOpen(!isOpen);
+                                  setSelectedRow(row);
+                                }}
+                              />
+                            </Tooltip>
+                          </span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 120,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                        filterable: false,
+                      },
+                    },
+                    {
+                      fieldName: "ordered_date",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "ordered_date" }} />
+                      ),
+                      displayTemplate: (row) => {
+                        return (
+                          <span>{changeDateFormat(row.ordered_date)}</span>
+                        );
+                      },
+                      disabled: true,
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+
+                    {
+                      fieldName: "test_type",
+                      label: <AlgaehLabel label={{ fieldName: "proiorty" }} />,
+                      displayTemplate: (row) => {
+                        return row.test_type === "S" ? (
+                          <span className="badge badge-danger">Stat</span>
+                        ) : (
+                          <span className="badge badge-secondary">Routine</span>
+                        );
+                      },
+                      disabled: true,
+                      others: {
+                        maxWidth: 90,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "sample_status",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Specimen Status" }}
+                        />
+                      ),
+                      displayTemplate: (row) => {
+                        return row.sample_status === "N" ? (
+                          <span className="badge badge-warning">Pending</span>
+                        ) : row.sample_status === "A" ? (
+                          <span className="badge badge-success">Accepted</span>
+                        ) : row.sample_status === "R" ? (
+                          <span className="badge badge-danger">Rejected</span>
+                        ) : null;
+                      },
+                      disabled: true,
+                      others: {
+                        maxWidth: 140,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+
+                    {
+                      fieldName: "lab_id_number",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />
+                      ),
+                      disabled: true,
+                      others: {
+                        maxWidth: 140,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "primary_id_no",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "primary_id_no" }} />
+                      ),
+                      disabled: false,
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "patient_code",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                      ),
+                      disabled: false,
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "full_name",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "patient_name" }} />
+                      ),
+                      disabled: true,
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "left" },
+                      },
+                    },
+                    {
+                      fieldName: "service_name",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Test Name" }} />
+                      ),
+
+                      disabled: true,
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "status",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Test Status" }} />
+                      ),
+                      displayTemplate: (row) => {
+                        return row.status === "CL" ? (
+                          <span className="badge badge-secondary">
+                            Collected
+                          </span>
+                        ) : row.status === "CN" ? (
+                          <span className="badge badge-danger">Cancelled</span>
+                        ) : row.status === "CF" ? (
+                          <span className="badge badge-primary">Confirmed</span>
+                        ) : (
+                          <span className="badge badge-success">Validated</span>
+                        );
+                      },
+                      disabled: true,
+                      others: {
+                        maxWidth: 90,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                  ]}
+                  keyId="patient_code"
+                  data={sample_collection.filter((f) => f.status !== "O")}
+                  filter={true}
+                  noDataText="No data available for selected period"
+                  paging={{ page: 0, rowsPerPage: 20 }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </React.Fragment>
   );
 }
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(AccessionAcknowledgement)
-);
