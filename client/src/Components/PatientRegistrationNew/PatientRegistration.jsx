@@ -294,7 +294,6 @@ export function PatientRegistration() {
     },
   });
   const preferenceFunction = async () => {
-    debugger;
     const { screen_code } = selectedMenu;
 
     if (userPreferences?.length > 0 && userPreferences) {

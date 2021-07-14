@@ -731,7 +731,6 @@ function SampleCollection() {
   let _Confirmed = [];
   let _Validated = [];
   if (sample_collection?.length > 0 && sample_collection !== undefined) {
-    debugger;
     _Ordered = sample_collection.filter((f) => {
       return f.status === "O";
     });
@@ -1032,19 +1031,21 @@ function SampleCollection() {
           </div>
         </div>
       </div>
-      <SampleCollectionModal
-        HeaderCaption={
-          <AlgaehLabel
-            label={{
-              fieldName: "sample_collection",
-              align: "ltr",
-            }}
-          />
-        }
-        open={isOpen}
-        onClose={CloseCollectionModel}
-        selected_patient={selected_patient}
-      />
+      {isOpen ? (
+        <SampleCollectionModal
+          HeaderCaption={
+            <AlgaehLabel
+              label={{
+                fieldName: "sample_collection",
+                align: "ltr",
+              }}
+            />
+          }
+          isOpen={isOpen}
+          onClose={CloseCollectionModel}
+          selected_patient={selected_patient}
+        />
+      ) : null}
     </div>
   );
 }
