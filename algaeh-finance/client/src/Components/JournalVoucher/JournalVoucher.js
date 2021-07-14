@@ -414,8 +414,12 @@ export default function JournalVoucher() {
         const debit_data = _.filter(data, (f) => {
           return f.payment_type === "DR";
         });
-        setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
-        setTotalDebit(_.sumBy(debit_data, (s) => parseFloat(s.amount)));
+        setTotalCredit(
+          _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
+        );
+        setTotalDebit(
+          _.sumBy(debit_data, (s) => parseFloat(s.amount)).toFixed(2)
+        );
 
         setJournerList(data);
         setFinanceVoucherHeaderID(location.state.finance_voucher_header_id);
@@ -453,8 +457,12 @@ export default function JournalVoucher() {
           const debit_data = _.filter(records, (f) => {
             return f.payment_type === "DR";
           });
-          setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
-          setTotalDebit(_.sumBy(debit_data, (s) => parseFloat(s.amount)));
+          setTotalCredit(
+            _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
+          );
+          setTotalDebit(
+            _.sumBy(debit_data, (s) => parseFloat(s.amount)).toFixed(2)
+          );
 
           setJournerList(records);
         } else {
@@ -517,10 +525,10 @@ export default function JournalVoucher() {
                     return f.payment_type === "DR";
                   });
                   setTotalCredit(
-                    _.sumBy(credit_data, (s) => parseFloat(s.amount))
+                    _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
                   );
                   setTotalDebit(
-                    _.sumBy(debit_data, (s) => parseFloat(s.amount))
+                    _.sumBy(debit_data, (s) => parseFloat(s.amount)).toFixed(2)
                   );
                   return [first, second];
                 });
@@ -1121,8 +1129,12 @@ export default function JournalVoucher() {
               return f.payment_type === "DR";
             });
 
-            setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
-            setTotalDebit(_.sumBy(debit_data, (s) => parseFloat(s.amount)));
+            setTotalCredit(
+              _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
+            );
+            setTotalDebit(
+              _.sumBy(debit_data, (s) => parseFloat(s.amount)).toFixed(2)
+            );
           },
           onClear: () => {
             record["payment_type"] = undefined;
@@ -1132,8 +1144,12 @@ export default function JournalVoucher() {
             const debit_data = _.filter(journerList, (f) => {
               return f.payment_type === "DR";
             });
-            setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
-            setTotalDebit(_.sumBy(debit_data, (s) => parseFloat(s.amount)));
+            setTotalCredit(
+              _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
+            );
+            setTotalDebit(
+              _.sumBy(debit_data, (s) => parseFloat(s.amount)).toFixed(2)
+            );
           },
           others: { ...isDisabled },
         }}
@@ -1156,7 +1172,7 @@ export default function JournalVoucher() {
           type: "number",
           onChange: (e) => {
             // console.log(journerList);
-
+            debugger;
             records["amount"] = e.target.value === "" ? "" : e.target.value;
             const credit_data = _.filter(journerList, (f) => {
               return f.payment_type === "CR";
@@ -1165,9 +1181,17 @@ export default function JournalVoucher() {
               return f.payment_type === "DR";
             });
             if (voucherType !== "expense_voucher") {
-              setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
+              setTotalCredit(
+                _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
+              );
             }
-            setTotalDebit(_.sumBy(debit_data, (s) => parseFloat(s.amount)));
+            const abc = _.sumBy(debit_data, (s) =>
+              parseFloat(s.amount)
+            ).toFixed(2);
+
+            setTotalDebit(
+              _.sumBy(debit_data, (s) => parseFloat(s.amount)).toFixed(2)
+            );
             // if (records["payment_type"] === "DR")
             //   records["debit_amount"] = records["amount"];
             // else records["credit_amount"] = records["amount"];
