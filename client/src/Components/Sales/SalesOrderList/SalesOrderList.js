@@ -26,7 +26,7 @@ import {
   persistStageOnGet,
   persistStateOnBack,
 } from "algaeh-react-components";
-import { getSavedDocument } from "../../Laboratory/ResultEntryList/ResultEntryListHandaler";
+// import { getSavedDocument } from "../../Laboratory/ResultEntryList/ResultEntryListHandaler";
 
 class SalesOrderList extends Component {
   constructor(props) {
@@ -74,7 +74,7 @@ class SalesOrderList extends Component {
       if (records) {
         this.setState({ ...records }, () => {
           getSalesOrderList(this);
-          getSavedDocument(this);
+          // getSavedDocument(this);
         });
         persistStorageOnRemove();
       } else {

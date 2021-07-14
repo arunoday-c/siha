@@ -2097,7 +2097,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
           </button>,
           <AlgaehSecurityComponent componentCode="SPEC_COLL_STATUS_CHANGE">
             <button
-              className="btn btn-other"
+              className="btn btn-default"
               onClick={updateLabOrderServiceMultiple.bind(this, this)}
             >
               <AlgaehLabel
@@ -2109,7 +2109,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
           </AlgaehSecurityComponent>,
           <AlgaehSecurityComponent componentCode="BTN_BLK_SAM_BAR_COL">
             <button
-              className="btn btn-other"
+              className="btn btn-default"
               onClick={BulkSampleCollection.bind(this, this)}
             >
               <AlgaehLabel
@@ -2121,7 +2121,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
           </AlgaehSecurityComponent>,
           <AlgaehSecurityComponent componentCode="BTN_BLK_SAM_BAR_COL">
             <button
-              className="btn btn-other"
+              className="btn btn-default"
               onClick={printBulkBarcode.bind(this, this)}
             >
               <AlgaehLabel
@@ -2188,846 +2188,794 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
           </div>
 
           <div className="row">
-            <div className="col-lg-12">
-              <div className="portlet portlet-bordered margin-bottom-15">
-                <div className="portlet-title">
-                  <div className="caption">
-                    <h3 className="caption-subject">
-                      Specimen Collection List
-                    </h3>
-                  </div>
-                </div>
-
-                <div className="portlet-body" id="samplecollection_grid">
-                  <AlgaehDataGrid
-                    columns={[
-                      {
-                        fieldName: "action",
-                        label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                        displayTemplate: (row) => {
-                          return (
-                            <>
-                              {row.collected !== "Y" ? (
-                                <Tooltip
-                                  title="Collect Specimen"
-                                  zIndex={99999}
-                                >
-                                  <i
-                                    style={{
-                                      pointerEvents:
-                                        row.billed === "N" ? "none" : "",
-                                      opacity: row.billed === "N" ? "0.1" : "",
-                                    }}
-                                    className="fas fa-check"
-                                    onClick={() => CollectSample(row)}
-                                  />
-                                </Tooltip>
-                              ) : (
-                                <span>
-                                  <Tooltip
-                                    title="Generate Barcode"
-                                    zIndex={99999}
-                                  >
-                                    <i
-                                      style={{
-                                        pointerEvents:
-                                          row.billed === "N" ? "none" : "",
-                                        opacity:
-                                          row.billed === "N" ? "0.1" : "",
-                                      }}
-                                      className="fas fa-barcode"
-                                      onClick={() => printBarcode(row)}
-                                    />
-                                  </Tooltip>
-
-                                  <Tooltip title="Cancel Sample" zIndex={99999}>
-                                    <i
-                                      className="fa fa-times"
-                                      onClick={() =>
-                                        updateLabOrderServiceStatus(row)
-                                      }
-                                    />
-                                  </Tooltip>
-                                </span>
-                              )}
-                            </>
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          return (
+            <div className="col-lg-12" id="samplecollection_grid">
+              <AlgaehDataGrid
+                columns={[
+                  {
+                    fieldName: "action",
+                    label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                    displayTemplate: (row) => {
+                      return (
+                        <>
+                          {row.collected !== "Y" ? (
+                            <Tooltip title="Collect Specimen" zIndex={99999}>
+                              <i
+                                style={{
+                                  pointerEvents:
+                                    row.billed === "N" ? "none" : "",
+                                  opacity: row.billed === "N" ? "0.1" : "",
+                                }}
+                                className="fas fa-check"
+                                onClick={() => CollectSample(row)}
+                              />
+                            </Tooltip>
+                          ) : (
                             <span>
-                              {row.collected !== "Y" ? (
-                                <Tooltip title="Collect Specimen">
-                                  <i
-                                    style={{
-                                      pointerEvents:
-                                        row.billed === "N" ? "none" : "",
-                                      opacity: row.billed === "N" ? "0.1" : "",
-                                    }}
-                                    className="fas fa-check"
-                                    onClick={() => {
-                                      CollectSample(row);
-                                    }}
-                                  />
-                                </Tooltip>
-                              ) : (
-                                <Tooltip title="Generate Barcode">
-                                  <i
-                                    style={{
-                                      pointerEvents:
-                                        row.billed === "N" ? "none" : "",
-                                      opacity: row.billed === "N" ? "0.1" : "",
-                                    }}
-                                    className="fas fa-barcode"
-                                    onClick={() => printBarcode(row)}
-                                  />
-                                </Tooltip>
-                              )}
-                            </span>
-                          );
-                        },
+                              <Tooltip title="Generate Barcode" zIndex={99999}>
+                                <i
+                                  style={{
+                                    pointerEvents:
+                                      row.billed === "N" ? "none" : "",
+                                    opacity: row.billed === "N" ? "0.1" : "",
+                                  }}
+                                  className="fas fa-barcode"
+                                  onClick={() => printBarcode(row)}
+                                />
+                              </Tooltip>
 
-                        others: {
-                          maxWidth: 100,
-                          // resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      manualColumns,
-                      {
-                        fieldName: "billed",
-                        label: <AlgaehLabel label={{ fieldName: "billed" }} />,
-
-                        displayTemplate: (row) => {
-                          return row.billed === "Y" ? (
-                            <span className="badge badge-success">Billed</span>
-                          ) : (
-                            <span className="badge badge-danger">
-                              Not Billed
-                            </span>
-                          );
-                        },
-
-                        // displayTemplate: (row) => {
-                        //   return row.billed === "N"
-                        //     ? "Not Billed"
-                        //     : "Billed";
-                        // },
-                        editorTemplate: (row) => {
-                          return row.billed === "N" ? "Not Billed" : "Billed";
-                        },
-                        filterable: true,
-                        filterType: "choices",
-                        choices: [
-                          {
-                            name: "Not Billed",
-                            value: "N",
-                          },
-                          {
-                            name: "Billed",
-                            value: "Y",
-                          },
-                        ],
-                        others: {
-                          // resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "collected",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "collected" }} />
-                        ),
-                        filterable: true,
-                        filterType: "choices",
-                        choices: [
-                          {
-                            name: "No",
-                            value: "N",
-                          },
-                          {
-                            name: "Yes",
-                            value: "Y",
-                          },
-                        ],
-                        displayTemplate: (row) => {
-                          return row.collected === "Y" ? (
-                            <span className="badge badge-success">Yes</span>
-                          ) : (
-                            <span className="badge badge-danger">No</span>
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          return row.collected === "Y" ? (
-                            <span className="badge badge-success">Yes</span>
-                          ) : (
-                            <span className="badge badge-danger">No</span>
-                          );
-                        },
-                      },
-                      {
-                        fieldName: "test_type",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return (
-                            <span>
-                              {row.test_type === "S" ? "Stat" : "Routine"}
-                            </span>
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          return (
-                            <span>
-                              {row.test_type === "S" ? "Stat" : "Routine"}
-                            </span>
-                          );
-                        },
-                        disabled: true,
-                        filterable: true,
-                        filterType: "choices",
-                        choices: [
-                          {
-                            name: "Stat",
-                            value: "S",
-                          },
-                          {
-                            name: "Routine",
-                            value: "R",
-                          },
-                        ],
-                        others: {
-                          // resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "service_code",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Test Code" }} />
-                        ),
-                        editorTemplate: (row) => {
-                          return row.service_code;
-                        },
-                        filterable: true,
-                        others: {
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "service_name",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Test Name" }} />
-                        ),
-                        editorTemplate: (row) => {
-                          return row.service_name;
-                        },
-                        filterable: true,
-                        others: {
-                          minWidth: 250,
-
-                          style: { textAlign: "left" },
-                        },
-                      },
-                      {
-                        fieldName: "sample_id",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "specimen_name" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          let display =
-                            labspecimen === undefined
-                              ? []
-                              : labspecimen.filter(
-                                  (f) =>
-                                    f.hims_d_lab_specimen_id === row.sample_id
-                                );
-                          return row.collected === "Y" || row.billed === "N" ? (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].SpeDescription
-                                : ""}
-                            </span>
-                          ) : (
-                            <AlgaehAutoComplete
-                              div={{ className: "noLabel" }}
-                              selector={{
-                                name: "sample_id",
-                                className: "select-fld",
-                                value: row.sample_id,
-                                dataSource: {
-                                  textField: "SpeDescription",
-                                  valueField: "hims_d_lab_specimen_id",
-                                  data: labspecimen,
-                                },
-                                updateInternally: true,
-                                onChange: (e, value) => {
-                                  row.sample_id = value;
-                                  forceUpdate(row);
-
-                                  // onchangegridcol(row, e);
-                                },
-                                onClear: (e) => {
-                                  row.sample_id = null;
-                                  forceUpdate(row);
-                                },
-                              }}
-                            />
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          let display =
-                            labspecimen === undefined
-                              ? []
-                              : labspecimen.filter(
-                                  (f) =>
-                                    f.hims_d_lab_specimen_id === row.sample_id
-                                );
-                          return row.collected === "Y" || row.billed === "N" ? (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].SpeDescription
-                                : ""}
-                            </span>
-                          ) : (
-                            <AlgaehAutoComplete
-                              div={{ className: "noLabel" }}
-                              selector={{
-                                name: "sample_id",
-                                className: "select-fld",
-                                value: row.sample_id,
-                                dataSource: {
-                                  textField: "SpeDescription",
-                                  valueField: "hims_d_lab_specimen_id",
-                                  data: labspecimen,
-                                },
-                                updateInternally: true,
-                                onChange: (e, value) => {
-                                  row.sample_id = value;
-                                  forceUpdate(row);
-
-                                  // onchangegridcol(row, e);
-                                },
-                                onClear: (e) => {
-                                  row.sample_id = null;
-                                  forceUpdate(row);
-                                },
-                              }}
-                            />
-                          );
-                        },
-                        others: {
-                          maxWidth: 200,
-                          // resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "container_id",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "Container" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          let display =
-                            labcontainer === undefined
-                              ? []
-                              : labcontainer.filter(
-                                  (f) =>
-                                    f.hims_d_lab_container_id ===
-                                    row.container_id
-                                );
-                          return row.collected === "Y" || row.billed === "N" ? (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].ConDescription
-                                : ""}
-                            </span>
-                          ) : (
-                            <AlgaehAutoComplete
-                              div={{ className: "noLabel" }}
-                              selector={{
-                                name: "container_id",
-                                className: "select-fld",
-                                value: row.container_id,
-                                dataSource: {
-                                  textField: "ConDescription",
-                                  valueField: "hims_d_lab_container_id",
-                                  data: labcontainer,
-                                },
-                                updateInternally: true,
-                                onChange: (e, value) => {
-                                  row.container_code = value;
-                                  forceUpdate(row);
-
-                                  // onchangegridcol(row, e);
-                                },
-                                onClear: (e) => {
-                                  row.container_code = null;
-                                  forceUpdate(row);
-                                },
-                              }}
-                            />
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          let display =
-                            labcontainer === undefined
-                              ? []
-                              : labcontainer.filter(
-                                  (f) =>
-                                    f.hims_d_lab_container_id ===
-                                    row.container_id
-                                );
-                          return row.collected === "Y" || row.billed === "N" ? (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].ConDescription
-                                : ""}
-                            </span>
-                          ) : (
-                            <AlgaehAutoComplete
-                              div={{ className: "noLabel" }}
-                              selector={{
-                                name: "container_id",
-                                className: "select-fld",
-                                value: row.container_id,
-                                dataSource: {
-                                  textField: "ConDescription",
-                                  valueField: "hims_d_lab_container_id",
-                                  data: labcontainer,
-                                },
-                                updateInternally: true,
-                                onChange: (e, value) => {
-                                  row.container_code = value;
-                                  forceUpdate(row);
-
-                                  // onchangegridcol(row, e);
-                                },
-                                onClear: (e) => {
-                                  row.container_code = null;
-                                  forceUpdate(row);
-                                },
-                              }}
-                            />
-                          );
-                        },
-                        others: {
-                          maxWidth: 200,
-                          // resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "send_out_test",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Send Out" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.collected === "Y" || row.billed === "N" ? (
-                            row.send_out_test === "Y" ? (
-                              <span className="badge badge-success">Yes</span>
-                            ) : (
-                              <span className="badge badge-danger">No</span>
-                            )
-                          ) : (
-                            <AlgaehAutoComplete
-                              div={{ className: "noLabel" }}
-                              selector={{
-                                name: "send_out_test",
-                                className: "select-fld",
-                                value: row.send_out_test,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: variableJson.FORMAT_YESNO,
-                                },
-                                updateInternally: true,
-                                onChange: (e, value) => {
-                                  row.send_out_test = value;
-                                  forceUpdate(row);
-
-                                  // onchangegridcol(row, e);
-                                },
-                                onClear: (e) => {
-                                  row.send_out_test = "N";
-                                  forceUpdate(row);
-                                },
-                              }}
-                            />
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          return row.collected === "Y" || row.billed === "N" ? (
-                            row.send_out_test === "Y" ? (
-                              <span className="badge badge-success">Yes</span>
-                            ) : (
-                              <span className="badge badge-danger">No</span>
-                            )
-                          ) : (
-                            <AlgaehAutoComplete
-                              div={{ className: "noLabel" }}
-                              selector={{
-                                name: "send_out_test",
-                                className: "select-fld",
-                                value: row.send_out_test,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: variableJson.FORMAT_YESNO,
-                                },
-                                updateInternally: true,
-                                onChange: (e, value) => {
-                                  row.send_out_test = value;
-                                  forceUpdate(row);
-
-                                  // onchangegridcol(row, e);
-                                },
-                                onClear: (e) => {
-                                  row.send_out_test = "N";
-                                  forceUpdate(row);
-                                },
-                              }}
-                            />
-                          );
-                        },
-                        others: {
-                          maxWidth: 150,
-                          // resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "send_in_test",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Send In" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.collected === "Y" || row.billed === "N" ? (
-                            row.send_in_test === "Y" ? (
-                              <span className="badge badge-success">Yes</span>
-                            ) : (
-                              <span className="badge badge-danger">No</span>
-                            )
-                          ) : (
-                            <AlgaehAutoComplete
-                              div={{ className: "noLabel" }}
-                              selector={{
-                                name: "send_in_test",
-                                className: "select-fld",
-                                value: row.send_in_test,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: variableJson.FORMAT_YESNO,
-                                },
-                                updateInternally: true,
-                                onChange: (e, value) => {
-                                  row.send_in_test = value;
-                                  forceUpdate(row);
-
-                                  // onchangegridcol(row, e);
-                                },
-                                onClear: (e) => {
-                                  row.send_in_test = "N";
-                                  forceUpdate(row);
-                                },
-                              }}
-                            />
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          return row.collected === "Y" || row.billed === "N" ? (
-                            row.send_in_test === "Y" ? (
-                              <span className="badge badge-success">Yes</span>
-                            ) : (
-                              <span className="badge badge-danger">No</span>
-                            )
-                          ) : (
-                            <AlgaehAutoComplete
-                              div={{ className: "noLabel" }}
-                              selector={{
-                                name: "send_in_test",
-                                className: "select-fld",
-                                value: row.send_in_test,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: variableJson.FORMAT_YESNO,
-                                },
-                                updateInternally: true,
-                                onChange: (e, value) => {
-                                  row.send_in_test = value;
-                                  forceUpdate(row);
-
-                                  // onchangegridcol(row, e);
-                                },
-                                onClear: (e) => {
-                                  row.send_in_test = "N";
-                                  forceUpdate(row);
-                                },
-                              }}
-                            />
-                          );
-                        },
-                        others: {
-                          maxWidth: 150,
-                          // show: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "collected_date",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "collected_date" }}
-                          />
-                        ),
-                        displayTemplate: (row) => {
-                          if (
-                            row.send_in_test === "Y" &&
-                            row.collected === "N"
-                          ) {
-                            return (
-                              <DatePicker
-                                name="collected_date"
-                                disabledDate={(d) =>
-                                  !d ||
-                                  d.isAfter(
-                                    moment().add(1, "days").format("YYYY-MM-DD")
-                                  )
-                                }
-                                format="YYYY-MM-DD HH:mm:ss"
-                                // minDate={new Date()}
-                                showTime
-                                onChange={(e) => {}}
-                                onOk={(ctrl) => {
-                                  if (
-                                    Date.parse(moment(ctrl)._d) >
-                                    Date.parse(new Date())
-                                  ) {
-                                    swalMessage({
-                                      title:
-                                        "Collected date cannot be future Date.",
-                                      type: "warning",
-                                    });
-                                  } else {
-                                    row["collected_date"] = moment(ctrl)._d;
-                                    forceUpdate(row);
+                              <Tooltip title="Cancel Sample" zIndex={99999}>
+                                <i
+                                  className="fa fa-times"
+                                  onClick={() =>
+                                    updateLabOrderServiceStatus(row)
                                   }
+                                />
+                              </Tooltip>
+                            </span>
+                          )}
+                        </>
+                      );
+                    },
+                    editorTemplate: (row) => {
+                      return (
+                        <span>
+                          {row.collected !== "Y" ? (
+                            <Tooltip title="Collect Specimen">
+                              <i
+                                style={{
+                                  pointerEvents:
+                                    row.billed === "N" ? "none" : "",
+                                  opacity: row.billed === "N" ? "0.1" : "",
+                                }}
+                                className="fas fa-check"
+                                onClick={() => {
+                                  CollectSample(row);
                                 }}
                               />
+                            </Tooltip>
+                          ) : (
+                            <Tooltip title="Generate Barcode">
+                              <i
+                                style={{
+                                  pointerEvents:
+                                    row.billed === "N" ? "none" : "",
+                                  opacity: row.billed === "N" ? "0.1" : "",
+                                }}
+                                className="fas fa-barcode"
+                                onClick={() => printBarcode(row)}
+                              />
+                            </Tooltip>
+                          )}
+                        </span>
+                      );
+                    },
+
+                    others: {
+                      maxWidth: 100,
+                      // resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  manualColumns,
+                  {
+                    fieldName: "billed",
+                    label: <AlgaehLabel label={{ fieldName: "billed" }} />,
+
+                    displayTemplate: (row) => {
+                      return row.billed === "Y" ? (
+                        <span className="badge badge-success">Billed</span>
+                      ) : (
+                        <span className="badge badge-danger">Not Billed</span>
+                      );
+                    },
+
+                    // displayTemplate: (row) => {
+                    //   return row.billed === "N"
+                    //     ? "Not Billed"
+                    //     : "Billed";
+                    // },
+                    editorTemplate: (row) => {
+                      return row.billed === "N" ? "Not Billed" : "Billed";
+                    },
+                    filterable: true,
+                    filterType: "choices",
+                    choices: [
+                      {
+                        name: "Not Billed",
+                        value: "N",
+                      },
+                      {
+                        name: "Billed",
+                        value: "Y",
+                      },
+                    ],
+                    others: {
+                      // resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "collected",
+                    label: <AlgaehLabel label={{ fieldName: "collected" }} />,
+                    filterable: true,
+                    filterType: "choices",
+                    choices: [
+                      {
+                        name: "No",
+                        value: "N",
+                      },
+                      {
+                        name: "Yes",
+                        value: "Y",
+                      },
+                    ],
+                    displayTemplate: (row) => {
+                      return row.collected === "Y" ? (
+                        <span className="badge badge-success">Yes</span>
+                      ) : (
+                        <span className="badge badge-danger">No</span>
+                      );
+                    },
+                    editorTemplate: (row) => {
+                      return row.collected === "Y" ? (
+                        <span className="badge badge-success">Yes</span>
+                      ) : (
+                        <span className="badge badge-danger">No</span>
+                      );
+                    },
+                  },
+                  {
+                    fieldName: "test_type",
+                    label: <AlgaehLabel label={{ fieldName: "proiorty" }} />,
+                    displayTemplate: (row) => {
+                      return (
+                        <span>
+                          {row.test_type === "S" ? "Stat" : "Routine"}
+                        </span>
+                      );
+                    },
+                    editorTemplate: (row) => {
+                      return (
+                        <span>
+                          {row.test_type === "S" ? "Stat" : "Routine"}
+                        </span>
+                      );
+                    },
+                    disabled: true,
+                    filterable: true,
+                    filterType: "choices",
+                    choices: [
+                      {
+                        name: "Stat",
+                        value: "S",
+                      },
+                      {
+                        name: "Routine",
+                        value: "R",
+                      },
+                    ],
+                    others: {
+                      // resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "service_code",
+                    label: <AlgaehLabel label={{ forceLabel: "Test Code" }} />,
+                    editorTemplate: (row) => {
+                      return row.service_code;
+                    },
+                    filterable: true,
+                    others: {
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "service_name",
+                    label: <AlgaehLabel label={{ forceLabel: "Test Name" }} />,
+                    editorTemplate: (row) => {
+                      return row.service_name;
+                    },
+                    filterable: true,
+                    others: {
+                      minWidth: 250,
+
+                      style: { textAlign: "left" },
+                    },
+                  },
+                  {
+                    fieldName: "sample_id",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "specimen_name" }} />
+                    ),
+                    displayTemplate: (row) => {
+                      let display =
+                        labspecimen === undefined
+                          ? []
+                          : labspecimen.filter(
+                              (f) => f.hims_d_lab_specimen_id === row.sample_id
                             );
-                          } else {
-                            return (
-                              <span>
-                                {moment(row.collected_date).isValid()
-                                  ? moment(row.collected_date).format(
-                                      "DD-MM-YYYY hh:mm"
-                                    )
-                                  : "------"}
-                              </span>
+                      return row.collected === "Y" || row.billed === "N" ? (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].SpeDescription
+                            : ""}
+                        </span>
+                      ) : (
+                        <AlgaehAutoComplete
+                          div={{ className: "noLabel" }}
+                          selector={{
+                            name: "sample_id",
+                            className: "select-fld",
+                            value: row.sample_id,
+                            dataSource: {
+                              textField: "SpeDescription",
+                              valueField: "hims_d_lab_specimen_id",
+                              data: labspecimen,
+                            },
+                            updateInternally: true,
+                            onChange: (e, value) => {
+                              row.sample_id = value;
+                              forceUpdate(row);
+
+                              // onchangegridcol(row, e);
+                            },
+                            onClear: (e) => {
+                              row.sample_id = null;
+                              forceUpdate(row);
+                            },
+                          }}
+                        />
+                      );
+                    },
+                    editorTemplate: (row) => {
+                      let display =
+                        labspecimen === undefined
+                          ? []
+                          : labspecimen.filter(
+                              (f) => f.hims_d_lab_specimen_id === row.sample_id
                             );
-                          }
-                        },
-                        editorTemplate: (row) => {
-                          return (
-                            <span>
-                              {moment(row.collected_date).isValid()
-                                ? moment(row.collected_date).format(
-                                    "DD-MM-YYYY hh:mm"
-                                  )
-                                : "------"}
-                            </span>
-                          );
-                        },
+                      return row.collected === "Y" || row.billed === "N" ? (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].SpeDescription
+                            : ""}
+                        </span>
+                      ) : (
+                        <AlgaehAutoComplete
+                          div={{ className: "noLabel" }}
+                          selector={{
+                            name: "sample_id",
+                            className: "select-fld",
+                            value: row.sample_id,
+                            dataSource: {
+                              textField: "SpeDescription",
+                              valueField: "hims_d_lab_specimen_id",
+                              data: labspecimen,
+                            },
+                            updateInternally: true,
+                            onChange: (e, value) => {
+                              row.sample_id = value;
+                              forceUpdate(row);
 
-                        others: {
-                          minWidth: 200,
-                          // show: false,
-                          style: { textAlign: "left" },
-                        },
-                      },
-                      {
-                        fieldName: "status",
-                        label: <AlgaehLabel label={{ fieldName: "Status" }} />,
-                        displayTemplate: (row) => {
-                          return row.status === "O"
-                            ? "Ordered"
-                            : row.status === "CL"
-                            ? "Collected"
-                            : row.status === "CN"
-                            ? "Test Canceled"
-                            : row.status === "CF"
-                            ? "Result Confirmed"
-                            : "Result Validated";
-                        },
-                        editorTemplate: (row) => {
-                          return (
-                            <AlgaehAutoComplete
-                              // error={errors2}
-                              div={{ className: "col " }}
-                              selector={{
-                                className: "select-fld",
-                                name: "status",
-                                value: row.status,
-                                onChange: (e, value) => {
-                                  row.status = value;
-                                },
-                                // others: { defaultValue: row.bed_id },
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: [
-                                    {
-                                      name: "Ordered",
-                                      value: "O",
-                                    },
-                                    {
-                                      name: "Collected",
-                                      value: "CL",
-                                    },
-                                    {
-                                      name: "Canceled",
-                                      value: "CN",
-                                    },
-                                    {
-                                      name: "Result Confirmed",
-                                      value: "CF",
-                                    },
-                                  ],
-                                },
-                                updateInternally: true,
-                                // others: {
-                                //   disabled:
-                                //     current.request_status === "APR" &&
-                                //     current.work_status === "COM",
-                                //   tabIndex: "4",
-                                // },
-                              }}
-                            />
-                          );
-                        },
-                        // others: {
-                        //   // resizable: false,
-                        //   style: { textAlign: "center" }
-                        // }
-                      },
+                              // onchangegridcol(row, e);
+                            },
+                            onClear: (e) => {
+                              row.sample_id = null;
+                              forceUpdate(row);
+                            },
+                          }}
+                        />
+                      );
+                    },
+                    others: {
+                      maxWidth: 200,
+                      // resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "container_id",
+                    label: <AlgaehLabel label={{ fieldName: "Container" }} />,
+                    displayTemplate: (row) => {
+                      let display =
+                        labcontainer === undefined
+                          ? []
+                          : labcontainer.filter(
+                              (f) =>
+                                f.hims_d_lab_container_id === row.container_id
+                            );
+                      return row.collected === "Y" || row.billed === "N" ? (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].ConDescription
+                            : ""}
+                        </span>
+                      ) : (
+                        <AlgaehAutoComplete
+                          div={{ className: "noLabel" }}
+                          selector={{
+                            name: "container_id",
+                            className: "select-fld",
+                            value: row.container_id,
+                            dataSource: {
+                              textField: "ConDescription",
+                              valueField: "hims_d_lab_container_id",
+                              data: labcontainer,
+                            },
+                            updateInternally: true,
+                            onChange: (e, value) => {
+                              row.container_code = value;
+                              forceUpdate(row);
 
-                      {
-                        fieldName: "collected_by",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "collected_by" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          let display =
-                            userdrtails === undefined
-                              ? []
-                              : userdrtails.filter(
-                                  (f) =>
-                                    f.algaeh_d_app_user_id === row.collected_by
-                                );
+                              // onchangegridcol(row, e);
+                            },
+                            onClear: (e) => {
+                              row.container_code = null;
+                              forceUpdate(row);
+                            },
+                          }}
+                        />
+                      );
+                    },
+                    editorTemplate: (row) => {
+                      let display =
+                        labcontainer === undefined
+                          ? []
+                          : labcontainer.filter(
+                              (f) =>
+                                f.hims_d_lab_container_id === row.container_id
+                            );
+                      return row.collected === "Y" || row.billed === "N" ? (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].ConDescription
+                            : ""}
+                        </span>
+                      ) : (
+                        <AlgaehAutoComplete
+                          div={{ className: "noLabel" }}
+                          selector={{
+                            name: "container_id",
+                            className: "select-fld",
+                            value: row.container_id,
+                            dataSource: {
+                              textField: "ConDescription",
+                              valueField: "hims_d_lab_container_id",
+                              data: labcontainer,
+                            },
+                            updateInternally: true,
+                            onChange: (e, value) => {
+                              row.container_code = value;
+                              forceUpdate(row);
 
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].username
-                                : ""}
-                            </span>
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          let display =
-                            userdrtails === undefined
-                              ? []
-                              : userdrtails.filter(
-                                  (f) =>
-                                    f.algaeh_d_app_user_id === row.collected_by
-                                );
+                              // onchangegridcol(row, e);
+                            },
+                            onClear: (e) => {
+                              row.container_code = null;
+                              forceUpdate(row);
+                            },
+                          }}
+                        />
+                      );
+                    },
+                    others: {
+                      maxWidth: 200,
+                      // resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "send_out_test",
+                    label: <AlgaehLabel label={{ forceLabel: "Send Out" }} />,
+                    displayTemplate: (row) => {
+                      return row.collected === "Y" || row.billed === "N" ? (
+                        row.send_out_test === "Y" ? (
+                          <span className="badge badge-success">Yes</span>
+                        ) : (
+                          <span className="badge badge-danger">No</span>
+                        )
+                      ) : (
+                        <AlgaehAutoComplete
+                          div={{ className: "noLabel" }}
+                          selector={{
+                            name: "send_out_test",
+                            className: "select-fld",
+                            value: row.send_out_test,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: variableJson.FORMAT_YESNO,
+                            },
+                            updateInternally: true,
+                            onChange: (e, value) => {
+                              row.send_out_test = value;
+                              forceUpdate(row);
 
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].username
-                                : ""}
-                            </span>
-                          );
-                        },
-                        others: {
-                          minWidth: 200,
-                          // show: false,
-                          style: { textAlign: "left" },
-                        },
-                      },
+                              // onchangegridcol(row, e);
+                            },
+                            onClear: (e) => {
+                              row.send_out_test = "N";
+                              forceUpdate(row);
+                            },
+                          }}
+                        />
+                      );
+                    },
+                    editorTemplate: (row) => {
+                      return row.collected === "Y" || row.billed === "N" ? (
+                        row.send_out_test === "Y" ? (
+                          <span className="badge badge-success">Yes</span>
+                        ) : (
+                          <span className="badge badge-danger">No</span>
+                        )
+                      ) : (
+                        <AlgaehAutoComplete
+                          div={{ className: "noLabel" }}
+                          selector={{
+                            name: "send_out_test",
+                            className: "select-fld",
+                            value: row.send_out_test,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: variableJson.FORMAT_YESNO,
+                            },
+                            updateInternally: true,
+                            onChange: (e, value) => {
+                              row.send_out_test = value;
+                              forceUpdate(row);
 
-                      {
-                        fieldName: "barcode_gen",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Barcode Gen Date" }}
+                              // onchangegridcol(row, e);
+                            },
+                            onClear: (e) => {
+                              row.send_out_test = "N";
+                              forceUpdate(row);
+                            },
+                          }}
+                        />
+                      );
+                    },
+                    others: {
+                      maxWidth: 150,
+                      // resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "send_in_test",
+                    label: <AlgaehLabel label={{ forceLabel: "Send In" }} />,
+                    displayTemplate: (row) => {
+                      return row.collected === "Y" || row.billed === "N" ? (
+                        row.send_in_test === "Y" ? (
+                          <span className="badge badge-success">Yes</span>
+                        ) : (
+                          <span className="badge badge-danger">No</span>
+                        )
+                      ) : (
+                        <AlgaehAutoComplete
+                          div={{ className: "noLabel" }}
+                          selector={{
+                            name: "send_in_test",
+                            className: "select-fld",
+                            value: row.send_in_test,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: variableJson.FORMAT_YESNO,
+                            },
+                            updateInternally: true,
+                            onChange: (e, value) => {
+                              row.send_in_test = value;
+                              forceUpdate(row);
+
+                              // onchangegridcol(row, e);
+                            },
+                            onClear: (e) => {
+                              row.send_in_test = "N";
+                              forceUpdate(row);
+                            },
+                          }}
+                        />
+                      );
+                    },
+                    editorTemplate: (row) => {
+                      return row.collected === "Y" || row.billed === "N" ? (
+                        row.send_in_test === "Y" ? (
+                          <span className="badge badge-success">Yes</span>
+                        ) : (
+                          <span className="badge badge-danger">No</span>
+                        )
+                      ) : (
+                        <AlgaehAutoComplete
+                          div={{ className: "noLabel" }}
+                          selector={{
+                            name: "send_in_test",
+                            className: "select-fld",
+                            value: row.send_in_test,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: variableJson.FORMAT_YESNO,
+                            },
+                            updateInternally: true,
+                            onChange: (e, value) => {
+                              row.send_in_test = value;
+                              forceUpdate(row);
+
+                              // onchangegridcol(row, e);
+                            },
+                            onClear: (e) => {
+                              row.send_in_test = "N";
+                              forceUpdate(row);
+                            },
+                          }}
+                        />
+                      );
+                    },
+                    others: {
+                      maxWidth: 150,
+                      // show: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "collected_date",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "collected_date" }} />
+                    ),
+                    displayTemplate: (row) => {
+                      if (row.send_in_test === "Y" && row.collected === "N") {
+                        return (
+                          <DatePicker
+                            name="collected_date"
+                            disabledDate={(d) =>
+                              !d ||
+                              d.isAfter(
+                                moment().add(1, "days").format("YYYY-MM-DD")
+                              )
+                            }
+                            format="YYYY-MM-DD HH:mm:ss"
+                            // minDate={new Date()}
+                            showTime
+                            onChange={(e) => {}}
+                            onOk={(ctrl) => {
+                              if (
+                                Date.parse(moment(ctrl)._d) >
+                                Date.parse(new Date())
+                              ) {
+                                swalMessage({
+                                  title:
+                                    "Collected date cannot be future Date.",
+                                  type: "warning",
+                                });
+                              } else {
+                                row["collected_date"] = moment(ctrl)._d;
+                                forceUpdate(row);
+                              }
+                            }}
                           />
-                        ),
-                        displayTemplate: (row) => {
-                          return (
-                            <span>
-                              {moment(row.barcode_gen).isValid()
-                                ? moment(row.barcode_gen).format(
-                                    "DD-MM-YYYY hh:mm"
-                                  )
-                                : "------"}
-                            </span>
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          return (
-                            <span>
-                              {moment(row.barcode_gen).isValid()
-                                ? moment(row.barcode_gen).format(
-                                    "DD-MM-YYYY hh:mm"
-                                  )
-                                : "------"}
-                            </span>
-                          );
-                        },
-                        others: {
-                          minWidth: 200,
-                          // show: false,
-                          style: { textAlign: "left" },
-                        },
-                      },
-                      {
-                        fieldName: "remarks",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Rejection Remarks" }}
-                          />
-                        ),
-                        editorTemplate: (row) => {
-                          return row.remarks;
-                        },
-                        others: {
-                          minWidth: 200,
-                          // resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                    ]}
-                    keyId="patient_code"
-                    // dataSource={{
-                    data={test_details}
-                    // }}
-                    // events={{
-                    //   onSave: (row) => updateLabOrderServiceStatus(row),
-                    // }}
-                    filter={true}
-                    noDataText="No data available for selected period"
-                    // isEditable={editableGrid}
-                    pageOptions={{ rows: 50, page: 1 }}
-                    isFilterable={true}
-                    pagination={true}
-                  />
-                </div>
-              </div>
+                        );
+                      } else {
+                        return (
+                          <span>
+                            {moment(row.collected_date).isValid()
+                              ? moment(row.collected_date).format(
+                                  "DD-MM-YYYY hh:mm"
+                                )
+                              : "------"}
+                          </span>
+                        );
+                      }
+                    },
+                    editorTemplate: (row) => {
+                      return (
+                        <span>
+                          {moment(row.collected_date).isValid()
+                            ? moment(row.collected_date).format(
+                                "DD-MM-YYYY hh:mm"
+                              )
+                            : "------"}
+                        </span>
+                      );
+                    },
+
+                    others: {
+                      minWidth: 200,
+                      // show: false,
+                      style: { textAlign: "left" },
+                    },
+                  },
+                  {
+                    fieldName: "status",
+                    label: <AlgaehLabel label={{ fieldName: "Status" }} />,
+                    displayTemplate: (row) => {
+                      return row.status === "O"
+                        ? "Ordered"
+                        : row.status === "CL"
+                        ? "Collected"
+                        : row.status === "CN"
+                        ? "Test Canceled"
+                        : row.status === "CF"
+                        ? "Result Confirmed"
+                        : "Result Validated";
+                    },
+                    editorTemplate: (row) => {
+                      return (
+                        <AlgaehAutoComplete
+                          // error={errors2}
+                          div={{ className: "col " }}
+                          selector={{
+                            className: "select-fld",
+                            name: "status",
+                            value: row.status,
+                            onChange: (e, value) => {
+                              row.status = value;
+                            },
+                            // others: { defaultValue: row.bed_id },
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: [
+                                {
+                                  name: "Ordered",
+                                  value: "O",
+                                },
+                                {
+                                  name: "Collected",
+                                  value: "CL",
+                                },
+                                {
+                                  name: "Canceled",
+                                  value: "CN",
+                                },
+                                {
+                                  name: "Result Confirmed",
+                                  value: "CF",
+                                },
+                              ],
+                            },
+                            updateInternally: true,
+                            // others: {
+                            //   disabled:
+                            //     current.request_status === "APR" &&
+                            //     current.work_status === "COM",
+                            //   tabIndex: "4",
+                            // },
+                          }}
+                        />
+                      );
+                    },
+                    // others: {
+                    //   // resizable: false,
+                    //   style: { textAlign: "center" }
+                    // }
+                  },
+
+                  {
+                    fieldName: "collected_by",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "collected_by" }} />
+                    ),
+                    displayTemplate: (row) => {
+                      let display =
+                        userdrtails === undefined
+                          ? []
+                          : userdrtails.filter(
+                              (f) => f.algaeh_d_app_user_id === row.collected_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].username
+                            : ""}
+                        </span>
+                      );
+                    },
+                    editorTemplate: (row) => {
+                      let display =
+                        userdrtails === undefined
+                          ? []
+                          : userdrtails.filter(
+                              (f) => f.algaeh_d_app_user_id === row.collected_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].username
+                            : ""}
+                        </span>
+                      );
+                    },
+                    others: {
+                      minWidth: 200,
+                      // show: false,
+                      style: { textAlign: "left" },
+                    },
+                  },
+
+                  {
+                    fieldName: "barcode_gen",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Barcode Gen Date" }} />
+                    ),
+                    displayTemplate: (row) => {
+                      return (
+                        <span>
+                          {moment(row.barcode_gen).isValid()
+                            ? moment(row.barcode_gen).format("DD-MM-YYYY hh:mm")
+                            : "------"}
+                        </span>
+                      );
+                    },
+                    editorTemplate: (row) => {
+                      return (
+                        <span>
+                          {moment(row.barcode_gen).isValid()
+                            ? moment(row.barcode_gen).format("DD-MM-YYYY hh:mm")
+                            : "------"}
+                        </span>
+                      );
+                    },
+                    others: {
+                      minWidth: 200,
+                      // show: false,
+                      style: { textAlign: "left" },
+                    },
+                  },
+                  {
+                    fieldName: "remarks",
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "Rejection Remarks" }}
+                      />
+                    ),
+                    editorTemplate: (row) => {
+                      return row.remarks;
+                    },
+                    others: {
+                      minWidth: 200,
+                      // resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                ]}
+                keyId="patient_code"
+                // dataSource={{
+                data={test_details}
+                // }}
+                // events={{
+                //   onSave: (row) => updateLabOrderServiceStatus(row),
+                // }}
+                filter={true}
+                noDataText="No data available for selected period"
+                // isEditable={editableGrid}
+                pageOptions={{ rows: 50, page: 1 }}
+                isFilterable={true}
+                pagination={true}
+              />
             </div>
           </div>
           {/* <div className=" popupFooter">
