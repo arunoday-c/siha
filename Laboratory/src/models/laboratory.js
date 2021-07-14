@@ -158,6 +158,11 @@ const labModal = {
         inputValues.push(req.query.status);
       }
 
+      if (req.query.sample_status != null) {
+        _stringData += " and LS.status=?";
+        inputValues.push(req.query.sample_status);
+      }
+
       if (req.query.send_sms) {
         _stringData += " and LO.send_sms=?";
         inputValues.push(req.query.send_sms);
