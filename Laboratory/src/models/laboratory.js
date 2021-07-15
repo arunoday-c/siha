@@ -6,11 +6,13 @@ import pad from "node-string-pad";
 import moment from "moment";
 import mysql from "mysql";
 import _ from "lodash";
-import newAxios from "algaeh-utilities/axios";
-import algaehMail from "algaeh-utilities/mail-send";
-
 import axios from "axios";
+import algaehMail from "algaeh-utilities/mail-send";
+import "regenerator-runtime/runtime";
+import dotenv from "dotenv";
+if (process.env.NODE_ENV !== "production") dotenv.config();
 
+const { PORTAL_HOST } = process.env;
 // export default
 const labModal = {
   getLabOrderedServices_old: (req, res, next) => {
@@ -1111,43 +1113,6 @@ const labModal = {
       });
     }
   },
-  updateLabOrderServiceStatus: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    try {
-      // cancelled
-      // console.log("req.body", req.body.hims_f_lab_order_id);
-
-      _mysql
-        .executeQuery({
-          query: `
-          UPDATE hims_f_lab_order L 
-          INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id 
-          set L.status='O', L.updated_by=?, L.updated_date=?, S.status='N', S.collected='N',
-          S.updated_by=?, S.updated_date=? where L.hims_f_lab_order_id in (?);`,
-          values: [
-            req["userIdentity"].algaeh_d_app_user_id,
-            new Date(),
-            req["userIdentity"].algaeh_d_app_user_id,
-            new Date(),
-            req.body.hims_f_lab_order_id,
-          ],
-          printQuery: true,
-        })
-        .then((result) => {
-          req.records = result;
-          _mysql.releaseConnection();
-          next();
-        })
-        .catch((error) => {
-          _mysql.releaseConnection();
-          next(error);
-        });
-    } catch (e) {
-      _mysql.releaseConnection();
-
-      next(e);
-    }
-  },
 
   updateHassanNo: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -1197,276 +1162,6 @@ const labModal = {
     }
   },
 
-  updateLabOrderServices: async (req, res, next) => {
-    const _mysql = new algaehMysql();
-    try {
-      let inputParam = { ...req.body };
-      // console.log("updateLabOrderServices", inputParam);
-      // consol.log("updateLabOrderServices");
-
-      return new Promise((resolve, reject) => {
-        let strQuery = "";
-
-        // console.log("hims_d_lab_sample_id", inputParam.hims_d_lab_sample_id);
-        if (inputParam.hims_d_lab_sample_id === null) {
-          strQuery = mysql.format(
-            "SELECT hims_d_lab_container_id AS container_id, container_id AS container_code \
-            FROM hims_d_lab_container WHERE hims_d_lab_container_id=?; \
-            SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?; \
-            insert into hims_f_lab_sample (`order_id`,`sample_id`, \
-            `container_id`,`collected`,`status`, `collected_by`, `collected_date`, `barcode_gen`, hospital_id) values (?,?,?,?,?,?,?,?,?); \
-            INSERT IGNORE INTO `hims_m_lab_specimen` (test_id, specimen_id, container_id, container_code, created_by, created_date, \
-              updated_by, updated_date) VALUE(?,?,?,?,?,?,?,?);",
-            [
-              inputParam.container_id,
-              inputParam.hims_d_hospital_id,
-              inputParam.order_id,
-              inputParam.sample_id,
-              inputParam.container_id,
-              inputParam.collected,
-              inputParam.status,
-              req.userIdentity.algaeh_d_app_user_id,
-              new Date(),
-              new Date(),
-              inputParam.hims_d_hospital_id,
-              inputParam.test_id,
-              inputParam.sample_id,
-              inputParam.container_id,
-              inputParam.container_code,
-              req.userIdentity.algaeh_d_app_user_id,
-              new Date(),
-              req.userIdentity.algaeh_d_app_user_id,
-              new Date(),
-            ]
-          );
-        } else {
-          strQuery = mysql.format(
-            "SELECT container_id as container_code FROM hims_d_lab_container \
-            where hims_d_lab_container_id=?;\
-            SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;",
-            [inputParam.container_id, inputParam.hims_d_hospital_id]
-          );
-        }
-        _mysql
-          .executeQueryWithTransaction({
-            query: strQuery,
-            printQuery: true,
-          })
-          .then((update_lab_sample) => {
-            inputParam.container_code = update_lab_sample[0][0].container_code;
-            inputParam.lab_location_code =
-              update_lab_sample[1][0].lab_location_code;
-            resolve(update_lab_sample);
-          })
-          .catch((e) => {
-            _mysql.rollBackTransaction(() => {
-              next(e);
-              reject(e);
-            });
-          });
-      })
-        .then((result) => {
-          console.log("inputParam.lab_id_number", inputParam.lab_id_number);
-          if (inputParam.lab_id_number != null) {
-            _mysql
-              .executeQuery({
-                query: `update hims_f_lab_order L  \
-                  INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id SET S.container_id=${
-                    inputParam.container_id
-                  }, S.sample_id=${inputParam.sample_id},S.collected='${
-                  inputParam.collected
-                }', L.status='CL', send_out_test='${
-                  inputParam.send_out_test
-                }',send_in_test='${inputParam.send_in_test}',S.collected_by=${
-                  req.userIdentity.algaeh_d_app_user_id
-                }, S.collected_date ='${
-                  inputParam.collected_date ? inputParam.collected_date : now()
-                }', L.barcode_gen = now() where hims_f_lab_order_id=${
-                  inputParam.hims_f_lab_order_id
-                }`,
-                // values: condition,
-                printQuery: true,
-              })
-              .then((result) => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = {
-                    collected: inputParam.collected,
-                    collected_by: req.userIdentity.algaeh_d_app_user_id,
-                    collected_date: new Date(),
-                    barcode_gen: new Date(),
-                    status: "CL",
-                  };
-                  next();
-                });
-              })
-              .catch((e) => {
-                _mysql.rollBackTransaction(() => {
-                  next(e);
-                });
-              });
-          } else {
-            let _date = new Date();
-            _date = moment(_date).format("YYYY-MM-DD");
-            return new Promise((resolve, reject) => {
-              _mysql
-                .executeQuery({
-                  query:
-                    "select number,hims_m_hospital_container_mapping_id from hims_m_hospital_container_mapping \
-                  where hospital_id =? and container_id=? and date =?; SELECT lab_id_number FROM hims_f_lab_order L \
-                  INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id \
-                  where L.visit_id=? and S.sample_id=? and S.container_id=? and L.billed='Y' and S.collected='Y';",
-                  values: [
-                    inputParam.hims_d_hospital_id,
-                    inputParam.container_id,
-                    _date,
-                    inputParam.visit_id,
-                    inputParam.sample_id,
-                    inputParam.container_id,
-                  ],
-                  printQuery: true,
-                })
-                .then((container_mapping) => {
-                  resolve(container_mapping);
-                })
-                .catch((e) => {
-                  _mysql.rollBackTransaction(() => {
-                    next(e);
-                    reject(e);
-                  });
-                });
-            })
-              .then((result_data) => {
-                const record = result_data[0];
-                const test_exists = result_data[1];
-                let query = "";
-                let condition = [];
-                let padNum = "";
-                let labIdNumber = "";
-                let _newNumber = 1;
-                // console.log("test_exists", test_exists);
-                if (
-                  test_exists.length === 0 ||
-                  test_exists[0].labIdNumber === null
-                ) {
-                  // console.log("11");
-                  if (record != null && record.length > 0) {
-                    _newNumber = parseInt(record[0].number, 10);
-                    _newNumber = _newNumber + 1;
-                    padNum = pad(String(_newNumber), 3, "LEFT", "0");
-                    condition.push(
-                      _newNumber,
-                      req.userIdentity.algaeh_d_app_user_id,
-                      record[0].hims_m_hospital_container_mapping_id
-                    );
-
-                    condition.push;
-                    query =
-                      "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() \
-                  where hims_m_hospital_container_mapping_id =?;";
-                  } else {
-                    condition.push(
-                      inputParam.hims_d_hospital_id,
-                      inputParam.container_id,
-                      _date,
-                      1,
-                      req.userIdentity.algaeh_d_app_user_id,
-                      req.userIdentity.algaeh_d_app_user_id
-                    );
-
-                    query =
-                      "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,\
-                        `number`,`created_by`,`updated_by`) values (?,?,?,?,?,?);";
-                  }
-                  // console.log("query", query);
-                  padNum = pad(String(_newNumber), 3, "LEFT", "0");
-                  const dayOfYear = moment().dayOfYear();
-                  labIdNumber =
-                    inputParam.lab_location_code +
-                    moment().format("YY") +
-                    dayOfYear +
-                    inputParam.container_code +
-                    padNum;
-                } else {
-                  labIdNumber = test_exists[0].lab_id_number;
-                }
-
-                // console.log("labIdNumber", labIdNumber);
-                // consol.log("labIdNumber", labIdNumber);
-                _mysql
-                  .executeQuery({
-                    query:
-                      query +
-                      `UPDATE hims_f_lab_order L 
-                      INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id 
-                      SET S.container_id=${
-                        inputParam.container_id
-                      }, S.sample_id=${inputParam.sample_id}, 
-                      S.collected='${inputParam.collected}', S.status='${
-                        inputParam.status
-                      }', 
-                      S.collected_by=${req.userIdentity.algaeh_d_app_user_id},
-                      S.collected_date =${
-                        inputParam.collected_date
-                          ? `'${inputParam.collected_date}'`
-                          : `now()`
-                      }, S.barcode_gen = now(), lab_id_number ='${labIdNumber}'
-                      ,L.status='CL', send_out_test='${
-                        inputParam.send_out_test
-                      }',send_in_test='${inputParam.send_in_test}'
-                      where L.hims_f_lab_order_id=${
-                        inputParam.hims_f_lab_order_id
-                      };`,
-                    values: condition,
-                    printQuery: true,
-                  })
-                  .then((result) => {
-                    _mysql.commitTransaction(() => {
-                      // console.log("completedddddddddddd");
-                      _mysql.releaseConnection();
-                      req.records = {
-                        collected: inputParam.collected,
-                        collected_by: req.userIdentity.algaeh_d_app_user_id,
-                        collected_date: inputParam.collected_date
-                          ? inputParam.collected_date
-                          : new Date(),
-                        send_in_test: inputParam.send_in_test,
-                        lab_id_number: labIdNumber,
-                        status: "CL",
-                      };
-                      // if (inputParam.bulkBarcode) {
-                      //   return;
-                      // } else {
-                      next();
-                      // }
-                    });
-                  })
-                  .catch((e) => {
-                    _mysql.rollBackTransaction(() => {
-                      next(e);
-                    });
-                  });
-              })
-              .catch((e) => {
-                _mysql.rollBackTransaction(() => {
-                  next(e);
-                });
-              });
-          }
-          // }
-        })
-        .catch((e) => {
-          _mysql.rollBackTransaction(() => {
-            next(e);
-          });
-        });
-    } catch (e) {
-      // _mysql.releaseConnection();
-      _mysql.rollBackTransaction(() => {
-        next(e);
-      });
-    }
-  },
   getOrderByTestCategory: (req, res, next) => {
     const _mysql = new algaehMysql();
 
@@ -1540,7 +1235,7 @@ const labModal = {
           printQuery: true,
         })
         .then((result) => {
-          console.log("result", result);
+          // console.log("result", result);
           const arrangedData = _.chain(result)
             .groupBy((g) => moment(g.ordered_date).format("YYYY-MM-DD"))
             .map((details, key) => {
@@ -1838,22 +1533,51 @@ const labModal = {
             _mysql
               .executeQuery({
                 query:
-                  "UPDATE `hims_f_lab_order` SET `status`='O',updated_date=?,updated_by=?  WHERE `hims_f_lab_order_id`=?;",
+                  "UPDATE `hims_f_lab_order` SET `status`='O',updated_date=?,updated_by=?  WHERE `hims_f_lab_order_id`=?;\
+                  SELECT L.service_id, visit_code, primary_id_no FROM hims_f_lab_order L \
+                  INNER JOIN hims_f_patient P ON P.hims_d_patient_id=L.patient_id\
+                  INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id=L.visit_id \
+                  where hims_f_lab_order_id = ?;",
                 values: [
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
                   input.order_id,
+                  input.order_id,
                 ],
                 printQuery: true,
               })
-              .then((lab_order) => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = lab_order;
-                  next();
-                });
+              .then(async (lab_order) => {
+                if (input.portal_exists === "Y") {
+                  const portal_input = lab_order[1][0];
+                  const portal_data = {
+                    service_id: portal_input.service_id,
+                    visit_code: portal_input.visit_code,
+                    patient_identity: portal_input.primary_id_no,
+                    service_status: "ORDERED",
+                  };
+                  // console.log("portal_data", portal_data);
+                  await axios
+                    .post(
+                      `${PORTAL_HOST}/info/deletePatientService`,
+                      portal_data
+                    )
+                    .catch((e) => {
+                      throw e;
+                    });
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = lab_order;
+                    next();
+                  });
+                } else {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = lab_order;
+                    next();
+                  });
+                }
               })
-              .catch((error) => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
@@ -2323,7 +2047,7 @@ const labModal = {
   updateMicroResultEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
-    console.log("updateMicroResultEntry: ");
+    // console.log("updateMicroResultEntry: ");
     try {
       let inputParam = req.body;
 
@@ -2337,9 +2061,9 @@ const labModal = {
       let strQuery = "";
       let updateQuery = "";
 
-      console.log("inputParam.status: ", inputParam.status);
+      // console.log("inputParam.status: ", inputParam.status);
       if (inputParam.status == "E") {
-        console.log("data_exists: ", inputParam.data_exists);
+        // console.log("data_exists: ", inputParam.data_exists);
         if (inputParam.bacteria_type === "G") {
           if (inputParam.data_exists == true) {
             for (let i = 0; i < inputParam.microAntbiotic.length; i++) {
@@ -2438,12 +2162,12 @@ const labModal = {
           "'  ";
       }
 
-      console.log("qry: ", qry);
+      // console.log("qry: ", qry);
 
       _mysql
         .executeQueryWithTransaction(qry)
         .then((results) => {
-          console.log("results: ", results);
+          // console.log("results: ", results);
           if (results != null) {
             _mysql
               .executeQuery({
@@ -2466,7 +2190,7 @@ const labModal = {
                 printQuery: true,
               })
               .then((update_lab_order) => {
-                console.log("update_lab_order: ", update_lab_order);
+                // console.log("update_lab_order: ", update_lab_order);
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
                   req.records = {
@@ -2893,124 +2617,391 @@ const labModal = {
 };
 export default labModal;
 
-export async function bulkSampleCollection(req, res, next) {
+export async function updateLabOrderServices(req, res, next) {
   const _mysql = new algaehMysql();
-
   try {
-    const input = req.body;
-    console.log("inputttttttttt", input.bulkCollection);
-    // consol.log("inputttttttttt", input.bulkCollection);
-    // for (let i = 0; i < input.bulkCollection.length; i++) {
-    //   req.body = {
-    //     ...input.bulkCollection[i],
-    //     bulkBarcode:
-    //       parseInt(i) + 1 === input.bulkCollection.length ? false : true,
-    //     // portal_exits: input.portal_exits,
-    //   };
-    //   console.log("inputttttttttt", req.body);
-    //   (function (i) {
-    input.bulkCollection.forEach((item, i) => {
-      req.body = {
-        ...item,
+    let inputParam = { ...req.body };
+    // console.log("updateLabOrderServices", inputParam);
+    // consol.log("updateLabOrderServices");
 
-        // portal_exits: input.portal_exits,
-      };
-      setTimeout(async () => {
-        //   console.log("inputttttttttt", i);
+    // return new Promise((resolve, reject) => {
+    let strQuery = "";
+    let _date = new Date();
+    _date = moment(_date).format("YYYY-MM-DD");
 
-        await labModal.updateLabOrderServices(req, res, next);
-        // .then((res) => {
+    // console.log("hims_d_lab_sample_id", inputParam.hims_d_lab_sample_id);
+    if (inputParam.hims_d_lab_sample_id === null) {
+      strQuery = mysql.format(
+        "SELECT hims_d_lab_container_id AS container_id, container_id AS container_code \
+          FROM hims_d_lab_container WHERE hims_d_lab_container_id=?; \
+          SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?; \
+          select number,hims_m_hospital_container_mapping_id from hims_m_hospital_container_mapping \
+          where hospital_id =? and container_id=? and date =?; SELECT lab_id_number FROM hims_f_lab_order L \
+          INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id \
+          where L.visit_id=? and S.sample_id=? and S.container_id=? and L.billed='Y' and S.collected='Y';\
+          INSERT INTO hims_f_lab_sample (`order_id`,`sample_id`, \
+          `container_id`,`collected`,`status`, `collected_by`, `collected_date`, `barcode_gen`, hospital_id) values (?,?,?,?,?,?,?,?,?); \
+          INSERT IGNORE INTO `hims_m_lab_specimen` (test_id, specimen_id, container_id, container_code, created_by, created_date, \
+            updated_by, updated_date) VALUE(?,?,?,?,?,?,?,?);",
+        [
+          inputParam.container_id,
+          inputParam.hims_d_hospital_id,
+          inputParam.hims_d_hospital_id,
+          inputParam.container_id,
+          _date,
+          inputParam.visit_id,
+          inputParam.sample_id,
+          inputParam.container_id,
 
-        // const portal_data = {
-        //   service_id: item.service_id,
-        //   visit_code: item.visit_code,
-        //   patient_identity: item.primary_id_no,
-        //   service_status: "SAMPLE COLLECTED",
-        // };
-        // axios
-        //   .post(`${input.PORTAL_HOST}/info/deletePatientService`, portal_data)
-        //   .then(function (response) {
-        //     //handle success
-        //     console.log(response);
-        //   })
-        //   .catch(function (response) {
-        //     //handle error
-        //     _mysql.releaseConnection();
-        //     next();
-        //     console.log(response);
-        //   });
-      }, 3000 * i);
-    });
-    // setTimeout(async () => {
-    //   //   console.log("inputttttttttt", i);
+          inputParam.order_id,
+          inputParam.sample_id,
+          inputParam.container_id,
+          inputParam.collected,
+          inputParam.status,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          new Date(),
+          inputParam.hims_d_hospital_id,
+          inputParam.test_id,
+          inputParam.sample_id,
+          inputParam.container_id,
+          inputParam.container_code,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+        ]
+      );
+    } else {
+      strQuery = mysql.format(
+        "SELECT container_id as container_code FROM hims_d_lab_container \
+          where hims_d_lab_container_id=?;\
+          SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;\
+          select number,hims_m_hospital_container_mapping_id from hims_m_hospital_container_mapping \
+          where hospital_id =? and container_id=? and date =?; SELECT lab_id_number FROM hims_f_lab_order L \
+          INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id \
+          where L.visit_id=? and S.sample_id=? and S.container_id=? and L.billed='Y' and S.collected='Y';",
+        [
+          inputParam.container_id,
+          inputParam.hims_d_hospital_id,
+          inputParam.hims_d_hospital_id,
+          inputParam.container_id,
+          _date,
+          inputParam.visit_id,
+          inputParam.sample_id,
+          inputParam.container_id,
+        ]
+      );
+    }
+    strQuery += "";
+    _mysql
+      .executeQueryWithTransaction({
+        query: strQuery,
+        printQuery: true,
+      })
+      .then((update_lab_sample) => {
+        inputParam.container_code = update_lab_sample[0][0].container_code;
+        inputParam.lab_location_code =
+          update_lab_sample[1][0].lab_location_code;
+        // console.log("inputParam.lab_id_number", inputParam.lab_id_number);
+        const today_date = moment().format("YYYY-MM-DD HH:mm:ss");
+        if (inputParam.lab_id_number != null) {
+          _mysql
+            .executeQuery({
+              query: `update hims_f_lab_order L  \
+                      INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id SET S.container_id=${
+                        inputParam.container_id
+                      }, S.sample_id=${inputParam.sample_id},S.collected='${
+                inputParam.collected
+              }', L.status='CL', send_out_test='${
+                inputParam.send_out_test
+              }',send_in_test='${inputParam.send_in_test}',S.collected_by=${
+                req.userIdentity.algaeh_d_app_user_id
+              }, S.collected_date ='${
+                inputParam.collected_date
+                  ? `${inputParam.collected_date}`
+                  : `${today_date}`
+              }', L.barcode_gen = now() where hims_f_lab_order_id=${
+                inputParam.hims_f_lab_order_id
+              }`,
+              // values: condition,
+              printQuery: true,
+            })
+            .then(async (result) => {
+              if (inputParam.portal_exists === "Y") {
+                const portal_data = {
+                  service_id: inputParam.service_id,
+                  visit_code: inputParam.visit_code,
+                  patient_identity: inputParam.primary_id_no,
+                  service_status: "SAMPLE COLLECTED",
+                };
+                await axios
+                  .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+                  .catch((e) => {
+                    throw e;
+                  });
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = {
+                    collected: inputParam.collected,
+                  };
+                  next();
+                });
+              } else {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = {
+                    collected: inputParam.collected,
+                  };
+                  next();
+                });
+              }
+            })
+            .catch((e) => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        } else {
+          // console.log("update_lab_sample", update_lab_sample);
+          const record = update_lab_sample[2];
+          const test_exists = update_lab_sample[3];
+          let query = "";
+          let condition = [];
+          let padNum = "";
+          let labIdNumber = "";
+          let _newNumber = 1;
 
-    //   await labModal.updateLabOrderServices(req, res, next);
-    //   // .then((res) => {
+          // console.log("test_exists", test_exists);
+          if (test_exists.length === 0 || test_exists[0].labIdNumber === null) {
+            // console.log("11");
+            if (record != null && record.length > 0) {
+              _newNumber = parseInt(record[0].number, 10);
+              _newNumber = _newNumber + 1;
+              padNum = pad(String(_newNumber), 3, "LEFT", "0");
+              condition.push(
+                _newNumber,
+                req.userIdentity.algaeh_d_app_user_id,
+                record[0].hims_m_hospital_container_mapping_id
+              );
 
-    //   // const portal_data = {
-    //   //   service_id: input.bulkCollection[i].service_id,
-    //   //   visit_code: input.bulkCollection[i].visit_code,
-    //   //   patient_identity: input.bulkCollection[i].primary_id_no,
-    //   //   service_status: "SAMPLE COLLECTED",
-    //   // };
-    //   // axios
-    //   //   .post(
-    //   //     `${input.PORTAL_HOST}/info/deletePatientService`,
-    //   //     portal_data
-    //   //   )
-    //   //   .then(function (response) {
-    //   //     //handle success
-    //   //     console.log(response);
-    //   //   })
-    //   //   .catch(function (response) {
-    //   //     //handle error
-    //   //     _mysql.releaseConnection();
-    //   //     next();
-    //   //     console.log(response);
-    //   //   });
-    //   // });
-    // }, 3000);
-    // })(i);
+              condition.push;
+              query =
+                "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() \
+                      where hims_m_hospital_container_mapping_id =?;";
+            } else {
+              condition.push(
+                inputParam.hims_d_hospital_id,
+                inputParam.container_id,
+                _date,
+                1,
+                req.userIdentity.algaeh_d_app_user_id,
+                req.userIdentity.algaeh_d_app_user_id
+              );
 
-    // setTimeout(
-    //   async () => {
-    //     //   console.log("inputttttttttt", i);
-    //     await labModal.updateLabOrderServices(req, res, next).then((res) => {
-    //       console.log("hererererererererer hererererrere");
-    //       const portal_data = {
-    //         service_id: input.bulkCollection[i].service_id,
-    //         visit_code: input.bulkCollection[i].visit_code,
-    //         patient_identity: input.bulkCollection[i].primary_id_no,
-    //         service_status: "SAMPLE COLLECTED",
-    //       };
-    //       axios
-    //         .post(
-    //           `${input.PORTAL_HOST}/info/deletePatientService`,
-    //           portal_data
-    //         )
-    //         .then(function (response) {
-    //           //handle success
-    //           console.log(response);
-    //         })
-    //         .catch(function (response) {
-    //           //handle error
-    //           _mysql.releaseConnection();
-    //           next();
-    //           console.log(response);
-    //         });
-    //     });
-    //   },
-    //   2000,
-    //   [i]
-    // );
+              query =
+                "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,\
+                            `number`,`created_by`,`updated_by`) values (?,?,?,?,?,?);";
+            }
+            // console.log("query", query);
+            padNum = pad(String(_newNumber), 3, "LEFT", "0");
+            const dayOfYear = moment().dayOfYear();
+            labIdNumber =
+              inputParam.lab_location_code +
+              moment().format("YY") +
+              dayOfYear +
+              inputParam.container_code +
+              padNum;
+          } else {
+            labIdNumber = test_exists[0].lab_id_number;
+          }
 
-    _mysql.releaseConnection();
-    console.log("hererererererererer hererererrere");
-    // next();
+          // console.log("labIdNumber", labIdNumber);
+          // consol.log("labIdNumber", labIdNumber);
+          _mysql
+            .executeQuery({
+              query:
+                query +
+                `UPDATE hims_f_lab_order L 
+                  INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id 
+                  SET S.container_id=${inputParam.container_id}, S.sample_id=${
+                  inputParam.sample_id
+                }, 
+                  S.collected='${inputParam.collected}', S.status='${
+                  inputParam.status
+                }', 
+                  S.collected_by=${req.userIdentity.algaeh_d_app_user_id},
+                  S.collected_date ='${
+                    inputParam.collected_date
+                      ? `${inputParam.collected_date}`
+                      : `${today_date}`
+                  }', S.barcode_gen = now(), lab_id_number ='${labIdNumber}'
+                  ,L.status='CL', send_out_test='${
+                    inputParam.send_out_test
+                  }',send_in_test='${inputParam.send_in_test}'
+                  where L.hims_f_lab_order_id=${
+                    inputParam.hims_f_lab_order_id
+                  };`,
+              values: condition,
+              printQuery: true,
+            })
+            .then(async (result) => {
+              // console.log("inputParam.portal_exists", inputParam.portal_exists);
+              // consol.log("inputParam.portal_exists", inputParam.portal_exists);
+              if (inputParam.portal_exists === "Y") {
+                const portal_data = {
+                  service_id: inputParam.service_id,
+                  visit_code: inputParam.visit_code,
+                  patient_identity: inputParam.primary_id_no,
+                  service_status: "SAMPLE COLLECTED",
+                };
+                await axios
+                  .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+                  .catch((e) => {
+                    throw e;
+                  });
+                _mysql.commitTransaction(() => {
+                  // console.log("completedddddddddddd");
+                  _mysql.releaseConnection();
+                  req.records = {
+                    collected: inputParam.collected,
+                    collected_by: req.userIdentity.algaeh_d_app_user_id,
+                    collected_date: inputParam.collected_date
+                      ? inputParam.collected_date
+                      : new Date(),
+                    send_in_test: inputParam.send_in_test,
+                    lab_id_number: labIdNumber,
+                    status: "CL",
+                  };
+                  next();
+                });
+              } else {
+                _mysql.commitTransaction(() => {
+                  // console.log("completedddddddddddd");
+                  _mysql.releaseConnection();
+                  req.records = {
+                    collected: inputParam.collected,
+                    collected_by: req.userIdentity.algaeh_d_app_user_id,
+                    collected_date: inputParam.collected_date
+                      ? inputParam.collected_date
+                      : new Date(),
+                    send_in_test: inputParam.send_in_test,
+                    lab_id_number: labIdNumber,
+                    status: "CL",
+                  };
+                  next();
+                });
+              }
+            })
+            .catch((e) => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        }
+      });
   } catch (e) {
     // _mysql.releaseConnection();
     _mysql.rollBackTransaction(() => {
       next(e);
     });
+  }
+}
+
+export async function updateLabOrderServiceStatus(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    _mysql
+      .executeQueryWithTransaction({
+        query: `
+        UPDATE hims_f_lab_order L 
+        INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id 
+        set L.status='O', L.updated_by=?, L.updated_date=?, S.status='N', S.collected='N',
+        S.updated_by=?, S.updated_date=? where L.hims_f_lab_order_id in (?);
+        SELECT L.service_id, visit_code, primary_id_no FROM hims_f_lab_order L
+        INNER JOIN hims_f_patient P ON P.hims_d_patient_id=L.patient_id
+        INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id=L.visit_id 
+        where hims_f_lab_order_id in (?)`,
+        values: [
+          req["userIdentity"].algaeh_d_app_user_id,
+          new Date(),
+          req["userIdentity"].algaeh_d_app_user_id,
+          new Date(),
+          req.body.hims_f_lab_order_id,
+          req.body.hims_f_lab_order_id,
+        ],
+        printQuery: true,
+      })
+      .then(async (result) => {
+        if (req.body.portal_exists === "Y") {
+          const calncel_details = result[1];
+          const portal_data = calncel_details.map((m) => {
+            return {
+              service_id: m.service_id,
+              visit_code: m.visit_code,
+              patient_identity: m.primary_id_no,
+              service_status: "ORDERED",
+            };
+          });
+          // console.log("PORTAL_HOST", PORTAL_HOST);
+          // consol.log("PORTAL_HOST", PORTAL_HOST);
+          await axios
+            .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+            .catch((e) => {
+              throw e;
+            });
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+        }
+      })
+      .catch((e) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+}
+
+export async function bulkSampleCollection(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const input = req.body;
+
+    // console.log("req.body", req.body);
+    // consol.log("req.body", req.body);
+    let collection_done = [];
+    for (let i = 0; i < input.bulkCollection.length; i++) {
+      let item = input.bulkCollection[i];
+      item.portal_exists = input.portal_exists;
+      req.body = {
+        ...item,
+      };
+      // console.log("item", item);
+      const xyz = await updateLabOrderServices(req, res, next);
+      collection_done.push(xyz);
+    }
+    Promise.all(collection_done)
+      .then(() => {
+        next();
+      })
+      .catch((e) => {
+        throw e;
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
   }
 }
