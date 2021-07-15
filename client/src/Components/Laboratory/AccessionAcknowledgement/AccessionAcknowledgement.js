@@ -123,7 +123,9 @@ export default function AccessionAcknowledgement() {
       return moment(date).format(Options.datetimeFormat);
     }
   };
-  const onSubmit = (selected_row, strAccRej) => {
+  const onSubmit = (selected_row, strAccRej, e) => {
+    // debugger;
+    e.persist();
     if (strAccRej === "R") {
       if (remarks === "") {
         AlgaehMessagePop({
@@ -244,7 +246,7 @@ export default function AccessionAcknowledgement() {
         <div className="popupFooter">
           <div className="col-12">
             <button
-              onClick={() => onSubmit(selected_row, "R")}
+              onClick={(e) => onSubmit(selected_row, "R", e)}
               type="button"
               className="btn btn-primary"
             >
@@ -400,7 +402,7 @@ export default function AccessionAcknowledgement() {
                                 }}
                                 className="fa fa-check"
                                 aria-hidden="true"
-                                onClick={() => onSubmit(row, "A")}
+                                onClick={(e) => onSubmit(row, "A", e)}
                               />
                             </Tooltip>
                             <Tooltip
