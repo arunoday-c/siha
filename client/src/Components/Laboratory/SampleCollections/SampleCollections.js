@@ -2226,7 +2226,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
                                 placement={"right"}
                               >
                                 <i
-                                  className="fa fa-times"
+                                  className="fa fa-share fa-flip-horizontal"
                                   onClick={() =>
                                     updateLabOrderServiceStatus(row)
                                   }
@@ -2973,7 +2973,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
                 filter={true}
                 noDataText="No data available for selected period"
                 // isEditable={editableGrid}
-                pageOptions={{ rows: 50, page: 1 }}
+                pageOptions={{ rows: 100, page: 1 }}
                 isFilterable={true}
                 pagination={true}
               />
