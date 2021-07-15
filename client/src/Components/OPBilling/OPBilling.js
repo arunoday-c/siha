@@ -460,19 +460,24 @@ class OPBilling extends Component {
               let portal_data = {};
               if (Inputobj.portal_exists === "Y") {
                 portal_data = Inputobj.billdetails.map((m) => {
-                  return {
-                    service_id: m.services_id,
-                    service_name: m.service_name,
-                    service_category: m.service_type,
-                    visit_code: Inputobj.visit_code,
-                    patient_identity: Inputobj.primary_id_no,
-                    pay_type: m.insurance_yesno === "Y" ? "INSURANCE" : "CASH",
-                    service_amount: m.patient_resp,
-                    service_vat: m.patient_tax,
-                    hospital_id: Inputobj.hospital_id,
-                    report_download:
-                      parseFloat(Inputobj.credit_amount) > 0 ? "N" : "Y",
-                  };
+                  if (m.service_type === 5 || m.service_type === 11) {
+                    return {
+                      service_id: m.services_id,
+                      service_name: m.service_name,
+                      service_category: m.service_type,
+                      visit_code: Inputobj.visit_code,
+                      patient_identity: Inputobj.primary_id_no,
+                      pay_type:
+                        m.insurance_yesno === "Y" ? "INSURANCE" : "CASH",
+                      service_amount: m.patient_resp,
+                      service_vat: m.patient_tax,
+                      hospital_id: Inputobj.hospital_id,
+                      report_download:
+                        parseFloat(Inputobj.credit_amount) > 0 ? "N" : "Y",
+                    };
+                  } else {
+                    return {};
+                  }
                 });
               }
               Inputobj.package_exists = package_exists;
