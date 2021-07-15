@@ -27,7 +27,7 @@ const { confirm } = Modal;
 
 export default function AccessionAcknowledgement() {
   const { userToken } = useContext(MainContext);
-  const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
+  // const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 
   const { control, errors, reset, getValues } = useForm({
     defaultValues: {
@@ -160,6 +160,7 @@ export default function AccessionAcknowledgement() {
             barcode_gen: selected_row.barcode_gen,
             remarks: remarks,
             status: strAccRej,
+            portal_exists: userToken?.portal_exists,
           };
           const after_ack = await AcceptandRejectSample(inputobj).catch(
             (error) => {
@@ -173,31 +174,31 @@ export default function AccessionAcknowledgement() {
             });
             return;
           }
-          if (userToken?.portal_exists === "Y" && strAccRej === "R") {
-            try {
-              const portal_data = {
-                service_id: selected_row.service_id,
-                visit_code: selected_row.visit_code,
-                patient_identity: selected_row.primary_id_no,
-                service_status: "ORDERED",
-              };
-              axios
-                .post(`${PORTAL_HOST}info/deletePatientService`, portal_data)
-                .then(function (response) {
-                  //handle success
-                  console.log(response);
-                })
-                .catch(function (response) {
-                  //handle error
-                  console.log(response);
-                });
-            } catch (error) {
-              AlgaehMessagePop({
-                display: error,
-                type: "error",
-              });
-            }
-          }
+          // if (userToken?.portal_exists === "Y" && strAccRej === "R") {
+          //   try {
+          //     const portal_data = {
+          //       service_id: selected_row.service_id,
+          //       visit_code: selected_row.visit_code,
+          //       patient_identity: selected_row.primary_id_no,
+          //       service_status: "ORDERED",
+          //     };
+          //     axios
+          //       .post(`${PORTAL_HOST}info/deletePatientService`, portal_data)
+          //       .then(function (response) {
+          //         //handle success
+          //         console.log(response);
+          //       })
+          //       .catch(function (response) {
+          //         //handle error
+          //         console.log(response);
+          //       });
+          //   } catch (error) {
+          //     AlgaehMessagePop({
+          //       display: error,
+          //       type: "error",
+          //     });
+          //   }
+          // }
           setRemarks("");
           setIsOpen(false);
           refetch();
