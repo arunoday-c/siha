@@ -13,6 +13,7 @@ import dotenv from "dotenv";
 if (process.env.NODE_ENV !== "production") dotenv.config();
 
 const { PORTAL_HOST } = process.env;
+console.log("PORTAL_HOST==", PORTAL_HOST);
 // export default
 const labModal = {
   getLabOrderedServices_old: (req, res, next) => {
@@ -2856,6 +2857,7 @@ export async function updateLabOrderServices(req, res, next) {
                   patient_identity: inputParam.primary_id_no,
                   service_status: "SAMPLE COLLECTED",
                 };
+                // console.log("portal_data", portal_data);
                 await axios
                   .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
                   .catch((e) => {
@@ -2941,7 +2943,7 @@ export async function updateLabOrderServiceStatus(req, res, next) {
               service_id: m.service_id,
               visit_code: m.visit_code,
               patient_identity: m.primary_id_no,
-              service_status: "ORDERED",
+              service_status: "SAMPLE COLLECTED",
             };
           });
           // console.log("PORTAL_HOST", PORTAL_HOST);

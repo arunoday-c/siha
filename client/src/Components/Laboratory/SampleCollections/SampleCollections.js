@@ -1572,6 +1572,10 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
         test_id: item.hims_d_investigation_test_id,
         container_code: item.container_code,
         lab_id_number: item.lab_id_number,
+        visit_code: item.visit_code,
+        primary_id_no: item.primary_id_no,
+        service_status: "SAMPLE COLLECTED",
+        portal_exists: portal_exists,
       };
     });
     // console.log(
@@ -2084,30 +2088,19 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
           <button onClick={onClose} className="btn btn-default">
             Close
           </button>,
-          <AlgaehSecurityComponent componentCode="SPEC_COLL_STATUS_CHANGE">
-            <button
-              className="btn btn-default"
-              onClick={updateLabOrderServiceMultiple.bind(this, this)}
-            >
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Mark as not collected",
-                }}
-              />
-            </button>
-          </AlgaehSecurityComponent>,
           <AlgaehSecurityComponent componentCode="BTN_BLK_SAM_BAR_COL">
             <button
-              className="btn btn-default"
+              className="btn btn-primary"
               onClick={BulkSampleCollection.bind(this, this)}
             >
               <AlgaehLabel
                 label={{
-                  forceLabel: "Bulk Sample Collection",
+                  forceLabel: "Collect Specimen",
                 }}
               />
             </button>
           </AlgaehSecurityComponent>,
+
           <AlgaehSecurityComponent componentCode="BTN_BLK_SAM_BAR_COL">
             <button
               className="btn btn-default"
@@ -2115,7 +2108,19 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
             >
               <AlgaehLabel
                 label={{
-                  forceLabel: "Print Bulk Barcode",
+                  forceLabel: "Print Barcode",
+                }}
+              />
+            </button>
+          </AlgaehSecurityComponent>,
+          <AlgaehSecurityComponent componentCode="SPEC_COLL_STATUS_CHANGE">
+            <button
+              className="btn btn-default"
+              onClick={updateLabOrderServiceMultiple.bind(this, this)}
+            >
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Cancel Collected Specimen",
                 }}
               />
             </button>
@@ -2180,6 +2185,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
             <div className="col-lg-12" id="samplecollection_grid">
               <AlgaehDataGrid
                 columns={[
+                  manualColumns,
                   {
                     fieldName: "action",
                     label: <AlgaehLabel label={{ fieldName: "action" }} />,
@@ -2207,7 +2213,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
                               <Tooltip
                                 title="Generate Barcode"
                                 zIndex={99999}
-                                placement={"right"}
+                                placement={"left"}
                               >
                                 <i
                                   style={{
@@ -2277,7 +2283,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
                       style: { textAlign: "center" },
                     },
                   },
-                  manualColumns,
+
                   {
                     fieldName: "billed",
                     label: <AlgaehLabel label={{ fieldName: "billed" }} />,
