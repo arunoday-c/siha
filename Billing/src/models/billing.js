@@ -3852,7 +3852,7 @@ export default {
               inner join hims_f_package_detail D on H.hims_f_package_header_id=D.package_header_id 
               inner join hims_d_services S on S.hims_d_services_id=D.service_id 
               inner join hims_d_service_type ST on ST.hims_d_service_type_id=D.service_type_id 
-              where D.service_type_id=5 and D.service_type_id=11 and hims_f_package_header_id in (?) ;`,
+              where (D.service_type_id=5 or D.service_type_id=11) and hims_f_package_header_id in (?) ;`,
             values: [package_ids],
             printQuery: true,
           })

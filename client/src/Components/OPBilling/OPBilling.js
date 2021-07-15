@@ -456,7 +456,6 @@ class OPBilling extends Component {
                 (f) => f.service_type_id === 14
               );
 
-              // debugger;
               let portal_data = {};
               if (Inputobj.portal_exists === "Y") {
                 portal_data = Inputobj.billdetails.map((m) => {
@@ -480,6 +479,7 @@ class OPBilling extends Component {
                   }
                 });
               }
+
               Inputobj.package_exists = package_exists;
               AlgaehLoader({ show: true });
               algaehApiCall({
