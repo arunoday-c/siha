@@ -1,16 +1,18 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import labModels, { bulkSampleCollection } from "../models/laboratory";
+import labModels, {
+  bulkSampleCollection,
+  updateLabOrderServices,
+  updateLabOrderServiceStatus,
+} from "../models/laboratory";
 import { labResultDispatch } from "../models/labDispatch";
 const {
   getLabOrderedServices,
   getLabOrderServiceForDoc,
   getLabOrderedServicesPatient,
-  updateLabOrderServices,
   getTestAnalytes,
   getMicroDetails,
   updateLabSampleStatus,
-  updateLabOrderServiceStatus,
   updateLabResultEntry,
   updateMicroResultEntry,
   getMicroResult,

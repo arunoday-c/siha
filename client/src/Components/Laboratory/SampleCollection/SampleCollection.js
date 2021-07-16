@@ -937,7 +937,7 @@ function SampleCollection() {
                   // },
                   {
                     fieldName: "test_type",
-                    label: <AlgaehLabel label={{ fieldName: "proiorty" }} />,
+                    label: <AlgaehLabel label={{ fieldName: "priority" }} />,
                     displayTemplate: (row) => {
                       return row.test_type === "S" ? (
                         <span className="badge badge-danger">Stat</span>
