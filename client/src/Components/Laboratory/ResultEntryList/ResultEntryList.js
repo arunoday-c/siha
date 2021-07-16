@@ -63,7 +63,6 @@ export default function ResultEntryList() {
   // const [pdfLoading, setPDFLoading] = useState(false);
 
   const ResultEntryModel = async (row) => {
-    debugger;
     if (row.test_section === "M" && row.culture_test === "Y") {
       if (row.group_id !== null) {
         const result = await newAlgaehApi({
@@ -106,8 +105,9 @@ export default function ResultEntryList() {
             },
           });
           row.comments_data = result.data.records;
-          setIsOpen(!isOpen);
           setSelectedPatient(row);
+
+          setIsOpen(!isOpen);
         }
       }
     }
@@ -128,7 +128,6 @@ export default function ResultEntryList() {
   };
 
   const saveDocumentCheck = async () => {
-    debugger;
     if (disableUploadButton) {
       AlgaehMessagePop({
         display:
@@ -216,7 +215,6 @@ export default function ResultEntryList() {
     getLabOrderedServices,
     {
       onSuccess: (data) => {
-        debugger;
         setSampleCollection(data);
       },
       onError: (err) => {
@@ -228,7 +226,6 @@ export default function ResultEntryList() {
     }
   );
   async function getLabOrderedServices(key) {
-    debugger;
     const date = getValues().start_date;
     const from_date = moment(date[0]).format("YYYY-MM-DD");
     const to_date = moment(date[1]).format("YYYY-MM-DD");
@@ -254,7 +251,6 @@ export default function ResultEntryList() {
   };
 
   const downloadDoc = (doc, isPreview) => {
-    debugger;
     if (doc.fromPath === true) {
       // setPDFLoading(true);
 
@@ -312,7 +308,6 @@ export default function ResultEntryList() {
     }
   };
   const deleteDoc = (doc) => {
-    debugger;
     confirm({
       title: `Are you sure you want to delete this file?`,
       content: `${doc.filename}`,
@@ -904,12 +899,14 @@ export default function ResultEntryList() {
             </div>
           </div>
         </div>
-        <ResultEntry
-          open={isOpen}
-          onClose={() => closeResultEntry()}
-          selectedPatient={selected_patient}
-          // comments_data={comments_data}
-        />
+        {isOpen ? (
+          <ResultEntry
+            open={isOpen}
+            onClose={() => closeResultEntry()}
+            selectedPatient={selected_patient}
+            // comments_data={comments_data}
+          />
+        ) : null}
 
         <MicrobiologyResultEntry
           // open={isMicroOpen}

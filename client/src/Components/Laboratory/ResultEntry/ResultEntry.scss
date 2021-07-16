@@ -186,10 +186,12 @@
     }
   }
   #labResultGrid_Cntr {
-    margin-bottom: 10px;
-    padding-right: 0;
-    .ReactTable {
-      max-height: 69vh !important;
+    .newStickyGrid {
+      .table-scroll {
+        min-height: 55vh !important;
+        max-height: 55vh !important;
+        overflow: auto !important;
+      }
     }
   }
 }
