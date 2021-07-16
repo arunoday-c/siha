@@ -1,3 +1,55 @@
+.hemResultEntryPopup {
+  width: 98vw !important;
+
+  .ant-modal-footer {
+    padding: 5px 15px !important;
+    .footer-btn-left {
+      button {
+        float: left;
+        margin-left: 0;
+        margin-right: 10px;
+      }
+    }
+  }
+  #hemResultEntryGrid {
+    margin-top: 10px;
+    .newStickyGrid {
+      .table-scroll {
+        min-height: 61vh !important;
+        max-height: 61vh !important;
+        overflow: auto !important;
+      }
+    }
+  }
+
+  .badge {
+    margin-top: 5px;
+  }
+  .popRightDiv {
+    max-height: 88vh !important;
+    padding-top: 0 !important;
+    .topbarPatientDetails {
+      background: #f7f7f7;
+      border-bottom: 1px solid #ccc;
+      padding-top: 10px;
+      h6 {
+        text-overflow: ellipsis;
+        width: 99%;
+        overflow: hidden;
+        white-space: nowrap;
+        small {
+          margin-top: 2px;
+          font-size: 0.85rem;
+          &.badge {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+          }
+        }
+      }
+    }
+  }
+}
+
 .patientInfo-lab-Top {
   background: white;
   width: 100%;
@@ -158,43 +210,7 @@
     }
   }
 }
-.labResultModalPopup {
-  .algaeh-modal {
-    margin: 0 auto;
-  }
-  .popRightDiv {
-    max-height: 88vh !important;
-    padding-top: 0 !important;
-    .topbarPatientDetails {
-      background: #f7f7f7;
-      border-bottom: 1px solid #ccc;
-      padding-top: 10px;
-      h6 {
-        text-overflow: ellipsis;
-        width: 99%;
-        overflow: hidden;
-        white-space: nowrap;
-        small {
-          margin-top: 2px;
-          font-size: 0.85rem;
-          &.badge {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-          }
-        }
-      }
-    }
-  }
-  #labResultGrid_Cntr {
-    .newStickyGrid {
-      .table-scroll {
-        min-height: 55vh !important;
-        max-height: 55vh !important;
-        overflow: auto !important;
-      }
-    }
-  }
-}
+
 .analyteTxtUL {
   margin: 0 0 0 20px;
   padding: 0;

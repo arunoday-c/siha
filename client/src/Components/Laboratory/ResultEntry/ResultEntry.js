@@ -2292,146 +2292,144 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
         maskClosable={true}
         onCancel={onClose}
         footer={[
-          <AlgaehSecurityComponent componentCode="PRI_LAB_RES">
-            <AlgaehButton
-              className="btn btn-default"
-              // loading={this.state.loading}
-              onClick={onClickPrintHandle}
-              disabled={
-                status === "V" && selectedPatient.credit_order === "N"
-                  ? false
-                  : true
-              }
-            >
-              Print
-            </AlgaehButton>
-            {/* <button
-            className="btn btn-default"
-            onClick={this.onClickPrintHandle.bind(this)}
-            disabled={this.state.status === "V" ? false : true}
-          >
-            Print
-          </button> */}
-          </AlgaehSecurityComponent>,
-          <AlgaehSecurityComponent componentCode="EDIT_RANGE_LAB_RES">
-            <button
-              type="button"
-              className="btn btn-default"
-              disabled={status === "V" ? true : false}
-              onClick={() => {
-                setEdit_range(!edit_range);
-              }}
-            >
-              Edit Ranges
-            </button>
-          </AlgaehSecurityComponent>,
-          <AlgaehSecurityComponent componentCode="EDIT_UNIT_LAB_RES">
-            <button
-              type="button"
-              className="btn btn-default"
-              disabled={status === "V" ? true : false}
-              onClick={() => {
-                setEdit_units(!edit_units);
-              }}
-            >
-              Edit Units
-            </button>
-          </AlgaehSecurityComponent>,
-          <AlgaehSecurityComponent componentCode="RELOAD_ANALYTES_MAS">
-            <button
-              type="button"
-              className="btn btn-default"
-              disabled={status === "V" ? true : false}
-              onClick={reloadAnalytesMaster}
-            >
-              Reload Analytes
-            </button>
-          </AlgaehSecurityComponent>,
+          <div className="row">
+            <div className="col-6 footer-btn-left">
+              <AlgaehSecurityComponent componentCode="PRI_LAB_RES">
+                <AlgaehButton
+                  className="btn btn-default"
+                  // loading={this.state.loading}
+                  onClick={onClickPrintHandle}
+                  disabled={
+                    status === "V" && selectedPatient.credit_order === "N"
+                      ? false
+                      : true
+                  }
+                >
+                  Print
+                </AlgaehButton>
+                {/* <button
+         className="btn btn-default"
+         onClick={this.onClickPrintHandle.bind(this)}
+         disabled={this.state.status === "V" ? false : true}
+       >
+         Print
+       </button> */}
+              </AlgaehSecurityComponent>
 
-          <div className="col-lg-6">
-            {/* <button
-      className="btn btn-primary"
-      onClick={this.showReport.bind(
-        this,
-        display !== null && display.length !== 0
-          ? display[0].full_name
-          : ""
-      )}
-      disabled={this.state.status === "V" ? false : true}
-    >
-      Print
-    </button> */}
+              <AlgaehSecurityComponent componentCode="EDIT_RANGE_LAB_RES">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  disabled={status === "V" ? true : false}
+                  onClick={() => {
+                    setEdit_range(!edit_range);
+                  }}
+                >
+                  Edit Ranges
+                </button>
+              </AlgaehSecurityComponent>
 
-            <AlgaehSecurityComponent componentCode="VAL_LAB_RES">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={onvalidate}
-                disabled={
-                  status === "V" ||
-                  entered_by_name.name === "" ||
-                  confirm_by_name.name === ""
-                    ? true
-                    : false
-                }
-              >
-                Validate All
-              </button>
-            </AlgaehSecurityComponent>
+              <AlgaehSecurityComponent componentCode="EDIT_UNIT_LAB_RES">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  disabled={status === "V" ? true : false}
+                  onClick={() => {
+                    setEdit_units(!edit_units);
+                  }}
+                >
+                  Edit Units
+                </button>
+              </AlgaehSecurityComponent>
 
-            <AlgaehSecurityComponent componentCode="CONF_LAB_RES">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={onconfirm}
-                disabled={
-                  status === "C" || entered_by_name.name === ""
-                    ? true
-                    : status === "V"
-                    ? true
-                    : false
-                }
-              >
-                Confirm All
-              </button>
-            </AlgaehSecurityComponent>
-            <AlgaehSecurityComponent componentCode="SAVE_LAB_RES">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={resultEntryUpdate}
-                disabled={
-                  status === "V" || test_analytes.length <= 0 ? true : false
-                }
-              >
-                Save
-              </button>
-            </AlgaehSecurityComponent>
+              <AlgaehSecurityComponent componentCode="RELOAD_ANALYTES_MAS">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  disabled={status === "V" ? true : false}
+                  onClick={reloadAnalytesMaster}
+                >
+                  Reload Analytes
+                </button>
+              </AlgaehSecurityComponent>
+            </div>
 
-            <AlgaehSecurityComponent componentCode="RE_RUN_LAB_RES">
+            <div className="col-6">
+              <AlgaehSecurityComponent componentCode="VAL_LAB_RES">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={onvalidate}
+                  disabled={
+                    status === "V" ||
+                    entered_by_name.name === "" ||
+                    confirm_by_name.name === ""
+                      ? true
+                      : false
+                  }
+                >
+                  Validate All
+                </button>
+              </AlgaehSecurityComponent>
+
+              <AlgaehSecurityComponent componentCode="CONF_LAB_RES">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={onconfirm}
+                  disabled={
+                    status === "C" || entered_by_name.name === ""
+                      ? true
+                      : status === "V"
+                      ? true
+                      : false
+                  }
+                >
+                  Confirm All
+                </button>
+              </AlgaehSecurityComponent>
+              <AlgaehSecurityComponent componentCode="SAVE_LAB_RES">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={resultEntryUpdate}
+                  disabled={
+                    status === "V" || test_analytes.length <= 0 ? true : false
+                  }
+                >
+                  Save
+                </button>
+              </AlgaehSecurityComponent>
+
+              <AlgaehSecurityComponent componentCode="RE_RUN_LAB_RES">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={onReRun}
+                  disabled={
+                    entered_by_name.name
+                      ? run_type === 3
+                        ? true
+                        : false
+                      : true
+                  }
+                >
+                  Re-Run
+                </button>
+              </AlgaehSecurityComponent>
               <button
                 type="button"
                 className="btn btn-default"
-                onClick={onReRun}
-                disabled={
-                  entered_by_name.name ? (run_type === 3 ? true : false) : true
-                }
+                onClick={(e) => {
+                  onClose(e);
+                }}
               >
-                Re-Run
+                Cancel
               </button>
-            </AlgaehSecurityComponent>
-            <button
-              type="button"
-              className="btn btn-default"
-              onClick={(e) => {
-                onClose(e);
-              }}
-            >
-              Cancel
-            </button>
+            </div>
           </div>,
         ]}
-        className={`row algaehNewModal SpecimenModalPopup`}
+        className={`row algaehNewModal hemResultEntryPopup`}
       >
         <div className="popupInner">
           <div className="popRightDiv">
@@ -2612,7 +2610,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
               <hr />
               <div className="col-12">
                 <div className="row">
-                  <div className="col-9" id="labResultGrid_Cntr">
+                  <div className="col-9" id="hemResultEntryGrid">
                     <AlgaehDataGrid
                       // id="labResult_list_grid"
                       columns={[

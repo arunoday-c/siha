@@ -1,36 +1,6 @@
 @import "../../../styles/algaehCssVariables.scss";
-
-.hptl-phase1-result-entry-form {
-  .go-button {
-    cursor: pointer;
-    margin-bottom: -9px;
-    margin-top: 20px;
-  }
-
-  .form-group {
-    margin-bottom: 0;
-
-    padding: 0;
-    padding-top: 20px;
-    cursor: pointer;
-  }
-
-  th,
-  td {
-    border-right: 1px solid #e6e6e6;
-  }
-}
-#resultListEntryCntr {
-  .ReactTable {
-    max-height: 62vh !important;
-  }
-}
-
-.badge {
-  margin-top: 5px;
-}
-
 .topResultCard {
+  padding-top: 10px;
   .card-body {
     padding: 0px 10px 3px;
     p {
@@ -45,6 +15,20 @@
       font-size: 2rem;
     }
   }
+}
+
+#resultEntry_grid {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 61vh !important;
+      max-height: 61vh !important;
+      overflow: auto !important;
+    }
+  }
+}
+
+.badge {
+  margin-top: 5px;
 }
 
 .investigationAttachmentModal {

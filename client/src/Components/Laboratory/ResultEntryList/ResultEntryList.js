@@ -511,7 +511,7 @@ export default function ResultEntryList() {
               />
             )}
           />
-          <div className="col" style={{ marginTop: "21px" }}>
+          <div className="col-3" style={{ marginTop: "21px" }}>
             <button
               className="btn btn-default btn-sm"
               type="button"
@@ -532,9 +532,8 @@ export default function ResultEntryList() {
               Load
             </button>
           </div>
-        </div>
-        <div className="row  margin-bottom-15 topResultCard">
-          <div className="col-12">
+
+          <div className="col topResultCard">
             <div className="card-group">
               <div className="card">
                 <div className="card-body">
@@ -571,6 +570,7 @@ export default function ResultEntryList() {
             </div>
           </div>
         </div>
+
         <div className="row">
           <div className="col-lg-12">
             <div className="portlet portlet-bordered margin-bottom-15">
@@ -580,9 +580,8 @@ export default function ResultEntryList() {
                 </div>
               </div>
 
-              <div className="portlet-body" id="resultListEntryCntr">
+              <div className="portlet-body" id="resultEntry_grid">
                 <AlgaehDataGrid
-                  id="samplecollection_grid"
                   columns={[
                     {
                       fieldName: "action",
@@ -696,7 +695,7 @@ export default function ResultEntryList() {
                         );
                       },
                       others: {
-                        width: 140,
+                        width: 200,
                         style: { textAlign: "center" },
                       },
                     },
@@ -712,7 +711,7 @@ export default function ResultEntryList() {
                       },
                       disabled: true,
                       others: {
-                        width: 150,
+                        width: 200,
                         style: { textAlign: "center" },
                       },
                     },
@@ -751,7 +750,7 @@ export default function ResultEntryList() {
                       },
                       disabled: true,
                       others: {
-                        width: 150,
+                        width: 200,
                         style: { textAlign: "center" },
                       },
                     },
@@ -799,6 +798,7 @@ export default function ResultEntryList() {
                       disabled: true,
                       filterable: true,
                       others: {
+                        minWidth: 350,
                         style: { textAlign: "left" },
                       },
                     },
@@ -891,9 +891,10 @@ export default function ResultEntryList() {
                   data={sample_collection.filter(
                     (f) => f.sample_status === "A"
                   )}
+                  pagination={true}
+                  pageOptions={{ rows: 100, page: 1 }}
                   isFilterable={true}
                   noDataText="No data available for selected period"
-                  paging={{ page: 0, rowsPerPage: 20 }}
                 />
               </div>
             </div>
