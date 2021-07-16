@@ -1620,9 +1620,18 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
   };
   const printBulkBarcode = () => {
     const data = test_details;
-    const filterData = data.filter((f) => f.checked);
+    const filterData = data.filter((f) => f.checked && f.collected === "Y");
+    // debugger;
+    if (filterData.length === 0) {
+      swalMessage({
+        title: "Select alteast one record.",
+        type: "warning",
+      });
+      return;
+    }
     const labOrderId = filterData.map((item) => item.hims_f_lab_order_id);
 
+    // debugger;
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -1716,6 +1725,20 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
   };
 
   const updateLabOrderServiceMultiple = () => {
+    let hims_f_lab_order_id = [];
+    test_details.map((o) => {
+      if (o.checked && o.collected === "Y") {
+        hims_f_lab_order_id.push(o.hims_f_lab_order_id);
+      }
+      return null;
+    });
+    if (hims_f_lab_order_id.length === 0) {
+      swalMessage({
+        title: "Select alteast one record.",
+        type: "warning",
+      });
+      return;
+    }
     swal({
       title: `Are you sure to change all specimen not collected?`,
       type: "warning",
@@ -1726,14 +1749,6 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
       cancelButtonText: "No",
     }).then((willDelete) => {
       if (willDelete.value) {
-        let hims_f_lab_order_id = [];
-        test_details.map((o) => {
-          if (o.checked) {
-            hims_f_lab_order_id.push(o.hims_f_lab_order_id);
-          }
-          return null;
-        });
-
         algaehApiCall({
           uri: "/laboratory/updateLabOrderServiceStatus",
           module: "laboratory",

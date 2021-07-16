@@ -2864,6 +2864,7 @@ export async function updateLabOrderServiceStatus(req, res, next) {
         UPDATE hims_f_lab_order L 
         INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id 
         set L.status='O', L.updated_by=?, L.updated_date=?, S.status='N', S.collected='N',
+        S.collected_by=null, S.collected_date = null, S.barcode_gen = null,
         S.updated_by=?, S.updated_date=? where L.hims_f_lab_order_id in (?);
         SELECT L.service_id, visit_code, primary_id_no FROM hims_f_lab_order L
         INNER JOIN hims_f_patient P ON P.hims_d_patient_id=L.patient_id
