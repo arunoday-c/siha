@@ -344,9 +344,14 @@ export default {
                       next();
                     }
                   }
-                  inputParam.visit_expiery_date = moment()
-                    .add(parseInt(record[0]["param_value"], 10), "days")
-                    .format("YYYY-MM-DD");
+                  inputParam.visit_expiery_date =
+                    inputParam.consultation === "Y"
+                      ? moment()
+                          .add(parseInt(record[0]["param_value"], 10), "days")
+                          .format("YYYY-MM-DD")
+                      : moment()
+                          .add(parseInt(record[0]["param_value"], 1), "days")
+                          .format("YYYY-MM-DD");
                   currentEpisodeNo = record[0].episode_id;
 
                   if (currentEpisodeNo > 0) {
