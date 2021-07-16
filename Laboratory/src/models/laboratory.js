@@ -11,9 +11,7 @@ import algaehMail from "algaeh-utilities/mail-send";
 import "regenerator-runtime/runtime";
 import dotenv from "dotenv";
 if (process.env.NODE_ENV !== "production") dotenv.config();
-
 const { PORTAL_HOST } = process.env;
-console.log("PORTAL_HOST==", PORTAL_HOST);
 // export default
 const labModal = {
   getLabOrderedServices_old: (req, res, next) => {
@@ -790,9 +788,6 @@ const labModal = {
         };
       });
 
-      // console.log("labServices", labServices);
-      // conseol.log("labServices", labServices);
-
       if (labServices.length > 0) {
         const IncludeValues = [
           "ordered_services_id",
@@ -872,7 +867,6 @@ const labModal = {
                     printQuery: true,
                   })
                   .then((specimentRecords) => {
-                    // console.log("----------specimentRecords", specimentRecords);
                     if (specimentRecords[0].length > 0) {
                       const specimen_list = specimentRecords[0];
                       const lab_orders = specimentRecords[1];
@@ -1237,7 +1231,6 @@ const labModal = {
           printQuery: true,
         })
         .then((result) => {
-          // console.log("result", result);
           const arrangedData = _.chain(result)
             .groupBy((g) => moment(g.ordered_date).format("YYYY-MM-DD"))
             .map((details, key) => {
@@ -1557,7 +1550,7 @@ const labModal = {
                     patient_identity: portal_input.primary_id_no,
                     service_status: "ORDERED",
                   };
-                  // console.log("portal_data", portal_data);
+
                   await axios
                     .post(
                       `${PORTAL_HOST}/info/deletePatientService`,
@@ -1601,9 +1594,6 @@ const labModal = {
                 break;
             }
 
-            // console.log("age_data", age_data);
-            // console.log("age_type", age_type);
-            // console.log("age", age);
             _mysql
               .executeQuery({
                 query:
@@ -1725,9 +1715,6 @@ const labModal = {
               break;
           }
 
-          // console.log("age_data", age_data);
-          // console.log("age_type", age_type);
-          // console.log("age", age);
           _mysql
             .executeQuery({
               query:
@@ -1835,14 +1822,8 @@ const labModal = {
         .Where((w) => w.status == "E")
         .ToArray().length;
       utilities.logger().log("runtype: ");
-      // let runtype = new LINQ(inputParam)
-      //   .Where(w => w.run_type != null)
-      //   .Select(s => s.run_type)
-      //   .ToArray();
-      let { runtype } = inputParam[inputParam.length - 1];
-      // console.log(runtype, "run type");
 
-      // console.log("inputParam: ", inputParam[0].critical_status);
+      let { runtype } = inputParam[inputParam.length - 1];
 
       let ref = null;
       let entered_by = null;
@@ -2048,8 +2029,7 @@ const labModal = {
 
   updateMicroResultEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
-    // const utilities = new algaehUtilities();
-    // console.log("updateMicroResultEntry: ");
+
     try {
       let inputParam = req.body;
 
@@ -2063,9 +2043,7 @@ const labModal = {
       let strQuery = "";
       let updateQuery = "";
 
-      // console.log("inputParam.status: ", inputParam.status);
       if (inputParam.status == "E") {
-        // console.log("data_exists: ", inputParam.data_exists);
         if (inputParam.bacteria_type === "G") {
           if (inputParam.data_exists == true) {
             for (let i = 0; i < inputParam.microAntbiotic.length; i++) {
@@ -2164,12 +2142,9 @@ const labModal = {
           "'  ";
       }
 
-      // console.log("qry: ", qry);
-
       _mysql
         .executeQueryWithTransaction(qry)
         .then((results) => {
-          // console.log("results: ", results);
           if (results != null) {
             _mysql
               .executeQuery({
@@ -2192,7 +2167,6 @@ const labModal = {
                 printQuery: true,
               })
               .then((update_lab_order) => {
-                // console.log("update_lab_order: ", update_lab_order);
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
                   req.records = {
@@ -2286,8 +2260,6 @@ const labModal = {
             printQuery: true,
           })
           .then((result) => {
-            // console.log("ord_lab_services", ord_lab_services.length);
-            // console.log("OrderServices", OrderServices.length);
             if (
               req.body.LAB_Package === true ||
               ord_lab_services.length !== OrderServices.length
@@ -2296,8 +2268,7 @@ const labModal = {
             } else {
               req.records = { LAB: false };
             }
-            // console.log("req.records.LAB_Package", req.records.LAB);
-            // consol.log("1");
+
             next();
           })
           .catch((e) => {
@@ -2599,20 +2570,8 @@ const labModal = {
 
           next();
         });
-        // } else {
-        //   mailSender
-        //     .send()
-        //     .then(() => {
-        //       // console.log("Mail Sent");
-        //       next();
-        //     })
-        //     .catch((error) => {
-        //       next(error);
-        //     });
-        // }
       });
     } catch (e) {
-      // _mysql.releaseConnection();
       next(e);
     }
   },
@@ -2623,15 +2582,12 @@ export async function updateLabOrderServices(req, res, next) {
   const _mysql = new algaehMysql();
   try {
     let inputParam = { ...req.body };
-    // console.log("updateLabOrderServices", inputParam);
-    // consol.log("updateLabOrderServices");
 
     // return new Promise((resolve, reject) => {
     let strQuery = "";
     let _date = new Date();
     _date = moment(_date).format("YYYY-MM-DD");
 
-    // console.log("hims_d_lab_sample_id", inputParam.hims_d_lab_sample_id);
     if (inputParam.hims_d_lab_sample_id === null) {
       strQuery = mysql.format(
         "SELECT hims_d_lab_container_id AS container_id, container_id AS container_code \
@@ -2705,7 +2661,6 @@ export async function updateLabOrderServices(req, res, next) {
         inputParam.container_code = update_lab_sample[0][0].container_code;
         inputParam.lab_location_code =
           update_lab_sample[1][0].lab_location_code;
-        // console.log("inputParam.lab_id_number", inputParam.lab_id_number);
         const today_date = moment().format("YYYY-MM-DD HH:mm:ss");
         if (inputParam.lab_id_number != null) {
           _mysql
@@ -2765,7 +2720,6 @@ export async function updateLabOrderServices(req, res, next) {
               });
             });
         } else {
-          // console.log("update_lab_sample", update_lab_sample);
           const record = update_lab_sample[2];
           const test_exists = update_lab_sample[3];
           let query = "";
@@ -2774,9 +2728,7 @@ export async function updateLabOrderServices(req, res, next) {
           let labIdNumber = "";
           let _newNumber = 1;
 
-          // console.log("test_exists", test_exists);
           if (test_exists.length === 0 || test_exists[0].labIdNumber === null) {
-            // console.log("11");
             if (record != null && record.length > 0) {
               _newNumber = parseInt(record[0].number, 10);
               _newNumber = _newNumber + 1;
@@ -2805,7 +2757,6 @@ export async function updateLabOrderServices(req, res, next) {
                 "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,\
                             `number`,`created_by`,`updated_by`) values (?,?,?,?,?,?);";
             }
-            // console.log("query", query);
             padNum = pad(String(_newNumber), 3, "LEFT", "0");
             const dayOfYear = moment().dayOfYear();
             labIdNumber =
@@ -2818,8 +2769,6 @@ export async function updateLabOrderServices(req, res, next) {
             labIdNumber = test_exists[0].lab_id_number;
           }
 
-          // console.log("labIdNumber", labIdNumber);
-          // consol.log("labIdNumber", labIdNumber);
           _mysql
             .executeQuery({
               query:
@@ -2848,8 +2797,6 @@ export async function updateLabOrderServices(req, res, next) {
               printQuery: true,
             })
             .then(async (result) => {
-              // console.log("inputParam.portal_exists", inputParam.portal_exists);
-              // consol.log("inputParam.portal_exists", inputParam.portal_exists);
               if (inputParam.portal_exists === "Y") {
                 const portal_data = {
                   service_id: inputParam.service_id,
@@ -2857,14 +2804,12 @@ export async function updateLabOrderServices(req, res, next) {
                   patient_identity: inputParam.primary_id_no,
                   service_status: "SAMPLE COLLECTED",
                 };
-                // console.log("portal_data", portal_data);
                 await axios
                   .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
                   .catch((e) => {
                     throw e;
                   });
                 _mysql.commitTransaction(() => {
-                  // console.log("completedddddddddddd");
                   _mysql.releaseConnection();
                   req.records = {
                     collected: inputParam.collected,
@@ -2880,7 +2825,6 @@ export async function updateLabOrderServices(req, res, next) {
                 });
               } else {
                 _mysql.commitTransaction(() => {
-                  // console.log("completedddddddddddd");
                   _mysql.releaseConnection();
                   req.records = {
                     collected: inputParam.collected,
@@ -2946,8 +2890,7 @@ export async function updateLabOrderServiceStatus(req, res, next) {
               service_status: "SAMPLE COLLECTED",
             };
           });
-          // console.log("PORTAL_HOST", PORTAL_HOST);
-          // consol.log("PORTAL_HOST", PORTAL_HOST);
+
           await axios
             .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
             .catch((e) => {
@@ -2983,8 +2926,6 @@ export async function bulkSampleCollection(req, res, next) {
   try {
     const input = req.body;
 
-    // console.log("req.body", req.body);
-    // consol.log("req.body", req.body);
     let collection_done = [];
     for (let i = 0; i < input.bulkCollection.length; i++) {
       let item = input.bulkCollection[i];
@@ -2992,7 +2933,7 @@ export async function bulkSampleCollection(req, res, next) {
       req.body = {
         ...item,
       };
-      // console.log("item", item);
+
       const xyz = await updateLabOrderServices(req, res, next);
       collection_done.push(xyz);
     }
