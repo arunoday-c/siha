@@ -16,7 +16,7 @@ import {
 import { swalMessage } from "../../utils/algaehApiCall.js";
 import { newAlgaehApi } from "../../hooks";
 import { getPatient } from "./PatientRegistration";
-import axios from "axios";
+// import axios from "axios";
 
 const updatePatient = async (data) => {
   const res = await newAlgaehApi({
@@ -36,7 +36,7 @@ export function UpdatePatient({
   identity_type,
   component = false,
 }) {
-  const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
+  // const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
   const { userToken, userLanguage } = useContext(MainContext);
   const [patientCode, setPatientCode] = useState(null);
 
@@ -120,9 +120,13 @@ export function UpdatePatient({
   });
 
   const onSubmit = (e) => {
+    debugger;
     update({
       ...e,
       hims_d_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
+      portal_exists: userToken?.portal_exists,
+      identity_type: identity_type,
+      patient_code: patient_code,
     }).then(async (data) => {
       if (data === undefined) {
         return;
@@ -130,35 +134,35 @@ export function UpdatePatient({
 
       const images = [];
 
-      if (userToken?.portal_exists === "Y") {
-        const portal_data = {
-          patient_identity: e.primary_id_no,
-          patient_code: patient_code,
-          identity_type: identity_type,
-          patient_name: e.full_name,
-          patient_dob: e.date_of_birth,
-          patient_gender: e.gender,
-          mobile_no: `${e.tel_code}${e.contact_number}`,
-          email_id: e.email,
-        };
-        try {
-          axios
-            .post(`${PORTAL_HOST}/info/updatepatientRegistration`, portal_data)
-            .then(function (response) {
-              //handle success
-              console.log(response);
-            })
-            .catch(function (response) {
-              //handle error
-              console.log(response);
-            });
-        } catch (error) {
-          AlgaehMessagePop({
-            display: error,
-            type: "error",
-          });
-        }
-      }
+      // if (userToken?.portal_exists === "Y") {
+      //   const portal_data = {
+      //     patient_identity: e.primary_id_no,
+      //     patient_code: patient_code,
+      //     identity_type: identity_type,
+      //     patient_name: e.full_name,
+      //     patient_dob: e.date_of_birth,
+      //     patient_gender: e.gender,
+      //     mobile_no: `${e.tel_code}${e.contact_number}`,
+      //     email_id: e.email,
+      //   };
+      //   try {
+      //     axios
+      //       .post(`${PORTAL_HOST}/info/updatepatientRegistration`, portal_data)
+      //       .then(function (response) {
+      //         //handle success
+      //         console.log(response);
+      //       })
+      //       .catch(function (response) {
+      //         //handle error
+      //         console.log(response);
+      //       });
+      //   } catch (error) {
+      //     AlgaehMessagePop({
+      //       display: error,
+      //       type: "error",
+      //     });
+      //   }
+      // }
       if (
         patientImage?.current !== null &&
         patientImage.current?.state?.fileExtention

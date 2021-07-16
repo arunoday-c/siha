@@ -1,6 +1,12 @@
 import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 
+import axios from "axios";
+import dotenv from "dotenv";
+if (process.env.NODE_ENV !== "production") dotenv.config();
+
+const { PORTAL_HOST } = process.env;
+
 export default {
   registerPatient: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -301,7 +307,7 @@ export default {
       // utilities.logger().log("genNumber: ", inputparam.patient_code);
       // inputparam.registration_date = new Date();
       _mysql
-        .executeQuery({
+        .executeQueryWithTransaction({
           query:
             "UPDATE `hims_f_patient` SET `title_id`=?, `full_name`=?, \
             `arabic_name`=?, `gender`=?, `religion_id`=?,\
@@ -355,18 +361,52 @@ export default {
           ],
           printQuery: true,
         })
-        .then((result) => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
+        .then(async (result) => {
+          if (inputparam.portal_exists === "Y") {
+            const portal_data = {
+              patient_identity: inputparam.primary_id_no,
+              patient_code: inputparam.patient_code,
+              identity_type: inputparam.identity_type,
+              patient_name: inputparam.full_name,
+              patient_dob: inputparam.date_of_birth,
+              patient_gender: inputparam.gender,
+              mobile_no: `${inputparam.tel_code}${inputparam.contact_number}`,
+              email_id: inputparam.email,
+            };
+
+            // console.log("PORTAL_HOST", PORTAL_HOST);
+            // console.log("portal_data", portal_data);
+            // consol.log("portal_data", portal_data);
+            await axios
+              .post(
+                `${PORTAL_HOST}/info/updatepatientRegistration`,
+                portal_data
+              )
+              .catch((e) => {
+                throw e;
+              });
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            });
+          } else {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            });
+          }
         })
         .catch((e) => {
-          _mysql.releaseConnection();
-          next(e);
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
         });
     } catch (e) {
-      _mysql.releaseConnection();
-      next(e);
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
     }
   },
 

@@ -215,7 +215,7 @@ export function PatientRegistration() {
     countries = [],
     selectedMenu,
   } = useContext(MainContext);
-  const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
+  // const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
   const [openPopup, setOpenPopup] = useState(false);
   const [attachmentVisible, setAttachmentVisible] = useState(false);
   const [priceModalVisible, setPriceModalVisible] = useState(false);
@@ -316,54 +316,54 @@ export function PatientRegistration() {
     });
   }, []);
 
-  const {
-    isLoading,
-    data: patientData,
-    refetch,
-  } = useQuery(["patient", { patient_code }], getPatient, {
-    enabled: !!patient_code,
-    initialData: {
-      bill_criedt: [],
-      patientRegistration: null,
-      identities: [],
-    },
-    retry: 0,
-    initialStale: true,
-    onSuccess: (data) => {
-      if (data?.patientRegistration) {
-        let patientRegistration = data?.patientRegistration;
+  const { isLoading, data: patientData, refetch } = useQuery(
+    ["patient", { patient_code }],
+    getPatient,
+    {
+      enabled: !!patient_code,
+      initialData: {
+        bill_criedt: [],
+        patientRegistration: null,
+        identities: [],
+      },
+      retry: 0,
+      initialStale: true,
+      onSuccess: (data) => {
+        if (data?.patientRegistration) {
+          let patientRegistration = data?.patientRegistration;
 
-        // const { screen_code } = selectedMenu;
-        // const preference = userPreferences[0][screen_code];
+          // const { screen_code } = selectedMenu;
+          // const preference = userPreferences[0][screen_code];
 
-        setIdentityType(patientRegistration.identity_type);
-        reset({
-          ...patientRegistration,
-          // visit_type: preference.visit_type,
-          // doctor: preference.doctor,
-          // consultation: "Y",
-          // visit_type: default_visit_type?.hims_d_visit_type_id,
+          setIdentityType(patientRegistration.identity_type);
+          reset({
+            ...patientRegistration,
+            // visit_type: preference.visit_type,
+            // doctor: preference.doctor,
+            // consultation: "Y",
+            // visit_type: default_visit_type?.hims_d_visit_type_id,
+          });
+          preferenceFunction().then((result) => {
+            if (result) {
+              setValue("visit_type", result.visit_type);
+              debugger;
+              setValue("doctor", result.doctor);
+              setServiceInfo(result.doctor);
+            } else {
+              setValue("visit_type", default_visit_type?.hims_d_visit_type_id);
+            }
+          });
+        }
+      },
+      onError: (err) => {
+        AlgaehMessagePop({
+          display: err?.message,
+          type: "error",
         });
-        preferenceFunction().then((result) => {
-          if (result) {
-            setValue("visit_type", result.visit_type);
-            debugger;
-            setValue("doctor", result.doctor);
-            setServiceInfo(result.doctor);
-          } else {
-            setValue("visit_type", default_visit_type?.hims_d_visit_type_id);
-          }
-        });
-      }
-    },
-    onError: (err) => {
-      AlgaehMessagePop({
-        display: err?.message,
-        type: "error",
-      });
-      history.push(location.pathname);
-    },
-  });
+        history.push(location.pathname);
+      },
+    }
+  );
 
   const [save, { isLoading: saveLoading }] = useMutation(savePatient, {
     onSuccess: (data) => {
@@ -597,47 +597,47 @@ export function PatientRegistration() {
     return result;
   };
 
-  const insertPatientPortal = (data) => {
-    // const result = await newAlgaehApi({
-    //   uri: "/appointment/getPatientDetilsByAppId",
-    //   module: "frontDesk",
-    //   method: "GET",
-    //   data: { application_id: appointment_id },
-    // });
-    // return result?.data?.records;
-    data.patient_identity = data.primary_id_no;
-    data.corporate_id =
-      insuranceInfo === undefined ? null : insuranceInfo.user_id;
-    data.identity_type = identity_type ?? "NATIONALITY ID";
-    data.patient_name = data.full_name;
-    data.patient_dob = data.date_of_birth;
-    data.patient_gender = data.gender;
-    // data.identity_type = data.primary_id_no;
-    data.mobile_no = `${data.tel_code}${data.contact_number}`;
-    data.email_id = data.email;
-    data.hospital_id = data.hospital_id;
-    data.age = data.age;
-    data.doctor_id = data.ins_doctor_id;
-    data.visit_code = data.visit_code;
-    // data.visit_date = data.visit_date).format("YYYY-MM-DD hh:mm:ss");
-    try {
-      axios
-        .post(`${PORTAL_HOST}/info/patientRegistration`, data)
-        .then(function (response) {
-          //handle success
-          console.log(response);
-        })
-        .catch(function (response) {
-          //handle error
-          console.log(response);
-        });
-    } catch (error) {
-      AlgaehMessagePop({
-        display: error,
-        type: "error",
-      });
-    }
-  };
+  // const insertPatientPortal = (data) => {
+  //   // const result = await newAlgaehApi({
+  //   //   uri: "/appointment/getPatientDetilsByAppId",
+  //   //   module: "frontDesk",
+  //   //   method: "GET",
+  //   //   data: { application_id: appointment_id },
+  //   // });
+  //   // return result?.data?.records;
+  //   data.patient_identity = data.primary_id_no;
+  //   data.corporate_id =
+  //     insuranceInfo === undefined ? null : insuranceInfo.user_id;
+  //   data.identity_type = identity_type ?? "NATIONALITY ID";
+  //   data.patient_name = data.full_name;
+  //   data.patient_dob = data.date_of_birth;
+  //   data.patient_gender = data.gender;
+  //   // data.identity_type = data.primary_id_no;
+  //   data.mobile_no = `${data.tel_code}${data.contact_number}`;
+  //   data.email_id = data.email;
+  //   data.hospital_id = data.hospital_id;
+  //   data.age = data.age;
+  //   data.doctor_id = data.ins_doctor_id;
+  //   data.visit_code = data.visit_code;
+  //   // data.visit_date = data.visit_date).format("YYYY-MM-DD hh:mm:ss");
+  //   try {
+  //     axios
+  //       .post(`${PORTAL_HOST}/info/patientRegistration`, data)
+  //       .then(function (response) {
+  //         //handle success
+  //         console.log(response);
+  //       })
+  //       .catch(function (response) {
+  //         //handle error
+  //         console.log(response);
+  //       });
+  //   } catch (error) {
+  //     AlgaehMessagePop({
+  //       display: error,
+  //       type: "error",
+  //     });
+  //   }
+  // };
 
   const onSubmit = (input) => {
     let inputData;
@@ -719,12 +719,15 @@ export function PatientRegistration() {
             is_mlc: "N",
             existing_plan: "N",
             incharge_or_provider: parseInt(doctor_id, 10),
+            identity_type: identity_type,
+            portal_exists: userToken?.portal_exists,
             receiptdetails,
+            insuranceInfo,
           }).then(async (data) => {
             await uploadAfterSubmit({ ...data, ...input });
-            if (userToken?.portal_exists === "Y") {
-              insertPatientPortal({ ...data, ...input });
-            }
+            // if (userToken?.portal_exists === "Y") {
+            //   insertPatientPortal({ ...data, ...input });
+            // }
             if (sockets.connected) {
               sockets.emit("patient_checked", {
                 ...data,
@@ -758,6 +761,7 @@ export function PatientRegistration() {
             card_date,
           } = input;
           inputData = {
+            ...input,
             patient_code,
             visit_type: input?.visit_type,
             shift_id: input?.shift_id,
@@ -777,6 +781,8 @@ export function PatientRegistration() {
             primary_effective_start_date: input?.primary_effective_start_date,
             primary_effective_end_date: input?.primary_effective_end_date,
             insured: input?.primary_insurance_provider_id ? "Y" : "N",
+            portal_exists: userToken?.portal_exists,
+            identity_type: identity_type,
             creidt_limit_req:
               insuranceInfo === undefined
                 ? null
@@ -791,6 +797,7 @@ export function PatientRegistration() {
             card_date,
             from_package,
             package_details,
+            insuranceInfo,
           };
           update({
             ...inputData,
@@ -812,9 +819,9 @@ export function PatientRegistration() {
           }).then(async (data) => {
             // console.log("In update", data);
             await uploadAfterSubmit({ ...data, ...input });
-            if (userToken?.portal_exists === "Y") {
-              insertPatientPortal({ ...data, ...input });
-            }
+            // if (userToken?.portal_exists === "Y") {
+            //   insertPatientPortal({ ...data, ...input });
+            // }
             if (sockets.connected) {
               sockets.emit("patient_checked", {
                 ...data,

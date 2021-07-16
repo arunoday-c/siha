@@ -7,6 +7,12 @@ import _ from "lodash";
 import mysql from "mysql";
 import moment from "moment";
 
+import axios from "axios";
+import dotenv from "dotenv";
+if (process.env.NODE_ENV !== "production") dotenv.config();
+
+const { PORTAL_HOST } = process.env;
+
 export default {
   newReceiptData: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
@@ -329,13 +335,15 @@ export default {
             "updated_date",
           ];
 
-          // console.log("inputParam.billdetails", inputParam.billdetails)
+          // console.log("inputParam.billdetails", inputParam.billdetails);
           let newDtls = new LINQ(inputParam.billdetails)
             .Select((s) => {
               return {
                 hims_f_billing_header_id: headerResult.insertId,
                 service_type_id: s.service_type_id,
                 services_id: s.services_id,
+                service_name: s.service_name,
+                service_type: s.service_type,
                 quantity: s.quantity,
                 unit_cost: s.unit_cost,
                 insurance_yesno: s.insurance_yesno,
@@ -376,6 +384,7 @@ export default {
             })
             .ToArray();
 
+          req.body.newDtls = newDtls;
           // let detailsInsert = [];
 
           _mysql
@@ -676,7 +685,162 @@ export default {
       next(e);
     }
   },
+  getPackageServices: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let inputParam = req.body;
 
+      const package_ids = inputParam.package_exists.map((o) => {
+        return o.ordered_package_id;
+      });
+      let strQuery = "SELECT 1=1";
+      if (inputParam.package_exists.length > 0) {
+        strQuery = mysql.format(
+          "SELECT D.service_id, service_name, service_type, H.insurance_yesno FROM hims_f_package_header H \
+            inner join hims_f_package_detail D on H.hims_f_package_header_id=D.package_header_id \
+            inner join hims_d_services S on S.hims_d_services_id=D.service_id \
+            inner join hims_d_service_type ST on ST.hims_d_service_type_id=D.service_type_id \
+            where (D.service_type_id=5 or D.service_type_id=11) and hims_f_package_header_id in (?) ;",
+          [package_ids]
+        );
+      }
+
+      new Promise((resolve, reject) => {
+        try {
+          // utilities.logger().log("getBillDetails: ");
+          _mysql
+            .executeQueryWithTransaction({
+              query: strQuery,
+              printQuery: true,
+            })
+            .then((result) => {
+              resolve(result);
+            });
+        } catch (e) {
+          reject(e);
+        }
+      })
+        .then(async (result) => {
+          // console.log("result", result);
+          let portal_data = [];
+
+          // if (inputParam.delete_data === true) {
+          // } else {
+          // console.log("portal_data", inputParam.newDtls);
+          if (inputParam.delete_data === true) {
+            let _services_id = [];
+            _.chain(inputParam.newDtls)
+              .filter(
+                (f) =>
+                  parseInt(f.service_type_id) === 5 ||
+                  parseInt(f.service_type_id) === 11
+              )
+              .map((m, key) => {
+                _services_id.push(m.services_id);
+              })
+              .value();
+
+            if (inputParam.package_exists.length > 0) {
+              for (let i = 0; i < result.length; i++) {
+                const m = result[i];
+                _services_id.push(m.service_id);
+              }
+            }
+            portal_data = {
+              service_id: _services_id,
+              visit_code: inputParam.visit_code,
+              patient_identity: inputParam.primary_id_no,
+              delete_data: true,
+            };
+          } else {
+            portal_data = _.chain(inputParam.newDtls)
+              .filter(
+                (f) =>
+                  parseInt(f.service_type_id) === 5 ||
+                  parseInt(f.service_type_id) === 11
+              )
+              .map((m, key) => {
+                return {
+                  service_id: m.services_id,
+                  service_name: m.service_name,
+                  service_category: m.service_type,
+                  visit_code: inputParam.visit_code,
+                  patient_identity: inputParam.primary_id_no,
+                  pay_type: m.insurance_yesno === "Y" ? "INSURANCE" : "CASH",
+                  service_amount: m.patient_resp,
+                  service_vat: m.patient_tax,
+                  hospital_id: inputParam.hospital_id,
+                  report_download:
+                    parseFloat(inputParam.credit_amount) > 0 ? "N" : "Y",
+                };
+              })
+              .value();
+            // console.log("portal_data", portal_data);
+            if (inputParam.package_exists.length > 0) {
+              for (let i = 0; i < result.length; i++) {
+                const m = result[i];
+                portal_data.push({
+                  service_id: m.service_id,
+                  service_name: m.service_name,
+                  service_category: m.service_type,
+                  visit_code: inputParam.visit_code,
+                  patient_identity: inputParam.primary_id_no,
+                  pay_type: m.insurance_yesno === "Y" ? "INSURANCE" : "CASH",
+                  service_amount: 0,
+                  service_vat: 0,
+                  hospital_id: req.userIdentity.hospital_id,
+                  report_download:
+                    parseFloat(inputParam.credit_amount) > 0 ? "N" : "Y",
+                });
+              }
+            }
+          }
+          const strurl =
+            inputParam.delete_data === true
+              ? "deletePatientService"
+              : "patientService";
+          // console.log("portal_data", strurl);
+          // console.log("portal_data", portal_data);
+          // consol.log("portal_data", portal_data);
+          await axios
+            .post(`${PORTAL_HOST}/info/` + strurl, portal_data)
+            .catch((e) => {
+              throw e;
+            });
+          // }
+          if (req.connection == null) {
+            req.package_data = result;
+            next();
+          } else {
+            req.package_data = result;
+            next();
+          }
+        })
+        .catch((error) => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+      // _mysql
+      //   .executeQueryWithTransaction({
+      //     query: strQuery,
+      //     printQuery: true,
+      //   })
+      //   .then(async (result) => {
+
+      //   })
+      //   .catch((error) => {
+      //     _mysql.rollBackTransaction(() => {
+      //       next(error);
+      //     });
+      //   });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
   patientAdvanceRefund: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
@@ -3835,52 +3999,6 @@ export default {
     }
   },
 
-  getPackageServices: (req, res, next) => {
-    const _options = req.connection == null ? {} : req.connection;
-    const _mysql = new algaehMysql(_options);
-    try {
-      let inputParam = req.body;
-
-      if (inputParam.package_exists.length > 0) {
-        const package_ids = inputParam.package_exists.map((o) => {
-          return o.ordered_package_id;
-        });
-
-        _mysql
-          .executeQuery({
-            query: `SELECT D.service_id, service_name, service_type, H.insurance_yesno FROM hims_f_package_header H 
-              inner join hims_f_package_detail D on H.hims_f_package_header_id=D.package_header_id 
-              inner join hims_d_services S on S.hims_d_services_id=D.service_id 
-              inner join hims_d_service_type ST on ST.hims_d_service_type_id=D.service_type_id 
-              where (D.service_type_id=5 or D.service_type_id=11) and hims_f_package_header_id in (?) ;`,
-            values: [package_ids],
-            printQuery: true,
-          })
-          .then((result) => {
-            if (req.connection == null) {
-              req.package_data = result;
-              next();
-            } else {
-              req.package_data = result;
-              next();
-            }
-          })
-          .catch((error) => {
-            _mysql.rollBackTransaction(() => {
-              next(error);
-            });
-          });
-      } else {
-        req.package_data = [];
-        next();
-      }
-    } catch (e) {
-      _mysql.rollBackTransaction(() => {
-        next(e);
-      });
-    }
-  },
-
   //created by:IRFAN
   generateAccountingEntry: (req, res, next) => {
     try {
@@ -5449,3 +5567,123 @@ function insertOrderServices(options) {
     options.next(e);
   });
 }
+// export async function getPackageServices(req, res, next) {
+//   const _options = req.connection == null ? {} : req.connection;
+//   const _mysql = new algaehMysql(_options);
+//   try {
+//     let inputParam = req.body;
+
+//     const package_ids = inputParam.package_exists.map((o) => {
+//       return o.ordered_package_id;
+//     });
+//     let strQuery = "SELECT 1=1";
+//     if (inputParam.package_exists.length > 0) {
+//       strQuery = mysql.format(
+//         "SELECT D.service_id, service_name, service_type, H.insurance_yesno FROM hims_f_package_header H \
+//           inner join hims_f_package_detail D on H.hims_f_package_header_id=D.package_header_id \
+//           inner join hims_d_services S on S.hims_d_services_id=D.service_id \
+//           inner join hims_d_service_type ST on ST.hims_d_service_type_id=D.service_type_id \
+//           where (D.service_type_id=5 or D.service_type_id=11) and hims_f_package_header_id in (?) ;",
+//         [package_ids]
+//       );
+//     }
+
+//     new Promise((resolve, reject) => {
+//       try {
+//         // utilities.logger().log("getBillDetails: ");
+//         _mysql
+//           .executeQueryWithTransaction({
+//             query: strQuery,
+//             printQuery: true,
+//           })
+//           .then((result) => {
+//             resolve(result);
+//           });
+//       } catch (e) {
+//         reject(e);
+//       }
+//     }).then(async (result) => {
+//       console.log("result", result);
+//       let portal_data = [];
+
+//       // if (inputParam.delete_data === true) {
+//       // } else {
+//       portal_data = _.chain(inputParam.billdetails)
+//         .filter(
+//           (f) =>
+//             parseInt(f.service_type_id) === 5 ||
+//             parseInt(f.service_type_id) === 11
+//         )
+//         .map((m, key) => {
+//           return {
+//             service_id: m.services_id,
+//             service_name: m.service_name,
+//             service_category: m.service_type,
+//             visit_code: inputParam.visit_code,
+//             patient_identity: inputParam.primary_id_no,
+//             pay_type: m.insurance_yesno === "Y" ? "INSURANCE" : "CASH",
+//             service_amount: m.patient_resp,
+//             service_vat: m.patient_tax,
+//             hospital_id: inputParam.hospital_id,
+//             report_download:
+//               parseFloat(inputParam.credit_amount) > 0 ? "N" : "Y",
+//           };
+//         })
+//         .value();
+//       if (inputParam.package_exists.length > 0) {
+//         result.map((m) => {
+//           portal_data.push({
+//             service_id: m.service_id,
+//             service_name: m.service_name,
+//             service_category: m.service_type,
+//             visit_code: inputParam.visit_code,
+//             patient_identity: inputParam.primary_id_no,
+//             pay_type: m.insurance_yesno === "Y" ? "INSURANCE" : "CASH",
+//             service_amount: 0,
+//             service_vat: 0,
+//             hospital_id: req.userIdentity.hospital_id,
+//             report_download:
+//               parseFloat(inputParam.credit_amount) > 0 ? "N" : "Y",
+//           });
+//         });
+//       }
+//       console.log("portal_data", portal_data);
+//       consol.log("portal_data", portal_data);
+//       await axios
+//         .post(
+//           `${PORTAL_HOST}/info/` + inputParam.delete_data === true
+//             ? `patientService`
+//             : `deletePatientService`,
+//           portal_data
+//         )
+//         .catch((e) => {
+//           throw e;
+//         });
+//       // }
+//       if (req.connection == null) {
+//         req.package_data = result;
+//         next();
+//       } else {
+//         req.package_data = result;
+//         next();
+//       }
+//     });
+//     // _mysql
+//     //   .executeQueryWithTransaction({
+//     //     query: strQuery,
+//     //     printQuery: true,
+//     //   })
+//     //   .then(async (result) => {
+
+//     //   })
+//     //   .catch((error) => {
+//     //     _mysql.rollBackTransaction(() => {
+//     //       next(error);
+//     //     });
+//     //   });
+//   } catch (e) {
+//     _mysql.rollBackTransaction(() => {
+//       next(e);
+//     });
+//   }
+// }

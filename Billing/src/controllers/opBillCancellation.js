@@ -70,9 +70,14 @@ export default () => {
         next();
       }
     },
-
+    (req, res, next) => {
+      if (req.body.portal_exists == "Y") {
+        getPackageServices(req, res, next);
+      } else {
+        next();
+      }
+    },
     cancelPackage,
-    getPackageServices,
     generateAccountingEntry,
     reVertCashHandover,
     (req, res, next) => {

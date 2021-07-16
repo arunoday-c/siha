@@ -157,7 +157,7 @@ export default {
 
               // console.log("inputParam.billdetails", inputParam.billdetails);
               // consoe.log("inputParam.billdetails", inputParam.billdetails);
-
+              req.body.newDtls = inputParam.billdetails;
               _mysql
                 .executeQuery({
                   query: "INSERT INTO hims_f_bill_cancel_details(??) VALUES ?",

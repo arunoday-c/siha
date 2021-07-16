@@ -1,8 +1,12 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-import algaehUtilities from "algaeh-utilities/utilities";
+import axios from "axios";
 import mysql from "mysql";
 import moment from "moment";
+import dotenv from "dotenv";
+if (process.env.NODE_ENV !== "production") dotenv.config();
+
+const { PORTAL_HOST } = process.env;
 export default {
   closeVisit: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -465,7 +469,7 @@ export default {
               ],
               printQuery: true,
             })
-            .then((patAppointment) => {
+            .then(async (patAppointment) => {
               // if (req.connection == null) {
               //   _mysql.commitTransaction(() => {
               //     _mysql.releaseConnection();
@@ -493,11 +497,45 @@ export default {
                 department: input.sub_department_name,
               };
 
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
-                req.records = result;
-                next();
-              });
+              if (input.portal_exists === "Y") {
+                input.patient_identity = input.primary_id_no;
+                input.corporate_id =
+                  input.insuranceInfo === undefined
+                    ? null
+                    : input.insuranceInfo.user_id;
+                input.identity_type = input.identity_type ?? "NATIONALITY ID";
+                input.patient_name = input.full_name;
+                input.patient_dob = input.date_of_birth;
+                input.patient_gender = input.gender;
+                input.mobile_no = `${input.tel_code}${input.contact_number}`;
+                input.email_id = input.email;
+                input.age = input.age_in_years;
+                input.doctor_id = input.doctor_id;
+                input.hospital_id = req.userIdentity.hospital_id;
+                input.visit_date = moment().format("YYYY-MM-DD HH:mm:ss");
+
+                const portal_data = input;
+                delete portal_data.billdetails;
+                delete portal_data.receiptdetails;
+                // console.log("PORTAL_HOST", PORTAL_HOST);
+                // consol.log("portal_data", portal_data);
+                await axios
+                  .post(`${PORTAL_HOST}/info/patientRegistration`, portal_data)
+                  .catch((e) => {
+                    throw e;
+                  });
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = result;
+                  next();
+                });
+              } else {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = result;
+                  next();
+                });
+              }
             })
             .catch((e) => {
               _mysql.rollBackTransaction(() => {

@@ -43,11 +43,11 @@ import {
   RawSecurityComponent,
 } from "algaeh-react-components";
 import sockets from "../../sockets";
-import axios from "axios";
+// import axios from "axios";
 import swal from "sweetalert2";
 import _ from "lodash";
 
-const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
+// const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 class OPBilling extends Component {
   constructor(props) {
     super(props);
@@ -458,10 +458,10 @@ class OPBilling extends Component {
                 (f) => f.service_type_id === 14
               );
 
-              debugger;
-              let portal_data = {};
+              // debugger;
+
               if (Inputobj.portal_exists === "Y") {
-                portal_data = _.chain(Inputobj.billdetails)
+                Inputobj.portal_data = _.chain(Inputobj.billdetails)
                   .filter(
                     (f) =>
                       parseInt(f.service_type_id) === 5 ||
@@ -484,28 +484,6 @@ class OPBilling extends Component {
                     };
                   })
                   .value();
-
-                // portal_data = Inputobj.billdetails.map((m) => {
-                //   if (
-                //     parseInt(m.service_type_id) === 5 ||
-                //     parseInt(m.service_type_id) === 11
-                //   ) {
-                //     return {
-                //       service_id: m.services_id,
-                //       service_name: m.service_name,
-                //       service_category: m.service_type,
-                //       visit_code: Inputobj.visit_code,
-                //       patient_identity: Inputobj.primary_id_no,
-                //       pay_type:
-                //         m.insurance_yesno === "Y" ? "INSURANCE" : "CASH",
-                //       service_amount: m.patient_resp,
-                //       service_vat: m.patient_tax,
-                //       hospital_id: Inputobj.hospital_id,
-                //       report_download:
-                //         parseFloat(Inputobj.credit_amount) > 0 ? "N" : "Y",
-                //     };
-                //   }
-                // });
               }
 
               Inputobj.package_exists = package_exists;
@@ -526,39 +504,39 @@ class OPBilling extends Component {
                       saveEnable: true,
                     });
 
-                    debugger;
-                    if (Inputobj.portal_exists === "Y") {
-                      const package_data = response.data.records.package_data;
-                      for (let i = 0; i < package_data.length; i++) {
-                        portal_data.push({
-                          service_id: package_data[i].service_id,
-                          service_name: package_data[i].service_name,
-                          service_category: package_data[i].service_type,
-                          visit_code: Inputobj.visit_code,
-                          patient_identity: Inputobj.primary_id_no,
-                          pay_type:
-                            package_data[i].insurance_yesno === "Y"
-                              ? "INSURANCE"
-                              : "CASH",
-                          service_amount: 0,
-                          service_vat: 0,
-                          hospital_id: Inputobj.hospital_id,
-                          report_download:
-                            parseFloat(Inputobj.credit_amount) > 0 ? "N" : "Y",
-                        });
-                      }
+                    // debugger;
+                    // if (Inputobj.portal_exists === "Y") {
+                    //   const package_data = response.data.records.package_data;
+                    //   for (let i = 0; i < package_data.length; i++) {
+                    //     portal_data.push({
+                    //       service_id: package_data[i].service_id,
+                    //       service_name: package_data[i].service_name,
+                    //       service_category: package_data[i].service_type,
+                    //       visit_code: Inputobj.visit_code,
+                    //       patient_identity: Inputobj.primary_id_no,
+                    //       pay_type:
+                    //         package_data[i].insurance_yesno === "Y"
+                    //           ? "INSURANCE"
+                    //           : "CASH",
+                    //       service_amount: 0,
+                    //       service_vat: 0,
+                    //       hospital_id: Inputobj.hospital_id,
+                    //       report_download:
+                    //         parseFloat(Inputobj.credit_amount) > 0 ? "N" : "Y",
+                    //     });
+                    //   }
 
-                      axios
-                        .post(`${PORTAL_HOST}/info/patientService`, portal_data)
-                        .then(function (response) {
-                          //handle success
-                          console.log(response);
-                        })
-                        .catch(function (response) {
-                          //handle error
-                          console.log(response);
-                        });
-                    }
+                    //   axios
+                    //     .post(`${PORTAL_HOST}/info/patientService`, portal_data)
+                    //     .then(function (response) {
+                    //       //handle success
+                    //       console.log(response);
+                    //     })
+                    //     .catch(function (response) {
+                    //       //handle error
+                    //       console.log(response);
+                    //     });
+                    // }
 
                     this.setState({
                       addNewService: true,
