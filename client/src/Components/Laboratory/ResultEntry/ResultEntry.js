@@ -1363,7 +1363,7 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import swal from "sweetalert2";
 import _ from "lodash";
-import axios from "axios";
+// import axios from "axios";
 import moment from "moment";
 import "../../../styles/site.scss";
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
@@ -1423,7 +1423,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
   const [edit_units, setEdit_units] = useState(false);
   const [status, setStatus] = useState("");
   let [, setState] = useState();
-  const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
+  // const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
   useEffect(() => {
     setPortal_exists(userToken.portal_exists);
 
@@ -1505,6 +1505,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
             ? data.commentsData.comments.split("<br/>")
             : []
         );
+        debugger;
         setRecords_test_formula(records_test_formula);
         setOrdered_by_name({
           name: data.analyteData[0].ordered_by_name,
@@ -1786,6 +1787,9 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
   };
   const UpdateLabOrder = (value, status) => {
     value[0].comments = comment_list.join("<br/>");
+    value[0].portal_exists = portal_exists;
+    value[0].visit_code = selectedPatient.visit_code;
+    value[0].primary_id_no = selectedPatient.primary_id_no;
     const critical_exit = _.filter(value, (f) => {
       return f.critical_status === "Y";
     });
@@ -1808,6 +1812,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
       }
     }
 
+    debugger;
     algaehApiCall({
       uri: "/laboratory/updateLabResultEntry",
       module: "laboratory",
@@ -1816,50 +1821,50 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
       onSuccess: (response) => {
         if (response.data.success === true) {
           if (status === "N") {
-            if (portal_exists === "Y") {
-              const portal_data = {
-                service_id: selectedPatient.service_id,
-                visit_code: selectedPatient.visit_code,
-                patient_identity: selectedPatient.primary_id_no,
-                service_status: "SAMPLE COLLECTED",
-              };
-              axios
-                .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-                .then(function (response) {
-                  //handle success
-                  console.log(response);
-                })
-                .catch(function (response) {
-                  //handle error
-                  console.log(response);
-                });
-            }
+            // if (portal_exists === "Y") {
+            //   const portal_data = {
+            //     service_id: selectedPatient.service_id,
+            //     visit_code: selectedPatient.visit_code,
+            //     patient_identity: selectedPatient.primary_id_no,
+            //     service_status: "SAMPLE COLLECTED",
+            //   };
+            //   axios
+            //     .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+            //     .then(function (response) {
+            //       //handle success
+            //       console.log(response);
+            //     })
+            //     .catch(function (response) {
+            //       //handle error
+            //       console.log(response);
+            //     });
+            // }
             swalMessage({
               type: "success",
               title: "Re-Run Started, Investigation is in Progress . .",
             });
           } else {
-            if (status === "CF" || status === "V" || status === "AV") {
-              if (portal_exists === "Y") {
-                const portal_data = {
-                  service_id: selectedPatient.service_id,
-                  visit_code: selectedPatient.visit_code,
-                  patient_identity: selectedPatient.primary_id_no,
-                  service_status:
-                    status === "CF" ? "RESULT CONFIRMED" : "RESULT VALIDATED",
-                };
-                axios
-                  .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-                  .then(function (response) {
-                    //handle success
-                    console.log(response);
-                  })
-                  .catch(function (response) {
-                    //handle error
-                    console.log(response);
-                  });
-              }
-            }
+            // if (status === "CF" || status === "V" || status === "AV") {
+            //   if (portal_exists === "Y") {
+            //     const portal_data = {
+            //       service_id: selectedPatient.service_id,
+            //       visit_code: selectedPatient.visit_code,
+            //       patient_identity: selectedPatient.primary_id_no,
+            //       service_status:
+            //         status === "CF" ? "RESULT CONFIRMED" : "RESULT VALIDATED",
+            //     };
+            //     axios
+            //       .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+            //       .then(function (response) {
+            //         //handle success
+            //         console.log(response);
+            //       })
+            //       .catch(function (response) {
+            //         //handle error
+            //         console.log(response);
+            //       });
+            //   }
+            // }
             swalMessage({
               type: "success",
               title: "Done successfully . .",
@@ -2285,7 +2290,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
   return (
     <div>
       <AlgaehModal
-        title="Specimen Collections"
+        title="Result Entry"
         class="labResultModalPopup"
         visible={open}
         mask={true}
@@ -2781,7 +2786,8 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
                           ),
                           displayTemplate: (row) => {
                             return edit_units === true &&
-                              row.analyte_type === "QN" ? (
+                              (row.analyte_type === "QN" ||
+                                row.analyte_type === "T") ? (
                               <AlgaehFormGroup
                                 div={{}}
                                 textBox={{

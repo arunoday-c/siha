@@ -178,7 +178,7 @@ const labModal = {
         .executeQuery({
           query:
             "SELECT hims_f_lab_order_id, test_id, service_id, LO.patient_id, primary_id_no, patient_code, P.full_name, \
-            P.date_of_birth, P.gender, ordered_date, LS.barcode_gen,visit_code,\
+            P.date_of_birth, P.gender, ordered_date, LS.barcode_gen,visit_code, LO.credit_order,\
             LO.status, test_type, visit_id, LO.lab_id_number, LS.status as sample_status,S.service_code, S.service_name,\
             case when LO.run_type='1' then '1 Time' when LO.run_type='2' then '2 Times' when LO.run_type='3' then '3 times' else '-' end as run_types, \
             hims_d_lab_sample_id, collected_by, collected_date, billed,sample_id, container_id, collected, hesn_upload, send_in_test, send_out_test, \
@@ -1315,7 +1315,7 @@ const labModal = {
           max(if(CL.algaeh_d_app_user_id=LB.confirmed_by, EM.full_name,'')) as confirm_by_name,
           max(if(CL.algaeh_d_app_user_id=LB.validated_by, EM.full_name,'')) as validate_by_name,
           LB.entered_by,LB.confirmed_by,LB.validated_by,
-          LO.*,
+          LO.*,LB.service_id,
           LO.text_value as val_text_value, LA.description,max(if(LM.formula is not null,LM.formula,null)) as formula,
           max(if(LM.display_formula is not null,LM.display_formula,null)) as display_formula,
           max(if(LM.decimals is not null,LM.decimals,null)) as decimals  from hims_f_ord_analytes LO
@@ -1337,6 +1337,7 @@ const labModal = {
           printQuery: true,
         })
         .then((result) => {
+          console.log("result", result);
           _mysql.releaseConnection();
           req.records = result;
 
@@ -1550,6 +1551,9 @@ const labModal = {
                     patient_identity: portal_input.primary_id_no,
                     service_status: "ORDERED",
                   };
+
+                  console.log("portal_data", portal_data);
+                  // consol.log("portal_data", portal_data);
 
                   await axios
                     .post(
@@ -1957,7 +1961,6 @@ const labModal = {
           ]
         );
       }
-      utilities.logger().log("qry: ", qry);
 
       _mysql
         .executeQuery({
@@ -1965,7 +1968,6 @@ const labModal = {
           printQuery: true,
         })
         .then((results) => {
-          utilities.logger().log("results: ", results);
           if (results != null && ref != null) {
             _mysql
               .executeQuery({
@@ -1984,18 +1986,57 @@ const labModal = {
                 ],
                 printQuery: true,
               })
-              .then((update_lab_order) => {
-                utilities.logger().log("update_lab_order: ", update_lab_order);
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = {
-                    results,
-                    entered_by: entered_by,
-                    confirmed_by: confirmed_by,
-                    validated_by: validated_by,
+              .then(async (update_lab_order) => {
+                console.log("portal_exists", inputParam[0].portal_exists);
+                console.log("ref", ref);
+                if (
+                  inputParam[0].portal_exists === "Y" &&
+                  (ref === "N" || ref === "CF" || ref === "V")
+                ) {
+                  const portal_data = {
+                    service_id: inputParam[0].service_id,
+                    visit_code: inputParam[0].visit_code,
+                    patient_identity: inputParam[0].primary_id_no,
+                    service_status:
+                      ref === "CF"
+                        ? "RESULT CONFIRMED"
+                        : ref === "V"
+                        ? "RESULT VALIDATED"
+                        : "SAMPLE COLLECTED",
                   };
-                  next();
-                });
+
+                  console.log("portal_data", portal_data);
+                  // consol.log("portal_data", portal_data);
+                  await axios
+                    .post(
+                      `${PORTAL_HOST}/info/deletePatientService`,
+                      portal_data
+                    )
+                    .catch((e) => {
+                      throw e;
+                    });
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = {
+                      results,
+                      entered_by: entered_by,
+                      confirmed_by: confirmed_by,
+                      validated_by: validated_by,
+                    };
+                    next();
+                  });
+                } else {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = {
+                      results,
+                      entered_by: entered_by,
+                      confirmed_by: confirmed_by,
+                      validated_by: validated_by,
+                    };
+                    next();
+                  });
+                }
               })
               .catch((e) => {
                 _mysql.rollBackTransaction(() => {
@@ -2692,6 +2733,8 @@ export async function updateLabOrderServices(req, res, next) {
                   patient_identity: inputParam.primary_id_no,
                   service_status: "SAMPLE COLLECTED",
                 };
+                // console.log("portal_data", portal_data);
+                // consol.log("portal_data", portal_data);
                 await axios
                   .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
                   .catch((e) => {
@@ -2881,27 +2924,32 @@ export async function updateLabOrderServiceStatus(req, res, next) {
         printQuery: true,
       })
       .then(async (result) => {
+        console.log("req.body.portal_exists", req.body.portal_exists);
         if (req.body.portal_exists === "Y") {
           const calncel_details = result[1];
-          const portal_data = calncel_details.map((m) => {
-            return {
-              service_id: m.service_id,
-              visit_code: m.visit_code,
-              patient_identity: m.primary_id_no,
-              service_status: "SAMPLE COLLECTED",
-            };
-          });
 
-          await axios
-            .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-            .catch((e) => {
-              throw e;
-            });
-          _mysql.commitTransaction(() => {
-            _mysql.releaseConnection();
-            req.records = result;
-            next();
-          });
+          for (let i = 0; i < calncel_details.length; i++) {
+            const portal_data = {
+              service_id: calncel_details[i].service_id,
+              visit_code: calncel_details[i].visit_code,
+              patient_identity: calncel_details[i].primary_id_no,
+              service_status: "ORDERED",
+            };
+            // console.log("portal_data", portal_data);
+            // consol.log("portal_data", portal_data);
+            await axios
+              .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+              .catch((e) => {
+                throw e;
+              });
+            if (i === calncel_details.length - 1) {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              });
+            }
+          }
         } else {
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
