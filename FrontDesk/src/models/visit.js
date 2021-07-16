@@ -293,7 +293,6 @@ export default {
           expectedResult.shift();
           let expResult = expectedResult[0];
 
-          console.log("1", inputParam.existing_plan);
           if (inputParam.existing_plan === "Y") {
             inputParam.visit_expiery_date = moment(
               expResult[0]["visit_expiery_date"]
@@ -302,7 +301,6 @@ export default {
             req.body.episode_id = inputParam.episode_id;
             internalInsertPatientVisitData();
           } else {
-            console.log("2", expResult[0]);
             //fetching expiry date and episode id for existing patient
             if (
               expResult[0].visit_expiery_date != null &&
@@ -344,15 +342,29 @@ export default {
                       next();
                     }
                   }
+                  // console.log(
+                  //   "inputParam.consultation",
+                  //   inputParam.consultation
+                  // );
+
                   inputParam.visit_expiery_date =
                     inputParam.consultation === "Y"
                       ? moment()
                           .add(parseInt(record[0]["param_value"], 10), "days")
                           .format("YYYY-MM-DD")
                       : moment()
-                          .add(parseInt(record[0]["param_value"], 1), "days")
+                          .add(parseInt(record[0]["param_value"], 2), "days")
                           .format("YYYY-MM-DD");
                   currentEpisodeNo = record[0].episode_id;
+
+                  // console.log(
+                  //   "inputParam.visit_expiery_date",
+                  //   inputParam.visit_expiery_date
+                  // );
+                  // consol.log(
+                  //   "inputParam.consultation",
+                  //   inputParam.consultation
+                  // );
 
                   if (currentEpisodeNo > 0) {
                     let nextEpisodeNo = currentEpisodeNo + 1;
