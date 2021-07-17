@@ -11,8 +11,8 @@ const executePDF = function executePDFMethod(options) {
       });
       options.mysql
         .executeQuery({
-          query: `SELECT S.service_name,LS.barcode_gen,LO.lab_id_number,P.date_of_birth, P.full_name,P.patient_code, 
-          age_in_years, age_in_months,age_in_days,gender,LC.color_name,LC.color_code,INV.isPCR,LO.hassan_number
+          query: `SELECT S.service_name,LS.barcode_gen,LO.lab_id_number,P.date_of_birth, P.full_name,P.patient_code,
+          P.primary_id_no, age_in_years, age_in_months,age_in_days,gender,LC.color_name,LC.color_code,INV.isPCR,LO.hassan_number
           FROM  hims_f_lab_order LO 
           inner join hims_f_lab_sample LS on LO.hims_f_lab_order_id = LS.order_id 
           inner join hims_f_patient P on P.hims_d_patient_id = LO.patient_id 

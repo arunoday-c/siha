@@ -19,10 +19,18 @@
         <b>{{header.lab_id_number}}</b></small>
       <small class="small-right" style="margin-top: 4px;"><b
         >{{header.barcode_gen}}</b></small>
-      <img
-        class="specimenBarcode"
-        src={{barcode "code128" header.lab_id_number false}}
-      />
+
+      {{#if header.isPCR "Y"}}
+        <img
+          class="specimenBarcode"
+          src={{barcode "code128" header.primary_id_no false}}
+        />
+      {{else}}
+        <img
+          class="specimenBarcode"
+          src={{barcode "code128" header.lab_id_number false}}
+        />
+      {{/if}}
       <small
         class="small-center texttruncate"
         style="width:
@@ -35,20 +43,23 @@
       <small class="small-center"><b></b></small>
       <small
         class="small-left texttruncate"
-        style="width:
-            77%; line-height:12px;text-align:left;"
+        style="width:61%; line-height:12px;text-align:left;"
       ><b>{{header.service_name}}</b></small>
-      {{!-- <small
-        class="small-right"
-        style="border-radius:2px;padding:1px 3px;border: 1px dashed {{header.color_code}}"
-      ><b>{{header.color_name}}</b></small> --}}
 
-      {{#ifExist header.color_name}}
-        <small
-          class="small-right"
-          style="border-radius:2px;padding:1px 3px;border: 1px dashed {{header.color_code}}"
-        ><b>{{header.color_name}}</b></small>
-      {{/ifExist}}
+      {{#if header.isPCR "Y"}}
+
+        {{#ifExist header.primary_id_no}}
+          <small
+            class="small-right"
+            style="width:39%;line-height:12px;text-align:right;"
+          ><b>{{header.primary_id_no}}</b></small>
+        {{/ifExist}}{{else}}
+        {{#ifExist header.color_name}}
+          <small
+            class="small-right"
+            style="border-radius:2px;padding:1px 3px;border: 1px dashed {{header.color_code}}"
+          ><b>{{header.color_name}}</b></small>
+        {{/ifExist}}{{/if}}
 
       {{!-- <small class="small-center"><b>{{header.lab_id_number}}</b></small> --}}
     </div>
