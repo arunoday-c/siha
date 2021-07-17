@@ -1318,7 +1318,8 @@ const labModal = {
           LO.*,LB.service_id,
           LO.text_value as val_text_value, LA.description,max(if(LM.formula is not null,LM.formula,null)) as formula,
           max(if(LM.display_formula is not null,LM.display_formula,null)) as display_formula,
-          max(if(LM.decimals is not null,LM.decimals,null)) as decimals  from hims_f_ord_analytes LO
+          max(if(LM.decimals is not null,LM.decimals,null)) as decimals,
+          LB.ordered_date, LB.entered_date, LB.confirmed_date, LB.validated_date from hims_f_ord_analytes LO
           inner join hims_d_lab_analytes LA on LA.hims_d_lab_analytes_id = LO.analyte_id
           inner join hims_f_lab_order LB on LB.hims_f_lab_order_id = LO.order_id
           inner join hims_m_lab_analyte as LM on LM.analyte_id = LA.hims_d_lab_analytes_id

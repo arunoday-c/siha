@@ -1509,7 +1509,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
         setRecords_test_formula(records_test_formula);
         setOrdered_by_name({
           name: data.analyteData[0].ordered_by_name,
-          ...ordered_by_name,
+          date: data.analyteData[0].ordered_date,
         });
         setConfirm_by_name({
           name: data.analyteData[0].confirm_by_name,
