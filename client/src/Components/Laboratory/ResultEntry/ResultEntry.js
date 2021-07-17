@@ -2734,12 +2734,12 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
                                           valueField: "value",
                                           data: [
                                             {
-                                              name: "Positive",
-                                              value: "Positive",
-                                            },
-                                            {
                                               name: "Negative",
                                               value: "Negative",
+                                            },
+                                            {
+                                              name: "Positive",
+                                              value: "Positive",
                                             },
                                             {
                                               name: "Not Seen",
