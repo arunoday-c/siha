@@ -2170,7 +2170,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
               </h6>
             </div>
 
-            <div className="col">
+            {/* <div className="col">
               <AlgaehLabel
                 label={{
                   fieldName: "ordered_by",
@@ -2181,7 +2181,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
                   ? selected_patient.doctor_name
                   : "------"}
               </h6>
-            </div>
+            </div> */}
             <div className="col-lg-3">
               <AlgaehLabel
                 label={{

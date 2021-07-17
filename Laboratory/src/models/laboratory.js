@@ -174,6 +174,9 @@ const labModal = {
         inputValues.push(req.query.test_type);
       }
 
+      // left join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
+      // E.full_name as doctor_name
+
       _mysql
         .executeQuery({
           query:
@@ -182,13 +185,12 @@ const labModal = {
             LO.status, test_type, visit_id, LO.lab_id_number, LS.status as sample_status,S.service_code, S.service_name,\
             case when LO.run_type='1' then '1 Time' when LO.run_type='2' then '2 Times' when LO.run_type='3' then '3 times' else '-' end as run_types, \
             hims_d_lab_sample_id, collected_by, collected_date, billed,sample_id, container_id, collected, hesn_upload, send_in_test, send_out_test, \
-            LS.remarks, E.full_name as doctor_name FROM hims_f_lab_order LO\
+            LS.remarks FROM hims_f_lab_order LO\
             inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
             INNER JOIN hims_f_patient P on P.hims_d_patient_id = LO.patient_id\
             INNER JOIN hims_f_patient_visit PV on PV.hims_f_patient_visit_id = LO.visit_id\
             LEFT JOIN hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A'\
             left join hims_d_lab_specimen as DLS on DLS.hims_d_lab_specimen_id = LS.sample_id \
-            left join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
             WHERE " +
             _stringData +
             " group by hims_f_lab_order_id order by hims_f_lab_order_id desc",

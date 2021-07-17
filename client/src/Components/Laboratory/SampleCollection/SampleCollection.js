@@ -621,6 +621,7 @@ function SampleCollection() {
               number_of_tests: g.getSource().length,
               status: firstRecordSet.status,
               test_type: firstRecordSet.test_type,
+              // doctor_name: firstRecordSet.doctor_name,
             };
           })
           .toArray();
