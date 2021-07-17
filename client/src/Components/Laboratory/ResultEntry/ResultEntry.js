@@ -1671,7 +1671,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
   //   }
   // );
   const onClickPrintHandle = () => {
-    generateLabResultReport()
+    generateLabResultReport({ hidePrinting: false })
       .then(() => {
         // this.setState({ loading: false });
       })
@@ -1693,6 +1693,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
   function generateLabResultReport(data) {
     return new Promise((resolve, reject) => {
       let portalParams = {};
+      debugger;
       if (portal_exists === "Y") {
         portalParams["reportToPortal"] = "true";
       }
