@@ -379,7 +379,8 @@ export default {
       }
 
       const qrUrl = process.env.QR_CODE_CLIENT ?? "http://localhost:3024/";
-      const portalUrl = process.env.PORTAL_HOST ?? "http://localhost:4402/";
+      const portalUrl =
+        process.env.PORTAL_HOST ?? "http://localhost:4402/api/v1";
 
       _mysql
         .executeQuery({
@@ -858,10 +859,9 @@ export default {
                               });
                               if (reportToPortal === "true") {
                                 const rptParameters = _inputParam.reportParams;
-                                const portal_patient_identity =
-                                  rptParameters.find(
-                                    (f) => f.name === "patient_identity"
-                                  ).value;
+                                const portal_patient_identity = rptParameters.find(
+                                  (f) => f.name === "patient_identity"
+                                ).value;
                                 const portal_service_id = rptParameters.find(
                                   (f) => f.name === "service_id"
                                 )?.value;
@@ -896,13 +896,9 @@ export default {
                                   );
 
                                   axios
-                                    .post(
-                                      `${portalUrl}api/v1/report/upload`,
-                                      formD,
-                                      {
-                                        headers: { ...formD.getHeaders() },
-                                      }
-                                    )
+                                    .post(`${portalUrl}/report/upload`, formD, {
+                                      headers: { ...formD.getHeaders() },
+                                    })
                                     .then(() => {
                                       console.log("report updated succesfully");
                                     })
@@ -926,8 +922,9 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } =
-                      __non_webpack_require__(_supportingJS);
+                    const { executePDF } = __non_webpack_require__(
+                      _supportingJS
+                    );
 
                     executePDF({
                       mysql: _mysql,
@@ -1179,8 +1176,9 @@ export default {
                       );
 
                       if (fs.existsSync(_supportingJS)) {
-                        const { executePDF } =
-                          __non_webpack_require__(_supportingJS);
+                        const { executePDF } = __non_webpack_require__(
+                          _supportingJS
+                        );
                         executePDF({
                           mysql: _mysql,
                           inputs: _inputParam,
@@ -1570,10 +1568,9 @@ export default {
                                       0,
                                       onlyAlphabets.length - 1
                                     );
-                                    const lastcharacter =
-                                      onlyAlphabets.charCodeAt(
-                                        onlyAlphabets.length - 1
-                                      );
+                                    const lastcharacter = onlyAlphabets.charCodeAt(
+                                      onlyAlphabets.length - 1
+                                    );
 
                                     const numberOfCols =
                                       parseInt($(this).attr("colspan")) - 1;
@@ -1884,8 +1881,9 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } =
-                      __non_webpack_require__(_supportingJS);
+                    const { executePDF } = __non_webpack_require__(
+                      _supportingJS
+                    );
                     executePDF({
                       mysql: _mysql,
                       inputs: _inputOrders,
