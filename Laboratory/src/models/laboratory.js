@@ -98,7 +98,7 @@ const labModal = {
             CL.algaeh_d_app_user_id=LO.validated_by or CL.algaeh_d_app_user_id=LO.confirmed_by or CL.algaeh_d_app_user_id=LO.hassan_number_updated_by or CL.algaeh_d_app_user_id=LO.hesn_upload_updated_by) \
             left join hims_d_employee EM on EM.hims_d_employee_id=CL.employee_id WHERE " +
             _stringData +
-            " group by hims_f_lab_order_id order by hims_f_lab_order_id desc",
+            " group by hims_f_lab_order_id order by LO.ordered_date desc",
           values: inputValues,
           printQuery: true,
         })
@@ -194,7 +194,7 @@ const labModal = {
             inner join hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = LO.test_id \
             WHERE " +
             _stringData +
-            " group by hims_f_lab_order_id order by hims_f_lab_order_id desc",
+            " group by hims_f_lab_order_id order by LO.ordered_date desc",
           values: inputValues,
           printQuery: true,
         })

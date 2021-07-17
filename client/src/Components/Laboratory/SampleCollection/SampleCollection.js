@@ -865,11 +865,11 @@ function SampleCollection() {
       <div className="row">
         <div className="col-lg-12">
           <div className="portlet portlet-bordered margin-bottom-15">
-            {/* <div className="portlet-title">
+            <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Specimen Collection List</h3>
               </div>
-            </div> */}
+            </div>
             <div className="portlet-body" id="samplecollectionListGrid">
               <AlgaehDataGrid
                 columns={[
@@ -910,7 +910,7 @@ function SampleCollection() {
                       resizable: false,
                       style: { textAlign: "center" },
                     },
-
+                    sortable: true,
                     filterable: true,
                     filterType: "date",
                     // choices: [
@@ -973,6 +973,7 @@ function SampleCollection() {
                     ),
                     disabled: false,
                     filterable: true,
+                    sortable: true,
                     others: {
                       width: 120,
                       resizable: false,
@@ -986,6 +987,7 @@ function SampleCollection() {
                     ),
                     disabled: false,
                     filterable: true,
+                    sortable: true,
                     others: {
                       width: 120,
                       resizable: false,
@@ -999,6 +1001,7 @@ function SampleCollection() {
                     ),
                     disabled: true,
                     filterable: true,
+                    sortable: true,
                     others: {
                       resizable: false,
                       style: { textAlign: "left" },
