@@ -184,7 +184,7 @@ const labModal = {
             P.date_of_birth, P.gender, ordered_date, LS.barcode_gen,visit_code, LO.credit_order,\
             LO.status, test_type, visit_id, LO.lab_id_number, LS.status as sample_status,S.service_code, S.service_name,\
             case when LO.run_type='1' then '1 Time' when LO.run_type='2' then '2 Times' when LO.run_type='3' then '3 times' else '-' end as run_types, \
-            hims_d_lab_sample_id, collected_by, collected_date, billed,sample_id, container_id, collected, hesn_upload, send_in_test, send_out_test, \
+            hims_d_lab_sample_id, collected_by, collected_date, billed,sample_id, container_id, collected, hesn_upload, LO.send_in_test, LO.send_out_test, \
             LS.remarks, IT.isPCR FROM hims_f_lab_order LO\
             inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
             INNER JOIN hims_f_patient P on P.hims_d_patient_id = LO.patient_id\
