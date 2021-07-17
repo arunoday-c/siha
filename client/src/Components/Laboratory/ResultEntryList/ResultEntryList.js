@@ -48,7 +48,7 @@ export default function ResultEntryList() {
       start_date: [moment(new Date()), moment(new Date())],
     },
   });
-
+  const [currentPage, setCurrentPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const [isMicroOpen, setIsMicroOpen] = useState(false);
   const [sample_collection, setSampleCollection] = useState([]);
@@ -913,7 +913,11 @@ export default function ResultEntryList() {
                     (f) => f.sample_status === "A"
                   )}
                   pagination={true}
-                  pageOptions={{ rows: 100, page: 1 }}
+                  pageOptions={{ rows: 100, page: currentPage }}
+                  pageEvent={(page) => {
+                    console.log("page====>", page);
+                    setCurrentPage(page);
+                  }}
                   isFilterable={true}
                   noDataText="No data available for selected period"
                 />

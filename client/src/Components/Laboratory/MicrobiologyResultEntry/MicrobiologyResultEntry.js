@@ -50,6 +50,7 @@ class MicrobiologyResultEntry extends Component {
       selcted_comments: "",
       contaminated_culture: "N",
       portal_exists: "N",
+      currentPage: 1,
     };
   }
 
@@ -635,7 +636,14 @@ class MicrobiologyResultEntry extends Component {
                                     : this.state.microAntbiotic
                                 }
                                 pagination={true}
-                                pageOptions={{ rows: 50, page: 1 }}
+                                pageOptions={{
+                                  rows: 50,
+                                  page: this.state.currentPage,
+                                }}
+                                pageEvent={(page) => {
+                                  this.setState({ currentPage: page });
+                                  // setCurrentPage(page);
+                                }}
                                 isFilterable={true}
                               />
                             </div>

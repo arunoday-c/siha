@@ -563,7 +563,7 @@ import sockets from "../../../sockets";
 // import _ from "moment";
 function SampleCollection() {
   const { userToken } = useContext(MainContext);
-
+  const [currentPage, setCurrentPage] = useState(1);
   const { control, errors, reset, getValues } = useForm({
     defaultValues: {
       hospital_id: userToken.hims_d_hospital_id,
@@ -1055,7 +1055,10 @@ function SampleCollection() {
                 data={sample_collection}
                 // filter={true}
                 pagination={true}
-                pageOptions={{ rows: 20, page: 1 }}
+                pageOptions={{ rows: 20, page: currentPage }}
+                pageEvent={(page) => {
+                  setCurrentPage(page);
+                }}
                 isFilterable={true}
                 noDataText="No data available for selected period"
                 // paging={{ page: 0, rowsPerPage: 100 }}
