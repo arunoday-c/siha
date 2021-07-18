@@ -39,7 +39,7 @@ export default function AccessionAcknowledgement() {
   const [isOpen, setIsOpen] = useState(false);
   const [sample_collection, setSample_collection] = useState([]);
   const [selected_row, setSelectedRow] = useState([]);
-
+  const [currentPage, setCurrentPage] = useState(1);
   const [remarks, setRemarks] = useState("");
 
   useEffect(() => {
@@ -634,7 +634,10 @@ export default function AccessionAcknowledgement() {
                   keyId="patient_code"
                   data={sample_collection.filter((f) => f.status !== "O")}
                   pagination={true}
-                  pageOptions={{ rows: 20, page: 1 }}
+                  pageOptions={{ rows: 50, page: currentPage }}
+                  pageEvent={(page) => {
+                    setCurrentPage(page);
+                  }}
                   isFilterable={true}
                   noDataText="No data available for selected period"
                 />

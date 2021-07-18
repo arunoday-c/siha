@@ -913,9 +913,8 @@ export default function ResultEntryList() {
                     (f) => f.sample_status === "A"
                   )}
                   pagination={true}
-                  pageOptions={{ rows: 100, page: currentPage }}
+                  pageOptions={{ rows: 50, page: currentPage }}
                   pageEvent={(page) => {
-                    console.log("page====>", page);
                     setCurrentPage(page);
                   }}
                   isFilterable={true}

@@ -1055,7 +1055,7 @@ function SampleCollection() {
                 data={sample_collection}
                 // filter={true}
                 pagination={true}
-                pageOptions={{ rows: 20, page: currentPage }}
+                pageOptions={{ rows: 50, page: currentPage }}
                 pageEvent={(page) => {
                   setCurrentPage(page);
                 }}
