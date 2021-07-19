@@ -1500,6 +1500,13 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
         const records_test_formula = _.filter(data, (f) => f.formula !== null);
 
         setTest_analytes(data.analyteData);
+        if (selectedPatient.isPCR === "Y") {
+          data.analyteData[0].result =
+            data.analyteData[0].result === null ||
+            data.analyteData[0].result === ""
+              ? "Negative"
+              : data.analyteData[0].result;
+        }
         setComment_list(
           data.commentsData.comments !== null
             ? data.commentsData.comments.split("<br/>")
@@ -2720,18 +2727,19 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
                                       selector={{
                                         name: "result",
                                         className: "select-fld",
-                                        value: row.result,
+                                        value:
+                                          row.result === null ? "" : row.result,
                                         dataSource: {
                                           textField: "name",
                                           valueField: "value",
                                           data: [
                                             {
-                                              name: "Positive",
-                                              value: "Positive",
-                                            },
-                                            {
                                               name: "Negative",
                                               value: "Negative",
+                                            },
+                                            {
+                                              name: "Positive",
+                                              value: "Positive",
                                             },
                                             {
                                               name: "Not Seen",

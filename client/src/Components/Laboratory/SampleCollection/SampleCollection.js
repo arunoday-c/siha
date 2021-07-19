@@ -563,7 +563,7 @@ import sockets from "../../../sockets";
 // import _ from "moment";
 function SampleCollection() {
   const { userToken } = useContext(MainContext);
-
+  const [currentPage, setCurrentPage] = useState(1);
   const { control, errors, reset, getValues } = useForm({
     defaultValues: {
       hospital_id: userToken.hims_d_hospital_id,
@@ -865,11 +865,11 @@ function SampleCollection() {
       <div className="row">
         <div className="col-lg-12">
           <div className="portlet portlet-bordered margin-bottom-15">
-            {/* <div className="portlet-title">
+            <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Specimen Collection List</h3>
               </div>
-            </div> */}
+            </div>
             <div className="portlet-body" id="samplecollectionListGrid">
               <AlgaehDataGrid
                 columns={[
@@ -910,7 +910,7 @@ function SampleCollection() {
                       resizable: false,
                       style: { textAlign: "center" },
                     },
-
+                    sortable: true,
                     filterable: true,
                     filterType: "date",
                     // choices: [
@@ -973,6 +973,7 @@ function SampleCollection() {
                     ),
                     disabled: false,
                     filterable: true,
+                    sortable: true,
                     others: {
                       width: 120,
                       resizable: false,
@@ -986,6 +987,7 @@ function SampleCollection() {
                     ),
                     disabled: false,
                     filterable: true,
+                    sortable: true,
                     others: {
                       width: 120,
                       resizable: false,
@@ -999,6 +1001,7 @@ function SampleCollection() {
                     ),
                     disabled: true,
                     filterable: true,
+                    sortable: true,
                     others: {
                       resizable: false,
                       style: { textAlign: "left" },
@@ -1052,7 +1055,10 @@ function SampleCollection() {
                 data={sample_collection}
                 // filter={true}
                 pagination={true}
-                pageOptions={{ rows: 20, page: 1 }}
+                pageOptions={{ rows: 50, page: currentPage }}
+                pageEvent={(page) => {
+                  setCurrentPage(page);
+                }}
                 isFilterable={true}
                 noDataText="No data available for selected period"
                 // paging={{ page: 0, rowsPerPage: 100 }}

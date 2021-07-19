@@ -48,7 +48,7 @@ export default function ResultEntryList() {
       start_date: [moment(new Date()), moment(new Date())],
     },
   });
-
+  const [currentPage, setCurrentPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const [isMicroOpen, setIsMicroOpen] = useState(false);
   const [sample_collection, setSampleCollection] = useState([]);
@@ -709,6 +709,9 @@ export default function ResultEntryList() {
                         );
                       },
                       disabled: true,
+                      filterable: true,
+                      filterType: "date",
+                      sortable: true,
                       others: {
                         width: 200,
                         style: { textAlign: "center" },
@@ -725,106 +728,49 @@ export default function ResultEntryList() {
                         );
                       },
                       disabled: true,
+                      filterable: true,
+                      filterType: "choices",
+                      choices: [
+                        {
+                          name: "Stat",
+                          value: "S",
+                        },
+                        {
+                          name: "Routine",
+                          value: "R",
+                        },
+                      ],
                       others: {
                         width: 90,
 
                         style: { textAlign: "center" },
                       },
                     },
-                    {
-                      fieldName: "sample_status",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Specimen Status" }}
-                        />
-                      ),
-                      displayTemplate: (row) => {
-                        return row.sample_status === "N" ? (
-                          <span className="badge badge-light">Not Done</span>
-                        ) : row.sample_status === "A" ? (
-                          <span className="badge badge-success">Accepted</span>
-                        ) : row.sample_status === "R" ? (
-                          <span className="badge badge-danger">Rejected</span>
-                        ) : null;
-                      },
-                      disabled: true,
-                      others: {
-                        width: 200,
-                        style: { textAlign: "center" },
-                      },
-                    },
-                    {
-                      fieldName: "lab_id_number",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />
-                      ),
-                      disabled: true,
-                      filterable: true,
-                      others: {
-                        width: 130,
-                        style: { textAlign: "center" },
-                      },
-                    },
-                    {
-                      fieldName: "primary_id_no",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "primary_id_no" }} />
-                      ),
-                      disabled: false,
-                      filterable: true,
-                      others: {
-                        width: 150,
-                        style: { textAlign: "center" },
-                      },
-                    },
-                    {
-                      fieldName: "patient_code",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "patient_code" }} />
-                      ),
-                      disabled: false,
-                      filterable: true,
-                      others: {
-                        width: 150,
-                        style: { textAlign: "center" },
-                      },
-                    },
-                    {
-                      fieldName: "full_name",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "patient_name" }} />
-                      ),
-                      disabled: true,
-                      filterable: true,
-                      others: {
-                        minWidth: 350,
-                        style: { textAlign: "left" },
-                      },
-                    },
-                    {
-                      fieldName: "service_name",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Test Name" }} />
-                      ),
-
-                      disabled: true,
-                      filterable: true,
-                      others: {
-                        style: { textAlign: "center" },
-                      },
-                    },
-                    {
-                      fieldName: "run_types",
-                      label: <AlgaehLabel label={{ forceLabel: "Re-run" }} />,
-
-                      disabled: true,
-                      others: {
-                        style: { textAlign: "center" },
-                      },
-                    },
+                    // {
+                    //   fieldName: "sample_status",
+                    //   label: (
+                    //     <AlgaehLabel label={{ forceLabel: "Specimen Ack." }} />
+                    //   ),
+                    //   displayTemplate: (row) => {
+                    //     return row.sample_status === "N" ? (
+                    //       <span className="badge badge-light">Not Done</span>
+                    //     ) : row.sample_status === "A" ? (
+                    //       <span className="badge badge-success">Accepted</span>
+                    //     ) : row.sample_status === "R" ? (
+                    //       <span className="badge badge-danger">Rejected</span>
+                    //     ) : null;
+                    //   },
+                    //   disabled: true,
+                    //   others: {
+                    //     width: 200,
+                    //     style: { textAlign: "center" },
+                    //   },
+                    // },
                     {
                       fieldName: "status",
-                      label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Test Status" }} />
+                      ),
                       displayTemplate: (row) => {
                         return row.status === "CL" ? (
                           <span className="badge badge-secondary">
@@ -864,6 +810,81 @@ export default function ResultEntryList() {
                         style: { textAlign: "center" },
                       },
                     },
+                    {
+                      fieldName: "lab_id_number",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />
+                      ),
+                      disabled: true,
+                      filterable: true,
+                      sortable: true,
+                      others: {
+                        width: 130,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "primary_id_no",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "primary_id_no" }} />
+                      ),
+                      disabled: false,
+                      filterable: true,
+                      sortable: true,
+                      others: {
+                        width: 150,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "patient_code",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                      ),
+                      disabled: false,
+                      filterable: true,
+                      sortable: true,
+                      others: {
+                        width: 150,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "full_name",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "patient_name" }} />
+                      ),
+                      disabled: true,
+                      filterable: true,
+                      sortable: true,
+                      others: {
+                        minWidth: 350,
+                        style: { textAlign: "left" },
+                      },
+                    },
+                    {
+                      fieldName: "service_name",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Test Name" }} />
+                      ),
+
+                      disabled: true,
+                      filterable: true,
+                      sortable: true,
+                      others: {
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "run_types",
+                      label: <AlgaehLabel label={{ forceLabel: "Re-run" }} />,
+
+                      disabled: true,
+                      sortable: true,
+                      others: {
+                        style: { textAlign: "center" },
+                      },
+                    },
                     // {
                     //   fieldName: "critical_status",
                     //   label: (
@@ -891,7 +912,10 @@ export default function ResultEntryList() {
                     (f) => f.sample_status === "A"
                   )}
                   pagination={true}
-                  pageOptions={{ rows: 100, page: 1 }}
+                  pageOptions={{ rows: 50, page: currentPage }}
+                  pageEvent={(page) => {
+                    setCurrentPage(page);
+                  }}
                   isFilterable={true}
                   noDataText="No data available for selected period"
                 />

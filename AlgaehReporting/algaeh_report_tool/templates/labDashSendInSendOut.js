@@ -54,7 +54,7 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_f_patient P on LO.patient_id=P.hims_d_patient_id and  P.record_status='A'
           inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'
           where ${_stringDataSendIn} 
-          group by hims_f_lab_order_id order by hims_f_lab_order_id desc
+          group by hims_f_lab_order_id order by LO.ordered_date desc
              `,
           values: [],
           printQuery: true,
