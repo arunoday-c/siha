@@ -170,6 +170,9 @@ const ResultEntryList = React.lazy(() =>
 const HassanNumber = React.lazy(() =>
   retry(() => import("./Components/Laboratory/HassanNumber/HassanNumber"))
 );
+const PCRBatches = React.lazy(() =>
+  retry(() => import("./Components/Laboratory/PCRBatches"))
+);
 const ResultDispatch = React.lazy(() =>
   retry(() => import("./Components/Laboratory/ResultDispatch/ResultDispatch"))
 );
@@ -1272,6 +1275,11 @@ const privateRoutes = [
     path: "/ResultEntryList",
     isExactPath: true,
     component: <ResultEntryList />,
+  },
+  {
+    path: "/PCRBatches",
+    isExactPath: true,
+    component: <PCRBatches />,
   },
 
   {

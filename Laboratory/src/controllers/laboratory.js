@@ -4,6 +4,7 @@ import labModels, {
   bulkSampleCollection,
   updateLabOrderServices,
   updateLabOrderServiceStatus,
+  createPCRBatch,
 } from "../models/laboratory";
 import { labResultDispatch } from "../models/labDispatch";
 const {
@@ -315,6 +316,15 @@ export default () => {
       .end();
   });
   api.post("/processLabSMS", processLabSMS, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        message: "Messages are in progress state",
+      })
+      .end();
+  });
+  api.post("/createPCRBatch", createPCRBatch, (req, res) => {
     res
       .status(utlities.AlgaehUtilities().httpStatus().ok)
       .json({

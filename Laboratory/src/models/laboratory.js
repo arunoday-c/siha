@@ -3002,3 +3002,60 @@ export async function bulkSampleCollection(req, res, next) {
     next(e);
   }
 }
+
+export function createPCRBatch(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const inputParam = req.query;
+    const batch_number =
+      "BAT-" +
+      moment().format("YYYYMMDDHHMMSS") +
+      req.userIdentity.algaeh_d_app_user_id;
+
+    console.log("batch_number", batch_number);
+    consol.log("batch_number", batch_number);
+    _mysql
+      .executeQueryWithTransaction({
+        query:
+          "INSERT INTO hims_f_lab_batch_header (`batch_number`,`batch_name`,`batch_type`, \
+      `created_by`,`updated_by`) values (?, ?, ?, ?, ?);",
+        values: [batch_number, inputParam.batch_name, inputParam.batch_type],
+        printQuery: true,
+      })
+      .then((headerResult) => {
+        const IncludeValues = ["id_number"];
+        _mysql
+          .executeQueryWithTransaction({
+            query: "INSERT INTO hims_f_lab_batch_detail(??) VALUES ?",
+            values: inputParam.batch_list,
+            includeValues: IncludeValues,
+            extraValues: {
+              batch_header_id: headerResult.insertId,
+            },
+            bulkInsertOrUpdate: true,
+            printQuery: true,
+          })
+          .then((result) => {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            });
+          })
+          .catch((e) => {
+            mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      })
+      .catch((e) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+}
