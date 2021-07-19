@@ -1,15 +1,26 @@
 import React, { memo, useCallback } from "react";
-import { AlgaehFormGroup } from "algaeh-react-components";
+import { AlgaehFormGroup, AlgaehMessagePop } from "algaeh-react-components";
 import { Controller } from "react-hook-form";
 import { debounce } from "lodash";
 import "./../../../../styles/site.scss";
+import { newAlgaehApi } from "../../../../hooks";
 
+export const checkIDExists = async (inputObj) => {
+  const result = await newAlgaehApi({
+    uri: "/laboratory/checkIDExists",
+    module: "laboratory",
+    method: "GET",
+    data: inputObj,
+  });
+  return result?.data;
+};
 export default memo(function BatchDetails({
   control,
   errors,
   setValue,
   getValues,
   updateState,
+  batch_list,
 }) {
   const onChangeHandeler = (e) => {
     const auto_insert = getValues("auto_insert");
@@ -23,12 +34,116 @@ export default memo(function BatchDetails({
   };
 
   const de_bounce = useCallback(
-    debounce((e) => {
-      updateState(e.target.value);
+    debounce(async (e) => {
+      debugger;
+      const scan_by = getValues("scan_by");
+      const data_exists = batch_list.filter(
+        (f) => f.id_number === e.target.value
+      );
+
+      if (data_exists.length > 0) {
+        AlgaehMessagePop({
+          display: "Selected ID already Exists",
+          type: "warning",
+        });
+        setValue("barcode_scanner", "");
+        return;
+      }
+      const after_ack = await checkIDExists({
+        id_number: e.target.value,
+        scan_by: getValues("scan_by"),
+      }).catch((error) => {
+        throw error;
+      });
+
+      if (after_ack.success === false) {
+        AlgaehMessagePop({
+          display: after_ack.message,
+          type: "error",
+        });
+        setValue("barcode_scanner", "");
+        return;
+      }
+
+      if (scan_by === "LI") {
+        updateState({
+          id_number: e.target.value,
+          lab_id_number: e.target.value,
+          order_id: after_ack.records.hims_f_lab_order_id,
+          primary_id_no: after_ack.records.id_number,
+        });
+      } else {
+        updateState({
+          id_number: e.target.value,
+          lab_id_number: after_ack.records.id_number,
+          order_id: after_ack.records.hims_f_lab_order_id,
+          primary_id_no: e.target.value,
+        });
+      }
+
       setValue("barcode_scanner", "");
     }, 2500),
     []
   );
+
+  const onClickAddtoList = async () => {
+    const barcode_scanner = getValues("barcode_scanner");
+
+    if (barcode_scanner === "") {
+      AlgaehMessagePop({
+        display: "Enter Barcode.",
+        type: "warning",
+      });
+      return;
+    }
+    const scan_by = getValues("scan_by");
+
+    const data_exists = batch_list.filter(
+      (f) => f.id_number === barcode_scanner
+    );
+
+    if (data_exists.length > 0) {
+      AlgaehMessagePop({
+        display: "Selected ID already Exists",
+        type: "warning",
+      });
+      setValue("barcode_scanner", "");
+      return;
+    }
+    const after_ack = await checkIDExists({
+      id_number: barcode_scanner,
+      scan_by: getValues("scan_by"),
+    }).catch((error) => {
+      throw error;
+    });
+
+    if (after_ack.success === false) {
+      AlgaehMessagePop({
+        display: after_ack.message,
+        type: "error",
+      });
+      setValue("barcode_scanner", "");
+      return;
+    }
+
+    if (scan_by === "LI") {
+      updateState({
+        id_number: barcode_scanner,
+        lab_id_number: barcode_scanner,
+        order_id: after_ack.records.hims_f_lab_order_id,
+        primary_id_no: after_ack.records.id_number,
+      });
+    } else {
+      updateState({
+        id_number: barcode_scanner,
+        lab_id_number: after_ack.records.id_number,
+        order_id: after_ack.records.hims_f_lab_order_id,
+        primary_id_no: barcode_scanner,
+      });
+    }
+
+    setValue("barcode_scanner", "");
+  };
 
   return (
     <div className="appointment_status">
@@ -75,7 +190,7 @@ export default memo(function BatchDetails({
         />
 
         <Controller
-          name="batch_type"
+          name="scan_by"
           control={control}
           render={(props) => (
             <div className="col-4">
@@ -83,22 +198,22 @@ export default memo(function BatchDetails({
               <div className="customCheckbox">
                 <label className="checkbox inline">
                   <input
-                    name="batch_type"
+                    name="scan_by"
                     value="LI"
                     checked={props.value === "LI" ? true : false}
                     type="checkbox"
                     onChange={(e) => {
-                      setValue("batch_type", e.target.value);
+                      setValue("scan_by", e.target.value);
                     }}
                   />
                   <span>Lab ID</span>
                   <input
-                    name="batch_type"
+                    name="scan_by"
                     value="PI"
                     checked={props.value === "PI" ? true : false}
                     type="checkbox"
                     onChange={(e) => {
-                      setValue("batch_type", e.target.value);
+                      setValue("scan_by", e.target.value);
                     }}
                   />
                   <span>Patient ID</span>
@@ -171,11 +286,7 @@ export default memo(function BatchDetails({
         <button
           className="btn btn-primary"
           style={{ marginLeft: 10 }}
-          onClick={() => {
-            const barcode_scanner = getValues("barcode_scanner");
-            updateState(barcode_scanner);
-            setValue("barcode_scanner", "");
-          }}
+          onClick={onClickAddtoList}
         >
           Add to List
         </button>

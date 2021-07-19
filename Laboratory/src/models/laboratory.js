@@ -3003,28 +3003,83 @@ export async function bulkSampleCollection(req, res, next) {
     next(e);
   }
 }
-
-export function createPCRBatch(req, res, next) {
+export function checkIDExists(req, res, next) {
   const _mysql = new algaehMysql();
   try {
     const inputParam = req.query;
+    console.log("inputParam", inputParam);
+    let strQuery;
+    if (inputParam.scan_by === "PI") {
+      strQuery = mysql.format(
+        `SELECT hims_f_lab_order_id, lab_id_number as id_number FROM hims_f_patient P 
+        INNER JOIN hims_f_lab_order L ON P.hims_d_patient_id=L.patient_id where  L.billed='Y' and L.status='CL' and primary_id_no=?;`,
+        [inputParam.id_number]
+      );
+    } else {
+      strQuery = mysql.format(
+        `SELECT hims_f_lab_order_id, primary_id_no as id_number, L.status FROM hims_f_lab_order L 
+        INNER JOIN hims_f_patient P ON L.patient_id=P.hims_d_patient_id where  L.billed='Y' and L.status='CL' and lab_id_number=?;`,
+        [inputParam.id_number]
+      );
+    }
+    _mysql
+      .executeQuery({
+        query: strQuery,
+        printQuery: true,
+      })
+      .then((headerResult) => {
+        console.log("headerResult", headerResult);
+        if (headerResult.length === 0) {
+          _mysql.releaseConnection();
+          req.records = {
+            message:
+              "Record Not Exists for Selected ID " + inputParam.id_number,
+            invalid_input: true,
+          };
+          next();
+        } else {
+          _mysql.releaseConnection();
+          req.records = headerResult[0];
+          next();
+        }
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}
+export function createPCRBatch(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const inputParam = req.body;
+    console.log("inputParam", inputParam);
+
     const batch_number =
       "BAT-" +
       moment().format("YYYYMMDDHHMMSS") +
       req.userIdentity.algaeh_d_app_user_id;
 
     console.log("batch_number", batch_number);
-    consol.log("batch_number", batch_number);
+    // consol.log("batch_number", batch_number);
     _mysql
       .executeQueryWithTransaction({
         query:
-          "INSERT INTO hims_f_lab_batch_header (`batch_number`,`batch_name`,`batch_type`, \
-      `created_by`,`updated_by`) values (?, ?, ?, ?, ?);",
-        values: [batch_number, inputParam.batch_name, inputParam.batch_type],
+          "INSERT INTO hims_f_lab_batch_header (`batch_number`,`batch_name`, \
+      `created_by`,`updated_by`) values (?, ?, ?, ?);",
+        values: [
+          batch_number,
+          inputParam.batch_name,
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.algaeh_d_app_user_id,
+        ],
         printQuery: true,
       })
       .then((headerResult) => {
-        const IncludeValues = ["id_number"];
+        const IncludeValues = ["lab_id_number", "order_id", "primary_id_no"];
         _mysql
           .executeQueryWithTransaction({
             query: "INSERT INTO hims_f_lab_batch_detail(??) VALUES ?",
@@ -3039,7 +3094,7 @@ export function createPCRBatch(req, res, next) {
           .then((result) => {
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
-              req.records = result;
+              req.records = { batch_number };
               next();
             });
           })

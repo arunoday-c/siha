@@ -1,11 +1,11 @@
 import React from "react";
 import CreateBatch from "./CreateBatch";
 import ValidateBatch from "./ValidateBatch";
-import "./PCRBatches.scss";
+import "./BatchGeneration.scss";
 // import WardBedSetup from "./WardBedSetup/WardBedSetup";
 import { AlgaehTabs, AlgaehLabel } from "algaeh-react-components";
 
-export default function PCRBatches(props) {
+export default function BatchGeneration(props) {
   return (
     <div className="AdmissionSetupScreen">
       <AlgaehTabs

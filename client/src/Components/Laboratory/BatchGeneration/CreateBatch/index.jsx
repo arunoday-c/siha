@@ -3,60 +3,73 @@ import { useForm } from "react-hook-form";
 import { newAlgaehApi } from "../../../../hooks";
 import BatchDetails from "./BatchDetails";
 import ListofBatches from "./ListofBatches";
+import { AlgaehMessagePop } from "algaeh-react-components";
+import swal from "sweetalert2";
 
 export default memo(function CreateBatch() {
-  const { control, errors, reset, handleSubmit, setValue, getValues } = useForm(
-    {
-      shouldFocusError: true,
-      defaultValues: {
-        auto_insert: true,
-        batch_type: "LI",
-      },
-    }
-  );
+  const { control, errors, reset, setValue, getValues } = useForm({
+    shouldFocusError: true,
+    defaultValues: {
+      batch_name: "",
+      barcode_scanner: "",
+      auto_insert: true,
+      scan_by: "LI",
+    },
+  });
 
   const [batch_list, setBatchList] = useState([]);
 
   const createBatch = async (data) => {
+    debugger;
     const result = await newAlgaehApi({
       uri: "/laboratory/createPCRBatch",
       module: "laboratory",
-      method: "GET",
-      data: {},
+      method: "POST",
+      data: data,
     });
     return result?.data?.records;
   };
-  const onSubmit = (data) => {
+  const onSubmit = () => {
     debugger;
-    createBatch(data).then((result) => {
-      reset({
-        barcode_scanner: "",
-        batch_number: "",
-        batch_name: "",
-        auto_insert: true,
+    let inpujObj = {
+      batch_name: getValues("batch_name"),
+      batch_list: batch_list,
+    };
+    createBatch(inpujObj)
+      .then((result) => {
+        debugger;
+        swal("Batch Created Succefully... Batch No." + result.batch_number, {
+          icon: "success",
+        });
+        reset({
+          barcode_scanner: "",
+          batch_number: "",
+          batch_name: "",
+          auto_insert: true,
+        });
+        setBatchList([]);
+      })
+      .catch((e) => {
+        AlgaehMessagePop({
+          display: e,
+          type: "error",
+        });
       });
-      setBatchList([]);
-    });
   };
 
   const updateState = (data) => {
     setBatchList((result) => {
-      result.push({ id_number: data });
+      result.push(data);
       return [...result];
     });
   };
 
   const deleteState = (data) => {
-    debugger;
     setBatchList((result) => {
-      result.splice(data, 1);
+      const _index = result.indexOf(data);
+      result.splice(_index, 1);
       return [...result];
     });
-  };
-
-  const onClick = () => {
-    debugger;
-    handleSubmit(onSubmit)();
   };
 
   return (
@@ -69,6 +82,7 @@ export default memo(function CreateBatch() {
           setValue={setValue}
           getValues={getValues}
           updateState={updateState}
+          batch_list={batch_list}
         />
 
         <ListofBatches batch_list={batch_list} deleteState={deleteState} />
@@ -92,7 +106,7 @@ export default memo(function CreateBatch() {
             type="submit"
             className="btn btn-primary"
             style={{ marginLeft: 10 }}
-            onClick={onClick}
+            onClick={onSubmit}
           >
             Create Batch
           </button>

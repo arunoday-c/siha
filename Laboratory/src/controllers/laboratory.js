@@ -5,6 +5,7 @@ import labModels, {
   updateLabOrderServices,
   updateLabOrderServiceStatus,
   createPCRBatch,
+  checkIDExists,
 } from "../models/laboratory";
 import { labResultDispatch } from "../models/labDispatch";
 const {
@@ -315,6 +316,19 @@ export default () => {
       })
       .end();
   });
+  api.get("/checkIDExists", checkIDExists, (req, res) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        message: req.records.message,
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  });
   api.post("/processLabSMS", processLabSMS, (req, res) => {
     res
       .status(utlities.AlgaehUtilities().httpStatus().ok)
@@ -329,7 +343,7 @@ export default () => {
       .status(utlities.AlgaehUtilities().httpStatus().ok)
       .json({
         success: true,
-        message: "Messages are in progress state",
+        records: req.records,
       })
       .end();
   });
