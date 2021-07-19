@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
 // import "./breadcrumb.scss";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehSecurityComponent } from "algaeh-react-components";
 import { SearchDetails, EditDetails } from "./BreadCurmbFunctionality";
 class BreadCrumb extends PureComponent {
   constructor(props) {
@@ -62,20 +63,24 @@ class BreadCrumb extends PureComponent {
   showEditData() {
     if (this.props.editData !== undefined) {
       return (
-        <li onClick={EditDetails.bind(this, this)}>
-          {" "}
-          <i className="fas fa-user-edit bredcrumpIconBig" />
-        </li>
+        <AlgaehSecurityComponent componentCode="PAT_DATA_EDIT">
+          <li onClick={EditDetails.bind(this, this)}>
+            {" "}
+            <i className="fas fa-user-edit bredcrumpIconBig" />
+          </li>
+        </AlgaehSecurityComponent>
       );
     }
   }
   showAttachments() {
     if (this.props.attachments !== undefined) {
       return (
-        <li onClick={() => this.props.attachments?.onClick()}>
-          {" "}
-          <i className="fas fa-paperclip bredcrumpIconBig" />
-        </li>
+        <AlgaehSecurityComponent componentCode="PAT_DATA_ATTC">
+          <li onClick={() => this.props.attachments?.onClick()}>
+            {" "}
+            <i className="fas fa-paperclip bredcrumpIconBig" />
+          </li>
+        </AlgaehSecurityComponent>
       );
     }
   }
