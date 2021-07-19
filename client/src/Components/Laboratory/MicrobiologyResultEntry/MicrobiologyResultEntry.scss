@@ -124,54 +124,7 @@
         border-right: 1px solid #e6e6e6;
       }
     }
-    .finalCommentsSection {
-      h6 {
-        width: 100%;
-        font-size: 0.8rem;
-        margin-bottom: 7px;
-        text-transform: uppercase;
-      }
-      ol {
-        width: 100%;
-        margin: 0;
-        padding: 5px 15px;
-        border: 1px solid #d3d3d3;
-        min-height: 18vh;
-        max-height: 18vh;
-        overflow: auto;
-        border-radius: 4px;
-        li {
-          margin: 0 10px;
-          padding: 0;
-          line-height: 23px;
-          i.fa-times {
-            border: 1px solid #929292;
-            border-radius: 100%;
-            width: 20px;
-            height: 20px;
-            line-height: 18px;
-            margin-left: 4px;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #929292;
-            &:hover {
-              color: red;
-              border: 1px solid red;
-              cursor: pointer;
-            }
-          }
-        }
-      }
-    }
-    #microLabResultGrid_Cntr {
-      .newStickyGrid {
-        .table-scroll {
-          min-height: 56vh;
-          max-height: 56vh;
-          overflow: auto;
-        }
-      }
-    }
+
     .analyteTxtUL {
       margin: 0 0 0 20px;
       padding: 0;
@@ -181,6 +134,55 @@
         padding: 0;
         list-style-type: disc;
       }
+    }
+  }
+}
+
+.finalCommentsSection {
+  h6 {
+    width: 100%;
+    font-size: 0.8rem;
+    margin-bottom: 7px;
+    text-transform: uppercase;
+  }
+  ol {
+    width: 100%;
+    margin: 0;
+    padding: 5px 15px;
+    border: 1px solid #d3d3d3;
+    min-height: 14vh;
+    max-height: 14vh;
+    overflow: auto;
+    border-radius: 4px;
+    li {
+      margin: 0 10px;
+      padding: 0;
+      line-height: 23px;
+      i.fa-times {
+        border: 1px solid #929292;
+        border-radius: 100%;
+        width: 20px;
+        height: 20px;
+        line-height: 18px;
+        margin-left: 4px;
+        text-align: center;
+        font-size: 0.8rem;
+        color: #929292;
+        &:hover {
+          color: red;
+          border: 1px solid red;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+#microLabResultGrid_Cntr {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 45vh !important;
+      max-height: 45vh !important;
+      overflow: auto !important;
     }
   }
 }

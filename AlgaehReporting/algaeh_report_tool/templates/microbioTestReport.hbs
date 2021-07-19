@@ -67,50 +67,54 @@
     </table>
   </section>
   <section>
-    <table class="tableForDataNoBorder" cell-padding="0">
-      <thead>
-        <tr>
-          <th class="txtFld">Antibiotic Name</th>
-          <th>Susceptible</th>
-          <th>Intermediate</th>
-          <th>Resistant</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#hasElement result}}
-          <tr>
-            <td colspan="6" class="tableSubHdg">
-              {{header.specimen}}
-            </td>
-          </tr>
-          {{#each result}}
-            {{#if susceptible "Y"}}
-              <tr>
-                <td class="txtFld">{{antibiotic_name}}</td>
-                <td>{{susceptibleText}}</td>
-                <td>{{intermediateText}}</td>
-                <td>{{resistantText}}</td>
-              </tr>
-            {{/if}}
-            {{#if intermediate "Y"}}
-              <tr>
-                <td class="txtFld">{{antibiotic_name}}</td>
-                <td>{{susceptibleText}}</td>
-                <td>{{intermediateText}}</td>
-                <td>{{resistantText}}</td>
-              </tr>{{/if}}
-            {{#if resistant "Y"}}
-              <tr>
-                <td class="txtFld">{{antibiotic_name}}</td>
-                <td>{{susceptibleText}}</td>
-                <td>{{intermediateText}}</td>
-                <td>{{resistantText}}</td>
-              </tr>{{/if}}
+    {{#if header.bacteria_type "Growth"}}
 
-          {{/each}}
-        {{/hasElement}}
-      </tbody>
-    </table>
+      <table class="tableForDataNoBorder" cell-padding="0">
+        <thead>
+          <tr>
+            <th class="txtFld">Antibiotic Name</th>
+            <th>Susceptible</th>
+            <th>Intermediate</th>
+            <th>Resistant</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#hasElement result}}
+            <tr>
+              <td colspan="6" class="tableSubHdg">
+                {{header.specimen}}
+              </td>
+            </tr>
+            {{#each result}}
+              {{#if susceptible "Y"}}
+                <tr>
+                  <td class="txtFld">{{antibiotic_name}}</td>
+                  <td>{{susceptibleText}}</td>
+                  <td>{{intermediateText}}</td>
+                  <td>{{resistantText}}</td>
+                </tr>
+              {{/if}}
+              {{#if intermediate "Y"}}
+                <tr>
+                  <td class="txtFld">{{antibiotic_name}}</td>
+                  <td>{{susceptibleText}}</td>
+                  <td>{{intermediateText}}</td>
+                  <td>{{resistantText}}</td>
+                </tr>{{/if}}
+              {{#if resistant "Y"}}
+                <tr>
+                  <td class="txtFld">{{antibiotic_name}}</td>
+                  <td>{{susceptibleText}}</td>
+                  <td>{{intermediateText}}</td>
+                  <td>{{resistantText}}</td>
+                </tr>{{/if}}
+
+            {{/each}}
+          {{/hasElement}}
+        </tbody>
+      </table>
+    {{else}}{{/if}}
+
     <table class="tableForData">
       <tbody>
         <tr>

@@ -1373,7 +1373,7 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
   return (
     <div>
       <AlgaehModal
-        title="Specimen Collections"
+        title="Microbiology Result Entry"
         class="labResultModalPopup"
         visible={open}
         mask={true}
@@ -1382,6 +1382,21 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
         footer={[
           <div className="row">
             <div className="col-6 footer-btn-left">
+              <AlgaehSecurityComponent componentCode="PRI_LAB_RES">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => generateLabResultReport(selectedPatient)}
+                  disabled={
+                    status === "V" && selectedPatient.credit_order === "N"
+                      ? false
+                      : true
+                  }
+                >
+                  Print
+                </button>
+              </AlgaehSecurityComponent>
+            </div>
+            <div className="col-6 ">
               <AlgaehSecurityComponent componentCode="VAL_LAB_RES">
                 <button
                   type="button"
@@ -1790,7 +1805,7 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
               </div>
             </div>
             <div className="row">
-              <div className="col-8">
+              <div className="col-9">
                 {" "}
                 <div
                   className="popLeftDiv"
@@ -1806,7 +1821,6 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
                             id="microLabResultGrid_Cntr"
                           >
                             <AlgaehDataGrid
-                              id="antibiotic_result"
                               columns={[
                                 {
                                   fieldName: "antibiotic_name",
