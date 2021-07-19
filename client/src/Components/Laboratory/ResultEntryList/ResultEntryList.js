@@ -71,16 +71,15 @@ export default function ResultEntryList() {
           data: { micro_group_id: row.group_id },
           method: "GET",
         });
-
+        setSelectedPatient(row);
         row.comments_data = result.records;
         row.microopen = true;
         setIsMicroOpen(!isMicroOpen);
-        setSelectedPatient(row);
       } else {
+        setSelectedPatient(row);
         row.comments_data = [];
         row.microopen = true;
         setIsMicroOpen(!isMicroOpen);
-        setSelectedPatient(row);
       }
     } else {
       if (row.status === "O") {
@@ -181,13 +180,13 @@ export default function ResultEntryList() {
     }
   };
 
-  const closeMicroResultEntry = ($this, e) => {
+  const closeMicroResultEntry = (e) => {
     setIsMicroOpen(!isMicroOpen);
     setSelectedPatient([]);
     refetch();
   };
 
-  const closeResultEntry = ($this, e) => {
+  const closeResultEntry = (e) => {
     setIsOpen(!isOpen);
     setSelectedPatient([]);
     refetch();
@@ -909,11 +908,13 @@ export default function ResultEntryList() {
           />
         ) : null}
 
-        <MicrobiologyResultEntry
-          // open={isMicroOpen}
-          onClose={() => closeMicroResultEntry()}
-          selectedPatient={selected_patient}
-        />
+        {isMicroOpen ? (
+          <MicrobiologyResultEntry
+            open={isMicroOpen}
+            onClose={() => closeMicroResultEntry()}
+            selectedPatient={selected_patient}
+          />
+        ) : null}
       </div>
     </React.Fragment>
   );
