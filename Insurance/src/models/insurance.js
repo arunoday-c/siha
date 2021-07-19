@@ -3,6 +3,7 @@ import moment from "moment";
 import mysql from "mysql";
 import _ from "lodash";
 import extend from "extend";
+import axios from "axios";
 
 export default {
   //Addded by noor code modification
@@ -2218,5 +2219,327 @@ export function closeStatement(req, res, next) {
   } catch (e) {
     _mysql.releaseConnection();
     next(e);
+  }
+}
+
+export async function ChangeOfInsuranceInvoice(req, res, next) {
+  // const _options = req.connection == null ? {} : req.connection;
+
+  const _mysql = new algaehMysql();
+  try {
+    let inputParam = { ...req.body };
+
+    const invoice_details = await _mysql
+      .executeQuery({
+        query:
+          "SELECT insurance_statement_id, insurance_statement_id_2, insurance_statement_id_3, D.hims_f_invoice_details_id, D.bill_header_id, D.bill_detail_id, D.service_id FROM hims_f_invoice_header H \
+          inner join hims_f_invoice_details D on H.hims_f_invoice_header_id = D.invoice_header_id where hims_f_invoice_header_id=?;",
+        values: [inputParam.hims_f_invoice_header_id],
+        printQuery: true,
+      })
+      .catch((error) => {
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
+      });
+
+    let inpObj = {
+      insured: inputParam.insured,
+      vat_applicable: inputParam.vat_applicable,
+      primary_insurance_provider_id: inputParam.insurance_provider_id,
+      primary_network_office_id: inputParam.network_office_id,
+      primary_network_id: inputParam.network_id,
+    };
+    let inputData = [];
+
+    invoice_details.map((item) => {
+      inputData.push({
+        ...inpObj,
+        hims_d_services_id: item.service_id,
+        hims_f_billing_header_id: item.bill_header_id,
+        hims_f_billing_details_id: item.bill_detail_id,
+      });
+    });
+    // claim_validated
+    let updateQuery = _mysql.mysqlQueryFormat(
+      "UPDATE hims_f_invoice_header SET insurance_provider_id=?, sub_insurance_id=?, \
+      network_id=?, policy_number=?, network_office_id=?, submission_amount=0, submission_amount2=0, \
+      submission_amount3=0, remittance_amount=0, remittance_amount2=0, remittance_amount3=0, \
+      denial_amount=0, denial_amount2=0, denial_amount3=0, insurance_statement_id=null, insurance_statement_id_2=null, \
+      insurance_statement_id_3=null, claim_status='P' where hims_f_invoice_header_id=?;",
+      [
+        inputParam.insurance_provider_id,
+        inputParam.sub_insurance_id,
+        inputParam.network_id,
+        inputParam.policy_number,
+        inputParam.network_office_id,
+        inputParam.hims_f_invoice_header_id,
+      ]
+    );
+
+    // req.body = inputData;
+    // console.log("inputData", inputData);
+    const { headers } = req;
+    let recalculate_services = null;
+    if (inputData.length > 0) {
+      recalculate_services = await axios({
+        method: "POST",
+        url: "http://localhost:3014/api/v1//billing/getBillDetails",
+        data: inputData,
+        headers: { ...headers },
+      }).catch((error) => {
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
+      });
+    }
+
+    const invoice_services =
+      recalculate_services === null
+        ? []
+        : recalculate_services.data.records.billdetails;
+    console.log("invoice_services", invoice_services);
+
+    if (invoice_services.length > 0) {
+      invoice_services.map((item) => {
+        const map_data = invoice_details.find(
+          (f) => f.bill_detail_id === item.hims_f_billing_details_id
+        );
+        updateQuery += _mysql.mysqlQueryFormat(
+          "UPDATE `hims_f_invoice_details` SET unit_cost=?, gross_amount=?, discount_amount=?, \
+          net_amount=?, patient_tax=?, company_tax=?, patient_resp=?, patient_payable=?, \
+          company_resp=?, company_payable=?, s1_amt=0, r1_amt=0, d1_amt =0, \
+          d1_reason_code=0, d1_reason_id=null, updated_date=?, updated_by=? \
+          where bill_detail_id=?;",
+          [
+            item.unit_cost,
+            item.gross_amount,
+            item.discount_amout,
+            item.net_amout,
+            item.patient_tax,
+            item.company_tax,
+            item.patient_resp,
+            item.patient_payable,
+            item.comapany_resp,
+            item.company_payble,
+            moment().format("YYYY-MM-DD HH:mm"),
+            req.userIdentity.algaeh_d_app_user_id,
+            map_data.hims_f_invoice_details_id,
+          ]
+        );
+      });
+    }
+
+    console.log("updateQuery", updateQuery);
+    consol.log("inputData", inputData);
+    // inputData = [];
+    // // console.log("inputData bill", inputData);
+    // visit_bills.map((item) => {
+    //   inputData.push({
+    //     ...inpObj,
+    //     hims_d_services_id: item.services_id,
+    //     hims_f_billing_details_id: item.hims_f_billing_details_id,
+    //     hims_f_billing_header_id: item.hims_f_billing_header_id,
+    //   });
+    // });
+    // let recalculate_bills = null;
+
+    // if (inputData.length > 0) {
+    //   recalculate_bills = await axios({
+    //     method: "POST",
+    //     url: "http://localhost:3014/api/v1//billing/getBillDetails",
+    //     data: inputData,
+    //     headers: { ...headers },
+    //   }).catch((error) => {
+    //     _mysql.rollBackTransaction(() => {
+    //       next(error);
+    //     });
+    //   });
+    // }
+    // const visit_bills_data =
+    //   recalculate_bills === null
+    //     ? []
+    //     : recalculate_bills.data.records.billdetails;
+
+    const header_bills = _.chain(visit_bills_data)
+      .groupBy((g) => g.hims_f_billing_header_id)
+      .map(function (detail, key) {
+        return {
+          from_bill_id: detail[0].hims_f_billing_header_id,
+
+          sub_total_amount: _.sumBy(detail, (s) => parseFloat(s.gross_amount)),
+
+          net_total: _.sumBy(detail, (s) => parseFloat(s.net_amout)),
+          discount_amount: _.sumBy(detail, (s) => parseFloat(s.discount_amout)),
+          gross_total: _.sumBy(detail, (s) => parseFloat(s.patient_payable)),
+
+          // Primary Insurance
+          copay_amount: _.sumBy(detail, (s) => parseFloat(s.copay_amount)),
+          deductable_amount: _.sumBy(detail, (s) =>
+            parseFloat(s.deductable_amount)
+          ),
+          // Responsibilities
+          patient_res: _.sumBy(detail, (s) => parseFloat(s.patient_resp)),
+          company_res: _.sumBy(detail, (s) => parseFloat(s.comapany_resp)),
+
+          // Tax Calculation
+          total_tax: _.sumBy(detail, (s) => parseFloat(s.total_tax)),
+          patient_tax: _.sumBy(detail, (s) => parseFloat(s.patient_tax)),
+          s_patient_tax: _.sumBy(detail, (s) => parseFloat(s.s_patient_tax)),
+
+          company_tax: _.sumBy(detail, (s) => parseFloat(s.company_tax)),
+
+          // Payables
+          patient_payable: _.sumBy(detail, (s) =>
+            parseFloat(s.patient_payable)
+          ),
+
+          company_payble: _.sumBy(detail, (s) => parseFloat(s.company_payble)),
+          company_payable: _.sumBy(detail, (s) => parseFloat(s.company_payble)),
+          net_tax:
+            _.sumBy(detail, (s) => parseFloat(s.patient_tax)) +
+            _.sumBy(detail, (s) => parseFloat(s.company_tax)),
+          billdetails: detail,
+        };
+      })
+      .value();
+
+    // let flow_continue = true;
+    // if (
+    //   inputParam.insured === "Y" &&
+    //   (sub_insurance.creidt_limit_req === "Y" ||
+    //     dat_sub_insurance.creidt_limit_req === "Y")
+    // ) {
+    //   const total_bills_amount = _.sumBy(header_bills, (s) =>
+    //     parseFloat(s.company_payable)
+    //   );
+    //   const creidt_amount_till =
+    //     parseFloat(sub_insurance.creidt_amount_till) +
+    //     parseFloat(total_bills_amount);
+
+    //   if (
+    //     parseFloat(creidt_amount_till) > parseFloat(sub_insurance.creidt_limit)
+    //   ) {
+    //     _mysql.releaseConnection();
+    //     flow_continue = false;
+    //     req.records = {
+    //       invalid_input: true,
+    //       message:
+    //         "You have reached your credit limit. Please collect payment and proceed.",
+    //     };
+
+    //     next();
+    //   } else {
+    //     if (
+    //       dat_sub_insurance.creidt_limit_req === "Y" &&
+    //       inputParam.sub_insurance_provider_id > 0
+    //     ) {
+    //       updateQuery += `UPDATE hims_d_insurance_sub SET creidt_amount_till = creidt_amount_till-${total_bills_amount} where hims_d_insurance_sub_id = ${inputParam.sub_insurance_provider_id};`;
+    //     }
+    //     if (
+    //       sub_insurance.creidt_limit_req === "Y" &&
+    //       inputParam.primary_sub_id > 0
+    //     ) {
+    //       updateQuery += `UPDATE hims_d_insurance_sub SET creidt_amount_till = creidt_amount_till+${total_bills_amount} where hims_d_insurance_sub_id = ${inputParam.primary_sub_id};`;
+    //     }
+    //     // updateQuery += `UPDATE hims_d_insurance_sub SET creidt_amount_till = creidt_amount_till+${total_bills_amount} where hims_d_insurance_sub_id = ${inputParam.primary_sub_id};`;
+    //   }
+    // } else if (
+    //   inputParam.insured === "Y" &&
+    //   sub_insurance.creidt_limit_req === "Y"
+    // ) {
+    //   const total_bills_amount = _.sumBy(header_bills, (s) =>
+    //     parseFloat(s.company_payable)
+    //   );
+    //   const creidt_amount_till =
+    //     parseFloat(sub_insurance.creidt_amount_till) +
+    //     parseFloat(total_bills_amount);
+
+    //   if (
+    //     parseFloat(creidt_amount_till) > parseFloat(sub_insurance.creidt_limit)
+    //   ) {
+    //     _mysql.releaseConnection();
+    //     flow_continue = false;
+    //     req.records = {
+    //       invalid_input: true,
+    //       message:
+    //         "You have reached your credit limit. Please collect payment and proceed.",
+    //     };
+
+    //     next();
+    //   } else {
+    //     if (
+    //       dat_sub_insurance.creidt_limit_req === "Y" &&
+    //       inputParam.sub_insurance_provider_id > 0
+    //     ) {
+    //       const bills_amount = _.sumBy(inputParam.visit_bills, (s) =>
+    //         parseFloat(s.company_payable)
+    //       );
+    //       updateQuery += `UPDATE hims_d_insurance_sub SET creidt_amount_till = creidt_amount_till-${bills_amount} where hims_d_insurance_sub_id = ${inputParam.sub_insurance_provider_id};`;
+    //     }
+    //     if (
+    //       sub_insurance.creidt_limit_req === "Y" &&
+    //       inputParam.primary_sub_id > 0
+    //     ) {
+    //       updateQuery += `UPDATE hims_d_insurance_sub SET creidt_amount_till = creidt_amount_till+${total_bills_amount} where hims_d_insurance_sub_id = ${inputParam.primary_sub_id};`;
+    //     }
+    //     // updateQuery += `UPDATE hims_d_insurance_sub SET creidt_amount_till = creidt_amount_till+${total_bills_amount} where hims_d_insurance_sub_id = ${inputParam.primary_sub_id};`;
+    //   }
+    // } else if (
+    //   inputParam.insured === "N" &&
+    //   dat_sub_insurance.creidt_limit_req === "Y" &&
+    //   inputParam.sub_insurance_provider_id > 0
+    // ) {
+    //   const total_bills_amount = _.sumBy(inputParam.visit_bills, (s) =>
+    //     parseFloat(s.company_payable)
+    //   );
+    //   updateQuery += `UPDATE hims_d_insurance_sub SET creidt_amount_till = creidt_amount_till-${total_bills_amount} where hims_d_insurance_sub_id = ${inputParam.sub_insurance_provider_id};`;
+    // }
+
+    // header_bills[i].hims_f_billing_header_id = insert_bill_header[0].insertId;
+    // header_bills[i].insured = inputParam.insured;
+    // header_bills[i].receipt_header_id = headerRcptResult.insertId;
+    // req.connection = {
+    //   connection: _mysql.connection,
+    //   isTransactionConnection: _mysql.isTransactionConnection,
+    //   pool: _mysql.pool,
+    // };
+    // req.body = header_bills[i];
+    // req.body.sub_department_id = inputParam.sub_department_id;
+    // req.body.ScreenCode = "BL0001";
+
+    // //Accounting Entry
+
+    // const accounting_entry = await generateAccountingEntryChangeEntitle(
+    //   req,
+    //   res,
+    //   next
+    // );
+    // else {
+    //   collection_data.push(new Promise.resolve());
+    // }
+
+    // Promise.all(collection_data)
+    //   .then(() => {
+    _mysql
+      .executeQuery({
+        query: updateQuery,
+        printQuery: true,
+      })
+      .then((subdetail) => {
+        // console.log("1lllll");
+        _mysql.releaseConnection();
+        req.records = { invalid_input: false };
+        next();
+      })
+      .catch((e) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
   }
 }

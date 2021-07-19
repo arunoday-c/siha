@@ -16,6 +16,7 @@ import {
   getCtrlCode,
 } from "./InvoiceGenerationHandaler";
 import { InvoiceDetails } from "./InvoiceDetails";
+import { ChangeInvoiceDetails } from "./ChangeInvoiceDetails";
 import "./InvoiceGeneration.scss";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import "../../../styles/site.scss";
@@ -64,6 +65,7 @@ class InvoiceGeneration extends Component {
       creidt_invoice: false,
       cash_invoice: true,
       dataExists: false,
+      changeShow: false,
     };
   }
 
@@ -248,6 +250,14 @@ class InvoiceGeneration extends Component {
     }
   }
 
+  onCloseChange() {
+    this.setState({ changeShow: !this.state.changeShow });
+  }
+
+  onClickChangeInsurance() {
+    this.setState({ changeShow: !this.state.changeShow });
+  }
+
   //created by Adnan
   render() {
     return (
@@ -416,6 +426,11 @@ class InvoiceGeneration extends Component {
           details={this.state?.Invoice_Detail}
           data={this.state}
         />
+        <ChangeInvoiceDetails
+          data={this.state}
+          show={this.state.changeShow}
+          onClose={this.onCloseChange.bind(this)}
+        />
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
@@ -429,7 +444,6 @@ class InvoiceGeneration extends Component {
                   label={{ fieldName: "btn_final", returnText: true }}
                 />
               </button>
-
               <button
                 type="button"
                 className="btn btn-default"
@@ -440,6 +454,15 @@ class InvoiceGeneration extends Component {
                   label={{ fieldName: "btn_clear", returnText: true }}
                 />
               </button>
+
+              {/* <button
+                type="button"
+                className="btn btn-default"
+                onClick={this.onClickChangeInsurance.bind(this)}
+                disabled={!this.state.dataExists}
+              >
+                Change Insurance Details
+              </button> */}
 
               <button
                 type="button"

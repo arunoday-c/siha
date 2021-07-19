@@ -7,6 +7,7 @@ import insuranceModels, {
   getInvoiceDetails,
   generateAccountingEntry,
   closeStatement,
+  ChangeOfInsuranceInvoice,
 } from "../models/insurance";
 import { generateInsuranceStatement } from "../models/insuranceStatement";
 const {
@@ -294,6 +295,14 @@ export default () => {
       next();
     }
   );
+
+  api.put("/ChangeOfInsuranceInvoice", ChangeOfInsuranceInvoice, (req, res) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+    next();
+  });
 
   api.put("/closeStatement", closeStatement, (req, res, next) => {
     let result = req.records;

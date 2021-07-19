@@ -290,7 +290,7 @@ export default {
           IH.`sec_company_payable`, IH.`submission_date`, IH.`submission_amount`, IH.`remittance_date`,\
           IH.`remittance_amount`, IH.`denial_amount`, IH.`claim_validated`, IH.`card_holder_name`,\
           IH.`card_holder_age`, IH.`card_holder_gender`, IH.`card_class`, IH.`created_by`, IH.`created_date`,\
-          IH.`updated_by`, IH.`updated_date`, IH.`hospital_id`, PV.visit_code, P.patient_code, P.full_name\
+          IH.`updated_by`, IH.`updated_date`, IH.`hospital_id`, PV.visit_code, P.patient_code, P.full_name, P.nationality_id\
           from  hims_f_invoice_header IH, hims_f_patient_visit PV, hims_f_patient P \
           where IH.visit_id = PV.hims_f_patient_visit_id and IH.patient_id = P.hims_d_patient_id and invoice_number=?",
           values: [req.query.invoice_number],
