@@ -206,18 +206,6 @@ export default memo(function ValidateBatch() {
                 <label className="checkbox inline">
                   <input
                     name="entry_type"
-                    value="R"
-                    checked={props.value === "R" ? true : false}
-                    type="checkbox"
-                    onChange={(e) => {
-                      setValue("entry_type", e.target.value);
-                    }}
-                  />
-                  <span>Relult Entry</span>
-                </label>
-                <label className="checkbox inline">
-                  <input
-                    name="entry_type"
                     value="A"
                     checked={props.value === "A" ? true : false}
                     type="checkbox"
@@ -225,7 +213,19 @@ export default memo(function ValidateBatch() {
                       setValue("entry_type", e.target.value);
                     }}
                   />
-                  <span>Acknowledge</span>
+                  <span>Sample Acknowledge</span>
+                </label>
+                <label className="checkbox inline">
+                  <input
+                    name="entry_type"
+                    value="R"
+                    checked={props.value === "R" ? true : false}
+                    type="checkbox"
+                    onChange={(e) => {
+                      setValue("entry_type", e.target.value);
+                    }}
+                  />
+                  <span>Result Entry</span>
                 </label>
               </div>
             </div>
