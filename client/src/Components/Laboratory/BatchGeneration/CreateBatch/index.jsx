@@ -21,7 +21,6 @@ export default memo(function CreateBatch() {
   const [batch_list, setBatchList] = useState([]);
 
   const createBatch = async (data) => {
-    debugger;
     const result = await newAlgaehApi({
       uri: "/laboratory/createPCRBatch",
       module: "laboratory",
@@ -31,14 +30,12 @@ export default memo(function CreateBatch() {
     return result?.data?.records;
   };
   const onSubmit = () => {
-    debugger;
     let inpujObj = {
       batch_name: getValues("batch_name"),
       batch_list: batch_list,
     };
     createBatch(inpujObj)
       .then((result) => {
-        debugger;
         swal("Batch Created Succefully... Batch No." + result.batch_number, {
           icon: "success",
         });
@@ -66,10 +63,13 @@ export default memo(function CreateBatch() {
   };
 
   const deleteState = (data) => {
+    debugger;
     setBatchList((result) => {
-      const _index = result.indexOf(data);
-      result.splice(_index, 1);
-      return [...result];
+      const final_data = result.filter(
+        (f) => f.lab_id_number !== data.lab_id_number
+      );
+
+      return [...final_data];
     });
   };
 
@@ -98,12 +98,14 @@ export default memo(function CreateBatch() {
               className="btn btn-primary"
               style={{ marginLeft: 10 }}
               onClick={onSubmit}
+              disabled={batch_list.length > 0 ? false : true}
             >
               Create Batch
             </button>{" "}
             <button
               onClick={() => {
                 reset({
+                  scan_by: "LI",
                   barcode_scanner: "",
                   batch_number: "",
                   batch_name: "",

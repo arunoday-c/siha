@@ -1,77 +1,314 @@
-import React from "react";
-// import { AlgaehFormGroup } from "algaeh-react-components";
-// import { Controller } from "react-hook-form";
+import React, { useState, memo, useRef } from "react";
+import { useForm } from "react-hook-form";
+import { newAlgaehApi } from "../../../../hooks";
+// import BatchDetails from "./BatchDetails";
+// import ListofBatches from "./ListofBatches";
+import {
+  AlgaehLabel,
+  AlgaehMessagePop,
+  AlgaehDataGrid,
+} from "algaeh-react-components";
+// import swal from "sweetalert2";
+import "./ValidateBatch.scss";
+import AlgaehSearch from "../../../Wrapper/globalSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
+import { Controller } from "react-hook-form";
 
-export default function ValidateBatch() {
-  //   const [batch_number, setBatchNumber] = useState([]);
-  //   const [batch_name, setBatchName] = useState([]);
+const STATUS = {
+  CHECK: true,
+  UNCHECK: false,
+  INDETERMINATE: true,
+};
+
+export default memo(function ValidateBatch() {
+  //control, errors, setValue, getValues
+  const { reset, control, setValue, getValues } = useForm({
+    shouldFocusError: true,
+    defaultValues: {
+      entry_type: "R",
+    },
+  });
+
+  const [batch_number, setBatchNUmber] = useState(null);
+  const [batch_list, setBatchList] = useState([]);
+  const [checkAll, setCheckAll] = useState(STATUS.UNCHECK);
+  let allChecked = useRef(undefined);
+
+  const getBatchDetail = async (data) => {
+    const result = await newAlgaehApi({
+      uri: "/laboratory/getBatchDetail",
+      module: "laboratory",
+      method: "GET",
+      data: data,
+    });
+    return result?.data?.records;
+  };
+
+  // const ValidateBatch = async (data) => {
+  //   const result = await newAlgaehApi({
+  //     uri: "/laboratory/createPCRBatch",
+  //     module: "laboratory",
+  //     method: "POST",
+  //     data: data,
+  //   });
+  //   return result?.data?.records;
+  // };
+  // const onSubmit = () => {
+  //   let inpujObj = {
+  //     batch_name: getValues("batch_name"),
+  //     batch_list: batch_list,
+  //   };
+  //   ValidateBatch(inpujObj)
+  //     .then((result) => {
+  //       swal("Batch Created Succefully... Batch No." + result.batch_number, {
+  //         icon: "success",
+  //       });
+  //       reset({
+  //         barcode_scanner: "",
+  //         batch_number: "",
+  //         batch_name: "",
+  //         auto_insert: true,
+  //       });
+  //       setBatchList([]);
+  //     })
+  //     .catch((e) => {
+  //       AlgaehMessagePop({
+  //         display: e,
+  //         type: "error",
+  //       });
+  //     });
+  // };
+
+  // const updateState = (data) => {
+  //   setBatchList((result) => {
+  //     result.push(data);
+  //     return [...result];
+  //   });
+  // };
+
+  // const deleteState = (data) => {
+  //   debugger;
+  //   setBatchList((result) => {
+  //     const _index = result.indexOf(data);
+  //     result.splice(_index, 1);
+  //     return [...result];
+  //   });
+  // };
+
+  const batchSearch = () => {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.Lab.BatchGen,
+      },
+      searchName: "BatchGen",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: (row) => {
+        debugger;
+        setBatchNUmber(row.batch_number);
+        getBatchDetail({
+          hims_f_lab_batch_header_id: row.hims_f_lab_batch_header_id,
+          entry_type: getValues("entry_type"),
+        })
+          .then((result) => {
+            const new_batch_list = batch_list;
+            console.log("new_batch_list", new_batch_list);
+            setBatchList(result);
+          })
+          .catch((e) => {
+            AlgaehMessagePop({
+              display: e,
+              type: "error",
+            });
+          });
+      },
+    });
+  };
+
+  const selectAll = (e) => {
+    const staus = e.target.checked;
+    const myState = batch_list.map((f) => {
+      return { ...f, checked: staus };
+    });
+
+    const hasUncheck = myState.filter((f) => {
+      return f.checked === undefined || f.checked === false;
+    });
+
+    const totalRecords = myState.length;
+    setCheckAll(
+      totalRecords === hasUncheck.length
+        ? "UNCHECK"
+        : hasUncheck.length === 0
+        ? "CHECK"
+        : "INDETERMINATE"
+    );
+    setBatchList([...myState]);
+  };
+
+  const selectToGenerateBarcode = (row, e) => {
+    const status = e.target.checked;
+    row.checked = status;
+    const records = batch_list;
+    const hasUncheck = records.filter((f) => {
+      return f.checked === undefined || f.checked === false;
+    });
+
+    const totalRecords = records.length;
+    let ckStatus =
+      totalRecords === hasUncheck.length
+        ? "UNCHECK"
+        : hasUncheck.length === 0
+        ? "CHECK"
+        : "INDETERMINATE";
+    if (ckStatus === "INDETERMINATE") {
+      allChecked.indeterminate = true;
+    } else {
+      allChecked.indeterminate = false;
+    }
+    setCheckAll(ckStatus);
+    setBatchList([...records]);
+  };
+
   return (
-    <div className="appointment_status">
-      {/* <form onSubmit={handleSubmit(onSubmit)} onError={onSubmit}>
-        <div className="row inner-top-search">
-          <Controller
-            name="batch_number"
-            control={control}
-            rules={{ required: "Required" }}
-            render={(props) => (
-              <AlgaehFormGroup
-                div={{ className: "col-3 mandatory form-group" }}
-                error={errors}
-                label={{
-                  forceLabel: "Batch Number",
-                  isImp: true,
-                }}
-                textBox={{
-                  ...props,
-                  className: "txt-fld",
-                  name: "batch_number",
-                }}
-              />
-            )}
-          />
+    <div className="ValidateBatchScreen">
+      <div className="row inner-top-search">
+        <Controller
+          name="entry_type"
+          control={control}
+          render={(props) => (
+            <div className="col form-group">
+              <label>Batch Type</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    name="entry_type"
+                    value="R"
+                    checked={props.value === "R" ? true : false}
+                    type="checkbox"
+                    onChange={(e) => {
+                      setValue("entry_type", e.target.value);
+                    }}
+                  />
+                  <span>Relult Entry</span>
+                </label>
+                <label className="checkbox inline">
+                  <input
+                    name="entry_type"
+                    value="A"
+                    checked={props.value === "A" ? true : false}
+                    type="checkbox"
+                    onChange={(e) => {
+                      setValue("entry_type", e.target.value);
+                    }}
+                  />
+                  <span>Acknowledge</span>
+                </label>
+              </div>
+            </div>
+          )}
+        />
 
-          <Controller
-            name="batch_name"
-            control={control}
-            rules={{ required: "Required" }}
-            render={(props) => (
-              <AlgaehFormGroup
-                div={{ className: "col-3 mandatory form-group" }}
-                error={errors}
-                label={{
-                  forceLabel: "Batch Name",
-                  isImp: true,
-                }}
-                textBox={{
-                  ...props,
-                  className: "txt-fld",
-                  name: "batch_name",
-                }}
-              />
-            )}
-          />
-          <Controller
-            name="barcode_scanner"
-            control={control}
-            rules={{ required: "Required" }}
-            render={(props) => (
-              <AlgaehFormGroup
-                div={{ className: "col-2 mandatory form-group" }}
-                error={errors}
-                label={{
-                  forceLabel: "Barcode Scanner",
-                  isImp: true,
-                }}
-                textBox={{
-                  ...props,
-                  className: "txt-fld",
-                  name: "barcode_scanner",
-                }}
-              />
-            )}
-          />
+        <div className="col-3 globalSearchCntr">
+          <AlgaehLabel label={{ fieldName: "Select Batch" }} />
+          <h6 onClick={() => batchSearch()}>
+            {batch_number ? batch_number : "------"}
+            <i className="fas fa-search fa-lg" />
+          </h6>
         </div>
-      </form> */}
+      </div>
+      <div className="row">
+        <AlgaehDataGrid
+          // id="appt-status-grid"
+          // datavalidate="data-validate='apptStatusDiv'"
+          columns={[
+            {
+              label: (
+                <input
+                  type="checkbox"
+                  defaultChecked={checkAll === "CHECK" ? true : false}
+                  ref={(input) => {
+                    allChecked = input;
+                  }}
+                  onChange={selectAll}
+                />
+              ),
+              fieldName: "select",
+              displayTemplate: (row) => {
+                return (
+                  <input
+                    type="checkbox"
+                    checked={row.checked}
+                    onChange={(e) => selectToGenerateBarcode(row, e)}
+                  />
+                );
+              },
+              others: {
+                maxWidth: 50,
+                filterable: false,
+                sortable: false,
+              },
+            },
+            {
+              fieldName: "full_name",
+              label: <AlgaehLabel label={{ fieldName: "Patient Name" }} />,
+            },
+            {
+              fieldName: "primary_id_no",
+              label: <AlgaehLabel label={{ forceLabel: "Patient ID" }} />,
+              disabled: false,
+            },
+            {
+              fieldName: "lab_id_number",
+
+              label: <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />,
+
+              disabled: false,
+            },
+            {
+              fieldName: "test_name",
+              label: <AlgaehLabel label={{ fieldName: "Test Name" }} />,
+            },
+            {
+              fieldName: "specimen_name",
+              label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
+            },
+          ]}
+          data={batch_list}
+          isFilterable={true}
+          pagination={true}
+        />
+      </div>
+
+      <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col-lg-12">
+            <button
+              type="submit"
+              className="btn btn-primary"
+              style={{ marginLeft: 10 }}
+              // onClick={onSubmit}
+              disabled={batch_list.length > 0 ? false : true}
+            >
+              Process
+            </button>
+            <button
+              onClick={() => {
+                reset({
+                  entry_type: "R",
+                });
+                setBatchList([]);
+                setBatchNUmber(null);
+              }}
+              className="btn btn-default"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+});

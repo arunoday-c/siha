@@ -4,14 +4,15 @@ export default memo(function DisplayItem({ item }) {
   return (
     <p className="valueSec">
       <span>
-        <b>Aboobacker Sidhiqe</b>
+        <b>{item.patient_name}</b>
       </span>
       <span>
-        {item.id_number}
+        {item.lab_id_number}
         <small>Lab ID No.</small>
       </span>
       <span>
-        AXQPA2534G<small>Primary ID No.</small>
+        {item.primary_id_no}
+        <small>Primary ID No.</small>
       </span>
     </p>
   );

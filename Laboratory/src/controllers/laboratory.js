@@ -6,6 +6,7 @@ import labModels, {
   updateLabOrderServiceStatus,
   createPCRBatch,
   checkIDExists,
+  getBatchDetail,
 } from "../models/laboratory";
 import { labResultDispatch } from "../models/labDispatch";
 const {
@@ -328,6 +329,12 @@ export default () => {
         records: req.records,
       });
     }
+  });
+  api.get("/getBatchDetail", getBatchDetail, (req, res) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
   });
   api.post("/processLabSMS", processLabSMS, (req, res) => {
     res

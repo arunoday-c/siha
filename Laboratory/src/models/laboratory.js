@@ -3007,18 +3007,21 @@ export function checkIDExists(req, res, next) {
   const _mysql = new algaehMysql();
   try {
     const inputParam = req.query;
-    console.log("inputParam", inputParam);
     let strQuery;
     if (inputParam.scan_by === "PI") {
       strQuery = mysql.format(
-        `SELECT hims_f_lab_order_id, lab_id_number as id_number FROM hims_f_patient P 
-        INNER JOIN hims_f_lab_order L ON P.hims_d_patient_id=L.patient_id where  L.billed='Y' and L.status='CL' and primary_id_no=?;`,
+        `SELECT hims_f_lab_order_id, lab_id_number as id_number, full_name as patient_name FROM hims_f_patient P 
+        INNER JOIN hims_f_lab_order L ON P.hims_d_patient_id=L.patient_id
+        inner join hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = L.test_id  
+        where  L.billed='Y' and L.status='CL' and IT.isPCR ='Y' and primary_id_no=?;`,
         [inputParam.id_number]
       );
     } else {
       strQuery = mysql.format(
-        `SELECT hims_f_lab_order_id, primary_id_no as id_number, L.status FROM hims_f_lab_order L 
-        INNER JOIN hims_f_patient P ON L.patient_id=P.hims_d_patient_id where  L.billed='Y' and L.status='CL' and lab_id_number=?;`,
+        `SELECT hims_f_lab_order_id, primary_id_no as id_number, L.status, full_name as patient_name FROM hims_f_lab_order L 
+        INNER JOIN hims_f_patient P ON L.patient_id=P.hims_d_patient_id         
+        INNER JOIN hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = L.test_id  
+        where  L.billed='Y' and L.status='CL' and IT.isPCR ='Y' and lab_id_number=?;`,
         [inputParam.id_number]
       );
     }
@@ -3028,7 +3031,6 @@ export function checkIDExists(req, res, next) {
         printQuery: true,
       })
       .then((headerResult) => {
-        console.log("headerResult", headerResult);
         if (headerResult.length === 0) {
           _mysql.releaseConnection();
           req.records = {
@@ -3069,12 +3071,14 @@ export function createPCRBatch(req, res, next) {
       .executeQueryWithTransaction({
         query:
           "INSERT INTO hims_f_lab_batch_header (`batch_number`,`batch_name`, \
-      `created_by`,`updated_by`) values (?, ?, ?, ?);",
+      `created_by`, `created_date`, `updated_by`, `updated_date`) values (?, ?, ?, ?, ?, ?);",
         values: [
           batch_number,
           inputParam.batch_name,
           req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
           req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
         ],
         printQuery: true,
       })
@@ -3113,5 +3117,46 @@ export function createPCRBatch(req, res, next) {
     _mysql.rollBackTransaction(() => {
       next(e);
     });
+  }
+}
+
+export function getBatchDetail(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const inputParam = req.query;
+
+    let strQuery = "",
+      strFiled = "";
+    if (inputParam.entry_type === "R") {
+      strFiled = ", LA.description as analyte_name";
+      strQuery =
+        " INNER JOIN hims_f_ord_analytes OA ON OA.order_id = L.hims_f_lab_order_id INNER JOIN hims_d_lab_analytes LA ON LA.hims_d_lab_analytes_id = OA.analyte_id ";
+    }
+    _mysql
+      .executeQuery({
+        query: `SELECT D.primary_id_no, D.lab_id_number, P.full_name, MS.description as specimen_name, 
+          IT.description as test_name ${strFiled}
+          FROM hims_f_lab_batch_detail D \
+          INNER JOIN hims_f_lab_order L ON L.hims_f_lab_order_id = D.order_id \
+          INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id\
+          INNER JOIN hims_d_lab_specimen MS ON MS.hims_d_lab_specimen_id = S.sample_id \
+          INNER JOIN hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = L.test_id  \
+          INNER JOIN hims_f_patient P ON P.hims_d_patient_id = L.patient_id 
+          ${strQuery} where batch_header_id=?;`,
+        values: [inputParam.hims_f_lab_batch_header_id],
+        printQuery: true,
+      })
+      .then((headerResult) => {
+        _mysql.releaseConnection();
+        req.records = headerResult;
+        next();
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
   }
 }

@@ -1163,6 +1163,11 @@ let algaehSearchConfig = (searchName, req) => {
           inner join hims_d_insurance_sub SU on S.sub_insurance_id = SU.hims_d_insurance_sub_id where S.record_status='A'`,
         orderBy: "S.hims_f_insurance_statement_id desc",
       },
+      {
+        searchName: "BatchGen",
+        searchQuery: `select hims_f_lab_batch_header_id, batch_number, batch_name from hims_f_lab_batch_header where hims_f_lab_batch_header_id > 0`,
+        orderBy: "hims_f_lab_batch_header_id desc",
+      },
       ...search_global1,
     ],
   };

@@ -23,21 +23,22 @@ export default memo(function BatchDetails({
   batch_list,
 }) {
   const onChangeHandeler = (e) => {
+    debugger;
     const auto_insert = getValues("auto_insert");
     if (auto_insert === true) {
       e.persist();
       setValue("barcode_scanner", e.target.value);
-      de_bounce(e);
+      de_bounce(e, batch_list);
     } else {
       setValue("barcode_scanner", e.target.value);
     }
   };
 
   const de_bounce = useCallback(
-    debounce(async (e) => {
+    debounce(async (e, new_batch_list) => {
       debugger;
       const scan_by = getValues("scan_by");
-      const data_exists = batch_list.filter(
+      const data_exists = new_batch_list.filter(
         (f) => f.id_number === e.target.value
       );
 
@@ -71,6 +72,7 @@ export default memo(function BatchDetails({
           lab_id_number: e.target.value,
           order_id: after_ack.records.hims_f_lab_order_id,
           primary_id_no: after_ack.records.id_number,
+          patient_name: after_ack.records.patient_name,
         });
       } else {
         updateState({
@@ -78,6 +80,7 @@ export default memo(function BatchDetails({
           lab_id_number: after_ack.records.id_number,
           order_id: after_ack.records.hims_f_lab_order_id,
           primary_id_no: e.target.value,
+          patient_name: after_ack.records.patient_name,
         });
       }
 
