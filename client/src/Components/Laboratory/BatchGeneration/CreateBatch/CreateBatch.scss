@@ -1,0 +1,63 @@
+.CreateBatchScreen {
+  margin-top: 32px;
+
+  .CreateBatchList {
+    min-height: 68vh;
+    max-height: 68vh;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    border: 1px solid #ccc;
+    background: #fff;
+    ul {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+
+      li {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        border-bottom: 1px solid #ccc;
+
+        .actionSec {
+          vertical-align: top;
+          width: 30px;
+          height: 44px;
+          text-align: center;
+          display: inline-block;
+          /* line-height: 24px; */
+          padding-top: 11px;
+          margin: 0;
+
+          &:hover {
+            background-color: red;
+            cursor: pointer;
+          }
+        }
+        .valueSec {
+          text-align: left;
+          display: inline-block;
+          width: calc(100% - 30px);
+          span {
+            display: inline-block;
+            padding: 3px 5px;
+            border-left: 1px solid #ccc;
+            height: 43px;
+            vertical-align: top;
+            width: 150px;
+            small {
+              display: block;
+            }
+            &:first-child {
+              width: calc(100% - 310px);
+            }
+          }
+        }
+        &:nth-child(odd) {
+          background-color: whitesmoke;
+        }
+      }
+    }
+  }
+}

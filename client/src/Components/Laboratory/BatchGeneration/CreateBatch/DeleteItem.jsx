@@ -6,10 +6,8 @@ export default memo(function DeleteItem({ item, deleteState }) {
     deleteState(item);
   };
   return (
-    <div className="itemAction">
-      <button className="btn btn-sm btn-edit-list" onClick={onDelete}>
-        Delete
-      </button>
-    </div>
+    <p className="actionSec" onClick={onDelete}>
+      <i className="fas fa-trash-alt"></i>
+    </p>
   );
 });

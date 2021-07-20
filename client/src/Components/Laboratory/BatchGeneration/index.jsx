@@ -7,7 +7,7 @@ import { AlgaehTabs, AlgaehLabel } from "algaeh-react-components";
 
 export default function BatchGeneration(props) {
   return (
-    <div className="AdmissionSetupScreen">
+    <div className="BatchGenerationScreen">
       <AlgaehTabs
         removeCommonSection={true}
         content={[
@@ -33,7 +33,7 @@ export default function BatchGeneration(props) {
             // componentCode: "ADM_BED_MSTR",
           },
         ]}
-        renderClass="appoSetupSection"
+        renderClass="BatchGenerationSections"
       />
     </div>
   );

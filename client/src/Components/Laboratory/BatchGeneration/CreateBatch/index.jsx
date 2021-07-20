@@ -5,6 +5,7 @@ import BatchDetails from "./BatchDetails";
 import ListofBatches from "./ListofBatches";
 import { AlgaehMessagePop } from "algaeh-react-components";
 import swal from "sweetalert2";
+import "./CreateBatch.scss";
 
 export default memo(function CreateBatch() {
   const { control, errors, reset, setValue, getValues } = useForm({
@@ -73,8 +74,7 @@ export default memo(function CreateBatch() {
   };
 
   return (
-    <div className="appointment_status">
-      {/* <form onSubmit={handleSubmit(onSubmit)} onError={onSubmit}> */}
+    <div className="CreateBatchScreen">
       <div className="row inner-top-search">
         <BatchDetails
           control={control}
@@ -84,35 +84,40 @@ export default memo(function CreateBatch() {
           updateState={updateState}
           batch_list={batch_list}
         />
-
+      </div>
+      <div className="row">
         <ListofBatches batch_list={batch_list} deleteState={deleteState} />
+        {/* <div className="col-8">details section here</div> */}
+      </div>
 
-        <div className="col" style={{ marginTop: 21 }}>
-          <button
-            onClick={() => {
-              reset({
-                barcode_scanner: "",
-                batch_number: "",
-                batch_name: "",
-                auto_insert: true,
-              });
-              setBatchList([]);
-            }}
-            className="btn btn-default"
-          >
-            Clear
-          </button>
-          <button
-            type="submit"
-            className="btn btn-primary"
-            style={{ marginLeft: 10 }}
-            onClick={onSubmit}
-          >
-            Create Batch
-          </button>
+      <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col-lg-12">
+            <button
+              type="submit"
+              className="btn btn-primary"
+              style={{ marginLeft: 10 }}
+              onClick={onSubmit}
+            >
+              Create Batch
+            </button>{" "}
+            <button
+              onClick={() => {
+                reset({
+                  barcode_scanner: "",
+                  batch_number: "",
+                  batch_name: "",
+                  auto_insert: true,
+                });
+                setBatchList([]);
+              }}
+              className="btn btn-default"
+            >
+              Clear
+            </button>
+          </div>
         </div>
       </div>
-      {/* </form> */}
     </div>
   );
 });

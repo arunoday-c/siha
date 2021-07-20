@@ -146,14 +146,14 @@ export default memo(function BatchDetails({
   };
 
   return (
-    <div className="appointment_status">
+    <div className="col appointment_status">
       <div className="row">
         <Controller
           name="batch_number"
           control={control}
           render={(props) => (
             <AlgaehFormGroup
-              div={{ className: "col-3 mandatory form-group" }}
+              div={{ className: "col mandatory form-group" }}
               error={errors}
               label={{
                 forceLabel: "Batch Number",
@@ -174,7 +174,7 @@ export default memo(function BatchDetails({
           control={control}
           render={(props) => (
             <AlgaehFormGroup
-              div={{ className: "col-3 mandatory form-group" }}
+              div={{ className: "col mandatory form-group" }}
               error={errors}
               label={{
                 forceLabel: "Batch Name",
@@ -193,7 +193,7 @@ export default memo(function BatchDetails({
           name="scan_by"
           control={control}
           render={(props) => (
-            <div className="col-4">
+            <div className="col form-group">
               <label>Batch Type</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
@@ -207,6 +207,8 @@ export default memo(function BatchDetails({
                     }}
                   />
                   <span>Lab ID</span>
+                </label>
+                <label className="checkbox inline">
                   <input
                     name="scan_by"
                     value="PI"
@@ -227,7 +229,7 @@ export default memo(function BatchDetails({
           control={control}
           rules={{ required: "Required" }}
           render={(props) => (
-            <div className="col-3 mandatory form-group ">
+            <div className="col mandatory form-group">
               <label className="style_Label undefined">
                 Barcode Scanner<span className="imp">&nbsp;*</span>
               </label>
@@ -264,7 +266,7 @@ export default memo(function BatchDetails({
           name="auto_insert"
           control={control}
           render={(props) => (
-            <div className="col">
+            <div className="col mandatory form-group">
               <label>Auto Insert</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
@@ -282,14 +284,15 @@ export default memo(function BatchDetails({
             </div>
           )}
         />
-
-        <button
-          className="btn btn-primary"
-          style={{ marginLeft: 10 }}
-          onClick={onClickAddtoList}
-        >
-          Add to List
-        </button>
+        <div className="col-1 mandatory form-group">
+          <button
+            className="btn btn-primary"
+            style={{ marginTop: 21 }}
+            onClick={onClickAddtoList}
+          >
+            Add to List
+          </button>
+        </div>
       </div>
     </div>
   );
