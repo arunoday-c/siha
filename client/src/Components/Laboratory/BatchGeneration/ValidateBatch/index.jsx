@@ -81,9 +81,15 @@ export default memo(function ValidateBatch() {
     };
     UpdateBatchDetail(inpujObj)
       .then((result) => {
-        swal("Saved Succefully... Batch No." + batch_number, {
+        swal({
+          title: "Batch Saved Successfully",
+          text: batch_number,
           icon: "success",
         });
+
+        // swal("Saved Succefully... Batch No." + batch_number, {
+        //   icon: "success",
+        // });
       })
       .catch((e) => {
         AlgaehMessagePop({
@@ -349,7 +355,7 @@ export default memo(function ValidateBatch() {
                   );
                 },
                 others: {
-                  maxWidth: 50,
+                  width: 50,
                   filterable: false,
                   sortable: false,
                 },
@@ -357,34 +363,35 @@ export default memo(function ValidateBatch() {
               {
                 fieldName: "full_name",
                 label: <AlgaehLabel label={{ fieldName: "Patient Name" }} />,
+                others: {
+                  // filterable: true,
+                  // sortable: true,
+                },
+                filterable: true,
+                sortable: true,
               },
               {
                 fieldName: "primary_id_no",
                 label: <AlgaehLabel label={{ forceLabel: "Patient ID" }} />,
-                disabled: false,
+
+                others: {
+                  // filterable: true,
+                  // sortable: true,
+                },
+                filterable: true,
+                sortable: true,
               },
               {
                 fieldName: "lab_id_number",
 
                 label: <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />,
 
-                disabled: false,
-              },
-              {
-                fieldName: "test_name",
-                label: <AlgaehLabel label={{ fieldName: "Test Name" }} />,
-              },
-              {
-                fieldName: "specimen_name",
-                label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
-              },
-              {
-                fieldName: "specimen_name",
-                label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
-              },
-              {
-                fieldName: "analyte_name",
-                label: <AlgaehLabel label={{ fieldName: "Analyte Name" }} />,
+                others: {
+                  // filterable: true,
+                  // sortable: true,
+                },
+                filterable: true,
+                sortable: true,
               },
               {
                 fieldName: "result",
@@ -437,6 +444,46 @@ export default memo(function ValidateBatch() {
                     </span>
                   );
                 },
+              },
+              {
+                fieldName: "test_name",
+                label: <AlgaehLabel label={{ fieldName: "Test Name" }} />,
+                others: {
+                  // filterable: true,
+                  // sortable: true,
+                },
+                filterable: true,
+                sortable: true,
+              },
+              {
+                fieldName: "specimen_name",
+                label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
+                others: {
+                  // filterable: true,
+                  // sortable: true,
+                },
+                filterable: true,
+                sortable: true,
+              },
+              {
+                fieldName: "specimen_name",
+                label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
+                others: {
+                  // filterable: true,
+                  // sortable: true,
+                },
+                filterable: true,
+                sortable: true,
+              },
+              {
+                fieldName: "analyte_name",
+                label: <AlgaehLabel label={{ fieldName: "Analyte Name" }} />,
+                others: {
+                  // filterable: true,
+                  // sortable: true,
+                },
+                filterable: true,
+                sortable: true,
               },
             ]}
             data={batch_list}

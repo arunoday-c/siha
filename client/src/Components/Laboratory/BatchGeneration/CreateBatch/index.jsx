@@ -36,7 +36,9 @@ export default memo(function CreateBatch() {
     };
     createBatch(inpujObj)
       .then((result) => {
-        swal("Batch Created Succefully" + result.batch_number, {
+        swal({
+          title: "Batch Created Successfully",
+          text: result.batch_number,
           icon: "success",
         });
         reset({

@@ -151,7 +151,7 @@ export default memo(function BatchDetails({
   return (
     <div className="col appointment_status">
       <div className="row">
-        <Controller
+        {/* <Controller
           name="batch_number"
           control={control}
           render={(props) => (
@@ -170,7 +170,7 @@ export default memo(function BatchDetails({
               }}
             />
           )}
-        />
+        /> */}
 
         <Controller
           name="batch_name"
@@ -193,11 +193,34 @@ export default memo(function BatchDetails({
         />
 
         <Controller
+          name="auto_insert"
+          control={control}
+          render={(props) => (
+            <div className="col-2 mandatory form-group">
+              <label>Auto Insert</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    name="auto_insert"
+                    defaultChecked={props.value}
+                    type="checkbox"
+                    onChange={(e) => {
+                      setValue("auto_insert", e.target.checked);
+                    }}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
+          )}
+        />
+
+        <Controller
           name="scan_by"
           control={control}
           render={(props) => (
-            <div className="col form-group">
-              <label>Batch Type</label>
+            <div className="col-3 form-group">
+              <label>Scan Type</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
                   <input
@@ -222,29 +245,6 @@ export default memo(function BatchDetails({
                     }}
                   />
                   <span>Patient ID</span>
-                </label>
-              </div>
-            </div>
-          )}
-        />
-
-        <Controller
-          name="auto_insert"
-          control={control}
-          render={(props) => (
-            <div className="col mandatory form-group">
-              <label>Auto Insert</label>
-              <div className="customCheckbox">
-                <label className="checkbox inline">
-                  <input
-                    name="auto_insert"
-                    defaultChecked={props.value}
-                    type="checkbox"
-                    onChange={(e) => {
-                      setValue("auto_insert", e.target.checked);
-                    }}
-                  />
-                  <span>Yes</span>
                 </label>
               </div>
             </div>
