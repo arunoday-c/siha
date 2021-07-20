@@ -14,6 +14,25 @@ export default memo(function BatchDetails({ batch_list, deleteState }) {
       </div>
       <div className="CreateBatchList">
         <ul>
+          <li>
+            <p className="actionSec">
+              {/* <i className="fas fa-trash-alt"></i> */}
+            </p>
+            <p class="valueSec">
+              <span>
+                <small>Patient Full Name</small>
+              </span>
+              <span>
+                <small>Test Name</small>
+              </span>
+              <span>
+                <small>Lab ID No.</small>
+              </span>
+              <span>
+                <small>Primary ID No.</small>
+              </span>
+            </p>
+          </li>
           {batch_list.map((item) => {
             return (
               <DisplayComponent

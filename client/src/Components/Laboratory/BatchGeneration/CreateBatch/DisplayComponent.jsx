@@ -6,8 +6,8 @@ import DeleteItem from "./DeleteItem";
 export default memo(function DisplayComponent({ item, deleteState }) {
   return (
     <li>
-      <DisplayItem item={item} />
       <DeleteItem item={item} deleteState={deleteState} />
+      <DisplayItem item={item} />
     </li>
   );
 });

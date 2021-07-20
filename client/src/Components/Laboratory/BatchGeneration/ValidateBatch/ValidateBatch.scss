@@ -1,3 +1,12 @@
 .ValidateBatchScreen {
   margin-top: 32px;
+  #batchValidateGridCntr {
+    .newStickyGrid {
+      .table-scroll {
+        min-height: 62vh !important;
+        max-height: 62vh !important;
+        overflow: auto;
+      }
+    }
+  }
 }

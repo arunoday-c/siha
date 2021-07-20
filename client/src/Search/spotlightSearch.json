@@ -1313,5 +1313,17 @@
         "label": "Quotation Ref. Num."
       }
     ]
+  },
+  "Lab": {
+    "BatchGen": [
+      {
+        "fieldName": "batch_number",
+        "label": "Batch Number"
+      },
+      {
+        "fieldName": "Batch Name",
+        "label": "Batch Name"
+      }
+    ]
   }
 }
