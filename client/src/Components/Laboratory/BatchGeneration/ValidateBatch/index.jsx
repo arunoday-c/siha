@@ -203,21 +203,9 @@ export default memo(function ValidateBatch() {
           name="entry_type"
           control={control}
           render={(props) => (
-            <div className="col form-group">
+            <div className="col-3">
               <label>Batch Type</label>
               <div className="customCheckbox">
-                <label className="checkbox inline">
-                  <input
-                    name="entry_type"
-                    value="R"
-                    checked={props.value === "R" ? true : false}
-                    type="checkbox"
-                    onChange={(e) => {
-                      setValue("entry_type", e.target.value);
-                    }}
-                  />
-                  <span>Relult Entry</span>
-                </label>
                 <label className="checkbox inline">
                   <input
                     name="entry_type"
@@ -228,14 +216,26 @@ export default memo(function ValidateBatch() {
                       setValue("entry_type", e.target.value);
                     }}
                   />
-                  <span>Acknowledge</span>
+                  <span>Sample Acknowledge</span>
+                </label>
+                <label className="checkbox inline">
+                  <input
+                    name="entry_type"
+                    value="R"
+                    checked={props.value === "R" ? true : false}
+                    type="checkbox"
+                    onChange={(e) => {
+                      setValue("entry_type", e.target.value);
+                    }}
+                  />
+                  <span>Result Entry</span>
                 </label>
               </div>
             </div>
           )}
         />
 
-        <div className="col-3 globalSearchCntr">
+        <div className="col-3 globalSearchCntr form-group">
           <AlgaehLabel label={{ fieldName: "Select Batch" }} />
           <h6 onClick={() => batchSearch()}>
             {batch_number ? batch_number : "------"}
@@ -263,99 +263,44 @@ export default memo(function ValidateBatch() {
                 return (
                   <input
                     type="checkbox"
-                    checked={row.checked}
-                    onChange={(e) => selectToGenerateBarcode(row, e)}
+                    defaultChecked={checkAll === "CHECK" ? true : false}
+                    ref={(input) => {
+                      allChecked = input;
+                    }}
+                    onChange={selectAll}
                   />
-                );
-              },
-              others: {
-                maxWidth: 50,
-                filterable: false,
-                sortable: false,
-              },
-            },
-            {
-              fieldName: "full_name",
-              label: <AlgaehLabel label={{ fieldName: "Patient Name" }} />,
-            },
-            {
-              fieldName: "primary_id_no",
-              label: <AlgaehLabel label={{ forceLabel: "Patient ID" }} />,
-              disabled: false,
-            },
-            {
-              fieldName: "lab_id_number",
-
-              label: <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />,
-
-              disabled: false,
-            },
-            {
-              fieldName: "test_name",
-              label: <AlgaehLabel label={{ fieldName: "Test Name" }} />,
-            },
-            {
-              fieldName: "specimen_name",
-              label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
-            },
-            {
-              fieldName: "specimen_name",
-              label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
-            },
-            {
-              fieldName: "analyte_name",
-              label: <AlgaehLabel label={{ fieldName: "Analyte Name" }} />,
-            },
-            {
-              fieldName: "result",
-              label: <AlgaehLabel label={{ fieldName: "result" }} />,
-              displayTemplate: (row) => {
-                return (
-                  <span>
-                    <AlgaehAutoComplete
-                      div={{ className: "noLabel" }}
-                      selector={{
-                        name: "result",
-                        className: "select-fld",
-                        value: row.result === null ? "" : row.result,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: [
-                            {
-                              name: "Negative",
-                              value: "Negative",
-                            },
-                            {
-                              name: "Positive",
-                              value: "Positive",
-                            },
-                            {
-                              name: "Not Seen",
-                              value: "Not Seen",
-                            },
-                            {
-                              name: "Reactive",
-                              value: "Reactive",
-                            },
-                            {
-                              name: "Non-Reactive",
-                              value: "Non-Reactive",
-                            },
-                          ],
-                        },
-                        updateInternally: true,
-                        onChange: (e, value) => {
-                          row.result = value;
-                          forceUpdate(row);
-                        },
-                        onClear: (e) => {
-                          forceUpdate(row);
-                        },
-                      }}
+                ),
+                fieldName: "select",
+                displayTemplate: (row) => {
+                  return (
+                    <input
+                      type="checkbox"
+                      checked={row.checked}
+                      onChange={(e) => selectToGenerateBarcode(row, e)}
                     />
-                  </span>
-                );
+                  );
+                },
+                others: {
+                  maxWidth: 50,
+                  filterable: false,
+                  sortable: false,
+                },
+              },
+              {
+                fieldName: "full_name",
+                label: <AlgaehLabel label={{ fieldName: "Patient Name" }} />,
+              },
+              {
+                fieldName: "primary_id_no",
+                label: <AlgaehLabel label={{ forceLabel: "Patient ID" }} />,
+                disabled: false,
+              },
+              {
+                fieldName: "lab_id_number",
+
+                label: <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />,
+
+                disabled: false,
               },
             },
           ]}
