@@ -897,7 +897,9 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
   const { userToken } = useContext(MainContext);
 
   const [portal_exists, setPortal_exists] = useState(false);
-  const [growthType, setGrowthType] = useState("NoGrowth");
+  const [growthType, setGrowthType] = useState(
+    selectedPatient.bacteria_type === "G" ? "Growth" : "NoGrowth"
+  );
   const [organism_type, setOrganism_type] = useState(null);
 
   const [group_comments_id, setGroup_comments_id] = useState(null);
@@ -935,7 +937,7 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
   const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
   useEffect(() => {
     setPortal_exists(userToken.portal_exists);
-
+    debugger;
     setStatus(selectedPatient.status);
     setComments_data(selectedPatient.comments_data);
     // setComments(selectedPatient.comments);
@@ -1174,6 +1176,7 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
           });
           getAnalytesReload();
           // setTest_analytes(value);
+          debugger;
           setStatus(status === "AV" ? "V" : status);
           if (portal_exists === "Y" && status === "V") {
             generateLabResultReport({ ...selectedPatient, hidePrinting: true });
@@ -1436,7 +1439,7 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
                   type="button"
                   className="btn btn-primary"
                   onClick={resultEntryUpdate}
-                  disabled={status !== "CL" ? true : false}
+                  disabled={status === "V" ? true : false}
                 >
                   Save
                 </button>
