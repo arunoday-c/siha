@@ -224,6 +224,29 @@ export default memo(function BatchDetails({
             </div>
           )}
         />
+
+        <Controller
+          name="auto_insert"
+          control={control}
+          render={(props) => (
+            <div className="col mandatory form-group">
+              <label>Auto Insert</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    name="auto_insert"
+                    defaultChecked={props.value}
+                    type="checkbox"
+                    onChange={(e) => {
+                      setValue("auto_insert", e.target.checked);
+                    }}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
+          )}
+        />
         <Controller
           name="barcode_scanner"
           control={control}
@@ -259,29 +282,6 @@ export default memo(function BatchDetails({
             //     onChange: onChangeHandeler,
             //   }}
             // />
-          )}
-        />
-
-        <Controller
-          name="auto_insert"
-          control={control}
-          render={(props) => (
-            <div className="col mandatory form-group">
-              <label>Auto Insert</label>
-              <div className="customCheckbox">
-                <label className="checkbox inline">
-                  <input
-                    name="auto_insert"
-                    defaultChecked={props.value}
-                    type="checkbox"
-                    onChange={(e) => {
-                      setValue("auto_insert", e.target.checked);
-                    }}
-                  />
-                  <span>Yes</span>
-                </label>
-              </div>
-            </div>
           )}
         />
         <div className="col-1 mandatory form-group">
