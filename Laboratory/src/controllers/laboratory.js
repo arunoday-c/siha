@@ -8,6 +8,8 @@ import labModels, {
   checkIDExists,
   getBatchDetail,
   updateBatchDetail,
+  bulkSampleAcknowledge,
+  updateLabSampleStatus,
 } from "../models/laboratory";
 import { labResultDispatch } from "../models/labDispatch";
 const {
@@ -16,7 +18,6 @@ const {
   getLabOrderedServicesPatient,
   getTestAnalytes,
   getMicroDetails,
-  updateLabSampleStatus,
   updateLabResultEntry,
   updateMicroResultEntry,
   getMicroResult,
@@ -99,6 +100,12 @@ export default () => {
   });
 
   api.put("/bulkSampleCollection", bulkSampleCollection, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+  api.put("/bulkSampleAcknowledge", bulkSampleAcknowledge, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records,

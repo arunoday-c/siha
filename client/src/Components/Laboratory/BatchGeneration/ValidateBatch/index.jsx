@@ -1,4 +1,4 @@
-import React, { useState, memo } from "react";
+import React, { useState, memo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { newAlgaehApi } from "../../../../hooks";
 // import BatchDetails from "./BatchDetails";
@@ -6,34 +6,35 @@ import { newAlgaehApi } from "../../../../hooks";
 import {
   AlgaehLabel,
   AlgaehMessagePop,
-  // AlgaehDataGrid,
-  // AlgaehAutoComplete,
+  AlgaehDataGrid,
+  AlgaehAutoComplete,
 } from "algaeh-react-components";
 import swal from "sweetalert2";
 import "./ValidateBatch.scss";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { Controller } from "react-hook-form";
-import BatchValidationList from "./listData";
-// const STATUS = {
-//   CHECK: true,
-//   UNCHECK: false,
-//   INDETERMINATE: true,
-// };
+// import BatchValidationList from "./listData";
+const STATUS = {
+  CHECK: true,
+  UNCHECK: false,
+  INDETERMINATE: true,
+};
 
 export default memo(function ValidateBatch() {
   //control, errors, setValue, getValues
-  const { reset, control, setValue, getValues } = useForm({
+  const { control } = useForm({
     shouldFocusError: true,
-    defaultValues: {
-      entry_type: "R",
-    },
+    // defaultValues: {
+    //   entry_type: "R",
+    // },
   });
 
   const [batch_number, setBatchNUmber] = useState(null);
   const [batch_list, setBatchList] = useState([]);
-  // const [checkAll ,setCheckAll] = useState(STATUS.UNCHECK);
-  // let allChecked = useRef(undefined);
+  const [checkAll, setCheckAll] = useState(STATUS.UNCHECK);
+  const [entry_type, setEntryType] = useState("R");
+  let allChecked = useRef(undefined);
 
   const getBatchDetail = async (data) => {
     const result = await newAlgaehApi({
@@ -46,22 +47,40 @@ export default memo(function ValidateBatch() {
   };
   const UpdateBatchDetail = async (data) => {
     const result = await newAlgaehApi({
-      uri: "/laboratory/createPCRBatch",
+      uri: "/laboratory/updateBatchDetail",
       module: "laboratory",
-      method: "POST",
+      method: "PUT",
+      data: data,
+    });
+    return result?.data?.records;
+  };
+  const AckBatchDetail = async (data) => {
+    const result = await newAlgaehApi({
+      uri: "/laboratory/bulkSampleAcknowledge",
+      module: "laboratory",
+      method: "PUT",
       data: data,
     });
     return result?.data?.records;
   };
 
   const onSaveAll = () => {
+    const filterData = batch_list.filter((f) => f.checked);
+
+    if (filterData.length === 0) {
+      AlgaehMessagePop({
+        display: "Select alteast one record.",
+        type: "warning",
+      });
+      return;
+    }
     let inpujObj = {
-      batch_list: batch_list,
-      status: "S",
+      batch_list: filterData,
+      status: "E",
     };
     UpdateBatchDetail(inpujObj)
       .then((result) => {
-        swal("Batch Saved Succefully... Batch No." + batch_number, {
+        swal("Saved Succefully... Batch No." + batch_number, {
           icon: "success",
         });
       })
@@ -74,22 +93,81 @@ export default memo(function ValidateBatch() {
   };
 
   const onValidate = () => {
-    let inpujObj = {
-      batch_list: batch_list,
-      status: "S",
-    };
-    UpdateBatchDetail(inpujObj)
-      .then((result) => {
-        swal("Batch Validated Succefully... Batch No." + batch_number, {
-          icon: "success",
-        });
-      })
-      .catch((e) => {
-        AlgaehMessagePop({
-          display: e,
-          type: "error",
-        });
+    const filterData = batch_list.filter((f) => f.checked);
+
+    if (filterData.length === 0) {
+      AlgaehMessagePop({
+        display: "Select alteast one record.",
+        type: "warning",
       });
+      return;
+    }
+    swal({
+      title: `Are you sure to Validate ?`,
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willProceed) => {
+      if (willProceed.value) {
+        let inpujObj = {
+          batch_list: filterData,
+          status: "V",
+        };
+        UpdateBatchDetail(inpujObj)
+          .then((result) => {
+            swal("Validated Succefully... Batch No." + batch_number, {
+              icon: "success",
+            });
+          })
+          .catch((e) => {
+            AlgaehMessagePop({
+              display: e,
+              type: "error",
+            });
+          });
+      }
+    });
+  };
+  const onAcknowledge = () => {
+    const filterData = batch_list.filter((f) => f.checked);
+
+    if (filterData.length === 0) {
+      AlgaehMessagePop({
+        display: "Select alteast one record.",
+        type: "warning",
+      });
+      return;
+    }
+    swal({
+      title: `Are you sure to Acknowledge ?`,
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willProceed) => {
+      if (willProceed.value) {
+        let inpujObj = {
+          batch_list: filterData,
+        };
+        AckBatchDetail(inpujObj)
+          .then((result) => {
+            swal("Acknowledgeed Succefully... Batch No." + batch_number, {
+              icon: "success",
+            });
+          })
+          .catch((e) => {
+            AlgaehMessagePop({
+              display: e,
+              type: "error",
+            });
+          });
+      }
+    });
   };
 
   // const updateState = (data) => {
@@ -100,7 +178,7 @@ export default memo(function ValidateBatch() {
   // };
 
   // const deleteState = (data) => {
-  //   debugger;
+  //
   //   setBatchList((result) => {
   //     const _index = result.indexOf(data);
   //     result.splice(_index, 1);
@@ -122,17 +200,14 @@ export default memo(function ValidateBatch() {
         setBatchNUmber(row.batch_number);
         getBatchDetail({
           hims_f_lab_batch_header_id: row.hims_f_lab_batch_header_id,
-          entry_type: getValues("entry_type"),
+          entry_type: entry_type,
         })
           .then((result) => {
-            // const new_batch_list = batch_list;
-            // console.log("new_batch_list", new_batch_list);
-            //For testing need to remove this
-            let lst = result;
-            for (let i = 0; i < 100; i++) {
-              lst.push(result[0]);
-            }
-            setBatchList(lst);
+            // let lst = result;
+            // for (let i = 0; i < 100; i++) {
+            //   lst.push(result[0]);
+            // }
+            setBatchList(result);
           })
           .catch((e) => {
             AlgaehMessagePop({
@@ -144,57 +219,57 @@ export default memo(function ValidateBatch() {
     });
   };
 
-  // const selectAll = (e) => {
-  //   const staus = e.target.checked;
-  //   const myState = batch_list.map((f) => {
-  //     return { ...f, checked: staus };
-  //   });
+  const selectAll = (e) => {
+    const staus = e.target.checked;
+    const myState = batch_list.map((f) => {
+      return { ...f, checked: staus };
+    });
 
-  //   const hasUncheck = myState.filter((f) => {
-  //     return f.checked === undefined || f.checked === false;
-  //   });
+    const hasUncheck = myState.filter((f) => {
+      return f.checked === undefined || f.checked === false;
+    });
 
-  //   const totalRecords = myState.length;
-  //   setCheckAll(
-  //     totalRecords === hasUncheck.length
-  //       ? "UNCHECK"
-  //       : hasUncheck.length === 0
-  //       ? "CHECK"
-  //       : "INDETERMINATE"
-  //   );
-  //   setBatchList([...myState]);
-  // };
+    const totalRecords = myState.length;
+    setCheckAll(
+      totalRecords === hasUncheck.length
+        ? "UNCHECK"
+        : hasUncheck.length === 0
+        ? "CHECK"
+        : "INDETERMINATE"
+    );
+    setBatchList([...myState]);
+  };
 
-  // const selectToGenerateBarcode = (row, e) => {
-  //   const status = e.target.checked;
-  //   row.checked = status;
-  //   const records = batch_list;
-  //   const hasUncheck = records.filter((f) => {
-  //     return f.checked === undefined || f.checked === false;
-  //   });
+  const selectToGenerateBarcode = (row, e) => {
+    const status = e.target.checked;
+    row.checked = status;
+    const records = batch_list;
+    const hasUncheck = records.filter((f) => {
+      return f.checked === undefined || f.checked === false;
+    });
 
-  //   const totalRecords = records.length;
-  //   let ckStatus =
-  //     totalRecords === hasUncheck.length
-  //       ? "UNCHECK"
-  //       : hasUncheck.length === 0
-  //       ? "CHECK"
-  //       : "INDETERMINATE";
-  //   if (ckStatus === "INDETERMINATE") {
-  //     allChecked.indeterminate = true;
-  //   } else {
-  //     allChecked.indeterminate = false;
-  //   }
-  //   setCheckAll(ckStatus);
-  //   setBatchList([...records]);
-  // };
+    const totalRecords = records.length;
+    let ckStatus =
+      totalRecords === hasUncheck.length
+        ? "UNCHECK"
+        : hasUncheck.length === 0
+        ? "CHECK"
+        : "INDETERMINATE";
+    if (ckStatus === "INDETERMINATE") {
+      allChecked.indeterminate = true;
+    } else {
+      allChecked.indeterminate = false;
+    }
+    setCheckAll(ckStatus);
+    setBatchList([...records]);
+  };
 
-  // const forceUpdate = (row) => {
-  //   let new_batch_list = batch_list;
-  //   let _index = new_batch_list.indexOf(row);
-  //   new_batch_list[_index] = row;
-  //   setBatchList(new_batch_list);
-  // };
+  const forceUpdate = (row) => {
+    let new_batch_list = batch_list;
+    let _index = new_batch_list.indexOf(row);
+    new_batch_list[_index] = row;
+    setBatchList(new_batch_list);
+  };
 
   return (
     <div className="ValidateBatchScreen">
@@ -210,10 +285,10 @@ export default memo(function ValidateBatch() {
                   <input
                     name="entry_type"
                     value="A"
-                    checked={props.value === "A" ? true : false}
+                    checked={entry_type === "A" ? true : false}
                     type="checkbox"
                     onChange={(e) => {
-                      setValue("entry_type", e.target.value);
+                      setEntryType(e.target.value);
                     }}
                   />
                   <span>Sample Acknowledge</span>
@@ -222,10 +297,10 @@ export default memo(function ValidateBatch() {
                   <input
                     name="entry_type"
                     value="R"
-                    checked={props.value === "R" ? true : false}
+                    checked={entry_type === "R" ? true : false}
                     type="checkbox"
                     onChange={(e) => {
-                      setValue("entry_type", e.target.value);
+                      setEntryType(e.target.value);
                     }}
                   />
                   <span>Result Entry</span>
@@ -244,8 +319,10 @@ export default memo(function ValidateBatch() {
         </div>
       </div>
       <div className="row">
-        <BatchValidationList batch_list={batch_list} />
-        {/* <AlgaehDataGrid
+        {/* <BatchValidationList batch_list={batch_list} /> */}
+        <AlgaehDataGrid
+          // id="appt-status-grid"
+          // datavalidate="data-validate='apptStatusDiv'"
           columns={[
             {
               label: (
@@ -263,79 +340,147 @@ export default memo(function ValidateBatch() {
                 return (
                   <input
                     type="checkbox"
-                    defaultChecked={checkAll === "CHECK" ? true : false}
-                    ref={(input) => {
-                      allChecked = input;
-                    }}
-                    onChange={selectAll}
+                    checked={row.checked}
+                    onChange={(e) => selectToGenerateBarcode(row, e)}
                   />
-                ),
-                fieldName: "select",
-                displayTemplate: (row) => {
-                  return (
-                    <input
-                      type="checkbox"
-                      checked={row.checked}
-                      onChange={(e) => selectToGenerateBarcode(row, e)}
+                );
+              },
+              others: {
+                maxWidth: 50,
+                filterable: false,
+                sortable: false,
+              },
+            },
+            {
+              fieldName: "full_name",
+              label: <AlgaehLabel label={{ fieldName: "Patient Name" }} />,
+            },
+            {
+              fieldName: "primary_id_no",
+              label: <AlgaehLabel label={{ forceLabel: "Patient ID" }} />,
+              disabled: false,
+            },
+            {
+              fieldName: "lab_id_number",
+
+              label: <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />,
+
+              disabled: false,
+            },
+            {
+              fieldName: "test_name",
+              label: <AlgaehLabel label={{ fieldName: "Test Name" }} />,
+            },
+            {
+              fieldName: "specimen_name",
+              label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
+            },
+            {
+              fieldName: "specimen_name",
+              label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
+            },
+            {
+              fieldName: "analyte_name",
+              label: <AlgaehLabel label={{ fieldName: "Analyte Name" }} />,
+            },
+            {
+              fieldName: "result",
+              label: <AlgaehLabel label={{ fieldName: "result" }} />,
+              displayTemplate: (row) => {
+                return (
+                  <span>
+                    <AlgaehAutoComplete
+                      div={{ className: "noLabel" }}
+                      selector={{
+                        name: "result",
+                        className: "select-fld",
+                        value: row.result === null ? "" : row.result,
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: [
+                            {
+                              name: "Negative",
+                              value: "Negative",
+                            },
+                            {
+                              name: "Positive",
+                              value: "Positive",
+                            },
+                            {
+                              name: "Not Seen",
+                              value: "Not Seen",
+                            },
+                            {
+                              name: "Reactive",
+                              value: "Reactive",
+                            },
+                            {
+                              name: "Non-Reactive",
+                              value: "Non-Reactive",
+                            },
+                          ],
+                        },
+                        updateInternally: true,
+                        onChange: (e, value) => {
+                          row.result = value;
+                          forceUpdate(row);
+                        },
+                        onClear: (e) => {
+                          forceUpdate(row);
+                        },
+                      }}
                     />
-                  );
-                },
-                others: {
-                  maxWidth: 50,
-                  filterable: false,
-                  sortable: false,
-                },
-              },
-              {
-                fieldName: "full_name",
-                label: <AlgaehLabel label={{ fieldName: "Patient Name" }} />,
-              },
-              {
-                fieldName: "primary_id_no",
-                label: <AlgaehLabel label={{ forceLabel: "Patient ID" }} />,
-                disabled: false,
-              },
-              {
-                fieldName: "lab_id_number",
-
-                label: <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />,
-
-                disabled: false,
+                  </span>
+                );
               },
             },
           ]}
           data={batch_list}
           isFilterable={true}
           pagination={true}
-        /> */}
+        />
       </div>
 
       <div className="hptl-phase1-footer">
         <div className="row">
           <div className="col-lg-12">
-            <button
-              type="submit"
-              className="btn btn-primary"
-              style={{ marginLeft: 10 }}
-              onClick={onValidate}
-              disabled={batch_list.length > 0 ? false : true}
-            >
-              Validate All
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              style={{ marginLeft: 10 }}
-              onClick={onSaveAll}
-              disabled={batch_list.length > 0 ? false : true}
-            >
-              Save All
-            </button>
+            {entry_type === "R" ? (
+              <>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  style={{ marginLeft: 10 }}
+                  onClick={onValidate}
+                  disabled={batch_list.length > 0 ? false : true}
+                >
+                  Validate All
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  style={{ marginLeft: 10 }}
+                  onClick={onSaveAll}
+                  disabled={batch_list.length > 0 ? false : true}
+                >
+                  Save All
+                </button>
+              </>
+            ) : (
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={{ marginLeft: 10 }}
+                onClick={onAcknowledge}
+                disabled={batch_list.length > 0 ? false : true}
+              >
+                Acknowledge All
+              </button>
+            )}
+
             <button
               onClick={() => {
-                reset({
-                  entry_type: "R",
-                });
+                setEntryType("R");
                 setBatchList([]);
                 setBatchNUmber(null);
               }}
