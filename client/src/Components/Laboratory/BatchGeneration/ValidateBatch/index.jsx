@@ -7,8 +7,9 @@ import {
   AlgaehLabel,
   AlgaehMessagePop,
   AlgaehDataGrid,
+  AlgaehAutoComplete,
 } from "algaeh-react-components";
-// import swal from "sweetalert2";
+import swal from "sweetalert2";
 import "./ValidateBatch.scss";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
@@ -43,41 +44,53 @@ export default memo(function ValidateBatch() {
     });
     return result?.data?.records;
   };
+  const UpdateBatchDetail = async (data) => {
+    const result = await newAlgaehApi({
+      uri: "/laboratory/createPCRBatch",
+      module: "laboratory",
+      method: "POST",
+      data: data,
+    });
+    return result?.data?.records;
+  };
 
-  // const ValidateBatch = async (data) => {
-  //   const result = await newAlgaehApi({
-  //     uri: "/laboratory/createPCRBatch",
-  //     module: "laboratory",
-  //     method: "POST",
-  //     data: data,
-  //   });
-  //   return result?.data?.records;
-  // };
-  // const onSubmit = () => {
-  //   let inpujObj = {
-  //     batch_name: getValues("batch_name"),
-  //     batch_list: batch_list,
-  //   };
-  //   ValidateBatch(inpujObj)
-  //     .then((result) => {
-  //       swal("Batch Created Succefully... Batch No." + result.batch_number, {
-  //         icon: "success",
-  //       });
-  //       reset({
-  //         barcode_scanner: "",
-  //         batch_number: "",
-  //         batch_name: "",
-  //         auto_insert: true,
-  //       });
-  //       setBatchList([]);
-  //     })
-  //     .catch((e) => {
-  //       AlgaehMessagePop({
-  //         display: e,
-  //         type: "error",
-  //       });
-  //     });
-  // };
+  const onSaveAll = () => {
+    let inpujObj = {
+      batch_list: batch_list,
+      status: "S",
+    };
+    UpdateBatchDetail(inpujObj)
+      .then((result) => {
+        swal("Batch Saved Succefully... Batch No." + batch_number, {
+          icon: "success",
+        });
+      })
+      .catch((e) => {
+        AlgaehMessagePop({
+          display: e,
+          type: "error",
+        });
+      });
+  };
+
+  const onValidate = () => {
+    let inpujObj = {
+      batch_list: batch_list,
+      status: "S",
+    };
+    UpdateBatchDetail(inpujObj)
+      .then((result) => {
+        swal("Batch Validated Succefully... Batch No." + batch_number, {
+          icon: "success",
+        });
+      })
+      .catch((e) => {
+        AlgaehMessagePop({
+          display: e,
+          type: "error",
+        });
+      });
+  };
 
   // const updateState = (data) => {
   //   setBatchList((result) => {
@@ -170,6 +183,13 @@ export default memo(function ValidateBatch() {
     }
     setCheckAll(ckStatus);
     setBatchList([...records]);
+  };
+
+  const forceUpdate = (row) => {
+    let new_batch_list = batch_list;
+    let _index = new_batch_list.indexOf(row);
+    new_batch_list[_index] = row;
+    setBatchList(new_batch_list);
   };
 
   return (
@@ -275,6 +295,66 @@ export default memo(function ValidateBatch() {
               fieldName: "specimen_name",
               label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
             },
+            {
+              fieldName: "specimen_name",
+              label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
+            },
+            {
+              fieldName: "analyte_name",
+              label: <AlgaehLabel label={{ fieldName: "Analyte Name" }} />,
+            },
+            {
+              fieldName: "result",
+              label: <AlgaehLabel label={{ fieldName: "result" }} />,
+              displayTemplate: (row) => {
+                return (
+                  <span>
+                    <AlgaehAutoComplete
+                      div={{ className: "noLabel" }}
+                      selector={{
+                        name: "result",
+                        className: "select-fld",
+                        value: row.result === null ? "" : row.result,
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: [
+                            {
+                              name: "Negative",
+                              value: "Negative",
+                            },
+                            {
+                              name: "Positive",
+                              value: "Positive",
+                            },
+                            {
+                              name: "Not Seen",
+                              value: "Not Seen",
+                            },
+                            {
+                              name: "Reactive",
+                              value: "Reactive",
+                            },
+                            {
+                              name: "Non-Reactive",
+                              value: "Non-Reactive",
+                            },
+                          ],
+                        },
+                        updateInternally: true,
+                        onChange: (e, value) => {
+                          row.result = value;
+                          forceUpdate(row);
+                        },
+                        onClear: (e) => {
+                          forceUpdate(row);
+                        },
+                      }}
+                    />
+                  </span>
+                );
+              },
+            },
           ]}
           data={batch_list}
           isFilterable={true}
@@ -289,10 +369,19 @@ export default memo(function ValidateBatch() {
               type="submit"
               className="btn btn-primary"
               style={{ marginLeft: 10 }}
-              // onClick={onSubmit}
+              onClick={onValidate}
               disabled={batch_list.length > 0 ? false : true}
             >
-              Process
+              Validate All
+            </button>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              style={{ marginLeft: 10 }}
+              onClick={onSaveAll}
+              disabled={batch_list.length > 0 ? false : true}
+            >
+              Save All
             </button>
             <button
               onClick={() => {
