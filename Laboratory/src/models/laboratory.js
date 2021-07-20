@@ -3010,7 +3010,7 @@ export function checkIDExists(req, res, next) {
     let strQuery;
     if (inputParam.scan_by === "PI") {
       strQuery = mysql.format(
-        `SELECT hims_f_lab_order_id, lab_id_number as id_number, full_name as patient_name FROM hims_f_patient P 
+        `SELECT hims_f_lab_order_id, lab_id_number as id_number, full_name as patient_name,IT.description FROM hims_f_patient P 
         INNER JOIN hims_f_lab_order L ON P.hims_d_patient_id=L.patient_id
         inner join hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = L.test_id  
         where  L.billed='Y' and L.status='CL' and IT.isPCR ='Y' and primary_id_no=?;`,
@@ -3018,7 +3018,7 @@ export function checkIDExists(req, res, next) {
       );
     } else {
       strQuery = mysql.format(
-        `SELECT hims_f_lab_order_id, primary_id_no as id_number, L.status, full_name as patient_name FROM hims_f_lab_order L 
+        `SELECT hims_f_lab_order_id, primary_id_no as id_number, L.status, full_name as patient_name,IT.description FROM hims_f_lab_order L 
         INNER JOIN hims_f_patient P ON L.patient_id=P.hims_d_patient_id         
         INNER JOIN hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = L.test_id  
         where  L.billed='Y' and L.status='CL' and IT.isPCR ='Y' and lab_id_number=?;`,

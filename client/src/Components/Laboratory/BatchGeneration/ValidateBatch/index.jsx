@@ -33,6 +33,7 @@ export default memo(function ValidateBatch() {
   const [batch_number, setBatchNUmber] = useState(null);
   const [batch_list, setBatchList] = useState([]);
   const [checkAll, setCheckAll] = useState(STATUS.UNCHECK);
+  const [currentPage, setCurrentPage] = useState(1);
   let allChecked = useRef(undefined);
 
   const getBatchDetail = async (data) => {
@@ -199,7 +200,7 @@ export default memo(function ValidateBatch() {
           name="entry_type"
           control={control}
           render={(props) => (
-            <div className="col form-group">
+            <div className="col-3">
               <label>Batch Type</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
@@ -231,7 +232,7 @@ export default memo(function ValidateBatch() {
           )}
         />
 
-        <div className="col-3 globalSearchCntr">
+        <div className="col-3 globalSearchCntr form-group">
           <AlgaehLabel label={{ fieldName: "Select Batch" }} />
           <h6 onClick={() => batchSearch()}>
             {batch_number ? batch_number : "------"}
@@ -239,127 +240,135 @@ export default memo(function ValidateBatch() {
           </h6>
         </div>
       </div>
-      <div className="row">
-        <AlgaehDataGrid
-          // id="appt-status-grid"
-          // datavalidate="data-validate='apptStatusDiv'"
-          columns={[
-            {
-              label: (
-                <input
-                  type="checkbox"
-                  defaultChecked={checkAll === "CHECK" ? true : false}
-                  ref={(input) => {
-                    allChecked = input;
-                  }}
-                  onChange={selectAll}
-                />
-              ),
-              fieldName: "select",
-              displayTemplate: (row) => {
-                return (
+      <div className="row" id="batchValidateGridCntr">
+        <div className="col-12">
+          {" "}
+          <AlgaehDataGrid
+            // id="appt-status-grid"
+            // datavalidate="data-validate='apptStatusDiv'"
+            columns={[
+              {
+                label: (
                   <input
                     type="checkbox"
-                    checked={row.checked}
-                    onChange={(e) => selectToGenerateBarcode(row, e)}
+                    defaultChecked={checkAll === "CHECK" ? true : false}
+                    ref={(input) => {
+                      allChecked = input;
+                    }}
+                    onChange={selectAll}
                   />
-                );
-              },
-              others: {
-                maxWidth: 50,
-                filterable: false,
-                sortable: false,
-              },
-            },
-            {
-              fieldName: "full_name",
-              label: <AlgaehLabel label={{ fieldName: "Patient Name" }} />,
-            },
-            {
-              fieldName: "primary_id_no",
-              label: <AlgaehLabel label={{ forceLabel: "Patient ID" }} />,
-              disabled: false,
-            },
-            {
-              fieldName: "lab_id_number",
-
-              label: <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />,
-
-              disabled: false,
-            },
-            {
-              fieldName: "test_name",
-              label: <AlgaehLabel label={{ fieldName: "Test Name" }} />,
-            },
-            {
-              fieldName: "specimen_name",
-              label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
-            },
-            {
-              fieldName: "specimen_name",
-              label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
-            },
-            {
-              fieldName: "analyte_name",
-              label: <AlgaehLabel label={{ fieldName: "Analyte Name" }} />,
-            },
-            {
-              fieldName: "result",
-              label: <AlgaehLabel label={{ fieldName: "result" }} />,
-              displayTemplate: (row) => {
-                return (
-                  <span>
-                    <AlgaehAutoComplete
-                      div={{ className: "noLabel" }}
-                      selector={{
-                        name: "result",
-                        className: "select-fld",
-                        value: row.result === null ? "" : row.result,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: [
-                            {
-                              name: "Negative",
-                              value: "Negative",
-                            },
-                            {
-                              name: "Positive",
-                              value: "Positive",
-                            },
-                            {
-                              name: "Not Seen",
-                              value: "Not Seen",
-                            },
-                            {
-                              name: "Reactive",
-                              value: "Reactive",
-                            },
-                            {
-                              name: "Non-Reactive",
-                              value: "Non-Reactive",
-                            },
-                          ],
-                        },
-                        updateInternally: true,
-                        onChange: (e, value) => {
-                          row.result = value;
-                          forceUpdate(row);
-                        },
-                        onClear: (e) => {
-                          forceUpdate(row);
-                        },
-                      }}
+                ),
+                fieldName: "select",
+                displayTemplate: (row) => {
+                  return (
+                    <input
+                      type="checkbox"
+                      checked={row.checked}
+                      onChange={(e) => selectToGenerateBarcode(row, e)}
                     />
-                  </span>
-                );
+                  );
+                },
+                others: {
+                  maxWidth: 50,
+                  filterable: false,
+                  sortable: false,
+                },
               },
-            },
-          ]}
-          data={batch_list}
-          isFilterable={true}
-          pagination={true}
-        />
+              {
+                fieldName: "full_name",
+                label: <AlgaehLabel label={{ fieldName: "Patient Name" }} />,
+              },
+              {
+                fieldName: "primary_id_no",
+                label: <AlgaehLabel label={{ forceLabel: "Patient ID" }} />,
+                disabled: false,
+              },
+              {
+                fieldName: "lab_id_number",
+
+                label: <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />,
+
+                disabled: false,
+              },
+              {
+                fieldName: "test_name",
+                label: <AlgaehLabel label={{ fieldName: "Test Name" }} />,
+              },
+              {
+                fieldName: "specimen_name",
+                label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
+              },
+              {
+                fieldName: "specimen_name",
+                label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
+              },
+              {
+                fieldName: "analyte_name",
+                label: <AlgaehLabel label={{ fieldName: "Analyte Name" }} />,
+              },
+              {
+                fieldName: "result",
+                label: <AlgaehLabel label={{ fieldName: "result" }} />,
+                displayTemplate: (row) => {
+                  return (
+                    <span>
+                      <AlgaehAutoComplete
+                        div={{ className: "noLabel" }}
+                        selector={{
+                          name: "result",
+                          className: "select-fld",
+                          value: row.result === null ? "" : row.result,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: [
+                              {
+                                name: "Negative",
+                                value: "Negative",
+                              },
+                              {
+                                name: "Positive",
+                                value: "Positive",
+                              },
+                              {
+                                name: "Not Seen",
+                                value: "Not Seen",
+                              },
+                              {
+                                name: "Reactive",
+                                value: "Reactive",
+                              },
+                              {
+                                name: "Non-Reactive",
+                                value: "Non-Reactive",
+                              },
+                            ],
+                          },
+                          updateInternally: true,
+                          onChange: (e, value) => {
+                            row.result = value;
+                            forceUpdate(row);
+                          },
+                          onClear: (e) => {
+                            forceUpdate(row);
+                          },
+                        }}
+                      />
+                    </span>
+                  );
+                },
+              },
+            ]}
+            data={batch_list}
+            pagination={true}
+            pageOptions={{ rows: 50, page: currentPage }}
+            pageEvent={(page) => {
+              setCurrentPage(page);
+            }}
+            isFilterable={true}
+            noDataText="No data available for selected period"
+          />
+        </div>
       </div>
 
       <div className="hptl-phase1-footer">
