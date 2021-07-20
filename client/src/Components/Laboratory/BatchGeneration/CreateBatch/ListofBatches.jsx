@@ -6,6 +6,12 @@ import DisplayComponent from "./DisplayComponent";
 export default memo(function BatchDetails({ batch_list, deleteState }) {
   return (
     <div className="col-12">
+      <div className="customLISearch">
+        <input
+          type="text"
+          placeholder="Search by Name, Primary ID or Lab ID"
+        ></input>
+      </div>
       <div className="CreateBatchList">
         <ul>
           {batch_list.map((item) => {
