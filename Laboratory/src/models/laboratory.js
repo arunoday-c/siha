@@ -2955,13 +2955,42 @@ export async function updateLabOrderServiceStatus(req, res, next) {
               });
             }
           }
-        } else {
-          _mysql.commitTransaction(() => {
-            _mysql.releaseConnection();
-            req.records = result;
-            next();
-          });
         }
+        // else {
+        //   _mysql.commitTransaction(() => {
+        //     _mysql.releaseConnection();
+        //     req.records = result;
+        //     next();
+        //   });
+        // }
+        _mysql
+          .executeQueryWithTransaction({
+            query: `Update hims_f_ord_analytes set result= ?, status = 'N',entered_by=?,entered_date=?, confirm_by=?, confirmed_date=?, validate_by=?,validated_date=?  
+            where order_id in (?)`,
+            values: [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              req.body.hims_f_lab_order_id,
+            ],
+            printQuery: true,
+          })
+          .then(async (result) => {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            });
+          })
+          .catch((e) => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
       })
       .catch((e) => {
         _mysql.rollBackTransaction(() => {
