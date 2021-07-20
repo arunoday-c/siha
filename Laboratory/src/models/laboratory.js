@@ -1342,7 +1342,6 @@ const labModal = {
           printQuery: true,
         })
         .then((result) => {
-          console.log("result", result);
           _mysql.releaseConnection();
           req.records = result;
 
@@ -1557,7 +1556,6 @@ const labModal = {
                     service_status: "ORDERED",
                   };
 
-                  console.log("portal_data", portal_data);
                   // consol.log("portal_data", portal_data);
 
                   await axios
@@ -1992,8 +1990,6 @@ const labModal = {
                 printQuery: true,
               })
               .then(async (update_lab_order) => {
-                console.log("portal_exists", inputParam[0].portal_exists);
-                console.log("ref", ref);
                 if (
                   inputParam[0].portal_exists === "Y" &&
                   (ref === "N" || ref === "CF" || ref === "V")
@@ -2010,7 +2006,6 @@ const labModal = {
                         : "SAMPLE COLLECTED",
                   };
 
-                  console.log("portal_data", portal_data);
                   // consol.log("portal_data", portal_data);
                   await axios
                     .post(
@@ -2738,8 +2733,7 @@ export async function updateLabOrderServices(req, res, next) {
                   patient_identity: inputParam.primary_id_no,
                   service_status: "SAMPLE COLLECTED",
                 };
-                // console.log("portal_data", portal_data);
-                // consol.log("portal_data", portal_data);
+
                 await axios
                   .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
                   .catch((e) => {
@@ -2929,7 +2923,6 @@ export async function updateLabOrderServiceStatus(req, res, next) {
         printQuery: true,
       })
       .then(async (result) => {
-        console.log("req.body.portal_exists", req.body.portal_exists);
         if (req.body.portal_exists === "Y") {
           const calncel_details = result[1];
 
@@ -2940,8 +2933,7 @@ export async function updateLabOrderServiceStatus(req, res, next) {
               patient_identity: calncel_details[i].primary_id_no,
               service_status: "ORDERED",
             };
-            // console.log("portal_data", portal_data);
-            // consol.log("portal_data", portal_data);
+
             await axios
               .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
               .catch((e) => {
@@ -3058,15 +3050,12 @@ export function createPCRBatch(req, res, next) {
   const _mysql = new algaehMysql();
   try {
     const inputParam = req.body;
-    console.log("inputParam", inputParam);
 
     const batch_number =
       "BAT-" +
       moment().format("YYYYMMDDHHMMSS") +
       req.userIdentity.algaeh_d_app_user_id;
 
-    console.log("batch_number", batch_number);
-    // consol.log("batch_number", batch_number);
     _mysql
       .executeQueryWithTransaction({
         query:
@@ -3126,23 +3115,28 @@ export function getBatchDetail(req, res, next) {
     const inputParam = req.query;
 
     let strQuery = "",
-      strFiled = "";
+      strFiled = "",
+      strFilter = "";
     if (inputParam.entry_type === "R") {
-      strFiled = ", LA.description as analyte_name";
+      strFiled =
+        ", OA.hims_f_ord_analytes_id, LA.description as analyte_name, 'Negative' as result";
       strQuery =
         " INNER JOIN hims_f_ord_analytes OA ON OA.order_id = L.hims_f_lab_order_id INNER JOIN hims_d_lab_analytes LA ON LA.hims_d_lab_analytes_id = OA.analyte_id ";
+
+      strFilter = "";
     }
     _mysql
       .executeQuery({
-        query: `SELECT D.primary_id_no, D.lab_id_number, P.full_name, MS.description as specimen_name, 
+        query: `SELECT L.hims_f_lab_order_id, PV.visit_code, L.service_id, D.primary_id_no, D.lab_id_number, P.full_name, MS.description as specimen_name, 
           IT.description as test_name ${strFiled}
           FROM hims_f_lab_batch_detail D \
           INNER JOIN hims_f_lab_order L ON L.hims_f_lab_order_id = D.order_id \
+          INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id = L.visit_id \
           INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id\
           INNER JOIN hims_d_lab_specimen MS ON MS.hims_d_lab_specimen_id = S.sample_id \
           INNER JOIN hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = L.test_id  \
           INNER JOIN hims_f_patient P ON P.hims_d_patient_id = L.patient_id 
-          ${strQuery} where batch_header_id=?;`,
+          ${strQuery} where L.status = 'CL' and batch_header_id=?;`,
         values: [inputParam.hims_f_lab_batch_header_id],
         printQuery: true,
       })
@@ -3150,6 +3144,136 @@ export function getBatchDetail(req, res, next) {
         _mysql.releaseConnection();
         req.records = headerResult;
         next();
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}
+
+export function updateBatchDetail(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const inputParam = req.body;
+    let strQry = "",
+      updateQry = "";
+    let portal_data = [];
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id = ?;",
+        values: [req.userIdentity.hospital_id],
+        printQuery: true,
+      })
+      .then((headerResult) => {
+        console.log("headerResult", headerResult[0].portal_exists);
+
+        if (inputParam.status === "V") {
+          updateQry =
+            ", L.status='V', L.entered_by='" +
+            req.userIdentity.algaeh_d_app_user_id +
+            "', L.entered_date = '" +
+            moment().format("YYYY-MM-DD HH:mm") +
+            "' , L.confirmed_by='" +
+            req.userIdentity.algaeh_d_app_user_id +
+            "', L.confirmed_date = '" +
+            moment().format("YYYY-MM-DD HH:mm") +
+            "', L.validated_by='" +
+            req.userIdentity.algaeh_d_app_user_id +
+            "', L.validated_date = '" +
+            moment().format("YYYY-MM-DD HH:mm") +
+            "', OA.entered_by='" +
+            req.userIdentity.algaeh_d_app_user_id +
+            "', OA.entered_date = '" +
+            moment().format("YYYY-MM-DD HH:mm") +
+            "' , OA.confirm_by='" +
+            req.userIdentity.algaeh_d_app_user_id +
+            "', OA.confirmed_date = '" +
+            moment().format("YYYY-MM-DD HH:mm") +
+            "', OA.validate_by='" +
+            req.userIdentity.algaeh_d_app_user_id +
+            "', OA.validated_date = '" +
+            moment().format("YYYY-MM-DD HH:mm") +
+            "'";
+        }
+        for (let i = 0; i < inputParam.batch_list.length; i++) {
+          const batch_data = inputParam.batch_list[0];
+          strQry += mysql.format(
+            `update hims_f_lab_order L INNER JOIN hims_f_ord_analytes OA ON OA.order_id = L.hims_f_lab_order_id
+            set OA.status=?, result=?, L.updated_date= ?, L.updated_by=?, OA.updated_date= ?,
+            OA.updated_by=? ${updateQry} where hims_f_lab_order_id=?;`,
+            [
+              inputParam.status,
+              batch_data.result,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              batch_data.hims_f_lab_order_id,
+            ]
+          );
+          if (
+            inputParam.status === "V" &&
+            headerResult[0].portal_exists === "Y"
+          ) {
+            portal_data.push({
+              service_id: batch_data.service_id,
+              visit_code: batch_data.visit_code,
+              patient_identity: batch_data.primary_id_no,
+              service_status: "RESULT VALIDATED",
+            });
+          }
+        }
+        console.log("portal_data", portal_data);
+        consol.log("portal_data", portal_data);
+        _mysql
+          .executeQuery({
+            query: strQry,
+            printQuery: true,
+          })
+          .then(async (headerResult) => {
+            if (
+              inputParam.status === "V" &&
+              headerResult[0].portal_exists === "Y"
+            ) {
+              for (let i = 0; i < portal_data.length; i++) {
+                const portal_input = {
+                  service_id: portal_data[i].service_id,
+                  visit_code: portal_data[i].visit_code,
+                  patient_identity: portal_data[i].primary_id_no,
+                  service_status: "RESULT VALIDATED",
+                };
+
+                await axios
+                  .post(
+                    `${PORTAL_HOST}/info/deletePatientService`,
+                    portal_input
+                  )
+                  .catch((e) => {
+                    throw e;
+                  });
+                if (i === portal_data.length - 1) {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = result;
+                    next();
+                  });
+                }
+              }
+            } else {
+              _mysql.releaseConnection();
+              req.records = headerResult;
+              next();
+            }
+          })
+          .catch((e) => {
+            _mysql.releaseConnection();
+            next(e);
+          });
       })
       .catch((e) => {
         _mysql.releaseConnection();

@@ -7,6 +7,7 @@ import labModels, {
   createPCRBatch,
   checkIDExists,
   getBatchDetail,
+  updateBatchDetail,
 } from "../models/laboratory";
 import { labResultDispatch } from "../models/labDispatch";
 const {
@@ -346,6 +347,15 @@ export default () => {
       .end();
   });
   api.post("/createPCRBatch", createPCRBatch, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        records: req.records,
+      })
+      .end();
+  });
+  api.put("/updateBatchDetail", updateBatchDetail, (req, res) => {
     res
       .status(utlities.AlgaehUtilities().httpStatus().ok)
       .json({
