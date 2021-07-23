@@ -102,6 +102,7 @@ export default memo(function ValidateBatch() {
   const onValidate = () => {
     const filterData = batch_list.filter((f) => f.checked);
 
+    debugger;
     if (filterData.length === 0) {
       AlgaehMessagePop({
         display: "Select alteast one record.",

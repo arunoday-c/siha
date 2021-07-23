@@ -3189,7 +3189,7 @@ export function getBatchDetail(req, res, next) {
     _mysql
       .executeQuery({
         query: `SELECT L.hims_f_lab_order_id, D.order_id, PV.visit_code, L.service_id, D.primary_id_no, D.lab_id_number, P.full_name, MS.description as specimen_name, 
-          IT.description as test_name, date_of_birth, gender, L.test_id, S.hims_d_lab_sample_id, L.status as lab_status,
+          IT.description as test_name, date_of_birth, gender, L.patient_id, L.visit_id,  L.test_id, S.hims_d_lab_sample_id, L.status as lab_status,
           S.status as specimen_status ${strFiled}
           FROM hims_f_lab_batch_detail D \
           INNER JOIN hims_f_lab_order L ON L.hims_f_lab_order_id = D.order_id \
@@ -3233,7 +3233,7 @@ export function updateBatchDetail(req, res, next) {
       })
       .then((headerResult) => {
         const portal_exists = headerResult[0].portal_exists;
-        console.log("headerResult", portal_exists);
+        // console.log("inputParam.batch_list", inputParam.batch_list);
 
         if (inputParam.status === "V") {
           updateQry =
@@ -3264,7 +3264,7 @@ export function updateBatchDetail(req, res, next) {
             "'";
         }
         for (let i = 0; i < inputParam.batch_list.length; i++) {
-          const batch_data = inputParam.batch_list[0];
+          const batch_data = inputParam.batch_list[i];
           strQry += mysql.format(
             `update hims_f_lab_order L INNER JOIN hims_f_ord_analytes OA ON OA.order_id = L.hims_f_lab_order_id
             set OA.status=?, result=?, L.updated_date= ?, L.updated_by=?, OA.updated_date= ?,
@@ -3285,11 +3285,12 @@ export function updateBatchDetail(req, res, next) {
               visit_code: batch_data.visit_code,
               patient_identity: batch_data.primary_id_no,
               service_status: "RESULT VALIDATED",
+              hims_f_lab_order_id: batch_data.hims_f_lab_order_id,
+              patient_id: batch_data.patient_id,
+              visit_id: batch_data.visit_id,
             });
           }
         }
-        // console.log("portal_data", portal_data);
-        // consol.log("portal_data", portal_data);
         _mysql
           .executeQueryWithTransaction({
             query: strQry,
@@ -3297,30 +3298,21 @@ export function updateBatchDetail(req, res, next) {
           })
           .then(async (headerResult) => {
             if (inputParam.status === "V" && portal_exists === "Y") {
-              for (let i = 0; i < portal_data.length; i++) {
-                const portal_input = {
-                  service_id: portal_data[i].service_id,
-                  visit_code: portal_data[i].visit_code,
-                  patient_identity: portal_data[i].primary_id_no,
-                  service_status: "RESULT VALIDATED",
-                };
+              console.log("portal_data: ", portal_data);
+              await axios
+                .post(
+                  `${PORTAL_HOST}/info/updateBulkPatientServices`,
+                  portal_data
+                )
+                .catch((e) => {
+                  throw e;
+                });
 
-                await axios
-                  .post(
-                    `${PORTAL_HOST}/info/deletePatientService`,
-                    portal_input
-                  )
-                  .catch((e) => {
-                    throw e;
-                  });
-                if (i === portal_data.length - 1) {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = headerResult;
-                    next();
-                  });
-                }
-              }
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = headerResult;
+                next();
+              });
             } else {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
@@ -3328,6 +3320,39 @@ export function updateBatchDetail(req, res, next) {
                 next();
               });
             }
+
+            // if (inputParam.status === "V" && portal_exists === "Y") {
+            //   for (let i = 0; i < portal_data.length; i++) {
+            //     const portal_input = {
+            //       service_id: portal_data[i].service_id,
+            //       visit_code: portal_data[i].visit_code,
+            //       patient_identity: portal_data[i].primary_id_no,
+            //       service_status: "RESULT VALIDATED",
+            //     };
+
+            //     await axios
+            //       .post(
+            //         `${PORTAL_HOST}/info/deletePatientService`,
+            //         portal_data
+            //       )
+            //       .catch((e) => {
+            //         throw e;
+            //       });
+            //     if (i === portal_data.length - 1) {
+            //       _mysql.commitTransaction(() => {
+            //         _mysql.releaseConnection();
+            //         req.records = headerResult;
+            //         next();
+            //       });
+            //     }
+            //   }
+            // } else {
+            //   _mysql.commitTransaction(() => {
+            //     _mysql.releaseConnection();
+            //     req.records = headerResult;
+            //     next();
+            //   });
+            // }
           })
           .catch((e) => {
             _mysql.rollBackTransaction(() => {
