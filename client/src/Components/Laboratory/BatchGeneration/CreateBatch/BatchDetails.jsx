@@ -38,18 +38,7 @@ export default memo(function BatchDetails({
     debounce(async (e, new_batch_list) => {
       debugger;
       const scan_by = getValues("scan_by");
-      const data_exists = new_batch_list.filter(
-        (f) => f.id_number === e.target.value
-      );
 
-      if (data_exists.length > 0) {
-        AlgaehMessagePop({
-          display: "Selected ID already Exists",
-          type: "warning",
-        });
-        setValue("barcode_scanner", "");
-        return;
-      }
       const after_ack = await checkIDExists({
         id_number: e.target.value,
         scan_by: getValues("scan_by"),
@@ -66,6 +55,19 @@ export default memo(function BatchDetails({
         return;
       }
 
+      const data_exists = new_batch_list.filter(
+        (f) => f.lab_id_number === after_ack.records.lab_id_number
+      );
+
+      if (data_exists.length > 0) {
+        AlgaehMessagePop({
+          display: "Selected ID already Exists",
+          type: "warning",
+        });
+        setValue("barcode_scanner", "");
+        return;
+      }
+
       if (scan_by === "LI") {
         updateState({
           id_number: e.target.value,
@@ -73,6 +75,7 @@ export default memo(function BatchDetails({
           order_id: after_ack.records.hims_f_lab_order_id,
           primary_id_no: after_ack.records.id_number,
           patient_name: after_ack.records.patient_name,
+          description: after_ack.records.description,
         });
       } else {
         updateState({
@@ -81,6 +84,7 @@ export default memo(function BatchDetails({
           order_id: after_ack.records.hims_f_lab_order_id,
           primary_id_no: e.target.value,
           patient_name: after_ack.records.patient_name,
+          description: after_ack.records.description,
         });
       }
 

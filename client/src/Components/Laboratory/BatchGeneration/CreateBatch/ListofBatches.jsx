@@ -34,6 +34,7 @@ export default memo(function BatchDetails({ batch_list, deleteState }) {
             </p>
           </li>
           {batch_list.map((item) => {
+            debugger;
             return (
               <DisplayComponent
                 key={item.id_number}

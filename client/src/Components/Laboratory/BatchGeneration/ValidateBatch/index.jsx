@@ -128,6 +128,10 @@ export default memo(function ValidateBatch() {
             swal("Validated Succefully... Batch No." + batch_number, {
               icon: "success",
             });
+
+            setEntryType("R");
+            setBatchList([]);
+            setBatchNUmber(null);
           })
           .catch((e) => {
             AlgaehMessagePop({
