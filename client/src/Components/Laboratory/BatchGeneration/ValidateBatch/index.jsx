@@ -231,13 +231,18 @@ export default memo(function ValidateBatch() {
   };
 
   const selectAll = (e) => {
+    debugger;
     const staus = e.target.checked;
     const myState = batch_list.map((f) => {
       return { ...f, checked: staus };
     });
 
     const hasUncheck = myState.filter((f) => {
-      return f.checked === undefined || f.checked === false;
+      return (
+        f.checked === undefined ||
+        f.checked === false ||
+        f.specimen_status === "A"
+      );
     });
 
     const totalRecords = myState.length;
@@ -300,6 +305,8 @@ export default memo(function ValidateBatch() {
                     type="checkbox"
                     onChange={(e) => {
                       setEntryType(e.target.value);
+                      setBatchList([]);
+                      setBatchNUmber(null);
                     }}
                   />
                   <span>Sample Acknowledge</span>
@@ -312,6 +319,8 @@ export default memo(function ValidateBatch() {
                     type="checkbox"
                     onChange={(e) => {
                       setEntryType(e.target.value);
+                      setBatchList([]);
+                      setBatchNUmber(null);
                     }}
                   />
                   <span>Result Entry</span>
@@ -332,10 +341,7 @@ export default memo(function ValidateBatch() {
       <div className="row">
         {/* <BatchValidationList batch_list={batch_list} /> */}
         <div className="col-12" id="batchValidateGridCntr">
-          {" "}
           <AlgaehDataGrid
-            // id="appt-status-grid"
-            // datavalidate="data-validate='apptStatusDiv'"
             columns={[
               {
                 label: (
@@ -350,10 +356,20 @@ export default memo(function ValidateBatch() {
                 ),
                 fieldName: "select",
                 displayTemplate: (row) => {
+                  debugger;
                   return (
                     <input
                       type="checkbox"
                       checked={row.checked}
+                      disabled={
+                        entry_type === "A"
+                          ? row.specimen_status === "A"
+                            ? true
+                            : false
+                          : row.lab_status === "V"
+                          ? true
+                          : false
+                      }
                       onChange={(e) => selectToGenerateBarcode(row, e)}
                     />
                   );
@@ -363,6 +379,22 @@ export default memo(function ValidateBatch() {
                   filterable: false,
                   sortable: false,
                 },
+              },
+              {
+                fieldName: "status",
+                label: <AlgaehLabel label={{ fieldName: "Status" }} />,
+                displayTemplate: (row) => {
+                  debugger;
+                  return entry_type === "A"
+                    ? row.specimen_status === "A"
+                      ? "Acknowledge"
+                      : "Not Acknowledge"
+                    : row.lab_status === "V"
+                    ? "Validated"
+                    : "Not Validated";
+                },
+                // filterable: true,
+                sortable: true,
               },
               {
                 fieldName: "full_name",
@@ -401,7 +433,9 @@ export default memo(function ValidateBatch() {
                 fieldName: "result",
                 label: <AlgaehLabel label={{ fieldName: "result" }} />,
                 displayTemplate: (row) => {
-                  return (
+                  return row.lab_status === "V" ? (
+                    row.result
+                  ) : (
                     <span>
                       <AlgaehAutoComplete
                         div={{ className: "noLabel" }}

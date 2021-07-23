@@ -3116,6 +3116,8 @@ export function createPCRBatch(req, res, next) {
       moment().format("YYYYMMDDHHMMSS") +
       req.userIdentity.algaeh_d_app_user_id;
 
+    console.log("inputParam", inputParam);
+    // consol.log("inputParam", inputParam);
     _mysql
       .executeQueryWithTransaction({
         query:
@@ -3177,9 +3179,7 @@ export function getBatchDetail(req, res, next) {
     let strQuery = "",
       strFiled = "",
       strFilter = "";
-    if (inputParam.entry_type === "A") {
-      strFilter = " and S.status='N'";
-    }
+
     if (inputParam.entry_type === "R") {
       strFiled =
         ", OA.hims_f_ord_analytes_id, LA.description as analyte_name, CASE WHEN result is null THEN 'Negative' ELSE result END as result";
@@ -3189,7 +3189,8 @@ export function getBatchDetail(req, res, next) {
     _mysql
       .executeQuery({
         query: `SELECT L.hims_f_lab_order_id, D.order_id, PV.visit_code, L.service_id, D.primary_id_no, D.lab_id_number, P.full_name, MS.description as specimen_name, 
-          IT.description as test_name, date_of_birth, gender, L.test_id, S.hims_d_lab_sample_id ${strFiled}
+          IT.description as test_name, date_of_birth, gender, L.test_id, S.hims_d_lab_sample_id, L.status as lab_status,
+          S.status as specimen_status ${strFiled}
           FROM hims_f_lab_batch_detail D \
           INNER JOIN hims_f_lab_order L ON L.hims_f_lab_order_id = D.order_id \
           INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id = L.visit_id \
@@ -3197,7 +3198,7 @@ export function getBatchDetail(req, res, next) {
           INNER JOIN hims_d_lab_specimen MS ON MS.hims_d_lab_specimen_id = S.sample_id \
           INNER JOIN hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = L.test_id  \
           INNER JOIN hims_f_patient P ON P.hims_d_patient_id = L.patient_id 
-          ${strQuery} where L.status != 'V' and batch_header_id=? ${strFilter};`,
+          ${strQuery} where L.status != 'O' and batch_header_id=? ${strFilter};`,
         values: [inputParam.hims_f_lab_batch_header_id],
         printQuery: true,
       })

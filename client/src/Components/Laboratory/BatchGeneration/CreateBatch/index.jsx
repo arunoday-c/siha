@@ -30,6 +30,7 @@ export default memo(function CreateBatch() {
     return result?.data?.records;
   };
   const onSubmit = () => {
+    debugger;
     let inpujObj = {
       batch_name: getValues("batch_name"),
       batch_list: batch_list,
