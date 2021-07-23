@@ -24,5 +24,4 @@ const channelWrapper = connection.createChannel({
   setup: (channel) => channel.assertExchange(EXCHANGE_NAME, "direct"),
   name: "Portal-Publisher",
 });
-const BULK_VERIFY = "LAB_VERIFY";
-export { connection, EXCHANGE_NAME, BULK_VERIFY, channelWrapper };
+export { connection, EXCHANGE_NAME, channelWrapper };
