@@ -84,7 +84,7 @@ app.server.listen(_port, () => {
   const { RABBIT_MQ_SERVER } = process.env;
   if (RABBIT_MQ_SERVER && RABBIT_MQ_SERVER !== "") {
     //Start Listing to get PCR reports.
-    consumerPCR();
+    consumerPCR("UPDATE_BULK_PATIENT_SERVRPT");
   }
 });
 console.log(`Laboratory Server is running  on PORT  - ${_port} *`);

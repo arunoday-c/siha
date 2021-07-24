@@ -84,7 +84,10 @@ app.use((req, res, next) => {
     req.headers["x-bypass-user"] === xBypassUser &&
     req.headers["x-bypass-password"] === xBypassPassword
   ) {
-    console.log("Bypass added ===>", req.url);
+    req.userIdentity = {
+      hospital_id: 1,
+    };
+    console.log("Bypass  url ===>", req.url);
     next();
   } else {
     authentication(req, res, next);
