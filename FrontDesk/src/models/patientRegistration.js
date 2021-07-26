@@ -5,8 +5,8 @@ import axios from "axios";
 import dotenv from "dotenv";
 if (process.env.NODE_ENV !== "production") dotenv.config();
 
-const { PORTAL_HOST } = process.env;
-
+const processENV = process.env;
+const PORTAL_HOST = processENV.PORTAL_HOST ?? "http://localhost:4402/api/v1/";
 export default {
   registerPatient: (req, res, next) => {
     const _mysql = new algaehMysql();
