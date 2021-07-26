@@ -102,7 +102,6 @@ export default memo(function ValidateBatch() {
   const onValidate = () => {
     const filterData = batch_list.filter((f) => f.checked);
 
-    debugger;
     if (filterData.length === 0) {
       AlgaehMessagePop({
         display: "Select alteast one record.",
@@ -232,10 +231,17 @@ export default memo(function ValidateBatch() {
   };
 
   const selectAll = (e) => {
-    debugger;
     const staus = e.target.checked;
     const myState = batch_list.map((f) => {
-      return { ...f, checked: staus };
+      const check_status =
+        entry_type === "A"
+          ? f.specimen_status === "A"
+            ? false
+            : staus
+          : f.lab_status === "V"
+          ? false
+          : staus;
+      return { ...f, checked: check_status };
     });
 
     const hasUncheck = myState.filter((f) => {
@@ -357,7 +363,6 @@ export default memo(function ValidateBatch() {
                 ),
                 fieldName: "select",
                 displayTemplate: (row) => {
-                  debugger;
                   return (
                     <input
                       type="checkbox"
@@ -385,7 +390,6 @@ export default memo(function ValidateBatch() {
                 fieldName: "status",
                 label: <AlgaehLabel label={{ fieldName: "Status" }} />,
                 displayTemplate: (row) => {
-                  debugger;
                   return entry_type === "A"
                     ? row.specimen_status === "A"
                       ? "Acknowledge"
