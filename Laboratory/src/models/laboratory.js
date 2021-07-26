@@ -2687,6 +2687,15 @@ export async function updateLabOrderServices(req, res, next) {
 export async function updateLabOrderServiceStatus(req, res, next) {
   const _mysql = new algaehMysql();
   try {
+    console.log("normal_lab_order_id", req.body.normal_lab_order_id);
+    console.log("micro_cul_lab_order_id", req.body.micro_cul_lab_order_id);
+    let hims_f_lab_order_id = req.body.normal_lab_order_id;
+    if (req.body.micro_cul_lab_order_id.length > 0) {
+      hims_f_lab_order_id = hims_f_lab_order_id.concat(
+        req.body.micro_cul_lab_order_id
+      );
+    }
+    console.log("hims_f_lab_order_id", hims_f_lab_order_id);
     _mysql
       .executeQueryWithTransaction({
         query: `
@@ -2704,37 +2713,12 @@ export async function updateLabOrderServiceStatus(req, res, next) {
           new Date(),
           req["userIdentity"].algaeh_d_app_user_id,
           new Date(),
-          req.body.hims_f_lab_order_id,
-          req.body.hims_f_lab_order_id,
+          hims_f_lab_order_id,
+          hims_f_lab_order_id,
         ],
         printQuery: true,
       })
       .then(async (result) => {
-        if (req.body.portal_exists === "Y") {
-          const calncel_details = result[1];
-
-          for (let i = 0; i < calncel_details.length; i++) {
-            const portal_data = {
-              service_id: calncel_details[i].service_id,
-              visit_code: calncel_details[i].visit_code,
-              patient_identity: calncel_details[i].primary_id_no,
-              service_status: "ORDERED",
-            };
-
-            await axios
-              .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-              .catch((e) => {
-                throw e;
-              });
-            if (i === calncel_details.length - 1) {
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
-                req.records = result;
-                next();
-              });
-            }
-          }
-        }
         // else {
         //   _mysql.commitTransaction(() => {
         //     _mysql.releaseConnection();
@@ -2742,28 +2726,68 @@ export async function updateLabOrderServiceStatus(req, res, next) {
         //     next();
         //   });
         // }
+        let strQuery = "";
+        if (req.body.normal_lab_order_id.length > 0) {
+          strQuery += mysql.format(
+            `Update hims_f_ord_analytes set result= ?, status = 'N',entered_by=?,entered_date=?, confirm_by=?, confirmed_date=?, validate_by=?,validated_date=?  
+            where order_id in (?);`,
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              req.body.normal_lab_order_id,
+            ]
+          );
+        }
+        if (req.body.micro_cul_lab_order_id.length > 0) {
+          strQuery += mysql.format(
+            `update hims_f_micro_result set susceptible=?, intermediate=?, resistant=? where order_id in (?);`,
+            [null, null, null, req.body.micro_cul_lab_order_id]
+          );
+        }
+        console.log("strQuery", strQuery);
+        consol.log("strQuery", strQuery);
         _mysql
           .executeQueryWithTransaction({
-            query: `Update hims_f_ord_analytes set result= ?, status = 'N',entered_by=?,entered_date=?, confirm_by=?, confirmed_date=?, validate_by=?,validated_date=?  
-            where order_id in (?)`,
-            values: [
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              req.body.hims_f_lab_order_id,
-            ],
+            query: strQuery,
             printQuery: true,
           })
           .then(async (result) => {
-            _mysql.commitTransaction(() => {
-              _mysql.releaseConnection();
-              req.records = result;
-              next();
-            });
+            if (req.body.portal_exists === "Y") {
+              const calncel_details = result[1];
+
+              for (let i = 0; i < calncel_details.length; i++) {
+                const portal_data = {
+                  service_id: calncel_details[i].service_id,
+                  visit_code: calncel_details[i].visit_code,
+                  patient_identity: calncel_details[i].primary_id_no,
+                  service_status: "ORDERED",
+                };
+
+                await axios
+                  .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+                  .catch((e) => {
+                    throw e;
+                  });
+                if (i === calncel_details.length - 1) {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = result;
+                    next();
+                  });
+                }
+              }
+            } else {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              });
+            }
           })
           .catch((e) => {
             _mysql.rollBackTransaction(() => {

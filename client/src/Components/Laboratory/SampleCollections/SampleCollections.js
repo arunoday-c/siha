@@ -1621,7 +1621,6 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
   const printBulkBarcode = () => {
     const data = test_details;
     const filterData = data.filter((f) => f.checked && f.collected === "Y");
-    // debugger;
     if (filterData.length === 0) {
       swalMessage({
         title: "Select alteast one record.",
@@ -1631,7 +1630,6 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
     }
     const labOrderId = filterData.map((item) => item.hims_f_lab_order_id);
 
-    // debugger;
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -1692,11 +1690,20 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
       cancelButtonText: "No",
     }).then((willDelete) => {
       if (willDelete.value) {
+        let normal_lab_order_id = [],
+          micro_cul_lab_order_id = [];
+
+        if (row.culture_test === "Y" && row.test_section === "M") {
+          micro_cul_lab_order_id = [row.hims_f_lab_order_id];
+        } else {
+          normal_lab_order_id = [row.hims_f_lab_order_id];
+        }
         algaehApiCall({
           uri: "/laboratory/updateLabOrderServiceStatus",
           module: "laboratory",
           data: {
-            hims_f_lab_order_id: row.hims_f_lab_order_id,
+            micro_cul_lab_order_id: micro_cul_lab_order_id,
+            normal_lab_order_id: normal_lab_order_id,
             portal_exists: portal_exists,
           },
           method: "PUT",
@@ -1725,20 +1732,37 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
   };
 
   const updateLabOrderServiceMultiple = () => {
-    let hims_f_lab_order_id = [];
+    let normal_lab_order_id = [],
+      micro_cul_lab_order_id = [];
     test_details.map((o) => {
-      if (o.checked && o.collected === "Y") {
-        hims_f_lab_order_id.push(o.hims_f_lab_order_id);
+      if (
+        o.checked &&
+        o.collected === "Y" &&
+        o.culture_test === "N" &&
+        o.test_section !== "M"
+      ) {
+        normal_lab_order_id.push(o.hims_f_lab_order_id);
+      } else if (
+        o.checked &&
+        o.collected === "Y" &&
+        o.culture_test === "Y" &&
+        o.test_section === "M"
+      ) {
+        micro_cul_lab_order_id.push(o.hims_f_lab_order_id);
       }
       return null;
     });
-    if (hims_f_lab_order_id.length === 0) {
+    if (
+      normal_lab_order_id.length === 0 &&
+      micro_cul_lab_order_id.length === 0
+    ) {
       swalMessage({
         title: "Select alteast one record.",
         type: "warning",
       });
       return;
     }
+    // if (row.test_section === "M" && row.culture_test === "Y") {
     swal({
       title: `Are you sure to change all specimen not collected?`,
       type: "warning",
@@ -1753,7 +1777,8 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
           uri: "/laboratory/updateLabOrderServiceStatus",
           module: "laboratory",
           data: {
-            hims_f_lab_order_id: hims_f_lab_order_id,
+            normal_lab_order_id: normal_lab_order_id,
+            micro_cul_lab_order_id: micro_cul_lab_order_id,
             portal_exists: portal_exists,
           },
           method: "PUT",
