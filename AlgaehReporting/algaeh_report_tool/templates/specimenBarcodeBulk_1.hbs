@@ -1,30 +1,30 @@
 {{{importStyle "css/algaehReportStyles.css"}}}
 <style>
   .texttruncate{ text-overflow: ellipsis; overflow: hidden;white-space: nowrap;
-  } img.specimenBarcode { height:18px; margin-bottom: 3px;}
+  } 
+
+  img.specimenBarcode { height:18px; margin-bottom: 3px;}
 </style>
-<body>
-  {{#each header}}
-    <div
-      class="barcodeLine"
-      style="page-break-before: always; page-break-after: always;margin: 0;"
-    >
+<body style="margin:0px;background-color: blue;height:79px;">
+
+    {{#each header}}
+    <div class="barcodeLine" >
       <small
         class="small-left texttruncate"
         style="width:
             48%; font-size:8.5px; text-align:left;"
-      >LAB ID:
+      >Lab ID:
         <b>{{lab_id_number}}</b></small>
       <small class="small-right" style="margin-top: 4px;"><b
         >{{barcode_gen}}</b></small>
-      <img
+      {{!-- <img
         class="specimenBarcode"
         src={{barcode "code128" lab_id_number false}}
-      />
+      /> --}}
       <small
         class="small-center texttruncate"
         style="width:
-            98%; font-size:8.5px;text-transform: uppercase;"
+            98%; font-size:8.5px;"
       ><b>{{full_name}}</b></small>
       <small class="small-left"><b>{{patient_code}}</b></small>
       <small class="small-right"><b>{{date_of_birth}}
@@ -34,15 +34,19 @@
       <small
         class="small-left texttruncate"
         style="width:
-            77%; line-height:12px;text-align:left;font-size:7px;text-transform: uppercase;"
+            77%; line-height:12px;text-align:left;"
       ><b>{{description}}</b></small>
+     
+
       {{#ifExist color_name}}
         <small
           class="small-right"
           style="border-radius:2px;padding:1px 3px;border: 1px dashed {{color_code}}"
         ><b>{{color_name}}</b></small>
       {{/ifExist}}
-    </div>
 
-  {{/each}}
+       {{/each }}
+    </div>
+    
+  
 </body>
