@@ -21,10 +21,11 @@ export default memo(function BatchDetails({
   getValues,
   updateState,
   batch_list,
+  auto_insert,
+  updateAutoState,
 }) {
   const onChangeHandeler = (e) => {
-    debugger;
-    const auto_insert = getValues("auto_insert");
+    // const auto_insert = getValues("auto_insert");
     if (auto_insert === true) {
       e.persist();
       setValue("barcode_scanner", e.target.value);
@@ -36,7 +37,6 @@ export default memo(function BatchDetails({
 
   const de_bounce = useCallback(
     debounce(async (e, new_batch_list) => {
-      debugger;
       const scan_by = getValues("scan_by");
 
       const after_ack = await checkIDExists({
@@ -206,10 +206,10 @@ export default memo(function BatchDetails({
                 <label className="checkbox inline">
                   <input
                     name="auto_insert"
-                    defaultChecked={props.value}
+                    defaultChecked={auto_insert}
                     type="checkbox"
                     onChange={(e) => {
-                      setValue("auto_insert", e.target.checked);
+                      updateAutoState(e.target.checked);
                     }}
                   />
                   <span>Yes</span>
@@ -291,15 +291,17 @@ export default memo(function BatchDetails({
             // />
           )}
         />
-        <div className="col-1 mandatory form-group">
-          <button
-            className="btn btn-primary"
-            style={{ marginTop: 21 }}
-            onClick={onClickAddtoList}
-          >
-            Add to List
-          </button>
-        </div>
+        {auto_insert === false ? (
+          <div className="col-1 mandatory form-group">
+            <button
+              className="btn btn-primary"
+              style={{ marginTop: 21 }}
+              onClick={onClickAddtoList}
+            >
+              Add to List
+            </button>
+          </div>
+        ) : null}
       </div>
     </div>
   );
