@@ -404,13 +404,17 @@ export default memo(function ValidateBatch() {
                 fieldName: "status",
                 label: <AlgaehLabel label={{ fieldName: "Status" }} />,
                 displayTemplate: (row) => {
-                  return entry_type === "A"
-                    ? row.specimen_status === "A"
-                      ? "Acknowledge"
-                      : "Not Acknowledge"
-                    : row.lab_status === "V"
-                    ? "Validated"
-                    : "Not Validated";
+                  return entry_type === "A" ? (
+                    row.specimen_status === "A" ? (
+                      <span className="badge badge-primary">Acknowledge</span>
+                    ) : (
+                      <span className="badge badge-info">Not Acknowledge</span>
+                    )
+                  ) : row.lab_status === "V" ? (
+                    <span className="badge badge-success">Validated</span>
+                  ) : (
+                    <span className="badge badge-info">Pending</span>
+                  );
                 },
                 // filterable: true,
                 sortable: true,
@@ -455,7 +459,11 @@ export default memo(function ValidateBatch() {
                   return entry_type === "A" ? (
                     row.result
                   ) : row.lab_status === "V" ? (
-                    row.result
+                    row.result === "Negative" ? (
+                      <span className="badge badge-success">{row.result}</span>
+                    ) : (
+                      <span className="badge badge-danger">{row.result}</span>
+                    )
                   ) : (
                     <span>
                       <AlgaehAutoComplete
