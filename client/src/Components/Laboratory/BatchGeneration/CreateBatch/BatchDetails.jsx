@@ -89,7 +89,7 @@ export default memo(function BatchDetails({
       }
 
       setValue("barcode_scanner", "");
-    }, 2500),
+    }, 500),
     []
   );
 
