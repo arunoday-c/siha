@@ -33,7 +33,7 @@ export default memo(function ValidateBatch() {
   const [batch_number, setBatchNUmber] = useState(null);
   const [batch_list, setBatchList] = useState([]);
   const [checkAll, setCheckAll] = useState(STATUS.UNCHECK);
-  const [entry_type, setEntryType] = useState("R");
+  const [entry_type, setEntryType] = useState("A");
   const [currentPage, setCurrentPage] = useState(1);
   let allChecked = useRef(undefined);
 
@@ -214,10 +214,12 @@ export default memo(function ValidateBatch() {
           entry_type: entry_type,
         })
           .then((result) => {
-            // let lst = result;
-            // for (let i = 0; i < 100; i++) {
-            //   lst.push(result[0]);
-            // }
+            if (result.length === 0) {
+              AlgaehMessagePop({
+                display: "No Records Found to Result Entry",
+                type: "warning",
+              });
+            }
             setBatchList(result);
           })
           .catch((e) => {
@@ -438,7 +440,9 @@ export default memo(function ValidateBatch() {
                 fieldName: "result",
                 label: <AlgaehLabel label={{ fieldName: "result" }} />,
                 displayTemplate: (row) => {
-                  return row.lab_status === "V" ? (
+                  return entry_type === "A" ? (
+                    row.result
+                  ) : row.lab_status === "V" ? (
                     row.result
                   ) : (
                     <span>
