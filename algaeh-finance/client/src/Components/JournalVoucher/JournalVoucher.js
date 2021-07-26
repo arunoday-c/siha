@@ -414,6 +414,7 @@ export default function JournalVoucher() {
         const debit_data = _.filter(data, (f) => {
           return f.payment_type === "DR";
         });
+
         setTotalCredit(
           _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
         );
@@ -457,6 +458,7 @@ export default function JournalVoucher() {
           const debit_data = _.filter(records, (f) => {
             return f.payment_type === "DR";
           });
+
           setTotalCredit(
             _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
           );
@@ -524,6 +526,7 @@ export default function JournalVoucher() {
                   const debit_data = _.filter(state, (f) => {
                     return f.payment_type === "DR";
                   });
+
                   setTotalCredit(
                     _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
                   );
@@ -659,8 +662,10 @@ export default function JournalVoucher() {
         return;
       }
 
-      const total_dr = _.sumBy(journerList, (s) => parseFloat(s.amount));
-      if (parseFloat(bankAmount) !== total_dr) {
+      const total_dr = _.sumBy(journerList, (s) =>
+        parseFloat(s.amount)
+      ).toFixed(2);
+      if (parseFloat(bankAmount) !== parseFloat(total_dr)) {
         setLoading(false);
         AlgaehMessagePop({
           type: "info",
@@ -1172,7 +1177,7 @@ export default function JournalVoucher() {
           type: "number",
           onChange: (e) => {
             // console.log(journerList);
-            debugger;
+
             records["amount"] = e.target.value === "" ? "" : e.target.value;
             const credit_data = _.filter(journerList, (f) => {
               return f.payment_type === "CR";
