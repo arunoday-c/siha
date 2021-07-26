@@ -33,7 +33,7 @@ export default memo(function ValidateBatch() {
   const [batch_number, setBatchNUmber] = useState(null);
   const [batch_list, setBatchList] = useState([]);
   const [checkAll, setCheckAll] = useState(STATUS.UNCHECK);
-  const [entry_type, setEntryType] = useState("R");
+  const [entry_type, setEntryType] = useState("A");
   const [currentPage, setCurrentPage] = useState(1);
   let allChecked = useRef(undefined);
 
@@ -125,7 +125,13 @@ export default memo(function ValidateBatch() {
         };
         UpdateBatchDetail(inpujObj)
           .then((result) => {
-            swal("Validated Succefully... Batch No." + batch_number, {
+            // swal("Validated Succefully... Batch No." + batch_number, {
+            //   icon: "success",
+            // });
+
+            swal({
+              title: "Batch Validated Successfully",
+              text: batch_number,
               icon: "success",
             });
 
@@ -153,7 +159,7 @@ export default memo(function ValidateBatch() {
       return;
     }
     swal({
-      title: `Are you sure to Acknowledge ?`,
+      title: `Are you sure to Acknowledge?`,
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
@@ -167,7 +173,13 @@ export default memo(function ValidateBatch() {
         };
         AckBatchDetail(inpujObj)
           .then((result) => {
-            swal("Acknowledgeed Succefully... Batch No." + batch_number, {
+            // swal("Acknowledged Succefully... Batch No." + batch_number, {
+            //   icon: "success",
+            // });
+
+            swal({
+              title: "Batch Acknowledged Successfully",
+              text: batch_number,
               icon: "success",
             });
           })
@@ -214,10 +226,12 @@ export default memo(function ValidateBatch() {
           entry_type: entry_type,
         })
           .then((result) => {
-            // let lst = result;
-            // for (let i = 0; i < 100; i++) {
-            //   lst.push(result[0]);
-            // }
+            if (result.length === 0) {
+              AlgaehMessagePop({
+                display: "No Records Found to Result Entry",
+                type: "warning",
+              });
+            }
             setBatchList(result);
           })
           .catch((e) => {
@@ -390,13 +404,17 @@ export default memo(function ValidateBatch() {
                 fieldName: "status",
                 label: <AlgaehLabel label={{ fieldName: "Status" }} />,
                 displayTemplate: (row) => {
-                  return entry_type === "A"
-                    ? row.specimen_status === "A"
-                      ? "Acknowledge"
-                      : "Not Acknowledge"
-                    : row.lab_status === "V"
-                    ? "Validated"
-                    : "Not Validated";
+                  return entry_type === "A" ? (
+                    row.specimen_status === "A" ? (
+                      <span className="badge badge-primary">Acknowledge</span>
+                    ) : (
+                      <span className="badge badge-info">Not Acknowledge</span>
+                    )
+                  ) : row.lab_status === "V" ? (
+                    <span className="badge badge-success">Validated</span>
+                  ) : (
+                    <span className="badge badge-info">Pending</span>
+                  );
                 },
                 // filterable: true,
                 sortable: true,
@@ -438,8 +456,14 @@ export default memo(function ValidateBatch() {
                 fieldName: "result",
                 label: <AlgaehLabel label={{ fieldName: "result" }} />,
                 displayTemplate: (row) => {
-                  return row.lab_status === "V" ? (
+                  return entry_type === "A" ? (
                     row.result
+                  ) : row.lab_status === "V" ? (
+                    row.result === "Negative" ? (
+                      <span className="badge badge-success">{row.result}</span>
+                    ) : (
+                      <span className="badge badge-danger">{row.result}</span>
+                    )
                   ) : (
                     <span>
                       <AlgaehAutoComplete
