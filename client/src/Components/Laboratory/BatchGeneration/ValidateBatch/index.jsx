@@ -125,7 +125,13 @@ export default memo(function ValidateBatch() {
         };
         UpdateBatchDetail(inpujObj)
           .then((result) => {
-            swal("Validated Succefully... Batch No." + batch_number, {
+            // swal("Validated Succefully... Batch No." + batch_number, {
+            //   icon: "success",
+            // });
+
+            swal({
+              title: "Batch Validated Successfully",
+              text: batch_number,
               icon: "success",
             });
 
@@ -153,7 +159,7 @@ export default memo(function ValidateBatch() {
       return;
     }
     swal({
-      title: `Are you sure to Acknowledge ?`,
+      title: `Are you sure to Acknowledge?`,
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
@@ -167,7 +173,13 @@ export default memo(function ValidateBatch() {
         };
         AckBatchDetail(inpujObj)
           .then((result) => {
-            swal("Acknowledgeed Succefully... Batch No." + batch_number, {
+            // swal("Acknowledged Succefully... Batch No." + batch_number, {
+            //   icon: "success",
+            // });
+
+            swal({
+              title: "Batch Acknowledged Successfully",
+              text: batch_number,
               icon: "success",
             });
           })
