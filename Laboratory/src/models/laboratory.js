@@ -2689,15 +2689,15 @@ export async function updateLabOrderServices(req, res, next) {
 export async function updateLabOrderServiceStatus(req, res, next) {
   const _mysql = new algaehMysql();
   try {
-    console.log("normal_lab_order_id", req.body.normal_lab_order_id);
-    console.log("micro_cul_lab_order_id", req.body.micro_cul_lab_order_id);
+    // console.log("normal_lab_order_id", req.body.normal_lab_order_id);
+    // console.log("micro_cul_lab_order_id", req.body.micro_cul_lab_order_id);
     let hims_f_lab_order_id = req.body.normal_lab_order_id;
     if (req.body.micro_cul_lab_order_id.length > 0) {
       hims_f_lab_order_id = hims_f_lab_order_id.concat(
         req.body.micro_cul_lab_order_id
       );
     }
-    console.log("hims_f_lab_order_id", hims_f_lab_order_id);
+    // console.log("hims_f_lab_order_id", hims_f_lab_order_id);
     _mysql
       .executeQueryWithTransaction({
         query: `
@@ -2758,7 +2758,7 @@ export async function updateLabOrderServiceStatus(req, res, next) {
             query: strQuery,
             printQuery: true,
           })
-          .then(async (result) => {
+          .then(async (update_result) => {
             if (req.body.portal_exists === "Y") {
               const calncel_details = result[1];
 
@@ -2778,7 +2778,7 @@ export async function updateLabOrderServiceStatus(req, res, next) {
                 if (i === calncel_details.length - 1) {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
-                    req.records = result;
+                    req.records = update_result;
                     next();
                   });
                 }
@@ -2786,7 +2786,7 @@ export async function updateLabOrderServiceStatus(req, res, next) {
             } else {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
-                req.records = result;
+                req.records = update_result;
                 next();
               });
             }
