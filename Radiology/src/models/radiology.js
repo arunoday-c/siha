@@ -4,6 +4,14 @@ import appsettings from "algaeh-utilities/appsettings.json";
 import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 import moment from "moment";
+import dotenv from "dotenv";
+import axios from "axios";
+import "regenerator-runtime/runtime";
+
+if (process.env.NODE_ENV !== "production") dotenv.config();
+
+const processENV = process.env;
+const PORTAL_HOST = processENV.PORTAL_HOST ?? "http://localhost:4402/api/v1/";
 
 export default {
   getRadOrderedServices: (req, res, next) => {
@@ -291,14 +299,14 @@ export default {
       }
 
       _mysql
-        .executeQuery({
+        .executeQueryWithTransaction({
           query:
             "UPDATE `hims_f_rad_order` \
           SET `status`=?,  `cancelled`=?,`scheduled_date_time`=?, `scheduled_by`=?, `arrived_date`=?,\
           `arrived`=?,`validate_by`=?, `validate_date_time` = ?, `attended_by`=?, `attended_date_time`=?,\
           `exam_start_date_time`=?, `exam_end_date_time`=?, `exam_status`=?, `report_type`=?,\
           `technician_id`=?, `template_id`=?, `result_html`=?, `comments`=?\
-          WHERE `hims_f_rad_order_id`=?",
+          WHERE `hims_f_rad_order_id`=?; SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=?;",
           values: [
             inputParam.status,
             inputParam.cancelled,
@@ -319,21 +327,54 @@ export default {
             inputParam.result_html,
             inputParam.comments,
             inputParam.hims_f_rad_order_id,
+            req.userIdentity.hospital_id,
           ],
           printQuery: true,
         })
-        .then((update_rad_order) => {
-          _mysql.releaseConnection();
-          req.records = update_rad_order;
-          next();
+        .then(async (update_rad_order) => {
+          // console.log("status", inputParam.status);
+          // consol.log("portal_exists", update_rad_order[1][0].portal_exists);
+          const portal_exists = update_rad_order[1][0].portal_exists;
+          // console.log("portal_exists", portal_exists);
+          // consol.log("portal_exists", portal_exists);
+
+          if (portal_exists === "Y" && inputParam.status === "RA") {
+            const portal_data = {
+              service_id: inputParam.service_id,
+              visit_code: inputParam.visit_code,
+              patient_identity: inputParam.primary_id_no,
+              service_status: "RESULT VALIDATED",
+            };
+
+            // console.log("portal_data", portal_data);
+            // consol.log("portal_data", portal_data);
+            await axios
+              .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+              .catch((e) => {
+                throw e;
+              });
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = update_rad_order;
+              next();
+            });
+          } else {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = update_rad_order;
+              next();
+            });
+          }
         })
         .catch((e) => {
-          _mysql.releaseConnection();
-          next(e);
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
         });
     } catch (e) {
-      _mysql.releaseConnection();
-      next(e);
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
     }
   },
 
