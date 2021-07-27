@@ -861,7 +861,7 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 
 import swal from "sweetalert2";
 // import _ from "lodash";
-import axios from "axios";
+// import axios from "axios";
 import moment from "moment";
 
 // import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
@@ -927,14 +927,14 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
   const [data_exists, setData_exists] = useState(false);
   const [group_id, setGroup_id] = useState(null);
   const [comment_list, setComment_list] = useState([]);
-  const [bacteria_name, setBacteria_name] = useState();
+  const [bacteria_name, setBacteria_name] = useState(null);
   const [status, setStatus] = useState("");
   const [radioGrowth, setRadioGrowth] = useState(
     selectedPatient.bacteria_type === "G" ? true : false
   );
   const [microAntbiotic, setMicroAntbiotic] = useState([]);
   let [, setState] = useState();
-  const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
+  // const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
   useEffect(() => {
     setPortal_exists(userToken.portal_exists);
 
@@ -1123,9 +1123,12 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
       organism_type: organism_type,
       bacteria_name: bacteria_name,
       contaminated_culture: contaminated_culture,
+      service_id: selectedPatient.service_id,
+      visit_code: selectedPatient.visit_code,
+      primary_id_no: selectedPatient.primary_id_no,
     };
 
-    if (bacteria_name.length < 0 && radioGrowth) {
+    if ((bacteria_name === null || bacteria_name === "") && radioGrowth) {
       swalMessage({
         title: "Please Enter Bacteria Name",
         type: "warning",
@@ -1149,27 +1152,27 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
       method: "PUT",
       onSuccess: (response) => {
         if (response.data.success === true) {
-          if (status === "CF" || status === "V") {
-            if (portal_exists === "Y") {
-              const portal_data = {
-                service_id: selectedPatient.service_id,
-                visit_code: selectedPatient.visit_code,
-                patient_identity: selectedPatient.primary_id_no,
-                service_status:
-                  status === "CF" ? "RESULT CONFIRMED" : "RESULT VALIDATED",
-              };
-              axios
-                .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-                .then(function (response) {
-                  //handle success
-                  console.log(response);
-                })
-                .catch(function (response) {
-                  //handle error
-                  console.log(response);
-                });
-            }
-          }
+          // if (status === "CF" || status === "V") {
+          //   if (portal_exists === "Y") {
+          //     const portal_data = {
+          //       service_id: selectedPatient.service_id,
+          //       visit_code: selectedPatient.visit_code,
+          //       patient_identity: selectedPatient.primary_id_no,
+          //       service_status:
+          //         status === "CF" ? "RESULT CONFIRMED" : "RESULT VALIDATED",
+          //     };
+          //     axios
+          //       .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+          //       .then(function (response) {
+          //         //handle success
+          //         console.log(response);
+          //       })
+          //       .catch(function (response) {
+          //         //handle error
+          //         console.log(response);
+          //       });
+          //   }
+          // }
           swalMessage({
             type: "success",
             title: "Done successfully . .",
