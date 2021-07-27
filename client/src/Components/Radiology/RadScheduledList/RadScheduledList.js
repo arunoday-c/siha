@@ -1124,28 +1124,28 @@ export default function RadScheduledList() {
 
   let _Cancelled;
 
-  if (radtestlist?.length > 0) {
-    _Ordered = _.filter(radtestlist, (f) => {
+  if (radtestlist?.data.length > 0) {
+    _Ordered = _.filter(radtestlist.data, (f) => {
       return f.status === "O";
     }).length;
 
-    _Sheduled = _.filter(radtestlist, (f) => {
+    _Sheduled = _.filter(radtestlist.data, (f) => {
       return f.status === "S";
     }).length;
 
-    _Under_Process = _.filter(radtestlist, (f) => {
+    _Under_Process = _.filter(radtestlist.data, (f) => {
       return f.status === "UP";
     }).length;
 
-    _Completed = _.filter(radtestlist, (f) => {
+    _Completed = _.filter(radtestlist.data, (f) => {
       return f.status === "RC";
     }).length;
 
-    _Validated = _.filter(radtestlist, (f) => {
+    _Validated = _.filter(radtestlist.data, (f) => {
       return f.status === "RA";
     }).length;
 
-    _Cancelled = _.filter(radtestlist, (f) => {
+    _Cancelled = _.filter(radtestlist.data, (f) => {
       return f.status === "CN";
     }).length;
   } else {
@@ -1571,8 +1571,9 @@ export default function RadScheduledList() {
                   keyId="patient_code"
                   data={radtestlist?.data ?? []}
                   noDataText="No data available for selected period"
-                  filter={true}
                   paging={{ page: 0, rowsPerPage: 20 }}
+                  isFilterable={true}
+                  pagination={true}
                 />
               </div>
             </div>
