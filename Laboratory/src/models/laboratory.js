@@ -2752,7 +2752,7 @@ export async function updateLabOrderServiceStatus(req, res, next) {
           );
         }
         console.log("strQuery", strQuery);
-        consol.log("strQuery", strQuery);
+        // consol.log("strQuery", strQuery);
         _mysql
           .executeQueryWithTransaction({
             query: strQuery,
