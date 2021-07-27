@@ -652,6 +652,17 @@ let algaehSearchConfig = (searchName, req) => {
         orderBy: "hims_f_inventory_consumption_header_id desc",
       },
       {
+        searchName: "InvConsCancelEntry",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS H.*,date(H.can_consumption_date) as can_consumption_date, IL.location_description,\
+            EMP.full_name as doctor_name  from hims_f_inventory_can_consumption_header H \
+            inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = H.location_id  \
+            left join hims_d_employee EMP on EMP.hims_d_employee_id = H.provider_id  \
+            where H.hospital_id=" +
+          hospitalId,
+        orderBy: "hims_f_inventory_can_consumption_header_id desc",
+      },
+      {
         searchName: "servicemaster",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_d_services S left outer join hims_d_service_type ST on \

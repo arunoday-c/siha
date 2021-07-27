@@ -1093,6 +1093,25 @@
         "fieldName": "location_description",
         "label": "Location Name"
       }
+    ],
+    "InvConsCancelEntry": [
+      {
+        "fieldName": "can_consumption_number",
+        "label": "Consumption Cancel Number"
+      },
+      {
+        "fieldName": "can_consumption_date",
+        "label": "Consumption Cancel Date"
+      },
+      {
+        "fieldName": "doctor_name",
+        "label": "Doctor Name",
+        "required": "N"
+      },
+      {
+        "fieldName": "location_description",
+        "label": "Location Name"
+      }
     ]
   },
   "Items": {

@@ -358,7 +358,7 @@ class DayEndProcess extends Component {
   }
   DrillDownScree(row) {
     persistStateOnBack(this.state, true);
-    // debugger;
+    debugger;
     if (row.from_screen !== undefined) {
       if (
         row.from_screen === "FD0002" ||
@@ -380,8 +380,12 @@ class DayEndProcess extends Component {
         this.props.history.push(
           `/InvTransferEntry?transfer_number=${row.document_number}`
         );
-      } else if (row.from_screen === "INV0007") {
+      } else if (row.from_screen === "INV0011") {
         // Inventory Consumorion
+        this.props.history.push(
+          `/InvConsumptionCancel?can_consumption_number=${row.document_number}`
+        );
+      } else if (row.from_screen === "INV0007") {
         this.props.history.push(
           `/InvConsumptionEntry?consumption_number=${row.document_number}`
         );

@@ -544,6 +544,11 @@ const InvConsumptionEntry = React.lazy(() =>
     import("./Components/Inventory/InvConsumptionEntry/InvConsumptionEntry")
   )
 );
+const InvConsumptionCancel = React.lazy(() =>
+  retry(() =>
+    import("./Components/Inventory/InvConsumptionEntry/InvConsumptionCancel")
+  )
+);
 const InvPointOfSale = React.lazy(() =>
   retry(() => import("./Components/Inventory/InvPointOfSale/InvPointOfSale"))
 );
@@ -1401,6 +1406,11 @@ const privateRoutes = [
     path: "/InvConsumptionEntry",
     isExactPath: true,
     component: <InvConsumptionEntry />,
+  },
+  {
+    path: "/InvConsumptionCancel",
+    isExactPath: true,
+    component: <InvConsumptionCancel />,
   },
   {
     path: "/InvPointOfSale",
