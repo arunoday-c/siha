@@ -1982,7 +1982,7 @@ const labModal = {
                   "update hims_f_lab_order set `group_id`=?, `organism_type`=?, `bacteria_name`=?,`bacteria_type`=?, \
                   contaminated_culture=?, updated_date= ?, updated_by=?, comments=?" +
                   strQuery +
-                  "where hims_f_lab_order_id=? ",
+                  "where hims_f_lab_order_id=?; SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=?;",
                 values: [
                   inputParam.group_id,
                   inputParam.organism_type,
@@ -1993,20 +1993,65 @@ const labModal = {
                   req.userIdentity.algaeh_d_app_user_id,
                   inputParam.comments,
                   inputParam.hims_f_lab_order_id,
+                  req.userIdentity.hospital_id,
                 ],
                 printQuery: true,
               })
-              .then((update_lab_order) => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = {
-                    results,
-                    entered_by: entered_by,
-                    confirmed_by: confirmed_by,
-                    validated_by: validated_by,
+              .then(async (update_lab_order) => {
+                const portal_exists = update_lab_order[1][0].portal_exists;
+
+                // console.log("portal_exists", portal_exists);
+                // console.log("inputParam.status", inputParam.status);
+                // consol.log("portal_exists", portal_exists);
+
+                if (
+                  portal_exists === "Y" &&
+                  (inputParam.status === "CF" ||
+                    inputParam.status === "V" ||
+                    inputParam.status === "AV")
+                ) {
+                  const portal_data = {
+                    service_id: inputParam.service_id,
+                    visit_code: inputParam.visit_code,
+                    patient_identity: inputParam.primary_id_no,
+                    service_status:
+                      inputParam.status === "CF"
+                        ? "RESULT CONFIRMED"
+                        : "RESULT VALIDATED",
                   };
-                  next();
-                });
+
+                  // console.log("portal_data", portal_data);
+                  // consol.log("portal_data", portal_data);
+                  await axios
+                    .post(
+                      `${PORTAL_HOST}/info/deletePatientService`,
+                      portal_data
+                    )
+                    .catch((e) => {
+                      throw e;
+                    });
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = {
+                      results,
+                      entered_by: entered_by,
+                      confirmed_by: confirmed_by,
+                      validated_by: validated_by,
+                    };
+                    next();
+                  });
+                } else {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = {
+                      results,
+                      entered_by: entered_by,
+                      confirmed_by: confirmed_by,
+                      validated_by: validated_by,
+                    };
+                    next();
+                  });
+                }
               })
               .catch((e) => {
                 _mysql.rollBackTransaction(() => {
