@@ -21,10 +21,11 @@ export default memo(function BatchDetails({
   getValues,
   updateState,
   batch_list,
+  auto_insert,
+  updateAutoState,
 }) {
   const onChangeHandeler = (e) => {
-    debugger;
-    const auto_insert = getValues("auto_insert");
+    // const auto_insert = getValues("auto_insert");
     if (auto_insert === true) {
       e.persist();
       setValue("barcode_scanner", e.target.value);
@@ -36,20 +37,8 @@ export default memo(function BatchDetails({
 
   const de_bounce = useCallback(
     debounce(async (e, new_batch_list) => {
-      debugger;
       const scan_by = getValues("scan_by");
-      const data_exists = new_batch_list.filter(
-        (f) => f.id_number === e.target.value
-      );
 
-      if (data_exists.length > 0) {
-        AlgaehMessagePop({
-          display: "Selected ID already Exists",
-          type: "warning",
-        });
-        setValue("barcode_scanner", "");
-        return;
-      }
       const after_ack = await checkIDExists({
         id_number: e.target.value,
         scan_by: getValues("scan_by"),
@@ -66,6 +55,19 @@ export default memo(function BatchDetails({
         return;
       }
 
+      const data_exists = new_batch_list.filter(
+        (f) => f.lab_id_number === after_ack.records.lab_id_number
+      );
+
+      if (data_exists.length > 0) {
+        AlgaehMessagePop({
+          display: "Selected ID already Exists",
+          type: "warning",
+        });
+        setValue("barcode_scanner", "");
+        return;
+      }
+
       if (scan_by === "LI") {
         updateState({
           id_number: e.target.value,
@@ -73,6 +75,7 @@ export default memo(function BatchDetails({
           order_id: after_ack.records.hims_f_lab_order_id,
           primary_id_no: after_ack.records.id_number,
           patient_name: after_ack.records.patient_name,
+          description: after_ack.records.description,
         });
       } else {
         updateState({
@@ -81,11 +84,12 @@ export default memo(function BatchDetails({
           order_id: after_ack.records.hims_f_lab_order_id,
           primary_id_no: e.target.value,
           patient_name: after_ack.records.patient_name,
+          description: after_ack.records.description,
         });
       }
 
       setValue("barcode_scanner", "");
-    }, 2500),
+    }, 500),
     []
   );
 
@@ -151,7 +155,7 @@ export default memo(function BatchDetails({
   return (
     <div className="col appointment_status">
       <div className="row">
-        <Controller
+        {/* <Controller
           name="batch_number"
           control={control}
           render={(props) => (
@@ -170,7 +174,7 @@ export default memo(function BatchDetails({
               }}
             />
           )}
-        />
+        /> */}
 
         <Controller
           name="batch_name"
@@ -193,11 +197,34 @@ export default memo(function BatchDetails({
         />
 
         <Controller
+          name="auto_insert"
+          control={control}
+          render={(props) => (
+            <div className="col-2 mandatory form-group">
+              <label>Auto Insert</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    name="auto_insert"
+                    defaultChecked={auto_insert}
+                    type="checkbox"
+                    onChange={(e) => {
+                      updateAutoState(e.target.checked);
+                    }}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
+          )}
+        />
+
+        <Controller
           name="scan_by"
           control={control}
           render={(props) => (
-            <div className="col form-group">
-              <label>Batch Type</label>
+            <div className="col-3 form-group">
+              <label>Scan Type</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
                   <input
@@ -222,29 +249,6 @@ export default memo(function BatchDetails({
                     }}
                   />
                   <span>Patient ID</span>
-                </label>
-              </div>
-            </div>
-          )}
-        />
-
-        <Controller
-          name="auto_insert"
-          control={control}
-          render={(props) => (
-            <div className="col mandatory form-group">
-              <label>Auto Insert</label>
-              <div className="customCheckbox">
-                <label className="checkbox inline">
-                  <input
-                    name="auto_insert"
-                    defaultChecked={props.value}
-                    type="checkbox"
-                    onChange={(e) => {
-                      setValue("auto_insert", e.target.checked);
-                    }}
-                  />
-                  <span>Yes</span>
                 </label>
               </div>
             </div>
@@ -287,15 +291,17 @@ export default memo(function BatchDetails({
             // />
           )}
         />
-        <div className="col-1 mandatory form-group">
-          <button
-            className="btn btn-primary"
-            style={{ marginTop: 21 }}
-            onClick={onClickAddtoList}
-          >
-            Add to List
-          </button>
-        </div>
+        {auto_insert === false ? (
+          <div className="col-1 mandatory form-group">
+            <button
+              className="btn btn-primary"
+              style={{ marginTop: 21 }}
+              onClick={onClickAddtoList}
+            >
+              Add to List
+            </button>
+          </div>
+        ) : null}
       </div>
     </div>
   );

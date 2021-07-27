@@ -363,6 +363,7 @@ export default {
         reportToPortal,
         rpt_type,
       } = _inputParam;
+
       let usehbs = "";
       let singleHeaderFooter = false;
       if (others) {
@@ -471,12 +472,13 @@ export default {
 
                   const singleHeader = _data.report_type ? true : false;
                   // const _reportType = "PDF";
+
                   const _supportingJS = path.join(
                     process.cwd(),
                     "algaeh_report_tool/templates",
                     `${_data.report_name}${usehbs}.js`
                   );
-
+                  // console.log("_supportingJS===>", _supportingJS);
                   const _header = req.headers;
 
                   const startGenerate = async () => {
@@ -859,9 +861,10 @@ export default {
                               });
                               if (reportToPortal === "true") {
                                 const rptParameters = _inputParam.reportParams;
-                                const portal_patient_identity = rptParameters.find(
-                                  (f) => f.name === "patient_identity"
-                                ).value;
+                                const portal_patient_identity =
+                                  rptParameters.find(
+                                    (f) => f.name === "patient_identity"
+                                  ).value;
                                 const portal_service_id = rptParameters.find(
                                   (f) => f.name === "service_id"
                                 )?.value;
@@ -922,9 +925,8 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } = __non_webpack_require__(
-                      _supportingJS
-                    );
+                    const { executePDF } =
+                      __non_webpack_require__(_supportingJS);
 
                     executePDF({
                       mysql: _mysql,
@@ -1176,9 +1178,8 @@ export default {
                       );
 
                       if (fs.existsSync(_supportingJS)) {
-                        const { executePDF } = __non_webpack_require__(
-                          _supportingJS
-                        );
+                        const { executePDF } =
+                          __non_webpack_require__(_supportingJS);
                         executePDF({
                           mysql: _mysql,
                           inputs: _inputParam,
@@ -1568,9 +1569,10 @@ export default {
                                       0,
                                       onlyAlphabets.length - 1
                                     );
-                                    const lastcharacter = onlyAlphabets.charCodeAt(
-                                      onlyAlphabets.length - 1
-                                    );
+                                    const lastcharacter =
+                                      onlyAlphabets.charCodeAt(
+                                        onlyAlphabets.length - 1
+                                      );
 
                                     const numberOfCols =
                                       parseInt($(this).attr("colspan")) - 1;
@@ -1881,9 +1883,8 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } = __non_webpack_require__(
-                      _supportingJS
-                    );
+                    const { executePDF } =
+                      __non_webpack_require__(_supportingJS);
                     executePDF({
                       mysql: _mysql,
                       inputs: _inputOrders,

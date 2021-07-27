@@ -5,6 +5,11 @@ if (process.env.NODE_ENV !== "production") {
   dotenv.config();
 }
 const enableSMS = process.env.enableSMS;
+let pub = {};
+if (enableSMS === "true") {
+  pub = require("../rabbitMQ/publisher");
+}
+
 const TEMPLATES = {
   LAB_TEST: "LAB_TEST",
   PCR_TEST: "PCR_TEST",
@@ -14,7 +19,7 @@ export async function processLabSMS(req, res, next) {
     next(new Error("SMS is not enabled..."));
     return;
   }
-  const { publisher } = require("../rabbitMQ/publisher");
+  const { publisher } = pub;
   const _mysql = new algaehMysql();
   const { list } = req.body;
   const { username } = req.userIdentity;

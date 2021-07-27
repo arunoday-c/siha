@@ -24,5 +24,4 @@ const channelWrapper = connection.createChannel({
   setup: (channel) => channel.assertExchange(EXCHANGE_NAME, "direct"),
   name: "Portal-Publisher",
 });
-
 export { connection, EXCHANGE_NAME, channelWrapper };

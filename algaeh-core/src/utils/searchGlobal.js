@@ -1176,7 +1176,9 @@ let algaehSearchConfig = (searchName, req) => {
       },
       {
         searchName: "BatchGen",
-        searchQuery: `select hims_f_lab_batch_header_id, batch_number, batch_name from hims_f_lab_batch_header where hims_f_lab_batch_header_id > 0`,
+        searchQuery: `select hims_f_lab_batch_header_id, batch_number, batch_name, H.created_date, username from 
+        hims_f_lab_batch_header H INNER JOIN algaeh_d_app_user U  on U.algaeh_d_app_user_id=H.created_by 
+        where hims_f_lab_batch_header_id > 0`,
         orderBy: "hims_f_lab_batch_header_id desc",
       },
       ...search_global1,

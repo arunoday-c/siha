@@ -13,12 +13,12 @@ export default memo(function CreateBatch() {
     defaultValues: {
       batch_name: "",
       barcode_scanner: "",
-      auto_insert: true,
       scan_by: "LI",
     },
   });
 
   const [batch_list, setBatchList] = useState([]);
+  const [auto_insert, setAutoInsert] = useState(true);
 
   const createBatch = async (data) => {
     const result = await newAlgaehApi({
@@ -36,14 +36,15 @@ export default memo(function CreateBatch() {
     };
     createBatch(inpujObj)
       .then((result) => {
-        swal("Batch Created Succefully" + result.batch_number, {
+        swal({
+          title: "Batch Created Successfully",
+          text: result.batch_number,
           icon: "success",
         });
         reset({
           barcode_scanner: "",
           batch_number: "",
           batch_name: "",
-          auto_insert: true,
         });
         setBatchList([]);
       })
@@ -62,8 +63,11 @@ export default memo(function CreateBatch() {
     });
   };
 
+  const updateAutoState = (data) => {
+    setAutoInsert(data);
+  };
+
   const deleteState = (data) => {
-    debugger;
     setBatchList((result) => {
       const final_data = result.filter(
         (f) => f.lab_id_number !== data.lab_id_number
@@ -82,7 +86,9 @@ export default memo(function CreateBatch() {
           setValue={setValue}
           getValues={getValues}
           updateState={updateState}
+          updateAutoState={updateAutoState}
           batch_list={batch_list}
+          auto_insert={auto_insert}
         />
       </div>
       <div className="row">
@@ -109,7 +115,6 @@ export default memo(function CreateBatch() {
                   barcode_scanner: "",
                   batch_number: "",
                   batch_name: "",
-                  auto_insert: true,
                 });
                 setBatchList([]);
               }}

@@ -11,8 +11,8 @@
     }
   }
   .CreateBatchList {
-    min-height: 59vh;
-    max-height: 59vh;
+    min-height: 56vh;
+    max-height: 56vh;
     overflow: auto;
     padding: 0;
     margin: 0;
@@ -54,13 +54,13 @@
             border-left: 1px solid #ccc;
             height: 35px;
             vertical-align: middle;
-            width: 180px;
+            width: 220px;
             line-height: 30px;
             small {
               display: block;
             }
             &:first-child {
-              width: calc(100% - 540px);
+              width: calc(100% - 660px);
             }
           }
         }

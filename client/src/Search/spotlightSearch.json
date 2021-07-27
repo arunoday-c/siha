@@ -1340,8 +1340,17 @@
         "label": "Batch Number"
       },
       {
-        "fieldName": "Batch Name",
+        "fieldName": "batch_name",
         "label": "Batch Name"
+      },
+      {
+        "fieldName": "created_date",
+        "label": "Created Date"
+      },
+      {
+        "fieldName": "username",
+        "label": "Created By",
+        "required": "N"
       }
     ]
   }
