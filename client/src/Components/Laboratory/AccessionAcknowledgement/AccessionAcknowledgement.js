@@ -21,13 +21,11 @@ import {
 import moment from "moment";
 import sockets from "../../../sockets";
 import { Controller, useForm } from "react-hook-form";
-// import axios from "axios";
 
 const { confirm } = Modal;
 
 export default function AccessionAcknowledgement() {
   const { userToken } = useContext(MainContext);
-  // const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 
   const { control, errors, reset, getValues } = useForm({
     defaultValues: {
@@ -174,31 +172,6 @@ export default function AccessionAcknowledgement() {
             });
             return;
           }
-          // if (userToken?.portal_exists === "Y" && strAccRej === "R") {
-          //   try {
-          //     const portal_data = {
-          //       service_id: selected_row.service_id,
-          //       visit_code: selected_row.visit_code,
-          //       patient_identity: selected_row.primary_id_no,
-          //       service_status: "ORDERED",
-          //     };
-          //     axios
-          //       .post(`${PORTAL_HOST}info/deletePatientService`, portal_data)
-          //       .then(function (response) {
-          //         //handle success
-          //         console.log(response);
-          //       })
-          //       .catch(function (response) {
-          //         //handle error
-          //         console.log(response);
-          //       });
-          //   } catch (error) {
-          //     AlgaehMessagePop({
-          //       display: error,
-          //       type: "error",
-          //     });
-          //   }
-          // }
           setRemarks("");
           setIsOpen(false);
           refetch();

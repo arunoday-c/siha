@@ -3,7 +3,6 @@ import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import _ from "lodash";
-import axios from "axios";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -13,7 +12,6 @@ const texthandle = ($this, e) => {
     [name]: value,
   });
 };
-const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 export function generateLabResultReport(data) {
   return new Promise((resolve, reject) => {
     let portalParams = {};
@@ -110,50 +108,11 @@ const UpdateLabOrder = ($this, value, status) => {
     onSuccess: (response) => {
       if (response.data.success === true) {
         if (status === "N") {
-          if ($this.state.portal_exists === "Y") {
-            const portal_data = {
-              service_id: $this.state.service_id,
-              visit_code: $this.state.visit_code,
-              patient_identity: $this.state.primary_id_no,
-              service_status: "SAMPLE COLLECTED",
-            };
-            axios
-              .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-              .then(function (response) {
-                //handle success
-                console.log(response);
-              })
-              .catch(function (response) {
-                //handle error
-                console.log(response);
-              });
-          }
           swalMessage({
             type: "success",
             title: "Re-Run Started, Investigation is in Progress . .",
           });
         } else {
-          if (status === "CF" || status === "V" || status === "AV") {
-            if ($this.state.portal_exists === "Y") {
-              const portal_data = {
-                service_id: $this.state.service_id,
-                visit_code: $this.state.visit_code,
-                patient_identity: $this.state.primary_id_no,
-                service_status:
-                  status === "CF" ? "RESULT CONFIRMED" : "RESULT VALIDATED",
-              };
-              axios
-                .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-                .then(function (response) {
-                  //handle success
-                  console.log(response);
-                })
-                .catch(function (response) {
-                  //handle error
-                  console.log(response);
-                });
-            }
-          }
           swalMessage({
             type: "success",
             title: "Done successfully . .",
