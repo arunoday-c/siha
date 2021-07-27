@@ -9,6 +9,7 @@ import compression from "compression";
 // import { userSecurity } from "algaeh-utilities/checksecurity";
 import { authentication } from "algaeh-utilities/authentication";
 import consumerPCR from "./rabbitMQ/consumer";
+import consumerSMSStatus from "./rabbitMQ/consumerSMS";
 const _port = process.env.PORT;
 process.env.MYSQL_KEYS = JSON.stringify(keys.default.mysqlDb);
 process.env.rabbitMQ = JSON.stringify(keys.default.rabbitMQ);
@@ -85,6 +86,8 @@ app.server.listen(_port, () => {
   if (RABBIT_MQ_SERVER && RABBIT_MQ_SERVER !== "") {
     //Start Listing to get PCR reports.
     consumerPCR("UPDATE_BULK_PATIENT_SERVRPT");
+    //Update Lab sms status
+    consumerSMSStatus("SMS_STATUS");
   }
 });
 console.log(`Laboratory Server is running  on PORT  - ${_port} *`);

@@ -5,8 +5,9 @@ export async function getValidatedResult(name, input) {
       uri: "/laboratory/getValidatedResults",
       module: "laboratory",
       method: "GET",
-      data: { ...input, send_sms: "N" },
+      data: { ...input },
     });
+    console.log("result.data====>", result.data);
     if (result.data.success === true) return result.data.records;
     else throw new Error(result.data.message);
   } else {

@@ -23,15 +23,7 @@ export async function sendSMS(data) {
     if (fs.existsSync(filePath)) {
       const html = fs.readFileSync(filePath, "utf-8");
       const result = await hbs.compile(html)(data);
-      console.log(
-        "SMS_GATEWAY_SERVER,SMS_GATEWAY_USER,SMS_GATEWAY_PASSWORD,SMS_GATEWAY_SID,contact_no,message ",
-        SMS_GATEWAY_SERVER,
-        SMS_GATEWAY_USER,
-        SMS_GATEWAY_PASSWORD,
-        SMS_GATEWAY_SID,
-        contact_no,
-        result
-      );
+
       const response = await axios
         .get(SMS_GATEWAY_SERVER ?? "", {
           params: {
@@ -58,7 +50,6 @@ export async function sendSMS(data) {
         let rData = res.split('{"ErrorCode"');
         resData = JSON.parse(`{"ErrorCode"${rData[1]}`);
       }
-
       await updateLabSMSStatus({
         ...resData,
         message: result,
@@ -67,10 +58,12 @@ export async function sendSMS(data) {
         delivery_status: parseInt(resData["ErrorCode"], 10) > 0 ? 1 : 0,
         processed_by,
       });
+      return { ...data, ...resData };
     } else {
       throw new Error("There is no TEMPLATE exists by name " + template);
     }
   } catch (e) {
-    console.error("Error====>", e);
+    console.error(`Error in Send SMS @${new Date().toLocaleString()}===>`, e);
+    throw e;
   }
 }

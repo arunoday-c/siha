@@ -4,6 +4,7 @@ import { Channel } from "amqplib";
 // let channel: Channel | undefined = undefined;
 // import { EXCHANGE_NAME, channelWrapper } from "./";
 import { EXCHANGE_NAME, channelWrapper } from "./rabbitMQ";
+import { publisher } from "./publisher";
 const consumeSMS = async (queueName) => {
   try {
     await channelWrapper.addSetup(async (channel: Channel) => {
@@ -15,30 +16,41 @@ const consumeSMS = async (queueName) => {
         queueName,
         async (message) => {
           const data = JSON.parse(message?.content.toString() ?? "");
-          sendSMS(data);
-          //@ts-ignore
-          channel.ack(message);
+          sendSMS(data)
+            .then(async (result) => {
+              let _MsgId;
+              if (result.MessageData) {
+                if (
+                  Array.isArray(result.MessageData) &&
+                  result.MessageData.length > 0
+                ) {
+                  const { MessageParts } = result.MessageData[0];
+                  if (Array.isArray(MessageParts) && MessageParts.length > 0) {
+                    const { MsgId } = MessageParts[0];
+                    _MsgId = MsgId;
+                  }
+                }
+              }
+              await publisher("SMS_STATUS", {
+                hims_f_lab_order_id: result.hims_f_lab_order_id,
+                message_id: _MsgId,
+                code: result.ErrorCode,
+                message: result.ErrorMessage,
+              });
+            })
+            .finally(() => {
+              //@ts-ignore
+              channel.ack(message);
+            });
         },
         { noAck: false }
       );
     });
-
-    // if (!channel) {
-    //   const connection = await amqpConnection;
-    //   channel = await connection.createChannel();
-    // }
-    // // const connection = await amqpConnection;
-    // // const channel = await connection.createChannel();
-    // await channel.assertQueue(queueName, { durable: true });
-    // channel.prefetch(1);
-    // channel.consume(queueName, async (message) => {
-    //   const data = JSON.parse(message?.content.toString() ?? "");
-
-    //   sendSMS(data);
-    //   channel.ack(message);
-    // });
   } catch (e) {
-    console.error(`Error Consumer ${queueName} ===>`, e);
+    console.error(
+      `Error Consumer ${queueName} @ ${new Date().toLocaleString()}===>`,
+      e
+    );
   }
 };
 consumeSMS("SMS");

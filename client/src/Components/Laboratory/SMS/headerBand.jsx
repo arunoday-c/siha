@@ -33,7 +33,7 @@ export default memo(function HeaderBand(props) {
         setLabState({
           DATE_RANGE: [_from_date, _to_date],
           STATUS: type,
-          TRIGGER_LOAD: undefined,
+          TRIGGER_LOAD: true, //undefined,
         });
         history.push(
           pathName +

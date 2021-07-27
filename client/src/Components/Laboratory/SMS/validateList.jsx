@@ -31,7 +31,11 @@ export default memo(function ValidateList(props) {
   const { refetch } = useQuery(
     [
       "validateList",
-      { from_date: props.from_date, to_date: props.to_date, status: "V" },
+      {
+        from_date: props.from_date,
+        to_date: props.to_date,
+        status: props.status,
+      },
     ],
     getValidatedResult,
     {
@@ -41,27 +45,6 @@ export default memo(function ValidateList(props) {
         swalMessage({ type: "error", title: error });
       },
       onSuccess: (result) => {
-        // let dataSet = [];
-
-        // _.chain(result)
-        //   .groupBy((g) => g.patient_id)
-        //   .forEach((detail) => {
-        //     const nonPCR = _.chain(detail)
-        //       .filter((f) => f.isPCR === "N")
-        //       .maxBy((m) => m.validated_date)
-        //       .value();
-        //     const PCR = _.chain(detail)
-        //       .filter((f) => f.isPCR === "Y")
-        //       .maxBy((m) => m.validated_date)
-        //       .value();
-        //     if (nonPCR) {
-        //       dataSet.push(nonPCR);
-        //     }
-        //     if (PCR) {
-        //       dataSet.push(PCR);
-        //     }
-        //   })
-        //   .value();
         setLabState({ TRIGGER_LOAD: undefined });
         setData(result);
       },
@@ -83,7 +66,6 @@ export default memo(function ValidateList(props) {
       SELECTED_RECORDS: check_state === true ? _data.length : 0,
     });
   }
-
   return (
     <Spin tip="Please Wait..." spinning={loading}>
       <div className="row">
@@ -209,7 +191,34 @@ export default memo(function ValidateList(props) {
                     style: { textAlign: "center" },
                   },
                 },
-              ]}
+              ].concat(
+                props.status === "S"
+                  ? [
+                      {
+                        fieldName: "sms_message_id",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Message ID" }} />
+                        ),
+                      },
+                      {
+                        fieldName: "sms_message_response",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Response Message" }}
+                          />
+                        ),
+                      },
+                      {
+                        fieldName: "sms_response_code",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Response Code" }}
+                          />
+                        ),
+                      },
+                    ]
+                  : []
+              )}
               data={data}
               isFilterable={true}
               pagination={true}
