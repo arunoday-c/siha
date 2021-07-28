@@ -9,11 +9,12 @@ import PatientType from "./PatientType/PatientType.js";
 import VisaType from "./VisaType/VisaType.js";
 import IDType from "./IDType/IDType";
 import VisitType from "./VisitType/VisitType";
+import { PromotionMaster } from "./PromotionMaster";
+import { PortalSetup } from "./PortalSetup";
 // import InsuranceCardClass from "./InsuranceCardClass/InsuranceCardClass";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { AlgaehTabs, MainContext } from "algaeh-react-components";
-import { PromotionMaster } from "./PromotionMaster";
 
 class CommonSetup extends Component {
   constructor(props) {
@@ -94,6 +95,17 @@ class CommonSetup extends Component {
           ),
           children: <PromotionMaster />,
           componentCode: "COMM_PROM_MSTR",
+        },
+        {
+          title: (
+            <AlgaehLabel
+              label={{
+                forceLabel: "Portal Setup",
+              }}
+            />
+          ),
+          children: <PortalSetup />,
+          componentCode: "COMM_PORT_STUP",
         }
       );
     }
