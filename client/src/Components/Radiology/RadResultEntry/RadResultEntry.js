@@ -12,6 +12,7 @@ import {
   AlgaehLabel,
   AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
+import { maxCharactersLeft } from "../../../utils/algaehApiCall";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
@@ -39,6 +40,7 @@ class RadResultEntry extends Component {
       comments: "",
       portal_exists: "N",
     };
+    this.commentsMaxLength = 250;
   }
   static contextType = MainContext;
   componentDidMount() {
@@ -63,6 +65,7 @@ class RadResultEntry extends Component {
       newProps.selectedPatient !== undefined &&
       (newProps.radschlist === undefined || newProps.radschlist.length === 0)
     ) {
+      debugger;
       if (this.state.changesDone === false) {
         newProps.selectedPatient.pre_exam_status =
           newProps.selectedPatient.exam_status;
@@ -70,6 +73,7 @@ class RadResultEntry extends Component {
         this.setState({ ...this.state, ...newProps.selectedPatient });
       }
     } else {
+      debugger;
       this.setState({ ...this.state, ...newProps.radschlist[0] });
     }
   }
@@ -586,9 +590,16 @@ class RadResultEntry extends Component {
                             name="comments"
                             onChange={this.textAreaEvent.bind(this)}
                             rows="11"
-                          >
-                            {this.state.comments}
-                          </textarea>
+                            maxLength={this.commentsMaxLength}
+                          />{" "}
+                          <small className="float-left">
+                            Max Char.
+                            {maxCharactersLeft(
+                              this.commentsMaxLength,
+                              this.state.comments
+                            )}
+                            /{this.commentsMaxLength}
+                          </small>
                         </div>
                       </div>{" "}
                     </div>

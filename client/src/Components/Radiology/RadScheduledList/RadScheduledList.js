@@ -901,6 +901,7 @@ export default function RadScheduledList() {
   };
   const closeResultEntry = () => {
     setResultEntry(!resultEntry);
+    refecthRadList();
 
     // $this.setState(
     //   {
@@ -1006,9 +1007,9 @@ export default function RadScheduledList() {
       );
     }
 
-    if (selectedPatient.patient_id !== null) {
-      inputobj.patient_id = selectedPatient.patient_id;
-    }
+    // if (selectedPatient.patient_id !== null) {
+    //   inputobj.patient_id = selectedPatient.patient_id;
+    // }
 
     // if (status !== null) {
     //   inputobj.status = status;
