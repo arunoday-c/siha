@@ -121,6 +121,19 @@ export function PortalSetup() {
           </div>
         </div>
       </div>
+      <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col-lg-12">
+            <button
+              className="btn btn-primary"
+
+              // onClick={}
+            >
+              Publish to Portal
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
     // </Spin>
   );
