@@ -115,7 +115,7 @@ export default {
               next();
             })
             .catch((e) => {
-              console.log("m4:", e);
+              console.error("m4:", e);
               next(e);
             });
         })
@@ -212,7 +212,7 @@ export default {
               next();
             })
             .catch((e) => {
-              console.log("m4:", e);
+              console.error("m4:", e);
               next(e);
             });
         })
@@ -1291,7 +1291,7 @@ export default {
                       });
                   }
                 }).then((res) => {
-                  console.log("res:", res);
+                  // console.log("res:", res);
                   //ST-profit and loss calculation
                   result.forEach((m) => {
                     if (m.root_id == 4) {
@@ -3266,7 +3266,7 @@ function createHierarchy(
 
     return roots;
   } catch (e) {
-    console.log("MY-ERORR:", e);
+    console.error("MY-ERORR:", e);
   }
 }
 //created by :IRFAN to calculate the amount of account heads
@@ -3342,7 +3342,7 @@ function calcAmount(account_heads, levels, decimal_places) {
       resolve(final_res);
     });
   } catch (e) {
-    console.log("am55:", e);
+    console.error("am55:", e);
     reject(e);
   }
 }
@@ -3427,7 +3427,7 @@ function createHierarchyForDropdown(arry) {
 
     return roots;
   } catch (e) {
-    console.log("MY-ERORR:", e);
+    console.error("MY-ERORR:", e);
   }
 }
 
@@ -3503,7 +3503,7 @@ export function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
               resolve(outputArray[0]);
             })
             .catch((e) => {
-              console.log("m4:", e);
+              console.error("m4:", e);
               next(e);
             });
         })
@@ -3573,7 +3573,7 @@ export async function uploadOBAccounts(req, res, next) {
 
     for (let i = 0; i < input.length; i++) {
       const data = input[i];
-      console.log("data", data);
+      // console.log("data", data);
       const finance_voucher_exit = result[1].filter(
         (f) => f.child_id === data.finance_account_child_id
       );
