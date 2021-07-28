@@ -1,7 +1,7 @@
 import moment from "moment";
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-// import axios from "axios";
+
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -237,26 +237,8 @@ const UpdateRadOrder = ($this, value) => {
             },
           });
 
-          debugger;
           if (value === "validate") {
             if ($this.state.portal_exists === "Y") {
-              // const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
-              // const portal_data = {
-              //   service_id: $this.state.service_id,
-              //   visit_code: $this.state.visit_code,
-              //   patient_identity: $this.state.primary_id_no,
-              //   service_status: "RESULT VALIDATED",
-              // };
-              // axios
-              //   .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-              //   .then(function (response) {
-              //     //handle success
-              //     console.log(response);
-              //   })
-              //   .catch(function (response) {
-              //     //handle error
-              //     console.log(response);
-              //   });
               generateReport($this.state);
             }
           }

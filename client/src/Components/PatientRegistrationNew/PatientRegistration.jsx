@@ -215,7 +215,6 @@ export function PatientRegistration() {
     countries = [],
     selectedMenu,
   } = useContext(MainContext);
-  // const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
   const [openPopup, setOpenPopup] = useState(false);
   const [attachmentVisible, setAttachmentVisible] = useState(false);
   const [priceModalVisible, setPriceModalVisible] = useState(false);
@@ -596,48 +595,6 @@ export function PatientRegistration() {
     const result = await Promise.all(images);
     return result;
   };
-
-  // const insertPatientPortal = (data) => {
-  //   // const result = await newAlgaehApi({
-  //   //   uri: "/appointment/getPatientDetilsByAppId",
-  //   //   module: "frontDesk",
-  //   //   method: "GET",
-  //   //   data: { application_id: appointment_id },
-  //   // });
-  //   // return result?.data?.records;
-  //   data.patient_identity = data.primary_id_no;
-  //   data.corporate_id =
-  //     insuranceInfo === undefined ? null : insuranceInfo.user_id;
-  //   data.identity_type = identity_type ?? "NATIONALITY ID";
-  //   data.patient_name = data.full_name;
-  //   data.patient_dob = data.date_of_birth;
-  //   data.patient_gender = data.gender;
-  //   // data.identity_type = data.primary_id_no;
-  //   data.mobile_no = `${data.tel_code}${data.contact_number}`;
-  //   data.email_id = data.email;
-  //   data.hospital_id = data.hospital_id;
-  //   data.age = data.age;
-  //   data.doctor_id = data.ins_doctor_id;
-  //   data.visit_code = data.visit_code;
-  //   // data.visit_date = data.visit_date).format("YYYY-MM-DD hh:mm:ss");
-  //   try {
-  //     axios
-  //       .post(`${PORTAL_HOST}/info/patientRegistration`, data)
-  //       .then(function (response) {
-  //         //handle success
-  //         console.log(response);
-  //       })
-  //       .catch(function (response) {
-  //         //handle error
-  //         console.log(response);
-  //       });
-  //   } catch (error) {
-  //     AlgaehMessagePop({
-  //       display: error,
-  //       type: "error",
-  //     });
-  //   }
-  // };
 
   const onSubmit = (input) => {
     let inputData;

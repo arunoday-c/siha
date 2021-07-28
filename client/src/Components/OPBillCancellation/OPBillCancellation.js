@@ -30,11 +30,9 @@ import {
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
 import { RawSecurityComponent, MainContext } from "algaeh-react-components";
-// import axios from "axios";
 import swal from "sweetalert2";
 import _ from "lodash";
 
-// const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 class OPBillCancellation extends Component {
   constructor(props) {
     super(props);
@@ -249,33 +247,6 @@ class OPBillCancellation extends Component {
                 AlgaehLoader({ show: false });
 
                 if (response.data.success) {
-                  // if (this.state.portal_exists === "Y") {
-                  //   const package_data = response.data.records.package_data;
-                  //   for (let i = 0; i < package_data.length; i++) {
-                  //     _services_id.push(package_data[i].service_id);
-                  //   }
-                  //   const portal_data = {
-                  //     service_id: _services_id,
-                  //     visit_code: this.state.visit_code,
-                  //     patient_identity: this.state.primary_id_no,
-                  //     delete_data: true,
-                  //   };
-                  //   axios
-                  //     .post(
-                  //       `${PORTAL_HOST}/info/deletePatientService`,
-                  //       portal_data
-                  //     )
-                  //     .then(function (response) {
-                  //       //handle success
-                  //       console.log(response);
-                  //     })
-                  //     .catch(function (response) {
-                  //       //handle error
-                  //       console.log(response);
-                  //     });
-                  // }
-                  // debugger;
-
                   $this.setState({
                     bill_cancel_number: response.data.records.bill_number,
                     receipt_number: response.data.records.receipt_number,

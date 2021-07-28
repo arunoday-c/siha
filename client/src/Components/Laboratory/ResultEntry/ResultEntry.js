@@ -1363,7 +1363,6 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import swal from "sweetalert2";
 import _ from "lodash";
-// import axios from "axios";
 import moment from "moment";
 import "../../../styles/site.scss";
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
@@ -1423,7 +1422,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
   const [edit_units, setEdit_units] = useState(false);
   const [status, setStatus] = useState("");
   let [, setState] = useState();
-  // const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
+
   useEffect(() => {
     setPortal_exists(userToken.portal_exists);
 
@@ -1828,51 +1827,12 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
       method: "PUT",
       onSuccess: (response) => {
         if (response.data.success === true) {
-          if (status === "N") {
-            // if (portal_exists === "Y") {
-            //   const portal_data = {
-            //     service_id: selectedPatient.service_id,
-            //     visit_code: selectedPatient.visit_code,
-            //     patient_identity: selectedPatient.primary_id_no,
-            //     service_status: "SAMPLE COLLECTED",
-            //   };
-            //   axios
-            //     .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-            //     .then(function (response) {
-            //       //handle success
-            //       console.log(response);
-            //     })
-            //     .catch(function (response) {
-            //       //handle error
-            //       console.log(response);
-            //     });
-            // }
+          if (status === "N") {           
             swalMessage({
               type: "success",
               title: "Re-Run Started, Investigation is in Progress . .",
             });
-          } else {
-            // if (status === "CF" || status === "V" || status === "AV") {
-            //   if (portal_exists === "Y") {
-            //     const portal_data = {
-            //       service_id: selectedPatient.service_id,
-            //       visit_code: selectedPatient.visit_code,
-            //       patient_identity: selectedPatient.primary_id_no,
-            //       service_status:
-            //         status === "CF" ? "RESULT CONFIRMED" : "RESULT VALIDATED",
-            //     };
-            //     axios
-            //       .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-            //       .then(function (response) {
-            //         //handle success
-            //         console.log(response);
-            //       })
-            //       .catch(function (response) {
-            //         //handle error
-            //         console.log(response);
-            //       });
-            //   }
-            // }
+          } else {           
             swalMessage({
               type: "success",
               title: "Done successfully . .",
@@ -1888,22 +1848,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
           getAnalytesReload();
           setTest_analytes(value);
           setStatus(status === "AV" ? "V" : status);
-          // setConfirm_by_name(
-          //   response.data.records.confirmed_by
-          //     ? response.data.records.confirmed_by
-          //     : confirm_by_name
-          // );
-          // setEntered_by_name(
-          //   response.data.records.entered_by
-          //     ? response.data.records.entered_by
-          //     : entered_by_name.name
-          // );
-
-          // setValidate_by_name(
-          //   response.data.records.validated_by
-          //     ? response.data.records.validated_by
-          //     : validate_by_name
-          // );
+          
           setRun_type(status === "N" ? last.runtype : run_type);
           setEdit_range(false);
           setEdit_units(false);

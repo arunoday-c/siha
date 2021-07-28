@@ -1396,7 +1396,6 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
     return result?.data?.records;
   }
 
-  // const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
   const CollectSample = (row) => {
     if (row.container_id === null || row.container_id === undefined) {
       swalMessage({
@@ -1456,47 +1455,12 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
       method: "PUT",
       onSuccess: (response) => {
         if (response.data.success === true) {
-          // if (portal_exists === "Y") {
-          //   const portal_data = {
-          //     service_id: row.service_id,
-          //     visit_code: row.visit_code,
-          //     patient_identity: row.primary_id_no,
-          //     service_status: "SAMPLE COLLECTED",
-          //   };
-          //   axios
-          //     .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-          //     .then(function (response) {
-          //       console.log(response);
-          //     })
-          //     .catch(function (response) {
-          //       console.log(response);
-          //     });
-          // }
-
           if (sockets.connected) {
             sockets.emit("specimen_acknowledge", {
               test_details: response.data.records,
               collected_date: response.data.records.collected_date,
             });
           }
-          // for (let i = 0; i < test_details.length; i++) {
-          //   if (test_details[i].hims_f_lab_order_id === row.hims_f_lab_order_id) {
-          //     test_details[i].collected = response.data.records.collected;
-          //     test_details[i].collected_by = response.data.records.collected_by;
-          //     test_details[i].collected_date =
-          //       response.data.records.collected_date;
-          //     test_details[i].barcode_gen = response.data.records.barcode_gen;
-          //     test_details[i].send_in_test = response.data.records.send_in_test;
-          //     test_details[i].lab_id_number = response.data.records.lab_id_number;
-          //     test_details[i].status = response.data.records.status;
-          //   }
-          // }
-
-          // getSampleCollectionDetails( {
-          //   patient_id: row.patient_id,
-          //   visit_id: row.visit_id,
-          //   collected: "Y",
-          // });
           labOrderRefetch();
 
           swalMessage({
@@ -1578,12 +1542,6 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
         portal_exists: portal_exists,
       };
     });
-    // console.log(
-    //   "filterData",
-    //   filterData,
-    //   process.env.REACT_APP_PORTAL_HOST,
-    //   PORTAL_HOST
-    // );
     if (filterData.length > 0) {
       algaehApiCall({
         uri: "/laboratory/bulkSampleCollection",

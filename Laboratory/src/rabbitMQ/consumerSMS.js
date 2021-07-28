@@ -1,6 +1,6 @@
 import { channelWrapper, EXCHANGE_NAME } from "./connection";
-import { reportPCR } from "../models/bulkReportProcess";
-async function consumerPCR(queueName) {
+import { updateSMSStatus } from "../models/labSMS";
+async function consumerSMSStatus(queueName) {
   try {
     await channelWrapper.addSetup(async (channel) => {
       await channel.assertExchange(EXCHANGE_NAME, "direct", { durable: true });
@@ -11,24 +11,16 @@ async function consumerPCR(queueName) {
         queueName,
         async (message) => {
           const data = JSON.parse(message?.content.toString() ?? "");
+
           //Here it is data.
-          await reportPCR(data)
+          await updateSMSStatus(data)
             .then(() => {
-              setTimeout(async () => {
-                //@ts-ignore
-                await channel.ack(message);
-              }, 20000);
+              //@ts-ignore
+              channel.ack(message);
             })
-            .catch((e) => {
-              setTimeout(async () => {
-                //@ts-ignore
-                await channel.nack(message, false, true);
-                console.error(
-                  `Exchange/Queue :${EXCHANGE_NAME} / ${queueName},@:${new Date().toLocaleString()} 
-              ==>`,
-                  data
-                );
-              }, 20000);
+            .catch(() => {
+              //@ts-ignore
+              channel.nack(message, false, true);
             });
         },
         { noAck: false }
@@ -42,4 +34,4 @@ async function consumerPCR(queueName) {
   }
 }
 
-export default consumerPCR;
+export default consumerSMSStatus;

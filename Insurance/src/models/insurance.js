@@ -4,6 +4,12 @@ import mysql from "mysql";
 import _ from "lodash";
 import extend from "extend";
 import axios from "axios";
+import "regenerator-runtime/runtime";
+import dotenv from "dotenv";
+if (process.env.NODE_ENV !== "production") dotenv.config();
+// const { PORTAL_HOST } = process.env;
+const processENV = process.env;
+const PORTAL_HOST = processENV.PORTAL_HOST ?? "http://localhost:4402/api/v1/";
 
 export default {
   //Addded by noor code modification
@@ -327,10 +333,12 @@ export default {
     const _mysql = new algaehMysql();
     try {
       _mysql
-        .executeQuery({
+        .executeQueryWithTransaction({
           query:
             "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
-            select finance_account_head_id from finance_account_head where account_code='1.2.3.1' limit 1;",
+            select finance_account_head_id from finance_account_head where account_code='1.2.3.1' limit 1;\
+            SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=?",
+          values: [req.userIdentity.hospital_id],
           printQuery: false,
         })
         .then((result) => {
@@ -374,7 +382,7 @@ export default {
                 ];
 
                 _mysql
-                  .executeQuery({
+                  .executeQueryWithTransaction({
                     query: "INSERT INTO hims_d_insurance_sub(??) VALUES ?",
                     values: input,
                     includeValues: insurtColumns,
@@ -390,12 +398,49 @@ export default {
                     },
                     printQuery: false,
                   })
-                  .then((sunIns) => {
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = sunIns;
-                      next();
-                    });
+                  .then(async (sunIns) => {
+                    const portal_exists = result[2][0].portal_exists;
+
+                    // console.log("portal_exists", portal_exists);
+                    // console.log("insurance_type", input[0].insurance_type);
+                    // consol.log("insurance_type", input[0].insurance_type);
+
+                    if (
+                      portal_exists === "Y" &&
+                      input[0].insurance_type === "C"
+                    ) {
+                      const eff_end_date = moment(
+                        input[0].effective_end_date
+                      ).format("YYYYMMDD");
+                      const firstFourLetters = String(input[0].user_id)
+                        .substring(0, 4)
+                        .toUpperCase();
+                      const password = `${firstFourLetters}${eff_end_date}`;
+
+                      const portal_data = {
+                        user_id: input[0].user_id,
+                        password: password,
+                      };
+
+                      console.log("portal_data", portal_data);
+                      // consol.log("portal_data", portal_data);
+                      await axios
+                        .post(`${PORTAL_HOST}/info/userCreation`, portal_data)
+                        .catch((e) => {
+                          throw e;
+                        });
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = sunIns;
+                        next();
+                      });
+                    } else {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = sunIns;
+                        next();
+                      });
+                    }
                   })
                   .catch((error) => {
                     _mysql.rollBackTransaction(() => {
@@ -419,10 +464,13 @@ export default {
               "transaction_number",
               "effective_start_date",
               "effective_end_date",
+              "user_id",
+              "creidt_limit",
+              "creidt_limit_req",
             ];
 
             _mysql
-              .executeQuery({
+              .executeQueryWithTransaction({
                 query: "INSERT INTO hims_d_insurance_sub(??) VALUES ?",
                 values: input,
                 includeValues: insurtColumns,
@@ -435,11 +483,45 @@ export default {
                 },
                 printQuery: false,
               })
-              .then((result) => {
-                _mysql.releaseConnection();
-                req.records = result;
+              .then(async (result) => {
+                const portal_exists = result[2][0].portal_exists;
 
-                next();
+                // console.log("portal_exists", portal_exists);
+                // console.log("insurance_type", input[0].insurance_type);
+                // consol.log("insurance_type", input[0].insurance_type);
+                if (portal_exists === "Y" && input[0].insurance_type === "C") {
+                  const eff_end_date = moment(
+                    input[0].effective_end_date
+                  ).format("YYYYMMDD");
+                  const firstFourLetters = String(input[0].user_id)
+                    .substring(0, 4)
+                    .toUpperCase();
+                  const password = `${firstFourLetters}${eff_end_date}`;
+
+                  const portal_data = {
+                    user_id: input[0].user_id,
+                    password: password,
+                  };
+
+                  console.log("portal_data", portal_data);
+                  // consol.log("portal_data", portal_data);
+                  await axios
+                    .post(`${PORTAL_HOST}/info/userCreation`, portal_data)
+                    .catch((e) => {
+                      throw e;
+                    });
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = sunIns;
+                    next();
+                  });
+                } else {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = sunIns;
+                    next();
+                  });
+                }
               })
               .catch((error) => {
                 _mysql.releaseConnection();
