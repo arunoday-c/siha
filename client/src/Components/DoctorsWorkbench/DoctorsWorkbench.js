@@ -161,11 +161,14 @@ class DoctorsWorkbench extends Component {
       onSuccess: (response) => {
         // console.log("response.data", response.data.records);
         const { success, records } = response.data;
-        if (success && records.length > 0) {
+        if (success) {
           this.setState({
             appointments: records,
           });
         }
+        // else{
+
+        // }
       },
       onCatch: (error) => {
         swalMessage({
@@ -259,7 +262,7 @@ class DoctorsWorkbench extends Component {
         onSuccess: (response) => {
           if (response.data.success) {
             const _selecDate = new Date(dateRange.activeDateHeader).setDate(1);
-            debugger;
+
             if (Array.isArray(response.data.records)) {
               this.setState(
                 {
@@ -576,7 +579,6 @@ class DoctorsWorkbench extends Component {
                   >
                     {this.state.appointments.length !== 0 ? (
                       this.state.appointments.map((data, index) => {
-                        debugger;
                         return (
                           <li
                             key={index}
