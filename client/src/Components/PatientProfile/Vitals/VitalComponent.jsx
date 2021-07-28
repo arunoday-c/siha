@@ -10,11 +10,8 @@ import { temperatureConvertion } from "./VitalsHandlers";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import moment from "moment";
 import config from "../../../utils/config.json";
-// import _ from "lodash";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import axios from "axios";
 import { MainContext } from "algaeh-react-components";
-const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 class VitalComponent extends Component {
   constructor(props) {
     super(props);
@@ -34,8 +31,8 @@ class VitalComponent extends Component {
         let bodyArray = [];
         const _elements = document.querySelectorAll("[vitalid]");
         let resetElements = {};
-        const userToken = this.context.userToken;
-        let portal_data = [];
+        // const userToken = this.context.userToken;
+        // let portal_data = [];
         for (let i = 0; i < _elements.length; i++) {
           const inputElement = _elements[i].querySelector("input");
           const elementName = inputElement.getAttribute("name");
@@ -43,7 +40,25 @@ class VitalComponent extends Component {
           if (_elements[i].value !== "") {
             // const { visit_id, current_patient, case_type } = Window.global;
             const _isDepended = _elements[i].getAttribute("dependent");
+            // let inputObj = {};
+            // if (_elements[i].children[0].value) {
+            //   inputObj = {
+            //     patient_identity: this.props.primary_id_no,
+            //     visit_code: this.props.visit_code,
+            //     // visit_date: this.props.state.recorded_date,
+            //     visit_date: moment(this.props.state.recorded_date).format(
+            //       "YYYY-MM-DD hh:mm:ss"
+            //     ),
+            //     vital_name: elementName,
+            //     vital_value: _elements[i].children[0].value,
+            //     formula_value: _elements[i].getAttribute("formula_value"),
+            //   };
+            // }
+
             bodyArray.push({
+              primary_id_no: this.props.primary_id_no,
+              visit_code: this.props.visit_code,
+              vital_name: elementName,
               patient_id: this.props.current_patient, //Window.global["current_patient"],
               visit_id: this.props.visit_id, //Window.global["visit_id"],
               visit_date: this.props.state.recorded_date,
@@ -59,90 +74,14 @@ class VitalComponent extends Component {
                   : null,
               formula_value: _elements[i].getAttribute("formula_value"),
             });
-            // debugger;
-            if (_elements[i].children[0].value) {
-              portal_data.push({
-                patient_identity: this.props.primary_id_no,
-                visit_code: this.props.visit_code,
-                // visit_date: this.props.state.recorded_date,
-                visit_date: moment(this.props.state.recorded_date).format(
-                  "YYYY-MM-DD hh:mm:ss"
-                ),
-                hospital_id: userToken.hospital_id,
-                vital_name: elementName,
-                vital_value: _elements[i].children[0].value,
-                formula_value: _elements[i].getAttribute("formula_value"),
-              });
-            }
-            // if (elementName === "heart rate") {
-            //   portal_data = {
-            //     ...portal_data,
-            //     heart_rate: _elements[i].children[0].value
-            //       ? _elements[i].children[0].value
-            //       : 0.0,
-            //   };
-            // } else if (elementName === "respiratory rate") {
-            //   portal_data = {
-            //     ...portal_data,
-            //     respiratory_rate: _elements[i].children[0].value
-            //       ? _elements[i].children[0].value
-            //       : 0.0,
-            //   };
-            // } else if (elementName === "o2 sat") {
-            //   portal_data = {
-            //     ...portal_data,
-            //     o2_sat: _elements[i].children[0].value
-            //       ? _elements[i].children[0].value
-            //       : 0.0,
-            //   };
-            // } else if (elementName === "bp systolic") {
-            //   portal_data = {
-            //     ...portal_data,
-            //     bp_systolic: _elements[i].children[0].value
-            //       ? _elements[i].children[0].value
-            //       : 0.0,
-            //   };
-            // } else if (elementName === "bp diastolic") {
-            //   portal_data = {
-            //     ...portal_data,
-            //     bp_diastolic: _elements[i].children[0].value
-            //       ? _elements[i].children[0].value
-            //       : 0.0,
-            //   };
-            // } else {
-            //   portal_data = {
-            //     ...portal_data,
-            //     [elementName]: _elements[i].children[0].value
-            //       ? _elements[i].children[0].value
-            //       : 0.0,
-            //   };
-            // }
           }
         }
-
-        // console.lo("11");
-        debugger;
-
         algaehApiCall({
           uri: "/doctorsWorkBench/addPatientVitals",
           method: "POST",
           data: bodyArray,
           onSuccess: (response) => {
             if (response.data.success) {
-              const userToken = this.context.userToken;
-
-              if (userToken.portal_exists === "Y") {
-                axios
-                  .post(`${PORTAL_HOST}/info/patientVitals`, portal_data)
-                  .then(function (response) {
-                    //handle success
-                    console.log(response);
-                  })
-                  .catch(function (response) {
-                    //handle error
-                    console.log(response);
-                  });
-              }
               swalMessage({
                 title: "Vitals recorded successfully . .",
                 type: "success",

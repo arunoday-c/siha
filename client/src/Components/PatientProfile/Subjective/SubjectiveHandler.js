@@ -149,13 +149,12 @@ export default function SubjectiveHandler() {
         diagnosis_type: row.diagnosis_type,
         final_daignosis: row.final_daignosis,
         record_status: "A",
-      };
-      const portal_data = {
+
         patient_identity: $this.props.pat_profile.primary_id_no,
         visit_code: $this.props.pat_profile.visit_code,
-        diagnosis_type: row.diagnosis_type === "P" ? "Primary" : "Secondary",
         daignosis_name: row.icd_description,
       };
+
       algaehApiCall({
         uri: "/doctorsWorkBench/updatePatientDiagnosis",
         data: data,
@@ -166,9 +165,6 @@ export default function SubjectiveHandler() {
               title: "Record updated successfully . .",
               type: "success",
             });
-            if ($this.state.portal_exists === "Y") {
-              portalinserUpdateVisitDiagnosis($this, portal_data);
-            }
             getPatientDiagnosis($this);
           }
         },
@@ -208,7 +204,8 @@ export default function SubjectiveHandler() {
             if (forceSave === "forceSave") {
               swalMessage({
                 // title: "Saved Successfully",
-                html: "Chief Complaint, Significant Signs and Other Comments</br></br> <b>Saved Successfully</b>",
+                html:
+                  "Chief Complaint, Significant Signs and Other Comments</br></br> <b>Saved Successfully</b>",
                 type: "success",
               });
             }
@@ -228,12 +225,12 @@ export default function SubjectiveHandler() {
             other_signs: $this.state.other_signs,
             significant_signs: $this.state.significant_signs,
             encounter_id: encounter_id, // Window.global.encounter_id
+            primary_id_no: $this.props.pat_profile.primary_id_no,
+            visit_code: $this.props.pat_profile.visit_code,
+            visit_date: $this.props.pat_profile.Encounter_Date,
           },
           onSuccess: (response) => {
             if (response.data.success) {
-              if ($this.state.portal_exists === "Y") {
-                portalinserUpdateVisitData($this);
-              }
             }
           },
         });
@@ -247,6 +244,7 @@ export default function SubjectiveHandler() {
         return;
       }
       let patChiefComp = [];
+      debugger;
       patChiefComp.push({
         hims_f_episode_chief_complaint_id:
           $this.state.hims_f_episode_chief_complaint_id,
@@ -261,6 +259,11 @@ export default function SubjectiveHandler() {
         chronic: $this.state.chronic,
         complaint_type: $this.state.complaint_type,
         lmp_days: $this.state.lmp_days,
+        primary_id_no: $this.props.pat_profile.primary_id_no,
+        visit_code: $this.props.pat_profile.visit_code,
+        Encounter_Date: $this.props.pat_profile.Encounter_Date,
+        significant_signs: $this.state.significant_signs,
+        other_signs: $this.state.other_signs,
       });
       algaehApiCall({
         uri: "/doctorsWorkBench/updatePatientChiefComplaints",
@@ -268,14 +271,11 @@ export default function SubjectiveHandler() {
         data: { chief_complaints: patChiefComp },
         onSuccess: (response) => {
           if (response.data.success) {
-            if ($this.state.portal_exists === "Y") {
-              portalinserUpdateVisitData($this);
-            }
-
             if (forceSave === "forceSave") {
               swalMessage({
                 // title: "Updated Successfully",
-                html: "Chief Complaint, Significant Signs and Other Comments</br></br> <b>Saved Successfully</b>",
+                html:
+                  "Chief Complaint, Significant Signs and Other Comments</br></br> <b>Saved Successfully</b>",
                 type: "success",
               });
             }
@@ -301,12 +301,12 @@ export default function SubjectiveHandler() {
             other_signs: $this.state.other_signs,
             significant_signs: $this.state.significant_signs,
             encounter_id: encounter_id, //Window.global.encounter_id
+            primary_id_no: $this.props.pat_profile.primary_id_no,
+            visit_code: $this.props.pat_profile.visit_code,
+            visit_date: $this.props.pat_profile.Encounter_Date,
           },
           onSuccess: (response) => {
             if (response.data.success) {
-              if ($this.state.portal_exists === "Y") {
-                portalinserUpdateVisitData($this);
-              }
             }
           },
         });
@@ -456,20 +456,16 @@ function insertFinalICDS($this, row) {
     episode_id: episode_id, //Window.global["episode_id"],
     visit_id: visit_id, //Window.global["visit_id"],
     final_daignosis: "Y",
+
+    primary_id_no: $this.props.pat_profile.primary_id_no,
+    visit_code: $this.props.pat_profile.visit_code,
+    daignosis_name: row.icd_description,
   });
 
-  const portal_data = {
-    patient_identity: $this.props.pat_profile.primary_id_no,
-    visit_code: $this.props.pat_profile.visit_code,
-    diagnosis_type: diagnosis_type === "P" ? "Primary" : "Secondary",
-    daignosis_name: row.icd_description,
-    hospital_id: $this.state.hospital_id,
-  };
-
-  saveDiagnosis($this, insertfinalICDS, portal_data);
+  saveDiagnosis($this, insertfinalICDS);
 }
 
-function saveDiagnosis($this, data, portal_data) {
+function saveDiagnosis($this, data) {
   algaehApiCall({
     uri: "/doctorsWorkBench/addPatientDiagnosis",
     data: data,
@@ -477,10 +473,6 @@ function saveDiagnosis($this, data, portal_data) {
     onSuccess: (response) => {
       if (response.data.success === true) {
         getPatientDiagnosis($this);
-        debugger;
-        if ($this.state.portal_exists === "Y") {
-          portalinserUpdateVisitDiagnosis($this, portal_data);
-        }
 
         swalMessage({
           title: "Record Added successfully . .",
@@ -507,18 +499,18 @@ function showconfirmDialog($this, row) {
     cancelButtonText: "Cancel",
   }).then((willDelete) => {
     if (willDelete.value) {
+      debugger;
       let data = {
         hims_f_patient_diagnosis_id: row.hims_f_patient_diagnosis_id,
         diagnosis_type: row.diagnosis_type,
         final_daignosis: row.final_daignosis,
         record_status: "I",
-      };
-      const portal_data = {
         patient_identity: $this.props.pat_profile.primary_id_no,
         visit_code: $this.props.pat_profile.visit_code,
         daignosis_name: row.icd_description,
         delete_data: true,
       };
+
       algaehApiCall({
         uri: "/doctorsWorkBench/updatePatientDiagnosis",
         data: data,
@@ -529,10 +521,6 @@ function showconfirmDialog($this, row) {
               title: "Record deleted successfully . .",
               type: "success",
             });
-
-            if ($this.state.portal_exists === "Y") {
-              portalinserUpdateVisitDiagnosis($this, portal_data);
-            }
 
             getPatientDiagnosis($this);
           }
@@ -603,41 +591,6 @@ export function IcdCodeForChronic(cb) {
       cb(row);
     },
   });
-}
-
-function portalinserUpdateVisitData($this) {
-  const portal_data = {
-    patient_identity: $this.props.pat_profile.primary_id_no,
-    visit_code: $this.props.pat_profile.visit_code,
-    visit_date: $this.props.pat_profile.Encounter_Date,
-    chief_compliant: $this.state.chief_complaint,
-    significant_signs: $this.state.significant_signs,
-    other_signs: $this.state.other_signs,
-    hospital_id: $this.state.hospital_id,
-  };
-  axios
-    .post(`${PORTAL_HOST}/info/patientVisitDetails`, portal_data)
-    .then(function (response) {
-      //handle success
-      console.log(response);
-    })
-    .catch(function (response) {
-      //handle error
-      console.log(response);
-    });
-}
-
-function portalinserUpdateVisitDiagnosis($this, portal_data) {
-  axios
-    .post(`${PORTAL_HOST}/info/patientVisitDiagnosis`, portal_data)
-    .then(function (response) {
-      //handle success
-      console.log(response);
-    })
-    .catch(function (response) {
-      //handle error
-      console.log(response);
-    });
 }
 
 function portalDeleteUpdateVisitDiagnosis($this, portal_data) {

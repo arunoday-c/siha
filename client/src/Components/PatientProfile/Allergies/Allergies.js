@@ -26,12 +26,10 @@ import Enumerable from "linq";
 import Options from "../../../Options.json";
 import { Select, Divider, Input } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import axios from "axios";
 import { MainContext } from "algaeh-react-components";
 
 const { Option } = Select;
 // let index = 0;
-const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 class Allergies extends Component {
   constructor(props) {
     super(props);
@@ -196,29 +194,13 @@ class Allergies extends Component {
         severity: this.state.allergy_severity,
         comment: this.state.allergy_comment,
         allergy_inactive: this.state.allergy_inactive,
+
+        primary_id_no: this.props.primary_id_no,
+        allergy_type: this.state.allergy_type,
+        allergy_name: this.state.allergy_name,
       },
       onSuccess: (response) => {
         if (response.data.success) {
-          const data = {
-            patient_identity: this.props.primary_id_no,
-            allergy_type: this.state.allergy_type,
-            allergy_name: this.state.allergy_name,
-            allergy_status: "ACTIVE",
-            update_type: "HOSPITAL",
-          };
-
-          if (this.state.portal_exists === "Y") {
-            axios
-              .post(`${PORTAL_HOST}/info/patientAllergy`, data)
-              .then(function (response) {
-                //handle success
-                console.log(response);
-              })
-              .catch(function (response) {
-                //handle error
-                console.log(response);
-              });
-          }
           getPatientAllergies(this);
           this.resetAllergies();
           swalMessage({
@@ -287,52 +269,33 @@ class Allergies extends Component {
       cancelButtonText: "No",
     }).then((willDelete) => {
       if (willDelete.value) {
+        const allergy_type =
+          row.allergy_type === "F"
+            ? "Food"
+            : row.allergy_type === "A"
+            ? "Airborne"
+            : row.allergy_type === "AI"
+            ? "Animal and Insect"
+            : row.allergy_type === "C"
+            ? "Chemical and Others"
+            : row.allergy_type === "N"
+            ? "NKA"
+            : row.allergy_type === "D"
+            ? "Drug"
+            : null;
         let data = {
-          allergy_inactive: row.allergy_inactive,
-          comment: row.comment,
-          onset: row.onset,
-          severity: row.severity,
-          onset_date: row.onset_date,
+          delete_data: true,
           record_status: "I",
           hims_f_patient_allergy_id: row.hims_f_patient_allergy_id,
+          allergy_type: allergy_type,
+          primary_id_no: this.props.primary_id_no,
+          allergy_name: row.allergy_name,
         };
         algaehApiCall({
           uri: "/doctorsWorkBench/updatePatientAllergy",
           data: data,
           method: "PUT",
           onSuccess: (response) => {
-            const data = {
-              patient_identity: this.props.primary_id_no,
-              allergy_type:
-                row.allergy_type === "F"
-                  ? "Food"
-                  : data.allergy_type === "A"
-                  ? "Airborne "
-                  : data.allergy_type === "AI"
-                  ? "Animal and Insect"
-                  : data.allergy_type === "C"
-                  ? "Chemical and Others"
-                  : data.allergy_type === "N"
-                  ? "NKA"
-                  : data.allergy_type === "D"
-                  ? "Drug "
-                  : null,
-              allergy_name: row.allergy_name,
-              allergy_status: "INACTIVE",
-              update_type: "HOSPITAL",
-            };
-            if (this.state.portal_exists === "Y") {
-              axios
-                .post(`${PORTAL_HOST}/info/patientAllergy`, data)
-                .then(function (response) {
-                  //handle success
-                  console.log(response);
-                })
-                .catch(function (response) {
-                  //handle error
-                  console.log(response);
-                });
-            }
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",

@@ -58,10 +58,6 @@ import {
 import VitalsHistory from "../PatientProfile/Vitals/VitalsHistory";
 import ModalMedicalRecord from "../DoctorsWorkbench/ModalForMedicalRecordPat";
 import AllServicesModal from "./AllServicesModal";
-import axios from "axios";
-
-const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
-
 class NurseWorkbench extends Component {
   constructor(props) {
     super(props);
@@ -253,6 +249,20 @@ class NurseWorkbench extends Component {
         allergyNameErrorText: "Required",
       });
     }
+    const allergy_type =
+      this.state.allergy_value === "F"
+        ? "Food"
+        : this.state.allergy_value === "A"
+        ? "Airborne"
+        : this.state.allergy_value === "AI"
+        ? "Animal and Insect"
+        : this.state.allergy_value === "C"
+        ? "Chemical and Others"
+        : this.state.allergy_value === "N"
+        ? "NKA"
+        : this.state.allergy_value === "D"
+        ? "Drug"
+        : null;
     algaehApiCall({
       uri: "/doctorsWorkBench/addPatientNewAllergy",
       method: "POST",
@@ -264,45 +274,12 @@ class NurseWorkbench extends Component {
         severity: this.state.allergy_severity,
         comment: this.state.allergy_comment,
         allergy_inactive: this.state.allergy_inactive,
+        allergy_type: allergy_type,
+        primary_id_no: this.state.primary_id_no,
+        allergy_name: this.state.allergy_name,
       },
       onSuccess: (response) => {
         if (response.data.success) {
-          debugger;
-          if (this.state.portal_exists === "Y") {
-            const data = {
-              patient_identity: this.state.primary_id_no,
-              allergy_type:
-                this.state.allergy_value === "F"
-                  ? "Food"
-                  : this.state.allergy_value === "A"
-                  ? "Airborne"
-                  : this.state.allergy_value === "AI"
-                  ? "Animal and Insect"
-                  : this.state.allergy_value === "C"
-                  ? "Chemical and Others"
-                  : this.state.allergy_value === "N"
-                  ? "NKA"
-                  : this.state.allergy_value === "D"
-                  ? "Drug"
-                  : null,
-              allergy_name: this.state.allergy_name,
-              allergy_status: "ACTIVE",
-              update_type: "HOSPITAL",
-            };
-
-            debugger;
-            axios
-              .post(`${PORTAL_HOST}/info/patientAllergy`, data)
-              .then(function (response) {
-                //handle success
-                console.log(response);
-              })
-              .catch(function (response) {
-                //handle error
-                console.log(response);
-              });
-          }
-
           getPatientAllergies(this);
           this.resetAllergies();
           swalMessage({
@@ -426,14 +403,28 @@ class NurseWorkbench extends Component {
       cancelButtonText: "No",
     }).then((willDelete) => {
       if (willDelete.value) {
+        const allergy_type =
+          row.allergy_type === "F"
+            ? "Food"
+            : row.allergy_type === "A"
+            ? "Airborne"
+            : row.allergy_type === "AI"
+            ? "Animal and Insect"
+            : row.allergy_type === "C"
+            ? "Chemical and Others"
+            : row.allergy_type === "N"
+            ? "NKA"
+            : row.allergy_type === "D"
+            ? "Drug"
+            : null;
+        debugger;
         let data = {
-          allergy_inactive: row.allergy_inactive,
-          comment: row.comment,
-          onset: row.onset,
-          severity: row.severity,
-          onset_date: row.onset_date,
+          delete_data: true,
           record_status: "I",
           hims_f_patient_allergy_id: row.hims_f_patient_allergy_id,
+          allergy_type: allergy_type,
+          primary_id_no: this.state.primary_id_no,
+          allergy_name: row.allergy_name,
         };
         algaehApiCall({
           uri: "/doctorsWorkBench/updatePatientAllergy",
