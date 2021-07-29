@@ -3,6 +3,13 @@ import _ from "lodash";
 import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 import moment from "moment";
+import axios from "axios";
+import "regenerator-runtime/runtime";
+import dotenv from "dotenv";
+if (process.env.NODE_ENV !== "production") dotenv.config();
+
+const processENV = process.env;
+const PORTAL_HOST = processENV.PORTAL_HOST ?? "http://localhost:4402/api/v1/";
 
 export default {
   addCreidtSettlement: (req, res, next) => {
@@ -72,7 +79,11 @@ export default {
 
               _mysql
                 .executeQuery({
-                  query: "INSERT INTO hims_f_credit_detail(??) VALUES ?",
+                  query:
+                    "INSERT INTO hims_f_credit_detail(??) VALUES ?; \
+                  SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=" +
+                    req.userIdentity.hospital_id +
+                    ";",
                   values: inputParam.criedtdetails,
                   includeValues: IncludeValues,
                   extraValues: {
@@ -81,15 +92,61 @@ export default {
                   bulkInsertOrUpdate: true,
                   printQuery: true,
                 })
-                .then((leave_detail) => {
+                .then(async (credit_detail) => {
+                  const portal_exists = credit_detail[1][0].portal_exists;
+                  console.log("portal_exists", portal_exists);
                   //   _mysql.commitTransaction(() => {
                   //     _mysql.releaseConnection();
-                  req.records = {
-                    credit_number: credit_number,
-                    hims_f_credit_header_id: headerResult.insertId,
-                    receipt_number: req.records.receipt_number,
-                  };
-                  next();
+
+                  if (portal_exists === "Y") {
+                    let service_id = [];
+
+                    for (let i = 0; i < inputParam.criedtdetails.length; i++) {
+                      if (
+                        parseFloat(
+                          inputParam.criedtdetails[i].balance_amount
+                        ) === 0
+                      ) {
+                        inputParam.criedtdetails[i].service_data.map((o) => {
+                          service_id.push(o.services_id);
+                          return o.services_id;
+                        });
+                      }
+                    }
+
+                    const portal_data = {
+                      service_id: service_id,
+                      visit_code: inputParam.criedtdetails[0].visit_code,
+                      patient_identity:
+                        inputParam.criedtdetails[0].primary_id_no,
+                      report_download: "Y",
+                    };
+
+                    console.log("portal_data", portal_data);
+                    // consol.log("portal_data", portal_data);
+                    await axios
+                      .post(
+                        `${PORTAL_HOST}/info/deletePatientService`,
+                        portal_data
+                      )
+                      .catch((e) => {
+                        throw e;
+                      });
+                    req.records = {
+                      credit_number: credit_number,
+                      hims_f_credit_header_id: headerResult.insertId,
+                      receipt_number: req.records.receipt_number,
+                    };
+                    next();
+                  } else {
+                    req.records = {
+                      credit_number: credit_number,
+                      hims_f_credit_header_id: headerResult.insertId,
+                      receipt_number: req.records.receipt_number,
+                    };
+                    next();
+                  }
+
                   //   });
                 })
                 .catch((error) => {

@@ -6,6 +6,15 @@ import logUtils from "../utils/logging";
 import { LINQ } from "node-linq";
 import moment from "moment";
 import algaehMysql from "algaeh-mysql";
+
+import axios from "axios";
+import "regenerator-runtime/runtime";
+import dotenv from "dotenv";
+if (process.env.NODE_ENV !== "production") dotenv.config();
+// const { PORTAL_HOST } = process.env;
+const processENV = process.env;
+const PORTAL_HOST = processENV.PORTAL_HOST ?? "http://localhost:4402/api/v1/";
+
 const keyPath = require("algaeh-keys/keys");
 
 const { debugFunction, debugLog } = logUtils;
@@ -451,41 +460,93 @@ let deletePatientPrescription = (req, res, next) => {
       .executeQueryWithTransaction({
         query:
           "DELETE FROM hims_f_prescription_detail  WHERE hims_f_prescription_detail_id=?; \
-          DELETE FROM hims_f_medication_approval where prescription_detail_id=?",
+          DELETE FROM hims_f_medication_approval where prescription_detail_id=?;\
+          SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=? ",
         values: [
           input.hims_f_prescription_detail_id,
           input.hims_f_prescription_detail_id,
+          req.userIdentity.hospital_id,
         ],
         printQuery: true,
       })
-      .then((result) => {
+      .then(async (result) => {
+        const portal_exists = result[2][0].portal_exists;
+
+        // console.log("portal_exists", portal_exists);
+        // consol.log("portal_exists", portal_exists);
+
         if (input.hims_f_chronic_id !== null) {
-          try {
-            _mysql
-              .executeQuery({
-                query: `Delete from hims_f_chronic Where hims_f_chronic_id =?`,
-                values: [input.hims_f_chronic_id],
-                printQuery: true,
-              })
-              .then((result) => {
-                _mysql.releaseConnection();
-                req.records = result;
-                next();
-              })
-              .catch((error) => {
-                _mysql.releaseConnection();
+          _mysql
+            .executeQuery({
+              query: `Delete from hims_f_chronic Where hims_f_chronic_id =?`,
+              values: [input.hims_f_chronic_id],
+              printQuery: true,
+            })
+            .then(async (result) => {
+              if (portal_exists === "Y") {
+                const portal_data = {
+                  patient_identity: input.primary_id_no,
+                  item_name: input.item_description,
+                  visit_code: input.visit_code,
+                  delete_data: true,
+                };
+
+                // console.log("portal_data", portal_data);
+                // consol.log("portal_data", portal_data);
+                await axios
+                  .post(
+                    `${PORTAL_HOST}/info/deletePatientMedication`,
+                    portal_data
+                  )
+                  .catch((e) => {
+                    throw e;
+                  });
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = result;
+                  next();
+                });
+              } else {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = result;
+                  next();
+                });
+              }
+            })
+            .catch((error) => {
+              _mysql.rollBackTransaction(() => {
                 next(error);
               });
-          } catch (e) {
-            _mysql.releaseConnection();
-            next(e);
-          }
+            });
         } else {
-          _mysql.commitTransaction(() => {
-            _mysql.releaseConnection();
-            req.records = result;
-            next();
-          });
+          if (portal_exists === "Y") {
+            const portal_data = {
+              patient_identity: input.primary_id_no,
+              item_name: input.item_description,
+              visit_code: input.visit_code,
+              delete_data: true,
+            };
+
+            // console.log("else portal_data", portal_data);
+            // consol.log("portal_data", portal_data);
+            await axios
+              .post(`${PORTAL_HOST}/info/deletePatientMedication`, portal_data)
+              .catch((e) => {
+                throw e;
+              });
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            });
+          } else {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            });
+          }
         }
       })
       .catch((error) => {
@@ -494,8 +555,9 @@ let deletePatientPrescription = (req, res, next) => {
         });
       });
   } catch (e) {
-    _mysql.releaseConnection();
-    next(e);
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
   }
 };
 
@@ -605,7 +667,7 @@ let addPatientPrescription = (req, res, next) => {
           new Date(),
           req.userIdentity.hospital_id,
         ],
-        printQuery: false,
+        printQuery: true,
       })
       .then((result) => {
         req.body.prescription_id = result.insertId;
@@ -632,16 +694,170 @@ let addPatientPrescription = (req, res, next) => {
 
         _mysql
           .executeQueryWithTransaction({
-            query: "INSERT INTO hims_f_prescription_detail(??) VALUES ?",
+            query:
+              "INSERT INTO hims_f_prescription_detail(??) VALUES ?; \
+            SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=" +
+              req.userIdentity.hospital_id +
+              ";",
             values: input.medicationitems,
             includeValues: insurtColumns,
-            printQuery: false,
+            printQuery: true,
             bulkInsertOrUpdate: true,
             extraValues: {
               prescription_id: result.insertId,
             },
           })
           .then((resultDet) => {
+            const portal_exists = resultDet[1][0].portal_exists;
+            // console.log("portal_exists", portal_exists);
+            // consol.log("portal_exists", portal_exists);
+            let portal_data = [];
+
+            if (portal_exists === "Y") {
+              portal_data = input.medicationitems.map((m) => {
+                return {
+                  patient_identity: input.primary_id_no,
+                  visit_code: input.visit_code,
+                  visit_date: input.Encounter_Date,
+                  generic_name: m.generic_name,
+                  item_name: m.item_description,
+                  no_of_days: m.no_of_days,
+                  dosage: m.dosage,
+                  frequency:
+                    m.frequency === "0"
+                      ? "1-0-1"
+                      : m.frequency === "1"
+                      ? "1-0-0"
+                      : m.frequency === "2"
+                      ? "0-0-1"
+                      : m.frequency === "3"
+                      ? "0-1-0"
+                      : m.frequency === "4"
+                      ? "1-1-0"
+                      : m.frequency === "5"
+                      ? "0-1-1"
+                      : m.frequency === "6"
+                      ? "1-1-1"
+                      : m.frequency === "7"
+                      ? "Once only"
+                      : m.frequency === "8"
+                      ? "Once daily (q24h)"
+                      : m.frequency === "9"
+                      ? "Twice daily (Bid)"
+                      : m.frequency === "10"
+                      ? "Three times daily (tid)"
+                      : m.frequency === "11"
+                      ? "Five times daily"
+                      : m.frequency === "12"
+                      ? "Every two hours (q2h)"
+                      : m.frequency === "13"
+                      ? "Every three hours (q3h)"
+                      : m.frequency === "14"
+                      ? "Every four hours (q4h)"
+                      : m.frequency === "15"
+                      ? "Every six hours (q6h)"
+                      : m.frequency === "16"
+                      ? "Every eight hours (q8h)"
+                      : m.frequency === "17"
+                      ? "Every twelve hours (q12h)"
+                      : m.frequency === "18"
+                      ? "Four times daily (qid)"
+                      : m.frequency === "19"
+                      ? "Other (As per need)"
+                      : null,
+                  frequency_type:
+                    m.frequency_type === "PD"
+                      ? "Per Day"
+                      : m.frequency_type === "PH"
+                      ? "Per Hour"
+                      : m.frequency_type === "PW"
+                      ? "Per Week"
+                      : m.frequency_type === "PM"
+                      ? "Per Month"
+                      : m.frequency_type === "AD"
+                      ? "Alternate Day"
+                      : m.frequency_type === "2W"
+                      ? "Every 2 weeks"
+                      : m.frequency_type === "2M"
+                      ? "Every 2 months"
+                      : m.frequency_type === "3M"
+                      ? "Every 3 months"
+                      : m.frequency_type === "4M"
+                      ? "Every 4 months"
+                      : m.frequency_type === "6M"
+                      ? "Every 6 months"
+                      : null,
+                  frequency_time:
+                    m.frequency_time === "BM"
+                      ? "Before Meals"
+                      : m.frequency_time === "AM"
+                      ? "After Meals"
+                      : m.frequency_time === "WF"
+                      ? "With Food"
+                      : m.frequency_time === "EM"
+                      ? "Early Morning"
+                      : m.frequency_time === "BB"
+                      ? "Before Bed Time"
+                      : m.frequency_time === "AB"
+                      ? "At Bed Time"
+                      : m.frequency_time === "NN"
+                      ? "None"
+                      : null,
+                  frequency_route:
+                    m.frequency_route === "BL"
+                      ? "Buccal"
+                      : m.frequency_route === "EL"
+                      ? "Enteral"
+                      : m.frequency_route === "IL"
+                      ? "Inhalation"
+                      : m.frequency_route === "IF"
+                      ? "Infusion"
+                      : m.frequency_route === "IM"
+                      ? "Intramuscular Inj"
+                      : m.frequency_route === "IT"
+                      ? "Intrathecal Inj"
+                      : m.frequency_route === "IV"
+                      ? "Intravenous Inj"
+                      : m.frequency_route === "NL"
+                      ? "Nasal"
+                      : m.frequency_route === "OP"
+                      ? "Ophthalmic"
+                      : m.frequency_route === "OR"
+                      ? "Oral"
+                      : m.frequency_route === "OE"
+                      ? "Otic (ear)"
+                      : m.frequency_route === "RL"
+                      ? "Rectal"
+                      : m.frequency_route === "ST"
+                      ? "Subcutaneous"
+                      : m.frequency_route === "SL"
+                      ? "Sublingual"
+                      : m.frequency_route === "TL"
+                      ? "Topical"
+                      : m.frequency_route === "TD"
+                      ? "Transdermal"
+                      : m.frequency_route === "VL"
+                      ? "Vaginal"
+                      : m.frequency_route === "IN"
+                      ? "Intravitreal"
+                      : m.frequency_route === "VR"
+                      ? "Various"
+                      : m.frequency_route === "IP"
+                      ? "Intraperitoneal"
+                      : m.frequency_route === "ID"
+                      ? "Intradermal"
+                      : m.frequency_route === "INV"
+                      ? "Intravesical"
+                      : m.frequency_route === "EP"
+                      ? "Epilesional"
+                      : null,
+                  med_units: m.med_units,
+                  instructions: m.instructions,
+                  hospital_id: req.userIdentity.hospital_id,
+                };
+              });
+            }
+
             addChronic({
               req: req,
               input: input,
@@ -653,7 +869,7 @@ let addPatientPrescription = (req, res, next) => {
                 input: input,
                 next: next,
                 _mysql: _mysql,
-              }).then(() => {
+              }).then(async () => {
                 let services = [];
                 input.medicationitems.forEach((item) => {
                   services.push(item.service_id);
@@ -677,7 +893,7 @@ let addPatientPrescription = (req, res, next) => {
 
                       printQuery: true,
                     })
-                    .then((detail_res) => {
+                    .then(async (detail_res) => {
                       let insertArr = [];
 
                       detail_res.forEach((recd) => {
@@ -736,12 +952,30 @@ let addPatientPrescription = (req, res, next) => {
                               hospital_id: req.userIdentity.hospital_id,
                             },
                           })
-                          .then((med) => {
-                            _mysql.commitTransaction(() => {
-                              _mysql.releaseConnection();
-                              req.records = med;
-                              next();
-                            });
+                          .then(async (med) => {
+                            if (portal_exists === "Y") {
+                              // console.log(" eif portal_data", portal_data);
+                              // consol.log("portal_data", portal_data);
+                              await axios
+                                .post(
+                                  `${PORTAL_HOST}/info/patientMedication`,
+                                  portal_data
+                                )
+                                .catch((e) => {
+                                  throw e;
+                                });
+                              _mysql.commitTransaction(() => {
+                                _mysql.releaseConnection();
+                                req.records = resultDet;
+                                next();
+                              });
+                            } else {
+                              _mysql.commitTransaction(() => {
+                                _mysql.releaseConnection();
+                                req.records = resultDet;
+                                next();
+                              });
+                            }
                           })
                           .catch((error) => {
                             _mysql.rollBackTransaction(() => {
@@ -749,11 +983,29 @@ let addPatientPrescription = (req, res, next) => {
                             });
                           });
                       } else {
-                        _mysql.commitTransaction(() => {
-                          _mysql.releaseConnection();
-                          req.records = resultDet;
-                          next();
-                        });
+                        if (portal_exists === "Y") {
+                          // console.log("else portal_data", portal_data);
+                          // consol.log("portal_data", portal_data);
+                          await axios
+                            .post(
+                              `${PORTAL_HOST}/info/patientMedication`,
+                              portal_data
+                            )
+                            .catch((e) => {
+                              throw e;
+                            });
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = resultDet;
+                            next();
+                          });
+                        } else {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = resultDet;
+                            next();
+                          });
+                        }
                       }
                     })
                     .catch((error) => {
@@ -762,11 +1014,29 @@ let addPatientPrescription = (req, res, next) => {
                       });
                     });
                 } else {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = resultDet;
-                    next();
-                  });
+                  if (portal_exists === "Y") {
+                    // console.log("last portal_data", portal_data);
+                    // consol.log("portal_data", portal_data);
+                    await axios
+                      .post(
+                        `${PORTAL_HOST}/info/patientMedication`,
+                        portal_data
+                      )
+                      .catch((e) => {
+                        throw e;
+                      });
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = resultDet;
+                      next();
+                    });
+                  } else {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = resultDet;
+                      next();
+                    });
+                  }
                 }
               });
             });
@@ -794,10 +1064,11 @@ let updatePatientPrescription = (req, res, next) => {
     let input = req.body.medicationobj;
 
     _mysql
-      .executeQuery({
+      .executeQueryWithTransaction({
         query: `Update hims_f_prescription_detail set item_id=?,generic_id=?,dosage=?,med_units=?,
           service_id=?,uom_id=?,item_category_id=?,item_group_id=?,frequency=?,no_of_days=?,frequency_type=?,
-          frequency_time=?,frequency_route=?,instructions=?,start_date=? where hims_f_prescription_detail_id=? `,
+          frequency_time=?,frequency_route=?,instructions=?,start_date=? where hims_f_prescription_detail_id=?;
+          SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=? `,
         values: [
           input.item_id,
           input.generic_id,
@@ -815,21 +1086,184 @@ let updatePatientPrescription = (req, res, next) => {
           input.instructions,
           input.start_date,
           input.hims_f_prescription_detail_id,
+          req.userIdentity.hospital_id,
         ],
         printQuery: true,
       })
-      .then((result) => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
+      .then(async (result) => {
+        const portal_exists = result[1][0].portal_exists;
+
+        // console.log("portal_exists", portal_exists);
+        // consol.log("portal_exists", portal_exists);
+
+        if (portal_exists === "Y") {
+          const portal_data = {
+            patient_identity: input.primary_id_no,
+            visit_code: input.visit_code,
+            no_of_days: input.no_of_days,
+            dosage: input.dosage,
+            frequency:
+              input.frequency === "0"
+                ? "1-0-1"
+                : input.frequency === "1"
+                ? "1-0-0"
+                : input.frequency === "2"
+                ? "0-0-1"
+                : input.frequency === "3"
+                ? "0-1-0"
+                : input.frequency === "4"
+                ? "1-1-0"
+                : input.frequency === "5"
+                ? "0-1-1"
+                : input.frequency === "6"
+                ? "1-1-1"
+                : input.frequency === "7"
+                ? "Once only"
+                : input.frequency === "8"
+                ? "Once daily (q24h)"
+                : input.frequency === "9"
+                ? "Twice daily (Bid)"
+                : input.frequency === "10"
+                ? "Three times daily (tid)"
+                : input.frequency === "11"
+                ? "Five times daily"
+                : input.frequency === "12"
+                ? "Every two hours (q2h)"
+                : input.frequency === "13"
+                ? "Every three hours (q3h)"
+                : input.frequency === "14"
+                ? "Every four hours (q4h)"
+                : input.frequency === "15"
+                ? "Every six hours (q6h)"
+                : input.frequency === "16"
+                ? "Every eight hours (q8h)"
+                : input.frequency === "17"
+                ? "Every twelve hours (q12h)"
+                : input.frequency === "18"
+                ? "Four times daily (qid)"
+                : input.frequency === "19"
+                ? "Other (As per need)"
+                : null,
+            frequency_type:
+              input.frequency_type === "PD"
+                ? "Per Day"
+                : input.frequency_type === "PH"
+                ? "Per Hour"
+                : input.frequency_type === "PW"
+                ? "Per Week"
+                : input.frequency_type === "PM"
+                ? "Per Month"
+                : input.frequency_type === "AD"
+                ? "Alternate Day"
+                : input.frequency_type === "2W"
+                ? "Every 2 weeks"
+                : input.frequency_type === "2M"
+                ? "Every 2 months"
+                : input.frequency_type === "3M"
+                ? "Every 3 months"
+                : input.frequency_type === "4M"
+                ? "Every 4 months"
+                : input.frequency_type === "6M"
+                ? "Every 6 months"
+                : null,
+            frequency_time:
+              input.frequency_time === "BM"
+                ? "Before Meals"
+                : input.frequency_time === "AM"
+                ? "After Meals"
+                : input.frequency_time === "WF"
+                ? "With Food"
+                : input.frequency_time === "EM"
+                ? "Early Morning"
+                : input.frequency_time === "BB"
+                ? "Before Bed Time"
+                : input.frequency_time === "AB"
+                ? "At Bed Time"
+                : input.frequency_time === "NN"
+                ? "None"
+                : null,
+            frequency_route:
+              input.frequency_route === "BL"
+                ? "Buccal"
+                : input.frequency_route === "EL"
+                ? "Enteral"
+                : input.frequency_route === "IL"
+                ? "Inhalation"
+                : input.frequency_route === "IF"
+                ? "Infusion"
+                : input.frequency_route === "IM"
+                ? "Intramuscular Inj"
+                : input.frequency_route === "IT"
+                ? "Intrathecal Inj"
+                : input.frequency_route === "IV"
+                ? "Intravenous Inj"
+                : input.frequency_route === "NL"
+                ? "Nasal"
+                : input.frequency_route === "OP"
+                ? "Ophthalmic"
+                : input.frequency_route === "OR"
+                ? "Oral"
+                : input.frequency_route === "OE"
+                ? "Otic (ear)"
+                : input.frequency_route === "RL"
+                ? "Rectal"
+                : input.frequency_route === "ST"
+                ? "Subcutaneous"
+                : input.frequency_route === "SL"
+                ? "Sublingual"
+                : input.frequency_route === "TL"
+                ? "Topical"
+                : input.frequency_route === "TD"
+                ? "Transdermal"
+                : input.frequency_route === "VL"
+                ? "Vaginal"
+                : input.frequency_route === "IN"
+                ? "Intravitreal"
+                : input.frequency_route === "VR"
+                ? "Various"
+                : input.frequency_route === "IP"
+                ? "Intraperitoneal"
+                : input.frequency_route === "ID"
+                ? "Intradermal"
+                : input.frequency_route === "INV"
+                ? "Intravesical"
+                : input.frequency_route === "EP"
+                ? "Epilesional"
+                : null,
+            med_units: input.med_units,
+            instructions: input.instructions,
+            item_name: input.item_description,
+          };
+
+          // console.log("portal_data", portal_data);
+          // consol.log("portal_data", portal_data);
+          await axios
+            .post(`${PORTAL_HOST}/info/deletePatientMedication`, portal_data)
+            .catch((e) => {
+              throw e;
+            });
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+        }
       })
       .catch((error) => {
-        _mysql.releaseConnection();
-        next(error);
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
       });
   } catch (e) {
-    _mysql.releaseConnection();
-    next(e);
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
   }
 };
 //created by irfan: getPatientPrescription
@@ -895,7 +1329,7 @@ let getPatientPrescription = (req, res, next) => {
         " and date(prescription_date)= '" + input.prescription_date + "'";
     }
 
-    console.log("strQry", strQry);
+    // console.log("strQry", strQry);
     _mysql
       .executeQuery({
         query:

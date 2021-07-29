@@ -14,12 +14,9 @@ import {
   getPatientInsurance,
   getBillsForVisit,
   generateBills,
-  // getVisitWiseBillDetailS,
 } from "./ChangeEntitlementEvents";
 import { InsuranceForm } from "./InsuranceForm";
 import "./InvoiceGeneration.scss";
-import axios from "axios";
-// import _ from "lodash";
 
 const reducer = (state, { type, payload }) => {
   switch (type) {
@@ -74,8 +71,6 @@ export default function ChangeEntitlement(props) {
     }
   );
 
-  const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
-
   const clearPage = () => {
     clearBills();
     clearInsurance();
@@ -111,27 +106,6 @@ export default function ChangeEntitlement(props) {
           type: "error",
         });
         return;
-      }
-      try {
-        const data = {
-          visit_code: visit?.visit_code,
-          corporate_id: insurance_data.user_id,
-        };
-        axios
-          .post(`${PORTAL_HOST}/info/updatepatientVisit`, data)
-          .then(function (response) {
-            //handle success
-            console.log(response);
-          })
-          .catch(function (response) {
-            //handle error
-            console.log(response);
-          });
-      } catch (error) {
-        AlgaehMessagePop({
-          display: error,
-          type: "error",
-        });
       }
       AlgaehMessagePop({
         type: "success",
