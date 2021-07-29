@@ -47,44 +47,7 @@ function getMaxAuth(options) {
       });
   });
 }
-// export function multipleInvoices(req, res, next) {
-//   const inputs = req.body;
-//   const reqHeaders = req.headers;
-//   const { merdgeRecords, details } = inputs;
-//   let sendArray = [];
-//   for (let i = 0; i < merdgeRecords.length; i++) {
-//     let indetails = { ...inputs };
-//     const { balance_amount, invoice_no } = merdgeRecords[i];
-//     const det = details.map((detail) => {
-//       return {
-//         ...detail,
-//         amount: balance_amount,
-//       };
-//     });
-//     indetails["details"] = det;
-//     indetails["invoice_no"] = invoice_no;
-//     sendArray.push(
-//       axios({
-//         url: "http://localhost:3007/api/v1/voucher/addVoucher",
-//         method: "POST",
-//         data: indetails,
-//         headers: {
-//           "x-api-key": reqHeaders["x-api-key"],
-//           "x-client-ip": reqHeaders["x-client-ip"],
-//           "x-branch": reqHeaders["x-branch"],
-//         },
-//       })
-//     );
-//   }
-//   Promise.all(sendArray)
-//     .then((result) => {
-//       console.log("result", result);
-//       next();
-//     })
-//     .catch((error) => {
-//       next(error);
-//     });
-// }
+
 export default {
   //created by irfan:
   addVoucher: (req, res, next) => {
@@ -141,6 +104,7 @@ export default {
       next();
       return;
     } else {
+      let authLevels = "";
       _mysql
         .executeQuery({
           query:
@@ -148,6 +112,7 @@ export default {
           printQuery: true,
         })
         .then((resul) => {
+          authLevels = resul[0].auth_level;
           new Promise((resolve, reject) => {
             if (resul[0].allow_negative_balance == "Y") {
               resolve({});
@@ -175,15 +140,12 @@ export default {
                     let internal_eror = false;
                     const closeBalance = close_bal[0];
                     const led_data = close_bal[1];
-                    // console.log("input.details", input.details);
-
                     //ST-closing balance CHECK
                     input.details.forEach((entry) => {
                       //checking debit balance for asset and expence
                       const led_data_root = led_data.find(
                         (f) => f.finance_account_child_id == entry.child_id
                       );
-                      // console.log("led_data_root", led_data_root);
                       if (
                         (led_data_root.root_id == 1 ||
                           led_data_root.root_id == 5) &&
@@ -194,14 +156,10 @@ export default {
                         });
 
                         if (ledger != undefined) {
-                          // console.log("1", ledger.deb_minus_cred);
-                          // console.log("1", entry.amount);
-
                           const temp =
                             parseFloat(ledger.deb_minus_cred) -
                             parseFloat(entry.amount);
 
-                          // console.log("1", temp);
                           if (temp < 0) {
                             internal_eror = true;
                             req.records = {
@@ -275,7 +233,6 @@ export default {
                     next(error);
                   });
               } else {
-                // console.log("2");
                 resolve({});
               }
             }
@@ -320,7 +277,6 @@ export default {
 
                   // if (credit_amount == debit_amount) {
 
-                  // console.log("resul====", resul);
                   if (
                     resul.length == 1 &&
                     (resul[0]["cost_center_type"] == "P" ||
@@ -543,7 +499,6 @@ export default {
                           arrCounter = newDetails;
                         }
                         let strUpdateData = "";
-                        console.log("resul[0].auth_level", resul[0].auth_level);
                         if (
                           input.voucher_type === "receipt" &&
                           resul[0].auth_level == "N"
@@ -565,41 +520,180 @@ export default {
                           }
                         }
 
+                        let root_ids = [];
+                        //For clients which have authorization levels
+                        let rootQuery = `select 1`;
+                        // Client which they don't have authorization levels
+                        if (authLevels === "N") {
+                          //For single invoice
+                          if (isMultipleInvoices === "S") {
+                            root_ids = input.details.map((m) => {
+                              return m?.head_id;
+                            });
+                          }
+                          rootQuery = `select finance_account_head_id,root_id 
+                          from finance_account_head where finance_account_head_id in (?);`;
+                        }
+                        const rootValues =
+                          root_ids.length > 0
+                            ? {
+                                values: [root_ids],
+                              }
+                            : {};
                         _mysql
                           .executeQueryWithTransaction({
-                            query:
-                              "insert into finance_voucher_details (??) values ?;" +
-                              strUpdateData,
-                            values: arrCounter,
-                            bulkInsertOrUpdate: true,
+                            query: rootQuery,
+                            ...rootValues,
                             printQuery: true,
-                            excludeValues: ["disabled", "paytypedisable"],
-                            extraValues: {
-                              voucher_header_id: result.insertId,
-                              hospital_id: input.hospital_id,
-                            },
                           })
-                          .then((result2) => {
-                            //For Testing without saving Data
-                            // _mysql.rollBackTransaction(() => {
-                            //   _mysql.releaseConnection();
-                            //   req.records = {
-                            //     voucher_no: numgen[voucher_type],
-                            //     finance_voucher_header_id:
-                            //       finance_voucher_header_id,
-                            //   };
-                            //   next();
-                            // });
-                            // For testing without saving data
-                            _mysql.commitTransaction(() => {
-                              _mysql.releaseConnection();
-                              req.records = {
-                                voucher_no: numgen[voucher_type],
-                                finance_voucher_header_id:
-                                  finance_voucher_header_id,
-                              };
-                              next();
-                            });
+                          .then(async (rootResult) => {
+                            let PandLQuery = "";
+                            if (root_ids.length > 0) {
+                              let total_income = 0;
+                              let total_expense = 0;
+                              let balance_amt = 0;
+                              let pl_account = undefined;
+                              const arrList = input.details;
+                              for (let rd = 0; rd < arrList.length; rd++) {
+                                const rdInputs = arrList[rd];
+                                const roots = rootResult.find(
+                                  (f) =>
+                                    String(f.finance_account_head_id) ===
+                                    String(rdInputs.head_id)
+                                );
+                                if (roots) {
+                                  if (roots.root_id === 4) {
+                                    if (rdInputs.payment_type === "CR") {
+                                      total_income =
+                                        parseFloat(total_income) +
+                                        parseFloat(rdInputs.amount);
+                                    } else if (rdInputs.payment_type === "DR") {
+                                      total_income =
+                                        parseFloat(total_income) -
+                                        parseFloat(rdInputs.amount);
+                                    }
+                                  } else if (roots.root_id === 5) {
+                                    if (rdInputs.payment_type === "DR") {
+                                      total_expense =
+                                        parseFloat(total_expense) +
+                                        parseFloat(rdInputs.amount);
+                                    } else if (rdInputs.payment_type === "CR") {
+                                      total_expense =
+                                        parseFloat(total_expense) -
+                                        parseFloat(rdInputs.amount);
+                                    }
+                                  }
+                                }
+                              }
+                              balance_amt =
+                                parseFloat(total_income) -
+                                parseFloat(total_expense);
+                              if (balance_amt > 0) {
+                                pl_account = {
+                                  payment_date: new Date(),
+                                  head_id: 3,
+                                  child_id: 1,
+                                  debit_amount: 0,
+                                  credit_amount: balance_amt,
+                                  payment_type: "CR",
+                                  hospital_id: input.hospital_id,
+                                  year: moment().format("YYYY"),
+                                  month: moment().format("M"),
+                                  voucher_header_id: result.insertId,
+                                };
+                              } else if (balance_amt < 0) {
+                                pl_account = {
+                                  payment_date: new Date(),
+                                  head_id: 3,
+                                  child_id: 1,
+                                  debit_amount: Math.abs(balance_amt),
+                                  credit_amount: 0,
+                                  payment_type: "DR",
+                                  hospital_id: input.hospital_id,
+                                  year: moment().format("YYYY"),
+                                  month: moment().format("M"),
+                                  voucher_header_id: result.insertId,
+                                };
+                              }
+                              if (pl_account) {
+                                const arrHead = _.head(arrCounter);
+                                PandLQuery = _mysql.mysqlQueryFormat(
+                                  `INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,
+                                payment_type,hospital_id,year,month,pl_entry,entered_by,auth_status,voucher_header_id,project_id,sub_department_id,narration) 
+                                 VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                                  [
+                                    moment(pl_account.payment_date).format(
+                                      "YYYY-MM-DD"
+                                    ),
+                                    pl_account.head_id,
+                                    pl_account.child_id,
+                                    pl_account.debit_amount,
+                                    pl_account.credit_amount,
+                                    pl_account.payment_type,
+                                    pl_account.hospital_id,
+                                    pl_account.year,
+                                    pl_account.month,
+                                    "Y",
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    "A",
+                                    pl_account.voucher_header_id,
+                                    arrHead.project_id,
+                                    arrHead.sub_department_id,
+                                    input.narration,
+                                  ]
+                                );
+                                await _mysql
+                                  .executeQueryWithTransaction({
+                                    query: PandLQuery,
+                                    printQuery: true,
+                                  })
+                                  .catch((error) => {
+                                    _mysql.releaseConnection();
+                                    throw error;
+                                  });
+                              }
+                            }
+                            _mysql
+                              .executeQueryWithTransaction({
+                                query:
+                                  "insert into finance_voucher_details (??) values ?;" +
+                                  strUpdateData,
+                                values: arrCounter,
+                                bulkInsertOrUpdate: true,
+                                printQuery: true,
+                                excludeValues: ["disabled", "paytypedisable"],
+                                extraValues: {
+                                  voucher_header_id: result.insertId,
+                                  hospital_id: input.hospital_id,
+                                },
+                              })
+                              .then((result2) => {
+                                //For Testing without saving Data
+                                // _mysql.rollBackTransaction(() => {
+                                //   _mysql.releaseConnection();
+                                //   req.records = {
+                                //     voucher_no: numgen[voucher_type],
+                                //     finance_voucher_header_id:
+                                //       finance_voucher_header_id,
+                                //   };
+                                //   next();
+                                // });
+                                // For testing without saving data
+                                _mysql.commitTransaction(() => {
+                                  _mysql.releaseConnection();
+                                  req.records = {
+                                    voucher_no: numgen[voucher_type],
+                                    finance_voucher_header_id:
+                                      finance_voucher_header_id,
+                                  };
+                                  next();
+                                });
+                              })
+                              .catch((error) => {
+                                _mysql.rollBackTransaction(() => {
+                                  next(error);
+                                });
+                              });
                           })
                           .catch((error) => {
                             _mysql.rollBackTransaction(() => {
@@ -652,7 +746,6 @@ export default {
     let input = req.body;
     let finance_voucher_id = [];
 
-    // console.log("input"), input;
     let queryString = "";
     for (let i = 0; i < input.details.length; i++) {
       queryString += _mysql.mysqlQueryFormat(
@@ -667,7 +760,6 @@ export default {
         finance_voucher_id.push(input.details[i].finance_voucher_id);
       }
     }
-    // console.log("finance_voucher_id", finance_voucher_id);
     _mysql
       .executeQueryWithTransaction({
         query: queryString,
@@ -1119,7 +1211,6 @@ export default {
                             next(error);
                           });
                       }).then((res) => {
-                        // console.log("res:", res);
                         //ST-profit and loss calculation
                         result.forEach((m) => {
                           if (m.root_id == 4) {
@@ -1718,7 +1809,6 @@ export default {
                             });
                         }
                       }).then((res) => {
-                        // console.log("res:", res);
                         //ST-profit and loss calculation
                         result.forEach((m) => {
                           if (m.root_id == 4) {
@@ -1868,46 +1958,7 @@ export default {
 
                                           head_amount = oneRecord.amount;
                                         }
-                                        //     const total_paid_amount =
-                                        //       parseFloat(settled_amount) +
-                                        //       parseFloat(head_amount);
-
-                                        //     if (
-                                        //       parseFloat(head_amount) ==
-                                        //       total_paid_amount
-                                        //     ) {
-                                        //       updateQry += `update finance_voucher_header set settlement_status=if(settled_amount+${parseFloat(
-                                        //         head_amount
-                                        //       )}=amount,'S','P'),settled_amount=settled_amount+${parseFloat(
-                                        //         head_amount
-                                        //       )} where finance_voucher_header_id=${finance_voucher_header_id};`;
-                                        //     } else {
-                                        //       updateQry += `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
-                                        //         head_amount
-                                        //       )}, updated_date='${moment().format(
-                                        //         "YYYY-MM-DD"
-                                        //       )}',
-                                        //  updated_by= ${
-                                        //    req.userIdentity.algaeh_d_app_user_id
-                                        //  } where finance_voucher_header_id=${finance_voucher_header_id};`;
-                                        //     }
-                                        //Commented by noor due to multiple time amount update
-                                        // updateQry += `update finance_voucher_header set settlement_status=if(settled_amount+${parseFloat(
-                                        //   head_amount
-                                        // )}=amount,'S','P'),settled_amount=settled_amount+${parseFloat(
-                                        //   head_amount
-                                        // )},updated_date='${moment().format(
-                                        //   "YYYY-MM-DD"
-                                        // )}',updated_by=${
-                                        //   req.userIdentity.algaeh_d_app_user_id
-                                        // } where finance_voucher_header_id=${finance_voucher_header_id};`;
-                                        //End comment by noor
                                       }
-
-                                      // if (hasMultiple === "M") {
-                                      //   updateQry += `update finance_voucher_header set settlement_status='S',settled_amount=amount
-                                      //   where finance_voucher_header_id=${input.voucher_header_id};`;
-                                      // }
                                     }
 
                                     resolve({});
@@ -1921,60 +1972,6 @@ export default {
                                 _mysql.releaseConnection();
                                 next(error);
                               });
-
-                            // _mysql
-                            //   .executeQuery({
-                            //     query:
-                            //       "select finance_voucher_header_id, voucher_type,amount,settlement_status,settled_amount\
-                            //     from finance_voucher_header where invoice_no=? and voucher_type in ('purchase' ,'sales') and settlement_status='P';",
-                            //     values: [result[0]["invoice_ref_no"]],
-                            //     printQuery: true,
-                            //   })
-                            //   .then((BalanceInvoice) => {
-                            //     if (
-                            //       result[0]["voucher_type"] == "credit_note" ||
-                            //       result[0]["voucher_type"] == "debit_note" ||
-                            //       result[0]["voucher_type"] == "payment" ||
-                            //       result[0]["voucher_type"] == "receipt"
-                            //     ) {
-                            //       const total_paid_amount =
-                            //         parseFloat(
-                            //           BalanceInvoice[0]["settled_amount"]
-                            //         ) + parseFloat(result[0]["amount"]);
-
-                            //       if (
-                            //         parseFloat(BalanceInvoice[0]["amount"]) ==
-                            //         total_paid_amount
-                            //       ) {
-                            //         updateQry = `update finance_voucher_header set settlement_status='S',settled_amount=settled_amount+${parseFloat(
-                            //           result[0]["amount"]
-                            //         )} where finance_voucher_header_id=${
-                            //           BalanceInvoice[0][
-                            //             "finance_voucher_header_id"
-                            //           ]
-                            //         };`;
-                            //       } else {
-                            //         updateQry = `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
-                            //           result[0]["amount"]
-                            //         )}, updated_date='${moment().format(
-                            //           "YYYY-MM-DD"
-                            //         )}',
-                            //         updated_by= ${
-                            //           req.userIdentity.algaeh_d_app_user_id
-                            //         } where finance_voucher_header_id=${
-                            //           BalanceInvoice[0][
-                            //             "finance_voucher_header_id"
-                            //           ]
-                            //         };`;
-                            //       }
-                            //     }
-
-                            //     resolve({});
-                            //   })
-                            //   .catch((error) => {
-                            //     _mysql.releaseConnection();
-                            //     next(error);
-                            //   });
                           } else {
                             resolve({});
                           }
@@ -2147,23 +2144,13 @@ export default {
         default:
           strQry += "";
       }
-      // if (input.hospital_id) {
-      //   strQry += ` and VD.hospital_id=${input.hospital_id} `;
-      // }
+
       if (
         moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
         moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
       ) {
         strQry += ` and H.payment_date  between date('${input.from_date}') and date('${input.to_date}') `;
       }
-
-      // if (input.voucher_no != undefined && input.voucher_no != null) {
-      //   strQry += ` and H.voucher_no ='${input.voucher_no}'`;
-      // }
-
-      // if (input.voucher_type != undefined && input.voucher_type != null) {
-      //   strQry += ` and H.voucher_type ='${input.voucher_type}'`;
-      // }
 
       if (input.auth_status == "P" && input.auth_level == 1) {
         strQry += ` and VD.auth1 ='N'`;
@@ -2319,10 +2306,6 @@ export default {
     } else {
       _mysql
         .executeQuery({
-          //   query: `select distinct finance_voucher_header_id,invoice_no from
-          // finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id
-          // and D.auth_status='A' where voucher_type='${voucher_type}' and
-          // settlement_status='P' and invoice_no is not null ${str}; `,
           query: `select  finance_voucher_header_id,invoice_no,H.voucher_no,H.amount,
         H.narration,H.settled_amount,C.child_name as label,D.child_id, D.head_id,AH.account_name from
                 finance_voucher_header H 
@@ -2385,12 +2368,6 @@ export default {
     }
   },
 };
-
-// select head_office_id,H.hospital_name as head_office,
-// case cost_center_type when 'P' then 'project wise' when 'SD' then
-// 'sub department wise' else 'None' end as cost_center_type
-//  from finance_options F
-// left join hims_d_hospital H on F.head_office_id=H.hims_d_hospital_id
 
 //created by irfan: to get database field for authrzation
 function getFinanceAuthFields(auth_level) {
