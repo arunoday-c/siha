@@ -98,7 +98,7 @@ export function PortalSetup() {
       refetchOnMount: false,
       initialStale: true,
       cacheTime: Infinity,
-      onSuccess: (data) => {},
+      // onSuccess: (data) => {},
     }
   );
   async function getServiceTypeDropDown() {
@@ -135,12 +135,15 @@ export function PortalSetup() {
     return result?.data?.records;
   }
 
-  const {} = useQuery(["getPortalExists"], getPortalExists, {
+  // add here loadash
+
+  useQuery(["getPortalExists"], getPortalExists, {
     onSuccess: (data) => {
       setPortal_exists(data[0].portal_exists);
     },
     onError: (err) => {
       AlgaehMessagePop({
+        // check error msg here
         display: err?.message,
         type: "error",
       });
@@ -167,6 +170,7 @@ export function PortalSetup() {
       },
       onError: (err) => {
         AlgaehMessagePop({
+          // check error msg here
           display: err.message,
           type: "error",
         });
@@ -183,23 +187,12 @@ export function PortalSetup() {
     },
     onError: (err) => {
       AlgaehMessagePop({
+        // check error msg here
         display: err.message,
         type: "error",
       });
     },
   });
-  // const updateSetup = (filteredArray) => {
-  //   // const filteredArray = gridData.filter((f) => f.checked);
-  //   // if (filteredArray.length > 0) {
-
-  //   // } else {
-  //   //   AlgaehMessagePop({
-  //   //     display: "Nothing To Update...",
-  //   //     type: "warning",
-  //   //   });
-  //   //   return;
-  //   // }
-  // };
   const updateFunction = () => {
     const filteredArray = gridData.filter((f) => f.checked);
     if (isDirty) {
