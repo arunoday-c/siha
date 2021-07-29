@@ -27,6 +27,7 @@ const rtehandle = ($this, result_html) => {
 
 /** Here Report to call for   */
 function generateReport(row) {
+  const portalParams = { reportToPortal: true };
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -37,6 +38,7 @@ function generateReport(row) {
     others: { responseType: "blob" },
     data: {
       report: {
+        ...portalParams,
         reportName: "radiologyReport",
         reportToPortal: "true",
         reportParams: [
