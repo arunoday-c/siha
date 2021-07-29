@@ -1,0 +1,67 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div class="print-body">
+    <section>
+
+      <table class="tableForLabel" cell-padding="0">
+
+        <tr>
+          <td><label class="textEnLft">Cons. Cancel No</label>:<span
+              class="valueText"
+            >{{can_consumption_number}}</span>
+          </td>
+          <td><label class="textEnLft">Cons. Cancelled On</label>:<span
+              class="valueText"
+            >{{can_consumption_date}}</span>
+          </td>
+
+        </tr>
+        <tr>
+          <td><label class="textEnLft">Cancelled From</label>:<span
+              class="valueText"
+            >{{location_description}}</span>
+          </td>
+          <td><label class="textEnLft">Cancelled By</label>:<span
+              class="valueText"
+            >{{full_name}}
+              -
+              {{employee_code}}</span>
+          </td>
+        </tr>
+
+      </table>
+
+    </section>
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Item Name</th>
+            <th>UOM</th>
+            <th>batchno</th>
+            <th>Unit Cost</th>
+            <th>Qty</th>
+            <th>Ext. Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each detailList}}
+            <tr>
+              <td>{{inc @index}}</td>
+              <td>{{item_description}}</td>
+              <td>{{uom_description}}</td>
+              <td>{{batchno}}</td>
+              <td class="numberFld">{{unit_cost}}</td>
+              <td>{{quantity}}</td>
+              <td class="numberFld">{{extended_cost}}</td>
+            </tr>
+          {{/each}}
+
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
+</body>
