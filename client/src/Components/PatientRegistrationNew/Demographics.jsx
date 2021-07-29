@@ -135,7 +135,7 @@ export function Demographics({
         if (res[0]?.identity_document_id) {
           setValue("primary_identity_id", res[0]?.identity_document_id);
           setIdentityType(res[0]?.identity_type);
-          if (identities.length > 0) {
+          if (identities?.length > 0) {
             const initialValue = identities.filter(
               (f) =>
                 f.hims_d_identity_document_id === res[0]?.identity_document_id
