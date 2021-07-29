@@ -110,17 +110,21 @@ export function PortalSetup() {
 
     return result?.data?.records;
   }
-  const { refetch } = useQuery(["getSubInsuranceGrid"], getSubInsuranceGrid, {
-    onSuccess: (data) => {
-      setGridData(data);
-    },
-    onError: (err) => {
-      AlgaehMessagePop({
-        display: err?.message,
-        type: "error",
-      });
-    },
-  });
+  const { refetch, isLoading: reloading } = useQuery(
+    ["getSubInsuranceGrid"],
+    getSubInsuranceGrid,
+    {
+      onSuccess: (data) => {
+        setGridData(data);
+      },
+      onError: (err) => {
+        AlgaehMessagePop({
+          display: err?.message,
+          type: "error",
+        });
+      },
+    }
+  );
   async function getSubInsuranceGrid(key) {
     const result = await newAlgaehApi({
       uri: "/insurance/getSubInsuranceGrid",
@@ -220,7 +224,7 @@ export function PortalSetup() {
     }
   };
   return (
-    <Spin spinning={saveLoading}>
+    <Spin spinning={saveLoading || reloading}>
       <div className="PortalSetup">
         <div className="row inner-top-search">
           <div className="col-3 form-group">
@@ -344,7 +348,6 @@ export function PortalSetup() {
 
                             displayTemplate: (row) => {
                               let array = JSON.parse(row.service_types);
-
                               return (
                                 <Select
                                   {...{
@@ -371,7 +374,7 @@ export function PortalSetup() {
                                       );
                                     },
 
-                                    placeholder: "Select Item...",
+                                    placeholder: "Select Service...",
                                     // maxTagCount: "responsive",
                                   }}
                                 />
@@ -381,7 +384,6 @@ export function PortalSetup() {
                         ]}
                         rowUniqueId="hims_d_promotion_id"
                         data={gridData ?? []}
-                        // data={data}
                         pagination={true}
                         isFilterable={true}
                       />
