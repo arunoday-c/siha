@@ -1767,7 +1767,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
     AlgaehLoader({ show: true });
 
     const inputObj = {
-      test_id: selectedPatient.hims_d_investigation_test_id,
+      test_id: selectedPatient.test_id,
       date_of_birth: selectedPatient.date_of_birth,
       gender: selectedPatient.gender,
       order_id: selectedPatient.hims_f_lab_order_id,
@@ -1827,12 +1827,12 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
       method: "PUT",
       onSuccess: (response) => {
         if (response.data.success === true) {
-          if (status === "N") {           
+          if (status === "N") {
             swalMessage({
               type: "success",
               title: "Re-Run Started, Investigation is in Progress . .",
             });
-          } else {           
+          } else {
             swalMessage({
               type: "success",
               title: "Done successfully . .",
@@ -1848,7 +1848,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
           getAnalytesReload();
           setTest_analytes(value);
           setStatus(status === "AV" ? "V" : status);
-          
+
           setRun_type(status === "N" ? last.runtype : run_type);
           setEdit_range(false);
           setEdit_units(false);
