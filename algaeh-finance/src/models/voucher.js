@@ -745,14 +745,16 @@ export default {
 
     let input = req.body;
     let finance_voucher_id = [];
-
+    // return;
     let queryString = "";
     for (let i = 0; i < input.details.length; i++) {
       queryString += _mysql.mysqlQueryFormat(
-        "update finance_voucher_details set head_id=?, child_id=? where finance_voucher_id=?;",
+        "update finance_voucher_details set head_id=?, child_id=?,credit_amount=?,debit_amount=? where finance_voucher_id=?;",
         [
           input.details[i].head_id,
           input.details[i].child_id,
+          input.details[i].payment_type === "CR" ? input.details[i].amount : 0,
+          input.details[i].payment_type === "DR" ? input.details[i].amount : 0,
           input.details[i].finance_voucher_id,
         ]
       );
@@ -760,17 +762,156 @@ export default {
         finance_voucher_id.push(input.details[i].finance_voucher_id);
       }
     }
+    const headerAmount = _.chain(input.details)
+      .filter((f) => f.payment_type === "CR")
+      .sumBy((s) => parseFloat(s.amount))
+      .value();
+    queryString += _mysql.mysqlQueryFormat(
+      `update finance_voucher_header set amount=? where finance_voucher_header_id=?;`,
+      [headerAmount, input.finance_voucher_header_id]
+    );
     _mysql
       .executeQueryWithTransaction({
         query: queryString,
+        printQuery: true,
       })
-      .then((result) => {
+      .then(async (result) => {
+        const root_ids = input.details.map((m) => {
+          return m?.head_id;
+        });
+        const recordEntry = await _mysql
+          .executeQuery({
+            query: `select finance_voucher_id from finance_voucher_details where voucher_header_id=? and pl_entry='Y' limit 1;
+         select finance_account_head_id,root_id 
+                          from finance_account_head where finance_account_head_id in (?);`,
+            values: [input.finance_voucher_header_id, root_ids],
+            printQuery: true,
+          })
+          .catch((e) => {
+            _mysql.rollBackTransaction();
+            throw e;
+          });
+        const hasPandL = _.head(_.head(recordEntry));
+        const rootResult = _.last(recordEntry);
+
+        if (root_ids.length > 0) {
+          let total_income = 0;
+          let total_expense = 0;
+          let balance_amt = 0;
+          let pl_account = undefined;
+          const arrList = input.details;
+          for (let rd = 0; rd < arrList.length; rd++) {
+            const rdInputs = arrList[rd];
+            const roots = rootResult.find(
+              (f) =>
+                String(f.finance_account_head_id) === String(rdInputs.head_id)
+            );
+            if (roots) {
+              if (roots.root_id === 4) {
+                if (rdInputs.payment_type === "CR") {
+                  total_income =
+                    parseFloat(total_income) + parseFloat(rdInputs.amount);
+                } else if (rdInputs.payment_type === "DR") {
+                  total_income =
+                    parseFloat(total_income) - parseFloat(rdInputs.amount);
+                }
+              } else if (roots.root_id === 5) {
+                if (rdInputs.payment_type === "DR") {
+                  total_expense =
+                    parseFloat(total_expense) + parseFloat(rdInputs.amount);
+                } else if (rdInputs.payment_type === "CR") {
+                  total_expense =
+                    parseFloat(total_expense) - parseFloat(rdInputs.amount);
+                }
+              }
+            }
+          }
+          balance_amt = parseFloat(total_income) - parseFloat(total_expense);
+          if (balance_amt > 0) {
+            pl_account = {
+              payment_date: new Date(),
+              head_id: 3,
+              child_id: 1,
+              debit_amount: 0,
+              credit_amount: balance_amt,
+              payment_type: "CR",
+              hospital_id: input.hospital_id,
+              year: moment().format("YYYY"),
+              month: moment().format("M"),
+              voucher_header_id: input.finance_voucher_header_id,
+            };
+          } else if (balance_amt < 0) {
+            pl_account = {
+              payment_date: new Date(),
+              head_id: 3,
+              child_id: 1,
+              debit_amount: Math.abs(balance_amt),
+              credit_amount: 0,
+              payment_type: "DR",
+              hospital_id: input.hospital_id,
+              year: moment().format("YYYY"),
+              month: moment().format("M"),
+              voucher_header_id: input.finance_voucher_header_id,
+            };
+          }
+          const arrHead = _.head(
+            input.details.filter((f) => f.sub_department_id)
+          );
+          let queryPandL = "";
+          if (hasPandL && pl_account) {
+            queryPandL = _mysql.mysqlQueryFormat(
+              `update finance_voucher_details set debit_amount=?,credit_amount=?,
+  payment_type=? where pl_entry='Y' and finance_voucher_id=?;`,
+              [
+                pl_account.debit_amount,
+                pl_account.credit_amount,
+                pl_account.payment_type,
+                hasPandL.finance_voucher_id,
+              ]
+            );
+          } else if (pl_account) {
+            queryPandL = _mysql.mysqlQueryFormat(
+              `INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,
+  payment_type,hospital_id,year,month,pl_entry,entered_by,auth_status,voucher_header_id,project_id,sub_department_id,narration) 
+   VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+              [
+                moment(pl_account.payment_date).format("YYYY-MM-DD"),
+                pl_account.head_id,
+                pl_account.child_id,
+                pl_account.debit_amount,
+                pl_account.credit_amount,
+                pl_account.payment_type,
+                pl_account.hospital_id,
+                pl_account.year,
+                pl_account.month,
+                "Y",
+                req.userIdentity.algaeh_d_app_user_id,
+                "A",
+                pl_account.voucher_header_id,
+                arrHead.project_id,
+                arrHead.sub_department_id,
+                input.narration,
+              ]
+            );
+          }
+          await _mysql
+            .executeQueryWithTransaction({
+              query: queryPandL,
+              printQuery: true,
+            })
+            .catch((error) => {
+              _mysql.releaseConnection();
+              throw error;
+            });
+        }
+
         if (finance_voucher_id.length > 0) {
           _mysql
             .executeQueryWithTransaction({
               query:
                 "select * from finance_voucher_details where finance_voucher_id in (?)",
               values: [finance_voucher_id],
+              printQuery: true,
             })
             .then((voucher_result) => {
               _mysql
@@ -2210,7 +2351,7 @@ export default {
           left join finance_account_head H on VD.head_id=H.finance_account_head_id\
           left join finance_account_child C on VD.child_id=C.finance_account_child_id\
           inner join finance_voucher_header FH on FH.finance_voucher_header_id=VD.voucher_header_id
-          where VD.voucher_header_id=? order by payment_type; `,
+          where VD.voucher_header_id=? and VD.pl_entry='N' order by payment_type; `,
         values: [input.finance_voucher_header_id],
         printQuery: true,
       })
@@ -2239,7 +2380,7 @@ export default {
         CASE WHEN payment_type = 'DR' THEN ROUND(debit_amount,2) 
         else ROUND(credit_amount,2) END as amount
         from finance_voucher_details VD inner join finance_voucher_header VH on VH.finance_voucher_header_id=VD.voucher_header_id 
-        where VD.voucher_header_id=? order by payment_type; `,
+        where VD.voucher_header_id=? and VD.pl_entry='N' order by payment_type; `,
         values: [input.finance_voucher_header_id],
         printQuery: true,
       })
