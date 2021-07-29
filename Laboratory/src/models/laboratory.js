@@ -2553,7 +2553,7 @@ export async function updateLabOrderServices(req, res, next) {
                 inputParam.collected_date
                   ? `${inputParam.collected_date}`
                   : `${today_date}`
-              }', L.barcode_gen = now() where hims_f_lab_order_id=${
+              }', S.barcode_gen = now() where hims_f_lab_order_id=${
                 inputParam.hims_f_lab_order_id
               }`,
               // values: condition,
