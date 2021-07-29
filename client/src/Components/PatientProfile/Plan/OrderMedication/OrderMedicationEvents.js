@@ -4,15 +4,8 @@ import { removeGlobal } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import Options from "../../../../Options.json";
 import _ from "lodash";
-// import {
-//   PRESCRIPTION_FREQ_PERIOD,
-//   PRESCRIPTION_FREQ_TIME,
-//   PRESCRIPTION_FREQ_DURATION,
-//   PRESCRIPTION_FREQ_ROUTE,
-// } from "../../../../utils/GlobalVariables.json";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-// import axios from "axios";
-// const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
+
 //Text Handaler Change
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -291,17 +284,6 @@ const SaveMedication = ($this, context, e) => {
             type: "success",
           });
           if ($this.state.portal_exists === "Y") {
-            // portal_data = JSON.stringify(portal_data);
-            // axios
-            //   .post(`${PORTAL_HOST}/info/patientMedication`, portal_data)
-            //   .then(function (response) {
-            //     //handle success
-            //     console.log(response);
-            //   })
-            //   .catch(function (response) {
-            //     //handle error
-            //     console.log(response);
-            //   });
             uploadPrescriptiontoPortal($this);
           }
           if (Window.global["orderMedicationState"] !== null)

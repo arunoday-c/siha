@@ -12,8 +12,7 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
 import { Validations } from "./Validation";
-// import axios from "axios";
-// const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
+
 export default function SubjectiveHandler() {
   return {
     dataLevelUpdate: ($this, e) => {
@@ -361,15 +360,6 @@ export default function SubjectiveHandler() {
 
                       debugger;
                       if ($this.state.portal_exists === "Y") {
-                        // portal_data = JSON.stringify(portal_data);
-                        // const portal_data = {
-                        //   patient_identity:
-                        //     $this.props.pat_profile.primary_id_no,
-                        //   visit_code: $this.props.pat_profile.visit_code,
-                        //   item_name: medicine.item_description,
-                        //   delete_data: true,
-                        // };
-                        // portalDeleteUpdateVisitDiagnosis($this, portal_data);
                         uploadPrescriptiontoPortal($this);
                       }
                     }
@@ -596,19 +586,6 @@ export function IcdCodeForChronic(cb) {
     },
   });
 }
-
-// function portalDeleteUpdateVisitDiagnosis($this, portal_data) {
-//   axios
-//     .post(`${PORTAL_HOST}/info/deletePatientMedication`, portal_data)
-//     .then(function (response) {
-//       //handle success
-//       console.log(response);
-//     })
-//     .catch(function (response) {
-//       //handle error
-//       console.log(response);
-//     });
-// }
 
 export function uploadPrescriptiontoPortal($this) {
   debugger;
