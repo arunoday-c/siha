@@ -1,96 +1,27 @@
-import React, { useState, useRef } from "react";
-// import { useForm, Controller } from "react-hook-form";
-import { useQuery, useMutation } from "react-query";
-import { newAlgaehApi } from "../../../hooks";
-// import moment from "moment";
-import { Select, AlgaehMessagePop } from "algaeh-react-components";
+import React, { useContext } from "react";
+
+import { useQuery } from "react-query";
+
 import "./PortalSetup.scss";
-import { AlgaehDataGrid, AlgaehLabel, Spin } from "algaeh-react-components";
-const STATUS = {
-  CHECK: true,
-  UNCHECK: false,
-  INDETERMINATE: true,
-};
-const addOrUpdatePortalSetup = async (data) => {
-  const dataArray = data.filteredArray.map((item) => {
-    return {
-      ...item,
-      id: item.id,
-      insurance_id: item.insurance_provider_id,
-      sub_insurance_id: item.hims_d_insurance_sub_id,
-      service_types: JSON.stringify(item.service_type),
-      hospital_id: item.hospitalID,
-    };
-  });
+import {
+  getPortalExists,
+  addOrUpdatePortalSetup,
+  getServiceTypeDropDown,
+  getSubInsuranceGrid,
+  updatePortal,
+} from "./events";
+import { AlgaehMessagePop, Spin } from "algaeh-react-components";
+import PortalActive from "./PortalActive";
+import PortalGrid from "./PortalGrid";
+import { swalMessage } from "../../../utils/algaehApiCall";
+import { PortalSetupContext } from "./PortalSetupContext";
 
-  const result = await newAlgaehApi({
-    uri: "/insurance/addOrUpdatePortalSetup",
-    module: "insurance",
-    data: { data: dataArray },
-    method: "POST",
-  });
-  return result.data?.records;
-};
-const updatePortal = async (data) => {
-  const result = await newAlgaehApi({
-    uri: "/insurance/updatePortalExists",
-    module: "insurance",
-    data: { portal_exists: data.portal_exists },
-    method: "PUT",
-  });
-  return result.data?.records;
-};
-export function PortalSetup() {
-  const [checkAll, setCheckAll] = useState(STATUS.UNCHECK);
-  const [gridData, setGridData] = useState([]);
-  const [portal_exists, setPortal_exists] = useState("N");
-  const [isDirty, setIsDirty] = useState(false);
-  let allChecked = useRef(undefined);
-  const selectAll = (e) => {
-    const staus = e.target.checked;
-    const myState = gridData.map((f) => {
-      return { ...f, checked: staus, isDirty: staus ? true : false };
-    });
-
-    const hasUncheck = myState.filter((f) => {
-      return f.checked === undefined || f.checked === false;
-    });
-
-    const totalRecords = myState.length;
-    setCheckAll(
-      totalRecords === hasUncheck.length
-        ? "UNCHECK"
-        : hasUncheck.length === 0
-        ? "CHECK"
-        : "INDETERMINATE"
-    );
-    setGridData([...myState]);
-  };
-  const selectToProcess = (row, e) => {
-    const status = e.target.checked;
-    row.checked = status;
-    row["isDirty"] = status ? true : false;
-    const records = gridData;
-    const hasUncheck = records.filter((f) => {
-      return f.checked === undefined || f.checked === false;
-    });
-
-    const totalRecords = records.length;
-    let ckStatus =
-      totalRecords === hasUncheck.length
-        ? "UNCHECK"
-        : hasUncheck.length === 0
-        ? "CHECK"
-        : "INDETERMINATE";
-    if (ckStatus === "INDETERMINATE") {
-      allChecked.indeterminate = true;
-    } else {
-      allChecked.indeterminate = false;
-    }
-    setCheckAll(ckStatus);
-    setGridData([...records]);
-  };
-
+export default function PortalSetupComponent() {
+  // const [saveLoading, setSaveLoading] = useState(false);
+  // const [gridData, setGridData] = useState([]);
+  // const [portal_exists, setPortal_exists] = useState("N");
+  // const [isDirty, setIsDirty] = useState(false);
+  const { portalState, setPortalState } = useContext(PortalSetupContext);
   const { data: serviceTypes } = useQuery(
     "dropdown-data",
     getServiceTypeDropDown,
@@ -99,300 +30,99 @@ export function PortalSetup() {
       initialStale: true,
       cacheTime: Infinity,
       // onSuccess: (data) => {},
+      onError: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
     }
   );
-  async function getServiceTypeDropDown() {
-    const result = await newAlgaehApi({
-      uri: "/serviceType/getServiceTypeDropDown",
-      module: "masterSettings",
-      method: "GET",
-    });
 
-    return result?.data?.records;
-  }
   const { refetch, isLoading: reloading } = useQuery(
     ["getSubInsuranceGrid"],
     getSubInsuranceGrid,
     {
       onSuccess: (data) => {
-        setGridData(data);
+        setPortalState({ ...portalState, gridData: data });
+        // setGridData(data);
       },
-      onError: (err) => {
-        AlgaehMessagePop({
-          display: err?.message,
+      onError: (error) => {
+        swalMessage({
+          title: error.message,
           type: "error",
         });
       },
     }
   );
-  async function getSubInsuranceGrid(key) {
-    const result = await newAlgaehApi({
-      uri: "/insurance/getSubInsuranceGrid",
-      module: "insurance",
-      method: "GET",
-      // data: inputobj,
-    });
-    return result?.data?.records;
-  }
 
   // add here loadash
 
   useQuery(["getPortalExists"], getPortalExists, {
     onSuccess: (data) => {
-      setPortal_exists(data[0].portal_exists);
+      debugger;
+      setPortalState({ ...portalState, portal_exists: data[0].portal_exists });
+      // setPortal_exists(data[0].portal_exists);
     },
-    onError: (err) => {
-      AlgaehMessagePop({
-        // check error msg here
-        display: err?.message,
+    onError: (error) => {
+      swalMessage({
+        title: error.message,
         type: "error",
       });
     },
   });
-  async function getPortalExists(key) {
-    const result = await newAlgaehApi({
-      uri: "/insurance/getPortalExists",
-      module: "insurance",
-      method: "GET",
-      // data: inputobj,
-    });
-    return result?.data?.records;
-  }
-  const [save, { isLoading: saveLoading }] = useMutation(
-    addOrUpdatePortalSetup,
-    {
-      onSuccess: (data) => {
-        refetch();
-        AlgaehMessagePop({
-          display: "Data updated Successfully...",
-          type: "success",
-        });
-      },
-      onError: (err) => {
-        AlgaehMessagePop({
-          // check error msg here
-          display: err.message,
-          type: "error",
-        });
-      },
-    }
-  );
-  const [updatePortalExists] = useMutation(updatePortal, {
-    onSuccess: (data) => {
-      AlgaehMessagePop({
-        display: "Data updated Successfully...",
-        type: "success",
-      });
-      setIsDirty(false);
-    },
-    onError: (err) => {
-      AlgaehMessagePop({
-        // check error msg here
-        display: err.message,
-        type: "error",
-      });
-    },
-  });
+
   const updateFunction = () => {
-    const filteredArray = gridData.filter((f) => f.checked);
-    if (isDirty) {
-      updatePortalExists({ portal_exists: portal_exists });
+    setPortalState({ ...portalState, saveLoading: true });
+    const filteredArray = portalState?.gridData.filter((f) => f.checked);
+    if (portalState?.isDirty) {
+      updatePortal({ portal_exists: portalState?.portal_exists });
 
       if (filteredArray.length > 0) {
-        save({
-          filteredArray: filteredArray,
-        });
+        addOrUpdatePortalSetup(
+          {
+            filteredArray: filteredArray,
+          },
+          refetch
+        );
+        setPortalState({ ...portalState, saveLoading: false });
       }
     } else {
       if (filteredArray.length > 0) {
-        save({
-          filteredArray: filteredArray,
-        });
+        addOrUpdatePortalSetup(
+          {
+            filteredArray: filteredArray,
+          },
+          refetch
+        );
+        setPortalState({ ...portalState, saveLoading: false });
       } else {
         AlgaehMessagePop({
           display: "Nothing To Update...",
           type: "warning",
         });
+        setPortalState({ ...portalState, saveLoading: false });
       }
     }
   };
   return (
-    <Spin spinning={saveLoading || reloading}>
+    <Spin spinning={portalState?.saveLoading || reloading}>
       <div className="PortalSetup">
         <div className="row inner-top-search">
-          <div className="col-3 form-group">
-            <label>Portal Active</label>
-            <div className="customRadio">
-              <label className="radio inline">
-                <input
-                  type="radio"
-                  value="Y"
-                  checked={portal_exists === "Y"}
-                  onChange={(e) => {
-                    setIsDirty(true);
-                    setPortal_exists(e.target.value);
-                  }}
-                  name="portal_exists"
-                />
-                <span>Yes</span>
-              </label>{" "}
-              <label className="radio inline">
-                <input
-                  type="radio"
-                  value="N"
-                  checked={portal_exists === "N"}
-                  onChange={(e) => {
-                    setIsDirty(true);
-                    setPortal_exists(e.target.value);
-                  }}
-                  name="portal_exists"
-                />
-                <span>No</span>
-              </label>
-            </div>
-          </div>
+          <PortalActive
+            // setIsDirty={setIsDirty}
+            portal_exists={portalState?.portal_exists}
+            // setPortal_exists={setPortal_exists}
+          />
         </div>
         <div className="row ">
           <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Portal Corporate Lists</h3>
-                </div>
-                <div className="actions"></div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-12">
-                    <div id="CardMasterGrid_Cntr">
-                      <AlgaehDataGrid
-                        id="CardMasterGrid"
-                        datavalidate="data-validate='cardDiv'"
-                        columns={[
-                          {
-                            label: (
-                              <input
-                                type="checkbox"
-                                defaultChecked={
-                                  checkAll === "CHECK" ? true : false
-                                }
-                                ref={(input) => {
-                                  allChecked = input;
-                                }}
-                                onChange={selectAll}
-                                disabled={portal_exists === "N"}
-                              />
-                            ),
-                            fieldName: "select",
-                            displayTemplate: (row) => {
-                              return (
-                                <input
-                                  type="checkbox"
-                                  checked={row.checked}
-                                  onChange={(e) => selectToProcess(row, e)}
-                                  disabled={portal_exists === "N"}
-                                />
-                              );
-                            },
-                            others: {
-                              maxWidth: 50,
-                              filterable: false,
-                              sortable: false,
-                            },
-                          },
-                          {
-                            fieldName: "insurance_sub_code",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Corporate Code" }}
-                              />
-                            ),
-                          },
-                          {
-                            fieldName: "insurance_sub_name",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Corporate Company Name" }}
-                              />
-                            ),
-                            filterable: true,
-                          },
-                          {
-                            fieldName: "user_id",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Username" }} />
-                            ),
-                          },
-                          {
-                            fieldName: "effective_end_date",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Valid Upto" }}
-                              />
-                            ),
-                          },
-                          {
-                            fieldName: "last_sync",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Last Sync Date" }}
-                              />
-                            ),
-                          },
-                          {
-                            fieldName: "service_type",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Service Type" }}
-                              />
-                            ),
-
-                            displayTemplate: (row) => {
-                              let array = JSON.parse(row.service_types);
-                              return (
-                                <Select
-                                  {...{
-                                    mode: "multiple",
-                                    style: {
-                                      width: "100%",
-                                    },
-                                    data_role: "multipleSelectList",
-                                    name: "service_type",
-                                    value: array ? array : undefined,
-                                    options: serviceTypes,
-                                    onChange: (e) => {
-                                      row["isDirtyUpdate"] = true;
-                                      row.service_type = e;
-                                    },
-                                    optionFilterProp: "children",
-                                    // onSearch: onSearch,
-                                    disabled: portal_exists === "N",
-                                    filterOption: (input, option) => {
-                                      return (
-                                        option.label
-                                          .toLowerCase()
-                                          .indexOf(input.toLowerCase()) >= 0
-                                      );
-                                    },
-
-                                    placeholder: "Select Service...",
-                                    // maxTagCount: "responsive",
-                                  }}
-                                />
-                              );
-                            },
-                          },
-                        ]}
-                        rowUniqueId="hims_d_promotion_id"
-                        data={gridData ?? []}
-                        pagination={true}
-                        isFilterable={true}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <PortalGrid
+              gridData={portalState?.gridData}
+              // setGridData={setGridData}
+              serviceTypes={serviceTypes}
+              portal_exists={portalState?.portal_exists}
+            />
           </div>
         </div>
         <div className="hptl-phase1-footer">

@@ -2063,13 +2063,15 @@ let addPatientChiefComplaints = (req, res, next) => {
           });
         }
       })
-      .catch((error) => {
-        _mysql.releaseConnection();
-        next(error);
+      .catch((e) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
       });
   } catch (e) {
-    _mysql.releaseConnection();
-    next(e);
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
   }
 };
 
