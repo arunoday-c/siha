@@ -4,6 +4,7 @@ import serviceModels from "../models/serviceTypes";
 
 const {
   getServiceType,
+  getServiceTypeDropDown,
   getServices,
   getServiceInsured,
   addServices,
@@ -59,6 +60,18 @@ export default () => {
     });
     next();
   });
+  api.get(
+    "/getServiceTypeDropDown",
+    getServiceTypeDropDown,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(utlities.httpStatus().ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    }
+  );
 
   api.get("/getService", getServices, (req, res, next) => {
     let result = req.records;
