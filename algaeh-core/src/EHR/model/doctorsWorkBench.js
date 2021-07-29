@@ -1,7 +1,6 @@
 "use strict";
 import extend from "extend";
-import utils from "../../utils";
-import httpStatus from "../../utils/httpStatus";
+import axios from "axios";
 import { LINQ } from "node-linq";
 import moment from "moment";
 import logUtils from "../../utils/logging";
@@ -11,18 +10,15 @@ import mysql from "mysql";
 import algaehMysql from "algaeh-mysql";
 const keyPath = require("algaeh-keys/keys");
 import _ from "lodash";
-import { resolveTxt } from "dns";
-import { debug } from "console";
+import "regenerator-runtime/runtime";
+import dotenv from "dotenv";
+if (process.env.NODE_ENV !== "production") dotenv.config();
+// const { PORTAL_HOST } = process.env;
+const processENV = process.env;
+const PORTAL_HOST = processENV.PORTAL_HOST ?? "http://localhost:4402/api/v1/";
 
 const { decryption } = cryptoUtils;
 const { debugFunction, debugLog } = logUtils;
-const {
-  selectStatement,
-  paging,
-  whereCondition,
-  releaseDBConnection,
-  jsonArrayToObject,
-} = utils;
 
 //created by irfan: to add  physical_examination_header
 let physicalExaminationHeader = (req, res, next) => {
@@ -113,7 +109,6 @@ let physicalExaminationDetails = (req, res, next) => {
   //   updated_by: null,
   // };
 
-  debugFunction("physicalExaminationDetails");
   let input = req.body;
   try {
     // if (req.db == null) {
@@ -186,7 +181,6 @@ let physicalExaminationSubDetails = (req, res, next) => {
   // };
   let input = req.body;
 
-  debugFunction("physicalExaminationSubDetails");
   try {
     // if (req.db == null) {
     //   next(httpStatus.dataBaseNotInitilizedError());
@@ -1670,8 +1664,12 @@ let getPatientVitals = (req, res, next) => {
         const vitals = _.chain(result)
           .groupBy((g) => g.created_date)
           .map((details, key) => {
-            const { created_date, user_display_name, visit_date, visit_time } =
-              _.head(details);
+            const {
+              created_date,
+              user_display_name,
+              visit_date,
+              visit_time,
+            } = _.head(details);
             const recorded_dt = `${moment(visit_date).format(
               "YYYY-MM-DD"
             )} ${visit_time}`;
@@ -2010,12 +2008,16 @@ let addPatientChiefComplaints = (req, res, next) => {
     ];
 
     _mysql
-      .executeQuery({
-        query: "INSERT INTO hims_f_episode_chief_complaint(??) VALUES ?",
+      .executeQueryWithTransaction({
+        query:
+          "INSERT INTO hims_f_episode_chief_complaint(??) VALUES ?; \
+        SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=" +
+          req.userIdentity.hospital_id +
+          ";",
 
         values: req.body,
         includeValues: insurtColumns,
-        printQuery: false,
+        printQuery: true,
         bulkInsertOrUpdate: true,
         extraValues: {
           created_date: new Date(),
@@ -2025,10 +2027,41 @@ let addPatientChiefComplaints = (req, res, next) => {
           hospital_id: req.userIdentity.hospital_id,
         },
       })
-      .then((result) => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
+      .then(async (result) => {
+        const portal_exists = result[1][0].portal_exists;
+
+        // console.log("portal_exists", portal_exists);
+
+        if (portal_exists === "Y") {
+          const portal_data = {
+            patient_identity: req.body[0].primary_id_no,
+            visit_code: req.body[0].visit_code,
+            visit_date: req.body[0].Encounter_Date,
+            chief_compliant: req.body[0].comment,
+            significant_signs: req.body[0].significant_signs,
+            other_signs: req.body[0].other_signs,
+            hospital_id: req.userIdentity.hospital_id,
+          };
+
+          // console.log("portal_data", portal_data);
+          // consol.log("portal_data", portal_data);
+          await axios
+            .post(`${PORTAL_HOST}/info/patientVisitDetails`, portal_data)
+            .catch((e) => {
+              throw e;
+            });
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+        }
       })
       .catch((error) => {
         _mysql.releaseConnection();
@@ -2157,24 +2190,14 @@ let addPatientNewAllergy = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
 
   try {
-    // if (req.db == null) {
-    //   next(httpStatus.dataBaseNotInitilizedError());
-    // }
-    // let db = req.db;
     let inputparam = extend({}, req.body);
 
-    // db.getConnection((error, connection) => {
-    //   if (error) {
-    //     next(error);
-    //   }
-
-    //   connection.query(
     _mysql
-      .executeQuery({
+      .executeQueryWithTransaction({
         query:
           "INSERT INTO `hims_f_patient_allergy` (`patient_id`, `allergy_id`, onset, onset_date, severity, `comment`,\
          allergy_inactive,created_date,`created_by`,updated_date,`updated_by`,hospital_id)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?); SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=?;",
         values: [
           inputparam.patient_id,
           inputparam.allergy_id,
@@ -2188,34 +2211,53 @@ let addPatientNewAllergy = (req, res, next) => {
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.hospital_id,
+          req.userIdentity.hospital_id,
         ],
-        //         (error, result) => {
-        //           releaseDBConnection(db, connection);
-        //           if (error) {
-        //             next(error);
-        //           }
-        //           req.records = result;
-        //           next();
-        //         }
-        //       );
-        //     });
-        //   } catch (e) {
-        //     next(e);
-        //   }
-        // };
       })
-      .then((result) => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
+      .then(async (result) => {
+        const portal_exists = result[1][0].portal_exists;
+
+        // console.log("portal_exists", portal_exists);
+        // consol.log("portal_exists", portal_exists);
+
+        if (portal_exists === "Y") {
+          const portal_data = {
+            patient_identity: inputparam.primary_id_no,
+            allergy_type: inputparam.allergy_type,
+            allergy_name: inputparam.allergy_name,
+            allergy_status: "ACTIVE",
+            update_type: "HOSPITAL",
+          };
+
+          // console.log("portal_data", portal_data);
+          // consol.log("portal_data", portal_data);
+          await axios
+            .post(`${PORTAL_HOST}/info/patientAllergy`, portal_data)
+            .catch((e) => {
+              throw e;
+            });
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result[0];
+            next();
+          });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result[0];
+            next();
+          });
+        }
       })
-      .catch((error) => {
-        _mysql.releaseConnection();
-        next(error);
+      .catch((e) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
       });
   } catch (e) {
-    _mysql.releaseConnection();
-    next(e);
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
   }
 };
 
@@ -2336,7 +2378,10 @@ let updatePatientChiefComplaints = (req, res, next) => {
   try {
     let inputParam = req.body.chief_complaints;
     let chief_len = inputParam.length;
-    let qry = "";
+    let qry =
+      "SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=" +
+      req.userIdentity.hospital_id +
+      ";";
 
     for (let i = 0; i < chief_len; i++) {
       const _complaint_inactive_date =
@@ -2372,14 +2417,44 @@ let updatePatientChiefComplaints = (req, res, next) => {
     _mysql
       .executeQueryWithTransaction({
         query: qry,
-        // printQuery: true,
+        printQuery: true,
       })
-      .then((result) => {
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
-        });
+      .then(async (result) => {
+        const portal_exists = result[0][0].portal_exists;
+
+        // console.log("portal_exists", portal_exists);
+        // consol.log("portal_exists", portal_exists);
+
+        if (portal_exists === "Y") {
+          const portal_data = {
+            patient_identity: inputParam[0].primary_id_no,
+            visit_code: inputParam[0].visit_code,
+            visit_date: inputParam[0].Encounter_Date,
+            chief_compliant: inputParam[0].comment,
+            significant_signs: inputParam[0].significant_signs,
+            other_signs: inputParam[0].other_signs,
+            hospital_id: req.userIdentity.hospital_id,
+          };
+
+          // console.log("portal_data", portal_data);
+          // consol.log("portal_data", portal_data);
+          await axios
+            .post(`${PORTAL_HOST}/info/patientVisitDetails`, portal_data)
+            .catch((e) => {
+              throw e;
+            });
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+        }
       })
       .catch((error) => {
         _mysql.rollBackTransaction(() => {
@@ -2387,8 +2462,9 @@ let updatePatientChiefComplaints = (req, res, next) => {
         });
       });
   } catch (e) {
-    _mysql.releaseConnection();
-    next(e);
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
   }
 };
 
@@ -2406,8 +2482,11 @@ let addPatientDiagnosis = (req, res, next) => {
     ];
 
     _mysql
-      .executeQuery({
-        query: "INSERT INTO hims_f_patient_diagnosis(??) VALUES ?",
+      .executeQueryWithTransaction({
+        query:
+          "INSERT INTO hims_f_patient_diagnosis(??) VALUES ?; SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=" +
+          req.userIdentity.hospital_id +
+          ";",
         values: req.body,
         includeValues: insurtColumns,
         printQuery: false,
@@ -2420,18 +2499,49 @@ let addPatientDiagnosis = (req, res, next) => {
           hospital_id: req.userIdentity.hospital_id,
         },
       })
-      .then((result) => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
+      .then(async (result) => {
+        const portal_exists = result[1][0].portal_exists;
+        // console.log("portal_exists", portal_exists);
+        // consol.log("portal_exists", portal_exists);
+        if (portal_exists === "Y") {
+          const portal_data = {
+            patient_identity: req.body[0].primary_id_no,
+            visit_code: req.body[0].visit_code,
+            diagnosis_type:
+              req.body[0].diagnosis_type === "P" ? "Primary" : "Secondary",
+            daignosis_name: req.body[0].daignosis_name,
+            hospital_id: req.userIdentity.hospital_id,
+          };
+
+          // console.log("portal_data", portal_data);
+          // consol.log("portal_data", portal_data);
+          await axios
+            .post(`${PORTAL_HOST}/info/patientVisitDiagnosis`, portal_data)
+            .catch((e) => {
+              throw e;
+            });
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result[0];
+            next();
+          });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result[0];
+            next();
+          });
+        }
       })
-      .catch((error) => {
-        _mysql.releaseConnection();
-        next(error);
+      .catch((e) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
       });
   } catch (e) {
-    _mysql.releaseConnection();
-    next(e);
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
   }
 };
 
@@ -2440,18 +2550,8 @@ let addPatientROS = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
 
   try {
-    // if (req.db == null) {
-    //   next(httpStatus.dataBaseNotInitilizedError());
-    // }
-    // let db = req.db;
     let inputparam = extend({}, req.body);
 
-    // db.getConnection((error, connection) => {
-    //   if (error) {
-    //     next(error);
-    //   }
-
-    //   connection.query(
     _mysql
       .executeQuery({
         query:
@@ -2470,20 +2570,6 @@ let addPatientROS = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.hospital_id,
         ],
-        //         (error, result) => {
-        //           releaseDBConnection(db, connection);
-        //           if (error) {
-        //             next(error);
-        //           }
-        //           req.records = result;
-        //           next();
-        //         }
-        //       );
-        //     });
-        //   } catch (e) {
-        //     next(e);
-        //   }
-        // };
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2507,10 +2593,11 @@ let updatePatientDiagnosis = (req, res, next) => {
   let input = req.body;
   try {
     _mysql
-      .executeQuery({
+      .executeQueryWithTransaction({
         query:
           "update hims_f_patient_diagnosis set diagnosis_type=?, final_daignosis=?,\
-        updated_date=?,updated_by=?, record_status=? where `record_status`='A' and hims_f_patient_diagnosis_id=?;",
+        updated_date=?,updated_by=?, record_status=? where `record_status`='A' and hims_f_patient_diagnosis_id=?;\
+        SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=?;",
         values: [
           input.diagnosis_type,
           input.final_daignosis,
@@ -2518,20 +2605,52 @@ let updatePatientDiagnosis = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           input.record_status,
           input.hims_f_patient_diagnosis_id,
+          req.userIdentity.hospital_id,
         ],
         // printQuery: true,
       })
-      .then((result) => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
+      .then(async (result) => {
+        const portal_exists = result[1][0].portal_exists;
+        // console.log("portal_exists", portal_exists);
+        if (portal_exists === "Y") {
+          const portal_data = {
+            patient_identity: input.patient_identity,
+            visit_code: input.visit_code,
+            daignosis_name: input.daignosis_name,
+            diagnosis_type:
+              input.diagnosis_type === "P" ? "Primary" : "Secondary",
+            delete_data: input.delete_data,
+          };
+
+          // console.log("portal_data", portal_data);
+          // consol.log("portal_data", portal_data);
+          await axios
+            .post(`${PORTAL_HOST}/info/patientVisitDiagnosis`, portal_data)
+            .catch((e) => {
+              throw e;
+            });
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result[0];
+            next();
+          });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result[0];
+            next();
+          });
+        }
       })
-      .catch((error) => {
-        _mysql.releaseConnection();
-        next(error);
+      .catch((e) => {
+        mysql.rollBackTransaction(() => {
+          next(e);
+        });
       });
   } catch (e) {
-    next(e);
+    mysql.rollBackTransaction(() => {
+      next(e);
+    });
   }
 };
 
@@ -2655,21 +2774,13 @@ let addPatientVitals = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   let input = req.body;
 
-  // const insurtColumns = [
-  //   "patient_id",
-  //   "visit_id",
-  //   "visit_date",
-  //   "visit_time",
-  //   "case_type",
-  //   "vital_id",
-  //   "vital_value",
-  //   "vital_value_one",
-  //   "vital_value_two",
-  //   "formula_value",
-  // ];
-
   try {
-    let query = "";
+    let query =
+      "SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=" +
+      req.userIdentity.hospital_id +
+      ";";
+
+    let portal_data = [];
     for (let i = 0; i < input.length; i++) {
       const {
         vital_value,
@@ -2682,6 +2793,9 @@ let addPatientVitals = (req, res, next) => {
         vital_value_one,
         vital_value_two,
         formula_value,
+        primary_id_no,
+        visit_code,
+        vital_name,
       } = input[i];
       if (parseFloat(vital_value) !== 0) {
         query += mysql.format(
@@ -2706,42 +2820,62 @@ let addPatientVitals = (req, res, next) => {
             req.userIdentity.algaeh_d_app_user_id,
           ]
         );
+
+        portal_data.push({
+          patient_identity: primary_id_no,
+          visit_code: visit_code,
+          visit_date: moment(visit_date).format("YYYY-MM-DD hh:mm:ss"),
+          vital_name: vital_name,
+          vital_value: vital_value,
+          formula_value: formula_value,
+          hospital_id: req.userIdentity.hospital_id,
+        });
       }
     }
     if (query !== "") {
       _mysql
         .executeQuery({
           query,
-          // query: "INSERT INTO hims_f_patient_vitals(??) VALUES ?",
-          // values: input,
-          // includeValues: insurtColumns,
-          // printQuery: true,
-          // bulkInsertOrUpdate: true,
-          // extraValues: {
-          //   hospital_id: req.userIdentity.hospital_id,
-          //   created_date: new Date(),
-          //   created_by: req.userIdentity.algaeh_d_app_user_id,
-          //   updated_date: new Date(),
-          //   updated_by: req.userIdentity.algaeh_d_app_user_id,
-          // },
-          // printQuery: true,
+          printQuery: true,
         })
-        .then((result) => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
+        .then(async (result) => {
+          const portal_exists = result[0][0].portal_exists;
+          // console.log("portal_exists", portal_exists);
+          // consol.log("portal_exists", portal_exists);
+          if (portal_exists === "Y") {
+            // console.log("portal_data", portal_data);
+            // consol.log("portal_data", portal_data);
+            await axios
+              .post(`${PORTAL_HOST}/info/patientVitals`, portal_data)
+              .catch((e) => {
+                throw e;
+              });
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = result[0];
+              next();
+            });
+          } else {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = result[0];
+              next();
+            });
+          }
         })
-        .catch((error) => {
-          _mysql.releaseConnection();
-          next(error);
+        .catch((e) => {
+          mysql.rollBackTransaction(() => {
+            next(e);
+          });
         });
     } else {
       _mysql.releaseConnection();
       next(new Error("No records for vitals."));
     }
   } catch (e) {
-    _mysql.releaseConnection();
-    next(e);
+    mysql.rollBackTransaction(() => {
+      next(e);
+    });
   }
 };
 
@@ -2791,14 +2925,44 @@ let addPatientPhysicalExamination = (req, res, next) => {
 let updatePatientAllergy = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   let input = req.body;
+  // let strQuery = "";
+  // if (input.delete_data === true) {
+  //   strQuery += mysql.format(
+  //     `update hims_f_patient_allergy set record_status='I', updated_date=?, updated_by=?
+  //    where record_status='A' and  hims_f_patient_allergy_id=?;`,
+  //     [
+  //       new Date(),
+  //       req.userIdentity.algaeh_d_app_user_id,
+  //       input.hims_f_patient_allergy_id,
+  //     ]
+  //   );
+  // } else {
+  //   strQuery += mysql.format(
+  //     `update hims_f_patient_allergy set allergy_inactive=?,\
+  //   comment=?,onset=?,severity=?,onset_date=?, updated_date=?,updated_by=?, \
+  //   record_status=? where record_status='A' and  hims_f_patient_allergy_id=?;`,
+  //     [
+  //       input.allergy_inactive,
+  //       input.comment,
+  //       input.onset,
+  //       input.severity,
+  //       input.onset_date,
+  //       new Date(),
+  //       req.userIdentity.algaeh_d_app_user_id,
+  //       input.record_status,
+  //       input.hims_f_patient_allergy_id,
+  //     ]
+  //   );
+  // }
 
   try {
     _mysql
-      .executeQuery({
+      .executeQueryWithTransaction({
         query:
           "update hims_f_patient_allergy set allergy_inactive=?,\
         `comment`=?,onset=?,severity=?,onset_date=?, updated_date=?,updated_by=?, \
-        record_status=? where `record_status`='A' and  hims_f_patient_allergy_id=?;",
+        record_status=? where `record_status`='A' and  hims_f_patient_allergy_id=?; \
+        SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=?;",
         values: [
           input.allergy_inactive,
           input.comment,
@@ -2809,23 +2973,51 @@ let updatePatientAllergy = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           input.record_status,
           input.hims_f_patient_allergy_id,
+          req.userIdentity.hospital_id,
         ],
-
-        // printQuery: true,
+        printQuery: true,
       })
-      .then((result) => {
-        _mysql.releaseConnection();
+      .then(async (result) => {
+        const portal_exists = result[1][0].portal_exists;
+        // console.log("portal_exists", portal_exists);
+        if (portal_exists === "Y") {
+          const portal_data = {
+            patient_identity: input.primary_id_no,
+            allergy_type: input.allergy_type,
+            allergy_name: input.allergy_name,
+            allergy_status: "INACTIVE",
+            update_type: "HOSPITAL",
+          };
 
-        req.records = result;
-        next();
+          // console.log("portal_data", portal_data);
+          // consol.log("portal_data", portal_data);
+          await axios
+            .post(`${PORTAL_HOST}/info/patientAllergy`, portal_data)
+            .catch((e) => {
+              throw e;
+            });
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result[0];
+            next();
+          });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result[0];
+            next();
+          });
+        }
       })
-      .catch((error) => {
-        _mysql.releaseConnection();
-        next(error);
+      .catch((e) => {
+        mysql.rollBackTransaction(() => {
+          next(e);
+        });
       });
   } catch (e) {
-    _mysql.releaseConnection();
-    next(e);
+    mysql.rollBackTransaction(() => {
+      next(e);
+    });
   }
 };
 
@@ -3795,7 +3987,7 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.other_signs,
       ]);
     }
-    strQuery += " where encounter_id=?";
+    strQuery += " where encounter_id=?;";
 
     _mysql
       .executeQuery({
@@ -3803,8 +3995,7 @@ let updatePatientEncounter = (req, res, next) => {
         values: [inputData.encounter_id],
         // printQuery: true,
       })
-      .then((result) => {
-        // utilities.logger().log("result: ", result);
+      .then(async (result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
@@ -3817,54 +4008,6 @@ let updatePatientEncounter = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //   let inputData = extend({}, req.body);
-  //   let strQuery = "";
-  //   if (inputData.examination_notes != null) {
-  //     strQuery += "examination_notes = '" + inputData.examination_notes + "'";
-  //   }
-  //   if (inputData.assesment_notes != null) {
-  //     strQuery += "assesment_notes = '" + inputData.assesment_notes + "'";
-  //   }
-
-  //   if (inputData.significant_signs != null) {
-  //     strQuery += "significant_signs = '" + inputData.significant_signs + "'";
-  //   }
-
-  //   if (inputData.other_signs != null) {
-  //     // strQuery !== "" ? " and" : "";
-  //     strQuery += " , other_signs = '" + inputData.other_signs + "'";
-  //   }
-
-  //   if (strQuery != "") {
-  //     db.getConnection((error, connection) => {
-  //       connection.query(
-  //         "UPDATE hims_f_patient_encounter Set " +
-  //           strQuery +
-  //           " where encounter_id=?",
-  //         [inputData.encounter_id],
-  //         (error, result) => {
-  //           releaseDBConnection(db, connection);
-  //           if (error) {
-  //             next(error);
-  //           }
-  //           req.records = result;
-  //           debugLog("result", result);
-  //           next();
-  //         }
-  //       );
-  //     });
-  //   } else {
-  //     next();
-  //     return;
-  //   }
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 //created by Nowshad: to get
@@ -4142,8 +4285,13 @@ export const getNurseNotes = (req, res, next) => {
 
 export const addNurseNote = (req, res, next) => {
   const _mysql = new algaehMysql();
-  const { patient_id, visit_id, episode_id, nursing_notes, visit_date } =
-    req.body;
+  const {
+    patient_id,
+    visit_id,
+    episode_id,
+    nursing_notes,
+    visit_date,
+  } = req.body;
   try {
     _mysql
       .executeQuery({
