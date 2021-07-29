@@ -339,6 +339,14 @@ export function PortalSetup() {
                             ),
                           },
                           {
+                            fieldName: "last_sync",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Last Sync Date" }}
+                              />
+                            ),
+                          },
+                          {
                             fieldName: "service_type",
                             label: (
                               <AlgaehLabel
