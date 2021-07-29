@@ -257,6 +257,33 @@ export default {
       next(e);
     }
   },
+
+  getServiceTypeDropDown: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      _mysql
+        .executeQuery({
+          query: `SELECT hims_d_service_type_id as value, service_type as label
+        FROM hims_d_service_type WHERE record_status='A' 
+         order by hims_d_service_type_id desc`,
+          // values: inputValues,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   getServices: (req, res, next) => {
     let input = req.query;
     const _mysql = new algaehMysql();

@@ -860,8 +860,6 @@ import { newAlgaehApi } from "../../../hooks";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 
 import swal from "sweetalert2";
-// import _ from "lodash";
-// import axios from "axios";
 import moment from "moment";
 
 // import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
@@ -934,7 +932,7 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
   );
   const [microAntbiotic, setMicroAntbiotic] = useState([]);
   let [, setState] = useState();
-  // const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
+
   useEffect(() => {
     setPortal_exists(userToken.portal_exists);
 
@@ -1152,27 +1150,6 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
       method: "PUT",
       onSuccess: (response) => {
         if (response.data.success === true) {
-          // if (status === "CF" || status === "V") {
-          //   if (portal_exists === "Y") {
-          //     const portal_data = {
-          //       service_id: selectedPatient.service_id,
-          //       visit_code: selectedPatient.visit_code,
-          //       patient_identity: selectedPatient.primary_id_no,
-          //       service_status:
-          //         status === "CF" ? "RESULT CONFIRMED" : "RESULT VALIDATED",
-          //     };
-          //     axios
-          //       .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-          //       .then(function (response) {
-          //         //handle success
-          //         console.log(response);
-          //       })
-          //       .catch(function (response) {
-          //         //handle error
-          //         console.log(response);
-          //       });
-          //   }
-          // }
           swalMessage({
             type: "success",
             title: "Done successfully . .",

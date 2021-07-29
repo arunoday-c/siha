@@ -14,6 +14,10 @@ const {
   addPatientInsuranceData,
   getListOfInsuranceProvider,
   getSubInsurance,
+  getSubInsuranceGrid,
+  getPortalExists,
+  updatePortalExists,
+  addOrUpdatePortalSetup,
   addInsuranceProvider,
   updateInsuranceProvider,
   addSubInsuranceProvider,
@@ -49,6 +53,26 @@ export default () => {
       next();
     }
   );
+
+  api.post(
+    "/addOrUpdatePortalSetup",
+    addOrUpdatePortalSetup,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+
+  api.get("/getPortalExists", getPortalExists, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
   api.get(
     "/getListOfInsuranceProvider",
     getListOfInsuranceProvider,
@@ -61,6 +85,15 @@ export default () => {
       next();
     }
   );
+
+  api.put("/updatePortalExists", updatePortalExists, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
   api.get("/verifyUserIdExist", verifyUserIdExist, (req, res, next) => {
     const exists = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -73,6 +106,14 @@ export default () => {
     next();
   });
   api.get("/getSubInsurance", getSubInsurance, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.get("/getSubInsuranceGrid", getSubInsuranceGrid, (req, res, next) => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,

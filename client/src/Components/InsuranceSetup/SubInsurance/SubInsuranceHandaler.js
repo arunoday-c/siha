@@ -2,9 +2,6 @@ import moment from "moment";
 import { Validations } from "./SubInsuranceValidation";
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-// import axios from "axios";
-
-// const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 
 const texthandle = ($this, e) => {
   let name;
@@ -71,41 +68,6 @@ const saveAfterUnique = ($this, context) => {
           });
         }
         addNewSubinsurance($this);
-        // if (
-        //   $this.state.insurance_type === "C" &&
-        //   $this.state.portal_exists === "Y"
-        // ) {
-        //   const eff_end_date = moment($this.state.effective_end_date).format(
-        //     "YYYYMMDD"
-        //   );
-        //   const firstFourLetters = String($this.state.user_id)
-        //     .substring(0, 4)
-        //     .toUpperCase();
-        //   const password = `${firstFourLetters}${eff_end_date}`;
-
-        //   const _data = {
-        //     user_id: $this.state.user_id,
-        //     password: password,
-        //   };
-
-        //   try {
-        //     axios
-        //       .post(`${PORTAL_HOST}/info/userCreation`, _data)
-        //       .then(function (response) {
-        //         //handle success
-        //         console.log(response);
-        //       })
-        //       .catch(function (response) {
-        //         //handle error
-        //         console.log(response);
-        //       });
-        //   } catch (error) {
-        //     swalMessage({
-        //       title: error,
-        //       type: "error",
-        //     });
-        //   }
-        // }
         swalMessage({
           type: "success",
           title: "Added successfully . .",
