@@ -2530,13 +2530,13 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
                             },
                             updateInternally: true,
                             onChange: (e, value) => {
-                              row.container_code = value;
+                              row.container_id = value;
                               forceUpdate(row);
 
                               // onchangegridcol(row, e);
                             },
                             onClear: (e) => {
-                              row.container_code = null;
+                              row.container_id = null;
                               forceUpdate(row);
                             },
                           }}
