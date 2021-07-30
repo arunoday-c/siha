@@ -1328,7 +1328,7 @@ const labModal = {
           LB.ordered_date, LB.entered_date, LB.confirmed_date, LB.validated_date from hims_f_ord_analytes LO
           inner join hims_d_lab_analytes LA on LA.hims_d_lab_analytes_id = LO.analyte_id
           inner join hims_f_lab_order LB on LB.hims_f_lab_order_id = LO.order_id
-          inner join hims_m_lab_analyte as LM on LM.analyte_id = LA.hims_d_lab_analytes_id
+          left join hims_m_lab_analyte as LM on LM.analyte_id = LA.hims_d_lab_analytes_id
           left join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LB.entered_by or 
             CL.algaeh_d_app_user_id=LB.validated_by or CL.algaeh_d_app_user_id=LB.confirmed_by)
           left join hims_d_employee EM on EM.hims_d_employee_id=CL.employee_id
