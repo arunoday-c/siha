@@ -1779,6 +1779,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
       gender: selectedPatient.gender,
       order_id: selectedPatient.hims_f_lab_order_id,
       allAnalytesArray: test_analytes,
+      reload_analyte: "Y",
     };
     algaehApiCall({
       uri: "/laboratory/reloadAnalytesMaster",

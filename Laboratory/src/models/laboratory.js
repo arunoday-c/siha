@@ -1537,7 +1537,7 @@ const labModal = {
 
                 let strArray = "";
 
-                if (filteredArray?.length > 0) {
+                if (filteredArray?.length > 0 && input.reload_analyte === "Y") {
                   let analyteIds = filteredArray
                     .map((item) => item.hims_f_ord_analytes_id)
                     .join(",");
