@@ -178,22 +178,21 @@ class StaffCashCollection extends Component {
 
     //getting the payment mode
     const [_, mode] = name.split("_"); // eslint-disable-line
-
-    if (value && value > 0) {
-      let diff = this.state[exp_prefix + mode] - value;
-      let status = this.checkStatus(diff);
-      this.setState({
-        [name]: value,
-        [diff_prefix + mode]: diff,
-        [mode + status_suffix]: status,
-      });
-    } else {
-      this.setState({
-        [name]: "",
-        [diff_prefix + mode]: 0,
-        [mode + status_suffix]: null,
-      });
-    }
+    // if (value && value > 0) {
+    let diff = this.state[exp_prefix + mode] - value;
+    let status = this.checkStatus(diff);
+    this.setState({
+      [name]: value,
+      [diff_prefix + mode]: diff,
+      [mode + status_suffix]: status,
+    });
+    // } else {
+    //   this.setState({
+    //     [name]: "",
+    //     [diff_prefix + mode]: 0,
+    //     [mode + status_suffix]: null,
+    //   });
+    // }
   }
 
   checkStatus(diff) {
@@ -955,7 +954,6 @@ class StaffCashCollection extends Component {
                                       },
                                       others: {
                                         type: "number",
-                                        min: 0,
                                       },
                                     }}
                                   />
