@@ -10,7 +10,7 @@ import { newAlgaehApi } from "../../../../hooks";
 import { AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import { MainContext } from "algaeh-react-components";
 import { logoUrl, LoadLogo } from "../imagesSettings";
-// import EmailConfig from "./EmailConfig";
+import EmailConfig from "./EmailConfig";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
@@ -540,7 +540,7 @@ export function Organization(props) {
               </div>
               <div className="col-12">
                 <div className="row">
-                  <div className="col">
+                  <div className="col-4" style={{ overflow: "hidden" }}>
                     <label>Logo For Application</label>
                     <Upload
                       name="org_image"
@@ -559,7 +559,7 @@ export function Organization(props) {
                         <img
                           src={app_logo}
                           alt="avatar"
-                          style={{ height: "100%" }}
+                          style={{ width: "100%" }}
                         />
                       ) : (
                         <>
@@ -575,7 +575,7 @@ export function Organization(props) {
                       )}
                     </Upload>
                   </div>
-                  <div className="col">
+                  <div className="col-4" style={{ overflow: "hidden" }}>
                     <label>Logo For Report</label>
                     <Upload
                       name="org_image"
@@ -594,7 +594,7 @@ export function Organization(props) {
                         <img
                           src={org_image}
                           alt="avatar"
-                          style={{ height: "100%" }}
+                          style={{ width: "100%" }}
                         />
                       ) : (
                         <>
@@ -609,7 +609,7 @@ export function Organization(props) {
                       )}
                     </Upload>
                   </div>
-                  <div className="col">
+                  <div className="col-4" style={{ overflow: "hidden" }}>
                     <label>Seal For Report</label>
                     <Upload
                       name="org_image"
@@ -650,9 +650,9 @@ export function Organization(props) {
           </div>
         </div>
       </div>
-      {/* <div className="col-4">
+      <div className="col-4">
         {userToken.user_type === "SU" ? <EmailConfig /> : null}
-      </div> */}
+      </div>
     </div>
   );
 }
