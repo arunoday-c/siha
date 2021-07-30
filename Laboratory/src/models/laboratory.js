@@ -1526,6 +1526,39 @@ const labModal = {
             })
             .then((all_analytes) => {
               if (all_analytes.length > 0) {
+                let allAnalytesArray = input.allAnalytesArray;
+                let analytesMasterArray = all_analytes;
+                let filteredArray = allAnalytesArray.filter(
+                  (f1) =>
+                    !analytesMasterArray.some(
+                      (f2) => f1.analyte_id === f2.analyte_id
+                    )
+                );
+
+                let strArray = "";
+                let analyteIds = filteredArray
+                  .map((item) => item.hims_f_ord_analytes_id)
+                  .join(",");
+
+                if (filteredArray?.length > 0) {
+                  strArray += `delete from hims_f_ord_analytes where hims_f_ord_analytes_id in (${analyteIds});`;
+                  // filteredArray.map((item) => {
+                  //   return _mysql
+                  //     .executeQuery({
+                  //       query: `delete from hims_f_ord_analytes where hims_f_ord_analytes_id=? `,
+                  //       values: [item.hims_f_ord_analytes_id],
+                  //       printQuery: true,
+                  //     })
+                  //     .then((result) => {
+
+                  //     })
+                  //     .catch((e) => {
+                  //       _mysql.rollBackTransaction(() => {
+                  //         next(e);
+                  //       });
+                  //     });
+                  // });
+                }
                 const analyts = [
                   "order_id",
                   "analyte_id",
@@ -1541,10 +1574,10 @@ const labModal = {
                 ];
                 _mysql
                   .executeQuery({
-                    query:
-                      "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ? \
-                        ON DUPLICATE KEY UPDATE analyte_type=values(analyte_type), normal_low=values(normal_low),normal_high=values(normal_high), \
-                        critical_value_req = values(critical_value_req), critical_low=values(critical_low), critical_high=values(critical_high), text_value=values(text_value)",
+                    query: `INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ? 
+                        ON DUPLICATE KEY UPDATE analyte_type=values(analyte_type), normal_low=values(normal_low),normal_high=values(normal_high), 
+                        critical_value_req = values(critical_value_req), critical_low=values(critical_low), critical_high=values(critical_high), text_value=values(text_value);
+                        ${strArray}`,
                     values: all_analytes,
                     includeValues: analyts,
                     extraValues: {
