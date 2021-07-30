@@ -1536,12 +1536,13 @@ const labModal = {
                 );
 
                 let strArray = "";
-                let analyteIds = filteredArray
-                  .map((item) => item.hims_f_ord_analytes_id)
-                  .join(",");
 
                 if (filteredArray?.length > 0) {
+                  let analyteIds = filteredArray
+                    .map((item) => item.hims_f_ord_analytes_id)
+                    .join(",");
                   strArray += `delete from hims_f_ord_analytes where hims_f_ord_analytes_id in (${analyteIds});`;
+
                   // filteredArray.map((item) => {
                   //   return _mysql
                   //     .executeQuery({
