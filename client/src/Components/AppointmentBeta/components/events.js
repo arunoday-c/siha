@@ -130,6 +130,5 @@ export function generateDoctorSlots(data) {
     }
     count++;
   });
-  console.log("tds====>", tds);
   return tds;
 }

@@ -142,9 +142,10 @@ export default memo(function TdCell(props) {
                 <ul className="appStatusList">
                   {app_status
                     .filter((f) => f.steps > appStep)
-                    .map((item) => {
+                    .map((item, index) => {
                       return (
                         <LiList
+                          key={index}
                           item={item}
                           userLanguage={userLanguage}
                           patient={patient}
@@ -308,39 +309,21 @@ export default memo(function TdCell(props) {
                 &nbsp;
                 {veryFirstPatient?.contact_number}
               </span>
-              {/* <i
-                className="fas fa-times"
-                 onClick={this.cancelAppt.bind(this, patient)}
-              /> */}
+
               <div className="appStatusListCntr">
                 <i className="fas fa-clock" />
                 <ul className="appStatusList">
                   {app_status
                     .filter((f) => f.steps > appStep)
-                    .map((item) => {
+                    .map((item, index) => {
                       return (
                         <LiList
+                          key={index}
                           item={item}
                           userLanguage={userLanguage}
                           patient={veryFirstPatient}
                         />
                       );
-                      // return (
-                      //   <li
-                      //     key={item.hims_d_appointment_status_id}
-
-                      //   >
-                      //     <span
-                      //       style={{
-                      //         backgroundColor: item.color_code,
-                      //       }}
-                      //     >
-                      //       {userLanguage === "ar"
-                      //         ? item.description_ar
-                      //         : item.statusDesc}
-                      //     </span>
-                      //   </li>
-                      // );
                     })}
                   <li>
                     <span>Print App. Slip</span>
@@ -371,11 +354,11 @@ export default memo(function TdCell(props) {
               {userLanguage === "ar" ? props.time_ar : props.time}
             </span>
             <PlotAddIcon />
-            <DisplayAppointmentPatient />
+            <DisplayAppointmentPatient key={props.time} />
           </td>
           <td className="tg-baqh">
             <PlotStandByIcons />
-            <DisplayStandByPatients />
+            <DisplayStandByPatients key={props.time} />
           </td>
         </>
       ) : (
