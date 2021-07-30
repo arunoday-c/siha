@@ -540,6 +540,32 @@ class SubInsurance extends PureComponent {
                             },
                           },
                         },
+
+                        {
+                          fieldName: "user_id",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Username" }} />
+                          ),
+                          editorTemplate: (row) => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.user_id,
+                                  className: "txt-fld",
+                                  name: "user_id",
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    ),
+                                  },
+                                }}
+                              />
+                            );
+                          },
+                        },
                         {
                           fieldName: "card_format",
                           label: (
@@ -648,6 +674,8 @@ class SubInsurance extends PureComponent {
                             if (row.finance_account_child_id) {
                               return (
                                 <AlagehAutoComplete
+                                  div={{ className: "noLabel" }}
+                                  label={{}}
                                   selector={{
                                     dataSource: {
                                       data: this.state.finance_providers,
@@ -668,7 +696,7 @@ class SubInsurance extends PureComponent {
                               return (
                                 <AlgaehTreeSearch
                                   div={{
-                                    className: "form-group customTreeSearch",
+                                    className: "form-group customTreeSearch ",
                                   }}
                                   tree={{
                                     treeDefaultExpandAll: true,

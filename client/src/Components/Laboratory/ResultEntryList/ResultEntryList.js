@@ -694,7 +694,7 @@ export default function ResultEntryList() {
                         );
                       },
                       others: {
-                        width: 200,
+                        minWidth: 170,
                         style: { textAlign: "center" },
                       },
                     },
