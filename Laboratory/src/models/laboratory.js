@@ -2904,158 +2904,155 @@ export async function updateLabSampleStatus(req, res, next) {
       req.userIdentity.algaeh_d_app_user_id,
       input.hims_d_lab_sample_id,
     ];
-    _mysql
-      .executeQueryWithTransaction({
-        query: queryBuilder + strHisQry,
-        values: inputs,
-        printQuery: true,
-      })
-      .then((results) => {
-        if (input.status == "R") {
-          _mysql
-            .executeQuery({
-              query:
-                "UPDATE `hims_f_lab_order` SET `status`='O',updated_date=?,updated_by=?  WHERE `hims_f_lab_order_id`=?;\
+    const results = await _mysql.executeQueryWithTransaction({
+      query: queryBuilder + strHisQry,
+      values: inputs,
+      printQuery: true,
+    });
+    // .then((results) => {
+    if (input.status == "R") {
+      const lab_order = await _mysql.executeQuery({
+        query:
+          "UPDATE `hims_f_lab_order` SET `status`='O',updated_date=?,updated_by=?  WHERE `hims_f_lab_order_id`=?;\
                 SELECT L.service_id, visit_code, primary_id_no FROM hims_f_lab_order L \
                 INNER JOIN hims_f_patient P ON P.hims_d_patient_id=L.patient_id\
                 INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id=L.visit_id \
                 where hims_f_lab_order_id = ?;",
-              values: [
-                new Date(),
-                req.userIdentity.algaeh_d_app_user_id,
-                input.order_id,
-                input.order_id,
-              ],
-              printQuery: true,
-            })
-            .then(async (lab_order) => {
-              if (input.portal_exists === "Y") {
-                const portal_input = lab_order[1][0];
-                const portal_data = {
-                  service_id: portal_input.service_id,
-                  visit_code: portal_input.visit_code,
-                  patient_identity: portal_input.primary_id_no,
-                  service_status: "ORDERED",
-                };
+        values: [
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          input.order_id,
+          input.order_id,
+        ],
+        printQuery: true,
+      });
+      // .then(async (lab_order) => {
+      if (input.portal_exists === "Y") {
+        const portal_input = lab_order[1][0];
+        const portal_data = {
+          service_id: portal_input.service_id,
+          visit_code: portal_input.visit_code,
+          patient_identity: portal_input.primary_id_no,
+          service_status: "ORDERED",
+        };
 
-                // consol.log("portal_data", portal_data);
+        // consol.log("portal_data", portal_data);
 
-                await axios
-                  .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-                  .catch((e) => {
-                    throw e;
-                  });
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = lab_order;
-                  next();
-                });
-              } else {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = lab_order;
-                  next();
-                });
-              }
-            })
-            .catch((e) => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
-              });
-            });
-        } else {
-          const age_data = results[1][0];
-          const age_type = age_data["age_type"];
-          let age = "";
-          switch (age_type) {
-            case "D":
-              age = age_data["days"];
+        await axios
+          .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+          .catch((e) => {
+            throw e;
+          });
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = lab_order;
+          next();
+        });
+      } else {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = lab_order;
+          next();
+        });
+      }
+      // })
+      // .catch((e) => {
+      //   _mysql.rollBackTransaction(() => {
+      //     next(e);
+      //   });
+      // });
+    } else {
+      const age_data = results[1][0];
+      const age_type = age_data["age_type"];
+      let age = "";
+      switch (age_type) {
+        case "D":
+          age = age_data["days"];
 
-              break;
-            case "M":
-              age = age_data["months"];
-              break;
-            case "Y":
-              age = age_data["years"];
-              break;
-          }
+          break;
+        case "M":
+          age = age_data["months"];
+          break;
+        case "Y":
+          age = age_data["years"];
+          break;
+      }
 
-          _mysql
-            .executeQuery({
-              query:
-                "select hims_m_lab_analyte_id,test_id,M.analyte_id, R.gender, R.age_type, R.from_age,\
+      const all_analytes = await _mysql.executeQuery({
+        query:
+          "select hims_m_lab_analyte_id,test_id,M.analyte_id, R.gender, R.age_type, R.from_age,\
                   R.to_age, R.critical_value_req, R.critical_low,  R.critical_high, R.normal_low, R.normal_high ,\
                   R.normal_qualitative_value,R.text_value ,A.analyte_type,A.result_unit from hims_m_lab_analyte  M \
                   left join hims_d_lab_analytes A on M.analyte_id=A.hims_d_lab_analytes_id\
                   left join  hims_d_lab_analytes_range R on  M.analyte_id=R.analyte_id\
                   and (R.gender=? or R.gender='BOTH') and (R.age_type=? or R.age_type='Y') and ? between R.from_age and R.to_age\
                   where M.test_id in(?) order by display_order;",
-              values: [req.body.gender, age_type, age, input.test_id],
-              printQuery: true,
-            })
-            .then((all_analytes) => {
-              if (all_analytes.length > 0) {
-                const analyts = [
-                  "order_id",
-                  "analyte_id",
-                  "analyte_type",
-                  "result_unit",
-                  "critical_value_req",
-                  "critical_low",
-                  "critical_high",
-                  "normal_low",
-                  "normal_high",
-                  "text_value",
-                  "normal_qualitative_value",
-                ];
-                _mysql
-                  .executeQuery({
-                    query:
-                      "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ? \
+        values: [req.body.gender, age_type, age, input.test_id],
+        printQuery: true,
+      });
+      // .then((all_analytes) => {
+      if (all_analytes.length > 0) {
+        const analyts = [
+          "order_id",
+          "analyte_id",
+          "analyte_type",
+          "result_unit",
+          "critical_value_req",
+          "critical_low",
+          "critical_high",
+          "normal_low",
+          "normal_high",
+          "text_value",
+          "normal_qualitative_value",
+        ];
+        const results = await _mysql
+          .executeQuery({
+            query:
+              "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ? \
                       ON DUPLICATE KEY UPDATE normal_low=values(normal_low),normal_high=values(normal_high), \
                       critical_value_req = values(critical_value_req), critical_low=values(critical_low), critical_high=values(critical_high), text_value=values(text_value)",
-                    values: all_analytes,
-                    includeValues: analyts,
-                    extraValues: {
-                      created_by: req.userIdentity.algaeh_d_app_user_id,
-                      updated_by: req.userIdentity.algaeh_d_app_user_id,
-                      order_id: input.order_id,
-                    },
-                    bulkInsertOrUpdate: true,
-                    printQuery: true,
-                  })
-                  .then((ord_analytes) => {
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = ord_analytes;
-                      next();
-                    });
-                  })
-                  .catch((e) => {
-                    _mysql.rollBackTransaction(() => {
-                      next(e);
-                    });
-                  });
-              } else {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = results[0];
-                  next();
-                });
-              }
-            })
-            .catch((error) => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
-              });
+            values: all_analytes,
+            includeValues: analyts,
+            extraValues: {
+              created_by: req.userIdentity.algaeh_d_app_user_id,
+              updated_by: req.userIdentity.algaeh_d_app_user_id,
+              order_id: input.order_id,
+            },
+            bulkInsertOrUpdate: true,
+            printQuery: true,
+          })
+          .then((ord_analytes) => {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = ord_analytes;
+              next();
             });
-        }
-      })
-      .catch((e) => {
-        _mysql.rollBackTransaction(() => {
-          next(e);
+          })
+          .catch((e) => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      } else {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = results[0];
+          next();
         });
-      });
+      }
+      // })
+      // .catch((error) => {
+      //   _mysql.rollBackTransaction(() => {
+      //     next(e);
+      //   });
+      // });
+    }
+    // })
+    // .catch((e) => {
+    //   _mysql.rollBackTransaction(() => {
+    //     next(e);
+    //   });
+    // });
   } catch (e) {
     _mysql.rollBackTransaction(() => {
       next(e);
