@@ -74,7 +74,7 @@ function PatientRecall() {
           return item.sub_department_id === parseInt(sub_department_id);
         });
 
-        setDoctors(doctor[0].doctors);
+        setDoctors(doctor[0]?.doctors);
       }
     },
     onError: (err) => {

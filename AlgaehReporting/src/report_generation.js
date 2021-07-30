@@ -316,7 +316,8 @@ hbs.registerHelper("commentBreakUp", function (comment_data) {
   if (comment_data === "" || comment_data === null) {
     return [];
   } else {
-    return comment_data.split("<br/>");
+    // return comment_data.split("<br/>");
+    return comment_data.split("<br/>").filter((f) => f && f !== "");
   }
 });
 hbs.registerHelper("dynamic", (records, columns) => {
