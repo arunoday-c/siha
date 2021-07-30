@@ -325,6 +325,17 @@ class InvestigationSetup extends Component {
                       },
                     },
                     {
+                      fieldName: "service_name",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Linked Services" }}
+                        />
+                      ),
+                      others: {
+                        style: { textAlign: "left" },
+                      },
+                    },
+                    {
                       fieldName: "category_id",
                       label: (
                         <AlgaehLabel label={{ fieldName: "category_id" }} />

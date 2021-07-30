@@ -161,7 +161,7 @@ class NewInvestigation extends PureComponent {
                           },
                         }}
                       />
-                      <div className="col-12 globalSearchCntr">
+                      <div className="col-12 globalSearchCntr mandatory form-group">
                         <AlgaehLabel
                           label={{ fieldName: "services_id", isImp: true }}
                         />
