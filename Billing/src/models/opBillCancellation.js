@@ -581,9 +581,10 @@ export default {
                 for (let i = 0; i < lab_data_result.length; i++) {
                   if (lab_data_result[i].ordered_services_id == null) {
                     strQry += _mysql.mysqlQueryFormat(
-                      "DELETE FROM hims_f_ord_analytes where order_id=?; DELETE FROM hims_f_lab_sample where order_id=?;\
+                      "DELETE FROM hims_f_micro_result where order_id=?;DELETE FROM hims_f_ord_analytes where order_id=?; DELETE FROM hims_f_lab_sample where order_id=?;\
                       DELETE FROM hims_f_lab_order where hims_f_lab_order_id=?;",
                       [
+                        lab_data_result[i].hims_f_lab_order_id,
                         lab_data_result[i].hims_f_lab_order_id,
                         lab_data_result[i].hims_f_lab_order_id,
                         lab_data_result[i].hims_f_lab_order_id,
@@ -610,7 +611,7 @@ export default {
                     };
                     next();
                   })
-                  .catch((e) => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
