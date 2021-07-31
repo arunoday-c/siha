@@ -72,14 +72,13 @@ export default function BookAppointment(props) {
   }, [params]);
 
   useEffect(() => {
-    const parameters = new URLSearchParams(window.location.search);
-
     if (socket.connected) {
       socket.on("refresh_appointment", async ({ patient }) => {
+        const parameters = new URLSearchParams(window.location.search);
         const provider_id = parameters.get("provider_id");
         const sub_department_id = parameters.get("sub_department_id");
         const appointmentDate = parameters.get("appointmentDate");
-
+        debugger;
         if (
           sub_department_id === patient.sub_department_id &&
           appointmentDate === patient.appointment_date
@@ -89,6 +88,7 @@ export default function BookAppointment(props) {
             provider_id: provider_id,
             schedule_date: appointmentDate,
           });
+
           setDoctorSchedules(dataSchedule);
         }
         // }
