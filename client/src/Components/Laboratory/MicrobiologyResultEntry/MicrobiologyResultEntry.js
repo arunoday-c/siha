@@ -918,7 +918,11 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
     name: "",
     date: "",
   });
-  const [contaminated_culture, setContaminated_culture] = useState("N");
+  const [contaminated_culture, setContaminated_culture] = useState(
+    selectedPatient.contaminated_culture
+      ? selectedPatient.contaminated_culture
+      : "N"
+  );
   const [comments_data, setComments_data] = useState([]);
   // const [comments, setComments] = useState();
   // const [test_analytes, setTest_analytes] = useState([]);
@@ -1021,10 +1025,10 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
         setGroup_id(
           selectedPatient.group_id ? selectedPatient.group_id : group_id
         );
-        setGrowthType(
-          selectedPatient.bacteria_type === "G" ? "Growth" : "NoGrowth"
-        );
-
+        // setGrowthType(
+        //   selectedPatient.bacteria_type === "G" ? "Growth" : "NoGrowth"
+        // );
+        // setContaminated_culture(selectedPatient.contaminated_culture);
         setOrganism_type(
           selectedPatient.organism_type
             ? selectedPatient.organism_type
@@ -1772,7 +1776,7 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
                       type="radio"
                       value="Y"
                       name="contaminated_culture"
-                      checked={contaminated_culture === "N" ? true : false}
+                      checked={contaminated_culture === "Y" ? true : false}
                       onChange={(e) => setContaminated_culture(e.target.value)}
                       disabled={data_exists}
                     />
