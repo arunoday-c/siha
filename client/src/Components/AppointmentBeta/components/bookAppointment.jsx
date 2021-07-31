@@ -7,6 +7,7 @@ import {
   Select,
   //   AlgaehSearch,
 } from "algaeh-react-components";
+import "../appointment.scss";
 import {
   AlagehAutoComplete,
   AlagehFormGroup,
@@ -210,7 +211,7 @@ export default memo(function BookAppointment(props) {
       }}
       okText={<AlgaehLabel label={{ fieldName: "btn_save" }} />}
       cancelText={<AlgaehLabel label={{ fieldName: "btn_close" }} />}
-      width="65vw"
+      className={`row algaehNewModal newAppoModal`}
     >
       <div className="popupInner" data-validate="addApptDiv">
         <div className="col-12 popRightDiv">

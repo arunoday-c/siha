@@ -352,3 +352,9 @@
     }
   }
 }
+.newAppoModal {
+  width: 80vw;
+  .ant-modal-footer {
+    padding: 5px 15px !important;
+  }
+}
