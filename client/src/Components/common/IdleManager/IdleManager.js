@@ -14,6 +14,7 @@ import { MainContext } from "algaeh-react-components";
 import { encrypter } from "../../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import IdleTimer from "react-idle-timer";
+// import socket from "socket.io-client/lib/socket";
 
 export function IdleManager() {
   const history = useHistory();
@@ -21,7 +22,7 @@ export function IdleManager() {
   const [visible, setVisible] = useState(false);
   const [password, setPassword] = useState("");
   const idleRef = createRef();
-
+  const { socket } = context;
   useEffect(() => {
     getItem("locked").then((result) => {
       if (result) {
@@ -31,13 +32,13 @@ export function IdleManager() {
   }, []);
 
   function onIdle() {
+    console.log("Executed from idle");
     setItem("locked", true).then(() => {
       setVisible(true);
     });
   }
 
   function onLogout() {
-    const { socket } = context;
     newAlgaehApi({
       uri: "/apiAuth/logout",
       method: "GET",
@@ -83,6 +84,9 @@ export function IdleManager() {
           setItem("locked", false).then(() => {
             setVisible(false);
             setPassword("");
+            if (!socket.connected) {
+              socket.open();
+            }
           });
         } else {
           alert(message);
@@ -175,7 +179,7 @@ export function IdleManager() {
           element={document}
           onIdle={onIdle}
           debounce={250}
-          timeout={1000 * 60 * 5} // mins to milliseco
+          timeout={1000 * 60 * 1} // mins to milliseco
         />
       </>
     );

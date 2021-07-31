@@ -29,12 +29,6 @@ export default function AppointmentContextProvider(props) {
     setDepartmentData(payload) {
       dispatch({ type: TYPES.DEPARTMENT_DATA, payload });
     },
-    // setEditState(e) {
-    //   dispatch({ type: TYPES.setEditState, payload: e });
-    // },
-    // clearState() {
-    //   dispatch({ type: TYPES.clearState });
-    // },
   };
 
   return (
@@ -43,8 +37,3 @@ export default function AppointmentContextProvider(props) {
     </AppointmentContext.Provider>
   );
 }
-
-// function DummyComponent(props) {
-//   const { setParentState, setSlotData } = useContext(AppointmentContext);
-//   return <Appointment {...{ setParentState, setSlotData, ...props }} />;
-// }

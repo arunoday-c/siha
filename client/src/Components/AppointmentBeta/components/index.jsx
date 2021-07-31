@@ -45,55 +45,6 @@ export default function BookAppointment(props) {
       keepPreviousData: true,
       onSuccess: ({ legends }) => {
         setAppointmentStatus(legends);
-        // const appStatus = legends.find(
-        //   (f) => f.hims_d_appointment_status_id === appointment_status_id
-        // );
-        // const checkStatus = legends.find(
-        //   (f) => f.hims_d_appointment_status_id === checkInId
-        // );
-        // const rescheduleStatus = legends.find(
-        //   (f) => f.hims_d_appointment_status_id === RescheduleId
-        // );
-        // const cancelledStatus = legends.find(
-        //   (f) => f.hims_d_appointment_status_id === cancelledId
-        // );
-        // const noShowStatus = legends.find(
-        //   (f) => f.hims_d_appointment_status_id === noShowId
-        // );
-
-        // setAppointmentStatus({
-
-        //   appointment_status: {
-        //     id: appStatus?.hims_d_appointment_status_id,
-        //     color: appStatus?.color_code,
-        //     name: appStatus?.statusDesc,
-        //     default_status: appStatus?.default_status,
-        //   },
-        //   check_in_status: {
-        //     id: checkStatus?.hims_d_appointment_status_id,
-        //     color: checkStatus?.color_code,
-        //     name: checkStatus?.statusDesc,
-        //     default_status: checkStatus?.default_status,
-        //   },
-        //   reschedule_status: {
-        //     id: rescheduleStatus?.hims_d_appointment_status_id,
-        //     color: rescheduleStatus?.color_code,
-        //     name: rescheduleStatus?.statusDesc,
-        //     default_status: rescheduleStatus?.default_status,
-        //   },
-        //   cancelled_status: {
-        //     id: cancelledStatus?.hims_d_appointment_status_id,
-        //     color: cancelledStatus?.color_code,
-        //     name: cancelledStatus?.statusDesc,
-        //     default_status: cancelledStatus?.default_status,
-        //   },
-        //   no_show_status: {
-        //     id: noShowStatus?.hims_d_appointment_status_id,
-        //     color: noShowStatus?.color_code,
-        //     name: noShowStatus?.statusDesc,
-        //     default_status: noShowStatus?.default_status,
-        //   },
-        // });
       },
       onError: (error) => {
         swalMessage({
@@ -122,29 +73,25 @@ export default function BookAppointment(props) {
 
   useEffect(() => {
     const parameters = new URLSearchParams(window.location.search);
-    debugger;
+
     if (socket.connected) {
-      socket.on("reload_appointment", (patient) => {
+      socket.on("refresh_appointment", async ({ patient }) => {
         const provider_id = parameters.get("provider_id");
         const sub_department_id = parameters.get("sub_department_id");
         const appointmentDate = parameters.get("appointmentDate");
-        let currentDate = new Date(appointmentDate);
-        var appointmentDate1 = new Date(patient.appointment_date);
 
-        //best to use .getTime() to compare dates
-        if (currentDate.getTime() === appointmentDate1.getTime()) {
-          if (
-            sub_department_id === patient.sub_department_id &&
-            provider_id === patient.provider_id
-          ) {
-            const dataSchedule = getDoctorSchedule("", {
-              sub_dept_id: sub_department_id,
-              provider_id,
-              schedule_date: appointmentDate,
-            });
-            setDoctorSchedules(dataSchedule);
-          }
+        if (
+          sub_department_id === patient.sub_department_id &&
+          appointmentDate === patient.appointment_date
+        ) {
+          const dataSchedule = await getDoctorSchedule("", {
+            sub_dept_id: sub_department_id,
+            provider_id: provider_id,
+            schedule_date: appointmentDate,
+          });
+          setDoctorSchedules(dataSchedule);
         }
+        // }
       });
     }
   }, [socket]);

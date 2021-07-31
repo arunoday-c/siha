@@ -13,6 +13,7 @@ function createSockets() {
     reconnectionDelay: 1000,
     reconnectionDelayMax: 5000,
     reconnectionAttempts: 5,
+    // pingInterval: 60000,
   };
   if (window.location.port) {
     _localaddress = _localaddress + `:${sockets.port}`;
@@ -20,6 +21,9 @@ function createSockets() {
     options.path = sockets.path;
   }
   options.transports = ["websocket"];
+  options.upgrade = false;
+  // {transports: ['websocket'], upgrade: false}
+
   return io.connect(_localaddress, options);
 }
 
@@ -29,8 +33,11 @@ socket.once("connect", () => {
   console.log("connected");
 });
 
-socket.once("disconnect", () => {
-  socket.removeAllListeners();
+socket.once("disconnect", (reason) => {
+  console.log("reason===>", reason);
+  if (reason === "transport close") {
+    socket.connect();
+  } else socket.removeAllListeners();
 });
 
 export default socket;

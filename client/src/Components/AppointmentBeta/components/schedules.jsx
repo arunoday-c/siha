@@ -3,17 +3,20 @@ import { AppointmentContext } from "../AppointmentContext";
 import DoctorSlotHeader from "./doctorSlotHeader";
 import DoctorInLeave from "./doctorInLeave";
 import DoctorSlots from "./doctorSlotBody";
+
 export default memo(function Schedules(props) {
   const { doctors_schedule } = useContext(AppointmentContext);
   const [width, setWidth] = useState(0);
   const [isChanges, setIsChanges] = useState(false);
+
   useEffect(() => {
     const _WIDTH = 318 * doctors_schedule?.length ?? 0;
     setWidth(isNaN(_WIDTH) ? 0 : _WIDTH);
-
     if (Array.isArray(doctors_schedule)) {
       setIsChanges(!isChanges);
     }
+
+    console.log("Doc schedule changed===>", doctors_schedule);
   }, [doctors_schedule]);
   return (
     <div className="portlet-body">

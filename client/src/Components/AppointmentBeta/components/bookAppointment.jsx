@@ -169,6 +169,7 @@ export default memo(function BookAppointment(props) {
           });
           props.setShowEditPopup(false);
           setDoctorSchedules(data);
+
           swalMessage({
             title: "Successfully created",
             type: "success",
