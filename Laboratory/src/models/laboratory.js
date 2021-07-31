@@ -184,7 +184,7 @@ const labModal = {
           query:
             "SELECT hims_f_lab_order_id, test_id, service_id,bacteria_name,organism_type, bacteria_type, LO.patient_id, primary_id_no, patient_code, P.full_name, \
             P.date_of_birth,group_id, P.gender, ordered_date, LS.barcode_gen,visit_code, LO.credit_order,\
-            LO.status, test_type, visit_id, LO.lab_id_number, LS.status as sample_status,S.service_code, S.service_name,\
+            LO.status, test_type, visit_id, LO.lab_id_number,LO.contaminated_culture, LS.status as sample_status,S.service_code, S.service_name,\
             case when LO.run_type='1' then '1 Time' when LO.run_type='2' then '2 Times' when LO.run_type='3' then '3 times' else '-' end as run_types, \
             hims_d_lab_sample_id, collected_by,TC.test_section, collected_date, billed,sample_id, container_id, collected, hesn_upload, LO.send_in_test, LO.send_out_test, \
             LS.remarks, IT.isPCR,IT.culture_test, IT.auto_validate FROM hims_f_lab_order LO\
@@ -1537,7 +1537,7 @@ const labModal = {
 
                 let strArray = "";
 
-                if (filteredArray?.length > 0 && input.reload_analyte === "Y") {
+                if (filteredArray?.length > 0) {
                   let analyteIds = filteredArray
                     .map((item) => item.hims_f_ord_analytes_id)
                     .join(",");
