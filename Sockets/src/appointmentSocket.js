@@ -9,8 +9,6 @@ const apsock = (socket) => {
       patient.appointment_from_time
     )} slot ${formatDate(patient.appointment_date)}`;
 
-    console.log("patient=>>>>>", patient);
-
     const frontDeskNot = new notifiModel({
       module: "ftdsk",
       message: frontMsg,
