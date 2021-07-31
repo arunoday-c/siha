@@ -24,7 +24,6 @@ export default memo(function DoctorSlots(props) {
       const slot = parseInt(props.slot, 10);
       if (!changeTime) setChangeTime(moment().format("HH:mm"));
       interval = setInterval(() => {
-        console.log("Here executed");
         setChangeTime(moment().format("HH:mm"));
       }, 1000 * 60 * slot);
     }

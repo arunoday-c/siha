@@ -18,7 +18,7 @@ export default memo(function TdCell(props) {
     sub_department_id,
     provider_id,
   } = useContext(AppointmentContext);
-
+  const isInactive = isInactiveTimeSlot(props?.time);
   const newEndTime = moment(props.time, "hh:mm a").add(props.slot, "minutes");
   const patient_list = props.patients?.filter(
     (f) =>
@@ -83,7 +83,7 @@ export default memo(function TdCell(props) {
           )?.color_code
         : props?.mark_as_break
         ? "#f2f2f2"
-        : isInactiveTimeSlot(props?.time)
+        : isInactive //isInactiveTimeSlot(props?.time)
         ? "#fbfbfb"
         : "#ffffff";
       const isNoShow = app_status.find((f) => f.default_status === "NS");
@@ -178,7 +178,7 @@ export default memo(function TdCell(props) {
   function onDropAppointment(e) {
     e.preventDefault();
     e.persist();
-    debugger;
+
     const hasPatient = e.currentTarget.querySelector("div");
     if (hasPatient) {
       swalMessage({
@@ -338,12 +338,15 @@ export default memo(function TdCell(props) {
       return null;
     }
   }
+
   return (
     <React.Fragment>
       {props.mark_as_break === false ? (
         <>
           <td
-            className="tg-baqh"
+            className={`tg-baqh ${
+              isInactive === true && !patient ? "inActiveSlotOpacity" : ""
+            }`}
             onDragOver={(e) => {
               e.preventDefault();
               e.dataTransfer.dropEffect = "move";
@@ -356,7 +359,11 @@ export default memo(function TdCell(props) {
             <PlotAddIcon />
             <DisplayAppointmentPatient key={props.time} />
           </td>
-          <td className="tg-baqh">
+          <td
+            className={`tg-baqh ${
+              isInactive === true && !patient ? "inActiveSlotOpacity" : ""
+            }`}
+          >
             <PlotStandByIcons />
             <DisplayStandByPatients key={props.time} />
           </td>

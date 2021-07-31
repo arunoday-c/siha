@@ -783,8 +783,13 @@ export default {
           .executeQuery({
             query: `select finance_voucher_id from finance_voucher_details where voucher_header_id=? and pl_entry='Y' limit 1;
          select finance_account_head_id,root_id 
-                          from finance_account_head where finance_account_head_id in (?);`,
-            values: [input.finance_voucher_header_id, root_ids],
+                          from finance_account_head where finance_account_head_id in (?);
+          select payment_date from finance_voucher_details where voucher_header_id=? and pl_entry ='N' limit 1;`,
+            values: [
+              input.finance_voucher_header_id,
+              root_ids,
+              input.finance_voucher_header_id,
+            ],
             printQuery: true,
           })
           .catch((e) => {
@@ -792,8 +797,8 @@ export default {
             throw e;
           });
         const hasPandL = _.head(_.head(recordEntry));
-        const rootResult = _.last(recordEntry);
-
+        const rootResult = recordEntry[1];
+        const _payment = _.head(recordEntry[2]);
         if (root_ids.length > 0) {
           let total_income = 0;
           let total_expense = 0;
@@ -875,7 +880,7 @@ export default {
   payment_type,hospital_id,year,month,pl_entry,entered_by,auth_status,voucher_header_id,project_id,sub_department_id,narration) 
    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
               [
-                moment(pl_account.payment_date).format("YYYY-MM-DD"),
+                moment(_payment.payment_date).format("YYYY-MM-DD"),
                 pl_account.head_id,
                 pl_account.child_id,
                 pl_account.debit_amount,
