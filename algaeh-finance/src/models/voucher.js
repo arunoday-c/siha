@@ -748,18 +748,31 @@ export default {
     // return;
     let queryString = "";
     for (let i = 0; i < input.details.length; i++) {
-      queryString += _mysql.mysqlQueryFormat(
-        "update finance_voucher_details set head_id=?, child_id=?,credit_amount=?,debit_amount=? where finance_voucher_id=?;",
-        [
-          input.details[i].head_id,
-          input.details[i].child_id,
-          input.details[i].payment_type === "CR" ? input.details[i].amount : 0,
-          input.details[i].payment_type === "DR" ? input.details[i].amount : 0,
-          input.details[i].finance_voucher_id,
-        ]
-      );
-      if (input.details[i].child_id != input.details[i].og_child_id) {
-        finance_voucher_id.push(input.details[i].finance_voucher_id);
+      if (input.details[i].finance_voucher_id) {
+        queryString += _mysql.mysqlQueryFormat(
+          "update finance_voucher_details set head_id=?, child_id=?,credit_amount=?,debit_amount=?,narration=? where finance_voucher_id=?;",
+          [
+            input.details[i].head_id,
+            input.details[i].child_id,
+            input.details[i].payment_type === "CR"
+              ? input.details[i].amount
+              : 0,
+            input.details[i].payment_type === "DR"
+              ? input.details[i].amount
+              : 0,
+            input.details[i].narration,
+            input.details[i].finance_voucher_id,
+          ]
+        );
+
+        if (input.details[i].og_child_id && input.details[i].child_id)
+          if (input.details[i].child_id != input.details[i].og_child_id) {
+            finance_voucher_id.push(input.details[i].finance_voucher_id);
+          }
+      } else {
+        // queryString += _mysql.mysqlQueryFormat(`INSERT INTO finance_voucher_details(head_id,child_id,
+        //   credit_amount,debit_amount,narration,payment_date,month,year,payment_type,narration,
+        //   credit_amount,)`)
       }
     }
     const headerAmount = _.chain(input.details)
@@ -862,7 +875,7 @@ export default {
           const arrHead = _.head(
             input.details.filter((f) => f.sub_department_id)
           );
-          let queryPandL = "";
+          let queryPandL = "SELECT 1;";
           if (hasPandL && pl_account) {
             queryPandL = _mysql.mysqlQueryFormat(
               `update finance_voucher_details set debit_amount=?,credit_amount=?,
@@ -909,7 +922,6 @@ export default {
               throw error;
             });
         }
-
         if (finance_voucher_id.length > 0) {
           _mysql
             .executeQueryWithTransaction({

@@ -413,6 +413,8 @@ export default function JournalVoucher() {
         });
         const debit_data = _.filter(data, (f) => {
           return f.payment_type === "DR";
+        }).map((m) => {
+          return { ...m, paytypedisable: true };
         });
 
         setTotalCredit(
@@ -421,12 +423,21 @@ export default function JournalVoucher() {
         setTotalDebit(
           _.sumBy(debit_data, (s) => parseFloat(s.amount)).toFixed(2)
         );
+        const firstRecord = _.head(credit_data);
+        if (firstRecord.voucher_type === "expense_voucher") {
+          setBankAmount(
+            _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
+          );
+          setFromBank(firstRecord.sourceName);
+          setJournerList(debit_data);
+        } else {
+          setJournerList(data);
+        }
 
-        setJournerList(data);
         setFinanceVoucherHeaderID(location.state.finance_voucher_header_id);
-        setVoucherType(data[0].voucher_type);
-        setVoucherDate(moment(data[0].payment_date)._d);
-        setInvoiceData(data[0].invoice_ref_no);
+        setVoucherType(firstRecord.voucher_type);
+        setVoucherDate(moment(firstRecord.payment_date)._d);
+        setInvoiceData(firstRecord.invoice_ref_no);
 
         // setPayment(state => ({ ...state, ...data }));
       } else {
@@ -677,6 +688,19 @@ export default function JournalVoucher() {
       const _source = fromBank.split("-");
       const _child_id = _source[1];
       const _head_id = _source[0];
+      let _finance_voucher_id = {};
+      if (finance_voucher_header_id > 0 && location.state) {
+        const detailsList = location.state?.data;
+        if (detailsList && detailsList.length > 0) {
+          const fin_voucher = detailsList.find((f) => {
+            return f.payment_type === "CR";
+          });
+          _finance_voucher_id = {
+            finance_voucher_id: fin_voucher.finance_voucher_id,
+          };
+        }
+      }
+
       _journerList.push({
         child_id: _child_id,
         head_id: _head_id,
@@ -684,6 +708,7 @@ export default function JournalVoucher() {
         payment_mode: "CA",
         amount: bankAmount,
         sourceName: fromBank,
+        ..._finance_voucher_id,
         narration: "Expense Voucher",
         slno: journerList.length + 1,
       });
@@ -1315,6 +1340,7 @@ export default function JournalVoucher() {
                   updateInternally: true,
                   onChange: (value, label) => {
                     setFromBank(value);
+
                     // if (value !== undefined) {
                     //   record["sourceName"] = value;
                     //   const source = value.split("-");
@@ -1337,6 +1363,7 @@ export default function JournalVoucher() {
                       return node["finance_account_head_id"];
                     }
                   },
+                  value: fromBank,
                 }}
               />
               <AlgaehFormGroup
