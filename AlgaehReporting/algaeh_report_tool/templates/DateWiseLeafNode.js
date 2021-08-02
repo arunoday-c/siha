@@ -8,11 +8,8 @@ const executePDF = function executePDFMethod(options) {
 
       const moment = options.moment;
       let input = {};
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
       const params = options.args.reportParams;
 
       // const decimal_places = options.args.crypto.decimal_places;
@@ -55,13 +52,12 @@ const executePDF = function executePDFMethod(options) {
               .executeQuery({
                 query: `  select finance_voucher_header_id,voucher_type,voucher_no,VD.narration,
                       VD.head_id,VD.payment_date, VD.child_id, AH.root_id,              
-                      ROUND(sum(debit_amount),${decimal_places}) as debit_amount,
-                      ROUND(sum(credit_amount),${decimal_places})  as credit_amount,C.child_name,C.ledger_code
+                      debit_amount,credit_amount,C.child_name,C.ledger_code
                       from finance_voucher_header H right join finance_voucher_details VD
                       on H.finance_voucher_header_id=VD.voucher_header_id inner join finance_account_child C on
                       VD.child_id=C.finance_account_child_id inner join  finance_account_head AH on
                        C.head_id=AH.finance_account_head_id     where  VD.auth_status='A' and
-                      VD.child_id=?  ${strQry} group by VD.payment_date,voucher_no, VD.head_id order by VD.finance_voucher_id asc;
+                      VD.child_id=?  ${strQry} order by VD.finance_voucher_id asc;
                       select  child_id,ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),2) as cred_minus_deb,
                       ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),2)  as deb_minus_cred
                       from   finance_voucher_details    where child_id=? and auth_status='A'  and payment_date < ?;
@@ -189,9 +185,10 @@ const executePDF = function executePDFMethod(options) {
                         outputArray.push({
                           ...item,
                           voucher_type: _.startCase(item.voucher_type),
-                          row_closing_balance: parseFloat(
-                            row_closing_balance
-                          ).toFixed(decimal_places),
+                          row_closing_balance:
+                            parseFloat(row_closing_balance).toFixed(
+                              decimal_places
+                            ),
                         });
                       });
                       index++;
