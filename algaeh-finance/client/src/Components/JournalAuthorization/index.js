@@ -12,6 +12,7 @@ import {
   Tooltip,
   Modal,
   AlgaehTreeSearch,
+  AlgaehLabel,
 } from "algaeh-react-components";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import Details from "./details";
@@ -595,7 +596,10 @@ export default memo(function (props) {
                       columns={[
                         {
                           fieldName: "id",
-                          label: "Actions",
+                          // label: "Actions",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Action" }} />
+                          ),
                           displayTemplate: actions,
 
                           others: {
@@ -604,7 +608,9 @@ export default memo(function (props) {
                         },
                         {
                           fieldName: "auth_status",
-                          label: "Record Status",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Status" }} />
+                          ),
                           sortable: true,
                           filterable: true,
                           displayTemplate: (row) => {
@@ -628,28 +634,56 @@ export default memo(function (props) {
                               </span>
                             );
                           },
+                          others: {
+                            Width: 110,
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "voucher_no",
-                          label: "Voucher Number",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Voucher Number" }}
+                            />
+                          ),
                           filterable: true,
                           sortable: true,
                           displayTemplate: voucherCol,
+                          others: {
+                            Width: 150,
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "voucher_type",
-                          label: "Voucher Type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Voucher Type" }}
+                            />
+                          ),
                           filterable: true,
                           displayTemplate: (row) => {
                             return _.startCase(
                               row.voucher_type ? row.voucher_type : ""
                             );
                           },
+                          others: {
+                            Width: 120,
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "payment_date",
-                          label: "Payment Date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Payment Date" }}
+                            />
+                          ),
                           filterable: true,
+                          others: {
+                            Width: 120,
+                            style: { textAlign: "center" },
+                          },
                         },
                         // ...paymentTemplates,
                         /* Commented paymentTemplates there is no condition we can use directly   */
@@ -667,7 +701,10 @@ export default memo(function (props) {
                         /* Commented End */
                         {
                           fieldName: "amount",
-                          label: "Amount",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                          ),
+
                           filterable: true,
                           displayTemplate: (row) => {
                             return (
@@ -678,22 +715,38 @@ export default memo(function (props) {
                               </span>
                             );
                           },
+                          others: {
+                            Width: 110,
+                            style: { textAlign: "right" },
+                          },
                         },
                         {
                           fieldName: "narration",
-                          label: "Narration",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Narration" }} />
+                          ),
                           filterable: true,
+                          others: {
+                            style: { textAlign: "left" },
+                          },
                         },
                         {
                           fieldName: "entered_by",
-                          label: "Enterd By",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Entered By" }} />
+                          ),
                           filterable: true,
+                          others: {
+                            Width: 200,
+                            style: { textAlign: "left" },
+                          },
                         },
                       ]}
-                      height="40vh"
+                      data={data}
                       isFilterable={true}
                       rowUnique="finance_voucher_header_id"
-                      data={data}
+                      pagination={true}
+                      pageOptions={{ rows: 50, page: 1 }}
                     />
                   </div>
                 </div>

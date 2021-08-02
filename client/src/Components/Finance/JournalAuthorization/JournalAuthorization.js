@@ -407,10 +407,11 @@ class JournalAuthorization extends Component {
                                         row.finance_day_end_header_id
                                       );
                                     } else {
-                                      const itemExists = this.selectedDayEndIds.findIndex(
-                                        (f) =>
-                                          f === row.finance_day_end_header_id
-                                      );
+                                      const itemExists =
+                                        this.selectedDayEndIds.findIndex(
+                                          (f) =>
+                                            f === row.finance_day_end_header_id
+                                        );
                                       this.selectedDayEndIds.splice(
                                         itemExists,
                                         1
@@ -447,7 +448,7 @@ class JournalAuthorization extends Component {
                           fieldName: "transaction_date",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Document  Date" }}
+                              label={{ forceLabel: "Document Date" }}
                             />
                           ),
                         },
