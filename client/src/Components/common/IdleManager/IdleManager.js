@@ -14,8 +14,8 @@ import { MainContext } from "algaeh-react-components";
 import { encrypter } from "../../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import IdleTimer from "react-idle-timer";
-// import socket from "socket.io-client/lib/socket";
-
+//Here add pathname to refresh page on reLogin
+const forceRefresh = ["/Appointment"];
 export function IdleManager() {
   const history = useHistory();
   const context = useContext(MainContext);
@@ -32,7 +32,6 @@ export function IdleManager() {
   }, []);
 
   function onIdle() {
-    console.log("Executed from idle");
     setItem("locked", true).then(() => {
       setVisible(true);
     });
@@ -84,8 +83,12 @@ export function IdleManager() {
           setItem("locked", false).then(() => {
             setVisible(false);
             setPassword("");
-            if (!socket.connected) {
-              socket.open();
+            const pathname = window.location.pathname;
+            const isForceReload = forceRefresh.find(
+              (f) => f.toLowerCase() === pathname.toLowerCase()
+            );
+            if (isForceReload) {
+              window.location.reload(true);
             }
           });
         } else {
@@ -179,7 +182,7 @@ export function IdleManager() {
           element={document}
           onIdle={onIdle}
           debounce={250}
-          timeout={1000 * 60 * 20} // mins to milliseco
+          timeout={1000 * 60 * 2} // mins to milliseco
         />
       </>
     );

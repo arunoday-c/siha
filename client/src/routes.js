@@ -46,7 +46,7 @@ const SalesDashboard = React.lazy(() =>
 // const PatientRegistration = React.lazy(() =>
 //   retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
 // );
-const AppointmentBeta = React.lazy(() =>
+const Appointment = React.lazy(() =>
   retry(() => import("./Components/AppointmentBeta"))
 );
 const PatientRegistrationNew = React.lazy(() =>
@@ -811,14 +811,14 @@ const privateRoutes = [
     component: <PatientRegistrationNew />,
   },
   {
-    path: "/Appointment",
+    path: "/AppointmentOld",
     isExactPath: true,
     component: <FrontDesk screen="Appointment" />,
   },
   {
-    path: "/AppointmentBeta",
+    path: "/Appointment",
     isExactPath: true,
-    component: <AppointmentBeta screen="Appointment" />,
+    component: <Appointment screen="Appointment" />,
   },
   {
     path: "/UpdatePatientDetails",
