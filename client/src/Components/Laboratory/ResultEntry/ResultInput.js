@@ -37,10 +37,11 @@ export function ResultInput({ row, onChange }) {
           e.target.blur();
         },
         onKeyDown: (e) => {
+          debugger;
           if (e.keyCode === 13) {
             const elem =
               e.target.parentElement.parentElement.parentElement.parentElement
-                .parentElement.parentElement;
+                .parentElement;
             if (elem) {
               const existNextSibling = elem.nextElementSibling;
               if (existNextSibling) {
