@@ -233,6 +233,7 @@ export default memo(function (props) {
             type: "Adjust",
             data: result,
             finance_voucher_header_id: record.finance_voucher_header_id,
+            voucher_no: record.voucher_no,
           });
         })
         .catch((error) => {

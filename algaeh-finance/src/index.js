@@ -133,7 +133,7 @@ app.use((error, req, res, next) => {
         ...{
           dateTime: new Date().toLocaleString(),
           method: req.method,
-          ...(req.method === "GET" ? {} : { body: req.body }),
+          ...(req.method === "GET" ? {} : { body: JSON.stringify(req.body) }),
           requestUrl: req.originalUrl,
           requestHeader: {
             host: reqH.host,
@@ -143,6 +143,7 @@ app.use((error, req, res, next) => {
           },
         },
         message: errorMessage,
+        errorStock: JSON.stringify(error),
       },
       "error"
     );

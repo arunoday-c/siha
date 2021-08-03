@@ -776,7 +776,7 @@ export default {
           `INSERT INTO finance_voucher_details(head_id,child_id,
           credit_amount,debit_amount,narration,payment_date,month,year,payment_type,
           hospital_id,project_id,sub_department_id,doctor_id,auth1,auth1_by,auth2,auth2_by,auth2_date,auth_status,voucher_header_id)
-          value(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
+          value(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
           [
             input.details[i].head_id,
             input.details[i].child_id,
@@ -803,6 +803,14 @@ export default {
             previousInfo.auth_status,
             input.finance_voucher_header_id,
           ]
+        );
+      }
+    }
+    if (Array.isArray(input.deletedEntries)) {
+      for (let d = 0; d < input.deletedEntries.length; d++) {
+        queryString += _mysql.mysqlQueryFormat(
+          `delete from finance_voucher_details where finance_voucher_id=?;`,
+          [input.deletedEntries[d]]
         );
       }
     }

@@ -128,6 +128,7 @@ export default function JournalVoucher() {
   const [SorCDetailLoading, setSorCDetailLoading] = useState(false);
   const [SorCDetailValue, setSorCDetailValue] = useState(undefined);
   const [SorCHeaderName, setSorCHeaderName] = useState(undefined);
+  const [deletedEntries, setDeletedEntries] = useState([]);
   useEffect(() => {
     if (location.state?.language) {
       i18next.changeLanguage(location.state?.language);
@@ -395,7 +396,7 @@ export default function JournalVoucher() {
         customerOrSupplerDetailName,
       } = location.state;
       setSamePage(location.state?.samePage ?? false);
-
+      setVoucherNo(location.state.voucher_no);
       setSorCHeaderValue(customerOrSupplerHeaderName);
       setSorCDetailValue(customerOrSupplerDetailName);
       setCustomerSupplierID({
@@ -818,6 +819,7 @@ export default function JournalVoucher() {
       debitNoteTotal,
       debitNoteList,
       customerSupplierID: customerSupplierID,
+      deletedEntries,
     })
       .then((result) => {
         setLoading(false);
@@ -829,8 +831,11 @@ export default function JournalVoucher() {
         // setVoucherType("");
         // setAccounts([]);
         setAfterSaveDisabled(true);
-        setVoucherNo(result.voucher_no);
-        setVoucherID(result.finance_voucher_header_id);
+        if (!location?.state?.voucher_no) {
+          setVoucherNo(result.voucher_no);
+          setVoucherID(result.finance_voucher_header_id);
+        }
+
         // dataPayment = dataPayment.map(m => {
         //   delete m["seltype"];
         //   return m;
@@ -845,7 +850,11 @@ export default function JournalVoucher() {
           maskClosable: false,
           okText: "Ok",
           title: "Voucher No",
-          content: <h4>{result.voucher_no}</h4>,
+          content: result.voucher_no ? (
+            <h4>{result.voucher_no}</h4>
+          ) : (
+            <h4>{voucher_no}</h4>
+          ),
           onOk: () => modal.destroy(),
         });
         if (
@@ -1520,6 +1529,9 @@ export default function JournalVoucher() {
                     <AlgaehLabel label={{ fieldName: "JVList" }} />
                   </h3>
                 </div>
+                <small>
+                  {voucher_no && voucher_no !== "" ? ` - [${voucher_no}]` : ""}
+                </small>
                 <div
                   className={`actions arAction ${
                     parseFloat(total_credit) !== parseFloat(total_debit)
@@ -1629,13 +1641,27 @@ export default function JournalVoucher() {
                         }
 
                         setJournerList((data) => {
-                          const otherDetals = data
-                            .filter((f) => f.slno !== result["slno"])
-                            .map((m, i) => {
-                              return { ...m, slno: i + 1 };
-                            });
-                          return [...otherDetals];
+                          if (result["slno"]) {
+                            const otherDetails = data
+                              .filter((f) => f.slno !== result["slno"])
+                              .map((m, i) => {
+                                return { ...m, slno: i + 1 };
+                              });
+                            return [...otherDetails];
+                          } else {
+                            const otherDetails = data.filter(
+                              (f) =>
+                                f.finance_voucher_id !==
+                                result.finance_voucher_id
+                            );
+                            return [...otherDetails];
+                          }
                         });
+                        if (result.finance_voucher_id)
+                          setDeletedEntries((data) => {
+                            data.push(result.finance_voucher_id);
+                            return [...data];
+                          });
                       },
                     }}
                     others={{
