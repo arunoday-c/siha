@@ -8,11 +8,8 @@ const executePDF = function executePDFMethod(options) {
 
       const moment = options.moment;
       let input = {};
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
       const params = options.args.reportParams;
 
       // const decimal_places = options.args.crypto.decimal_places;
@@ -53,19 +50,25 @@ const executePDF = function executePDFMethod(options) {
               //END-cost center
               options.mysql
                 .executeQuery({
-                  query: `  select finance_voucher_header_id,voucher_type,voucher_no,
-                  VD.head_id,VD.payment_date ,VD.child_id,               
+                  query: `select H.finance_voucher_header_id, 
+                  case when H.voucher_type='journal' then 'Journal' when H.voucher_type='contra' then 'Contra'
+                  when H.voucher_type='receipt' then 'Receipt' when H.voucher_type='payment' then 'Payment'
+                  when H.voucher_type='sales' then 'Sales' when H.voucher_type='purchase' then 'Purchase'
+                  when H.voucher_type='credit_note' then 'Credit Note' when H.voucher_type='debit_note' then 'Debit Note'
+                  when H.voucher_type='expense_voucher' then 'Expense' when H.voucher_type='year_end' then 'Year End'
+                  when H.voucher_type='year_end_rev' then 'Year End Reversal' end as voucher_type, H.voucher_no,
+                  VD.head_id,VD.payment_date,VD.child_id,               
                   ROUND(sum(debit_amount),${decimal_places}) as debit_amount,
-                   ROUND(sum(credit_amount),${decimal_places})  as credit_amount,C.child_name
-                  from finance_voucher_header H inner join finance_voucher_details VD
-                  on H.finance_voucher_header_id=VD.voucher_header_id inner join finance_account_child C on
-                  VD.child_id=C.finance_account_child_id where  VD.auth_status='A' and
-                  VD.head_id in (with recursive cte  as (          
+                   ROUND(sum(credit_amount),${decimal_places}) as credit_amount,C.child_name
+                  from finance_voucher_header H 
+                  inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id 
+                  inner join finance_account_child C on VD.child_id=C.finance_account_child_id 
+                  where  VD.auth_status='A' and VD.head_id in (with recursive cte as (     
                   select  finance_account_head_id  from finance_account_head H
                   inner join finance_account_child where finance_account_head_id =? union                  
                   select  H.finance_account_head_id from finance_account_head H
                   inner join cte on H.parent_acc_id = cte.finance_account_head_id    
-                  )select * from cte ) ${strQry}   group by VD.payment_date,VD.child_id,voucher_no  order by VD.payment_date;`,
+                  ) select * from cte ) ${strQry}   group by VD.payment_date,VD.child_id,voucher_no  order by VD.payment_date and H.voucher_no;`,
                   values: [input.head_id],
                   printQuery: true,
                 })

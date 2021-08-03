@@ -2,11 +2,8 @@ const executePDF = function executePDFMethod(options) {
   return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
 
       let str = "";
       let input = {};
@@ -41,7 +38,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_sub_department SD on SD.hims_d_sub_department_id = FD.sub_department_id
           left join hims_d_project PR on PR.hims_d_project_id = FD.project_id
           left join finance_options FO on FO.default_branch_id = FD.hospital_id
-          where VD.finance_voucher_header_id=? and payment_type='DR';`,
+          where VD.finance_voucher_header_id=? and payment_type='DR' and FD.pl_entry <> 'Y';`,
           values: [input.voucher_header_id, input.voucher_header_id],
           printQuery: true,
         })
@@ -50,8 +47,8 @@ const executePDF = function executePDFMethod(options) {
             resultHeader: result[0].length > 0 ? result[0][0] : {},
             // subTotal:resultHeader.amount,
             resultInvoice: result[1],
-            totalDr: _.sumBy(result, (s) => parseFloat(s.debit_amount)),
-            totalCr: _.sumBy(result, (s) => parseFloat(s.credit_amount)),
+            totalDr: _.sumBy(result[1], (s) => parseFloat(s.debit_amount)),
+            // totalCr: _.sumBy(result, (s) => parseFloat(s.credit_amount)),
             currency: {
               decimal_places,
               addSymbol: false,

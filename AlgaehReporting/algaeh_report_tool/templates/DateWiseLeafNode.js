@@ -50,20 +50,28 @@ const executePDF = function executePDFMethod(options) {
 
             options.mysql
               .executeQuery({
-                query: `  select finance_voucher_header_id,voucher_type,voucher_no,VD.narration,
-                      VD.head_id,VD.payment_date, VD.child_id, AH.root_id,              
-                      debit_amount,credit_amount,C.child_name,C.ledger_code
-                      from finance_voucher_header H right join finance_voucher_details VD
-                      on H.finance_voucher_header_id=VD.voucher_header_id inner join finance_account_child C on
-                      VD.child_id=C.finance_account_child_id inner join  finance_account_head AH on
-                       C.head_id=AH.finance_account_head_id     where  VD.auth_status='A' and
-                      VD.child_id=?  ${strQry} order by VD.finance_voucher_id asc;
-                      select  child_id,ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),2) as cred_minus_deb,
-                      ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),2)  as deb_minus_cred
-                      from   finance_voucher_details    where child_id=? and auth_status='A'  and payment_date < ?;
-                      select  child_id,ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),2) as cred_minus_deb,
-                      ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),2)  as deb_minus_cred
-                      from   finance_voucher_details    where child_id=? and auth_status='A'  and payment_date <= ?;   `,
+                query: `
+                select finance_voucher_header_id,
+                case when H.voucher_type='journal' then 'Journal' when H.voucher_type='contra' then 'Contra'
+                when H.voucher_type='receipt' then 'Receipt' when H.voucher_type='payment' then 'Payment'
+                when H.voucher_type='sales' then 'Sales' when H.voucher_type='purchase' then 'Purchase'
+                when H.voucher_type='credit_note' then 'Credit Note' when H.voucher_type='debit_note' then 'Debit Note'
+                when H.voucher_type='expense_voucher' then 'Expense' when H.voucher_type='year_end' then 'Year End'
+                when H.voucher_type='year_end_rev' then 'Year End Reversal' end as voucher_type,
+                voucher_no,VD.narration,
+                VD.head_id,VD.payment_date, VD.child_id, AH.root_id,              
+                debit_amount,credit_amount,C.child_name,C.ledger_code
+                from finance_voucher_header H right join finance_voucher_details VD
+                on H.finance_voucher_header_id=VD.voucher_header_id inner join finance_account_child C on
+                VD.child_id=C.finance_account_child_id inner join  finance_account_head AH on
+                C.head_id=AH.finance_account_head_id where VD.auth_status='A' and
+                VD.child_id=? ${strQry} order by VD.payment_date and H.voucher_no;
+                select  child_id,ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),2) as cred_minus_deb,
+                ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),2)  as deb_minus_cred
+                from   finance_voucher_details    where child_id=? and auth_status='A'  and payment_date < ?;
+                select  child_id,ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),2) as cred_minus_deb,
+                ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),2)  as deb_minus_cred
+                from   finance_voucher_details    where child_id=? and auth_status='A'  and payment_date <= ?;   `,
                 values: [
                   input.child_id,
                   input.child_id,
