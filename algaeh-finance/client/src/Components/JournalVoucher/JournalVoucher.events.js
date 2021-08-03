@@ -93,7 +93,6 @@ export function getInvoiceDetail(input) {
 }
 
 export function addJurnorLedger(input) {
-  debugger;
   const { merdgeRecords, ...rest } = input;
   if (input.finance_voucher_header_id > 0) {
     return addVoucher(rest, "/voucher/updateVoucher");

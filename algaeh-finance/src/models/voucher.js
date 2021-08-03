@@ -770,9 +770,40 @@ export default {
             finance_voucher_id.push(input.details[i].finance_voucher_id);
           }
       } else {
-        // queryString += _mysql.mysqlQueryFormat(`INSERT INTO finance_voucher_details(head_id,child_id,
-        //   credit_amount,debit_amount,narration,payment_date,month,year,payment_type,narration,
-        //   credit_amount,)`)
+        const previousInfo = input.details.find((f) => f.finance_voucher_id);
+
+        queryString += _mysql.mysqlQueryFormat(
+          `INSERT INTO finance_voucher_details(head_id,child_id,
+          credit_amount,debit_amount,narration,payment_date,month,year,payment_type,
+          hospital_id,project_id,sub_department_id,doctor_id,auth1,auth1_by,auth2,auth2_by,auth2_date,auth_status,voucher_header_id)
+          value(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
+          [
+            input.details[i].head_id,
+            input.details[i].child_id,
+            input.details[i].payment_type === "CR"
+              ? input.details[i].amount
+              : 0,
+            input.details[i].payment_type === "DR"
+              ? input.details[i].amount
+              : 0,
+            input.details[i].narration,
+            previousInfo.payment_date,
+            previousInfo.month,
+            previousInfo.year,
+            input.details[i].payment_type,
+            previousInfo.hospital_id,
+            previousInfo.project_id,
+            previousInfo.sub_department_id,
+            previousInfo.doctor_id,
+            previousInfo.auth1,
+            previousInfo.auth1_by,
+            previousInfo.auth2,
+            previousInfo.auth2_by,
+            previousInfo.auth2_date,
+            previousInfo.auth_status,
+            input.finance_voucher_header_id,
+          ]
+        );
       }
     }
     const headerAmount = _.chain(input.details)
