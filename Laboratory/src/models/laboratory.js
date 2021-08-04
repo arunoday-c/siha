@@ -2569,6 +2569,7 @@ export async function updateLabOrderServices(req, res, next) {
     inputParam.container_code = update_lab_sample[0][0].container_code;
     inputParam.lab_location_code = update_lab_sample[1][0].lab_location_code;
     const today_date = moment().format("YYYY-MM-DD HH:mm:ss");
+    console.log("inputParam.lab_id_number", inputParam.lab_id_number);
     if (inputParam.lab_id_number != null) {
       const result = await _mysql.executeQuery({
         query: `update hims_f_lab_order L  \
@@ -2605,19 +2606,25 @@ export async function updateLabOrderServices(req, res, next) {
             throw e;
           });
         _mysql.commitTransaction(() => {
+          console.log("im here portal");
           _mysql.releaseConnection();
           req.records = {
             collected: inputParam.collected,
           };
-          next();
+          if (!req.preventNext) {
+            next();
+          }
         });
       } else {
         _mysql.commitTransaction(() => {
+          console.log("im here");
           _mysql.releaseConnection();
           req.records = {
             collected: inputParam.collected,
           };
-          next();
+          if (!req.preventNext) {
+            next();
+          }
         });
       }
       // })
@@ -2727,7 +2734,9 @@ export async function updateLabOrderServices(req, res, next) {
             lab_id_number: labIdNumber,
             status: "CL",
           };
-          next();
+          if (!req.preventNext) {
+            next();
+          }
         });
       } else {
         _mysql.commitTransaction(() => {
@@ -2742,7 +2751,9 @@ export async function updateLabOrderServices(req, res, next) {
             lab_id_number: labIdNumber,
             status: "CL",
           };
-          next();
+          if (!req.preventNext) {
+            next();
+          }
         });
       }
       // })
@@ -2756,7 +2767,9 @@ export async function updateLabOrderServices(req, res, next) {
   } catch (e) {
     // _mysql.releaseConnection();
     _mysql.rollBackTransaction(() => {
-      next(e);
+      if (!req.preventNext) {
+        next(e);
+      }
     });
   }
 }
@@ -3106,15 +3119,16 @@ export async function bulkSampleCollection(req, res, next) {
       req.body = {
         ...item,
       };
+      req.preventNext = true;
 
       const xyz = await updateLabOrderServices(req, res, next);
       collection_done.push(xyz);
-      // console.log("print i", i);
+      console.log("print i", i);
     }
-    // console.log("collection_done", collection_done);
-    // consol.log("collection_done", collection_done);
+    console.log("collection_done", collection_done);
     Promise.all(collection_done)
       .then(() => {
+        console.log("collection_done", collection_done);
         next();
       })
       .catch((e) => {
