@@ -335,6 +335,11 @@ export default {
                 "extended_cost",
               ];
 
+              console.log(
+                "input.inventory_stock_detail",
+                input.inventory_stock_detail
+              );
+
               _mysql
                 .executeQuery({
                   query:
