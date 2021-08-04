@@ -20,3 +20,13 @@
     margin-top: 2.5vh;
   }
 }
+
+#consumptionCancelGrid {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 56vh !important;
+      max-height: 56vh !important;
+      overflow: auto;
+    }
+  }
+}
