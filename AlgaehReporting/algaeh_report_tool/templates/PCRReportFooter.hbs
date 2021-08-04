@@ -1,18 +1,35 @@
 <style type="text/css">
   .headerFooterStyle1 { width: 100%; float: left; text-align: center;
-  border-top: 0.5rem dotted #ccc; font-size: 8px; margin-top: 5px; }
+  border-top: 0.5rem dotted #ccc; font-size: 8px; margin-top: 5px;padding:5px
+  15px 0; line-height: 14px;}
 </style>
 
 <body>
   <div class="headerFooterStyle1">
+    <span style="float:right;width: 100%; direction:rlt;text-align:center;">
+      <span>{{address2}}</span>
+      {{!-- <span>هاتف: {{phone2}}</span> --}}
+    </span>
+    <span style="float:left;width: 100%; direction:ltr;text-align:center;">
+      <span>{{address1}}</span>
+      {{!-- <span>Tel: {{phone1}}</span> --}}
+    </span>
+
+    <span style="float:none;width: 99%; text-align:center;font-weight: bold;">
+      <span><b>&#9990;</b> {{phone1}}</span>
+      |
+      <span>{{email}}</span>
+      |
+      <span>{{website}}</span>
+    </span>
 
     {{!-- <p><b>{{organization_name}}</b></p> --}}
-    <p style="direction: rtl; text-align:center">4620 طريق الملك عبدالله - حي
+    {{! <p style="direction: rtl; text-align:center">4620 طريق الملك عبدالله - حي
       الحمراء - هاتف: 920026272 - ايميل:info@otl.sa- الرياض 13217 - المملكة
       العربية السعودية
     </p>
     <p>4620 King Abdullah Road - AlHamra District - Tel:920026272 -
-      Mail:Info@otl.sa - Riyadh 13217 - Kingdom of Saudi Arabia</p>
+      Mail:Info@otl.sa - Riyadh 13217 - Kingdom of Saudi Arabia</p> }}
 
   </div>
 </body>
