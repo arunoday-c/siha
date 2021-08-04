@@ -921,7 +921,16 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
           <div className="row">
             <div className="col-lg-12" id="samplecollection_grid">
               {under_process === true ? (
-                <h2>Under Process</h2>
+                <div
+                  style={{
+                    height: "68vh",
+                    textAlign: "center",
+                    paddingTop: "30vh",
+                    background: "#efefef",
+                  }}
+                >
+                  <h2>Bulk collection in progress...</h2>
+                </div>
               ) : (
                 <SampleCollectionList
                   hospital_id={hospital_id}
