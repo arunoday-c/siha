@@ -37,6 +37,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
   // const [editableGrid, setEditableGrid] = useState(undefined);
   const [test_details, setTest_details] = useState([]);
   const [under_process, setUnderProcess] = useState(false);
+  const [display_message, setDisplayMessage] = useState("");
   let [, setState] = useState();
 
   useEffect(() => {
@@ -263,6 +264,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
         cancelButtonText: "No",
       }).then((willProcess) => {
         if (willProcess.value) {
+          setDisplayMessage("Bulk collection in progress...");
           setUnderProcess(true);
           const addedData = filterData.map((item) => {
             return {
@@ -442,19 +444,9 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
     let normal_lab_order_id = [],
       micro_cul_lab_order_id = [];
     test_details.map((o) => {
-      if (
-        o.checked &&
-        o.collected === "Y" &&
-        o.culture_test === "N" &&
-        o.test_section !== "M"
-      ) {
+      if (o.checked && o.collected === "Y" && o.culture_test === "N") {
         normal_lab_order_id.push(o.hims_f_lab_order_id);
-      } else if (
-        o.checked &&
-        o.collected === "Y" &&
-        o.culture_test === "Y" &&
-        o.test_section === "M"
-      ) {
+      } else if (o.checked && o.collected === "Y" && o.culture_test === "Y") {
         micro_cul_lab_order_id.push(o.hims_f_lab_order_id);
       }
       return null;
@@ -480,6 +472,8 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
       cancelButtonText: "No",
     }).then((willDelete) => {
       if (willDelete.value) {
+        setDisplayMessage("Bulk cancellation in progress...");
+        setUnderProcess(true);
         algaehApiCall({
           uri: "/laboratory/updateLabOrderServiceStatus",
           module: "laboratory",
@@ -492,7 +486,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
           onSuccess: (response) => {
             if (response.data.success === true) {
               swalMessage({
-                title: "Record Updated Successfully",
+                title: "Cancelled Successfully",
                 type: "success",
               });
 
@@ -500,6 +494,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
             }
           },
           onFailure: (error) => {
+            setUnderProcess(false);
             swalMessage({
               title: error.response.data.message || error.message,
               type: "error",
@@ -929,7 +924,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
                     background: "#efefef",
                   }}
                 >
-                  <h2>Bulk collection in progress...</h2>
+                  <h2>{display_message}</h2>
                 </div>
               ) : (
                 <SampleCollectionList

@@ -786,15 +786,9 @@ export default memo(function SampleCollectionList({
         },
       ]}
       keyId="patient_code"
-      // dataSource={{
       data={test_details}
-      // }}
-      // events={{
-      //   onSave: (row) => updateLabOrderServiceStatus(row),
-      // }}
       filter={true}
       noDataText="No data available for selected period"
-      // isEditable={editableGrid}
       pageOptions={{ rows: 100, page: 1 }}
       isFilterable={true}
       pagination={true}

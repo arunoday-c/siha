@@ -2786,9 +2786,8 @@ export async function updateLabOrderServiceStatus(req, res, next) {
       );
     }
     // console.log("hims_f_lab_order_id", hims_f_lab_order_id);
-    _mysql
-      .executeQueryWithTransaction({
-        query: `
+    const result = await _mysql.executeQueryWithTransaction({
+      query: `
         UPDATE hims_f_lab_order L 
         INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id 
         set L.status='O', L.updated_by=?, L.updated_date=?, S.status='N', S.collected='N',
@@ -2798,98 +2797,93 @@ export async function updateLabOrderServiceStatus(req, res, next) {
         INNER JOIN hims_f_patient P ON P.hims_d_patient_id=L.patient_id
         INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id=L.visit_id 
         where hims_f_lab_order_id in (?)`,
-        values: [
-          req["userIdentity"].algaeh_d_app_user_id,
-          new Date(),
-          req["userIdentity"].algaeh_d_app_user_id,
-          new Date(),
-          hims_f_lab_order_id,
-          hims_f_lab_order_id,
-        ],
-        printQuery: true,
-      })
-      .then(async (result) => {
-        // else {
-        //   _mysql.commitTransaction(() => {
-        //     _mysql.releaseConnection();
-        //     req.records = result;
-        //     next();
-        //   });
-        // }
-        let strQuery = "";
-        if (req.body.normal_lab_order_id.length > 0) {
-          strQuery += mysql.format(
-            `Update hims_f_ord_analytes set result= ?, status = 'N',entered_by=?,entered_date=?, confirm_by=?, confirmed_date=?, validate_by=?,validated_date=?  
+      values: [
+        req["userIdentity"].algaeh_d_app_user_id,
+        new Date(),
+        req["userIdentity"].algaeh_d_app_user_id,
+        new Date(),
+        hims_f_lab_order_id,
+        hims_f_lab_order_id,
+      ],
+      printQuery: true,
+    });
+    // .then(async (result) => {
+    let strQuery = "";
+    if (req.body.normal_lab_order_id.length > 0) {
+      strQuery += mysql.format(
+        `Update hims_f_ord_analytes set result= ?, status = 'N',entered_by=?,entered_date=?, confirm_by=?, confirmed_date=?, validate_by=?,validated_date=?  
             where order_id in (?);`,
-            [
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              req.body.normal_lab_order_id,
-            ]
-          );
-        }
-        if (req.body.micro_cul_lab_order_id.length > 0) {
-          strQuery += mysql.format(
-            `update hims_f_micro_result set susceptible=?, intermediate=?, resistant=? where order_id in (?);`,
-            [null, null, null, req.body.micro_cul_lab_order_id]
-          );
-        }
-        console.log("strQuery", strQuery);
-        // consol.log("strQuery", strQuery);
-        _mysql
-          .executeQueryWithTransaction({
-            query: strQuery,
-            printQuery: true,
-          })
-          .then(async (update_result) => {
-            if (req.body.portal_exists === "Y") {
-              const calncel_details = result[1];
+        [null, null, null, null, null, null, null, req.body.normal_lab_order_id]
+      );
+    }
+    if (req.body.micro_cul_lab_order_id.length > 0) {
+      strQuery += mysql.format(
+        `update hims_f_micro_result set susceptible=?, intermediate=?, resistant=? where order_id in (?);`,
+        [null, null, null, req.body.micro_cul_lab_order_id]
+      );
+    }
+    const update_result = await _mysql.executeQueryWithTransaction({
+      query: strQuery,
+      printQuery: true,
+    });
+    // .then(async (update_result) => {
+    if (req.body.portal_exists === "Y") {
+      const portal_data = result[1];
 
-              for (let i = 0; i < calncel_details.length; i++) {
-                const portal_data = {
-                  service_id: calncel_details[i].service_id,
-                  visit_code: calncel_details[i].visit_code,
-                  patient_identity: calncel_details[i].primary_id_no,
-                  service_status: "ORDERED",
-                };
-
-                await axios
-                  .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-                  .catch((e) => {
-                    throw e;
-                  });
-                if (i === calncel_details.length - 1) {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = update_result;
-                    next();
-                  });
-                }
-              }
-            } else {
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
-                req.records = update_result;
-                next();
-              });
-            }
-          })
-          .catch((e) => {
-            _mysql.rollBackTransaction(() => {
-              next(e);
-            });
-          });
-      })
-      .catch((e) => {
-        _mysql.rollBackTransaction(() => {
-          next(e);
+      await axios
+        .post(`${PORTAL_HOST}/info/updateBulkPatientServices`, portal_data)
+        .catch((e) => {
+          throw e;
         });
+
+      _mysql.commitTransaction(() => {
+        _mysql.releaseConnection();
+        req.records = update_result;
+        next();
       });
+      // for (let i = 0; i < calncel_details.length; i++) {
+      //   const portal_data = {
+      //     service_id: calncel_details[i].service_id,
+      //     visit_code: calncel_details[i].visit_code,
+      //     patient_identity: calncel_details[i].primary_id_no,
+      //     service_status: "ORDERED",
+      //   };
+      // await axios
+      // .post(
+      //   `${PORTAL_HOST}/info/updateBulkPatientServices`,
+      //   portal_data
+      // )
+      // .catch((e) => {
+      //   throw e;
+      // });
+
+      //   if (i === calncel_details.length - 1) {
+      //     _mysql.commitTransaction(() => {
+      //       _mysql.releaseConnection();
+      //       req.records = update_result;
+      //       next();
+      //     });
+      //   }
+      // }
+    } else {
+      _mysql.commitTransaction(() => {
+        _mysql.releaseConnection();
+        req.records = update_result;
+        next();
+      });
+    }
+    // })
+    // .catch((e) => {
+    //   _mysql.rollBackTransaction(() => {
+    //     next(e);
+    //   });
+    // });
+    // })
+    // .catch((e) => {
+    //   _mysql.rollBackTransaction(() => {
+    //     next(e);
+    //   });
+    // });
   } catch (e) {
     _mysql.rollBackTransaction(() => {
       next(e);
@@ -2993,13 +2987,17 @@ export async function updateLabSampleStatus(req, res, next) {
         _mysql.commitTransaction(() => {
           _mysql.releaseConnection();
           req.records = lab_order;
-          next();
+          if (!req.preventNext) {
+            next();
+          }
         });
       } else {
         _mysql.commitTransaction(() => {
           _mysql.releaseConnection();
           req.records = lab_order;
-          next();
+          if (!req.preventNext) {
+            next();
+          }
         });
       }
       // })
@@ -3072,7 +3070,9 @@ export async function updateLabSampleStatus(req, res, next) {
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
               req.records = ord_analytes;
-              next();
+              if (!req.preventNext) {
+                next();
+              }
             });
           })
           .catch((e) => {
@@ -3084,7 +3084,9 @@ export async function updateLabSampleStatus(req, res, next) {
         _mysql.commitTransaction(() => {
           _mysql.releaseConnection();
           req.records = results[0];
-          next();
+          if (!req.preventNext) {
+            next();
+          }
         });
       }
       // })
@@ -3102,7 +3104,9 @@ export async function updateLabSampleStatus(req, res, next) {
     // });
   } catch (e) {
     _mysql.rollBackTransaction(() => {
-      next(e);
+      if (!req.preventNext) {
+        next(e);
+      }
     });
   }
 }
@@ -3123,12 +3127,12 @@ export async function bulkSampleCollection(req, res, next) {
 
       const xyz = await updateLabOrderServices(req, res, next);
       collection_done.push(xyz);
-      console.log("print i", i);
+      // console.log("print i", i);
     }
-    console.log("collection_done", collection_done);
+    // console.log("collection_done", collection_done);
     Promise.all(collection_done)
       .then(() => {
-        console.log("collection_done", collection_done);
+        // console.log("collection_done", collection_done);
         next();
       })
       .catch((e) => {
@@ -3153,6 +3157,7 @@ export async function bulkSampleAcknowledge(req, res, next) {
       req.body = {
         ...item,
       };
+      req.preventNext = true;
 
       const xyz = await updateLabSampleStatus(req, res, next);
       collection_done.push(xyz);
@@ -3403,6 +3408,7 @@ export function updateBatchDetail(req, res, next) {
               hims_f_lab_order_id: batch_data.hims_f_lab_order_id,
               patient_id: batch_data.patient_id,
               visit_id: batch_data.visit_id,
+              report_process: true,
             });
           }
         }
