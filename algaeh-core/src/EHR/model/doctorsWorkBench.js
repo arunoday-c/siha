@@ -1495,7 +1495,7 @@ let getMyDay = (req, res, next) => {
           inner join hims_d_visit_type VT on V.visit_type=VT.hims_d_visit_type_id
           left join hims_f_patient_diagnosis PD on PD.episode_id=V.episode_id and PD.diagnosis_type='P' and PD.record_status='A'
           left join hims_d_icd ICD on ICD.hims_d_icd_id=PD.daignosis_id
-          where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? and ${_query} order by E.updated_date asc`,
+          where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? and ${_query} order by E.updated_date desc`,
         values: [req.userIdentity.hospital_id],
         printQuery: true,
       })
@@ -1664,12 +1664,8 @@ let getPatientVitals = (req, res, next) => {
         const vitals = _.chain(result)
           .groupBy((g) => g.created_date)
           .map((details, key) => {
-            const {
-              created_date,
-              user_display_name,
-              visit_date,
-              visit_time,
-            } = _.head(details);
+            const { created_date, user_display_name, visit_date, visit_time } =
+              _.head(details);
             const recorded_dt = `${moment(visit_date).format(
               "YYYY-MM-DD"
             )} ${visit_time}`;
@@ -4287,13 +4283,8 @@ export const getNurseNotes = (req, res, next) => {
 
 export const addNurseNote = (req, res, next) => {
   const _mysql = new algaehMysql();
-  const {
-    patient_id,
-    visit_id,
-    episode_id,
-    nursing_notes,
-    visit_date,
-  } = req.body;
+  const { patient_id, visit_id, episode_id, nursing_notes, visit_date } =
+    req.body;
   try {
     _mysql
       .executeQuery({
