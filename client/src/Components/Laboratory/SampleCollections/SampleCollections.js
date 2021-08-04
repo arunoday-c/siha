@@ -52,7 +52,6 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
 
     RawSecurityComponent({ componentCode: "BTN_BLK_SAM_BAR_COL" }).then(
       (result) => {
-        console.log("result===", result);
         if (result === "hide") {
           setShowCheckBoxColumn(false);
         } else {
@@ -100,7 +99,6 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
     getSampleCollectionDetails,
     {
       onSuccess: (data) => {
-        debugger;
         setTest_details(data);
         setUnderProcess(false);
       },
@@ -256,7 +254,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
     // AlgaehLoader({ show: true });
     if (filterData.length > 0) {
       swal({
-        title: `Are you sure to change all specimen not collected?`,
+        title: `Are you sure to collect Sample Bulk?`,
         type: "warning",
         showCancelButton: true,
         confirmButtonText: "Yes",
@@ -291,8 +289,6 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
             };
           });
 
-          debugger;
-
           algaehApiCall({
             uri: "/laboratory/bulkSampleCollection",
             module: "laboratory",
@@ -303,8 +299,6 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
             method: "PUT",
             onSuccess: (response) => {
               if (response.data.success === true) {
-                debugger;
-                console.log("Collect");
                 labOrderRefetch();
                 swalMessage({
                   title: "Collected Successfully",
@@ -501,8 +495,7 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
                 title: "Record Updated Successfully",
                 type: "success",
               });
-              debugger;
-              console.log("Multiple");
+
               labOrderRefetch();
             }
           },
@@ -796,8 +789,6 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
   // };
 
   const updateState = () => {
-    debugger;
-    console.log("state Update");
     labOrderRefetch();
   };
   const updateTestDetails = (data) => {
