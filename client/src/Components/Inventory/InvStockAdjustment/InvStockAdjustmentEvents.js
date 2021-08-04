@@ -1,9 +1,6 @@
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
-import {
-  algaehApiCall,
-  swalMessage
-} from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -15,18 +12,16 @@ const texthandle = ($this, e) => {
       description: e.selected.name,
       adjust_qty: 0,
       adjust_amount: 0,
-      remaining_qty: 0
+      remaining_qty: 0,
     });
   } else {
     $this.setState({
       [name]: value,
-
     });
   }
 };
 
 const batchEventHandaler = ($this, e) => {
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -36,42 +31,52 @@ const batchEventHandaler = ($this, e) => {
     sales_price: e.selected.sale_price,
     expirydate: e.selected.expirydt,
     barcode: e.selected.barcode,
-    unit_cost: e.selected.avgcost
+    unit_cost: e.selected.avgcost,
   });
 };
 
 const adjustQtyHandaler = ($this, e) => {
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if ($this.state.adjustment_type === null) {
     swalMessage({
       title: "Please select Adjustment Type",
-      type: "warning"
+      type: "warning",
     });
     return;
   }
-  if ($this.state.adjustment_type === "DQ" || $this.state.adjustment_type === "BD") {
+  if (
+    $this.state.adjustment_type === "DQ" ||
+    $this.state.adjustment_type === "BD"
+  ) {
     if (parseFloat(value) > parseFloat($this.state.qtyhand)) {
       swalMessage({
         title: "Cannot be less than Quantity in Hand",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
   }
 
-  let remaining_qty = 0
+  let remaining_qty = 0;
 
-  if ($this.state.adjustment_type === "DQ" || $this.state.adjustment_type === "BD") {
-    remaining_qty = value === "" ? 0 : parseFloat($this.state.qtyhand) - parseFloat(value)
-  } else if ($this.state.adjustment_type === "BI" || $this.state.adjustment_type === "IQ") {
-    remaining_qty = value === "" ? 0 : parseFloat($this.state.qtyhand) + parseFloat(value)
+  if (
+    $this.state.adjustment_type === "DQ" ||
+    $this.state.adjustment_type === "BD"
+  ) {
+    remaining_qty =
+      value === "" ? 0 : parseFloat($this.state.qtyhand) - parseFloat(value);
+  } else if (
+    $this.state.adjustment_type === "BI" ||
+    $this.state.adjustment_type === "IQ"
+  ) {
+    remaining_qty =
+      value === "" ? 0 : parseFloat($this.state.qtyhand) + parseFloat(value);
   }
 
   $this.setState({
     [name]: value,
-    remaining_qty: remaining_qty
+    remaining_qty: remaining_qty,
   });
 };
 
@@ -83,12 +88,12 @@ const getDrilDownData = ($this, transaction_id) => {
     module: "inventory",
     method: "GET",
     data: { transaction_id: transaction_id },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
         data.saveEnable = true;
         data.addItemButton = true;
-        data.dataExists = true
+        data.dataExists = true;
         $this.setState(data);
 
         AlgaehLoader({ show: false });
@@ -96,17 +101,17 @@ const getDrilDownData = ($this, transaction_id) => {
         AlgaehLoader({ show: false });
         swalMessage({
           type: "error",
-          title: response.data.records.message
+          title: response.data.records.message,
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 const getCtrlCode = ($this, docNumber) => {
@@ -117,12 +122,12 @@ const getCtrlCode = ($this, docNumber) => {
     module: "inventory",
     method: "GET",
     data: { adjustment_number: docNumber },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
         data.saveEnable = true;
         data.addItemButton = true;
-        data.dataExists = true
+        data.dataExists = true;
         $this.setState(data);
 
         AlgaehLoader({ show: false });
@@ -130,23 +135,21 @@ const getCtrlCode = ($this, docNumber) => {
         AlgaehLoader({ show: false });
         swalMessage({
           type: "error",
-          title: response.data.records.message
+          title: response.data.records.message,
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
 const ClearData = ($this) => {
-
-
   $this.setState({
     location_type: null,
     location_id: null,
@@ -172,12 +175,11 @@ const ClearData = ($this) => {
     sales_price: 0,
     comments: null,
     location_name: null,
-    dataExists: false
-  })
+    dataExists: false,
+  });
 };
 
-const SaveAdjustment = $this => {
-
+const SaveAdjustment = ($this) => {
   AlgaehLoader({ show: true });
 
   $this.state.posted = "Y";
@@ -187,12 +189,10 @@ const SaveAdjustment = $this => {
     module: "inventory",
     method: "POST",
     data: $this.state,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
-
         $this.setState({
-          adjustment_number:
-            response.data.records.adjustment_number,
+          adjustment_number: response.data.records.adjustment_number,
           saveEnable: true,
           addItemButton: true,
           dataExists: true,
@@ -200,26 +200,25 @@ const SaveAdjustment = $this => {
 
         swalMessage({
           title: "Saved successfully . .",
-          type: "success"
+          type: "success",
         });
         AlgaehLoader({ show: false });
       } else {
         AlgaehLoader({ show: false });
         swalMessage({
           type: "error",
-          title: response.data.records.message
+          title: response.data.records.message,
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
-
 };
 
 const LocationchangeTexts = ($this, ctrl, e) => {
@@ -230,10 +229,9 @@ const LocationchangeTexts = ($this, ctrl, e) => {
     [name]: value,
     location_type: e.selected.location_type,
     location_name: e.selected.location_description,
-    location_selected: true
+    location_selected: true,
   });
 };
-
 
 const generateReport = ($this, rpt_name, rpt_desc) => {
   algaehApiCall({
@@ -241,7 +239,7 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -250,17 +248,17 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
         reportParams: [
           {
             name: "hims_f_inventory_pos_header_id",
-            value: $this.state.hims_f_inventory_pos_header_id
+            value: $this.state.hims_f_inventory_pos_header_id,
           },
           {
             name: "pos_customer_type",
-            value: $this.state.pos_customer_type
-          }
+            value: $this.state.pos_customer_type,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       // const url = URL.createObjectURL(res.data);
       // let myWindow = window.open(
       //   "{{ product.metafields.google.custom_label_0 }}",
@@ -274,25 +272,24 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${rpt_desc}`;
       window.open(origin);
       // window.document.title = rpt_desc;
-    }
+    },
   });
 };
 
 const itemchangeText = ($this, e, ctrl) => {
-
   let name = ctrl;
   if ($this.state.location_id !== null) {
     let value = e.hims_d_inventory_item_master_id;
 
     algaehApiCall({
-      uri: "/inventoryGlobal/getUomLocationStock",
+      uri: "/inventoryGlobal/getUomLocationStockAdjust",
       module: "inventory",
       method: "GET",
       data: {
         location_id: $this.state.location_id,
-        item_id: value
+        item_id: value,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
           if (data.locationResult.length > 0) {
@@ -306,43 +303,43 @@ const itemchangeText = ($this, e, ctrl) => {
               item_group_id: e.group_id,
               Batch_Items: data.locationResult,
               addItemButton: false,
-              item_description: e.item_description
+              item_description: e.item_description,
             });
           } else {
             swalMessage({
               title: "No stock available for selected Item.",
-              type: "warning"
+              type: "warning",
             });
             $this.setState({
               item_description: $this.state.item_description,
-              item_id: $this.state.item_id
+              item_id: $this.state.item_id,
             });
           }
         } else {
           swalMessage({
             title: response.data.message,
-            type: "error"
+            type: "error",
           });
         }
         AlgaehLoader({ show: false });
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   } else {
     $this.setState(
       {
-        [name]: null
+        [name]: null,
       },
       () => {
         swalMessage({
           title: "Please select Location.",
-          type: "warning"
+          type: "warning",
         });
       }
     );
@@ -354,38 +351,45 @@ const AddItemtoList = ($this) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='ItemDetails'",
     onSuccess: () => {
-      if ($this.state.adjustment_type === "IQ" ||
+      if (
+        $this.state.adjustment_type === "IQ" ||
         $this.state.adjustment_type === "DQ" ||
         $this.state.adjustment_type === "BI" ||
-        $this.state.adjustment_type === "BD") {
-
+        $this.state.adjustment_type === "BD"
+      ) {
         if ($this.state.adjust_qty === 0) {
           swalMessage({
             title: "Adjust Quantity, cannot be zero.",
-            type: "warning"
+            type: "warning",
           });
           document.querySelector("[name='adjust_qty']").focus();
-          return
+          return;
         }
       }
-      if ($this.state.adjustment_type === "IA" ||
+      if (
+        $this.state.adjustment_type === "IA" ||
         $this.state.adjustment_type === "DA" ||
         $this.state.adjustment_type === "BI" ||
-        $this.state.adjustment_type === "BD") {
+        $this.state.adjustment_type === "BD"
+      ) {
         if ($this.state.adjust_amount === 0) {
           swalMessage({
             title: "Adjust Amount, cannot be zero.",
-            type: "warning"
+            type: "warning",
           });
           document.querySelector("[name='adjust_amount']").focus();
-          return
+          return;
         }
       }
 
-      let inventory_stock_detail = $this.state.inventory_stock_detail
+      let inventory_stock_detail = $this.state.inventory_stock_detail;
 
       let operation = "+";
-      if ($this.state.adjustment_type === "DQ" || $this.state.adjustment_type === "BD" || $this.state.adjustment_type === "DA") {
+      if (
+        $this.state.adjustment_type === "DQ" ||
+        $this.state.adjustment_type === "BD" ||
+        $this.state.adjustment_type === "DA"
+      ) {
         operation = "-";
         // extended_cost = parseFloat($this.state.adjust_qty) * parseFloat($this.state.unit_cost)
       } else {
@@ -414,9 +418,9 @@ const AddItemtoList = ($this) => {
         unit_cost: $this.state.unit_cost,
         extended_cost: 0,
         description: $this.state.description,
-        remaining_qty: $this.state.remaining_qty
-      }
-      inventory_stock_detail.push(InsertObj)
+        remaining_qty: $this.state.remaining_qty,
+      };
+      inventory_stock_detail.push(InsertObj);
       $this.setState({
         inventory_stock_detail: inventory_stock_detail,
         adjust_qty: 0,
@@ -437,28 +441,31 @@ const AddItemtoList = ($this) => {
         sales_price: 0,
         saveEnable: false,
         description: null,
-        remaining_qty: 0
-      })
-    }
+        remaining_qty: 0,
+      });
+    },
   });
-}
+};
 
 const adjustAmtHandaler = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  if ($this.state.adjustment_type === "DA" || $this.state.adjustment_type === "BD") {
+  if (
+    $this.state.adjustment_type === "DA" ||
+    $this.state.adjustment_type === "BD"
+  ) {
     if (parseFloat(value) > parseFloat($this.state.sales_price)) {
       swalMessage({
         title: "Cannot be less than Item Amount",
-        type: "warning"
+        type: "warning",
       });
       e.target.focus();
       $this.setState({
-        [name]: 0
+        [name]: 0,
       });
     }
   }
-}
+};
 
 export {
   texthandle,
@@ -472,5 +479,5 @@ export {
   adjustQtyHandaler,
   AddItemtoList,
   adjustAmtHandaler,
-  getDrilDownData
+  getDrilDownData,
 };
