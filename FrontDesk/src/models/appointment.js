@@ -2088,7 +2088,7 @@ export default {
         or(?>appointment_from_time and ?<=appointment_to_time));\
         SELECT hims_f_patient_appointment_id,patient_id,sub_department_id,patient_name FROM hims_f_patient_appointment\
         where record_status='A' and hospital_id=? and cancelled='N' and is_stand_by='N' \
-        and sub_department_id=? and provider_id=? and appointment_date=? " +
+        and sub_department_id=? and provider_id=? and appointment_date=? and patient_id=? " +
           strQry +
           ";select employee_code,sub_department_code from hims_d_employee as e inner join hims_d_sub_department as d \
           on d.hims_d_sub_department_id = e.sub_department_id where e.hims_d_employee_id =?;",
@@ -2106,6 +2106,7 @@ export default {
           input.sub_department_id,
           input.provider_id,
           input.appointment_date,
+          input.patient_id,
           input.provider_id,
         ],
         printQuery: true,
