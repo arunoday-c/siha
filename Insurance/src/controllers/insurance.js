@@ -10,6 +10,7 @@ import insuranceModels, {
   ChangeOfInsuranceInvoice,
 } from "../models/insurance";
 import { generateInsuranceStatement } from "../models/insuranceStatement";
+import { bulkUpdatePortalSetup } from "../models/bulkUpdatePortalSetup";
 const {
   addPatientInsuranceData,
   getListOfInsuranceProvider,
@@ -17,7 +18,7 @@ const {
   getSubInsuranceGrid,
   getPortalExists,
   updatePortalExists,
-  addOrUpdatePortalSetup,
+  // addOrUpdatePortalSetup,
   addInsuranceProvider,
   updateInsuranceProvider,
   addSubInsuranceProvider,
@@ -56,7 +57,7 @@ export default () => {
 
   api.post(
     "/addOrUpdatePortalSetup",
-    addOrUpdatePortalSetup,
+    bulkUpdatePortalSetup,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

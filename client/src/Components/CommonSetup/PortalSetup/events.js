@@ -80,6 +80,7 @@ export function addOrUpdatePortalSetup(data, refetch) {
   // return result.data?.records;
 }
 export function updatePortal(data, setIsDirty) {
+  debugger;
   newAlgaehApi({
     uri: "/insurance/updatePortalExists",
     module: "insurance",
@@ -91,7 +92,8 @@ export function updatePortal(data, setIsDirty) {
         display: "Data updated Successfully...",
         type: "success",
       });
-      setIsDirty(false);
+      // setIsDirty(false);
+      // set
     })
     .catch((err) => {
       AlgaehMessagePop({

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 
 import { useQuery } from "react-query";
 
@@ -8,7 +8,7 @@ import {
   addOrUpdatePortalSetup,
   getServiceTypeDropDown,
   getSubInsuranceGrid,
-  updatePortal,
+  // updatePortal,
 } from "./events";
 import { AlgaehMessagePop, Spin } from "algaeh-react-components";
 import PortalActive from "./PortalActive";
@@ -21,6 +21,7 @@ export default function PortalSetupComponent() {
   // const [gridData, setGridData] = useState([]);
   // const [portal_exists, setPortal_exists] = useState("N");
   // const [isDirty, setIsDirty] = useState(false);
+  let [, setState] = useState();
   const { portalState, setPortalState } = useContext(PortalSetupContext);
   const { data: serviceTypes } = useQuery(
     "dropdown-data",
@@ -45,6 +46,7 @@ export default function PortalSetupComponent() {
     {
       onSuccess: (data) => {
         setPortalState({ ...portalState, gridData: data });
+        setState({});
         // setGridData(data);
       },
       onError: (error) => {
@@ -60,7 +62,6 @@ export default function PortalSetupComponent() {
 
   useQuery(["getPortalExists"], getPortalExists, {
     onSuccess: (data) => {
-      debugger;
       setPortalState({ ...portalState, portal_exists: data[0].portal_exists });
       // setPortal_exists(data[0].portal_exists);
     },
@@ -75,35 +76,35 @@ export default function PortalSetupComponent() {
   const updateFunction = () => {
     setPortalState({ ...portalState, saveLoading: true });
     const filteredArray = portalState?.gridData.filter((f) => f.checked);
-    if (portalState?.isDirty) {
-      updatePortal({ portal_exists: portalState?.portal_exists });
+    // if (portalState?.isDirty) {
+    //   updatePortal({ portal_exists: portalState?.portal_exists });
 
-      if (filteredArray.length > 0) {
-        addOrUpdatePortalSetup(
-          {
-            filteredArray: filteredArray,
-          },
-          refetch
-        );
-        setPortalState({ ...portalState, saveLoading: false });
-      }
+    //   if (filteredArray.length > 0) {
+    //     addOrUpdatePortalSetup(
+    //       {
+    //         filteredArray: filteredArray,
+    //       },
+    //       refetch
+    //     );
+    //     setPortalState({ ...portalState, saveLoading: false });
+    //   }
+    // } else {
+    if (filteredArray.length > 0) {
+      addOrUpdatePortalSetup(
+        {
+          filteredArray: filteredArray,
+        },
+        refetch
+      );
+      setPortalState({ ...portalState, saveLoading: false });
     } else {
-      if (filteredArray.length > 0) {
-        addOrUpdatePortalSetup(
-          {
-            filteredArray: filteredArray,
-          },
-          refetch
-        );
-        setPortalState({ ...portalState, saveLoading: false });
-      } else {
-        AlgaehMessagePop({
-          display: "Nothing To Update...",
-          type: "warning",
-        });
-        setPortalState({ ...portalState, saveLoading: false });
-      }
+      AlgaehMessagePop({
+        display: "Nothing To Update...",
+        type: "warning",
+      });
+      setPortalState({ ...portalState, saveLoading: false });
     }
+    // }
   };
   return (
     <Spin spinning={portalState?.saveLoading || reloading}>
@@ -122,6 +123,7 @@ export default function PortalSetupComponent() {
               // setGridData={setGridData}
               serviceTypes={serviceTypes}
               portal_exists={portalState?.portal_exists}
+              refetch={refetch}
             />
           </div>
         </div>

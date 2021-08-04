@@ -6,6 +6,7 @@ import extend from "extend";
 import axios from "axios";
 import "regenerator-runtime/runtime";
 import dotenv from "dotenv";
+import { async } from "regenerator-runtime/runtime";
 if (process.env.NODE_ENV !== "production") dotenv.config();
 // const { PORTAL_HOST } = process.env;
 const processENV = process.env;
@@ -1721,79 +1722,78 @@ export default {
       next(e);
     }
   },
-  addOrUpdatePortalSetup: (req, res, next) => {
-    const _mysql = new algaehMysql();
+  // addOrUpdatePortalSetup: (req, res, next) => {
+  //   const _mysql = new algaehMysql();
 
-    try {
-      let input = req.body;
-      let array = input.data;
-      const insertArray = array.filter((f) => !f.id);
-      const updateArray = array.filter((f) => f.id);
-      if (insertArray.length > 0) {
-        const insurtColumns = [
-          "insurance_id",
-          "sub_insurance_id",
-          "service_types",
-          "hospital_id",
-        ];
+  //   try {
+  //     let input = req.body;
+  //     let array = input.data;
+  //     const insertArray = array.filter((f) => !f.id);
+  //     const updateArray = array.filter((f) => f.id);
+  //     if (insertArray.length > 0) {
+  //       const insurtColumns = [
+  //         "insurance_id",
+  //         "sub_insurance_id",
+  //         "service_types",
+  //         "hospital_id",
+  //       ];
 
-        _mysql
-          .executeQuery({
-            query: "INSERT INTO hims_d_portal_setup(??) VALUES ?",
-            values: insertArray,
-            includeValues: insurtColumns,
-            printQuery: true,
-            bulkInsertOrUpdate: true,
+  //       _mysql
+  //         .executeQuery({
+  //           query: "INSERT INTO hims_d_portal_setup(??) VALUES ?",
+  //           values: insertArray,
+  //           includeValues: insurtColumns,
+  //           printQuery: true,
+  //           bulkInsertOrUpdate: true,
+  //           extraValues: {
+  //             // last_sync: new Date(),
+  //             // created_date: new Date(),
+  //             // created_by: req.userIdentity.algaeh_d_app_user_id,
+  //             // updated_date: new Date(),
+  //             // updated_by: req.userIdentity.algaeh_d_app_user_id,
+  //           },
+  //         })
+  //         .then((result) => {
+  //           _mysql.releaseConnection();
+  //           req.records = result;
+  //           next();
+  //         })
+  //         .catch((error) => {
+  //           _mysql.releaseConnection();
+  //           next(error);
+  //         });
+  //     }
 
-            extraValues: {
-              last_sync: new Date(),
-              // created_date: new Date(),
-              // created_by: req.userIdentity.algaeh_d_app_user_id,
-              // updated_date: new Date(),
-              // updated_by: req.userIdentity.algaeh_d_app_user_id,
-            },
-          })
-          .then((result) => {
-            _mysql.releaseConnection();
-            req.records = result;
-            next();
-          })
-          .catch((error) => {
-            _mysql.releaseConnection();
-            next(error);
-          });
-      }
+  //     if (updateArray.length > 0) {
+  //       let qry = "";
+  //       updateArray.map((item) => {
+  //         qry += mysql.format(
+  //           `update hims_d_portal_setup set service_types=? where id=?;`,
+  //           [item.service_types, item.id]
+  //         );
+  //       });
 
-      if (updateArray.length > 0) {
-        let qry = "";
-        updateArray.map((item) => {
-          qry += mysql.format(
-            `update hims_d_portal_setup set service_types=? where id=?;`,
-            [item.service_types, item.id]
-          );
-        });
-
-        _mysql
-          .executeQuery({
-            query: qry,
-            bulkInsertOrUpdate: true,
-            printQuery: true,
-          })
-          .then((result) => {
-            req.records = result;
-            _mysql.releaseConnection();
-            next();
-          })
-          .catch((e) => {
-            _mysql.releaseConnection();
-            next(e);
-          });
-      }
-    } catch (e) {
-      _mysql.releaseConnection();
-      next(e);
-    }
-  },
+  //       _mysql
+  //         .executeQuery({
+  //           query: qry,
+  //           bulkInsertOrUpdate: true,
+  //           printQuery: true,
+  //         })
+  //         .then((result) => {
+  //           req.records = result;
+  //           _mysql.releaseConnection();
+  //           next();
+  //         })
+  //         .catch((e) => {
+  //           _mysql.releaseConnection();
+  //           next(e);
+  //         });
+  //     }
+  //   } catch (e) {
+  //     _mysql.releaseConnection();
+  //     next(e);
+  //   }
+  // },
   //created by irfan
   getFinanceInsuranceProviders: (req, res, next) => {
     const _mysql = new algaehMysql();

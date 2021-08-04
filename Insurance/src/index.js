@@ -9,6 +9,7 @@ import compression from "compression";
 import { userSecurity } from "algaeh-utilities/checksecurity";
 import { authentication } from "algaeh-utilities/authentication";
 import SwaggerConfiguration from "algaeh-utilities/swagger";
+// import corporateMaster from "./rabbitMQ/consumer";
 const app = express();
 app.server = http.createServer(app);
 app.use(cors());
@@ -21,6 +22,7 @@ app.use(
 app.use(compression());
 
 process.env.MYSQL_KEYS = JSON.stringify(keys.default.mysqlDb);
+process.env.rabbitMQ = JSON.stringify(keys.default.rabbitMQ);
 if (process.env.NODE_ENV === "development") {
   new SwaggerConfiguration("Insurance Api's").Geteate(app);
 }
@@ -142,5 +144,10 @@ app.use((error, req, res, next) => {
   });
 });
 app.server.listen(_port);
+//    () => {
+//   const { RABBIT_MQ_SERVER } = process.env;
+//   if (RABBIT_MQ_SERVER && RABBIT_MQ_SERVER !== "") {
+//   }
+// });
 console.log(`Insurance Server is running  on PORT  - ${_port} *`);
 export default app;

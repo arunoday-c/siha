@@ -4,6 +4,7 @@ import { Select } from "algaeh-react-components";
 import { PortalSetupContext } from "./PortalSetupContext";
 import "./PortalSetup.scss";
 import { AlgaehDataGrid, AlgaehLabel } from "algaeh-react-components";
+import { addOrUpdatePortalSetup } from "./events";
 const STATUS = {
   CHECK: true,
   UNCHECK: false,
@@ -12,11 +13,13 @@ const STATUS = {
 export default function PortalGrid({
   gridData,
   //   setGridData,
+  refetch,
   serviceTypes,
   portal_exists,
 }) {
   const [checkAll, setCheckAll] = useState(STATUS.UNCHECK);
   //   const [currentPage, setCurrentPage] = useState(1);
+
   const { portalState, setPortalState } = useContext(PortalSetupContext);
   let allChecked = useRef(undefined);
   const selectAll = (e) => {
@@ -70,7 +73,7 @@ export default function PortalGrid({
       <input
         type="checkbox"
         //   checked={row.checked}
-        defaultChecked={row.id === null ? false : true}
+        defaultChecked={row.id !== null ? true : false}
         onChange={(e) => selectToProcess(row, e)}
         disabled={portalState?.portal_exists === "N"}
       />
@@ -121,6 +124,23 @@ export default function PortalGrid({
                       maxWidth: 50,
                       filterable: false,
                       sortable: false,
+                    },
+                  },
+                  {
+                    label: "Action",
+                    fieldName: "",
+                    displayTemplate: (row) => {
+                      return (
+                        <i
+                          className="fas fa-sync-alt"
+                          onClick={() => {
+                            addOrUpdatePortalSetup(
+                              { filteredArray: [row] },
+                              refetch
+                            );
+                          }}
+                        ></i>
+                      );
                     },
                   },
                   {
