@@ -706,8 +706,7 @@ let insertOrderedServices = (req, res, next) => {
                                 .then((resultPreAprvl) => {
                                   req.records = {
                                     resultPreAprvl,
-                                    ResultOfFetchOrderIds:
-                                      ResultOfFetchOrderIds,
+                                    ResultOfFetchOrderIds: ResultOfFetchOrderIds,
                                   };
                                   next();
                                 })
@@ -1227,7 +1226,7 @@ let getVisitConsumable = (req, res, next) => {
         S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`, S.`arabic_service_name`, \
         S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`, S.`procedure_type`, \
         S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, \
-        S.`vat_percent`, S.`service_status`, ST.service_type, '+' as operation FROM `hims_f_ordered_inventory` OS \
+        S.`vat_percent`, S.`service_status`, ST.service_type, '+' as operation, OS.expirydt as expiry_date FROM `hims_f_ordered_inventory` OS \
         inner join  `hims_d_services` S on OS.services_id = S.hims_d_services_id \
         inner join  `hims_d_service_type` ST on OS.service_type_id = ST.hims_d_service_type_id \
         inner join  `hims_d_inventory_item_master` IM on OS.inventory_item_id = IM.hims_d_inventory_item_master_id \

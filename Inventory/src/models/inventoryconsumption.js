@@ -319,6 +319,7 @@ export default {
             })
             .then((headerResult) => {
               req.body.consumption_number = document_number;
+              req.body.con_cancel = true;
               req.body.hims_f_inventory_can_consumption_header_id =
                 headerResult.insertId;
 
@@ -333,6 +334,11 @@ export default {
                 "unit_cost",
                 "extended_cost",
               ];
+
+              console.log(
+                "input.inventory_stock_detail",
+                input.inventory_stock_detail
+              );
 
               _mysql
                 .executeQuery({
@@ -462,6 +468,17 @@ export default {
                   inputParam.inventory_stock_detail,
                   (s) => parseFloat(s.extended_cost)
                 );
+
+                const _narration =
+                  inputParam.con_cancel === true
+                    ? "Cancel Consumption done for " +
+                      location_acc[0].location_description +
+                      "/" +
+                      net_payable
+                    : "Consumption done for " +
+                      location_acc[0].location_description +
+                      "/" +
+                      net_payable;
                 _mysql
                   .executeQuery({
                     query:
@@ -476,10 +493,7 @@ export default {
                       inputParam.transaction_id,
                       inputParam.consumption_number,
                       inputParam.ScreenCode,
-                      "Consumption done for " +
-                        location_acc[0].location_description +
-                        "/" +
-                        net_payable,
+                      _narration,
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
                     ],
