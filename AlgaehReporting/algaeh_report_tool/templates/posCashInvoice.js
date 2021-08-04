@@ -10,7 +10,7 @@ const executePDF = function executePDFMethod(options) {
         symbol_position,
         currency_symbol,
         vat_applicable,
-        vat_percent
+        vat_percent,
       } = options.args.crypto;
       const internalParameters = parameters.reportParams;
       const headerID = _.find(
@@ -29,11 +29,11 @@ const executePDF = function executePDFMethod(options) {
  E.arabic_name, 	trim(sub_department_name)as sub_department_name, 	H.card_number, 	V.age_in_years, 	P.gender, 	  \
  N.nationality, 	arabic_sub_department_name, 	IP.insurance_provider_name, 	IP.arabic_provider_name, 	   \
  E.license_number,H.patient_tax, H.company_tax, coalesce(H.patient_tax,0) + coalesce(H.company_tax,0) as net_tax, \
- H.patient_payable, coalesce(H.patient_payable,0)+0 as due_amout,H.net_total,ICD.icd_code,ICD.long_icd_description from 	hims_f_patient P inner join  hims_f_pharmacy_pos_header H on 	P.hims_d_patient_id = H.patient_id   \
+ H.patient_payable, coalesce(H.patient_payable,0)+0 as due_amout,H.net_total,ICD.icd_code,ICD.long_icd_description, USR.user_display_name as cashier_name from 	hims_f_patient P inner join  hims_f_pharmacy_pos_header H on 	P.hims_d_patient_id = H.patient_id   \
  inner join hims_f_patient_visit V on 	V.hims_f_patient_visit_id = H.visit_id inner join hims_d_employee E on   \
  E.hims_d_employee_id = V.doctor_id inner join hims_d_sub_department SD on 	 SD.hims_d_sub_department_id = V.sub_department_id \
  left join hims_d_insurance_provider IP on 	 IP.hims_d_insurance_provider_id = H.insurance_provider_id   left join  \
- hims_d_nationality as N on 	 N.hims_d_nationality_id = P.nationality_id  inner join hims_f_patient_diagnosis as DIA on DIA.episode_id = V.episode_id and diagnosis_type='P' inner join hims_d_icd ICD on ICD.hims_d_icd_id = DIA.daignosis_id  where H.hims_f_pharmacy_pos_header_id=?;\
+ hims_d_nationality as N on 	 N.hims_d_nationality_id = P.nationality_id  left join hims_f_patient_diagnosis as DIA on DIA.episode_id = V.episode_id and diagnosis_type='P'  left join hims_d_icd ICD on ICD.hims_d_icd_id = DIA.daignosis_id  left join algaeh_d_app_user USR on USR.algaeh_d_app_user_id = H.created_by  where H.hims_f_pharmacy_pos_header_id=?;\
  select 	item.sfda_code as registration_number, item.item_description, D.quantity, D.unit_cost as price, 	D.extended_cost as gross_amount, \
  coalesce(D.patient_responsibility,0) as patient_share,\
  coalesce(D.discount_amount, 	0)as discount_amount, 	coalesce(D.net_extended_cost, 	0)as net_amount, 	\
@@ -54,7 +54,7 @@ pos_date as invoice_date   ,'--'as policy_number, \
 '--'as sub_department_name, card_number,'--' as age_in_years,'--' as gender, \
 N.nationality, '--' as arabic_sub_department_name,'--' as insurance_provider_name,'--' as arabic_provider_name, '--' as license_number,\
 coalesce(patient_tax,0) as patient_tax, coalesce(company_tax,0) as company_tax, (coalesce(patient_tax,0) + coalesce(company_tax,0)) as net_tax,net_total, \
- patient_payable, coalesce(patient_payable,0)+0 as due_amout from  hims_f_pharmacy_pos_header H left join hims_d_nationality N on H.nationality_id=N.hims_d_nationality_id\
+ patient_payable, coalesce(patient_payable,0)+0 as due_amout, USR.user_display_name as cashier_name from  hims_f_pharmacy_pos_header H left join hims_d_nationality N on H.nationality_id=N.hims_d_nationality_id left join algaeh_d_app_user USR on USR.algaeh_d_app_user_id = H.created_by  \
   where  hims_f_pharmacy_pos_header_id=?; \
 select 	item.sfda_code as registration_number, item.item_description, D.quantity, D.unit_cost as price, 	D.extended_cost as gross_amount, \
 coalesce(D.patient_responsibility,0) as patient_share,\
@@ -117,7 +117,7 @@ H.hims_f_pharmacy_pos_header_id=?;";
               currency_symbol,
             },
             vat_applicable: vat_applicable,
-            default_vat_percent: parseFloat(vat_percent)
+            default_vat_percent: parseFloat(vat_percent),
           };
           mysql.releaseConnection();
           resolve(result);
