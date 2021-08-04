@@ -54,6 +54,7 @@ function NavBars(props) {
         return item;
       });
     });
+
     if (socket.connected) {
       socket.on("count", (res) => {
         setCount(res);

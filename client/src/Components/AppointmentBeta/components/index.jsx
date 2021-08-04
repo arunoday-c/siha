@@ -3,8 +3,8 @@ import { useQuery } from "react-query";
 import { MainContext } from "algaeh-react-components";
 import { useParams } from "react-router-dom";
 
-import { useLocation, useHistory } from "react-router-dom";
-import moment from "moment";
+import { useLocation } from "react-router-dom";
+// import moment from "moment";
 import TopSelect from "./topSelection";
 import DoctorFilter from "./filter";
 import Legends from "./legends";
@@ -17,8 +17,8 @@ import { getDoctorSchedule } from "./events";
 // import socket from "../../../socket";
 export default function BookAppointment(props) {
   const location = useLocation();
-  const history = useHistory();
-  const pathName = history.location.pathname;
+  // const history = useHistory();
+  // const pathName = history.location.pathname;
   const { socket } = useContext(MainContext);
   const params = useParams();
   const {
@@ -72,14 +72,14 @@ export default function BookAppointment(props) {
       setDepartment(dataFromRecall.sub_department_id);
 
       setDoctor(dataFromRecall.doctor_id);
-      history.push(
-        pathName +
-          `?appointmentDate=${moment(dataFromRecall.followup_date).format(
-            "YYYY-MM-DD"
-          )}&sub_department_id=${
-            dataFromRecall.sub_department_id
-          }&provider_id=${dataFromRecall.doctor_id}`
-      );
+      // history.push(
+      //   pathName +
+      //     `?appointmentDate=${moment(dataFromRecall.followup_date).format(
+      //       "YYYY-MM-DD"
+      //     )}&sub_department_id=${
+      //       dataFromRecall.sub_department_id
+      //     }&provider_id=${dataFromRecall.doctor_id}`
+      // );
       setPatientRecallData(dataFromRecall);
     }
   }, [location?.state?.data]);

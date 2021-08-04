@@ -13,6 +13,8 @@ import {
   AlagehFormGroup,
   AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
+import { useLocation } from "react-router-dom";
+
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import { swalMessage } from "../../../utils/algaehApiCall";
@@ -23,6 +25,9 @@ import moment from "moment";
 import { AppointmentContext } from "../AppointmentContext";
 import { getDoctorSchedule } from "./events";
 export default memo(function BookAppointment(props) {
+  const location = useLocation();
+  // const history = useHistory();
+  // const pathName = history.location.pathname;
   const { userLanguage, titles, countries, socket } = useContext(MainContext);
   const {
     appointmentDate,
@@ -30,8 +35,8 @@ export default memo(function BookAppointment(props) {
     app_status,
     sub_department_id,
     provider_id,
-    patientRecallData,
-    setPatientRecallData,
+    // dataFromRecall,
+    // setDataFromRecall,
   } = useContext(AppointmentContext);
   const [no_of_slots, setNoOfSlots] = useState(1);
   const [patient_code, setPatientCode] = useState(undefined);
@@ -64,25 +69,36 @@ export default memo(function BookAppointment(props) {
     );
   }, []);
   useEffect(() => {
-    if (patientRecallData) {
-      debugger;
+    let dataFromRecall = location.state?.data;
+
+    if (dataFromRecall) {
       const yrsAge = moment().diff(
-        moment(patientRecallData.date_of_birth, "YYYY-MM-DD"),
+        moment(dataFromRecall.date_of_birth, "YYYY-MM-DD"),
         "years"
       );
-      setPatientCode(patientRecallData.patient_code);
-      setTitleId(patientRecallData.title_id);
-      setPatientID(patientRecallData.patient_id);
-      setPatientName(patientRecallData.pat_name);
-      setDateOfBirth(patientRecallData.date_of_birth);
+      setPatientCode(dataFromRecall.patient_code);
+      setTitleId(dataFromRecall.title_id);
+      setPatientID(dataFromRecall.patient_id);
+      setPatientName(dataFromRecall.pat_name);
+      setDateOfBirth(dataFromRecall.date_of_birth);
       setAge(yrsAge);
-      setGender(patientRecallData.gender);
-      setTeleCode(patientRecallData.tel_code);
-      setEmail(patientRecallData.email);
-      setArabicName(patientRecallData.arabic_name);
-      setContactNumber(patientRecallData.contact_number);
+      setGender(dataFromRecall.gender);
+      setTeleCode(dataFromRecall.tel_code);
+      setEmail(dataFromRecall.email);
+      setArabicName(dataFromRecall.arabic_name);
+      setContactNumber(dataFromRecall.contact_number);
+      // location.state = null;
+
+      // history.push(
+      //   pathName +
+      //     `?appointmentDate=${moment(dataFromRecall.followup_date).format(
+      //       "YYYY-MM-DD"
+      //     )}&sub_department_id=${
+      //       dataFromRecall.sub_department_id
+      //     }&provider_id=${dataFromRecall.doctor_id}`
+      // );
     }
-  }, [patientRecallData]);
+  }, [location?.state?.data]);
   function clearAllState() {
     setNoOfSlots(1);
     setPatientCode(undefined);
@@ -185,7 +201,7 @@ export default memo(function BookAppointment(props) {
             socket.emit("appointment_created", send_data);
           }
           clearAllState();
-          setPatientRecallData(undefined);
+
           const data = await getDoctorSchedule("", {
             sub_dept_id: sub_department_id,
             provider_id,
