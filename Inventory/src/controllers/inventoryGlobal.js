@@ -14,6 +14,7 @@ const {
   getListUomSelectedItem,
   getItemLocationStockConsumtion,
   getItemUoms,
+  getUomLocationStockAdjust,
 } = invModels;
 
 export default () => {
@@ -24,6 +25,17 @@ export default () => {
       records: req.records,
     });
   });
+
+  api.get(
+    "/getUomLocationStockAdjust",
+    getUomLocationStockAdjust,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
 
   api.get("/getItemUoms", getItemUoms, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
