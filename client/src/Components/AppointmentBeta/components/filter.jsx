@@ -1,4 +1,4 @@
-import React, { memo, useContext, useState } from "react";
+import React, { memo, useContext, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useQuery } from "react-query";
 import {
@@ -22,6 +22,15 @@ export default memo(function Filter(props) {
   const [doctors, setDoctorsList] = useState([]);
   const history = useHistory();
   const pathName = history.location.pathname;
+  useEffect(() => {
+    if (sub_department_id) {
+      const doctors = props?.data?.filter(
+        (f) => f.value === parseInt(sub_department_id)
+      )[0]?.children;
+
+      setDoctorsList(doctors);
+    }
+  }, [props?.data]);
   useQuery(
     [
       "doctor-schedule",

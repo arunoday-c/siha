@@ -30,6 +30,8 @@ export default memo(function BookAppointment(props) {
     app_status,
     sub_department_id,
     provider_id,
+    patientRecallData,
+    setPatientRecallData,
   } = useContext(AppointmentContext);
   const [no_of_slots, setNoOfSlots] = useState(1);
   const [patient_code, setPatientCode] = useState(undefined);
@@ -61,6 +63,26 @@ export default memo(function BookAppointment(props) {
       )
     );
   }, []);
+  useEffect(() => {
+    if (patientRecallData) {
+      debugger;
+      const yrsAge = moment().diff(
+        moment(patientRecallData.date_of_birth, "YYYY-MM-DD"),
+        "years"
+      );
+      setPatientCode(patientRecallData.patient_code);
+      setTitleId(patientRecallData.title_id);
+      setPatientID(patientRecallData.patient_id);
+      setPatientName(patientRecallData.pat_name);
+      setDateOfBirth(patientRecallData.date_of_birth);
+      setAge(yrsAge);
+      setGender(patientRecallData.gender);
+      setTeleCode(patientRecallData.tel_code);
+      setEmail(patientRecallData.email);
+      setArabicName(patientRecallData.arabic_name);
+      setContactNumber(patientRecallData.contact_number);
+    }
+  }, [patientRecallData]);
   function clearAllState() {
     setNoOfSlots(1);
     setPatientCode(undefined);
@@ -163,6 +185,7 @@ export default memo(function BookAppointment(props) {
             socket.emit("appointment_created", send_data);
           }
           clearAllState();
+          setPatientRecallData(undefined);
           const data = await getDoctorSchedule("", {
             sub_dept_id: sub_department_id,
             provider_id,

@@ -2,6 +2,9 @@ import React, { useEffect, useContext } from "react";
 import { useQuery } from "react-query";
 import { MainContext } from "algaeh-react-components";
 import { useParams } from "react-router-dom";
+
+import { useLocation, useHistory } from "react-router-dom";
+import moment from "moment";
 import TopSelect from "./topSelection";
 import DoctorFilter from "./filter";
 import Legends from "./legends";
@@ -13,6 +16,9 @@ import "../appointment.scss";
 import { getDoctorSchedule } from "./events";
 // import socket from "../../../socket";
 export default function BookAppointment(props) {
+  const location = useLocation();
+  const history = useHistory();
+  const pathName = history.location.pathname;
   const { socket } = useContext(MainContext);
   const params = useParams();
   const {
@@ -23,6 +29,7 @@ export default function BookAppointment(props) {
     setAppointmentStatus,
     setDepartmentData,
     setDoctorSchedules,
+    setPatientRecallData,
   } = useContext(AppointmentContext);
   const { data, isLoading } = useQuery(
     "appointment-department-doctors",
@@ -54,6 +61,28 @@ export default function BookAppointment(props) {
       },
     }
   );
+  useEffect(() => {
+    let dataFromRecall = location.state?.data;
+
+    if (dataFromRecall) {
+      setAppointmentDate(dataFromRecall.followup_date);
+
+      setAppointmentDateHeader(dataFromRecall.followup_date);
+
+      setDepartment(dataFromRecall.sub_department_id);
+
+      setDoctor(dataFromRecall.doctor_id);
+      history.push(
+        pathName +
+          `?appointmentDate=${moment(dataFromRecall.followup_date).format(
+            "YYYY-MM-DD"
+          )}&sub_department_id=${
+            dataFromRecall.sub_department_id
+          }&provider_id=${dataFromRecall.doctor_id}`
+      );
+      setPatientRecallData(dataFromRecall);
+    }
+  }, [location?.state?.data]);
 
   useEffect(() => {
     const parameters = new URLSearchParams(window.location.search);
@@ -78,7 +107,6 @@ export default function BookAppointment(props) {
         const provider_id = parameters.get("provider_id");
         const sub_department_id = parameters.get("sub_department_id");
         const appointmentDate = parameters.get("appointmentDate");
-        debugger;
         if (
           sub_department_id === patient.sub_department_id &&
           appointmentDate === patient.appointment_date

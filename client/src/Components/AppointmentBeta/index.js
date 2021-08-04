@@ -29,6 +29,9 @@ export default function AppointmentContextProvider(props) {
     setDepartmentData(payload) {
       dispatch({ type: TYPES.DEPARTMENT_DATA, payload });
     },
+    setPatientRecallData(payload) {
+      dispatch({ type: TYPES.PATIENT_RECALL_DATA, payload });
+    },
   };
 
   return (
