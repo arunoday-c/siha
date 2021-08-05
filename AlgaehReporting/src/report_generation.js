@@ -862,15 +862,17 @@ export default {
                               });
                               if (reportToPortal === "true") {
                                 const rptParameters = _inputParam.reportParams;
-                                const portal_patient_identity =
-                                  rptParameters.find(
-                                    (f) => f.name === "patient_identity"
-                                  ).value;
+                                const portal_patient_identity = rptParameters.find(
+                                  (f) => f.name === "patient_identity"
+                                ).value;
                                 const portal_service_id = rptParameters.find(
                                   (f) => f.name === "service_id"
                                 )?.value;
                                 const portal_visit_code = rptParameters.find(
                                   (f) => f.name === "visit_code"
+                                ).value;
+                                const portal_report_from = rptParameters.find(
+                                  (f) => f.name === "report_from"
                                 ).value;
 
                                 if (
@@ -890,6 +892,7 @@ export default {
                                       patient_identity: portal_patient_identity,
                                       service_id: portal_service_id,
                                       visit_code: portal_visit_code,
+                                      report_from: portal_report_from,
                                       hospital_id:
                                         req.userIdentity["hospital_id"],
                                     })
@@ -926,8 +929,9 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } =
-                      __non_webpack_require__(_supportingJS);
+                    const { executePDF } = __non_webpack_require__(
+                      _supportingJS
+                    );
 
                     executePDF({
                       mysql: _mysql,
@@ -1179,8 +1183,9 @@ export default {
                       );
 
                       if (fs.existsSync(_supportingJS)) {
-                        const { executePDF } =
-                          __non_webpack_require__(_supportingJS);
+                        const { executePDF } = __non_webpack_require__(
+                          _supportingJS
+                        );
                         executePDF({
                           mysql: _mysql,
                           inputs: _inputParam,
@@ -1570,10 +1575,9 @@ export default {
                                       0,
                                       onlyAlphabets.length - 1
                                     );
-                                    const lastcharacter =
-                                      onlyAlphabets.charCodeAt(
-                                        onlyAlphabets.length - 1
-                                      );
+                                    const lastcharacter = onlyAlphabets.charCodeAt(
+                                      onlyAlphabets.length - 1
+                                    );
 
                                     const numberOfCols =
                                       parseInt($(this).attr("colspan")) - 1;
@@ -1884,8 +1888,9 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } =
-                      __non_webpack_require__(_supportingJS);
+                    const { executePDF } = __non_webpack_require__(
+                      _supportingJS
+                    );
                     executePDF({
                       mysql: _mysql,
                       inputs: _inputOrders,
