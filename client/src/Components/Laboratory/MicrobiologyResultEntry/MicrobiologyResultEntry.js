@@ -1181,7 +1181,7 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
       if (portal_exists === "Y") {
         portalParams["reportToPortal"] = "true";
       }
-      console.log("portal_exists", portal_exists);
+      // console.log("portal_exists", portal_exists);
 
       algaehApiCall({
         uri: "/report",

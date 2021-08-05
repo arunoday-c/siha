@@ -27,47 +27,55 @@ const rtehandle = ($this, result_html) => {
 
 /** Here Report to call for   */
 function generateReport(row) {
-  const portalParams = { reportToPortal: true };
-  algaehApiCall({
-    uri: "/report",
-    method: "GET",
-    module: "reports",
-    headers: {
-      Accept: "blob",
-    },
-    others: { responseType: "blob" },
-    data: {
-      report: {
-        ...portalParams,
-        reportName: "radiologyReport",
-        reportToPortal: "true",
-        reportParams: [
-          {
-            name: "hims_f_rad_order_id",
-            value: row.hims_f_rad_order_id,
-          },
-          {
-            name: "visit_code",
-            value: row.visit_code,
-          },
-          {
-            name: "patient_identity",
-            value: row.primary_id_no,
-          },
-          {
-            name: "service_id",
-            value: row.service_id,
-          },
-        ],
-        outputFileType: "PDF",
+  return new Promise((resolve, reject) => {
+    const portalParams = { reportToPortal: true };
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
       },
-    },
-    // onSuccess: (res) => {
-    //   const urlBlob = URL.createObjectURL(res.data);
-    //   const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Radiology Report`;
-    //   window.open(origin);
-    //   // window.document.title = "Radiology Report";
-    // },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          ...portalParams,
+          reportName: "radiologyReport",
+          reportToPortal: "true",
+          reportParams: [
+            {
+              name: "hims_f_rad_order_id",
+              value: row.hims_f_rad_order_id,
+            },
+            {
+              name: "visit_code",
+              value: row.visit_code,
+            },
+            {
+              name: "patient_identity",
+              value: row.primary_id_no,
+            },
+            {
+              name: "service_id",
+              value: row.service_id,
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        if (data.hidePrinting === true) {
+          resolve();
+        } else {
+          const urlBlob = URL.createObjectURL(res.data);
+          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Radiology Report`;
+          window.open(origin);
+        }
+      },
+      onCatch: (err) => {
+        reject(err);
+      },
+    });
   });
 }
 
