@@ -819,8 +819,8 @@ export default {
       .sumBy((s) => parseFloat(s.amount))
       .value();
     queryString += _mysql.mysqlQueryFormat(
-      `update finance_voucher_header set amount=? where finance_voucher_header_id=?;`,
-      [headerAmount, input.finance_voucher_header_id]
+      `update finance_voucher_header set amount=?,narration=? where finance_voucher_header_id=?;`,
+      [headerAmount, input.narration, input.finance_voucher_header_id]
     );
     _mysql
       .executeQueryWithTransaction({
