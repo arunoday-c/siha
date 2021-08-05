@@ -239,10 +239,10 @@ const UpdateRadOrder = ($this, value) => {
             },
           });
 
-          if (value === "validate") {
-            if ($this.state.portal_exists === "Y") {
-              generateReport($this.state);
-            }
+          debugger;
+
+          if (value === "validate" && $this.state.portal_exists === "Y") {
+            generateReport($this.state);
           }
         }
       },
