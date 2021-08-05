@@ -1,9 +1,14 @@
 .JVModalDetail {
-  width: 80vw;
-  .JVModalDetailGrid {
-    margin-top: 15px;
-    min-height: 15vh !important;
-    max-height: 25vh;
+  width: 95vw !important;
+  #JVModalDetailGrid {
+    margin: 10px 0;
+    .newStickyGrid {
+      .table-scroll {
+        min-height: 55vh;
+        max-height: 55vh;
+        overflow: auto;
+      }
+    }
   }
   .ant-modal-footer {
     padding: 5px 15px !important;
