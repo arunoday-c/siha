@@ -59,10 +59,6 @@ function generateReport(row) {
               name: "service_id",
               value: row.service_id,
             },
-            {
-              name: "report_from",
-              value: "R",
-            },
           ],
           outputFileType: "PDF",
         },

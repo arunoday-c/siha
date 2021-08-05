@@ -871,15 +871,13 @@ export default {
                                 const portal_visit_code = rptParameters.find(
                                   (f) => f.name === "visit_code"
                                 ).value;
-                                const portal_report_from = rptParameters.find(
-                                  (f) => f.name === "report_from"
-                                ).value;
 
                                 if (
                                   portal_patient_identity &&
                                   portal_service_id &&
                                   portal_visit_code
                                 ) {
+                                  console.log("1234");
                                   const formD = new FormData();
                                   formD.append(
                                     "file",
@@ -892,7 +890,6 @@ export default {
                                       patient_identity: portal_patient_identity,
                                       service_id: portal_service_id,
                                       visit_code: portal_visit_code,
-                                      report_from: portal_report_from,
                                       hospital_id:
                                         req.userIdentity["hospital_id"],
                                     })
