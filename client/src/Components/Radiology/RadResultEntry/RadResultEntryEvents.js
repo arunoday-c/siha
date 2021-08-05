@@ -64,13 +64,13 @@ function generateReport(row) {
         },
       },
       onSuccess: (res) => {
-        if (data.hidePrinting === true) {
-          resolve();
-        } else {
-          const urlBlob = URL.createObjectURL(res.data);
-          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Radiology Report`;
-          window.open(origin);
-        }
+        // if (data.hidePrinting === true) {
+        resolve();
+        // } else {
+        //   const urlBlob = URL.createObjectURL(res.data);
+        //   const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Radiology Report`;
+        //   window.open(origin);
+        // }
       },
       onCatch: (err) => {
         reject(err);
