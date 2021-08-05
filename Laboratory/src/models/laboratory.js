@@ -1368,7 +1368,8 @@ const labModal = {
           max(if(CL.algaeh_d_app_user_id=LB.entered_by, EM.full_name,'' )) as entered_by_name,
           max(if(CL.algaeh_d_app_user_id=LB.confirmed_by, EM.full_name,'')) as confirm_by_name,
           max(if(CL.algaeh_d_app_user_id=LB.validated_by, EM.full_name,'')) as validate_by_name,
-          LB.entered_by,LB.confirmed_by,LB.validated_by
+          LB.entered_by,LB.confirmed_by,LB.validated_by,
+          LB.ordered_date, LB.entered_date, LB.confirmed_date, LB.validated_date
           from hims_f_lab_order LB
           left join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LB.entered_by or 
             CL.algaeh_d_app_user_id=LB.validated_by or CL.algaeh_d_app_user_id=LB.confirmed_by)
