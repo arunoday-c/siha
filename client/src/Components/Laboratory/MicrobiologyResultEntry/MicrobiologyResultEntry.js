@@ -1176,56 +1176,65 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
     });
   };
   function generateLabResultReport(data) {
-    let portalParams = {};
-    if (portal_exists === "Y") {
-      portalParams["reportToPortal"] = "true";
-    }
+    return new Promise((resolve, reject) => {
+      let portalParams = {};
+      if (portal_exists === "Y") {
+        portalParams["reportToPortal"] = "true";
+      }
+      console.log("portal_exists", portal_exists);
 
-    algaehApiCall({
-      uri: "/report",
-      method: "GET",
-      module: "reports",
-      headers: {
-        Accept: "blob",
-      },
-      others: { responseType: "blob" },
-      data: {
-        report: {
-          reportName: "microbioTestReport",
-          ...portalParams,
-          reportParams: [
-            { name: "hims_d_patient_id", value: data.patient_id },
-            {
-              name: "visit_id",
-              value: data.visit_id,
-            },
-            {
-              name: "hims_f_lab_order_id",
-              value: data.hims_f_lab_order_id,
-            },
-            {
-              name: "visit_code",
-              value: data.visit_code,
-            },
-            {
-              name: "patient_identity",
-              value: data.primary_id_no,
-            },
-            {
-              name: "service_id",
-              value: data.service_id,
-            },
-          ],
-          outputFileType: "PDF",
+      algaehApiCall({
+        uri: "/report",
+        method: "GET",
+        module: "reports",
+        headers: {
+          Accept: "blob",
         },
-      },
-      onSuccess: (res) => {
-        if (data.hidePrinting === undefined) {
-          const urlBlob = URL.createObjectURL(res.data);
-          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Test Report`;
-          window.open(origin);
-        }
-      },
+        others: { responseType: "blob" },
+        data: {
+          report: {
+            reportName: "microbioTestReport",
+            ...portalParams,
+            reportParams: [
+              { name: "hims_d_patient_id", value: data.patient_id },
+              {
+                name: "visit_id",
+                value: data.visit_id,
+              },
+              {
+                name: "hims_f_lab_order_id",
+                value: data.hims_f_lab_order_id,
+              },
+              {
+                name: "visit_code",
+                value: data.visit_code,
+              },
+              {
+                name: "patient_identity",
+                value: data.primary_id_no,
+              },
+              {
+                name: "service_id",
+                value: data.service_id,
+              },
+            ],
+            outputFileType: "PDF",
+          },
+        },
+        onSuccess: (res) => {
+          if (data.hidePrinting === true) {
+            resolve();
+          } else {
+            const urlBlob = URL.createObjectURL(res.data);
+            const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Test Report`;
+            window.open(origin);
+          }
+        },
+
+        onCatch: (err) => {
+          reject(err);
+        },
+      });
     });
   }
   const onvalidate = () => {
