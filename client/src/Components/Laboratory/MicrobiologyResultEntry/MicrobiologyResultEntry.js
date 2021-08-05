@@ -1160,7 +1160,7 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
           });
           getAnalytesReload();
           // setTest_analytes(value);
-
+          debugger;
           setStatus(status === "AV" ? "V" : status);
           if (portal_exists === "Y" && status === "V") {
             generateLabResultReport({ ...selectedPatient, hidePrinting: true });
@@ -1177,7 +1177,7 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
   };
   function generateLabResultReport(data) {
     let portalParams = {};
-    if (data.portal_exists === "Y") {
+    if (portal_exists === "Y") {
       portalParams["reportToPortal"] = "true";
     }
 
