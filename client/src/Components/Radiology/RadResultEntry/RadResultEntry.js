@@ -25,6 +25,7 @@ import {
   templatehandle,
   rtehandle,
   handleExamStatus,
+  generateReport,
 } from "./RadResultEntryEvents";
 import { MainContext } from "algaeh-react-components";
 class RadResultEntry extends Component {
@@ -108,6 +109,10 @@ class RadResultEntry extends Component {
     if (value !== null) {
       return moment(value).format(Options.dateFormat);
     }
+  }
+
+  onClickPrintHandle() {
+    generateReport(this, { hidePrinting: false });
   }
 
   textAreaEvent(e) {
@@ -675,6 +680,14 @@ class RadResultEntry extends Component {
                     }}
                   >
                     Cancel
+                  </button>
+
+                  <button
+                    className="btn btn-default"
+                    onClick={this.onClickPrintHandle.bind(this)}
+                    disabled={!validateDisable}
+                  >
+                    Print
                   </button>
                 </div>
               </div>
