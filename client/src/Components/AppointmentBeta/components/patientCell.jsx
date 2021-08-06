@@ -92,8 +92,8 @@ export default memo(function TdCell(props) {
       )?.steps;
       if (isStandby === "N" && patient?.cancelled === "N") {
         if (
-          patient.appointment_status_id ===
-          isNoShow.hims_d_appointment_status_id
+          patient?.appointment_status_id ===
+          isNoShow?.hims_d_appointment_status_id
         ) {
           return (
             <div
@@ -148,7 +148,8 @@ export default memo(function TdCell(props) {
                           key={index}
                           item={item}
                           userLanguage={userLanguage}
-                          patient={patient}
+                          patient={{ ...patient, doc_name: props.doc_name }}
+                          // doc_name={}
                         />
                       );
                     })}

@@ -3753,12 +3753,14 @@ let getAllPatientFollowUp = (req, res, next) => {
 
   try {
     let inputData = req.query;
-    let strQuery = `SELECT PF.doctor_id,PAT.email,PAT.date_of_birth,PAT.email,PAT.hims_d_patient_id,PF.patient_id,PAT.arabic_name,PAT.gender,PAT.tel_code,PAT.title_id,
+    let strQuery = `SELECT him_f_patient_followup_id,APS.default_status,APS.color_code,APS.description,PF.doctor_id,PAT.email,PAT.date_of_birth,PAT.email,PAT.hims_d_patient_id,PF.patient_id,PAT.arabic_name,PAT.gender,PAT.tel_code,PAT.title_id,
     EM.sub_department_id,PAT.full_name as pat_name, PAT.patient_code,PAT.primary_id_no,PAT.contact_number, EM.full_name as doc_name,
     SD.sub_department_desc, PF.followup_date FROM hims_f_patient_followup as PF
         inner join hims_f_patient PAT on PAT.hims_d_patient_id = PF.patient_id
         inner join hims_d_employee EM on EM.hims_d_employee_id = PF.doctor_id
         inner join hims_d_sub_department SD on SD.hims_d_sub_department_id = EM.sub_department_id
+        left join hims_f_patient_appointment PA on PA.pat_recall_id = PF.him_f_patient_followup_id
+        left join hims_d_appointment_status APS on  APS.hims_d_appointment_status_id= PA.appointment_status_id
         where date(PF.followup_date) between date(?) and date(?)  `;
 
     if (inputData.doctor_id != null) {
@@ -3770,13 +3772,13 @@ let getAllPatientFollowUp = (req, res, next) => {
         " and PF.sub_department_id='" + inputData.sub_department_id + "'";
     }
 
-    strQuery += " ORDER BY PF.followup_date desc";
+    strQuery += " group by PF.patient_id  ORDER BY PF.followup_date asc ";
 
     _mysql
       .executeQuery({
         query: strQuery,
         values: [inputData.recall_start, inputData.recall_end],
-        // printQuery: true,
+        printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();

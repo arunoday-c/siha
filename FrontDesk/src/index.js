@@ -9,6 +9,10 @@ import compression from "compression";
 // import { userSecurity } from "algaeh-utilities/checksecurity";
 import { authentication } from "algaeh-utilities/authentication";
 import SwaggerConfiguration from "algaeh-utilities/swagger";
+import consumerSMSStatus from "./rabbitMQ/consumerSMS";
+process.env.MYSQL_KEYS = JSON.stringify(keys.default.mysqlDb);
+process.env.rabbitMQ = JSON.stringify(keys.default.rabbitMQ);
+
 const app = express();
 app.server = http.createServer(app);
 app.use(cors());
@@ -143,6 +147,11 @@ app.use((error, req, res, next) => {
     message: errorMessage,
   });
 });
-app.server.listen(_port);
+app.server.listen(_port, () => {
+  const { RABBIT_MQ_SERVER } = process.env;
+  if (RABBIT_MQ_SERVER && RABBIT_MQ_SERVER !== "") {
+    consumerSMSStatus("SMS_STATUS");
+  }
+});
 console.log(`Front Desk Server is running  on PORT  - ${_port} *`);
 export default app;

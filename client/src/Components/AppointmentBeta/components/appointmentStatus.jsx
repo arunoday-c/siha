@@ -7,7 +7,7 @@ import { MainContext } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../hooks";
 import { swalMessage } from "../../../utils/algaehApiCall";
 import { AppointmentContext } from "../AppointmentContext";
-import { getDoctorSchedule } from "./events";
+import { getDoctorSchedule, confirmAppointmentSMS } from "./events";
 export default memo(function LiList(props) {
   const { userLanguage } = useContext(MainContext);
   const history = useHistory();
@@ -42,6 +42,7 @@ export default memo(function LiList(props) {
           confirmed: props.item.default_status === "CF" ? "Y" : "N",
           cancelled: "N",
           appointment_status_id: props.item.hims_d_appointment_status_id,
+          ...props.doc_name,
         };
         newAlgaehApi({
           uri: `/appointment/updatePatientAppointment`,
@@ -55,6 +56,11 @@ export default memo(function LiList(props) {
               provider_id,
               schedule_date: appointmentDate,
             });
+            debugger;
+            if (type === "Confirmed") {
+              confirmAppointmentSMS(edit_details);
+            }
+
             setDoctorSchedules(data);
             swalMessage({
               title: "Successfully Updated",

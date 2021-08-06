@@ -20,6 +20,9 @@
   },
   "dependencies": {
     "algaeh-mysql": "^1.5.2",
+    "amqp": "^0.2.7",
+    "amqp-connection-manager": "^3.2.2",
+    "amqplib": "^0.8.0",
     "axios": "^0.19.2",
     "body-parser": "^1.18.2",
     "compression": "^1.7.3",
