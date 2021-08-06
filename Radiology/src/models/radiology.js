@@ -102,12 +102,12 @@ export default {
           query: `SELECT  hims_f_rad_order_id,
             if(CL.algaeh_d_app_user_id=SA.scheduled_by, EM.full_name,'') as scheduled_by_name,
             if(CL.algaeh_d_app_user_id=SA.validate_by, EM.full_name,'') as validate_by_name,
-            if(CL.algaeh_d_app_user_id=SA.ordered_by, EM.full_name,'') as ordered_by_name
+            if(CL.algaeh_d_app_user_id=SA.ordered_by, EM.full_name,'') as ordered_by_name            
             from hims_f_rad_order SA 
             left join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=SA.scheduled_by or
             CL.algaeh_d_app_user_id=SA.validate_by or CL.algaeh_d_app_user_id=SA.ordered_by )
             left join hims_d_employee EM on EM.hims_d_employee_id=CL.employee_id
-             WHERE hims_f_rad_order_id=?  `,
+             WHERE hims_f_rad_order_id=?;`,
           values: [req.query.hims_f_rad_order_id],
           printQuery: true,
         })
@@ -280,49 +280,62 @@ export default {
     try {
       const utilities = new algaehUtilities();
       // utilities.logger().log("updateRadOrderedServices ");
+      // console.log("4567");
+
       let inputParam = { ...req.body };
+      let strQuery = "";
       if (inputParam.scheduled_by == null && inputParam.status == "S") {
-        inputParam.scheduled_by = req.userIdentity.algaeh_d_app_user_id;
+        strQuery =
+          ", scheduled_by =" +
+          req.userIdentity.algaeh_d_app_user_id +
+          ", scheduled_date_time = '" +
+          moment().format("YYYY-MM-DD HH:mm") +
+          "'";
       }
       if (inputParam.validate_by == null && inputParam.status == "RA") {
-        inputParam.validate_by = req.userIdentity.algaeh_d_app_user_id;
+        strQuery =
+          ",validate_by =" +
+          req.userIdentity.algaeh_d_app_user_id +
+          ",validate_date_time = '" +
+          moment().format("YYYY-MM-DD HH:mm") +
+          "'";
       }
       if (
         inputParam.attended_by == null &&
         inputParam.status == "V" &&
         inputParam.report_type == "AD"
       ) {
-        inputParam.attended_by = req.userIdentity.algaeh_d_app_user_id;
+        strQuery =
+          ",attended_by =" +
+          req.userIdentity.algaeh_d_app_user_id +
+          ",attended_date_time = '" +
+          moment().format("YYYY-MM-DD HH:mm") +
+          "'";
       }
       if (inputParam.status == "UP") {
-        inputParam.technician_id = req.userIdentity.algaeh_d_app_user_id;
+        strQuery = ",technician_id =" + req.userIdentity.algaeh_d_app_user_id;
       }
+
+      // console.log("strQuery", strQuery);
 
       _mysql
         .executeQueryWithTransaction({
           query:
             "UPDATE `hims_f_rad_order` \
-          SET `status`=?,  `cancelled`=?,`scheduled_date_time`=?, `scheduled_by`=?, `arrived_date`=?,\
-          `arrived`=?,`validate_by`=?, `validate_date_time` = ?, `attended_by`=?, `attended_date_time`=?,\
-          `exam_start_date_time`=?, `exam_end_date_time`=?, `exam_status`=?, `report_type`=?,\
-          `technician_id`=?, `template_id`=?, `result_html`=?, `comments`=?\
-          WHERE `hims_f_rad_order_id`=?; SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=?;",
+          SET `status`=?,  `cancelled`=?, `arrived_date`=?,\
+          `arrived`=?, `exam_start_date_time`=?, `exam_end_date_time`=?, `exam_status`=?, `report_type`=?, \
+          `template_id`=?, `result_html`=?, `comments`=? " +
+            strQuery +
+            " WHERE `hims_f_rad_order_id`=?; SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=?;",
           values: [
             inputParam.status,
             inputParam.cancelled,
-            inputParam.scheduled_date_time,
-            inputParam.scheduled_by,
             inputParam.arrived_date,
             inputParam.arrived,
-            inputParam.validate_by,
-            inputParam.validate_date_time,
-            inputParam.attended_by,
-            inputParam.attended_date_time,
             inputParam.exam_start_date_time,
             inputParam.exam_end_date_time,
             inputParam.exam_status,
             inputParam.report_type,
-            inputParam.technician_id,
             inputParam.template_id,
             inputParam.result_html,
             inputParam.comments,
@@ -332,6 +345,7 @@ export default {
           printQuery: true,
         })
         .then(async (update_rad_order) => {
+          // consol.log("4567");
           // console.log("status", inputParam.status);
           // consol.log("portal_exists", update_rad_order[1][0].portal_exists);
           const portal_exists = update_rad_order[1][0].portal_exists;

@@ -39,6 +39,7 @@ class RadResultEntry extends Component {
       changesDone: false,
       comments: "",
       portal_exists: "N",
+      user_name: "",
     };
     this.commentsMaxLength = 250;
   }
@@ -56,8 +57,9 @@ class RadResultEntry extends Component {
           mappingName: "radiologyusers",
         },
       });
-      const { portal_exists } = this.context.userToken;
-      this.setState({ portal_exists });
+      debugger;
+      const { portal_exists, full_name } = this.context.userToken;
+      this.setState({ portal_exists, user_name: full_name });
     }
   }
   UNSAFE_componentWillReceiveProps(newProps) {

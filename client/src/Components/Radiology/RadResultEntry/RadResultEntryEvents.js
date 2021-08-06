@@ -203,7 +203,7 @@ const UpdateRadOrder = ($this, value) => {
       arrived: $this.state.arrived,
       arrived_date: moment(new Date())._d,
       validate_by: $this.state.validate_by,
-      validate_date_time: $this.state.validate_date_time,
+      validate_date_time: new Date(),
       attended_by: $this.state.attended_by,
       technician_id: $this.state.technician_id,
       template_id: $this.state.template_id,
@@ -240,10 +240,13 @@ const UpdateRadOrder = ($this, value) => {
               mappingName: "radschlist",
             },
             afterSuccess: (data) => {
-              $this.setState({
-                isOpen: !$this.state.isOpen,
-                // status: "RA"
-              });
+              if (value === "validate") {
+                $this.setState({
+                  validate_by_name: $this.state.user_name,
+                  validated_date: new Date(),
+                  // status: "RA"
+                });
+              }
             },
           });
 
