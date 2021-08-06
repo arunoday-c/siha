@@ -25,6 +25,7 @@ import {
   templatehandle,
   rtehandle,
   handleExamStatus,
+  generateReport,
 } from "./RadResultEntryEvents";
 import { MainContext } from "algaeh-react-components";
 class RadResultEntry extends Component {
@@ -39,6 +40,7 @@ class RadResultEntry extends Component {
       changesDone: false,
       comments: "",
       portal_exists: "N",
+      user_name: "",
     };
     this.commentsMaxLength = 250;
   }
@@ -56,16 +58,18 @@ class RadResultEntry extends Component {
           mappingName: "radiologyusers",
         },
       });
-      const { portal_exists } = this.context.userToken;
-      this.setState({ portal_exists });
+      debugger;
+      const { portal_exists, full_name } = this.context.userToken;
+      this.setState({ portal_exists, user_name: full_name });
     }
   }
   UNSAFE_componentWillReceiveProps(newProps) {
+    const { portal_exists } = this.context.userToken;
     if (
       newProps.selectedPatient !== undefined &&
       (newProps.radschlist === undefined || newProps.radschlist.length === 0)
     ) {
-      debugger;
+      newProps.selectedPatient.portal_exists = portal_exists;
       if (this.state.changesDone === false) {
         newProps.selectedPatient.pre_exam_status =
           newProps.selectedPatient.exam_status;
@@ -73,7 +77,7 @@ class RadResultEntry extends Component {
         this.setState({ ...this.state, ...newProps.selectedPatient });
       }
     } else {
-      debugger;
+      newProps.radschlist[0].portal_exists = portal_exists;
       this.setState({ ...this.state, ...newProps.radschlist[0] });
     }
   }
@@ -105,6 +109,10 @@ class RadResultEntry extends Component {
     if (value !== null) {
       return moment(value).format(Options.dateFormat);
     }
+  }
+
+  onClickPrintHandle() {
+    generateReport(this, { hidePrinting: false });
   }
 
   textAreaEvent(e) {
@@ -672,6 +680,14 @@ class RadResultEntry extends Component {
                     }}
                   >
                     Cancel
+                  </button>
+
+                  <button
+                    className="btn btn-default"
+                    onClick={this.onClickPrintHandle.bind(this)}
+                    disabled={!validateDisable}
+                  >
+                    Print
                   </button>
                 </div>
               </div>
