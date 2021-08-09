@@ -590,6 +590,7 @@ const PostPOReturnEntry = ($this) => {
     data: InputObj,
     method: "PUT",
     onSuccess: (response) => {
+      debugger;
       if (response.data.success === true) {
         $this.setState({
           postEnable: true,
@@ -599,6 +600,11 @@ const PostPOReturnEntry = ($this) => {
         swalMessage({
           title: "Posted successfully . .",
           type: "success",
+        });
+      } else {
+        swalMessage({
+          title: response.data.result.message,
+          type: "error",
         });
       }
       AlgaehLoader({ show: false });

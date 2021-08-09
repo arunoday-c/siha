@@ -12,33 +12,25 @@
                     <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
                 </tr> --}}
                 <tr>
-                    <td style="width:20%">Bill No/ رقم الفاتوره<span class="numberFld">:</span></td>
+                    <td style="width:20%">Bill No:<span class="numberFld">:</span></td>
                     <td style="width:20%"><b>{{header.invoice_number}}</b></td>
-                    <td style="width:20%">Bill Date/تاريخ الفاتورة<span class="numberFld">:</span></td>
+                    <td style="width:20%">Bill Dat:e<span class="numberFld">:</span></td>
                     <td style="width:40%">{{dateTime header.invoice_date "date"}}</td>
                 </tr>
                 <tr>
-                    <td>MR No/رقم الملف<span class="numberFld">:</span></td>
+                    <td>MR No<span class="numberFld">:</span></td>
                     <td><b>{{header.patient_code}} / {{header.primary_id_no}}</b></td>
-                    <td>Patient Name/الإسم<span class="numberFld">:</span></td>
+                    <td>Patient Name:<span class="numberFld">:</span></td>
                     <td><b>{{header.patient_full_name}}</b></td>
                 </tr>
-                <tr>
-                    <td>Age|Gender/ العمر | الجنس:</td>
+                {{!-- <tr>
+                    <td>Age|Gender:</td>
                     <td>{{header.age_in_years}}/{{header.gender}}</td>
 
                     <td>Nationality/الجنسية:</td>
                     <td><b>{{header.nationality}}</b></td>
-                </tr>
-
-                <tr>
-                    <td>Department / قسم:</td>
-                    <td>{{header.sub_department_name}}</td>
-                    <td>Doctor / طبيب:</td>
-                    <td>{{header.full_name}}</td>
-                </tr>
-
-                <tr>
+                </tr> --}}
+                {{!-- <tr>
                     <td>VAT Reg No./الرقم الضريبي:</td>
                     <td>{{header.tax_number}}</td>
                     <td>Insurance Co./شركة التأمين:</td>
@@ -47,7 +39,7 @@
                 <tr>
                     <td>Cashier Name:</td>
                     <td colspan="3">{{header.cashier_name}}</td>
-                </tr>
+                </tr> --}}
 
                 {{!-- <tr>
                     <td>Policy/ Class:<span
@@ -74,23 +66,19 @@
             <table class="tableDotPrint2" cell-padding="0">
                 <thead>
                     <tr>
-                        <th class="txtFld">Service Desc.<p>وصف الخدمة</p>
+                        <th class="txtFld">Service Desc.
                         </th>
-                        <th class="numberFld">Price<p>السعر</p>
+                        <th class="numberFld">Price
                         </th>
-                        <th class="numberFld">Discount<p>خصم</p>
+                        <th class="numberFld">Discount
                         </th>
-                        <th class="numberFld">Net Amt. <p>المبلغ الصافي</p>
-                        </th>
-                        <th class="numberFld">Vat Amt. <p>قيمة الضريبة</p>
-                        </th>
-                        <th class="numberFld">Total Amount<p>المبلغ الإجمالي</th>
+                        <th class="numberFld">Total Amount</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each detail}}
                     <tr>
-                        <td colspan="8" class="tableSubHdg"><b>{{service_type}}/{{arabic_service_type}}</b></td>
+                        <td colspan="8" class="tableSubHdg"><b>{{service_type}}</td>
                     </tr>
                     {{#each detailList}}
                     <tr>
@@ -102,8 +90,6 @@
                             {{/if}} </td>
                         <td class="numberFld">{{gross_amount}}</td>
                         <td class="numberFld">{{discount_amount}}</td>
-                        <td class="numberFld">{{patient_share}}</td>
-                        <td class="numberFld">{{patient_tax}}</td>
                         <td class="numberFld">{{patient_payable}}</td>
                     </tr>
                     {{/each}}
@@ -121,14 +107,14 @@
                 <tr>
                     <td>Gross Amount</td>
                     <td>{{total_gross_amount}}</td>
-                    <td class="numberFld">: القيمة قبل الخصم</td>
+
                 </tr>
                 <tr>
                     <td>Discount</td>
                     <td>{{total_discount_amount}}</td>
-                    <td class="numberFld">: الخصم</td>
+
                 </tr>
-                {{#if vat_applicable "Y"}}
+                {{!-- {{#if vat_applicable "Y"}}
                 <tr>
                     <td>VAT Amount {{default_vat_percent}}%</td>
                     <td>{{total_patient_tax}}</td>
@@ -139,12 +125,12 @@
                     <td>{{total_patient_payable}}</td>
                     <td class="numberFld">: القيمة بعد الضريبة</td>
                 </tr>
-                {{else}} <tr></tr>{{/if}}
-               
+                {{else}} <tr></tr>{{/if}} --}}
+
                 <tr>
                     <td>Receivable</td>
                     <td><b>{{total_patient_payable}}</b></td>
-                    <td>المبلغ النقدي:</td>
+
                 </tr>
                 {{!-- <tr>
                     <td>Paid Amount</td>
@@ -157,8 +143,8 @@
                     <td>المبلغ المتبقي</td>
                 </tr> --}}
             </table>
-          
-        </section> 
+
+        </section>
         {{!-- <div style="border:1px dotted #ccc; width:50%; margin:auto; font-size:15px"> 
              <p style="text-align: center; ">
                For results enquiry <b style="margin: 0 15px;">0593880131</b> للاستعلام عن النتائج
