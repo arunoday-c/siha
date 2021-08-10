@@ -351,43 +351,51 @@ function PatientRecall() {
               Load
             </button>
           </div>
-          <div className="actions">
+        </div>
+        <div className="row">
+          <div className=" col-12">
             {/* <Spin spinning={appStatusLoading ?? true}> */}
-            <ul className="ul-legend">
-              {legends &&
-                legends?.map((item, index) => (
-                  <li key={index}>
-                    <span
-                      style={{
-                        backgroundColor: item.color_code,
-                      }}
-                    />
-                    {userLanguage === "ar"
-                      ? item.description_ar
-                      : item.statusDesc}
-                  </li>
-                ))}
-            </ul>
+            <div className="actions">
+              <ul className="ul-legend">
+                {legends &&
+                  legends?.map((item, index) => (
+                    <li key={index}>
+                      <span
+                        style={{
+                          backgroundColor: item.color_code,
+                        }}
+                      />
+                      {userLanguage === "ar"
+                        ? item.description_ar
+                        : item.statusDesc}
+                    </li>
+                  ))}
+              </ul>
+            </div>
             {/* </Spin> */}
           </div>
         </div>
       </form>
       <div className="scrolling-wrapper">
-        <Spin spinning={loading}>
-          {followUpData.length > 0 ? (
-            followUpData?.map((item, index) => (
-              <Column key={index} data={item} />
-            ))
-          ) : (
-            <div className="noRecallData">
-              <i className="fas fa-info-circle"></i>
-              <p>
-                <b>No Follow Up</b> or <b>Appointment</b> request available for
-                selected period.
-              </p>
-            </div>
-          )}
-        </Spin>
+        <div className="col-12">
+          <div className="row" style={{ background: "#fff" }}>
+            <Spin spinning={loading}>
+              {followUpData.length > 0 ? (
+                followUpData?.map((item, index) => (
+                  <Column key={index} data={item} />
+                ))
+              ) : (
+                <div className="noRecallData">
+                  <i className="fas fa-info-circle"></i>
+                  <p>
+                    <b>No Follow Up</b> or <b>Appointment</b> request available
+                    for selected period.
+                  </p>
+                </div>
+              )}
+            </Spin>
+          </div>
+        </div>
       </div>
     </div>
   );

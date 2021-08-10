@@ -1,3 +1,5 @@
+@import "../../styles/algaehCssVariables.scss";
+
 .patient_recall {
   /* The heart of the matter */
   .scrolling-wrapper {
@@ -18,18 +20,24 @@
         text-align: center;
       }
       .slotsDiv {
-        min-height: 73vh;
-        max-height: 73vh;
+        min-height: 70vh;
+        max-height: 70vh;
         overflow-y: auto;
         overflow-x: hidden;
         .eachSlot {
           padding: 3px 10px;
-          border-bottom: 1px solid #dfdfdf;
+          border-bottom: 2px dashed #a8a8a8;
           font-size: 0.9rem;
           h3 {
             margin: 0;
             padding: 2px 0;
             font-size: 1rem;
+
+            text-overflow: ellipsis;
+            overflow: hidden;
+            width: 180px;
+            height: 1.2em;
+            white-space: nowrap;
           }
           hr {
             margin: 5px 0;
@@ -38,14 +46,28 @@
             margin: 0;
           }
           &:nth-child(odd) {
-            background-color: #f9f9f9;
+            background-color: #fffdef;
           }
           .btn-book {
-            border-radius: 0;
+            border-radius: 2px;
             padding: 0;
             margin: 5px 0 0;
             /* width: 100%; */
             min-height: 25px !important;
+            background: rgba($color-black, 0.2) !important;
+            color: black;
+            border: 1px solid rgba($color-black, 0.3) !important;
+            &:hover {
+              background: white !important;
+              color: black;
+            }
+          }
+          .docNametext {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            width: 180px;
+            white-space: nowrap;
+            display: block;
           }
         }
       }
