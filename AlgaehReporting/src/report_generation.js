@@ -26,6 +26,7 @@ import { generatePDFReport } from "./hummus/index";
 
 // const XlsxTemplate = require("xlsx-template");
 
+const excel_cel_numFmt = "#,##0.00";
 let outputFolder = path.join(
   path.join(process.cwd(), "algaeh_report_tool/templates", "Output")
 );
@@ -1488,6 +1489,7 @@ export default {
                         worksheet.addRow(rows);
                         var lastRow = worksheet.rowCount;
                         let headerRow = worksheet.getRow(lastRow);
+
                         headerRow.fill = {
                           type: "pattern",
                           pattern: "solid",
@@ -1617,6 +1619,9 @@ export default {
                                       fgColor: { argb: "D1FCFF" },
                                     };
                                   }
+                                  if (!isNaN(parseFloat(cell.value))) {
+                                    cell.numFmt = excel_cel_numFmt;
+                                  }
                                 } else {
                                   cell.value = $(this)
                                     .text()
@@ -1637,6 +1642,9 @@ export default {
                                       ? 2
                                       : skipOnMerdge + 1;
                                   // }
+                                  if (!isNaN(parseFloat(cell.value))) {
+                                    cell.numFmt = excel_cel_numFmt;
+                                  }
                                 }
 
                                 if (
