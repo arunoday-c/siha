@@ -521,6 +521,14 @@ export default {
       if (inputParam.is_revert == "Y") {
         strRevert = "is_revert = 'N', ";
       }
+
+      const inv_item_id = inputParam.po_return_entry_detail.map((item) => {
+        return item.inv_item_id;
+      });
+
+      // console.log("inv_item_id", inv_item_id);
+      // consol.log("inv_item_id", inv_item_id)
+
       _mysql
         .executeQueryWithTransaction({
           query:
@@ -537,39 +545,66 @@ export default {
           printQuery: true,
         })
         .then((headerResult) => {
-          req.connection = {
-            connection: _mysql.connection,
-            isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool,
-          };
-
-          let StrQuery = "";
-
-          for (let i = 0; i < inputParam.po_return_entry_detail.length; i++) {
-            StrQuery += mysql.format(
-              "UPDATE `hims_f_procurement_po_return_detail` SET return_qty=? where hims_f_procurement_po_return_detail_id=?;",
-              [
-                inputParam.po_return_entry_detail[i].return_qty,
-                inputParam.po_return_entry_detail[i]
-                  .hims_f_procurement_po_return_detail_id,
-              ]
-            );
-          }
-          _mysql
-            .executeQuery({
-              query: StrQuery,
-              printQuery: true,
-            })
-            .then((detailResult) => {
-              // _mysql.releaseConnection();
-              req.records = { purchase_number: inputParam.purchase_number };
-              next();
-            })
-            .catch((e) => {
+          checkStockExsits({
+            inputParam: inputParam,
+            next: next,
+            _mysql: _mysql,
+          }).then((deductionOutput) => {
+            // error: true, item_description: obj.item_description
+            // console.log("deductionOutput", deductionOutput);
+            // consol.log("deductionOutput", deductionOutput);
+            if (deductionOutput.error === true) {
               _mysql.rollBackTransaction(() => {
-                next(e);
+                req.records = {
+                  invalid_input: true,
+                  message:
+                    deductionOutput.item_description +
+                    " Return stock and stock in your stock not matching.",
+                };
+                next();
               });
-            });
+            } else {
+              // console.log("123456");
+              // consol.log("123456");
+              req.connection = {
+                connection: _mysql.connection,
+                isTransactionConnection: _mysql.isTransactionConnection,
+                pool: _mysql.pool,
+              };
+
+              let StrQuery = "";
+
+              for (
+                let i = 0;
+                i < inputParam.po_return_entry_detail.length;
+                i++
+              ) {
+                StrQuery += mysql.format(
+                  "UPDATE `hims_f_procurement_po_return_detail` SET return_qty=? where hims_f_procurement_po_return_detail_id=?;",
+                  [
+                    inputParam.po_return_entry_detail[i].return_qty,
+                    inputParam.po_return_entry_detail[i]
+                      .hims_f_procurement_po_return_detail_id,
+                  ]
+                );
+              }
+              _mysql
+                .executeQuery({
+                  query: StrQuery,
+                  printQuery: true,
+                })
+                .then((detailResult) => {
+                  // _mysql.releaseConnection();
+                  req.records = { purchase_number: inputParam.purchase_number };
+                  next();
+                })
+                .catch((e) => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            }
+          });
         })
         .catch((e) => {
           _mysql.rollBackTransaction(() => {
@@ -758,7 +793,7 @@ export default {
                               project_id: project_id,
                               sub_department_id: sub_department_id,
                             },
-                            printQuery: false,
+                            printQuery: true,
                           })
                           .then((subResult) => {
                             // _mysql.commitTransaction(() => {
@@ -806,3 +841,41 @@ export default {
     }
   },
 };
+
+async function checkStockExsits(options) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const inputParam = options.inputParam;
+      const _mysql = options._mysql;
+      // console.log("inputParam:- ", inputParam);
+
+      for (let i = 0; i < inputParam.po_return_entry_detail.length; i++) {
+        const obj = inputParam.po_return_entry_detail[i];
+        const subResult = await _mysql.executeQuery({
+          query:
+            "SELECT (IL.qtyhand / IU.conversion_factor) qtyhand FROM \
+            hims_m_inventory_item_location IL inner join hims_m_inventory_item_uom IU on IU.item_master_id = IL.item_id \
+            and IL.cost_uom = IU.uom_id and IU.record_status='A' \
+            where inventory_location_id=? and item_id=? and batchno=?;",
+          values: [
+            inputParam.inventory_location_id,
+            obj.inv_item_id,
+            obj.batchno,
+          ],
+          printQuery: true,
+        });
+        if (parseFloat(subResult[0].qtyhand) < parseFloat(obj.return_qty)) {
+          // console.log("error");
+          resolve({ error: true, item_description: obj.item_description });
+        }
+        if (i == inputParam.po_return_entry_detail.length - 1) {
+          resolve({ error: false, item_description: obj.item_description });
+        }
+      }
+    } catch (e) {
+      reject(e);
+    }
+  }).catch((e) => {
+    options.next(e);
+  });
+}
