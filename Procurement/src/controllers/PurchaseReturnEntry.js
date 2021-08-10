@@ -63,6 +63,17 @@ export default () => {
   api.put(
     "/postPurchaseReturnOrderEntry",
     postPurchaseReturnOrderEntry,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        console.log("4567");
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          result: req.records,
+        });
+      } else {
+        next();
+      }
+    },
     generateAccountingEntry,
     (req, res, next) => {
       if (req.body.is_revert == "Y") {
@@ -75,7 +86,6 @@ export default () => {
         }
       }
     },
-
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
