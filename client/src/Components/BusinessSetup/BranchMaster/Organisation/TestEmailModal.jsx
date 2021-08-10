@@ -74,7 +74,7 @@ export default function TestEmailModal({ visible, setVisible }) {
   return (
     <div>
       <AlgaehModal
-        title={`Send Test mail`}
+        title={`Send Test Mail`}
         visible={visible}
         destroyOnClose={true}
         footer={null}
@@ -169,7 +169,9 @@ export default function TestEmailModal({ visible, setVisible }) {
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-12">
-                    <button type="submit">Send</button>
+                    <button className="btn btn-primary btn-sm" type="submit">
+                      Send
+                    </button>
                     <AlgaehButton
                       className="btn btn-default"
                       onClick={() => {

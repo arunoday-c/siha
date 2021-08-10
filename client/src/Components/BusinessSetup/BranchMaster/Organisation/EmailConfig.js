@@ -108,18 +108,22 @@ export default function EmailConfig(props) {
         </div>
         <div className="portlet-body">
           <div className="row">
-            <div className="col-12 form-group">
-              <Checkbox
-                onChange={handleEmailChange}
-                name="is_enabled"
-                checked={is_enabled}
-              >
-                Activate Email Nofication
-              </Checkbox>
+            <div className="col-6 form-group">
+              <label> Notify via Email</label>
+              <div>
+                {" "}
+                <Checkbox
+                  onChange={handleEmailChange}
+                  name="is_enabled"
+                  checked={is_enabled}
+                >
+                  Yes
+                </Checkbox>
+              </div>
             </div>
 
             <AlgaehFormGroup
-              div={{ className: "col-8 form-group" }}
+              div={{ className: "col-12 form-group" }}
               label={{
                 forceLabel: "SMTP Host Name",
                 isImp: false,
@@ -131,22 +135,6 @@ export default function EmailConfig(props) {
                 disabled: !is_enabled,
                 onChange: handleEmailChange,
                 type: "text",
-              }}
-            />
-
-            <AlgaehFormGroup
-              div={{ className: "col-4 form-group" }}
-              label={{
-                forceLabel: "SMTP Port",
-                isImp: false,
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "port",
-                value: port,
-                disabled: !is_enabled,
-                onChange: handleEmailChange,
-                type: "number",
               }}
             />
 
@@ -182,29 +170,50 @@ export default function EmailConfig(props) {
               }}
             />
             <div className="col-6 form-group">
-              <Checkbox
-                onChange={handleEmailChange}
-                name="secure"
-                checked={secure}
-              >
-                Is SSL enabled
-              </Checkbox>
+              <label>Is SSL enabled</label>
+              <div>
+                {" "}
+                <Checkbox
+                  onChange={handleEmailChange}
+                  name="secure"
+                  checked={secure}
+                  disabled={!is_enabled}
+                >
+                  Yes
+                </Checkbox>
+              </div>
             </div>
-            <div className="row">
+            <AlgaehFormGroup
+              div={{ className: "col-6 form-group" }}
+              label={{
+                forceLabel: "SMTP Port",
+                isImp: false,
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "port",
+                value: port,
+                disabled: !is_enabled,
+                onChange: handleEmailChange,
+                type: "number",
+              }}
+            />
+
+            <div className="col-12" style={{ textAlign: "right" }}>
+              {" "}
+              <hr></hr>
               {/* <div className="row"> */}
               <AlgaehButton
-                className="btn btn-primary"
-                style={{ marginRight: 10 }}
-                // disabled={!is_enabled}
+                className="btn btn-default"
+                disabled={!is_enabled}
                 onClick={openOrCloseTestEmailModal}
               >
-                Test Email Configuration
+                Send Test Email
               </AlgaehButton>
               <AlgaehButton
                 className="btn btn-primary"
-                // style={{ float: "right", marginTop: 20 }}
-                // style={{ padding: 10 }}
-                // disabled={!is_enabled}
+                style={{ marginLeft: 5 }}
+                disabled={!is_enabled}
                 onClick={updateEmailConfig}
               >
                 Update Email
