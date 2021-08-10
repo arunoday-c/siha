@@ -6,7 +6,7 @@ import {
   AlgaehFormGroup,
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../hooks";
-
+import TestEmailModal from "./TestEmailModal";
 export default function EmailConfig(props) {
   const baseEmailConfig = {
     host: "",
@@ -17,6 +17,7 @@ export default function EmailConfig(props) {
     is_enabled: false,
   };
   const [emailConfig, setEmailConfig] = useState(baseEmailConfig);
+  const [visible, setVisible] = useState(false);
   useEffect(() => {
     newAlgaehApi({
       uri: "/Document/getEmailConfig",
@@ -88,9 +89,16 @@ export default function EmailConfig(props) {
       [name]: value !== undefined ? value : checked,
     }));
   }
+  const openOrCloseTestEmailModal = () => {
+    setVisible(!visible);
+  };
 
   return (
     <div>
+      <TestEmailModal
+        visible={visible}
+        setVisible={openOrCloseTestEmailModal}
+      />
       <div className="portlet portlet-bordered margin-bottom-15">
         <div className="portlet-title">
           <div className="caption">
@@ -182,15 +190,26 @@ export default function EmailConfig(props) {
                 Is SSL enabled
               </Checkbox>
             </div>
-            <div className="col">
+            <div className="row">
+              {/* <div className="row"> */}
               <AlgaehButton
                 className="btn btn-primary"
-                style={{ float: "right", marginTop: 20 }}
+                style={{ marginRight: 10 }}
+                // disabled={!is_enabled}
+                onClick={openOrCloseTestEmailModal}
+              >
+                Test Email Configuration
+              </AlgaehButton>
+              <AlgaehButton
+                className="btn btn-primary"
+                // style={{ float: "right", marginTop: 20 }}
+                // style={{ padding: 10 }}
                 // disabled={!is_enabled}
                 onClick={updateEmailConfig}
               >
                 Update Email
               </AlgaehButton>
+              {/* </div> */}
             </div>
           </div>
         </div>
