@@ -19,6 +19,9 @@ const HISDashboard = React.lazy(() =>
 const FrontdeskDashboard = React.lazy(() =>
   retry(() => import("./Components/Dashboard/frontdesk-dashboard"))
 );
+const EncounterDashboard = React.lazy(() =>
+  retry(() => import("./Components/Dashboard/encounter-dashboard"))
+);
 const DoctorDashboard = React.lazy(() =>
   retry(() => import("./Components/Dashboard/doctor-dashboard"))
 );
@@ -681,6 +684,11 @@ const privateRoutes = [
     path: "/FrontdeskDashboard",
     isExactPath: true,
     component: <FrontdeskDashboard />,
+  },
+  {
+    path: "/EncounterDashboard",
+    isExactPath: true,
+    component: <EncounterDashboard />,
   },
   {
     path: "/DoctorDashboard",
