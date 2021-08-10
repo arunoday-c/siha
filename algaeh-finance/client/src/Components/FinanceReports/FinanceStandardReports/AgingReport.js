@@ -17,7 +17,7 @@ import { getAmountFormart } from "../../../utils/GlobalFunctions";
 export default function AgingReport({ style, result, layout, type, dates }) {
   const DIFF = {
     payable: { url: "getAccountPayableAging", title: "Payable" },
-    receivable: { url: "getAccountReceivableAging", title: "Receivable" }
+    receivable: { url: "getAccountReceivableAging", title: "Receivable" },
   };
 
   // const createPrintObject = useRef(undefined);
@@ -55,13 +55,14 @@ export default function AgingReport({ style, result, layout, type, dates }) {
   // const { organization_name, address1, address2, full_name } = organisation;
 
   function loadReport(excel) {
+    debugger;
     let extraHeaders = {};
     if (excel === true) {
       extraHeaders = {
         headers: {
-          Accept: "blob"
+          Accept: "blob",
         },
-        others: { responseType: "blob" }
+        others: { responseType: "blob" },
       };
     }
     algaehApiCall({
@@ -71,10 +72,10 @@ export default function AgingReport({ style, result, layout, type, dates }) {
       data: {
         from_date: dates[0],
         to_date: dates[1],
-        excel
+        excel,
       },
       ...extraHeaders,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (excel) {
           handleFile(response.data, type);
         } else {
@@ -88,11 +89,11 @@ export default function AgingReport({ style, result, layout, type, dates }) {
               ninety_days_amount: footer.ninety_days_total,
               above_ninety_days_amount: footer.above_ninety_days_total,
               balance: footer.grand_total,
-              customer: ""
+              customer: "",
             });
           }
         }
-      }
+      },
     });
   }
 
@@ -106,77 +107,82 @@ export default function AgingReport({ style, result, layout, type, dates }) {
           fieldName: "customer",
           label: type === "receivable" ? "Customer Name" : "Vendor Name",
           filterable: true,
-          sortable: true
+          sortable: true,
         },
         {
           fieldName: "todays_amount",
           label: "Current",
           filterable: true,
-          displayTemplate: row => {
+          displayTemplate: (row) => {
             return getAmountFormart(row["todays_amount"], {
-              appendSymbol: false
+              appendSymbol: false,
             });
-          }
+          },
         },
         {
           fieldName: "thirty_days_amount",
           label: "1-30 Days",
           filterable: true,
-          displayTemplate: row => {
+          displayTemplate: (row) => {
             return getAmountFormart(row["thirty_days_amount"], {
-              appendSymbol: false
+              appendSymbol: false,
             });
-          }
+          },
         },
         {
           fieldName: "sixty_days_amount",
           label: "31-60 Days",
           filterable: true,
-          displayTemplate: row => {
+          displayTemplate: (row) => {
             return getAmountFormart(row["sixty_days_amount"], {
-              appendSymbol: false
+              appendSymbol: false,
             });
-          }
+          },
         },
         {
           fieldName: "ninety_days_amount",
           label: "61-90 Days",
           filterable: true,
-          displayTemplate: row => {
+          displayTemplate: (row) => {
             return getAmountFormart(row["ninety_days_amount"], {
-              appendSymbol: false
+              appendSymbol: false,
             });
-          }
+          },
         },
         {
           fieldName: "above_ninety_days_amount",
           label: "Over 90 Days",
           filterable: true,
-          displayTemplate: row => {
+          displayTemplate: (row) => {
             return getAmountFormart(row["above_ninety_days_amount"], {
-              appendSymbol: false
+              appendSymbol: false,
             });
-          }
+          },
         },
         {
           fieldName: "balance",
           label: "Balance",
           filterable: true,
-          displayTemplate: row => {
+          displayTemplate: (row) => {
             return getAmountFormart(row["balance"], { appendSymbol: false });
-          }
-        }
+          },
+        },
       ]}
       data={data}
       tableprops={{
-        aggregate: fieldName => {
+        aggregate: (fieldName) => {
           if (footerData) {
-            return getAmountFormart(footerData[fieldName], {
-              appendSymbol: false
-            });
+            debugger;
+            if (fieldName !== "customer") {
+              return getAmountFormart(footerData[fieldName], {
+                appendSymbol: false,
+              });
+            } else {
+              return "";
+            }
           }
         },
-        footer: true
+        footer: true,
       }}
     />
     // <>
