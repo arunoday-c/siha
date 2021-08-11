@@ -121,6 +121,98 @@ export default {
       next(e);
     }
   },
+  loadEncounterData: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = req.query;
+      console.log("input", input);
+      let strQuery = "";
+      if (input.doctor_id) {
+        strQuery += ` and PV.doctor_id=${input.doctor_id}`;
+      }
+      if (input.hims_d_sub_department_id) {
+        strQuery += ` and PV.sub_department_id=${input.hims_d_sub_department_id}`;
+      }
+      _mysql
+        .executeQuery({
+          query: `SELECT PV.patient_id,E.full_name,PV.doctor_id,PV.sub_department_id,SD.sub_department_name,PV.new_visit_patient 
+          FROM hims_f_patient_visit PV 
+          inner join hims_d_employee E on E.hims_d_employee_id=PV.doctor_id
+          inner join hims_d_sub_department SD on SD.hims_d_sub_department_id=PV.sub_department_id
+          where PV.hospital_id=? and date(visit_date)=date(?) ${strQuery};`,
+          values: [
+            input.hospital_id ? input.hospital_id : 1,
+            moment(input.from_date).format("YYYY-MM-DD"),
+          ],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          let arrangedData = _.chain(result[0])
+            .groupBy((g) => {
+              return g.sub_department_id;
+            })
+            .map((details, key) => {
+              const { sub_department_id, sub_department_name } =
+                _.head(details);
+
+              return {
+                sub_department_id: sub_department_id,
+                sub_department_name: sub_department_name,
+
+                total_patients: details?.length,
+
+                detailsOfDoc: _.chain(details)
+                  .groupBy((it) => it.doctor_id)
+                  .map((detail, index) => {
+                    const { doctor_id, full_name } = _.head(detail);
+                    return {
+                      full_name,
+                      doctor_id,
+                      totalLength: detail?.length,
+                      newVisitDetails: _.chain(detail)
+                        .groupBy((it) => it.new_visit_patient)
+                        .map((newVisit, index) => {
+                          const { new_visit_patient } = _.head(newVisit);
+                          return {
+                            new_visit_patient,
+
+                            totalPat: newVisit?.length,
+                          };
+                        })
+                        .value(),
+                    };
+                  })
+                  .value(),
+              };
+            })
+            .value();
+          const totalPatientData = _.chain(result[0])
+            .groupBy((it) => it.new_visit_patient)
+            .map((newVisit, index) => {
+              return {
+                total: newVisit?.length,
+              };
+            })
+            .value();
+          console.log("arrangeData", arrangedData);
+          req.records = {
+            arrangedData,
+            total_new_visit: totalPatientData[0]?.total,
+            total_followUp: totalPatientData[1]?.total,
+            totalPatient: result[0]?.length,
+          };
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   addFrontDesk: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

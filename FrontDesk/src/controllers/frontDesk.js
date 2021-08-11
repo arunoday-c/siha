@@ -25,6 +25,7 @@ const {
   getFrontDeskDataForWeek,
   getFrontDeskDashboardForSubdept,
   getFrontDeskDashboardDoctor,
+  loadEncounterData,
 } = frontModels;
 
 const {
@@ -170,6 +171,12 @@ export default () => {
     }
   );
 
+  api.get("/loadEncounterData", loadEncounterData, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
   api.get(
     "/getCashHandoverDetails",
     getCashHandoverDetails,

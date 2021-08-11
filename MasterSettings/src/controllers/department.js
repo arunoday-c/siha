@@ -28,6 +28,7 @@ const {
   getAllSubDepartment,
   addEmailSendSubDept,
   getEmailSetupDetails,
+  getAllClinicalSubDept,
 } = deptModels;
 
 import { LINQ } from "node-linq";
@@ -72,6 +73,15 @@ export default () => {
     });
     next();
   });
+  api.get("/getAllClinicalSubDept", getAllClinicalSubDept, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+
   api.put(
     "/updateDepartment",
     updateDepartment,
