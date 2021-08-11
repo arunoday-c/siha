@@ -132,3 +132,15 @@ export function generateDoctorSlots(data) {
   });
   return tds;
 }
+export async function confirmAppointmentSMS(input) {
+  const result = await newAlgaehApi({
+    uri: "/frontDesk/confirmAppointmentSMS",
+    module: "frontDesk",
+    method: "POST",
+    data: input,
+  }).catch((error) => {
+    throw error;
+  });
+
+  return result.data;
+}

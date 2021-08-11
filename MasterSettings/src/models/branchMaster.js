@@ -1,5 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
+import newAxios from "algaeh-utilities/axios";
+import algaehMail from "algaeh-utilities/mail-send";
 import _ from "lodash";
 
 export default {
@@ -52,6 +54,50 @@ export default {
       }
     } catch (e) {
       _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  // sending test email for testing email configurations : suhail
+  sendTestMail: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const { hospital_address, hospital_name } = req.userIdentity;
+    const { MailName, to_mail_id, body_mail } = req.query;
+    const mail_body = body_mail ? body_mail : "";
+    try {
+      newAxios(req, {
+        url: "http://localhost:3006/api/v1//Document/getEmailConfig",
+      }).then((res) => {
+        const options = res.data;
+        new algaehMail(options.data[0])
+          .to(to_mail_id)
+          .subject(MailName)
+          .templateHbs("testEmail.hbs", {
+            hospital_address,
+            hospital_name,
+            mail_body,
+          })
+          .send()
+          .then((result) => {
+            console.log("Mail Sent");
+            req.records = result;
+            next();
+          })
+          .catch((error) => {
+            next(error);
+          });
+
+        // if (send_attachment === "true") {
+        // mailSender.attachReportsAndSend(req, reportInput, (error, records) => {
+        //   if (error) {
+        //     next(error);
+        //     return;
+        //   }
+
+        //   next();
+        // });
+      });
+    } catch (e) {
       next(e);
     }
   },

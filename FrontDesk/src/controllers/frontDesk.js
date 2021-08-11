@@ -34,6 +34,7 @@ const {
   addCashHandover,
   updatePatientPackage,
 } = billModels;
+import { confirmAppointmentSMS } from "../models/appointmentSMS";
 
 const { insertLadOrderedServices } = labModels;
 const { insertRadOrderedServices } = radModels;
@@ -93,6 +94,17 @@ export default () => {
     },
     addEpisodeEncounterData,
 
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+
+  api.post(
+    "/confirmAppointmentSMS",
+    confirmAppointmentSMS,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

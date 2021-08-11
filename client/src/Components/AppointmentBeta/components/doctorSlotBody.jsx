@@ -41,7 +41,7 @@ export default memo(function DoctorSlots(props) {
         />
       </tr>
       <tr style={{ cursor: "pointer" }}>
-        <TdCell {...item} />
+        <TdCell {...item} doc_name={props.doctor_name} />
       </tr>
     </React.Fragment>
   ));

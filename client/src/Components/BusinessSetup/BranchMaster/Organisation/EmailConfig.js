@@ -6,7 +6,7 @@ import {
   AlgaehFormGroup,
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../hooks";
-
+import TestEmailModal from "./TestEmailModal";
 export default function EmailConfig(props) {
   const baseEmailConfig = {
     host: "",
@@ -17,6 +17,7 @@ export default function EmailConfig(props) {
     is_enabled: false,
   };
   const [emailConfig, setEmailConfig] = useState(baseEmailConfig);
+  const [visible, setVisible] = useState(false);
   useEffect(() => {
     newAlgaehApi({
       uri: "/Document/getEmailConfig",
@@ -88,9 +89,16 @@ export default function EmailConfig(props) {
       [name]: value !== undefined ? value : checked,
     }));
   }
+  const openOrCloseTestEmailModal = () => {
+    setVisible(!visible);
+  };
 
   return (
     <div>
+      <TestEmailModal
+        visible={visible}
+        setVisible={openOrCloseTestEmailModal}
+      />
       <div className="portlet portlet-bordered margin-bottom-15">
         <div className="portlet-title">
           <div className="caption">
@@ -100,18 +108,22 @@ export default function EmailConfig(props) {
         </div>
         <div className="portlet-body">
           <div className="row">
-            <div className="col-12 form-group">
-              <Checkbox
-                onChange={handleEmailChange}
-                name="is_enabled"
-                checked={is_enabled}
-              >
-                Activate Email Nofication
-              </Checkbox>
+            <div className="col-6 form-group">
+              <label> Notify via Email</label>
+              <div>
+                {" "}
+                <Checkbox
+                  onChange={handleEmailChange}
+                  name="is_enabled"
+                  checked={is_enabled}
+                >
+                  Yes
+                </Checkbox>
+              </div>
             </div>
 
             <AlgaehFormGroup
-              div={{ className: "col-8 form-group" }}
+              div={{ className: "col-12 form-group" }}
               label={{
                 forceLabel: "SMTP Host Name",
                 isImp: false,
@@ -123,22 +135,6 @@ export default function EmailConfig(props) {
                 disabled: !is_enabled,
                 onChange: handleEmailChange,
                 type: "text",
-              }}
-            />
-
-            <AlgaehFormGroup
-              div={{ className: "col-4 form-group" }}
-              label={{
-                forceLabel: "SMTP Port",
-                isImp: false,
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "port",
-                value: port,
-                disabled: !is_enabled,
-                onChange: handleEmailChange,
-                type: "number",
               }}
             />
 
@@ -174,23 +170,55 @@ export default function EmailConfig(props) {
               }}
             />
             <div className="col-6 form-group">
-              <Checkbox
-                onChange={handleEmailChange}
-                name="secure"
-                checked={secure}
-              >
-                Is SSL enabled
-              </Checkbox>
+              <label>Is SSL enabled</label>
+              <div>
+                {" "}
+                <Checkbox
+                  onChange={handleEmailChange}
+                  name="secure"
+                  checked={secure}
+                  disabled={!is_enabled}
+                >
+                  Yes
+                </Checkbox>
+              </div>
             </div>
-            <div className="col">
+            <AlgaehFormGroup
+              div={{ className: "col-6 form-group" }}
+              label={{
+                forceLabel: "SMTP Port",
+                isImp: false,
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "port",
+                value: port,
+                disabled: !is_enabled,
+                onChange: handleEmailChange,
+                type: "number",
+              }}
+            />
+
+            <div className="col-12" style={{ textAlign: "right" }}>
+              {" "}
+              <hr></hr>
+              {/* <div className="row"> */}
+              <AlgaehButton
+                className="btn btn-default"
+                disabled={!is_enabled}
+                onClick={openOrCloseTestEmailModal}
+              >
+                Send Test Email
+              </AlgaehButton>
               <AlgaehButton
                 className="btn btn-primary"
-                style={{ float: "right", marginTop: 20 }}
-                // disabled={!is_enabled}
+                style={{ marginLeft: 5 }}
+                disabled={!is_enabled}
                 onClick={updateEmailConfig}
               >
                 Update Email
               </AlgaehButton>
+              {/* </div> */}
             </div>
           </div>
         </div>

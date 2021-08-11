@@ -21,16 +21,29 @@ export default memo(function Filter(props) {
   } = useContext(AppointmentContext);
   const [doctors, setDoctorsList] = useState([]);
   const history = useHistory();
+  // const location = useLocation();
   const pathName = history.location.pathname;
   useEffect(() => {
-    if (sub_department_id) {
+    if (sub_department_id && sub_department_id !== "null") {
       const doctors = props?.data?.filter(
-        (f) => f.value === parseInt(sub_department_id)
+        (f) => f.value == sub_department_id
       )[0]?.children;
 
       setDoctorsList(doctors);
+      // let dataFromRecall = location.state?.data;
+      // if (dataFromRecall)
+      //   return history.push(
+      //     pathName +
+      //       `?appointmentDate=${moment(dataFromRecall.followup_date).format(
+      //         "YYYY-MM-DD"
+      //       )}&sub_department_id=${
+      //         dataFromRecall.sub_department_id
+      //       }&provider_id=${dataFromRecall.doctor_id}`
+      //   );
+
+      // location.state = null;
     }
-  }, [props?.data]);
+  }, [props?.data, sub_department_id]);
   useQuery(
     [
       "doctor-schedule",

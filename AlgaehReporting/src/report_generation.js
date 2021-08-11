@@ -26,6 +26,7 @@ import { generatePDFReport } from "./hummus/index";
 
 // const XlsxTemplate = require("xlsx-template");
 
+const excel_cel_numFmt = "#,##0.00";
 let outputFolder = path.join(
   path.join(process.cwd(), "algaeh_report_tool/templates", "Output")
 );
@@ -862,10 +863,9 @@ export default {
                               });
                               if (reportToPortal === "true") {
                                 const rptParameters = _inputParam.reportParams;
-                                const portal_patient_identity =
-                                  rptParameters.find(
-                                    (f) => f.name === "patient_identity"
-                                  ).value;
+                                const portal_patient_identity = rptParameters.find(
+                                  (f) => f.name === "patient_identity"
+                                ).value;
                                 const portal_service_id = rptParameters.find(
                                   (f) => f.name === "service_id"
                                 )?.value;
@@ -878,6 +878,7 @@ export default {
                                   portal_service_id &&
                                   portal_visit_code
                                 ) {
+                                  console.log("1234");
                                   const formD = new FormData();
                                   formD.append(
                                     "file",
@@ -926,8 +927,9 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } =
-                      __non_webpack_require__(_supportingJS);
+                    const { executePDF } = __non_webpack_require__(
+                      _supportingJS
+                    );
 
                     executePDF({
                       mysql: _mysql,
@@ -1179,8 +1181,9 @@ export default {
                       );
 
                       if (fs.existsSync(_supportingJS)) {
-                        const { executePDF } =
-                          __non_webpack_require__(_supportingJS);
+                        const { executePDF } = __non_webpack_require__(
+                          _supportingJS
+                        );
                         executePDF({
                           mysql: _mysql,
                           inputs: _inputParam,
@@ -1486,6 +1489,7 @@ export default {
                         worksheet.addRow(rows);
                         var lastRow = worksheet.rowCount;
                         let headerRow = worksheet.getRow(lastRow);
+
                         headerRow.fill = {
                           type: "pattern",
                           pattern: "solid",
@@ -1570,10 +1574,9 @@ export default {
                                       0,
                                       onlyAlphabets.length - 1
                                     );
-                                    const lastcharacter =
-                                      onlyAlphabets.charCodeAt(
-                                        onlyAlphabets.length - 1
-                                      );
+                                    const lastcharacter = onlyAlphabets.charCodeAt(
+                                      onlyAlphabets.length - 1
+                                    );
 
                                     const numberOfCols =
                                       parseInt($(this).attr("colspan")) - 1;
@@ -1616,6 +1619,9 @@ export default {
                                       fgColor: { argb: "D1FCFF" },
                                     };
                                   }
+                                  if (!isNaN(parseFloat(cell.value))) {
+                                    cell.numFmt = excel_cel_numFmt;
+                                  }
                                 } else {
                                   cell.value = $(this)
                                     .text()
@@ -1636,6 +1642,9 @@ export default {
                                       ? 2
                                       : skipOnMerdge + 1;
                                   // }
+                                  if (!isNaN(parseFloat(cell.value))) {
+                                    cell.numFmt = excel_cel_numFmt;
+                                  }
                                 }
 
                                 if (
@@ -1884,8 +1893,9 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } =
-                      __non_webpack_require__(_supportingJS);
+                    const { executePDF } = __non_webpack_require__(
+                      _supportingJS
+                    );
                     executePDF({
                       mysql: _mysql,
                       inputs: _inputOrders,

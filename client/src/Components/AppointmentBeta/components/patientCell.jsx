@@ -77,7 +77,7 @@ export default memo(function TdCell(props) {
   function DisplayAppointmentPatient() {
     if (patient) {
       const bg_color = patient
-        ? app_status.find(
+        ? app_status?.find(
             (f) =>
               f.hims_d_appointment_status_id === patient.appointment_status_id
           )?.color_code
@@ -86,14 +86,14 @@ export default memo(function TdCell(props) {
         : isInactive //isInactiveTimeSlot(props?.time)
         ? "#fbfbfb"
         : "#ffffff";
-      const isNoShow = app_status.find((f) => f.default_status === "NS");
-      const appStep = app_status.find(
+      const isNoShow = app_status?.find((f) => f.default_status === "NS");
+      const appStep = app_status?.find(
         (f) => f.hims_d_appointment_status_id === patient.appointment_status_id
       )?.steps;
       if (isStandby === "N" && patient?.cancelled === "N") {
         if (
-          patient.appointment_status_id ===
-          isNoShow.hims_d_appointment_status_id
+          patient?.appointment_status_id ===
+          isNoShow?.hims_d_appointment_status_id
         ) {
           return (
             <div
@@ -148,7 +148,8 @@ export default memo(function TdCell(props) {
                           key={index}
                           item={item}
                           userLanguage={userLanguage}
-                          patient={patient}
+                          patient={{ ...patient, doc_name: props.doc_name }}
+                          // doc_name={}
                         />
                       );
                     })}

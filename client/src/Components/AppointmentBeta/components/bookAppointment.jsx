@@ -13,6 +13,8 @@ import {
   AlagehFormGroup,
   AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
+import { useLocation } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import { swalMessage } from "../../../utils/algaehApiCall";
@@ -23,6 +25,9 @@ import moment from "moment";
 import { AppointmentContext } from "../AppointmentContext";
 import { getDoctorSchedule } from "./events";
 export default memo(function BookAppointment(props) {
+  const location = useLocation();
+  // const history = useHistory();
+  // const pathName = history.location.pathname;
   const { userLanguage, titles, countries, socket } = useContext(MainContext);
   const {
     appointmentDate,
@@ -30,9 +35,11 @@ export default memo(function BookAppointment(props) {
     app_status,
     sub_department_id,
     provider_id,
-    patientRecallData,
-    setPatientRecallData,
+    userToken,
+    // dataFromRecall,
+    // setDataFromRecall,
   } = useContext(AppointmentContext);
+  const [maxLength, setMaxLength] = useState(null);
   const [no_of_slots, setNoOfSlots] = useState(1);
   const [patient_code, setPatientCode] = useState(undefined);
   const [title_id, setTitleId] = useState(undefined);
@@ -42,12 +49,14 @@ export default memo(function BookAppointment(props) {
   const [date_of_birth, setDateOfBirth] = useState(undefined);
   const [age, setAge] = useState(undefined);
   const [gender, setGender] = useState(undefined);
+  const [pat_recall_id, setPat_recall_id] = useState(null);
   const [appointment_status_id, setAppointmentStatusId] = useState(undefined);
-  const [tel_code, setTeleCode] = useState(undefined);
-  const [contact_number, setContactNumber] = useState(undefined);
+  // const [tel_code, setTeleCode] = useState(undefined);
+  // const [contact_number, setContactNumber] = useState(undefined);
   const [email, setEmail] = useState(undefined);
   const [appointment_remarks, setAppointmentRemarks] = useState(undefined);
   const [edited_appStatus, setEdited_appStatus] = useState([]);
+  // let [, setState] = useState();
   useEffect(() => {
     const defaultAppStatus = app_status.find(
       (f) => f.default_status === "Y"
@@ -63,26 +72,86 @@ export default memo(function BookAppointment(props) {
       )
     );
   }, []);
+  const [currentCountry] = countries?.filter(
+    (item) => item.hims_d_country_id === userToken?.default_country
+  );
+  const {
+    control,
+    setValue,
+    clearErrors,
+    setError,
+    getValues,
+    formState: { errors },
+  } = useForm({
+    reValidateMode: "onChange",
+    shouldFocusError: true,
+    defaultValues: {
+      tel_code: currentCountry?.tel_code,
+    },
+  });
+
   useEffect(() => {
-    if (patientRecallData) {
-      debugger;
+    let dataFromRecall = location.state?.data;
+
+    if (dataFromRecall) {
       const yrsAge = moment().diff(
-        moment(patientRecallData.date_of_birth, "YYYY-MM-DD"),
+        moment(dataFromRecall.date_of_birth, "YYYY-MM-DD"),
         "years"
       );
-      setPatientCode(patientRecallData.patient_code);
-      setTitleId(patientRecallData.title_id);
-      setPatientID(patientRecallData.patient_id);
-      setPatientName(patientRecallData.pat_name);
-      setDateOfBirth(patientRecallData.date_of_birth);
+
+      setPatientCode(dataFromRecall.patient_code);
+      setTitleId(dataFromRecall.title_id);
+      setPatientID(dataFromRecall.patient_id);
+      setPatientName(dataFromRecall.pat_name);
+      setDateOfBirth(dataFromRecall.date_of_birth);
       setAge(yrsAge);
-      setGender(patientRecallData.gender);
-      setTeleCode(patientRecallData.tel_code);
-      setEmail(patientRecallData.email);
-      setArabicName(patientRecallData.arabic_name);
-      setContactNumber(patientRecallData.contact_number);
+      setGender(dataFromRecall.gender);
+      // setTeleCode(dataFromRecall.tel_code);
+      setPat_recall_id(dataFromRecall.pat_recall_id);
+      // setValue("tel_code", dataFromRecall.tel_code);
+      // setValue("contact_number", dataFromRecall.contact_number);
+      setEmail(dataFromRecall.email);
+      setArabicName(dataFromRecall.arabic_name);
+      // setContactNumber(dataFromRecall.contact_number);
+      // setTimeout(function () {
+      //   // setState({});
+      //   setValue("tel_code", dataFromRecall.tel_code);
+      //   setValue("contact_number", dataFromRecall.contact_number);
+      // });
+      // location.state = null;
+
+      // history.push(
+      //   pathName +
+      //     `?appointmentDate=${moment(dataFromRecall.followup_date).format(
+      //       "YYYY-MM-DD"
+      //     )}&sub_department_id=${
+      //       dataFromRecall.sub_department_id
+      //     }&provider_id=${dataFromRecall.doctor_id}`
+      // );
     }
-  }, [patientRecallData]);
+  }, [location?.state?.data]);
+  useEffect(() => {
+    const telCode = getValues().tel_code;
+    if (telCode) {
+      const maxlength = countries.filter((f) => f.tel_code === telCode)[0]
+        .max_phone_digits;
+      setMaxLength(maxlength);
+    }
+  }, [getValues().tel_code]);
+  useEffect(() => {
+    let dataFromRecall = location.state?.data;
+    if (dataFromRecall) {
+      setTimeout(function () {
+        // setState({});
+        const maxlength = countries.filter(
+          (f) => f.tel_code === dataFromRecall.tel_code
+        )[0].max_phone_digits;
+        setMaxLength(maxlength);
+        setValue("tel_code", dataFromRecall.tel_code);
+        setValue("contact_number", dataFromRecall.contact_number);
+      });
+    }
+  }, [props.showEditPopup]);
   function clearAllState() {
     setNoOfSlots(1);
     setPatientCode(undefined);
@@ -94,10 +163,14 @@ export default memo(function BookAppointment(props) {
     setAge(undefined);
     setGender(undefined);
     setAppointmentStatusId(undefined);
-    setTeleCode(undefined);
-    setContactNumber(undefined);
+    setPat_recall_id(null);
+    // setTeleCode(undefined);
+    // setContactNumber(undefined);
+    setValue("tel_code", undefined);
+    setValue("contact_number", undefined);
     setEmail(undefined);
     setAppointmentRemarks(undefined);
+    clearErrors(["tel_code", "contact_number"]);
   }
   function patientSearch() {
     AlgaehSearch({
@@ -111,7 +184,7 @@ export default memo(function BookAppointment(props) {
       },
       onRowSelect: (row) => {
         // console.log("Selected Row:", row);
-
+        setPat_recall_id(null);
         const yrsAge = moment().diff(
           moment(row.date_of_birth, "YYYY-MM-DD"),
           "years"
@@ -123,10 +196,13 @@ export default memo(function BookAppointment(props) {
         setDateOfBirth(row.date_of_birth);
         setAge(yrsAge);
         setGender(row.gender);
-        setTeleCode(row.tel_code);
+        // setTeleCode(row.tel_code);
         setEmail(row.email);
         setArabicName(row.arabic_name);
-        setContactNumber(row.contact_number);
+
+        // setContactNumber(row.contact_number);
+        setValue("tel_code", row.tel_code);
+        setValue("contact_number", row.contact_number);
       },
     });
   }
@@ -142,6 +218,15 @@ export default memo(function BookAppointment(props) {
           .add("minutes", duration_minutes)
           .format("HH:mm:ss");
         const dob = moment(date_of_birth).format("YYYY-MM-DD");
+
+        if (getValues().contact_number.length !== maxLength || 10) {
+          setError("contact_number", {
+            type: "maxLength",
+            shouldFocus: true,
+            message: `This should be ${maxLength} length`,
+          });
+        }
+        return;
         const send_data = {
           patient_id,
           patient_code,
@@ -151,14 +236,15 @@ export default memo(function BookAppointment(props) {
           appointment_from_time: moment(from_time, "hh:mm a").format(
             "HH:mm:ss"
           ),
+          pat_recall_id,
           appointment_to_time,
           appointment_status_id,
           patient_name,
           arabic_name,
           date_of_birth: dob,
           age,
-          contact_number,
-          tel_code,
+          contact_number: getValues().contact_number,
+          tel_code: getValues().tel_code,
           email,
           send_to_provider: "N",
           gender,
@@ -180,12 +266,13 @@ export default memo(function BookAppointment(props) {
             type: "error",
           });
         });
+
         if (result.data.success) {
           if (socket.connected) {
             socket.emit("appointment_created", send_data);
           }
           clearAllState();
-          setPatientRecallData(undefined);
+
           const data = await getDoctorSchedule("", {
             sub_dept_id: sub_department_id,
             provider_id,
@@ -478,7 +565,7 @@ export default memo(function BookAppointment(props) {
           </div>
 
           <div className="row">
-            {!!countries?.length && (
+            {/* {!!countries?.length && (
               <div className="col-lg-4 algaehInputGroup">
                 <AlgaehLabel
                   label={{
@@ -510,24 +597,11 @@ export default memo(function BookAppointment(props) {
                           value: item,
                         }))}
                     >
-                      {/* {countries?.map((item) => (
-                                      <Option
-                                        value={item.tel_code}
-                                        key={item.tel_code}
-                                      >
-                                        {item.tel_code}
-                                      </Option>
-                                    ))} */}
+                   
                     </Select>
                   </>
                   <AlagehFormGroup
-                    // div={{
-                    //   className: "col-6 form-group mandatory",
-                    // }}
-                    // label={{
-                    //   fieldName: "contact_number",
-                    //   isImp: true,
-                    // }}
+                   
                     textBox={{
                       className: "txt-fld",
                       name: "contact_number",
@@ -541,23 +615,103 @@ export default memo(function BookAppointment(props) {
                       },
                     }}
                   />
-                  {/* <Controller
-                            control={control}
-                            name="contact_number"
-                            rules={{
-                              required: "Please Enter Contact Number",
-                              minLength: {
-                                message: "Please Enter Valid Number",
-                                value: 6,
-                              },
-                            }}
-                            render={(props) => (
-                              <>
-                                <Input {...props} disabled={disabled} />
-                              </>
-                            )}
-                          /> */}
+                
                 </Input.Group>
+              </div>
+            )} */}
+            {!!countries?.length && (
+              <div className="col-lg-4 algaehInputGroup mandatory">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "contact_number",
+                    isImp: true,
+                  }}
+                />
+                {/* <label className="style_Label">
+                              Contact Number<span className="imp">&nbsp;*</span>
+                            </label> */}
+                <Input.Group compact>
+                  <Controller
+                    control={control}
+                    name="tel_code"
+                    rules={{
+                      required: "Select Tel Code",
+                    }}
+                    render={({ value, onChange }) => (
+                      <>
+                        <Select
+                          value={value}
+                          onChange={(_, selected) => {
+                            onChange(_, selected);
+                            setMaxLength(
+                              selected.max_phone_digits
+                                ? selected.max_phone_digits
+                                : null
+                            );
+                          }}
+                          virtual={true}
+                          // disabled={disabled}
+                          showSearch
+                          filterOption={(input, option) => {
+                            return (
+                              option.value
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          }}
+                          options={countries
+                            ?.map((item) => ({
+                              tel_code: item.tel_code,
+                              max_phone_digits: item.max_phone_digits,
+                            }))
+                            .filter((v, i, a) => a.indexOf(v) === i)
+                            .map((item) => {
+                              return {
+                                label: item.tel_code,
+                                value: item.tel_code,
+
+                                max_phone_digits: item.max_phone_digits,
+                              };
+                            })}
+                        >
+                          {/* {countries?.map((item) => (
+                                      <Option
+                                        value={item.tel_code}
+                                        key={item.tel_code}
+                                      >
+                                        {item.tel_code}
+                                      </Option>
+                                    ))} */}
+                        </Select>
+                      </>
+                    )}
+                  />
+                  <span className="errorMsg">{errors.tel_code?.message}</span>
+                  <Controller
+                    control={control}
+                    name="contact_number"
+                    rules={{
+                      required: "Please Enter Contact Number",
+                      maxLength: {
+                        message: "Please Enter Valid Number",
+                        value: maxLength,
+                      },
+                    }}
+                    render={(props) => (
+                      <>
+                        <Input
+                          {...props}
+                          // disabled={disabled}
+                          maxLength={maxLength}
+                          placeholder={maxLength ? `${maxLength} digits` : ""}
+                        />
+                      </>
+                    )}
+                  />
+                </Input.Group>
+                <span className="errorMsg">
+                  {errors.contact_number?.message}
+                </span>
               </div>
             )}
 

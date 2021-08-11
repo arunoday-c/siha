@@ -1080,35 +1080,35 @@ export default function RadScheduledList() {
       },
     }
   );
-  const generateReport = (row) => {
-    algaehApiCall({
-      uri: "/report",
-      method: "GET",
-      module: "reports",
-      headers: {
-        Accept: "blob",
-      },
-      others: { responseType: "blob" },
-      data: {
-        report: {
-          reportName: "radiologyReport",
-          reportParams: [
-            {
-              name: "hims_f_rad_order_id",
-              value: row.hims_f_rad_order_id,
-            },
-          ],
-          outputFileType: "PDF",
-        },
-      },
-      onSuccess: (res) => {
-        const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Radiology Report`;
-        window.open(origin);
-        // window.document.title = "Radiology Report";
-      },
-    });
-  };
+  // const generateReport = (row) => {
+  //   algaehApiCall({
+  //     uri: "/report",
+  //     method: "GET",
+  //     module: "reports",
+  //     headers: {
+  //       Accept: "blob",
+  //     },
+  //     others: { responseType: "blob" },
+  //     data: {
+  //       report: {
+  //         reportName: "radiologyReport",
+  //         reportParams: [
+  //           {
+  //             name: "hims_f_rad_order_id",
+  //             value: row.hims_f_rad_order_id,
+  //           },
+  //         ],
+  //         outputFileType: "PDF",
+  //       },
+  //     },
+  //     onSuccess: (res) => {
+  //       const urlBlob = URL.createObjectURL(res.data);
+  //       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Radiology Report`;
+  //       window.open(origin);
+  //       // window.document.title = "Radiology Report";
+  //     },
+  //   });
+  // };
   const changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.datetimeFormat);
@@ -1401,7 +1401,7 @@ export default function RadScheduledList() {
                               />
                             </Tooltip>
 
-                            <Tooltip title="Print Result">
+                            {/* <Tooltip title="Print Result">
                               <i
                                 style={{
                                   pointerEvents:
@@ -1411,7 +1411,7 @@ export default function RadScheduledList() {
                                 className="fas fa-print"
                                 onClick={() => generateReport(row)}
                               />
-                            </Tooltip>
+                            </Tooltip> */}
                           </>
                         );
                       },

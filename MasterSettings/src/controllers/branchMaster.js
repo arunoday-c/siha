@@ -12,6 +12,7 @@ const {
   modifyBranchMaster,
   getDepartmentsChart,
   getEmployeeReportingTo,
+  sendTestMail,
 } = branchModels;
 
 export default () => {
@@ -66,6 +67,17 @@ export default () => {
         records: result,
       });
     }
+
+    next();
+  });
+
+  api.get("/sendTestMail", sendTestMail, (req, res, next) => {
+    let result = req.records;
+
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
 
     next();
   });

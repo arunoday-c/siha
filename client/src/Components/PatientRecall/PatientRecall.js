@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./PatientRecall.scss";
 // import {
 //   AlgaehDateHandler,
@@ -12,6 +12,7 @@ import {
   AlgaehDateHandler,
   AlgaehMessagePop,
   Spin,
+  MainContext,
   // persistStorageOnRemove,
   // persistStageOnGet,
   // persistStateOnBack
@@ -33,6 +34,7 @@ const getDoctorsAndDepts = async (key) => {
   return result?.data?.records;
 };
 function PatientRecall() {
+  const { userLanguage } = useContext(MainContext);
   const today = moment().format("YYYY/MM/DD");
   const {
     control,
@@ -53,6 +55,7 @@ function PatientRecall() {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [followUpData, setFollowUpData] = useState([]);
+  const [legends, setLegends] = useState([]);
   const history = useHistory();
   const location = useLocation();
   const {} = useQuery(["dropdown-data"], getDoctorsAndDepts, {
@@ -110,8 +113,22 @@ function PatientRecall() {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    getAppointmentStatus();
   }, []);
-
+  async function getAppointmentStatus() {
+    const { data } = await newAlgaehApi({
+      uri: "/appointment/getAppointmentStatus",
+      module: "frontDesk",
+      method: "GET",
+    }).catch((error) => {
+      throw error;
+    });
+    if (data.success === false) {
+      throw new Error(data.message);
+    } else {
+      return setLegends(data.records);
+    }
+  }
   const getFollowUpData = async (data) => {
     const from_data = data.recall_start
       ? moment(data.recall_start).format("YYYY/MM/DD")
@@ -335,23 +352,50 @@ function PatientRecall() {
             </button>
           </div>
         </div>
+        <div className="row">
+          <div className=" col-12">
+            {/* <Spin spinning={appStatusLoading ?? true}> */}
+            <div className="actions">
+              <ul className="ul-legend">
+                {legends &&
+                  legends?.map((item, index) => (
+                    <li key={index}>
+                      <span
+                        style={{
+                          backgroundColor: item.color_code,
+                        }}
+                      />
+                      {userLanguage === "ar"
+                        ? item.description_ar
+                        : item.statusDesc}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+            {/* </Spin> */}
+          </div>
+        </div>
       </form>
       <div className="scrolling-wrapper">
-        <Spin spinning={loading}>
-          {followUpData.length > 0 ? (
-            followUpData?.map((item, index) => (
-              <Column key={index} data={item} />
-            ))
-          ) : (
-            <div className="noRecallData">
-              <i className="fas fa-info-circle"></i>
-              <p>
-                <b>No Follow Up</b> or <b>Appointment</b> request available for
-                selected period.
-              </p>
-            </div>
-          )}
-        </Spin>
+        <div className="col-12">
+          <div className="row" style={{ background: "#fff" }}>
+            <Spin spinning={loading}>
+              {followUpData.length > 0 ? (
+                followUpData?.map((item, index) => (
+                  <Column key={index} data={item} />
+                ))
+              ) : (
+                <div className="noRecallData">
+                  <i className="fas fa-info-circle"></i>
+                  <p>
+                    <b>No Follow Up</b> or <b>Appointment</b> request available
+                    for selected period.
+                  </p>
+                </div>
+              )}
+            </Spin>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -911,10 +911,12 @@ export function BillDetails({
                               sendingObject.net_amount -
                               sendingObject?.advance_adjust -
                               credit;
-                            sendingObject.cash_amount = 0;
+                            sendingObject.cash_amount = sendingObject.receiveable_amount.toFixed(
+                              decimal_places
+                            );
                             sendingObject.card_amount = 0;
                             sendingObject.unbalanced_amount = sendingObject.receiveable_amount.toFixed(
-                              3
+                              decimal_places
                             );
                             return { ...sendingObject };
                           });

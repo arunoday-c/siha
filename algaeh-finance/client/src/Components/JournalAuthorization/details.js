@@ -1,5 +1,9 @@
 import React from "react";
-import { AlgaehModal, AlgaehDataGrid } from "algaeh-react-components";
+import {
+  AlgaehLabel,
+  AlgaehModal,
+  AlgaehDataGrid,
+} from "algaeh-react-components";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 
 export default function ({ visible, voucherNo, inVisible, data }) {
@@ -16,17 +20,23 @@ export default function ({ visible, voucherNo, inVisible, data }) {
       }}
       className={`row algaehNewModal JVModalDetail`}
     >
-      <div className="col-12">
+      <div className="col-12" id="JVModalDetailGrid">
         <AlgaehDataGrid
-          className="JVModalDetailGrid"
           columns={[
             {
               fieldName: "ledger",
-              label: "Ledger",
+              label: <AlgaehLabel label={{ forceLabel: "Ledger" }} />,
+              disabled: true,
+              filterable: true,
+              sortable: false,
+              others: {
+                resizable: false,
+                style: { textAlign: "left" },
+              },
             },
             {
               fieldName: "debit_amount",
-              label: "Debit Amount",
+              label: <AlgaehLabel label={{ forceLabel: "Debit Amt." }} />,
               displayTemplate: (row) => {
                 return (
                   <span>
@@ -35,11 +45,19 @@ export default function ({ visible, voucherNo, inVisible, data }) {
                     })}
                   </span>
                 );
-              }
+              },
+              disabled: true,
+              filterable: true,
+              sortable: false,
+              others: {
+                resizable: false,
+                width: 100,
+                style: { textAlign: "right" },
+              },
             },
             {
               fieldName: "credit_amount",
-              label: "Credit Amount",
+              label: <AlgaehLabel label={{ forceLabel: "Credit Amt." }} />,
               displayTemplate: (row) => {
                 return (
                   <span>
@@ -48,16 +66,37 @@ export default function ({ visible, voucherNo, inVisible, data }) {
                     })}
                   </span>
                 );
-              }
+              },
+              disabled: true,
+              filterable: true,
+              sortable: false,
+              others: {
+                resizable: false,
+                width: 100,
+                style: { textAlign: "right" },
+              },
             },
             {
               fieldName: "narration",
-              label: "Narration",
+              label: <AlgaehLabel label={{ forceLabel: "Narration" }} />,
+              disabled: true,
+              filterable: true,
+              sortable: false,
+              others: {
+                resizable: false,
+                // width: 100,
+                style: { textAlign: "left" },
+              },
             },
           ]}
           // height="40vh"
           rowUnique="finance_voucher_id"
           data={data}
+          filter={true}
+          noDataText="No data available for selected period"
+          pageOptions={{ rows: 50, page: 1 }}
+          isFilterable={true}
+          pagination={true}
         />
       </div>
       {/* <div className="col-12 margin-top-15">
