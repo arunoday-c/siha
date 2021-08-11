@@ -1620,6 +1620,9 @@ export default {
                                     };
                                   }
                                   if (!isNaN(parseFloat(cell.value))) {
+                                    cell.value = parseFloat(
+                                      String(cell.value).replace(/,/g, "")
+                                    );
                                     cell.numFmt = excel_cel_numFmt;
                                   }
                                 } else {
@@ -1643,7 +1646,14 @@ export default {
                                       : skipOnMerdge + 1;
                                   // }
                                   if (!isNaN(parseFloat(cell.value))) {
+                                    cell.value = parseFloat(
+                                      String(cell.value).replace(/,/g, "")
+                                    );
                                     cell.numFmt = excel_cel_numFmt;
+                                    cell.alignment = {
+                                      vertical: "middle",
+                                      horizontal: "right",
+                                    };
                                   }
                                 }
 

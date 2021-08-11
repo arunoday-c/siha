@@ -87,6 +87,7 @@ export function GenerateExcel({
           const row_count = worksheet.rowCount;
           worksheet.getRow(row_count).eachCell((cell) => {
             if (!isNaN(parseFloat(cell.value))) {
+              cell.value = parseFloat(cell.value.replace(/,/g, ""));
               cell.numFmt = "#,##0.00";
               cell.alignment = { vertical: "middle", horizontal: "right" };
             }
@@ -121,6 +122,7 @@ export function GenerateExcel({
         worksheet.getRow(row_count).eachCell((cell) => {
           if (cell.value !== "") {
             if (!isNaN(parseFloat(cell.value))) {
+              cell.value = parseFloat(String(cell.value).replace(/,/g, ""));
               cell.numFmt = "#,##0.00";
               cell.alignment = { vertical: "middle", horizontal: "right" };
             }
