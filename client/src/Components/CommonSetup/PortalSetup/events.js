@@ -6,7 +6,6 @@ export async function getServiceTypeDropDown() {
     module: "masterSettings",
     method: "GET",
   }).catch((error) => {
-    debugger;
     throw error;
   });
   if (data.success === false) {
@@ -46,41 +45,17 @@ export async function getPortalExists(key) {
   }
 }
 
-export function addOrUpdatePortalSetup(data, refetch) {
-  const dataArray = data.filteredArray.map((item) => {
-    return {
-      ...item,
-      id: item.id,
-      insurance_id: item.insurance_provider_id,
-      sub_insurance_id: item.hims_d_insurance_sub_id,
-      service_types: JSON.stringify(item.service_type),
-      hospital_id: item.hospitalID,
-    };
-  });
-
-  newAlgaehApi({
+export async function addOrUpdatePortalSetup(data, refetch) {
+  await newAlgaehApi({
     uri: "/insurance/addOrUpdatePortalSetup",
     module: "insurance",
-    data: { data: dataArray },
+    data: data,
     method: "POST",
-  })
-    .then((response) => {
-      refetch();
-      AlgaehMessagePop({
-        display: "Data updated Successfully...",
-        type: "success",
-      });
-    })
-    .catch((err) => {
-      AlgaehMessagePop({
-        display: err.message,
-        type: "error",
-      });
-    });
-  // return result.data?.records;
+  }).catch((err) => {
+    throw new Error(err.message);
+  });
 }
 export function updatePortal(data, setIsDirty) {
-  debugger;
   newAlgaehApi({
     uri: "/insurance/updatePortalExists",
     module: "insurance",
@@ -101,4 +76,15 @@ export function updatePortal(data, setIsDirty) {
         type: "error",
       });
     });
+}
+
+export async function syncServicesToPortal() {
+  const result = await newAlgaehApi({
+    uri: "/insurance/syncServicesToPortal",
+    module: "insurance",
+    method: "POST",
+  }).catch((err) => {
+    throw new Error(err.message);
+  });
+  return result.data;
 }

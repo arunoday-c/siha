@@ -1,18 +1,22 @@
 import { channelWrapper, EXCHANGE_NAME } from "./connection";
-import bulkUpdatePortalSetup from "../models/bulkUpdatePortalSetup";
-async function corporateMaster(queueName) {
+import { corporateServiceMasterSync } from "../models/bulkUpdatePortalSetup";
+
+const CORPORATE_MASTER_ACK = "CORPORATE_MASTER_ACK";
+
+async function corporateServices(queueName, exchangeName) {
   try {
+    exchangeName = exchangeName ?? EXCHANGE_NAME;
     await channelWrapper.addSetup(async (channel) => {
-      await channel.assertExchange(EXCHANGE_NAME, "direct", { durable: true });
+      await channel.assertExchange(exchangeName, "direct", { durable: true });
       await channel.assertQueue(queueName, { durable: true });
       await channel.prefetch(1);
-      await channel.bindQueue(queueName, EXCHANGE_NAME, queueName);
+      await channel.bindQueue(queueName, exchangeName, queueName);
       await channel.consume(
         queueName,
         async (message) => {
           const data = JSON.parse(message?.content.toString() ?? "");
           //Here it is data.
-          await bulkUpdatePortalSetup(data)
+          await pushToLocal(data, queueName)
             .then(() => {
               setTimeout(async () => {
                 //@ts-ignore
@@ -24,7 +28,7 @@ async function corporateMaster(queueName) {
                 //@ts-ignore
                 await channel.nack(message, false, true);
                 console.error(
-                  `Exchange/Queue :${EXCHANGE_NAME} / ${queueName},@:${new Date().toLocaleString()} 
+                  `Exchange/Queue :${exchangeName} / ${queueName},@:${new Date().toLocaleString()} 
               ==>`,
                   data
                 );
@@ -42,4 +46,18 @@ async function corporateMaster(queueName) {
   }
 }
 
-export default corporateMaster;
+// export default corporateMaster;
+
+async function pushToLocal(data, queue) {
+  try {
+    switch (queue) {
+      case "CORPORATE_MASTER_ACK":
+        return corporateServiceMasterSync(data);
+        break;
+    }
+  } catch (e) {
+    throw e;
+  }
+}
+
+corporateServices(CORPORATE_MASTER_ACK);
