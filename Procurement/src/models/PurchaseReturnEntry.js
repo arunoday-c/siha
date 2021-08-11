@@ -558,8 +558,9 @@ export default {
                 req.records = {
                   invalid_input: true,
                   message:
+                    "Returning stock & Stock-in-hand not matching for the item " +
                     deductionOutput.item_description +
-                    " Return stock and stock in your stock not matching.",
+                    ".",
                 };
                 next();
               });

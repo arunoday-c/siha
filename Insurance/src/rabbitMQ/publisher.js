@@ -2,15 +2,17 @@
 // let channel = undefined;
 // import { Channel } from "amqplib";
 import { channelWrapper, EXCHANGE_NAME } from "./connection";
-export async function publisher(queueName, data) {
+export async function publisher(queueName, data, exchangeName) {
   try {
+    exchangeName = exchangeName ?? EXCHANGE_NAME;
+
     await channelWrapper.addSetup(async (channel) => {
       await channel.assertQueue(queueName, { durable: true });
-      await channel.bindQueue(queueName, EXCHANGE_NAME, queueName);
+      await channel.bindQueue(queueName, exchangeName, queueName);
       return;
     });
 
-    await channelWrapper.publish(EXCHANGE_NAME, queueName, data, {
+    await channelWrapper.publish(exchangeName, queueName, data, {
       contentType: `application/json`,
       persistent: true,
     });
@@ -19,4 +21,5 @@ export async function publisher(queueName, data) {
     // console.error("Error Publisher===>", e);
   }
 }
-console.log("<======SMS is activated=====>");
+
+console.log("<======Portal sync is activated=====>");

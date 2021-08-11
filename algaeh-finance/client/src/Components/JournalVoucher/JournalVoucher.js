@@ -418,6 +418,7 @@ export default function JournalVoucher() {
           return { ...m, paytypedisable: true };
         });
 
+        debugger;
         setTotalCredit(
           _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
         );
@@ -471,6 +472,7 @@ export default function JournalVoucher() {
             return f.payment_type === "DR";
           });
 
+          debugger;
           setTotalCredit(
             _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
           );
@@ -539,6 +541,7 @@ export default function JournalVoucher() {
                     return f.payment_type === "DR";
                   });
 
+                  debugger;
                   setTotalCredit(
                     _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
                   );
@@ -1168,6 +1171,7 @@ export default function JournalVoucher() {
               return f.payment_type === "DR";
             });
 
+            debugger;
             setTotalCredit(
               _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
             );
@@ -1183,6 +1187,7 @@ export default function JournalVoucher() {
             const debit_data = _.filter(journerList, (f) => {
               return f.payment_type === "DR";
             });
+            debugger;
             setTotalCredit(
               _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
             );
@@ -1212,6 +1217,7 @@ export default function JournalVoucher() {
           onChange: (e) => {
             // console.log(journerList);
 
+            debugger;
             records["amount"] = e.target.value === "" ? "" : e.target.value;
             const credit_data = _.filter(journerList, (f) => {
               return f.payment_type === "CR";
@@ -1220,6 +1226,7 @@ export default function JournalVoucher() {
               return f.payment_type === "DR";
             });
             if (voucherType !== "expense_voucher") {
+              debugger;
               setTotalCredit(
                 _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
               );
@@ -1389,6 +1396,7 @@ export default function JournalVoucher() {
                   placeholder: "Enter Amount",
                   value: bankAmount,
                   onChange: (e) => {
+                    debugger;
                     setBankAmount(e.target.value);
                     setTotalCredit(e.target.value);
                   },
@@ -1534,7 +1542,8 @@ export default function JournalVoucher() {
                 </small>
                 <div
                   className={`actions arAction ${
-                    parseFloat(total_credit) !== parseFloat(total_debit)
+                    parseFloat(String(total_credit).replace(/,/g, "")) !==
+                    parseFloat(String(total_debit).replace(/,/g, ""))
                       ? "notEqualPar"
                       : ""
                   } `}
@@ -1542,17 +1551,26 @@ export default function JournalVoucher() {
                   <span className="notEqual">
                     <AlgaehLabel label={{ fieldName: "TCredit" }} />
                     <b>
-                      {getAmountFormart(total_credit, {
-                        appendSymbol: false,
-                      })}
+                      {getAmountFormart(
+                        parseFloat(String(total_credit).replace(/,/g, "")),
+                        {
+                          appendSymbol: false,
+                        }
+                      )}
                     </b>
                   </span>
                   <span className="notEqual">
                     <AlgaehLabel label={{ fieldName: "TDebit" }} />
                     <b>
-                      {getAmountFormart(total_debit, {
+                      {getAmountFormart(
+                        parseFloat(String(total_debit).replace(/,/g, "")),
+                        {
+                          appendSymbol: false,
+                        }
+                      )}
+                      {/* {getAmountFormart(total_debit, {
                         appendSymbol: false,
-                      })}
+                      })} */}
                     </b>
                   </span>
                   <button
@@ -1628,6 +1646,7 @@ export default function JournalVoucher() {
                           });
                           return;
                         }
+                        debugger;
                         if (result.payment_type === "CR") {
                           setTotalCredit(
                             (amount) =>

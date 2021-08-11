@@ -2,21 +2,13 @@ import React, { memo, useContext } from "react";
 import { PortalSetupContext } from "./PortalSetupContext";
 import "./PortalSetup.scss";
 import { updatePortal } from "./events";
-export default memo(function PortalActive(
-  {
-    //   setIsDirty,
-    //   portal_exists,
-    //   setPortal_exists,
-  }
-) {
+export default memo(function PortalActive() {
   const onRadioChange = (e) => {
     setPortalState({
       ...portalState,
-      // isDirty: true,
       portal_exists: e.target.value,
     });
 
-    // if (portalState?.isDirty) {
     updatePortal({ portal_exists: e.target.value });
   };
   const { portalState, setPortalState } = useContext(PortalSetupContext);
@@ -35,7 +27,7 @@ export default memo(function PortalActive(
             name="portal_exists"
           />
           <span>Yes</span>
-        </label>{" "}
+        </label>
         <label className="radio inline">
           <input
             type="radio"

@@ -143,11 +143,11 @@ app.use((error, req, res, next) => {
     message: errorMessage,
   });
 });
-app.server.listen(_port);
-//    () => {
-//   const { RABBIT_MQ_SERVER } = process.env;
-//   if (RABBIT_MQ_SERVER && RABBIT_MQ_SERVER !== "") {
-//   }
-// });
+app.server.listen(_port, () => {
+  const { RABBIT_MQ_SERVER } = process.env;
+  if (RABBIT_MQ_SERVER && RABBIT_MQ_SERVER !== "") {
+    require("./rabbitMQ/consumer");
+  }
+});
 console.log(`Insurance Server is running  on PORT  - ${_port} *`);
 export default app;

@@ -609,6 +609,7 @@ export default {
             let above_ninety_days_total = parseFloat(0).toFixed(decimal_places);
             let grand_total = parseFloat(0).toFixed(decimal_places);
 
+            // console.log("1");
             const outputArray = [];
             if (Result[1].length > 1) {
               todays_total = Result[1].pop().debit_amount;
@@ -625,6 +626,7 @@ export default {
             if (Result[5].length > 1) {
               above_ninety_days_total = Result[5].pop().debit_amount;
             }
+            // console.log("2");
             ledgers.forEach((ledger) => {
               let todays_amount = parseFloat(0).toFixed(decimal_places);
               let thirty_days_amount = parseFloat(0).toFixed(decimal_places);
@@ -688,7 +690,7 @@ export default {
                 });
               }
             });
-
+            // console.log("3");
             grand_total = (
               parseFloat(todays_total) +
               parseFloat(thirty_days_total) +
@@ -697,6 +699,7 @@ export default {
               parseFloat(above_ninety_days_total)
             ).toFixed(decimal_places);
 
+            _mysql.releaseConnection();
             req.records = {
               data: outputArray,
               todays_total: todays_total,
@@ -1046,6 +1049,7 @@ export default {
               parseFloat(above_ninety_days_total)
             ).toFixed(decimal_places);
 
+            _mysql.releaseConnection();
             req.records = {
               data: outputArray,
               todays_total: todays_total,
@@ -1272,7 +1276,7 @@ function getAccountHeadsForTrialBalance(
               resolve(outputArray);
             })
             .catch((e) => {
-              console.log("m4:", e);
+              // console.log("m4:", e);
               next(e);
             });
         })
@@ -1367,7 +1371,7 @@ function getAccountHeadsForReport(
               resolve(outputArray[0]);
             })
             .catch((e) => {
-              console.log("m4:", e);
+              // console.log("m4:", e);
               next(e);
             });
         })
@@ -1462,7 +1466,7 @@ function calcAmount(account_heads, levels, decimal_places) {
       }
       resolve(final_res);
     } catch (e) {
-      console.log("am55:", e);
+      // console.log("am55:", e);
       reject(e);
     }
   });
@@ -1556,7 +1560,7 @@ function calcAmountForTrialBalance(
       resolve(final_res);
     });
   } catch (e) {
-    console.log("am55:", e);
+    // console.log("am55:", e);
     reject(e);
   }
 }
@@ -1721,7 +1725,7 @@ function createHierarchy(
 
     return roots;
   } catch (e) {
-    console.log("MY-ERORR:", e);
+    // console.log("MY-ERORR:", e);
   }
 }
 
@@ -1930,7 +1934,7 @@ function createHierarchyForTB_BAKUP_JAN_16_2020(
 
     return roots;
   } catch (e) {
-    console.log("MY-ERORR:", e);
+    // console.log("MY-ERORR:", e);
   }
 }
 //created by :IRFAN to build tree hierarchy TRIAL BALANCE
@@ -2104,7 +2108,7 @@ function createHierarchyForTB(
 
     return { roots, total_debit_amount, total_credit_amount };
   } catch (e) {
-    console.log("MY-ERORR:", e);
+    // console.log("MY-ERORR:", e);
   }
 }
 
@@ -2295,7 +2299,7 @@ function calcAmountForProfitAndLoss(account_heads, levels, decimal_places) {
     }
     return final_res;
   } catch (e) {
-    console.log("am55:", e);
+    // console.log("am55:", e);
     reject(e);
   }
 }
@@ -2471,7 +2475,7 @@ function buildHierarchyForProfitAndLoss(
 
     return roots;
   } catch (e) {
-    console.log("MY-ERORR:", e);
+    // console.log("MY-ERORR:", e);
   }
 }
 
@@ -2743,17 +2747,17 @@ function getTrialBalanceFunc(
                       resolve(outputArray[0]);
                     })
                     .catch((e) => {
-                      console.log("m2:", e);
+                      // console.log("m2:", e);
                       next(e);
                     });
                 })
                 .catch((e) => {
-                  console.log("m3:", e);
+                  // console.log("m3:", e);
                   next(e);
                 });
             })
             .catch((e) => {
-              console.log("m4:", e);
+              // console.log("m4:", e);
               next(e);
             });
         })
@@ -3497,6 +3501,6 @@ function createHierarchyTransactionTB(
 
     return roots;
   } catch (e) {
-    console.log("MY-ERORR:", e);
+    // console.log("MY-ERORR:", e);
   }
 }

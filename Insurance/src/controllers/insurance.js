@@ -10,7 +10,10 @@ import insuranceModels, {
   ChangeOfInsuranceInvoice,
 } from "../models/insurance";
 import { generateInsuranceStatement } from "../models/insuranceStatement";
-import { bulkUpdatePortalSetup } from "../models/bulkUpdatePortalSetup";
+import {
+  bulkUpdatePortalSetup,
+  syncPortalServices,
+} from "../models/bulkUpdatePortalSetup";
 const {
   addPatientInsuranceData,
   getListOfInsuranceProvider,
@@ -355,5 +358,6 @@ export default () => {
     next();
   });
   api.get("/generateInsuranceStatement", generateInsuranceStatement);
+  api.post("/syncServicesToPortal", syncPortalServices);
   return api;
 };

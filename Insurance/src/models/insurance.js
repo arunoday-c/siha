@@ -1652,14 +1652,14 @@ export default {
     try {
       _mysql
         .executeQuery({
-          query: `SELECT hims_d_insurance_sub_id,PS.*,IP.hospital_id as hospitalID,insurance_sub_code,user_id,I.effective_end_date,insurance_sub_name,arabic_sub_name,insurance_provider_id,
-              card_format,ins_template_name,transaction_number,I.effective_start_date, 
-              finance_account_child_id,concat('(',ledger_code,') ',child_name) as child_name ,I.head_id, I.child_id
-              from hims_d_insurance_sub  I      
-              left join finance_account_child C on I.child_id=C.finance_account_child_id 
-              left join hims_d_portal_setup PS on PS.sub_insurance_id=I.hims_d_insurance_sub_id
-              left join hims_d_insurance_provider IP on IP.hims_d_insurance_provider_id=I.insurance_provider_id
-              where I.record_status='A';`,
+          query: `select hims_d_insurance_sub_id as sub_insurance_id, insurance_provider_id as insurance_id ,PS.service_types,PS.hospital_id,insurance_sub_code,user_id,
+          S.insurance_sub_name,S.arabic_sub_name,insurance_provider_id,
+                        card_format,ins_template_name,transaction_number,
+                        if( S.hims_d_insurance_sub_id = PS.insurance_id,'Y','N') as checked,
+                        IP.insurance_provider_name,IP.arabic_provider_name
+                        from hims_d_insurance_sub as S left join hims_d_portal_setup as PS on
+           S.hims_d_insurance_sub_id = PS.sub_insurance_id inner join hims_d_insurance_provider as IP
+           on IP.hims_d_insurance_provider_id= S.insurance_provider_id where S.user_id is not null;`,
           printQuery: true,
         })
         .then((result) => {
