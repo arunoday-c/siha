@@ -9,22 +9,23 @@ import {
   AlagehFormGroup,
   AlgaehDateHandler,
   AlgaehModalPopUp,
-  AlagehAutoComplete,
+  // AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import {
-  changeEvent,
+  // changeEvent,
   dateFormater,
   updateStockDetils,
   datehandle,
   texthandle,
   printBarcode,
   openExchangePopup,
-  onClickProcess,
+  // onClickProcess,
 } from "./InvStockEnquiryEvents";
 import "./InvStockEnquiry.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
+import TransationOption from "./TransationOption";
 // import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 class BatchWiseStock extends Component {
@@ -55,10 +56,10 @@ class BatchWiseStock extends Component {
     );
   };
   render() {
-    const ware_house =
-      this.props.inventorylocations === undefined
-        ? []
-        : this.props.inventorylocations.filter((f) => f.location_type === "WH");
+    // const ware_house =
+    //   this.props.inventorylocations === undefined
+    //     ? []
+    //     : this.props.inventorylocations.filter((f) => f.location_type === "WH");
     return (
       <React.Fragment>
         <AlgaehModalPopUp
@@ -118,7 +119,7 @@ class BatchWiseStock extends Component {
 
                         return (
                           <span>
-                            {display !== undefined && display.length !== 0
+                            {display !== undefined && display?.length !== 0
                               ? display[0].location_description
                               : ""}
                           </span>
@@ -136,7 +137,7 @@ class BatchWiseStock extends Component {
 
                         return (
                           <span>
-                            {display !== undefined && display.length !== 0
+                            {display !== undefined && display?.length !== 0
                               ? display[0].location_description
                               : ""}
                           </span>
@@ -169,7 +170,7 @@ class BatchWiseStock extends Component {
 
                         return (
                           <span>
-                            {display !== null && display.length !== 0
+                            {display !== null && display?.length !== 0
                               ? display[0].uom_description
                               : ""}
                           </span>
@@ -193,7 +194,7 @@ class BatchWiseStock extends Component {
 
                         return (
                           <span>
-                            {display !== null && display.length !== 0
+                            {display !== null && display?.length !== 0
                               ? display[0].uom_description
                               : ""}
                           </span>
@@ -211,7 +212,7 @@ class BatchWiseStock extends Component {
 
                         return (
                           <span>
-                            {display !== null && display.length !== 0
+                            {display !== null && display?.length !== 0
                               ? display[0].uom_description
                               : ""}
                           </span>
@@ -382,7 +383,26 @@ class BatchWiseStock extends Component {
             </div>
           </div>
         </AlgaehModalPopUp>
-        <AlgaehModalPopUp
+        {this.state.open_exchange ? (
+          <TransationOption
+            item_details={this.state.item_details}
+            visible={this.state.open_exchange}
+            // trans_type,
+            setVisible={() => {
+              this.setState({
+                open_exchange: !this.state.open_exchange,
+              });
+            }}
+            inventorylocations={this.props.inventorylocations}
+            req_warehouse={this.props.req_warehouse}
+            location_id={this.props.location_id}
+            location_type={this.props.location_type}
+            trans_ack_required={this.props.trans_ack_required}
+            requisition_auth_level={this.props.requisition_auth_level}
+            git_locations={this.props.git_locations}
+          />
+        ) : null}
+        {/* <AlgaehModalPopUp
           title="Transation Option"
           openPopup={this.state.open_exchange}
           class={"MultiTransationModal"}
@@ -589,7 +609,7 @@ class BatchWiseStock extends Component {
               </div>
             </div>
           </div>
-        </AlgaehModalPopUp>
+        </AlgaehModalPopUp> */}
       </React.Fragment>
     );
   }

@@ -281,12 +281,13 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT hims_m_inventory_item_location_id, item_id, inventory_location_id, item_location_status, \
+            "SELECT hims_m_inventory_item_location_id, item_id, inventory_location_id,LI.location_description,LI.location_type, item_location_status, \
             batchno, expirydt, barcode, qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, IL.item_type, grn_id,\
             grnno, sale_price, mrp_price, sales_uom, git_qty, IM.stocking_uom_id, vendor_batchno, \
             category_id as item_category_id, group_id as item_group_id, \
             IM.item_description, IM.waited_avg_cost from hims_m_inventory_item_location IL \
             inner join hims_d_inventory_item_master IM on item_id = IM.hims_d_inventory_item_master_id \
+            inner join hims_d_inventory_location LI on inventory_location_id=LI.hims_d_inventory_location_id\
             where (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and IL.record_status='A' and qtyhand>0" +
             strAppend +
             "order by date(expirydt)",

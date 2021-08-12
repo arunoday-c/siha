@@ -302,7 +302,6 @@ const openExchangePopup = ($this, row) => {
 const onClickProcess = ($this) => {
   let inputOb = $this.state;
 
-  debugger;
   if (inputOb.trans_type === null) {
     swalMessage({
       title: "Select Transaction Type.",
@@ -396,7 +395,7 @@ const onClickProcess = ($this) => {
         const settings = { header: undefined, footer: undefined };
 
         if ($this.props.trans_ack_required === "Y") {
-          if ($this.props.git_locations.length === 0) {
+          if ($this.props.git_locations?.length === 0) {
             swalMessage({
               title: "Please Enter GIT Loaction to transfer item",
               type: "warning",

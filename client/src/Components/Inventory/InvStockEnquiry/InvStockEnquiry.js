@@ -62,7 +62,10 @@ class InvStockEnquiry extends Component {
   }
 
   componentDidMount() {
-    if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
+    if (
+      this.props.itemlist === undefined ||
+      this.props.itemlist?.length === 0
+    ) {
       this.props.getItems({
         uri: "/inventory/getItemMaster",
         data: { item_status: "A" },
@@ -77,7 +80,7 @@ class InvStockEnquiry extends Component {
 
     if (
       this.props.locations === undefined ||
-      this.props.locations.length === 0
+      this.props.locations?.length === 0
     ) {
       this.props.getLocation({
         uri: "/inventory/getInventoryLocation",
@@ -93,7 +96,7 @@ class InvStockEnquiry extends Component {
         },
       });
     }
-    if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
+    if (this.props.itemuom === undefined || this.props.itemuom?.length === 0) {
       this.props.getItemUOM({
         uri: "/inventory/getInventoryUom",
         module: "inventory",
@@ -403,7 +406,7 @@ class InvStockEnquiry extends Component {
 
                       return (
                         <span>
-                          {display !== null && display.length !== 0
+                          {display !== null && display?.length !== 0
                             ? display[0].uom_description
                             : ""}
                         </span>
@@ -437,7 +440,7 @@ class InvStockEnquiry extends Component {
 
                       return (
                         <span>
-                          {display !== null && display.length !== 0
+                          {display !== null && display?.length !== 0
                             ? display[0].uom_description
                             : ""}
                         </span>
