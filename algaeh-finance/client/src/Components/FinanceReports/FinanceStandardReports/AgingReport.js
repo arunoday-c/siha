@@ -5,15 +5,17 @@ import React, { useEffect, useState } from "react";
 // import ReactToPrint from "react-to-print";
 // import { newAlgaehApi } from "../../../hooks";
 
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { handleFile } from "../FinanceReportEvents";
 // import { getItem, tokenDecode } from "algaeh-react-components/storage";
 // import moment from "moment";
 // import jwtDecode from "jwt-decode";
-// import { AlgaehTable, AlgaehMessagePop } from "algaeh-react-components";
+import { AlgaehDateHandler, AlgaehButton } from "algaeh-react-components";
 // import ReportHeader from "../header";
 import PrintLayout from "../printlayout";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import moment from "moment";
+
 export default function AgingReport({ style, result, layout, type, dates }) {
   const DIFF = {
     payable: { url: "getAccountPayableAging", title: "Payable" },
@@ -22,7 +24,10 @@ export default function AgingReport({ style, result, layout, type, dates }) {
 
   // const createPrintObject = useRef(undefined);
   const [data, setData] = useState([]);
+  const [till_date, setTillDate] = useState(undefined);
+  const [date_wise, setDateWise] = useState("N");
   const [footerData, setFooterData] = useState({});
+  const [loading, setLoading] = useState(false);
   // const [organisation, setOrganisation] = useState({});
 
   useEffect(() => {
@@ -54,6 +59,18 @@ export default function AgingReport({ style, result, layout, type, dates }) {
 
   // const { organization_name, address1, address2, full_name } = organisation;
 
+  function onPreviewClick() {
+    if (date_wise === "Y" && till_date === undefined) {
+      swalMessage({
+        type: "warning",
+        title: "Select Upto Date.",
+      });
+    } else {
+      setLoading(true);
+      loadReport();
+    }
+  }
+
   function loadReport(excel) {
     debugger;
     let extraHeaders = {};
@@ -73,9 +90,12 @@ export default function AgingReport({ style, result, layout, type, dates }) {
         from_date: dates[0],
         to_date: dates[1],
         excel,
+        date_wise,
+        till_date,
       },
       ...extraHeaders,
       onSuccess: (response) => {
+        setLoading(false);
         if (excel) {
           handleFile(response.data, type);
         } else {
@@ -94,97 +114,205 @@ export default function AgingReport({ style, result, layout, type, dates }) {
           }
         }
       },
+      onFailure: (error) => {
+        setLoading(false);
+        swalMessage({
+          type: "error",
+          title: error.response.data.message || error.message,
+        });
+      },
     });
   }
 
   return (
-    <PrintLayout
-      title={`Account ${
-        type === "receivable" ? "Receivable" : "Payable"
-      } Aging Report`}
-      columns={[
-        {
-          fieldName: "customer",
-          label: type === "receivable" ? "Customer Name" : "Vendor Name",
-          filterable: true,
-          sortable: true,
-        },
-        {
-          fieldName: "todays_amount",
-          label: "Current",
-          filterable: true,
-          displayTemplate: (row) => {
-            return getAmountFormart(row["todays_amount"], {
-              appendSymbol: false,
-            });
-          },
-        },
-        {
-          fieldName: "thirty_days_amount",
-          label: "1-30 Days",
-          filterable: true,
-          displayTemplate: (row) => {
-            return getAmountFormart(row["thirty_days_amount"], {
-              appendSymbol: false,
-            });
-          },
-        },
-        {
-          fieldName: "sixty_days_amount",
-          label: "31-60 Days",
-          filterable: true,
-          displayTemplate: (row) => {
-            return getAmountFormart(row["sixty_days_amount"], {
-              appendSymbol: false,
-            });
-          },
-        },
-        {
-          fieldName: "ninety_days_amount",
-          label: "61-90 Days",
-          filterable: true,
-          displayTemplate: (row) => {
-            return getAmountFormart(row["ninety_days_amount"], {
-              appendSymbol: false,
-            });
-          },
-        },
-        {
-          fieldName: "above_ninety_days_amount",
-          label: "Over 90 Days",
-          filterable: true,
-          displayTemplate: (row) => {
-            return getAmountFormart(row["above_ninety_days_amount"], {
-              appendSymbol: false,
-            });
-          },
-        },
-        {
-          fieldName: "balance",
-          label: "Balance",
-          filterable: true,
-          displayTemplate: (row) => {
-            return getAmountFormart(row["balance"], { appendSymbol: false });
-          },
-        },
-      ]}
-      data={data}
-      tableprops={{
-        aggregate: (fieldName) => {
-          if (footerData) {
-            debugger;
-            if (fieldName !== "customer") {
-              return getAmountFormart(footerData[fieldName], {
-                appendSymbol: false,
-              });
+    <>
+      <div className="col-2">
+        <label>Date Wise</label>
+        <div className="customCheckbox">
+          <label className="checkbox inline">
+            <input
+              type="checkbox"
+              checked={date_wise === "Y" ? true : false}
+              onChange={(e) => {
+                const checked = e.target.checked ? "Y" : "N";
+                setDateWise(checked);
+                setData([]);
+                setFooterData({});
+              }}
+            />
+            <span> Yes</span>
+          </label>
+        </div>
+      </div>
+
+      <AlgaehDateHandler
+        div={{
+          className: "col-2 algaeh-date-fld",
+        }}
+        label={{
+          fieldName: "Upto Date",
+        }}
+        textBox={{
+          className: "form-control",
+          value: till_date,
+        }}
+        maxDate={moment().add(1, "days")}
+        events={{
+          onChange: (momentDate) => {
+            if (momentDate) {
+              setTillDate(momentDate._d);
             } else {
-              return "";
+              setTillDate(undefined);
             }
-          }
-        },
-        footer: true,
-      }}
-    />
+          },
+        }}
+        others={{
+          disabled: date_wise === "N" ? true : false,
+        }}
+      />
+
+      <div className="col previewReportBtn">
+        <AlgaehButton
+          className="btn btn-primary"
+          onClick={onPreviewClick}
+          loading={loading}
+        >
+          Preview
+        </AlgaehButton>
+      </div>
+
+      {date_wise === "Y" ? (
+        <PrintLayout
+          title={`Account ${
+            type === "receivable" ? "Receivable" : "Payable"
+          } Aging Report`}
+          columns={[
+            {
+              fieldName: "customer",
+              label: type === "receivable" ? "Customer Name" : "Vendor Name",
+              filterable: true,
+              sortable: true,
+            },
+            {
+              fieldName: "balance",
+              label: "Balance",
+              filterable: true,
+              displayTemplate: (row) => {
+                return getAmountFormart(row["balance"], {
+                  appendSymbol: false,
+                });
+              },
+            },
+          ]}
+          data={data}
+          tableprops={{
+            aggregate: (fieldName) => {
+              if (footerData) {
+                debugger;
+                if (fieldName !== "customer") {
+                  return getAmountFormart(footerData[fieldName], {
+                    appendSymbol: false,
+                  });
+                } else {
+                  return "";
+                }
+              }
+            },
+            footer: true,
+          }}
+        />
+      ) : (
+        <PrintLayout
+          title={`Account ${
+            type === "receivable" ? "Receivable" : "Payable"
+          } Aging Report`}
+          columns={[
+            {
+              fieldName: "customer",
+              label: type === "receivable" ? "Customer Name" : "Vendor Name",
+              filterable: true,
+              sortable: true,
+            },
+            {
+              fieldName: "todays_amount",
+              label: "Current",
+              filterable: true,
+              displayTemplate: (row) => {
+                return getAmountFormart(row["todays_amount"], {
+                  appendSymbol: false,
+                });
+              },
+            },
+            {
+              fieldName: "thirty_days_amount",
+              label: "1-30 Days",
+              filterable: true,
+              displayTemplate: (row) => {
+                return getAmountFormart(row["thirty_days_amount"], {
+                  appendSymbol: false,
+                });
+              },
+            },
+            {
+              fieldName: "sixty_days_amount",
+              label: "31-60 Days",
+              filterable: true,
+              displayTemplate: (row) => {
+                return getAmountFormart(row["sixty_days_amount"], {
+                  appendSymbol: false,
+                });
+              },
+            },
+            {
+              fieldName: "ninety_days_amount",
+              label: "61-90 Days",
+              filterable: true,
+              displayTemplate: (row) => {
+                return getAmountFormart(row["ninety_days_amount"], {
+                  appendSymbol: false,
+                });
+              },
+            },
+            {
+              fieldName: "above_ninety_days_amount",
+              label: "Over 90 Days",
+              filterable: true,
+              displayTemplate: (row) => {
+                return getAmountFormart(row["above_ninety_days_amount"], {
+                  appendSymbol: false,
+                });
+              },
+            },
+            {
+              fieldName: "balance",
+              label: "Balance",
+              filterable: true,
+              displayTemplate: (row) => {
+                return getAmountFormart(row["balance"], {
+                  appendSymbol: false,
+                });
+              },
+            },
+          ]}
+          data={data}
+          tableprops={{
+            aggregate: (fieldName) => {
+              if (footerData) {
+                debugger;
+                if (fieldName !== "customer") {
+                  return getAmountFormart(footerData[fieldName], {
+                    appendSymbol: false,
+                  });
+                } else {
+                  return "";
+                }
+              }
+            },
+            footer: true,
+          }}
+        />
+      )}
+    </>
     // <>
     //   <div className="row">
     //     <div className="col-12 reportHeaderAction">
