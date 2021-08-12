@@ -13,7 +13,8 @@ export default memo(function SingleDoctorCard({ data }) {
             <div className="content">
               <div className="row">
                 <div className="col-12">
-                  <p>{item.full_name}</p>
+                  <p style={{ margin: "0" }}>{item.full_name}</p>
+                  <small>{item.sub_department_name}</small>
                 </div>
               </div>{" "}
               <div className="footer">

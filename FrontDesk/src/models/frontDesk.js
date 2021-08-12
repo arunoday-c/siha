@@ -168,9 +168,11 @@ export default {
                 detailsOfDoc: _.chain(details)
                   .groupBy((it) => it.doctor_id)
                   .map((detail, index) => {
-                    const { doctor_id, full_name } = _.head(detail);
+                    const { doctor_id, full_name, sub_department_name } =
+                      _.head(detail);
                     return {
                       full_name,
+                      sub_department_name,
                       doctor_id,
                       totalLength: detail?.length,
                       newVisitDetails: _.chain(detail)
@@ -179,7 +181,6 @@ export default {
                           const { new_visit_patient } = _.head(newVisit);
                           return {
                             new_visit_patient,
-
                             totalPat: newVisit?.length,
                           };
                         })
