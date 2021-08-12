@@ -10,15 +10,16 @@ export default memo(function DoctorsDataWithSubdepartment(props) {
       {encounterData?.map((item, index) => {
         return (
           <div key={item.sub_department_id}>
-            <div className="col-12">
-              <h4>
-                Sub Department Name - <b>{item.sub_department_name}</b>
-              </h4>
-              <hr style={{ paddingBottom: 5 }} />
+            <div className="row">
+              <div className="col-12">
+                <h4>
+                  Sub Department Name - <b>{item.sub_department_name}</b>
+                </h4>
+                <hr style={{ paddingBottom: 5 }} />
+              </div>
             </div>
-            <div className="col-3">
-              <SingleDoctorCard key={index} data={item} />
-            </div>
+
+            <SingleDoctorCard key={index} data={item} />
           </div>
         );
       })}
