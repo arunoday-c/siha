@@ -140,7 +140,6 @@ const apsock = (socket) => {
   });
 
   socket.on("encounter_dash", (patient) => {
-    console.log("iamhererererererereerere", patient);
     socket.broadcast.emit("reload_encounter_dash", {
       ...patient,
     });
