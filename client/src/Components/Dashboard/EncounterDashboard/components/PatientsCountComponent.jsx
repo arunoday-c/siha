@@ -34,7 +34,7 @@ export default memo(function PatientsCountComponent(patientCountData) {
             <div className="col-12">
               <div className="numbers">
                 <p>Total New Patients</p>
-                {newPatientCount ? totalPatientsLength : 0.0}
+                {newPatientCount ? newPatientCount : 0.0}
               </div>
             </div>
           </div>

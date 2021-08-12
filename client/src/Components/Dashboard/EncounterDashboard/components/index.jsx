@@ -1,7 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import FilterComponent from "./FilterComponent";
 import { useQuery } from "react-query";
-// import { MainContext } from "algaeh-react-components";
+import { MainContext } from "algaeh-react-components";
+import moment from "moment";
 // import { useParams } from "react-router-dom";
 import {
   getDeptAndSubDept,
@@ -18,7 +19,7 @@ export default function EncounterDashboard(props) {
   // const location = useLocation();
   // const history = useHistory();
   // const pathName = history.location.pathname;
-  // const { socket } = useContext(MainContext);
+  const { socket } = useContext(MainContext);
   const {
     setSubDepartmentData,
     setHospitalData,
@@ -44,42 +45,37 @@ export default function EncounterDashboard(props) {
   );
   useEffect(() => {
     loadEncounterData().then((result) => {
-      debugger;
       setFollowUpPatientCount(result.total_followUp);
       setNewPatientCount(result.total_new_visit);
       setTotalPatientsLength(result.totalPatient);
       setEncounterData(result.arrangedData);
     });
   }, []);
-  // useEffect(() => {
-  // if (socket.connected) {
-  //   socket.on("refresh_appointment", async ({ patient }) => {
-  //     const parameters = new URLSearchParams(window.location.search);
-  //     const provider_id = parameters.get("provider_id");
-  //     const sub_department_id = parameters.get("sub_department_id");
-  //     const appointmentDate = parameters.get("appointmentDate");
-  //     if (
-  //       sub_department_id === patient.sub_department_id &&
-  //       appointmentDate === patient.appointment_date
-  //     ) {
-  //       const dataSchedule = await getDoctorSchedule("", {
-  //         sub_dept_id: sub_department_id,
-  //         provider_id: provider_id,
-  //         schedule_date: appointmentDate,
-  //       });
+  useEffect(() => {
+    if (socket.connected) {
+      socket.on("reload_encounter_dash", async (patient) => {
+        const parameters = new URLSearchParams(window.location.search);
+        const from_date = parameters.get("from_date");
 
-  //       setDoctorSchedules(dataSchedule);
-  //     }
-  //     // }
-  //   });
-  // }
-  // }, [socket]);
+        if (from_date === moment(patient.visit_date).format("YYYY-MM-DD")) {
+          await loadEncounterData().then((result) => {
+            setFollowUpPatientCount(result.total_followUp);
+            setNewPatientCount(result.total_new_visit);
+            setTotalPatientsLength(result.totalPatient);
+            setEncounterData(result.arrangedData);
+          });
+        }
+        // }
+      });
+    }
+  }, [socket]);
   const { data: hospitalData } = useQuery(
     "hospital-data",
     getOrganizationByUser,
     {
       keepPreviousData: true,
       onSuccess: (data) => {
+        data.unshift({ hims_d_hospital_id: -1, hospital_name: "All" });
         setHospitalData(data);
       },
       onError: (error) => {
@@ -93,7 +89,6 @@ export default function EncounterDashboard(props) {
   const { data: doctorData } = useQuery("doctor-data", getProviderDetails, {
     keepPreviousData: true,
     onSuccess: (data) => {
-      debugger;
       setDoctorData(data);
     },
     onError: (error) => {

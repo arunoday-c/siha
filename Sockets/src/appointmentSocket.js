@@ -138,6 +138,13 @@ const apsock = (socket) => {
     //   }
     // });
   });
+
+  socket.on("encounter_dash", (patient) => {
+    console.log("iamhererererererereerere", patient);
+    socket.broadcast.emit("reload_encounter_dash", {
+      ...patient,
+    });
+  });
   socket.on("opBill_add", ({ bill_date, billdetails }) => {
     const labRecord = billdetails.filter((f) => f.service_type === "Lab");
     if (labRecord.length > 0) {

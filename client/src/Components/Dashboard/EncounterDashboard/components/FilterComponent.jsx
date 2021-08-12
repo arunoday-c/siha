@@ -1,19 +1,28 @@
 import React, { memo, useContext, useState, useEffect } from "react";
 // import {useQuery} from "react-query";
 import { useForm, Controller } from "react-hook-form";
+import moment from "moment";
 import {
   AlgaehAutoComplete,
   AlgaehDateHandler,
   AlgaehTreeSearch,
 } from "algaeh-react-components";
+import { useHistory } from "react-router-dom";
 import { loadEncounterData } from "./events";
 import { EncounterDashboardContext } from "../EncounterDashboardContext";
 
 export default memo(function FilterComponent(props) {
   const [doctors, setDoctors] = useState([]);
-  const { control, errors, handleSubmit } = useForm({
+  const { control, errors, handleSubmit, getValues, setValue } = useForm({
     shouldFocusError: true,
+    defaultValues: {
+      from_date: new Date(),
+      hospital_id: -1,
+    },
   });
+  const history = useHistory();
+  // const location = useLocation();
+  const pathName = history.location.pathname;
   const {
     // setSubDepartmentData,
     // setDoctorData,
@@ -39,6 +48,14 @@ export default memo(function FilterComponent(props) {
       setDoctors(doctorData);
     }
   }, [doctorData]);
+  useEffect(() => {
+    history.push(
+      pathName +
+        `?from_date=${moment(
+          getValues().from_date ? getValues().from_date : new Date()
+        ).format("YYYY-MM-DD")}`
+    );
+  }, []);
   return (
     <div>
       <form onSubmit={handleSubmit(encounterData)}>
@@ -63,6 +80,9 @@ export default memo(function FilterComponent(props) {
                     onChange: (_, selected) => {
                       onChange(selected);
                     },
+                    onClear: () => {
+                      onChange(undefined);
+                    },
 
                     dataSource: {
                       textField: "hospital_name",
@@ -82,19 +102,20 @@ export default memo(function FilterComponent(props) {
             <Controller
               name="hims_d_sub_department_id"
               control={control}
-              rules={{ required: "Please select a department" }}
+              // rules={{ required: "Please select a department" }}
               render={({ value, onBlur, onChange }) => (
                 <AlgaehAutoComplete
-                  div={{ className: "col-12 form-group mandatory" }}
+                  div={{ className: "col-12 form-group " }}
                   label={{
                     forceLabel: "Sub Department",
-                    isImp: true,
+                    // isImp: true,
                   }}
-                  error={errors}
+                  // error={errors}
                   selector={{
                     value,
                     onChange: (_, selected) => {
                       onChange(selected);
+                      setValue("doctor_id", undefined);
                       let doctors = doctorData;
 
                       setDoctors(
@@ -136,6 +157,7 @@ export default memo(function FilterComponent(props) {
                   }}
                   label={{ forceLabel: "Date", isImp: true }}
                   error={errors}
+                  minDate={new Date()}
                   textBox={{
                     className: "txt-fld",
                     name: "from_date",
@@ -160,21 +182,20 @@ export default memo(function FilterComponent(props) {
             <Controller
               control={control}
               name="doctor_id"
-              rules={{ required: "Please Select a doctor" }}
+              // rules={{ required: "Please Select a doctor" }}
               render={({ onChange, value }) => (
                 <AlgaehTreeSearch
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col " }}
                   label={{
                     fieldName: "doctor_id",
-                    isImp: true,
+                    // isImp: true,
                     align: "ltr",
                   }}
-                  error={errors}
+                  // error={errors}
                   tree={{
                     disableHeader: true,
                     treeDefaultExpandAll: true,
-                    onChange: (selected, _) => {
-                      debugger;
+                    onChange: (selected) => {
                       onChange(selected);
                     },
 

@@ -1,10 +1,9 @@
 import React, { memo } from "react";
 
 export default memo(function SingleDoctorCard({ data }) {
-  debugger;
   return (
     <>
-      {data.map((item, index) => (
+      {data.detailsOfDoc.map((item, index) => (
         <div className="card animated fadeInUp faster" key={index}>
           <div className="content">
             <div className="row">
@@ -24,10 +23,20 @@ export default memo(function SingleDoctorCard({ data }) {
               <hr />
               <div className="row">
                 <div className="col-6 stats">
-                  New Visit - <span>{item.newVisitDetails[0].totalPat}</span>
+                  New Visit -{" "}
+                  <span>
+                    {item.newVisitDetails[0]?.totalPat
+                      ? item.newVisitDetails[0]?.totalPat
+                      : 0}
+                  </span>
                 </div>
                 <div className="col-6 stats" style={{ textAlign: "right" }}>
-                  Follow Up - <span>{item.newVisitDetails[0].totalPat}</span>
+                  Follow Up -{" "}
+                  <span>
+                    {item.newVisitDetails[1]?.totalPat
+                      ? item.newVisitDetails[1]?.totalPat
+                      : 0}
+                  </span>
                 </div>
               </div>
             </div>

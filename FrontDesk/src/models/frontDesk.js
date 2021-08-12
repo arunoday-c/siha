@@ -133,22 +133,25 @@ export default {
       if (input.hims_d_sub_department_id) {
         strQuery += ` and PV.sub_department_id=${input.hims_d_sub_department_id}`;
       }
+      if (input.hospital_id != -1 && input.hospital_id) {
+        strQuery += ` and PV.hospital_id=${input.hospital_id}`;
+      }
       _mysql
         .executeQuery({
           query: `SELECT PV.patient_id,E.full_name,PV.doctor_id,PV.sub_department_id,SD.sub_department_name,PV.new_visit_patient 
           FROM hims_f_patient_visit PV 
           inner join hims_d_employee E on E.hims_d_employee_id=PV.doctor_id
           inner join hims_d_sub_department SD on SD.hims_d_sub_department_id=PV.sub_department_id
-          where PV.hospital_id=? and date(visit_date)=date(?) ${strQuery};`,
+          where  date(visit_date)=date(?) ${strQuery};`,
           values: [
-            input.hospital_id ? input.hospital_id : 1,
+            // input.hospital_id ? input.hospital_id : 1,
             moment(input.from_date).format("YYYY-MM-DD"),
           ],
           printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
-          let arrangedData = _.chain(result[0])
+          let arrangedData = _.chain(result)
             .groupBy((g) => {
               return g.sub_department_id;
             })
@@ -187,7 +190,7 @@ export default {
               };
             })
             .value();
-          const totalPatientData = _.chain(result[0])
+          const totalPatientData = _.chain(result)
             .groupBy((it) => it.new_visit_patient)
             .map((newVisit, index) => {
               return {
@@ -200,7 +203,7 @@ export default {
             arrangedData,
             total_new_visit: totalPatientData[0]?.total,
             total_followUp: totalPatientData[1]?.total,
-            totalPatient: result[0]?.length,
+            totalPatient: result.length,
           };
           next();
         })

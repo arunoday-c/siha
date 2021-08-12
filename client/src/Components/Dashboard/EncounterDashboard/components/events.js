@@ -3,7 +3,6 @@
 import { newAlgaehApi } from "../../../../hooks";
 
 export async function loadEncounterData(data1) {
-  debugger;
   const { data } = await newAlgaehApi({
     uri: "/frontdesk/loadEncounterData",
     module: "frontDesk",

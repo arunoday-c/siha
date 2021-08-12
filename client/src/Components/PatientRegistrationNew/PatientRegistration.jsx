@@ -306,7 +306,7 @@ export function PatientRegistration() {
     preferenceFunction().then((result) => {
       if (result) {
         setValue("visit_type", result.visit_type);
-        debugger;
+
         setValue("doctor", result.doctor);
         setServiceInfo(result.doctor);
       } else {
@@ -315,54 +315,54 @@ export function PatientRegistration() {
     });
   }, []);
 
-  const { isLoading, data: patientData, refetch } = useQuery(
-    ["patient", { patient_code }],
-    getPatient,
-    {
-      enabled: !!patient_code,
-      initialData: {
-        bill_criedt: [],
-        patientRegistration: null,
-        identities: [],
-      },
-      retry: 0,
-      initialStale: true,
-      onSuccess: (data) => {
-        if (data?.patientRegistration) {
-          let patientRegistration = data?.patientRegistration;
+  const {
+    isLoading,
+    data: patientData,
+    refetch,
+  } = useQuery(["patient", { patient_code }], getPatient, {
+    enabled: !!patient_code,
+    initialData: {
+      bill_criedt: [],
+      patientRegistration: null,
+      identities: [],
+    },
+    retry: 0,
+    initialStale: true,
+    onSuccess: (data) => {
+      if (data?.patientRegistration) {
+        let patientRegistration = data?.patientRegistration;
 
-          // const { screen_code } = selectedMenu;
-          // const preference = userPreferences[0][screen_code];
+        // const { screen_code } = selectedMenu;
+        // const preference = userPreferences[0][screen_code];
 
-          setIdentityType(patientRegistration.identity_type);
-          reset({
-            ...patientRegistration,
-            // visit_type: preference.visit_type,
-            // doctor: preference.doctor,
-            // consultation: "Y",
-            // visit_type: default_visit_type?.hims_d_visit_type_id,
-          });
-          preferenceFunction().then((result) => {
-            if (result) {
-              setValue("visit_type", result.visit_type);
-              debugger;
-              setValue("doctor", result.doctor);
-              setServiceInfo(result.doctor);
-            } else {
-              setValue("visit_type", default_visit_type?.hims_d_visit_type_id);
-            }
-          });
-        }
-      },
-      onError: (err) => {
-        AlgaehMessagePop({
-          display: err?.message,
-          type: "error",
+        setIdentityType(patientRegistration.identity_type);
+        reset({
+          ...patientRegistration,
+          // visit_type: preference.visit_type,
+          // doctor: preference.doctor,
+          // consultation: "Y",
+          // visit_type: default_visit_type?.hims_d_visit_type_id,
         });
-        history.push(location.pathname);
-      },
-    }
-  );
+        preferenceFunction().then((result) => {
+          if (result) {
+            setValue("visit_type", result.visit_type);
+
+            setValue("doctor", result.doctor);
+            setServiceInfo(result.doctor);
+          } else {
+            setValue("visit_type", default_visit_type?.hims_d_visit_type_id);
+          }
+        });
+      }
+    },
+    onError: (err) => {
+      AlgaehMessagePop({
+        display: err?.message,
+        type: "error",
+      });
+      history.push(location.pathname);
+    },
+  });
 
   const [save, { isLoading: saveLoading }] = useMutation(savePatient, {
     onSuccess: (data) => {
@@ -453,7 +453,7 @@ export function PatientRegistration() {
           preferenceFunction().then((result) => {
             if (result) {
               setValue("visit_type", result.visit_type);
-              debugger;
+
               setValue("doctor", result.doctor);
               setServiceInfo(result.doctor);
             } else {
@@ -686,7 +686,14 @@ export function PatientRegistration() {
             //   insertPatientPortal({ ...data, ...input });
             // }
             if (sockets.connected) {
+              console.log("iiasisisiisisis");
               sockets.emit("patient_checked", {
+                ...data,
+                provider_id: doctor_id,
+                visit_date: new Date(),
+                full_name: input?.full_name,
+              });
+              sockets.emit("encounter_dash", {
                 ...data,
                 provider_id: doctor_id,
                 visit_date: new Date(),
@@ -780,7 +787,14 @@ export function PatientRegistration() {
             //   insertPatientPortal({ ...data, ...input });
             // }
             if (sockets.connected) {
+              console.log("iiasisisiisisis");
               sockets.emit("patient_checked", {
+                ...data,
+                provider_id: doctor_id,
+                visit_date: new Date(),
+                full_name: input?.full_name,
+              });
+              sockets.emit("encounter_dash", {
                 ...data,
                 provider_id: doctor_id,
                 visit_date: new Date(),
@@ -847,7 +861,7 @@ export function PatientRegistration() {
     preferenceFunction().then((result) => {
       if (result) {
         setValue("visit_type", result.visit_type);
-        debugger;
+
         setValue("doctor", result.doctor);
         setServiceInfo(result.doctor);
       } else {
