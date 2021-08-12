@@ -226,7 +226,7 @@ export default memo(function BookAppointment(props) {
             message: `This should be ${maxLength} length`,
           });
         }
-        return;
+
         const send_data = {
           patient_id,
           patient_code,

@@ -208,6 +208,37 @@ export default {
       next(e);
     }
   },
+  getAllClinicalSubDept: (req, res, next) => {
+    let input = req.query;
+    const _mysql = new algaehMysql();
+
+    try {
+      _mysql
+        .executeQuery({
+          query: `select hims_d_sub_department_id, sub_department_code,
+          sub_department_name, arabic_sub_department_name,SD.department_id, 
+         sub_department_status from  hims_d_sub_department SD
+         inner join hims_d_department D on SD.department_id=D.hims_d_department_id
+         where SD.record_status='A' and D.department_type='CLINICAL'
+         order by hims_d_sub_department_id desc;`,
+          // values: values,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
   selectSubDepartment: (req, res, next) => {
     let input = req.query;
     const _mysql = new algaehMysql();
@@ -216,15 +247,17 @@ export default {
       let query = "";
       let strQuery = "";
       let values = [];
-      let strSubDept = ""
-      let strType = ""
+      let strSubDept = "";
+      let strType = "";
 
       if (input.hims_d_sub_department_id > 0) {
-        strSubDept += " and hims_d_sub_department_id= " + input.hims_d_sub_department_id;
+        strSubDept +=
+          " and hims_d_sub_department_id= " + input.hims_d_sub_department_id;
       }
       if (input.location_wise === "Y") {
-        strQuery = "left join hims_d_inventory_location L on SD.inventory_location_id = L.hims_d_inventory_location_id "
-        strType = ", L.location_type "
+        strQuery =
+          "left join hims_d_inventory_location L on SD.inventory_location_id = L.hims_d_inventory_location_id ";
+        strType = ", L.location_type ";
       }
       if (input.department_id > 0) {
         query =
@@ -232,8 +265,8 @@ export default {
             inventory_location_id,sub_department_desc, department_id, SD.effective_start_date, SD.effective_end_date, \
             SD.department_type, sub_department_status,vitals_mandatory, D.department_name ${strType} from  hims_d_sub_department SD \
             inner join  hims_d_department D on D.hims_d_department_id = SD.department_id` +
-          strQuery
-          + ` where SD.record_status='A' and department_id=? ${strSubDept} order by hims_d_sub_department_id desc`;
+          strQuery +
+          ` where SD.record_status='A' and department_id=? ${strSubDept} order by hims_d_sub_department_id desc`;
 
         values.push(input.department_id);
       } else {
@@ -242,8 +275,8 @@ export default {
             inventory_location_id,sub_department_desc, department_id, SD.effective_start_date, SD.effective_end_date, 
             SD.department_type, sub_department_status, vitals_mandatory, D.department_name ${strType} from  
             hims_d_sub_department SD inner join  hims_d_department D on D.hims_d_department_id = SD.department_id ` +
-          strQuery
-          + ` where SD.record_status = 'A' ${strSubDept} order by hims_d_sub_department_id desc`;
+          strQuery +
+          ` where SD.record_status = 'A' ${strSubDept} order by hims_d_sub_department_id desc`;
       }
 
       _mysql
