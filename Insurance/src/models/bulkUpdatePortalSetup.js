@@ -1,5 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
+import moment from "moment";
 import { publisher } from "../rabbitMQ/publisher";
 export async function bulkUpdatePortalSetup(req, res, next) {
   const _mysql = new algaehMysql();
@@ -242,5 +243,102 @@ export async function syncPortalServices(req, res, next) {
   } catch (e) {
     _mysql.releaseConnection();
     next(e);
+  }
+}
+
+export async function getListFromPortal(data) {
+  for (let i = 0; i < data.length; i++) {
+    const {
+      patient_identity,
+      patient_package_id,
+      register_id,
+      package_header_id,
+      register_patient_id,
+      portal_user_id,
+      patient_code,
+      patient_name,
+      patient_dob,
+      patient_gender,
+      package_name,
+      details,
+    } = data[i];
+
+    const _mysql = new algaehMysql();
+
+    try {
+      const headerQuery = _mysql.mysqlQueryFormat(
+        `INSERT INTO portal_patient_package_header(
+        patient_identity,patient_package_id,register_id,package_header_id,
+        register_patient_id,portal_user_id,patient_code,patient_name,patient_dob,
+        patient_gender,package_name) values(?,?,?,?,?,?,?,?,?,?,?);`,
+        [
+          patient_identity,
+          patient_package_id,
+          register_id,
+          package_header_id,
+          register_patient_id,
+          portal_user_id,
+          patient_code,
+          patient_name,
+          moment(patient_dob).format("YYYY-MM-DD"),
+          patient_gender,
+          package_name,
+        ]
+      );
+
+      const result = await _mysql
+        .executeQueryWithTransaction({
+          query: headerQuery,
+          printQuery: true,
+        })
+        .catch((error) => {
+          throw error;
+        });
+
+      //insertId
+      let query = "";
+      for (let d = 0; d < details.length; d++) {
+        const {
+          package_detail_service_name,
+          package_detail_id,
+          service_insurance_id,
+          service_insurance_insurance_id,
+          service_insurance_services_id,
+          service_insurance_service_type_id,
+        } = details[d];
+        query += _mysql.mysqlQueryFormat(
+          `INSERT INTO portal_patient_package_detail
+           (package_detail_id,package_detail_service_name,
+            package_detail_services_insurance_id,service_insurance_insurance_id,service_insurance_services_id,
+            service_insurance_service_type_id,portal_package_id) VALUES(?,?,?,?,?,?,?);`,
+          [
+            package_detail_id,
+            package_detail_service_name,
+            service_insurance_id,
+            service_insurance_insurance_id,
+            service_insurance_services_id,
+            service_insurance_service_type_id,
+            result.insertId,
+          ]
+        );
+      }
+      if (query !== "") {
+        await _mysql
+          .executeQuery({ query, printQuery: true })
+          .catch((error) => {
+            throw error;
+          });
+        _mysql.commitTransaction();
+        _mysql.releaseConnection();
+      } else {
+        _mysql.rollBackTransaction();
+        throw new Error(
+          `There is no services for data ===> ${JSON.stringify(data[i])}`
+        );
+      }
+    } catch (e) {
+      _mysql.releaseConnection();
+      throw e;
+    }
   }
 }
