@@ -1,0 +1,108 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div
+    class="print-body"
+    style="page-break-before: always; page-break-after: always; margin-right:15px"
+  >
+
+    <section>
+      <p>Dear Sir,</p>
+      <p>Subject:
+        <b>Requesting
+          {{header.loan_description}}
+          for the sum of
+          {{numberFormating header.loan_amount currencyheader}}</b></p>
+    </section>
+
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <tbody>
+          <tr>
+            <td class="txtFld" width="20%">Branch</td>
+            <td class="txtFld" width="80%"><b>{{header.hospital_name}}</b></td>
+          </tr>
+          <tr>
+            <td class="txtFld" width="20%">Employee Code</td>
+            <td class="txtFld" width="80%"><b>{{header.employee_code}}</b></td>
+          </tr>
+          <tr>
+            <td class="txtFld" width="20%">Employee Name</td>
+            <td class="txtFld" width="80%"><b>{{header.full_name}}</b></td>
+          </tr>
+          <tr>
+            <td class="txtFld" width="20%">Request No.</td>
+            <td class="txtFld" width="80%"><b
+              >{{header.loan_application_number}}</b></td>
+          </tr>
+          <tr>
+            <td class="txtFld" width="20%">Requested Date</td>
+            <td class="txtFld" width="80%"><b
+              >{{header.loan_application_date}}</b></td>
+          </tr>
+          <tr>
+            <td class="txtFld" width="20%">Requested Amount</td>
+            <td class="txtFld" width="80%"><b>{{numberFormating
+                  header.loan_amount
+                  currencyheader
+                }}</b></td>
+          </tr>
+          <tr>
+            <td class="txtFld" width="20%">Installment Amount</td>
+            <td class="txtFld" width="80%"><b>{{numberFormating
+                  header.installment_amount
+                  currencyheader
+                }}</b></td>
+          </tr>
+          <tr>
+            <td class="txtFld" width="20%">Loan Start Month & Year</td>
+            <td class="txtFld" width="80%"><b
+              >{{start_month}}-{{header.start_year}}</b></td>
+          </tr>
+          <tr>
+            <td class="txtFld" width="20%">Loan Type</td>
+            <td class="txtFld" width="80%"><b
+              >{{header.loan_description}}</b></td>
+          </tr>
+          <tr>
+            <td class="txtFld" width="20%">Loan Reason:</td>
+            <td class="txtFld" width="80%"><b
+              >{{header.application_reason}}</b></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <table class="tableForLabelSignature labelBlock" cell-padding="0">
+        <tr>
+          <td width="50%">
+            <p>I hereby request to avail of company loan facility and guarantee
+              to repay as agreed on loan slip.</p>
+
+            <span>{{header.full_name}}</span>
+            <span>{{header.employee_code}}</span>
+            <small>{{header.designation}}</small>
+            <br />
+            <b class="signArea"></b>
+          </td>
+          <td width="50%" class="numberFld">
+            <p>أطلب بموجب هذا الاستفادة من تسهيلات قرض الشركة وضمان السداد كما
+              هو متفق عليه في قسيمة القرض.</p>
+
+            <span>{{header.arabic_name}}</span>
+            <span>{{header.employee_code}}</span>
+            <small>{{header.designation}}</small>
+            <br />
+            <b class="signArea"></b>
+          </td>
+        </tr>
+
+      </table>
+    </section>
+    <p style="text-align: center">This is a system generated Loan Slip on
+      {{currentDateTime "date"}}.
+    </p>
+
+  </div>
+</body>

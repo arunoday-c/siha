@@ -8,6 +8,46 @@ const texthandler = ($this, e) => {
   });
 };
 
+const generateLoanRequestSlip = ($this, row) => {
+  console.log(row);
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "loanRequestSlip",
+        reportParams: [
+          {
+            name: "hims_f_loan_application_id",
+            value: row.hims_f_loan_application_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      // const url = URL.createObjectURL(res.data);
+      // let myWindow = window.open(
+      //   "{{ product.metafields.google.custom_label_0 }}",
+      //   "_blank"
+      // );
+
+      // myWindow.document.write(
+      //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+      // );
+      const urlBlob = URL.createObjectURL(res.data);
+      // const documentName="Salary Slip"
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Loan Request Slip for ${row.employee_code}-${row.employee_name}`;
+      window.open(origin);
+    },
+  });
+};
+
 const generateLoanEmiReport = ($this, row) => {
   console.log(row);
   algaehApiCall({
@@ -48,4 +88,4 @@ const generateLoanEmiReport = ($this, row) => {
   });
 };
 
-export { texthandler, generateLoanEmiReport };
+export { texthandler, generateLoanRequestSlip, generateLoanEmiReport };

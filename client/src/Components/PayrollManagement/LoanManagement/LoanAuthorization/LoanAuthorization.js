@@ -14,7 +14,10 @@ import Enumerable from "linq";
 import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import { generateLoanEmiReport } from "./LoanAuthorizationEvent.js";
+import {
+  generateLoanRequestSlip,
+  generateLoanEmiReport,
+} from "./LoanAuthorizationEvent.js";
 import { AlgaehDataGrid, RawSecurityComponent } from "algaeh-react-components";
 class LoanAuthorization extends Component {
   constructor(props) {
@@ -446,15 +449,25 @@ class LoanAuthorization extends Component {
                         ),
                         displayTemplate: (row) => {
                           return row.loan_authorized === "APR" ? (
-                            <i
-                              className="fas fa-eye"
-                              onClick={() => {
-                                this.setState({
-                                  selRow: row,
-                                  openAuth: true,
-                                });
-                              }}
-                            />
+                            <span>
+                              <i
+                                className="fas fa-eye"
+                                onClick={() => {
+                                  this.setState({
+                                    selRow: row,
+                                    openAuth: true,
+                                  });
+                                }}
+                              />{" "}
+                              <i
+                                className="fas fa-print"
+                                onClick={generateLoanRequestSlip.bind(
+                                  this,
+                                  this,
+                                  row
+                                )}
+                              />
+                            </span>
                           ) : row.loan_authorized === "IS" ? (
                             <i
                               className="fas fa-print"
@@ -465,15 +478,26 @@ class LoanAuthorization extends Component {
                               )}
                             />
                           ) : (
-                            <i
-                              className="fas fa-file-signature"
-                              onClick={() => {
-                                this.setState({
-                                  selRow: row,
-                                  openAuth: true,
-                                });
-                              }}
-                            />
+                            <span>
+                              {" "}
+                              <i
+                                className="fas fa-file-signature"
+                                onClick={() => {
+                                  this.setState({
+                                    selRow: row,
+                                    openAuth: true,
+                                  });
+                                }}
+                              />{" "}
+                              <i
+                                className="fas fa-print"
+                                onClick={generateLoanRequestSlip.bind(
+                                  this,
+                                  this,
+                                  row
+                                )}
+                              />
+                            </span>
                           );
                         },
                         others: {
