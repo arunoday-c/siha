@@ -6,7 +6,7 @@ import "./AccessionAcknowledgement.scss";
 import "./../../../styles/site.scss";
 import { newAlgaehApi } from "../../../hooks";
 import { AcceptandRejectSample } from "./AccessionAcknowledgementHandaler";
-
+import { Checkbox } from "algaeh-react-components";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
@@ -16,12 +16,16 @@ import {
   Tooltip,
   Modal,
 } from "algaeh-react-components";
-
+import swal from "sweetalert2";
 // import Enumerable from "linq";
 import moment from "moment";
 import sockets from "../../../sockets";
 import { Controller, useForm } from "react-hook-form";
-
+const STATUS = {
+  CHECK: true,
+  UNCHECK: false,
+  INDETERMINATE: true,
+};
 const { confirm } = Modal;
 
 export default function AccessionAcknowledgement() {
@@ -33,7 +37,7 @@ export default function AccessionAcknowledgement() {
       start_date: [moment(new Date()), moment(new Date())],
     },
   });
-
+  const [checkAll, setCheckAll] = useState(STATUS.UNCHECK);
   const [isOpen, setIsOpen] = useState(false);
   const [sample_collection, setSample_collection] = useState([]);
   const [selected_row, setSelectedRow] = useState([]);
@@ -61,7 +65,7 @@ export default function AccessionAcknowledgement() {
     getLabOrderedServices,
     {
       onSuccess: (data) => {
-        setSample_collection(data);
+        setSample_collection(data.filter((f) => f.status !== "O"));
       },
       onError: (err) => {
         AlgaehMessagePop({
@@ -88,6 +92,33 @@ export default function AccessionAcknowledgement() {
     });
     return result?.data?.records;
   }
+  const selectAll = (e) => {
+    const stats = e.target.checked === true ? "Y" : "N";
+    let myState = [];
+    debugger;
+    myState = sample_collection.map((f) => {
+      return { ...f, checked: stats };
+    });
+    setCheckAll(stats === "Y" ? STATUS.CHECK : STATUS.UNCHECK);
+    setSample_collection([...myState]);
+    // const myState = portalState.gridData.map((f) => {
+    //   return { ...f, checked: stats, isDirty: stats === "Y" ? true : false };
+    // });
+
+    // const hasUncheck = myState.filter((f) => {
+    //   return f.checked === undefined || f.checked === "N";
+    // });
+
+    // const totalRecords = myState.length;
+    // setCheckAll(
+    //   totalRecords === hasUncheck.length
+    //     ? "UNCHECK"
+    //     : hasUncheck.length === 0
+    //     ? "CHECK"
+    //     : "INDETERMINATE"
+    // );
+    // setPortalState({ ...portalState, gridData: [...myState] });
+  };
 
   // let _Ordered = [];
 
@@ -120,6 +151,15 @@ export default function AccessionAcknowledgement() {
     if (date != null) {
       return moment(date).format(Options.datetimeFormat);
     }
+  };
+  const AckBatchDetail = async (data) => {
+    const result = await newAlgaehApi({
+      uri: "/laboratory/bulkSampleAcknowledge",
+      module: "laboratory",
+      method: "PUT",
+      data: data,
+    });
+    return result?.data?.records;
   };
   const onSubmit = (selected_row, strAccRej, e) => {
     // debugger;
@@ -194,7 +234,53 @@ export default function AccessionAcknowledgement() {
       },
     });
   };
+  const onAcknowledge = () => {
+    const filterData = sample_collection.filter(
+      (f) => f.checked && f.sample_status !== "A"
+    );
 
+    if (filterData.length === 0) {
+      AlgaehMessagePop({
+        display: "Select at-least one record or All Records are  ",
+        type: "warning",
+      });
+      return;
+    }
+    swal({
+      title: `Are you sure to Acknowledge?`,
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willProceed) => {
+      if (willProceed.value) {
+        let inpujObj = {
+          batch_list: filterData,
+        };
+        AckBatchDetail(inpujObj)
+          .then((result) => {
+            refetch();
+            // swal("Acknowledged Succefully... Batch No." + batch_number, {
+            //   icon: "success",
+            // });
+
+            swal({
+              title: "Batch Acknowledged Successfully",
+              icon: "success",
+            });
+          })
+          .catch((e) => {
+            AlgaehMessagePop({
+              display: e,
+              type: "error",
+            });
+          });
+      }
+    });
+  };
+  const gridData = sample_collection.filter((f) => f.sample_status !== "A");
   return (
     <React.Fragment>
       <Modal
@@ -356,6 +442,31 @@ export default function AccessionAcknowledgement() {
                 <AlgaehDataGrid
                   // id="accessionAcknoweldgeGrid"
                   columns={[
+                    {
+                      label: (
+                        <Checkbox
+                          indeterminate={checkAll === STATUS.INDETERMINATE}
+                          checked={checkAll === STATUS.CHECK}
+                          onChange={selectAll}
+                          disabled={gridData.length > 0 ? false : true}
+                        ></Checkbox>
+                      ),
+                      fieldName: "select",
+                      displayTemplate: (row) => {
+                        return (
+                          <CheckBoxPlot
+                            row={row}
+                            fullData={sample_collection ?? []}
+                            setCheckAll={setCheckAll}
+                          />
+                        );
+                      },
+                      others: {
+                        maxWidth: 50,
+                        filterable: false,
+                        sortable: false,
+                      },
+                    },
                     {
                       fieldName: "action",
                       label: <AlgaehLabel label={{ fieldName: "action" }} />,
@@ -605,7 +716,7 @@ export default function AccessionAcknowledgement() {
                     },
                   ]}
                   keyId="patient_code"
-                  data={sample_collection.filter((f) => f.status !== "O")}
+                  data={sample_collection ?? []}
                   pagination={true}
                   pageOptions={{ rows: 50, page: currentPage }}
                   pageEvent={(page) => {
@@ -618,7 +729,75 @@ export default function AccessionAcknowledgement() {
             </div>
           </div>
         </div>
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={{ marginLeft: 10 }}
+                onClick={onAcknowledge}
+                disabled={gridData.length > 0 ? false : true}
+              >
+                Acknowledge All
+              </button>
+
+              {/* <button
+              onClick={() => {
+                setEntryType("R");
+                setBatchList([]);
+                setBatchNUmber(null);
+              }}
+              className="btn btn-default"
+            >
+              Clear
+            </button> */}
+            </div>
+          </div>
+        </div>
       </div>
     </React.Fragment>
   );
 }
+
+/**
+ * For checkboxes
+ * @param {row} Object
+ * @param {fullData} Array
+ * @returns Component
+ */
+function CheckBoxPlot({ row, fullData, setCheckAll }) {
+  const [checked, setChecked] = useState("N");
+  useEffect(() => {
+    setChecked(row.checked);
+  }, [row.checked]);
+  return (
+    <input
+      type="checkbox"
+      checked={checked === "Y" ? true : false}
+      onChange={(e) => {
+        const check = e.target.checked === true ? "Y" : "N";
+
+        if (row.id) {
+          row.isDirty = true;
+        }
+        row.checked = check;
+
+        const hasUncheck = fullData.filter((f) => {
+          return f.checked === undefined || f.checked === "N";
+        });
+        const hasChecks = fullData.filter((f) => f.checked === "Y");
+        setCheckAll(
+          fullData.length === hasChecks.length
+            ? STATUS.CHECK
+            : fullData.length === hasUncheck.length
+            ? STATUS.UNCHECK
+            : STATUS.INDETERMINATE
+        );
+        setChecked(check);
+      }}
+      disabled={row.sample_status === "A"}
+    />
+  );
+}
+React.memo(CheckBoxPlot);
