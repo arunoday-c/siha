@@ -8,19 +8,20 @@ export default memo(function DoctorsDataWithSubdepartment(props) {
   return (
     <>
       {encounterData?.map((item, index) => {
+        debugger;
         return (
-          <div key={item.sub_department_id}>
-            <div className="row">
-              <div className="col-12">
-                <h4>
-                  Sub Department Name - <b>{item.sub_department_name}</b>
-                </h4>
-                <hr style={{ paddingBottom: 5 }} />
-              </div>
-            </div>
+          // <div key={item.sub_department_id}>
+          //   <div className="row">
+          //     <div className="col-12">
+          //       <h4>
+          //         Sub Department Name - <b>{item.sub_department_name}</b>
+          //       </h4>
+          //       <hr style={{ paddingBottom: 5 }} />
+          //     </div>
+          //   </div>
 
-            <SingleDoctorCard key={index} data={item} />
-          </div>
+          <SingleDoctorCard key={index} data={item} />
+          // </div>
         );
       })}
     </>

@@ -151,46 +151,48 @@ export default {
         })
         .then((result) => {
           _mysql.releaseConnection();
-          let arrangedData = _.chain(result)
-            .groupBy((g) => {
-              return g.sub_department_id;
-            })
-            .map((details, key) => {
-              const { sub_department_id, sub_department_name } =
-                _.head(details);
+          let arrangedData =
+            // _.chain(result)
+            //   .groupBy((g) => {
+            //     return g.sub_department_id;
+            //   })
+            //   .map((details, key) => {
+            //     const { sub_department_id, sub_department_name } =
+            //       _.head(details);
 
-              return {
-                sub_department_id: sub_department_id,
-                sub_department_name: sub_department_name,
+            //     return {
+            //       sub_department_id: sub_department_id,
+            //       sub_department_name: sub_department_name,
 
-                total_patients: details?.length,
+            //       total_patients: details?.length,
 
-                detailsOfDoc: _.chain(details)
-                  .groupBy((it) => it.doctor_id)
-                  .map((detail, index) => {
-                    const { doctor_id, full_name, sub_department_name } =
-                      _.head(detail);
-                    return {
-                      full_name,
-                      sub_department_name,
-                      doctor_id,
-                      totalLength: detail?.length,
-                      newVisitDetails: _.chain(detail)
-                        .groupBy((it) => it.new_visit_patient)
-                        .map((newVisit, index) => {
-                          const { new_visit_patient } = _.head(newVisit);
-                          return {
-                            new_visit_patient,
-                            totalPat: newVisit?.length,
-                          };
-                        })
-                        .value(),
-                    };
-                  })
-                  .value(),
-              };
-            })
-            .value();
+            //       detailsOfDoc:
+            _.chain(result)
+              .groupBy((it) => it.doctor_id)
+              .map((detail, index) => {
+                const { doctor_id, full_name, sub_department_name } =
+                  _.head(detail);
+                return {
+                  full_name,
+                  sub_department_name,
+                  doctor_id,
+                  totalLength: detail?.length,
+                  newVisitDetails: _.chain(detail)
+                    .groupBy((it) => it.new_visit_patient)
+                    .map((newVisit, index) => {
+                      const { new_visit_patient } = _.head(newVisit);
+                      return {
+                        new_visit_patient,
+                        totalPat: newVisit?.length,
+                      };
+                    })
+                    .value(),
+                };
+              })
+              .value();
+          // };
+          // })
+          // .value();
           const totalPatientData = _.chain(result)
             .groupBy((it) => it.new_visit_patient)
             .map((newVisit, index) => {
