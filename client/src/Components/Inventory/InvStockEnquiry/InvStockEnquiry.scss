@@ -110,3 +110,15 @@
     background-color: whitesmoke;
   }
 }
+
+.transationOptionModal {
+  min-width: 45vw !important;
+  min-width: 45vw !important;
+  top: 15vh !important;
+  .popupInner {
+    height: 40vh;
+  }
+  .ant-modal-footer {
+    padding: 5px 15px !important;
+  }
+}

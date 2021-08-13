@@ -5,6 +5,7 @@ import {
   AlgaehFormGroup,
   AlgaehModal,
 } from "algaeh-react-components";
+import "./InvStockEnquiry.scss";
 // import AlgaehModalPopUp from "../../Wrapper/modulePopUp";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import moment from "moment";
@@ -302,9 +303,10 @@ export default function TransationOption({
       // openPopup={visible}
       // class={"MultiTransationModal"}
       // onClose={}
+      className={`row algaehNewModal transationOptionModal`}
     >
-      <div className="col-12 popupInner margin-top-15">
-        <form onSubmit={handleSubmit(onClickProcess)}>
+      <form onSubmit={handleSubmit(onClickProcess)}>
+        <div className="col-12 popupInner margin-top-15">
           <div className="row">
             <div className="col-12">
               <AlgaehLabel
@@ -316,7 +318,7 @@ export default function TransationOption({
                 {item_details ? item_details.item_description : "--------"}
               </h6>
             </div>
-            <div className="col">
+            <div className="col-4">
               <AlgaehLabel
                 label={{
                   forceLabel: "Selected Location",
@@ -328,7 +330,7 @@ export default function TransationOption({
                   : "--------"}
               </h6>
             </div>
-            <div className="col">
+            <div className="col-4">
               <AlgaehLabel
                 label={{
                   forceLabel: "Location Type",
@@ -340,7 +342,7 @@ export default function TransationOption({
                   : "--------"}
               </h6>
             </div>
-            <div className="col">
+            <div className="col-4">
               <AlgaehLabel
                 label={{
                   forceLabel: "QTY In Hand",
@@ -350,68 +352,18 @@ export default function TransationOption({
                 {item_details ? parseFloat(item_details.qtyhand) : "--------"}
               </h6>
             </div>
-          </div>
-
-          <Controller
-            name="trans_type"
-            control={control}
-            rules={{ required: "Select Transaction Type" }}
-            render={({ value, onChange }) => (
-              <AlgaehAutoComplete
-                div={{ className: "col-4 form-group mandatory" }}
-                label={{ forceLabel: "Transaction Type", isImp: true }}
-                error={errors}
-                selector={{
-                  className: "form-control",
-                  name: "trans_type",
-                  value,
-                  onChange: (_, selected) => {
-                    onChange(selected);
-                  },
-                  onClear: () => {
-                    onChange(undefined);
-                  },
-
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: [
-                      {
-                        name: "Consume",
-                        value: "C",
-                      },
-                      {
-                        name: "Transfer",
-                        value: "T",
-                      },
-                      {
-                        name: "Material Request",
-                        value: "MR",
-                      },
-                    ],
-                  },
-                  // others: {
-                  //   disabled:
-                  //     current.request_status === "APR" &&
-                  //     current.work_status === "COM",
-                  //   tabIndex: "4",
-                  // },
-                }}
-              />
-            )}
-          />
-          {trans_type === "MR" ? (
             <Controller
-              name="to_location_id"
+              name="trans_type"
               control={control}
-              rules={{ required: "Please select date" }}
-              render={({ value, onChange, onBlur }) => (
-                // <div className="col-2 algaeh-date-fld">
+              rules={{ required: "Select Transaction Type" }}
+              render={({ value, onChange }) => (
                 <AlgaehAutoComplete
                   div={{ className: "col-4 form-group mandatory" }}
-                  label={{ forceLabel: "Request From", isImp: true }}
+                  label={{ forceLabel: "Transaction Type", isImp: true }}
                   error={errors}
                   selector={{
+                    className: "form-control",
+                    name: "trans_type",
                     value,
                     onChange: (_, selected) => {
                       onChange(selected);
@@ -419,237 +371,168 @@ export default function TransationOption({
                     onClear: () => {
                       onChange(undefined);
                     },
-                    onBlur: (_, selected) => {
-                      onBlur(selected);
-                    },
-                    name: "to_location_id",
+
                     dataSource: {
-                      textField: "location_description",
-                      valueField: "hims_d_inventory_location_id",
-                      data:
-                        req_warehouse === "N" ? inventorylocations : ware_house,
+                      textField: "name",
+                      valueField: "value",
+                      data: [
+                        {
+                          name: "Consume",
+                          value: "C",
+                        },
+                        {
+                          name: "Transfer",
+                          value: "T",
+                        },
+                        {
+                          name: "Material Request",
+                          value: "MR",
+                        },
+                      ],
                     },
                     // others: {
-                    //   // disabled: disabled || current.request_status === "APR",
-                    //   tabIndex: "23",
+                    //   disabled:
+                    //     current.request_status === "APR" &&
+                    //     current.work_status === "COM",
+                    //   tabIndex: "4",
                     // },
-                    autoComplete: "off",
                   }}
                 />
               )}
-            />
-          ) : null}
-          {trans_type === "T" ? (
-            <Controller
-              name="to_location_id"
-              control={control}
-              rules={{ required: "Please select a department" }}
-              render={({ value, onBlur, onChange }) => (
-                <AlgaehAutoComplete
-                  div={{ className: "col-3 form-group mandatory" }}
-                  label={{ forceLabel: "Transfer To", isImp: true }}
-                  error={errors}
-                  selector={{
-                    value,
-                    onChange: (_, selected) => {
-                      onChange(selected);
-                    },
-                    onClear: () => {
-                      onChange(undefined);
-                    },
-                    onBlur: (_, selected) => {
-                      onBlur(selected);
-                    },
-                    name: "to_location_id",
-                    dataSource: {
-                      textField: "location_description",
-                      valueField: "hims_d_inventory_location_id",
-                      data:
-                        trans_type === "T" ? inventorylocations : ware_house,
-                    },
-                    autoComplete: "off",
-                  }}
-                />
-              )}
-            />
-          ) : null}
-          <Controller
-            name="quantity"
-            control={control}
-            rules={{ required: "Required" }}
-            render={(props) => (
-              <AlgaehFormGroup
-                div={{ className: "col-3 form-group mandatory" }}
-                error={errors}
-                label={{
-                  forceLabel: "Quantity",
-                  isImp: true,
-                }}
-                textBox={{
-                  number: {
-                    allowNegative: false,
-                    thousandSeparator: ",",
-                  },
-                  className: "txt-fld",
-                  name: "quantity",
-                  ...props,
-                }}
-              />
-            )}
-          />
-          {/* <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
-            <button type="submit" className="btn btn-primary">
-              Load
-            </button>
-          </div>{" "} */}
-
-          {/* <div className="row">
-            <AlagehAutoComplete
-              div={{ className: "col-4 form-group mandatory" }}
-              label={{ forceLabel: "Transation Type", isImp: true }}
-              selector={{
-                name: "trans_type",
-                className: "select-fld",
-                value: this.state.trans_type,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: [
-                    {
-                      name: "Consume",
-                      value: "C",
-                    },
-                    {
-                      name: "Transfer",
-                      value: "T",
-                    },
-                    {
-                      name: "Material Request",
-                      value: "MR",
-                    },
-                  ],
-                },
-
-                onChange: changeEvent.bind(this, this),
-                onClear: () => {
-                  this.setState({
-                    trans_type: null,
-                  });
-                },
-                autoComplete: "off",
-              }}
             />
             {trans_type === "MR" ? (
-              <AlagehAutoComplete
-                div={{ className: "col-4 form-group mandatory" }}
-                label={{ forceLabel: "Request From", isImp: true }}
-                selector={{
-                  name: "to_location_id",
-                  className: "select-fld",
-                  value: to_location_id,
-                  dataSource: {
-                    textField: "location_description",
-                    valueField: "hims_d_inventory_location_id",
-                    data:
-                      this.props.req_warehouse === "N"
-                        ? this.props.inventorylocations
-                        : ware_house,
-                  },
-
-                  onChange: changeEvent.bind(this, this),
-                  onClear: () => {
-                    this.setState({
-                      to_location_id: null,
-                    });
-                  },
-                  autoComplete: "off",
-                }}
-              />
-            ) : null}
-
-            {trans_type === "T" ? (
-              <AlagehAutoComplete
-                div={{ className: "col-3 form-group mandatory" }}
-                label={{ forceLabel: "Transfer To", isImp: true }}
-                selector={{
-                  name: "to_location_id",
-                  className: "select-fld",
-                  value: to_location_id,
-                  dataSource: {
-                    textField: "location_description",
-                    valueField: "hims_d_inventory_location_id",
-                    data:
-                      this.state.trans_type === "T"
-                        ? this.props.inventorylocations
-                        : ware_house,
-                  },
-
-                  onChange: changeEvent.bind(this, this),
-                  onClear: () => {
-                    this.setState({
-                      to_location_id: null,
-                    });
-                  },
-                  autoComplete: "off",
-                }}
-              />
-            ) : null}
-
-            <AlagehFormGroup
-              div={{ className: "col-2 form-group mandatory" }}
-              label={{
-                forceLabel: "Quantity",
-                isImp: true,
-              }}
-              textBox={{
-                number: {
-                  allowNegative: false,
-                  thousandSeparator: ",",
-                },
-                className: "txt-fld",
-                name: "quantity",
-                value: this.state.quantity,
-                events: {
-                  onChange: changeEvent.bind(this, this),
-                },
-              }}
-            />
-          </div> */}
-          {/* </div> */}
-
-          <div className=" popupFooter">
-            <div className="col-lg-12">
-              <div className="row">
-                <div className="col-lg-12">
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    // onClick={onClickProcess.bind(this, this)}
-                  >
-                    Save
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={(e) => {
-                      setVisible();
-                      reset();
-                      // this.setState({
-                      //   open_exchange: false,
-                      //   trans_type: null,
-                      //   quantity: 0,
-                      //   to_location_id: null,
-                      // });
+              <Controller
+                name="to_location_id"
+                control={control}
+                rules={{ required: "Please select date" }}
+                render={({ value, onChange, onBlur }) => (
+                  // <div className="col-2 algaeh-date-fld">
+                  <AlgaehAutoComplete
+                    div={{ className: "col-4 form-group mandatory" }}
+                    label={{ forceLabel: "Request From", isImp: true }}
+                    error={errors}
+                    selector={{
+                      value,
+                      onChange: (_, selected) => {
+                        onChange(selected);
+                      },
+                      onClear: () => {
+                        onChange(undefined);
+                      },
+                      onBlur: (_, selected) => {
+                        onBlur(selected);
+                      },
+                      name: "to_location_id",
+                      dataSource: {
+                        textField: "location_description",
+                        valueField: "hims_d_inventory_location_id",
+                        data:
+                          req_warehouse === "N"
+                            ? inventorylocations
+                            : ware_house,
+                      },
+                      // others: {
+                      //   // disabled: disabled || current.request_status === "APR",
+                      //   tabIndex: "23",
+                      // },
+                      autoComplete: "off",
                     }}
-                  >
-                    Cancel
-                  </button>
-                </div>
+                  />
+                )}
+              />
+            ) : null}
+            {trans_type === "T" ? (
+              <Controller
+                name="to_location_id"
+                control={control}
+                rules={{ required: "Please select a department" }}
+                render={({ value, onBlur, onChange }) => (
+                  <AlgaehAutoComplete
+                    div={{ className: "col-4 form-group mandatory" }}
+                    label={{ forceLabel: "Transfer To", isImp: true }}
+                    error={errors}
+                    selector={{
+                      value,
+                      onChange: (_, selected) => {
+                        onChange(selected);
+                      },
+                      onClear: () => {
+                        onChange(undefined);
+                      },
+                      onBlur: (_, selected) => {
+                        onBlur(selected);
+                      },
+                      name: "to_location_id",
+                      dataSource: {
+                        textField: "location_description",
+                        valueField: "hims_d_inventory_location_id",
+                        data:
+                          trans_type === "T" ? inventorylocations : ware_house,
+                      },
+                      autoComplete: "off",
+                    }}
+                  />
+                )}
+              />
+            ) : null}
+            <Controller
+              name="quantity"
+              control={control}
+              rules={{ required: "Required" }}
+              render={(props) => (
+                <AlgaehFormGroup
+                  div={{ className: "col-4 form-group mandatory" }}
+                  error={errors}
+                  label={{
+                    forceLabel: "Quantity",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    number: {
+                      allowNegative: false,
+                      thousandSeparator: ",",
+                    },
+                    className: "txt-fld",
+                    name: "quantity",
+                    ...props,
+                  }}
+                />
+              )}
+            />
+          </div>
+        </div>
+        <div className=" popupFooter">
+          <div className="col-lg-12">
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  // onClick={onClickProcess.bind(this, this)}
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={(e) => {
+                    setVisible();
+                    reset();
+                    // this.setState({
+                    //   open_exchange: false,
+                    //   trans_type: null,
+                    //   quantity: 0,
+                    //   to_location_id: null,
+                    // });
+                  }}
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </AlgaehModal>
   );
 }
