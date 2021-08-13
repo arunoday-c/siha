@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { handleFile } from "../FinanceReportEvents";
+import Filter from "../filter";
 // import { getItem, tokenDecode } from "algaeh-react-components/storage";
 // import moment from "moment";
 // import jwtDecode from "jwt-decode";
@@ -126,50 +127,53 @@ export default function AgingReport({ style, result, layout, type, dates }) {
 
   return (
     <>
-      <div className="col-2">
-        <label>Date Wise</label>
-        <div className="customCheckbox">
-          <label className="checkbox inline">
-            <input
-              type="checkbox"
-              checked={date_wise === "Y" ? true : false}
-              onChange={(e) => {
-                const checked = e.target.checked ? "Y" : "N";
-                setDateWise(checked);
-                setData([]);
-                setFooterData({});
-              }}
-            />
-            <span> Yes</span>
-          </label>
+      <div className="row inner-top-search">
+        <div className="col-2">
+          <label>Date Wise</label>
+          <div className="customCheckbox">
+            <label className="checkbox inline">
+              <input
+                type="checkbox"
+                checked={date_wise === "Y" ? true : false}
+                onChange={(e) => {
+                  const checked = e.target.checked ? "Y" : "N";
+                  setDateWise(checked);
+                  setTillDate(undefined);
+                  setData([]);
+                  setFooterData({});
+                }}
+              />
+              <span> Yes</span>
+            </label>
+          </div>
         </div>
-      </div>
 
-      <AlgaehDateHandler
-        div={{
-          className: "col-2 algaeh-date-fld",
-        }}
-        label={{
-          fieldName: "Upto Date",
-        }}
-        textBox={{
-          className: "form-control",
-          value: till_date,
-        }}
-        maxDate={moment().add(1, "days")}
-        events={{
-          onChange: (momentDate) => {
-            if (momentDate) {
-              setTillDate(momentDate._d);
-            } else {
-              setTillDate(undefined);
-            }
-          },
-        }}
-        others={{
-          disabled: date_wise === "N" ? true : false,
-        }}
-      />
+        <AlgaehDateHandler
+          div={{
+            className: "col-2 algaeh-date-fld",
+          }}
+          label={{
+            fieldName: "Upto Date",
+          }}
+          textBox={{
+            className: "form-control",
+            value: till_date,
+          }}
+          maxDate={moment().add(1, "days")}
+          events={{
+            onChange: (momentDate) => {
+              if (momentDate) {
+                setTillDate(momentDate._d);
+              } else {
+                setTillDate(undefined);
+              }
+            },
+          }}
+          others={{
+            disabled: date_wise === "N" ? true : false,
+          }}
+        />
+      </div>
 
       <div className="col previewReportBtn">
         <AlgaehButton

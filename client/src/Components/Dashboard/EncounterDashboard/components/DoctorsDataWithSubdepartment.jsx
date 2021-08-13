@@ -6,10 +6,12 @@ export default memo(function DoctorsDataWithSubdepartment(props) {
   const { encounterData } = useContext(EncounterDashboardContext);
 
   return (
-    <>
+    <div className="row">
       {encounterData?.map((item, index) => {
         debugger;
         return (
+          <SingleDoctorCard key={index} data={item} />
+
           // <div key={item.sub_department_id}>
           //   <div className="row">
           //     <div className="col-12">
@@ -20,10 +22,9 @@ export default memo(function DoctorsDataWithSubdepartment(props) {
           //     </div>
           //   </div>
 
-          <SingleDoctorCard key={index} data={item} />
           // </div>
         );
       })}
-    </>
+    </div>
   );
 });
