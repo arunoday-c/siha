@@ -9,10 +9,10 @@ import {
   AlgaehFormGroup,
 } from "algaeh-react-components";
 import { InfoBar } from "../../../Wrappers";
-import { LedgerReport } from "../../InvoiceCommon";
+import StatementReport from "../../StatementReport";
 import {
   getInvoicesForCustomer,
-  VerifyAuthorization,
+  // VerifyAuthorization,
 } from "./CusPaymentEvents";
 import { Button, Spin, Checkbox, Modal } from "antd";
 import _ from "lodash";
@@ -22,7 +22,7 @@ import CreditNotes from "./creditNotes";
 export default memo(function (props) {
   const location = useLocation();
   const history = useHistory();
-  const [visible, setvisible] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
   const [indeterminate, setIndeterminate] = useState(false);
   const [checkAll, setCheckAll] = useState(false);
@@ -59,12 +59,14 @@ export default memo(function (props) {
                   <span
                     style={{
                       pointerEvents:
-                        row.invoice_status === "open" &&
+                        (row.invoice_status === "open" ||
+                          row.invoice_status === "over due") &&
                         row.day_end_header_id > 0
                           ? ""
                           : "none",
                       opacity:
-                        row.invoice_status === "open" &&
+                        (row.invoice_status === "open" ||
+                          row.invoice_status === "over due") &&
                         row.day_end_header_id > 0
                           ? ""
                           : "0.1",
@@ -461,10 +463,17 @@ export default memo(function (props) {
           setShowCreditNotes(false);
         }}
       />
-      <LedgerReport
-        data={location.state.data}
+      <StatementReport
+        title="Customer Statement"
+        selectedNode={location.state.data}
         visible={visible}
-        setVisible={setvisible}
+        screenFrom="CUST"
+        onCancel={() => {
+          setVisible(false);
+        }}
+        onOk={() => {
+          setVisible(false);
+        }}
       />
       <div className="row">
         <div className="col-12">
@@ -763,7 +772,7 @@ export default memo(function (props) {
               className="btn btn-default"
               // disabled={!processList.length}
               loading={loading}
-              onClick={() => setvisible(true)}
+              onClick={() => setVisible(true)}
             >
               Print
             </AlgaehButton>
