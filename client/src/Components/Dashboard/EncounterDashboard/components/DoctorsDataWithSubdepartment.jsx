@@ -6,9 +6,8 @@ export default memo(function DoctorsDataWithSubdepartment(props) {
   const { encounterData } = useContext(EncounterDashboardContext);
 
   return (
-    <div className="row">
+    <div className="row encounterDashCards">
       {encounterData?.map((item, index) => {
-        debugger;
         return (
           <SingleDoctorCard key={index} data={item} />
 

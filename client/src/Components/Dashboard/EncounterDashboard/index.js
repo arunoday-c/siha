@@ -1,5 +1,7 @@
 import React, { useReducer } from "react";
 import moment from "moment";
+import "../dashboard.scss";
+
 import {
   reducer,
   EncounterDashboardContext,

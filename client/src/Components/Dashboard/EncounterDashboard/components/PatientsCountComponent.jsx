@@ -9,12 +9,12 @@ export default memo(function PatientsCountComponent(patientCountData) {
       <div className="card animated fadeInUp faster">
         <div className="content">
           <div className="row">
-            {/* <div className="col-4">
-                <div className="icon-big text-center">
-                  <i className="fas fa-calendar-check" />
-                </div>
-              </div> */}
-            <div className="col-12">
+            <div className="col-3">
+              <div className="icon-big text-center">
+                <i className="fas fa-users" />
+              </div>
+            </div>
+            <div className="col-9">
               <div className="numbers">
                 <p>Total Patients</p>
                 {totalPatientsLength ? totalPatientsLength : 0.0}
@@ -26,12 +26,12 @@ export default memo(function PatientsCountComponent(patientCountData) {
       <div className="card animated fadeInUp faster">
         <div className="content">
           <div className="row">
-            {/* <div className="col-4">
-                <div className="icon-big text-center">
-                  <i className="fas fa-walking" />
-                </div>
-              </div> */}
-            <div className="col-12">
+            <div className="col-3">
+              <div className="icon-big text-center">
+                <i className="fas fa-star" />
+              </div>
+            </div>
+            <div className="col-9">
               <div className="numbers">
                 <p>Total New Patients</p>
                 {newPatientCount ? newPatientCount : 0.0}
@@ -44,12 +44,12 @@ export default memo(function PatientsCountComponent(patientCountData) {
       <div className="card animated fadeInUp faster">
         <div className="content">
           <div className="row">
-            {/* <div className="col-4">
-                <div className="icon-big text-center">
-                  <i className="fas fa-credit-card" />
-                </div>
-              </div> */}
-            <div className="col-12">
+            <div className="col-3">
+              <div className="icon-big text-center">
+                <i className="fas fa-exchange-alt" />
+              </div>
+            </div>
+            <div className="col-9">
               <div className="numbers">
                 <p>Total Follow Up Patients</p>
                 {followUpPatientCount ? followUpPatientCount : 0.0}

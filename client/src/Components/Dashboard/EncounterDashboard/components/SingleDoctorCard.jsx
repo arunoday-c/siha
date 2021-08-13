@@ -4,9 +4,10 @@ export default memo(function SingleDoctorCard({ data, index }) {
   return (
     <div className="col-3">
       <div
-        className="card animated fadeInUp faster"
+        className="card animated fadeInUp faster enCard"
         key={index}
         style={{ backgroundColor: "white !important" }}
+        data-val={data.totalLength}
       >
         <div className="content">
           <div className="row">
