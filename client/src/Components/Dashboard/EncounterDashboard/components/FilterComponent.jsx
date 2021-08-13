@@ -128,6 +128,10 @@ export default memo(function FilterComponent(props) {
                   onChange: (mdate) => {
                     if (mdate) {
                       onChange(mdate._d);
+                      history.push(
+                        pathName +
+                          `?from_date=${moment(mdate._d).format("YYYY-MM-DD")}`
+                      );
                     } else {
                       onChange(undefined);
                     }
