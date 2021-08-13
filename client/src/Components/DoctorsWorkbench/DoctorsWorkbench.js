@@ -271,11 +271,14 @@ class DoctorsWorkbench extends Component {
             const _selecDate = new Date(dateRange.activeDateHeader).setDate(1);
 
             if (Array.isArray(response.data.records)) {
+              let descData = response.data.records;
               this.setState(
                 {
                   selectedHDate: _selecDate,
                   data: response.data.records,
-                  checkedInData: response.data.records,
+                  checkedInData: descData.sort((a, b) =>
+                    a["encountered_date"] < b["encountered_date"] ? 1 : -1
+                  ),
                   activeDateHeader: dateRange.activeDateHeader,
                   provider_id: response.data.records[0].provider_id,
                   sub_department_id: response.data.records[0].sub_department_id,
