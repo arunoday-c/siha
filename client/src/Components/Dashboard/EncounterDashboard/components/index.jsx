@@ -66,7 +66,11 @@ export default function EncounterDashboard(props) {
             setFollowUpPatientCount(result.total_followUp);
             setNewPatientCount(result.total_new_visit);
             setTotalPatientsLength(result.totalPatient);
-            setEncounterData(result.arrangedData);
+            const sortedData = result.arrangedData.sort((a, b) =>
+              a.totalLength < b.totalLength ? 1 : -1
+            );
+
+            setEncounterData(sortedData);
           });
         }
         // }

@@ -194,6 +194,13 @@ class DoctorsWorkbench extends Component {
         if (response.data.success) {
           this.loadListofData();
 
+          if (sockets.connected) {
+            sockets.emit("encounter_dash", {
+              ...data,
+              visit_date: this.state.activeDateHeader,
+            });
+          }
+
           setGlobal({
             vitals_mandatory: data.vitals_mandatory,
             "EHR-STD": "PatientProfile",
