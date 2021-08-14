@@ -304,16 +304,17 @@ export default {
             .executeQuery({
               query:
                 "INSERT INTO `hims_f_procurement_po_return_header` (purchase_return_number, grn_header_id, return_date, \
-                  po_return_from, return_type, pharmcy_location_id, inventory_location_id, location_type, vendor_id, payment_terms, \
+                  po_return_from, return_type, return_items, pharmcy_location_id, inventory_location_id, location_type, vendor_id, payment_terms, \
                   comment, sub_total, discount_amount, net_total, tax_amount, receipt_net_total, receipt_net_payable, \
                   return_total, hospital_id, return_ref_no) \
-              VALUE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              VALUE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
               values: [
                 purchase_return_number,
                 input.grn_header_id,
                 new Date(),
                 input.po_return_from,
                 input.return_type,
+                input.return_items,
                 input.pharmcy_location_id,
                 input.inventory_location_id,
                 input.location_type,
@@ -637,14 +638,22 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select head_id, child_id from finance_accounts_maping where account in ('INPUT_TAX');\
+                  "select account, head_id, child_id from finance_accounts_maping where account in ('INPUT_TAX', 'PHAR_DISP_ACC', 'INV_DISP_ACC');\
                   select hims_d_sub_department_id from hims_d_sub_department where department_type='I';\
                   select hims_d_sub_department_id from hims_d_sub_department where department_type='PH';\
                   select cost_center_type, cost_center_required from finance_options limit 1;",
                 printQuery: true,
               })
               .then((result) => {
-                const input_tax_acc = result[0][0];
+                const input_tax_acc = result[0].find(
+                  (f) => f.account === "INPUT_TAX"
+                );
+                const pharmacy_disp_acc = result[0].find(
+                  (f) => f.account === "PHAR_DISP_ACC"
+                );
+                const inv_disp_acc = result[0].find(
+                  (f) => f.account === "INV_DISP_ACC"
+                );
                 let sub_department_id = null;
                 let strQuery = "";
 
@@ -656,7 +665,7 @@ export default {
                   from hims_f_procurement_po_return_header RH \
                   left join hims_f_procurement_grn_header GH on GH.hims_f_procurement_grn_header_id = RH.grn_header_id \
                   inner join hims_d_pharmacy_location PL on PL.hims_d_pharmacy_location_id = RH.pharmcy_location_id\
-                  inner join hims_d_vendor V on V.hims_d_vendor_id = RH.vendor_id \
+                  left join hims_d_vendor V on V.hims_d_vendor_id = RH.vendor_id \
                   where hims_f_procurement_return_po_header_id=?;";
                   sub_department_id =
                     result[2].length > 0
@@ -671,7 +680,7 @@ export default {
                   from hims_f_procurement_po_return_header RH \
                   left join hims_f_procurement_grn_header GH on GH.hims_f_procurement_grn_header_id = RH.grn_header_id \
                   inner join hims_d_inventory_location PL on PL.hims_d_inventory_location_id = RH.inventory_location_id\
-                  inner join hims_d_vendor V on V.hims_d_vendor_id = RH.vendor_id \
+                  left join hims_d_vendor V on V.hims_d_vendor_id = RH.vendor_id \
                   where hims_f_procurement_return_po_header_id=?;";
                   sub_department_id =
                     result[1].length > 0
@@ -697,6 +706,7 @@ export default {
                   .then((header_result) => {
                     let project_id = null;
                     let headerResult = [];
+
                     if (header_result.length > 1) {
                       headerResult = header_result[0];
                       project_id = header_result[1][0].project_id;
@@ -745,15 +755,39 @@ export default {
                         ];
 
                         //Vendor Entry
-                        insertSubDetail.push({
-                          payment_date: new Date(),
-                          head_id: headerResult[0].v_head_id,
-                          child_id: headerResult[0].v_child_id,
-                          debit_amount: headerResult[0].return_total,
-                          payment_type: "DR",
-                          credit_amount: 0,
-                          hospital_id: req.userIdentity.hospital_id,
-                        });
+                        if (inputParam.return_items === "D") {
+                          if (inputParam.po_return_from === "INV") {
+                            insertSubDetail.push({
+                              payment_date: new Date(),
+                              head_id: inv_disp_acc.head_id,
+                              child_id: inv_disp_acc.child_id,
+                              debit_amount: headerResult[0].return_total,
+                              payment_type: "DR",
+                              credit_amount: 0,
+                              hospital_id: req.userIdentity.hospital_id,
+                            });
+                          } else {
+                            insertSubDetail.push({
+                              payment_date: new Date(),
+                              head_id: pharmacy_disp_acc.head_id,
+                              child_id: pharmacy_disp_acc.child_id,
+                              debit_amount: headerResult[0].return_total,
+                              payment_type: "DR",
+                              credit_amount: 0,
+                              hospital_id: req.userIdentity.hospital_id,
+                            });
+                          }
+                        } else {
+                          insertSubDetail.push({
+                            payment_date: new Date(),
+                            head_id: headerResult[0].v_head_id,
+                            child_id: headerResult[0].v_child_id,
+                            debit_amount: headerResult[0].return_total,
+                            payment_type: "DR",
+                            credit_amount: 0,
+                            hospital_id: req.userIdentity.hospital_id,
+                          });
+                        }
 
                         //Tax Entry
                         if (parseFloat(headerResult[0].tax_amount) > 0) {
@@ -779,7 +813,6 @@ export default {
                           hospital_id: headerResult[0].hospital_id,
                         });
 
-                        // console.log("insertSubDetail", insertSubDetail)
                         _mysql
                           .executeQuery({
                             query:
@@ -857,7 +890,7 @@ async function checkStockExsits(options) {
             "SELECT (IL.qtyhand / IU.conversion_factor) qtyhand FROM \
             hims_m_inventory_item_location IL inner join hims_m_inventory_item_uom IU on IU.item_master_id = IL.item_id \
             and IL.cost_uom = IU.uom_id and IU.record_status='A' \
-            where inventory_location_id=? and item_id=? and batchno=?;",
+            where qtyhand > 0 and inventory_location_id=? and item_id=? and batchno=?;",
           values: [
             inputParam.inventory_location_id,
             obj.inv_item_id,

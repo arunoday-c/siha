@@ -6,6 +6,15 @@ export default {
   getUomLocationStock: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
+      // console.log("req.query.return_items", req.query.return_items);
+      let strFilter = "";
+      if (req.query.return_items === "D") {
+        strFilter =
+          " and (date(expirydt) < date(CURDATE()) || exp_date_required='N')";
+      } else {
+        strFilter =
+          " and (date(expirydt) > date(CURDATE()) || exp_date_required='N')";
+      }
       _mysql
         .executeQuery({
           query:
@@ -17,8 +26,9 @@ export default {
               grn_id, grnno, sale_price, mrp_price, sales_uom, IU.uom_description, IL.vendor_batchno, IM.item_description,  \
               IM.purchase_cost from hims_m_inventory_item_location IL, hims_d_inventory_uom IU, hims_d_inventory_item_master IM \
               where IL.sales_uom = IU.hims_d_inventory_uom_id and IL.item_id = IM.hims_d_inventory_item_master_id\
-              and IL.record_status='A'  and item_id=? and inventory_location_id=? and qtyhand>0 \
-              and (date(expirydt) > date(CURDATE()) || exp_date_required='N') order by date(expirydt)",
+              and IL.record_status='A'  and item_id=? and inventory_location_id=? and qtyhand>0 " +
+            strFilter +
+            "order by date(expirydt)",
           values: [req.query.item_id, req.query.item_id, req.query.location_id],
           printQuery: true,
         })

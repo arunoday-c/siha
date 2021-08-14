@@ -114,7 +114,6 @@ const discounthandle = ($this, context, ctrl, e) => {
 const numberchangeTexts = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-
   if (name === "quantity") {
     if (parseFloat(value) < 0) {
       swalMessage({
@@ -201,34 +200,60 @@ const itemchangeText = ($this, context, e, ctrl) => {
     $this.state.pharmcy_location_id !== null ||
     $this.state.inventory_location_id !== null
   ) {
-    if ($this.state.vendor_id !== null) {
-      let value =
-        $this.state.po_return_from === "PHR"
-          ? e.hims_d_item_master_id
-          : e.hims_d_inventory_item_master_id;
+    // if ($this.state.return_items !== "D" || $this.state.vendor_id !== null) {
+    let value =
+      $this.state.po_return_from === "PHR"
+        ? e.hims_d_item_master_id
+        : e.hims_d_inventory_item_master_id;
 
-      if ($this.state.po_return_from === "PHR") {
-        algaehApiCall({
-          uri: "/pharmacyGlobal/getUomLocationStock",
-          module: "pharmacy",
-          method: "GET",
-          data: {
-            location_id: $this.state.pharmcy_location_id,
-            item_id: value,
-          },
-          onSuccess: (response) => {
-            if (response.data.success) {
-              let data = response.data.records;
-              if (data.locationResult.length > 0) {
-                const qtyhand = parseFloat(data.locationResult[0].qtyhand);
+    if ($this.state.po_return_from === "PHR") {
+      algaehApiCall({
+        uri: "/pharmacyGlobal/getUomLocationStock",
+        module: "pharmacy",
+        method: "GET",
+        data: {
+          location_id: $this.state.pharmcy_location_id,
+          item_id: value,
+          return_items: $this.state.return_items,
+        },
+        onSuccess: (response) => {
+          if (response.data.success) {
+            let data = response.data.records;
+            if (data.locationResult.length > 0) {
+              const qtyhand = parseFloat(data.locationResult[0].qtyhand);
 
-                $this.setState({
+              $this.setState({
+                [name]: value,
+                item_category: e.category_id,
+                uom_id: e.stocking_uom_id,
+                service_id: e.service_id,
+                item_group_id: e.group_id,
+                quantity: 0,
+                expiry_date: data.locationResult[0].expirydt,
+                batchno: data.locationResult[0].batchno,
+                vendor_batchno: data.locationResult[0].vendor_batchno,
+                qtyhand: qtyhand,
+                barcode: data.locationResult[0].barcode,
+                ItemUOM: data.uomResult,
+                Batch_Items: data.locationResult,
+                addItemButton: false,
+                item_description: e.item_description,
+                sales_uom_id: e.sales_uom_id,
+                uom_description: e.stk_uom_description,
+                stocking_uom: e.stocking_uom,
+                sales_price: e.sale_price,
+                unit_cost: data.locationResult[0].avgcost,
+              });
+
+              if (context !== undefined) {
+                context.updateState({
                   [name]: value,
                   item_category: e.category_id,
                   uom_id: e.stocking_uom_id,
                   service_id: e.service_id,
                   item_group_id: e.group_id,
                   quantity: 0,
+
                   expiry_date: data.locationResult[0].expirydt,
                   batchno: data.locationResult[0].batchno,
                   vendor_batchno: data.locationResult[0].vendor_batchno,
@@ -244,78 +269,79 @@ const itemchangeText = ($this, context, e, ctrl) => {
                   sales_price: e.sale_price,
                   unit_cost: data.locationResult[0].avgcost,
                 });
-
-                if (context !== undefined) {
-                  context.updateState({
-                    [name]: value,
-                    item_category: e.category_id,
-                    uom_id: e.stocking_uom_id,
-                    service_id: e.service_id,
-                    item_group_id: e.group_id,
-                    quantity: 0,
-
-                    expiry_date: data.locationResult[0].expirydt,
-                    batchno: data.locationResult[0].batchno,
-                    vendor_batchno: data.locationResult[0].vendor_batchno,
-                    qtyhand: qtyhand,
-                    barcode: data.locationResult[0].barcode,
-                    ItemUOM: data.uomResult,
-                    Batch_Items: data.locationResult,
-                    addItemButton: false,
-                    item_description: e.item_description,
-                    sales_uom_id: e.sales_uom_id,
-                    uom_description: e.stk_uom_description,
-                    stocking_uom: e.stocking_uom,
-                    sales_price: e.sale_price,
-                    unit_cost: data.locationResult[0].avgcost,
-                  });
-                }
-              } else {
-                swalMessage({
-                  title: "No stock available for selected Item.",
-                  type: "warning",
-                });
-                $this.setState({
-                  item_description: $this.state.item_description,
-                  item_id: $this.state.item_id,
-                });
-                if (context !== undefined) {
-                  context.updateState({
-                    item_description: $this.state.item_description,
-                    item_id: $this.state.item_id,
-                  });
-                }
               }
             } else {
               swalMessage({
-                title: response.data.message,
-                type: "error",
+                title: "No stock available for selected Item.",
+                type: "warning",
               });
+              $this.setState({
+                item_description: $this.state.item_description,
+                item_id: $this.state.item_id,
+              });
+              if (context !== undefined) {
+                context.updateState({
+                  item_description: $this.state.item_description,
+                  item_id: $this.state.item_id,
+                });
+              }
             }
-          },
-          onFailure: (error) => {
+          } else {
             swalMessage({
-              title: error.message,
+              title: response.data.message,
               type: "error",
             });
-          },
-        });
-      } else {
-        algaehApiCall({
-          uri: "/inventoryGlobal/getUomLocationStock",
-          module: "inventory",
-          method: "GET",
-          data: {
-            location_id: $this.state.inventory_location_id,
-            item_id: value,
-          },
-          onSuccess: (response) => {
-            if (response.data.success) {
-              let data = response.data.records;
-              if (data.locationResult.length > 0) {
-                const qtyhand = parseFloat(data.locationResult[0].qtyhand);
+          }
+        },
+        onFailure: (error) => {
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+    } else {
+      algaehApiCall({
+        uri: "/inventoryGlobal/getUomLocationStock",
+        module: "inventory",
+        method: "GET",
+        data: {
+          location_id: $this.state.inventory_location_id,
+          item_id: value,
+          return_items: $this.state.return_items,
+        },
+        onSuccess: (response) => {
+          if (response.data.success) {
+            let data = response.data.records;
+            if (data.locationResult.length > 0) {
+              const qtyhand = parseFloat(data.locationResult[0].qtyhand);
 
-                $this.setState({
+              $this.setState({
+                [name]: value,
+                item_category: e.category_id,
+                uom_id: e.sales_uom_id,
+                service_id: e.service_id,
+                item_group_id: e.group_id,
+                quantity: 0,
+                expiry_date: data.locationResult[0].expirydt,
+                batchno: data.locationResult[0].batchno,
+                grn_no: data.locationResult[0].grnno,
+                vendor_batchno: data.locationResult[0].vendor_batchno,
+                qtyhand: qtyhand,
+                barcode: data.locationResult[0].barcode,
+                ItemUOM: data.uomResult,
+                Batch_Items: data.locationResult,
+                addItemButton: false,
+                item_description: e.item_description,
+                sales_uom_id: e.sales_uom_id,
+                uom_description: e.uom_description,
+                stocking_uom: e.stocking_uom,
+                sales_price: e.sale_price,
+                unit_cost: data.locationResult[0].avgcost,
+              });
+
+              if (context !== undefined) {
+                context.updateState({
                   [name]: value,
                   item_category: e.category_id,
                   uom_id: e.sales_uom_id,
@@ -325,7 +351,6 @@ const itemchangeText = ($this, context, e, ctrl) => {
                   expiry_date: data.locationResult[0].expirydt,
                   batchno: data.locationResult[0].batchno,
                   grn_no: data.locationResult[0].grnno,
-                  vendor_batchno: data.locationResult[0].vendor_batchno,
                   qtyhand: qtyhand,
                   barcode: data.locationResult[0].barcode,
                   ItemUOM: data.uomResult,
@@ -338,75 +363,51 @@ const itemchangeText = ($this, context, e, ctrl) => {
                   sales_price: e.sale_price,
                   unit_cost: data.locationResult[0].avgcost,
                 });
-
-                if (context !== undefined) {
-                  context.updateState({
-                    [name]: value,
-                    item_category: e.category_id,
-                    uom_id: e.sales_uom_id,
-                    service_id: e.service_id,
-                    item_group_id: e.group_id,
-                    quantity: 0,
-                    expiry_date: data.locationResult[0].expirydt,
-                    batchno: data.locationResult[0].batchno,
-                    grn_no: data.locationResult[0].grnno,
-                    qtyhand: qtyhand,
-                    barcode: data.locationResult[0].barcode,
-                    ItemUOM: data.uomResult,
-                    Batch_Items: data.locationResult,
-                    addItemButton: false,
-                    item_description: e.item_description,
-                    sales_uom_id: e.sales_uom_id,
-                    uom_description: e.uom_description,
-                    stocking_uom: e.stocking_uom,
-                    sales_price: e.sale_price,
-                    unit_cost: data.locationResult[0].avgcost,
-                  });
-                }
-              } else {
-                swalMessage({
-                  title: "No stock available for selected Item.",
-                  type: "warning",
-                });
-                $this.setState({
-                  item_description: $this.state.item_description,
-                  item_id: $this.state.item_id,
-                });
-                if (context !== undefined) {
-                  context.updateState({
-                    item_description: $this.state.item_description,
-                    item_id: $this.state.item_id,
-                  });
-                }
               }
             } else {
               swalMessage({
-                title: response.data.message,
-                type: "error",
+                title: "No stock available for selected Item.",
+                type: "warning",
               });
+              $this.setState({
+                item_description: $this.state.item_description,
+                item_id: $this.state.item_id,
+              });
+              if (context !== undefined) {
+                context.updateState({
+                  item_description: $this.state.item_description,
+                  item_id: $this.state.item_id,
+                });
+              }
             }
-          },
-          onFailure: (error) => {
+          } else {
             swalMessage({
-              title: error.message,
+              title: response.data.message,
               type: "error",
             });
-          },
-        });
-      }
-    } else {
-      $this.setState(
-        {
-          [name]: null,
+          }
         },
-        () => {
+        onFailure: (error) => {
           swalMessage({
-            title: "Please select Vendor.",
-            type: "warning",
+            title: error.message,
+            type: "error",
           });
-        }
-      );
+        },
+      });
     }
+    // } else {
+    //   $this.setState(
+    //     {
+    //       [name]: null,
+    //     },
+    //     () => {
+    //       swalMessage({
+    //         title: "Please select Vendor.",
+    //         type: "warning",
+    //       });
+    //     }
+    //   );
+    // }
   } else {
     $this.setState(
       {
@@ -468,6 +469,7 @@ const AddItems = ($this, context) => {
       expiry_date: $this.state.expiry_date,
       barcode: $this.state.barcode,
       sales_uom: $this.state.sales_uom_id,
+      uom_description: $this.state.uom_description,
       unit_cost: $this.state.unit_cost,
       pharmacy_uom_id: $this.state.uom_id,
       item_description: $this.state.item_description,
@@ -536,6 +538,7 @@ const AddItems = ($this, context) => {
       expiry_date: $this.state.expiry_date,
       barcode: $this.state.barcode,
       sales_uom: $this.state.sales_uom_id,
+      uom_description: $this.state.uom_description,
       unit_cost: $this.state.unit_cost,
       inventory_uom_id: $this.state.uom_id,
       item_description: $this.state.item_description,
