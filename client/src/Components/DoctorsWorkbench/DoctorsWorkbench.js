@@ -279,6 +279,7 @@ class DoctorsWorkbench extends Component {
                   checkedInData: descData.sort((a, b) =>
                     a["encountered_date"] < b["encountered_date"] ? 1 : -1
                   ),
+                  sortBy: "encountered_date",
                   activeDateHeader: dateRange.activeDateHeader,
                   provider_id: response.data.records[0].provider_id,
                   sub_department_id: response.data.records[0].sub_department_id,
