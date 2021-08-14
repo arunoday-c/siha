@@ -509,15 +509,16 @@ export default {
                             )} where child_id=${
                               input.customerSupplierID.child_id
                             };`;
-                          } else if (
-                            input.customerSupplierID.customer_type === "S"
-                          ) {
-                            strUpdateData = `UPDATE hims_d_insurance_sub set creidt_amount_till = creidt_amount_till- ${parseFloat(
-                              head_amount
-                            )} where child_id=${
-                              input.customerSupplierID.child_id
-                            };`;
                           }
+                          // else if (
+                          //   input.customerSupplierID.customer_type === "S"
+                          // ) {
+                          //   strUpdateData = `UPDATE hims_d_insurance_sub set creidt_amount_till = creidt_amount_till- ${parseFloat(
+                          //     credit_amount
+                          //   )} where child_id=${
+                          //     input.customerSupplierID.child_id
+                          //   };`;
+                          // }
                         }
 
                         let root_ids = [];
