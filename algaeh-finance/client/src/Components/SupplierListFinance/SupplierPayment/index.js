@@ -10,7 +10,7 @@ import {
 } from "algaeh-react-components";
 import _ from "lodash";
 import { InfoBar } from "../../../Wrappers";
-import { LedgerReport } from "../../InvoiceCommon";
+import StatementReport from "../../StatementReport";
 import { getInvoicesForSupplier, getDebitNotes } from "./SupPaymentEvents";
 import { Spin, Checkbox, Modal } from "antd";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
@@ -19,7 +19,7 @@ import { getAmountFormart } from "../../../utils/GlobalFunctions";
 export default memo(function (props) {
   const location = useLocation();
   const history = useHistory();
-  const [visible, setvisible] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
   const [info, setInfo] = useState({
     over_due: "0.00",
@@ -210,8 +210,13 @@ export default memo(function (props) {
       }
       grandTotal = totalAmount - debitNoteTotal;
     }
-    const { narration, child_id, head_id, voucher_type, invoice_no } =
-      filterCheck[0];
+    const {
+      narration,
+      child_id,
+      head_id,
+      voucher_type,
+      invoice_no,
+    } = filterCheck[0];
     Modal.confirm({
       title: "Please verify payment details",
       className: "debitNoteConfirmModal",
@@ -309,10 +314,17 @@ export default memo(function (props) {
   }
   return (
     <Spin spinning={loading}>
-      <LedgerReport
-        data={location.state.data}
+      <StatementReport
+        title="Supplier Statement"
+        selectedNode={location.state.data}
         visible={visible}
-        setVisible={setvisible}
+        screenFrom="SUP"
+        onCancel={() => {
+          setVisible(false);
+        }}
+        onOk={() => {
+          setVisible(false);
+        }}
       />
       <Modal
         title="Debit Notes List"
@@ -668,7 +680,7 @@ export default memo(function (props) {
               className="btn btn-default"
               // disabled={!processList.length}
               loading={loading}
-              onClick={() => setvisible(true)}
+              onClick={() => setVisible(true)}
             >
               Print
             </AlgaehButton>

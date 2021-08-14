@@ -86,7 +86,8 @@ const updateExaminationDiagrams = (req, res, next) => {
           } else {
             _mysql.releaseConnection();
             req.records = {
-              hims_f_examination_diagram_header_id: _hims_f_examination_diagram_header_id,
+              hims_f_examination_diagram_header_id:
+                _hims_f_examination_diagram_header_id,
               ...data,
             };
             next();
@@ -162,7 +163,8 @@ const saveExaminationDiagrams = (req, res, next) => {
               } else {
                 _mysql.releaseConnection();
                 req.records = {
-                  hims_f_examination_diagram_header_id: _hims_f_examination_diagram_header_id,
+                  hims_f_examination_diagram_header_id:
+                    _hims_f_examination_diagram_header_id,
                   ...data,
                 };
                 next();
@@ -220,7 +222,8 @@ const existingHeaderDiagramForDropDown = (req, res, next) => {
 
             return {
               groupType: key,
-              hims_f_examination_diagram_header_id: hims_f_examination_diagram_header_id,
+              hims_f_examination_diagram_header_id:
+                hims_f_examination_diagram_header_id,
               diagram_desc: diagram_desc,
               hims_d_sub_department_id: hims_d_sub_department_id,
               provider_id: provider_id,

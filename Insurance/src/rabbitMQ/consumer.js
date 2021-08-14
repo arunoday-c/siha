@@ -1,8 +1,11 @@
 import { channelWrapper, EXCHANGE_NAME } from "./connection";
-import { corporateServiceMasterSync } from "../models/bulkUpdatePortalSetup";
+import {
+  corporateServiceMasterSync,
+  getListFromPortal,
+} from "../models/bulkUpdatePortalSetup";
 
 const CORPORATE_MASTER_ACK = "CORPORATE_MASTER_ACK";
-
+const CORPORATE_PACKAGE_LIST = "CORPORATE_PACKAGE_LIST";
 async function corporateServices(queueName, exchangeName) {
   try {
     exchangeName = exchangeName ?? EXCHANGE_NAME;
@@ -54,10 +57,16 @@ async function pushToLocal(data, queue) {
       case "CORPORATE_MASTER_ACK":
         return corporateServiceMasterSync(data);
         break;
+      case "CORPORATE_PACKAGE_LIST":
+        return getListFromPortal(data);
+        break;
     }
   } catch (e) {
     throw e;
   }
 }
 
+//For Master ACK.
 corporateServices(CORPORATE_MASTER_ACK);
+//For Package List.
+corporateServices(CORPORATE_PACKAGE_LIST);
