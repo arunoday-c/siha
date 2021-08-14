@@ -5,6 +5,7 @@ import Options from "../../../Options.json";
 import "./AccessionAcknowledgement.scss";
 import "./../../../styles/site.scss";
 import { newAlgaehApi } from "../../../hooks";
+
 import { AcceptandRejectSample } from "./AccessionAcknowledgementHandaler";
 import { Checkbox } from "algaeh-react-components";
 import {
@@ -154,11 +155,21 @@ export default function AccessionAcknowledgement() {
     }
   };
   const AckBatchDetail = async (data) => {
+    const settings = { header: undefined, footer: undefined };
     const result = await newAlgaehApi({
       uri: "/laboratory/bulkSampleAcknowledge",
+      skipParse: true,
+      data: Buffer.from(JSON.stringify(data), "utf8"),
       module: "laboratory",
       method: "PUT",
-      data: data,
+      header: {
+        "content-type": "application/octet-stream",
+        ...settings,
+      },
+      // uri: "/laboratory/bulkSampleAcknowledge",
+      // module: "laboratory",
+      // method: "PUT",
+      // data: data,
     });
     return result?.data?.records;
   };
@@ -261,6 +272,7 @@ export default function AccessionAcknowledgement() {
         let inpujObj = {
           batch_list: filterData,
         };
+
         AckBatchDetail(inpujObj)
           .then((result) => {
             refetch();

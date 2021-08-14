@@ -3148,28 +3148,63 @@ export async function bulkSampleCollection(req, res, next) {
 export async function bulkSampleAcknowledge(req, res, next) {
   const _mysql = new algaehMysql();
   try {
-    const input = req.body;
+    let buffer = "";
+    req.on("data", (chunk) => {
+      buffer += chunk.toString();
+    });
 
-    let collection_done = [];
-    for (let i = 0; i < input.batch_list.length; i++) {
-      let item = input.batch_list[i];
-      item.remarks = "";
-      item.status = "A";
-      req.body = {
-        ...item,
-      };
-      req.preventNext = true;
+    req.on("end", async () => {
+      const input = JSON.parse(buffer);
 
-      const xyz = await updateLabSampleStatus(req, res, next);
-      collection_done.push(xyz);
-    }
-    Promise.all(collection_done)
-      .then(() => {
-        next();
-      })
-      .catch((e) => {
-        throw e;
-      });
+      console.log("input", input);
+      req.body = input;
+
+      let collection_done = [];
+      for (let i = 0; i < input.batch_list.length; i++) {
+        let item = input.batch_list[i];
+        item.remarks = "";
+        item.status = "A";
+        req.body = {
+          ...item,
+        };
+        req.preventNext = true;
+
+        const xyz = await updateLabSampleStatus(req, res, next);
+        collection_done.push(xyz);
+      }
+      Promise.all(collection_done)
+        .then(() => {
+          next();
+        })
+        .catch((e) => {
+          throw e;
+        });
+
+      // let input = JSON.parse(buffer);
+      // req.mySQl = _mysql;
+      // req.body = input;
+      // //Bill
+      // _mysql
+      //   .generateRunningNumber({
+      //     user_id: req.userIdentity.algaeh_d_app_user_id,
+      //     numgen_codes: ["DN_NUM"],
+      //     table_name: "hims_f_procurement_numgen",
+      //   })
+      //   .then((generatedNumbers) => {
+      //     req.connection = {
+      //       connection: _mysql.connection,
+      //       isTransactionConnection: _mysql.isTransactionConnection,
+      //       pool: _mysql.pool,
+      //     };
+      //     req.body.delivery_note_number = generatedNumbers.DN_NUM;
+      //     next();
+      //   })
+      //   .catch((e) => {
+      //     _mysql.rollBackTransaction(() => {
+      //       next(e);
+      //     });
+      //   });
+    });
   } catch (e) {
     _mysql.releaseConnection();
     next(e);
