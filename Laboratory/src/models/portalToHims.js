@@ -253,6 +253,7 @@ export async function patientBillGeneration(req, res, next) {
           billdetails: getBillDetailsData,
           incharge_or_provider: defaultsData?.default_doc_quick_reg,
           ScreenCode: "BL0001",
+          billed: "Y",
           receiptdetails: [
             {
               pay_type: "CA",
@@ -296,25 +297,19 @@ export async function patientBillGeneration(req, res, next) {
           .catch((error) => {
             throw error;
           });
-        console.log(
-          "etLabOrderedServices.data====>",
-          getLabOrderedServices.data
-        );
+
         const labOrders = getLabOrderedServices.data?.records.map((item) => {
           const {
             hims_f_lab_order_id,
             hims_d_lab_sample_id,
             order_id,
-            service_id,
             sample_id,
-            collected,
             status,
             service_code,
 
             send_out_test,
             send_in_test,
             container_id,
-            test_id,
           } = item;
           return {
             ...item,
@@ -322,27 +317,28 @@ export async function patientBillGeneration(req, res, next) {
             hims_d_lab_sample_id,
             visit_id: item.visit_id,
             order_id,
-            service_id,
+            service_id: item.service_id,
             sample_id,
             service_code,
-            collected,
             // status: status === "0" ? "N" : "Y",
             service_status: "SAMPLE COLLECTED",
             portal_exists: "Y",
             send_out_test,
             send_in_test,
             container_id,
-            test_id,
-
+            test_id: item.test_id,
             visit_code: item.visit_code,
             primary_id_no: item.primary_id_no,
+            collected: "Y",
+            status: "N",
+            hims_d_hospital_id: hospital_id,
           };
         });
 
         const updateRecord = await axios
           .put(
             `http://localhost:3013/api/v1/laboratory/bulkSampleCollection`,
-            { bulkCollection: labOrders },
+            { bulkCollection: labOrders, portal_exists: "Y" },
             {
               headers: {
                 "x-api-key": headers["x-api-key"],
