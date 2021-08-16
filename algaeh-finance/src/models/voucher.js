@@ -531,9 +531,9 @@ export default {
                             root_ids = input.details.map((m) => {
                               return m?.head_id;
                             });
+                            rootQuery = `select finance_account_head_id,root_id 
+                            from finance_account_head where finance_account_head_id in (?);`;
                           }
-                          rootQuery = `select finance_account_head_id,root_id 
-                          from finance_account_head where finance_account_head_id in (?);`;
                         }
                         const rootValues =
                           root_ids.length > 0
