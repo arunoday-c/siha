@@ -179,7 +179,6 @@ export async function patientBillGeneration(req, res, next) {
             });
         }
         //For Billing ----
-        //Get
         const _primary_network_office_id =
           insuranceSub?.hims_d_insurance_network_office_id;
         const _primary_network_id = insuranceSub?.hims_d_insurance_network_id;
@@ -203,7 +202,6 @@ export async function patientBillGeneration(req, res, next) {
             primary_network_office_id: _primary_network_office_id,
             primary_network_id: _primary_network_id,
             insured: "Y",
-            // vat_applicable: "N",
             vat_applicable:
               defaultsData?.default_nationality === nationality_id
                 ? defaultsData?.vat_applicable
@@ -278,6 +276,85 @@ export async function patientBillGeneration(req, res, next) {
             throw error;
           });
 
+        //For Lab
+        const getLabOrderedServices = await axios
+          .get(
+            `http://localhost:3013/api/v1/laboratory/getLabOrderedServices`,
+            {
+              params: {
+                patient_id:
+                  registrationResponse.data?.records.hims_d_patient_id,
+                visit_id: registrationResponse.data?.records.patient_visit_id,
+              },
+              headers: {
+                "x-api-key": headers["x-api-key"],
+                "x-branch": headers["x-branch"],
+                "x-client-ip": headers["x-client-ip"],
+              },
+            }
+          )
+          .catch((error) => {
+            throw error;
+          });
+        console.log(
+          "etLabOrderedServices.data====>",
+          getLabOrderedServices.data
+        );
+        const labOrders = getLabOrderedServices.data?.records.map((item) => {
+          const {
+            hims_f_lab_order_id,
+            hims_d_lab_sample_id,
+            order_id,
+            service_id,
+            sample_id,
+            collected,
+            status,
+            service_code,
+
+            send_out_test,
+            send_in_test,
+            container_id,
+            test_id,
+          } = item;
+          return {
+            ...item,
+            hims_f_lab_order_id,
+            hims_d_lab_sample_id,
+            visit_id: item.visit_id,
+            order_id,
+            service_id,
+            sample_id,
+            service_code,
+            collected,
+            // status: status === "0" ? "N" : "Y",
+            service_status: "SAMPLE COLLECTED",
+            portal_exists: "Y",
+            send_out_test,
+            send_in_test,
+            container_id,
+            test_id,
+
+            visit_code: item.visit_code,
+            primary_id_no: item.primary_id_no,
+          };
+        });
+
+        const updateRecord = await axios
+          .put(
+            `http://localhost:3013/api/v1/laboratory/bulkSampleCollection`,
+            { bulkCollection: labOrders },
+            {
+              headers: {
+                "x-api-key": headers["x-api-key"],
+                "x-branch": headers["x-branch"],
+                "x-client-ip": headers["x-client-ip"],
+              },
+            }
+          )
+          .catch((error) => {
+            throw error;
+          });
+        console.log("updateRecord===>", updateRecord.data);
         await _mysql
           .executeQuery({
             query: `update portal_patient_package_header set is_processed=1,bill_number=? where portal_package_id=?`,
