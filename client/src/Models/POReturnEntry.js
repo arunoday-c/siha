@@ -14,7 +14,7 @@ export default {
       inventory_location_id: null,
       location_type: null,
       vendor_id: null,
-      payment_terms: "",
+      payment_terms: 0,
       comment: null,
       sub_total: 0,
       discount_amount: 0,
@@ -25,6 +25,7 @@ export default {
       receipt_net_payable: 0,
       return_total: 0,
       return_ref_no: null,
+      return_items: "R",
 
       cancelled: "N",
       is_posted: "N",
@@ -40,6 +41,26 @@ export default {
       ReqData: true,
       return_type: "R",
       Batch_Items: [],
+
+      item_description: "",
+      item_category: null,
+      uom_id: null,
+      service_id: null,
+      item_group_id: null,
+      quantity: 0,
+
+      expiry_date: null,
+      batchno: [],
+      vendor_batchno: null,
+      qtyhand: 0,
+      barcode: null,
+      ItemUOM: [],
+      addItemButton: false,
+      sales_uom_id: null,
+      uom_description: null,
+      stocking_uom: null,
+      sales_price: null,
+      unit_cost: 0,
     };
     return output;
   },

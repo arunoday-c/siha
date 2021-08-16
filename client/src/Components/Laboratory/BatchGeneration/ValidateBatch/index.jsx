@@ -56,11 +56,21 @@ export default memo(function ValidateBatch() {
     return result?.data?.records;
   };
   const AckBatchDetail = async (data) => {
+    const settings = { header: undefined, footer: undefined };
     const result = await newAlgaehApi({
       uri: "/laboratory/bulkSampleAcknowledge",
+      skipParse: true,
+      data: Buffer.from(JSON.stringify(data), "utf8"),
       module: "laboratory",
+      header: {
+        "content-type": "application/octet-stream",
+        ...settings,
+      },
       method: "PUT",
-      data: data,
+      // uri: "/laboratory/bulkSampleAcknowledge",
+      // module: "laboratory",
+      // method: "PUT",
+      // data: data,
     });
     return result?.data?.records;
   };

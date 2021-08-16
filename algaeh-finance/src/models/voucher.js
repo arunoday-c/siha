@@ -509,15 +509,16 @@ export default {
                             )} where child_id=${
                               input.customerSupplierID.child_id
                             };`;
-                          } else if (
-                            input.customerSupplierID.customer_type === "S"
-                          ) {
-                            strUpdateData = `UPDATE hims_d_insurance_sub set creidt_amount_till = creidt_amount_till- ${parseFloat(
-                              head_amount
-                            )} where child_id=${
-                              input.customerSupplierID.child_id
-                            };`;
                           }
+                          // else if (
+                          //   input.customerSupplierID.customer_type === "S"
+                          // ) {
+                          //   strUpdateData = `UPDATE hims_d_insurance_sub set creidt_amount_till = creidt_amount_till- ${parseFloat(
+                          //     credit_amount
+                          //   )} where child_id=${
+                          //     input.customerSupplierID.child_id
+                          //   };`;
+                          // }
                         }
 
                         let root_ids = [];
@@ -530,9 +531,9 @@ export default {
                             root_ids = input.details.map((m) => {
                               return m?.head_id;
                             });
+                            rootQuery = `select finance_account_head_id,root_id 
+                            from finance_account_head where finance_account_head_id in (?);`;
                           }
-                          rootQuery = `select finance_account_head_id,root_id 
-                          from finance_account_head where finance_account_head_id in (?);`;
                         }
                         const rootValues =
                           root_ids.length > 0

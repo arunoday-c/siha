@@ -302,6 +302,15 @@ export function PatientRegistration() {
       return null;
     }
   };
+  const fieldRef = useRef(undefined);
+  useEffect(() => {
+    const errorsvalues = Object.values(errors);
+    if (errorsvalues.length > 0) {
+      return fieldRef?.current.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
+  }, [errors]);
   useEffect(() => {
     preferenceFunction().then((result) => {
       if (result) {
@@ -787,7 +796,6 @@ export function PatientRegistration() {
             //   insertPatientPortal({ ...data, ...input });
             // }
             if (sockets.connected) {
-              console.log("iiasisisiisisis");
               sockets.emit("patient_checked", {
                 ...data,
                 provider_id: doctor_id,
@@ -1236,7 +1244,9 @@ export function PatientRegistration() {
                 <Demographics
                   control={control}
                   setValue={setValue}
+                  fieldRef={fieldRef}
                   errors={errors}
+                  fieldRef={fieldRef}
                   clearErrors={clearErrors}
                   getValues={getValues}
                   patientImage={patientImage}
@@ -1252,6 +1262,7 @@ export function PatientRegistration() {
                   control={control}
                   trigger={trigger}
                   errors={errors}
+                  fieldRef={fieldRef}
                   clearErrors={clearErrors}
                   setValue={setValue}
                   insuranceImgFront={insuranceImgFront}
@@ -1261,6 +1272,7 @@ export function PatientRegistration() {
                   control={control}
                   trigger={trigger}
                   setValue={setValue}
+                  fieldRef={fieldRef}
                   visits={patientData?.visitDetails}
                   patientData={patientData}
                   packages={packages}
@@ -1279,6 +1291,7 @@ export function PatientRegistration() {
                   setError={setError}
                   trigger={trigger}
                   setValue={setValue}
+                  fieldRef={fieldRef}
                   clearErrors={clearErrors}
                   errors={errors}
                   patient={patientData?.patientRegistration}

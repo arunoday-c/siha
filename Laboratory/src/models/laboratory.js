@@ -182,7 +182,7 @@ const labModal = {
       _mysql
         .executeQuery({
           query:
-            "SELECT hims_f_lab_order_id, test_id, service_id,bacteria_name,organism_type, bacteria_type, LO.patient_id, primary_id_no, patient_code, P.full_name, \
+            "SELECT hims_f_lab_order_id, hims_f_lab_order_id as order_id, test_id, service_id,bacteria_name,organism_type, bacteria_type, LO.patient_id, primary_id_no, patient_code, P.full_name, \
             P.date_of_birth,group_id, P.gender, ordered_date, LS.barcode_gen,visit_code, LO.credit_order,\
             LO.status, test_type, visit_id, LO.lab_id_number,LO.contaminated_culture, LS.status as sample_status,S.service_code, S.service_name,\
             case when LO.run_type='1' then '1 Time' when LO.run_type='2' then '2 Times' when LO.run_type='3' then '3 times' else '-' end as run_types, \
@@ -1586,7 +1586,7 @@ const labModal = {
                 });
               }
             })
-            .catch((error) => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
@@ -1806,7 +1806,6 @@ const labModal = {
                         : "SAMPLE COLLECTED",
                   };
 
-                  // consol.log("portal_data", portal_data);
                   await axios
                     .post(
                       `${PORTAL_HOST}/info/deletePatientService`,
@@ -2011,10 +2010,6 @@ const labModal = {
               .then(async (update_lab_order) => {
                 const portal_exists = update_lab_order[1][0].portal_exists;
 
-                // console.log("portal_exists", portal_exists);
-                // console.log("inputParam.status", inputParam.status);
-                // consol.log("portal_exists", portal_exists);
-
                 if (
                   portal_exists === "Y" &&
                   (inputParam.status === "CF" ||
@@ -2030,9 +2025,6 @@ const labModal = {
                         ? "RESULT CONFIRMED"
                         : "RESULT VALIDATED",
                   };
-
-                  // console.log("portal_data", portal_data);
-                  // consol.log("portal_data", portal_data);
                   await axios
                     .post(
                       `${PORTAL_HOST}/info/deletePatientService`,
@@ -2546,7 +2538,7 @@ export async function updateLabOrderServices(req, res, next) {
     inputParam.container_code = update_lab_sample[0][0].container_code;
     inputParam.lab_location_code = update_lab_sample[1][0].lab_location_code;
     const today_date = moment().format("YYYY-MM-DD HH:mm:ss");
-    console.log("inputParam.lab_id_number", inputParam.lab_id_number);
+
     if (inputParam.lab_id_number != null) {
       const result = await _mysql.executeQuery({
         query: `update hims_f_lab_order L  \
@@ -2583,7 +2575,6 @@ export async function updateLabOrderServices(req, res, next) {
             throw e;
           });
         _mysql.commitTransaction(() => {
-          console.log("im here portal");
           _mysql.releaseConnection();
           req.records = {
             collected: inputParam.collected,
@@ -2594,7 +2585,6 @@ export async function updateLabOrderServices(req, res, next) {
         });
       } else {
         _mysql.commitTransaction(() => {
-          console.log("im here");
           _mysql.releaseConnection();
           req.records = {
             collected: inputParam.collected,
@@ -2754,15 +2744,13 @@ export async function updateLabOrderServices(req, res, next) {
 export async function updateLabOrderServiceStatus(req, res, next) {
   const _mysql = new algaehMysql();
   try {
-    // console.log("normal_lab_order_id", req.body.normal_lab_order_id);
-    // console.log("micro_cul_lab_order_id", req.body.micro_cul_lab_order_id);
     let hims_f_lab_order_id = req.body.normal_lab_order_id;
     if (req.body.micro_cul_lab_order_id.length > 0) {
       hims_f_lab_order_id = hims_f_lab_order_id.concat(
         req.body.micro_cul_lab_order_id
       );
     }
-    // console.log("hims_f_lab_order_id", hims_f_lab_order_id);
+
     const result = await _mysql.executeQueryWithTransaction({
       query: `
         UPDATE hims_f_lab_order L 
@@ -2872,8 +2860,7 @@ export async function updateLabSampleStatus(req, res, next) {
   const _mysql = new algaehMysql();
   try {
     let input = { ...req.body };
-    console.log("input", input);
-    // consol.log("input", input);
+
     let collected = ",";
     let strHisQry = "";
     if (input.status == "R") {
@@ -2954,8 +2941,6 @@ export async function updateLabSampleStatus(req, res, next) {
           service_status: "ORDERED",
         };
 
-        // consol.log("portal_data", portal_data);
-
         await axios
           .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
           .catch((e) => {
@@ -3012,10 +2997,10 @@ export async function updateLabSampleStatus(req, res, next) {
         values: [req.body.gender, age_type, age, input.test_id],
         printQuery: true,
       });
+
       // .then((all_analytes) => {
       if (all_analytes.length > 0) {
         const analyts = [
-          "order_id",
           "analyte_id",
           "analyte_type",
           "result_unit",
@@ -3027,36 +3012,36 @@ export async function updateLabSampleStatus(req, res, next) {
           "text_value",
           "normal_qualitative_value",
         ];
-        const results = await _mysql
-          .executeQuery({
-            query:
-              "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ? \
+        const results = await _mysql.executeQuery({
+          query:
+            "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ? \
                       ON DUPLICATE KEY UPDATE normal_low=values(normal_low),normal_high=values(normal_high), \
                       critical_value_req = values(critical_value_req), critical_low=values(critical_low), critical_high=values(critical_high), text_value=values(text_value)",
-            values: all_analytes,
-            includeValues: analyts,
-            extraValues: {
-              created_by: req.userIdentity.algaeh_d_app_user_id,
-              updated_by: req.userIdentity.algaeh_d_app_user_id,
-              order_id: input.order_id,
-            },
-            bulkInsertOrUpdate: true,
-            printQuery: true,
-          })
-          .then((ord_analytes) => {
-            _mysql.commitTransaction(() => {
-              _mysql.releaseConnection();
-              req.records = ord_analytes;
-              if (!req.preventNext) {
-                next();
-              }
-            });
-          })
-          .catch((e) => {
-            _mysql.rollBackTransaction(() => {
-              next(e);
-            });
-          });
+          values: all_analytes,
+          includeValues: analyts,
+          extraValues: {
+            created_by: req.userIdentity.algaeh_d_app_user_id,
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
+            order_id: input.order_id,
+          },
+          bulkInsertOrUpdate: true,
+          printQuery: true,
+        });
+
+        // .then((ord_analytes) => {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = results;
+          if (!req.preventNext) {
+            next();
+          }
+        });
+        // })
+        // .catch((e) => {
+        //   _mysql.rollBackTransaction(() => {
+        //     next(e);
+        //   });
+        // });
       } else {
         _mysql.commitTransaction(() => {
           _mysql.releaseConnection();
@@ -3104,12 +3089,10 @@ export async function bulkSampleCollection(req, res, next) {
 
       const xyz = await updateLabOrderServices(req, res, next);
       collection_done.push(xyz);
-      // console.log("print i", i);
     }
-    // console.log("collection_done", collection_done);
+
     Promise.all(collection_done)
       .then(() => {
-        // console.log("collection_done", collection_done);
         next();
       })
       .catch((e) => {
@@ -3124,28 +3107,35 @@ export async function bulkSampleCollection(req, res, next) {
 export async function bulkSampleAcknowledge(req, res, next) {
   const _mysql = new algaehMysql();
   try {
-    const input = req.body;
+    let buffer = "";
+    req.on("data", (chunk) => {
+      buffer += chunk.toString();
+    });
 
-    let collection_done = [];
-    for (let i = 0; i < input.batch_list.length; i++) {
-      let item = input.batch_list[i];
-      item.remarks = "";
-      item.status = "A";
-      req.body = {
-        ...item,
-      };
-      req.preventNext = true;
+    req.on("end", async () => {
+      const input = JSON.parse(buffer);
 
-      const xyz = await updateLabSampleStatus(req, res, next);
-      collection_done.push(xyz);
-    }
-    Promise.all(collection_done)
-      .then(() => {
-        next();
-      })
-      .catch((e) => {
-        throw e;
-      });
+      let collection_done = [];
+      for (let i = 0; i < input.batch_list.length; i++) {
+        let item = input.batch_list[i];
+        item.remarks = "";
+        item.status = "A";
+        req.body = {
+          ...item,
+        };
+        req.preventNext = true;
+
+        const xyz = await updateLabSampleStatus(req, res, next);
+        collection_done.push(xyz);
+      }
+      Promise.all(collection_done)
+        .then(() => {
+          next();
+        })
+        .catch((e) => {
+          throw e;
+        });
+    });
   } catch (e) {
     _mysql.releaseConnection();
     next(e);
@@ -3213,8 +3203,6 @@ export function createPCRBatch(req, res, next) {
       moment().format("YYYYMMDDHHMMSS") +
       req.userIdentity.algaeh_d_app_user_id;
 
-    console.log("inputParam", inputParam);
-    // consol.log("inputParam", inputParam);
     _mysql
       .executeQueryWithTransaction({
         query:
@@ -3330,7 +3318,6 @@ export function updateBatchDetail(req, res, next) {
       })
       .then((headerResult) => {
         const portal_exists = headerResult[0].portal_exists;
-        // console.log("inputParam.batch_list", inputParam.batch_list);
 
         if (inputParam.status === "V") {
           updateQry =
@@ -3396,7 +3383,6 @@ export function updateBatchDetail(req, res, next) {
           })
           .then(async (headerResult) => {
             if (inputParam.status === "V" && portal_exists === "Y") {
-              console.log("portal_data: ", portal_data);
               await axios
                 .post(
                   `${PORTAL_HOST}/info/updateBulkPatientServices`,

@@ -280,26 +280,77 @@ class PurchaseReturnEntry extends Component {
                       </div>
                     </div>
                   </div>
-                ) : null}{" "}
-                <AlagehFormGroup
-                  div={{ className: "col-2 mandatory" }}
-                  label={{
-                    forceLabel: "Return Reference No.",
-                    isImp: true,
-                  }}
-                  textBox={{
-                    value: this.state.return_ref_no,
-                    className: "txt-fld",
-                    name: "return_ref_no",
+                ) : (
+                  <AlagehAutoComplete
+                    div={{ className: "col-2 mandatory" }}
+                    label={{ forceLabel: "Return Item", isImp: true }}
+                    selector={{
+                      name: "return_items",
+                      className: "select-fld",
+                      value: this.state.return_items,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.RETURN_ITEM,
+                      },
+                      others: {
+                        disabled: this.state.dataExitst,
+                      },
+                      onChange: poforhandle.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          return_items: null,
+                        });
+                      },
+                    }}
+                  />
 
-                    events: {
-                      onChange: texthandle.bind(this, this),
-                    },
-                    others: {
-                      disabled: this.state.is_posted === "N" ? false : true,
-                    },
-                  }}
-                />
+                  // <div className="col-2">
+                  //   <label>Expiry Items</label>
+                  //   <div className="customRadio">
+                  //     <label className="radio inline">
+                  //       <input
+                  //         type="radio"
+                  //         value="R"
+                  //         name="return_items"
+                  //         checked={
+                  //           this.state.return_items === "R" ? true : false
+                  //         }
+                  //         onChange={texthandle.bind(this, this)}
+                  //         disabled={this.state.dataExitst}
+                  //       />
+                  //       <span>Return Items</span>
+                  //     </label>
+                  //     <label className="radio inline">
+                  //       <input
+                  //         type="radio"
+                  //         value="E"
+                  //         name="return_items"
+                  //         checked={
+                  //           this.state.return_items === "E" ? true : false
+                  //         }
+                  //         onChange={texthandle.bind(this, this)}
+                  //         disabled={this.state.dataExitst}
+                  //       />
+                  //       <span>Return Expiry Items</span>
+                  //     </label>
+                  //     <label className="radio inline">
+                  //       <input
+                  //         type="radio"
+                  //         value="D"
+                  //         name="return_items"
+                  //         checked={
+                  //           this.state.return_items === "D" ? true : false
+                  //         }
+                  //         onChange={texthandle.bind(this, this)}
+                  //         disabled={this.state.dataExitst}
+                  //       />
+                  //       <span>Dispose Expiry Items</span>
+                  //     </label>
+                  //   </div>
+                  // </div>
+                )}
+
                 <AlagehAutoComplete
                   div={{ className: "col-3 mandatory" }}
                   label={{ forceLabel: "Location Code", isImp: true }}
@@ -334,29 +385,58 @@ class PurchaseReturnEntry extends Component {
                     },
                   }}
                 />
-                <AlagehAutoComplete
-                  div={{ className: "col-3 mandatory" }}
-                  label={{ forceLabel: "Vendor Name", isImp: true }}
-                  selector={{
-                    name: "vendor_id",
-                    className: "select-fld",
-                    value: this.state.vendor_id,
-                    dataSource: {
-                      textField: "vendor_name",
-                      valueField: "hims_d_vendor_id",
-                      data: this.props.povendors,
-                    },
-                    others: {
-                      disabled: this.state.dataExitst,
-                    },
-                    onChange: vendortexthandle.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        vendor_id: null,
-                      });
-                    },
-                  }}
-                />
+
+                {this.state.return_items === "D" ? null : (
+                  <>
+                    <AlagehFormGroup
+                      div={{ className: "col-2 mandatory" }}
+                      label={{
+                        forceLabel: "Return Reference No.",
+                        isImp: this.state.return_items === "D" ? false : true,
+                      }}
+                      textBox={{
+                        value: this.state.return_ref_no,
+                        className: "txt-fld",
+                        name: "return_ref_no",
+
+                        events: {
+                          onChange: texthandle.bind(this, this),
+                        },
+                        others: {
+                          disabled: this.state.is_posted === "N" ? false : true,
+                        },
+                      }}
+                    />
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-3 mandatory" }}
+                      label={{
+                        forceLabel: "Vendor Name",
+                        isImp: this.state.return_items === "D" ? false : true,
+                      }}
+                      selector={{
+                        name: "vendor_id",
+                        className: "select-fld",
+                        value: this.state.vendor_id,
+                        dataSource: {
+                          textField: "vendor_name",
+                          valueField: "hims_d_vendor_id",
+                          data: this.props.povendors,
+                        },
+                        others: {
+                          disabled: this.state.dataExitst,
+                        },
+                        onChange: vendortexthandle.bind(this, this),
+                        onClear: () => {
+                          this.setState({
+                            vendor_id: null,
+                          });
+                        },
+                      }}
+                    />
+                  </>
+                )}
+
                 {/* <AlagehFormGroup
                                     div={{ className: "col-2" }}
                                     label={{

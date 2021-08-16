@@ -5,6 +5,7 @@ import Options from "../../../Options.json";
 import "./AccessionAcknowledgement.scss";
 import "./../../../styles/site.scss";
 import { newAlgaehApi } from "../../../hooks";
+
 import { AcceptandRejectSample } from "./AccessionAcknowledgementHandaler";
 import { Checkbox } from "algaeh-react-components";
 import {
@@ -15,6 +16,7 @@ import {
   MainContext,
   Tooltip,
   Modal,
+  Spin,
 } from "algaeh-react-components";
 import swal from "sweetalert2";
 // import Enumerable from "linq";
@@ -43,7 +45,7 @@ export default function AccessionAcknowledgement() {
   const [selected_row, setSelectedRow] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [remarks, setRemarks] = useState("");
-
+  const [acknowledgeLoading, setAcknowledgeLoading] = useState(false);
   useEffect(() => {
     sockets.on("reload_specimen_collection", (billData) => {
       const { bill_date } = billData;
@@ -153,11 +155,21 @@ export default function AccessionAcknowledgement() {
     }
   };
   const AckBatchDetail = async (data) => {
+    const settings = { header: undefined, footer: undefined };
     const result = await newAlgaehApi({
       uri: "/laboratory/bulkSampleAcknowledge",
+      skipParse: true,
+      data: Buffer.from(JSON.stringify(data), "utf8"),
       module: "laboratory",
       method: "PUT",
-      data: data,
+      header: {
+        "content-type": "application/octet-stream",
+        ...settings,
+      },
+      // uri: "/laboratory/bulkSampleAcknowledge",
+      // module: "laboratory",
+      // method: "PUT",
+      // data: data,
     });
     return result?.data?.records;
   };
@@ -235,6 +247,7 @@ export default function AccessionAcknowledgement() {
     });
   };
   const onAcknowledge = () => {
+    setAcknowledgeLoading(true);
     const filterData = sample_collection.filter(
       (f) => f.checked && f.sample_status !== "A"
     );
@@ -259,9 +272,11 @@ export default function AccessionAcknowledgement() {
         let inpujObj = {
           batch_list: filterData,
         };
+
         AckBatchDetail(inpujObj)
           .then((result) => {
             refetch();
+            setAcknowledgeLoading(false);
             // swal("Acknowledged Succefully... Batch No." + batch_number, {
             //   icon: "success",
             // });
@@ -272,6 +287,7 @@ export default function AccessionAcknowledgement() {
             });
           })
           .catch((e) => {
+            setAcknowledgeLoading(false);
             AlgaehMessagePop({
               display: e,
               type: "error",
@@ -283,113 +299,119 @@ export default function AccessionAcknowledgement() {
   const gridData = sample_collection.filter((f) => f.sample_status !== "A");
   return (
     <React.Fragment>
-      <Modal
-        title="Remarks"
-        visible={isOpen}
-        class="accessionRemarkPopUp"
-        footer={null}
-        onCancel={() => setIsOpen(false)}
-      >
-        <div className="popupInner">
-          <div className="col-12">
-            <label>Reason for Rejection</label>
-            <textarea
-              className="textArea"
-              name="remarks"
-              value={remarks}
-              onChange={(e) => {
-                setRemarks(e.target.value);
-              }}
-            />
-          </div>
-        </div>
-        <div className="popupFooter">
-          <div className="col-12">
-            <button
-              onClick={(e) => onSubmit(selected_row, "R", e)}
-              type="button"
-              className="btn btn-primary"
-            >
-              Save
-            </button>
-            <button
-              onClick={() => {
-                setIsOpen(!isOpen);
-              }}
-              type="button"
-              className="btn btn-default"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </Modal>
-
-      <div className="hptl-phase1-accession-acknowledgement-form">
-        <div className="row inner-top-search" style={{ paddingBottom: "10px" }}>
-          <Controller
-            control={control}
-            name="start_date"
-            rules={{
-              required: {
-                message: "Field is Required",
-              },
-            }}
-            render={({ onChange, value }) => (
-              <AlgaehDateHandler
-                div={{ className: "col-3" }}
-                label={{
-                  forceLabel: "ORDERED DATE & TIME",
-                  isImp: true,
-                }}
-                error={errors}
-                textBox={{
-                  className: "txt-fld",
-                  name: "start_date",
-                  value,
-                }}
-                type="range"
-                // others={{ disabled }}
-                events={{
-                  onChange: (mdate) => {
-                    if (mdate) {
-                      onChange(mdate);
-                    } else {
-                      onChange(undefined);
-                    }
-                  },
-                  onClear: () => {
-                    onChange(undefined);
-                  },
+      <Spin spinning={acknowledgeLoading}>
+        <Modal
+          title="Remarks"
+          visible={isOpen}
+          class="accessionRemarkPopUp"
+          footer={null}
+          onCancel={() => setIsOpen(false)}
+        >
+          <div className="popupInner">
+            <div className="col-12">
+              <label>Reason for Rejection</label>
+              <textarea
+                className="textArea"
+                name="remarks"
+                value={remarks}
+                onChange={(e) => {
+                  setRemarks(e.target.value);
                 }}
               />
-            )}
-          />
-
-          <div className="col" style={{ marginTop: "21px" }}>
-            <button
-              className="btn btn-default btn-sm"
-              type="button"
-              onClick={() => {
-                reset({ start_date: [moment(new Date()), moment(new Date())] });
-              }}
-            >
-              Clear
-            </button>
-            <button
-              className="btn btn-primary btn-sm"
-              style={{ marginLeft: "10px" }}
-              type="button"
-              onClick={() => {
-                // setEnabledHESN(true)
-                refetch();
-              }}
-            >
-              Load
-            </button>
+            </div>
           </div>
-        </div>
-        {/* <div className="row  margin-bottom-15 topResultCard">
+          <div className="popupFooter">
+            <div className="col-12">
+              <button
+                onClick={(e) => onSubmit(selected_row, "R", e)}
+                type="button"
+                className="btn btn-primary"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => {
+                  setIsOpen(!isOpen);
+                }}
+                type="button"
+                className="btn btn-default"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </Modal>
+
+        <div className="hptl-phase1-accession-acknowledgement-form">
+          <div
+            className="row inner-top-search"
+            style={{ paddingBottom: "10px" }}
+          >
+            <Controller
+              control={control}
+              name="start_date"
+              rules={{
+                required: {
+                  message: "Field is Required",
+                },
+              }}
+              render={({ onChange, value }) => (
+                <AlgaehDateHandler
+                  div={{ className: "col-3" }}
+                  label={{
+                    forceLabel: "ORDERED DATE & TIME",
+                    isImp: true,
+                  }}
+                  error={errors}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "start_date",
+                    value,
+                  }}
+                  type="range"
+                  // others={{ disabled }}
+                  events={{
+                    onChange: (mdate) => {
+                      if (mdate) {
+                        onChange(mdate);
+                      } else {
+                        onChange(undefined);
+                      }
+                    },
+                    onClear: () => {
+                      onChange(undefined);
+                    },
+                  }}
+                />
+              )}
+            />
+
+            <div className="col" style={{ marginTop: "21px" }}>
+              <button
+                className="btn btn-default btn-sm"
+                type="button"
+                onClick={() => {
+                  reset({
+                    start_date: [moment(new Date()), moment(new Date())],
+                  });
+                }}
+              >
+                Clear
+              </button>
+              <button
+                className="btn btn-primary btn-sm"
+                style={{ marginLeft: "10px" }}
+                type="button"
+                onClick={() => {
+                  // setEnabledHESN(true)
+                  refetch();
+                }}
+              >
+                Load
+              </button>
+            </div>
+          </div>
+          {/* <div className="row  margin-bottom-15 topResultCard">
           <div className="col-12">
             <div className="card-group">
               <div className="card">
@@ -427,322 +449,338 @@ export default function AccessionAcknowledgement() {
             </div>
           </div>
         </div> */}
-        <div className="row">
-          <div className="col-lg-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">
-                    Specimen Acknowledgement List
-                  </h3>
+          <div className="row">
+            <div className="col-lg-12">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">
+                      Specimen Acknowledgement List
+                    </h3>
+                  </div>
                 </div>
-              </div>
 
-              <div className="portlet-body" id="accessionAcknoweldgeGrid">
-                <AlgaehDataGrid
-                  // id="accessionAcknoweldgeGrid"
-                  columns={[
-                    {
-                      label: (
-                        <Checkbox
-                          indeterminate={checkAll === STATUS.INDETERMINATE}
-                          checked={checkAll === STATUS.CHECK}
-                          onChange={selectAll}
-                          disabled={gridData.length > 0 ? false : true}
-                        ></Checkbox>
-                      ),
-                      fieldName: "select",
-                      displayTemplate: (row) => {
-                        return (
-                          <CheckBoxPlot
-                            row={row}
-                            fullData={sample_collection ?? []}
-                            setCheckAll={setCheckAll}
+                <div className="portlet-body" id="accessionAcknoweldgeGrid">
+                  <AlgaehDataGrid
+                    // id="accessionAcknoweldgeGrid"
+                    columns={[
+                      {
+                        label: (
+                          <Checkbox
+                            indeterminate={checkAll === STATUS.INDETERMINATE}
+                            checked={checkAll === STATUS.CHECK}
+                            onChange={selectAll}
+                            disabled={gridData.length > 0 ? false : true}
+                          ></Checkbox>
+                        ),
+                        fieldName: "select",
+                        displayTemplate: (row) => {
+                          return (
+                            <CheckBoxPlot
+                              row={row}
+                              fullData={sample_collection ?? []}
+                              setCheckAll={setCheckAll}
+                            />
+                          );
+                        },
+                        others: {
+                          maxWidth: 50,
+                          filterable: false,
+                          sortable: false,
+                        },
+                      },
+                      {
+                        fieldName: "action",
+                        label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                        displayTemplate: (row) => {
+                          return (
+                            <span>
+                              <Tooltip
+                                title="Accept Specimen"
+                                placement={"right"}
+                              >
+                                <i
+                                  style={{
+                                    pointerEvents:
+                                      row.sample_status === "A" ? "none" : "",
+
+                                    opacity:
+                                      row.sample_status === "A" ? "0.1" : "",
+                                  }}
+                                  className="fa fa-check"
+                                  aria-hidden="true"
+                                  onClick={(e) => onSubmit(row, "A", e)}
+                                />
+                              </Tooltip>
+                              <Tooltip
+                                title="Reject Specimen"
+                                placement={"right"}
+                              >
+                                <i
+                                  style={{
+                                    pointerEvents:
+                                      row.sample_status === "A" ? "none" : "",
+
+                                    opacity:
+                                      row.sample_status === "A" ? "0.1" : "",
+                                  }}
+                                  className="fa fa-times"
+                                  aria-hidden="true"
+                                  onClick={() => {
+                                    setIsOpen(!isOpen);
+                                    setSelectedRow(row);
+                                  }}
+                                />
+                              </Tooltip>
+                            </span>
+                          );
+                        },
+                        others: {
+                          width: 100,
+
+                          style: { textAlign: "center" },
+                          filterable: false,
+                        },
+                      },
+                      {
+                        fieldName: "ordered_date",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "ordered_date" }} />
+                        ),
+                        displayTemplate: (row) => {
+                          return (
+                            <span>{changeDateFormat(row.ordered_date)}</span>
+                          );
+                        },
+                        disabled: true,
+                        others: {
+                          width: 180,
+
+                          style: { textAlign: "center" },
+                        },
+                        filterable: true,
+                        filterType: "date",
+                        sortable: true,
+                      },
+
+                      {
+                        fieldName: "test_type",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
+                        ),
+                        displayTemplate: (row) => {
+                          return row.test_type === "S" ? (
+                            <span className="badge badge-danger">Stat</span>
+                          ) : (
+                            <span className="badge badge-secondary">
+                              Routine
+                            </span>
+                          );
+                        },
+                        disabled: true,
+                        filterable: true,
+                        filterType: "choices",
+                        choices: [
+                          {
+                            name: "Stat",
+                            value: "S",
+                          },
+                          {
+                            name: "Routine",
+                            value: "R",
+                          },
+                        ],
+                        others: {
+                          width: 90,
+                          style: { textAlign: "center" },
+                        },
+                      },
+                      {
+                        fieldName: "Specimen",
+                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        displayTemplate: (row) => {
+                          return row.status === "CL" ? (
+                            <span className="badge badge-secondary">
+                              Collected
+                            </span>
+                          ) : row.status === "CN" ? (
+                            <span className="badge badge-danger">
+                              Cancelled
+                            </span>
+                          ) : row.status === "CF" ? (
+                            <span className="badge badge-primary">
+                              Confirmed
+                            </span>
+                          ) : (
+                            <span className="badge badge-success">
+                              Validated
+                            </span>
+                          );
+                        },
+                        disabled: true,
+                        filterable: true,
+                        filterType: "choices",
+                        choices: [
+                          {
+                            name: "Collected",
+                            value: "CL",
+                          },
+                          {
+                            name: "Cancelled",
+                            value: "CN",
+                          },
+                          {
+                            name: "Confirmed",
+                            value: "CF",
+                          },
+                          {
+                            name: "Validated",
+                            value: "V",
+                          },
+                        ],
+                        others: {
+                          width: 90,
+
+                          style: { textAlign: "center" },
+                        },
+                      },
+                      {
+                        fieldName: "sample_status",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Specimen Ack." }}
                           />
-                        );
-                      },
-                      others: {
-                        maxWidth: 50,
-                        filterable: false,
-                        sortable: false,
-                      },
-                    },
-                    {
-                      fieldName: "action",
-                      label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                      displayTemplate: (row) => {
-                        return (
-                          <span>
-                            <Tooltip
-                              title="Accept Specimen"
-                              placement={"right"}
-                            >
-                              <i
-                                style={{
-                                  pointerEvents:
-                                    row.sample_status === "A" ? "none" : "",
-
-                                  opacity:
-                                    row.sample_status === "A" ? "0.1" : "",
-                                }}
-                                className="fa fa-check"
-                                aria-hidden="true"
-                                onClick={(e) => onSubmit(row, "A", e)}
-                              />
-                            </Tooltip>
-                            <Tooltip
-                              title="Reject Specimen"
-                              placement={"right"}
-                            >
-                              <i
-                                style={{
-                                  pointerEvents:
-                                    row.sample_status === "A" ? "none" : "",
-
-                                  opacity:
-                                    row.sample_status === "A" ? "0.1" : "",
-                                }}
-                                className="fa fa-times"
-                                aria-hidden="true"
-                                onClick={() => {
-                                  setIsOpen(!isOpen);
-                                  setSelectedRow(row);
-                                }}
-                              />
-                            </Tooltip>
-                          </span>
-                        );
-                      },
-                      others: {
-                        width: 100,
-
-                        style: { textAlign: "center" },
-                        filterable: false,
-                      },
-                    },
-                    {
-                      fieldName: "ordered_date",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "ordered_date" }} />
-                      ),
-                      displayTemplate: (row) => {
-                        return (
-                          <span>{changeDateFormat(row.ordered_date)}</span>
-                        );
-                      },
-                      disabled: true,
-                      others: {
-                        width: 180,
-
-                        style: { textAlign: "center" },
-                      },
-                      filterable: true,
-                      filterType: "date",
-                      sortable: true,
-                    },
-
-                    {
-                      fieldName: "test_type",
-                      label: <AlgaehLabel label={{ fieldName: "proiorty" }} />,
-                      displayTemplate: (row) => {
-                        return row.test_type === "S" ? (
-                          <span className="badge badge-danger">Stat</span>
-                        ) : (
-                          <span className="badge badge-secondary">Routine</span>
-                        );
-                      },
-                      disabled: true,
-                      filterable: true,
-                      filterType: "choices",
-                      choices: [
-                        {
-                          name: "Stat",
-                          value: "S",
+                        ),
+                        displayTemplate: (row) => {
+                          return row.sample_status === "N" ? (
+                            <span className="badge badge-warning">Pending</span>
+                          ) : row.sample_status === "A" ? (
+                            <span className="badge badge-success">
+                              Accepted
+                            </span>
+                          ) : row.sample_status === "R" ? (
+                            <span className="badge badge-danger">Rejected</span>
+                          ) : null;
                         },
-                        {
-                          name: "Routine",
-                          value: "R",
-                        },
-                      ],
-                      others: {
-                        width: 90,
-                        style: { textAlign: "center" },
-                      },
-                    },
-                    {
-                      fieldName: "Specimen",
-                      label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                      displayTemplate: (row) => {
-                        return row.status === "CL" ? (
-                          <span className="badge badge-secondary">
-                            Collected
-                          </span>
-                        ) : row.status === "CN" ? (
-                          <span className="badge badge-danger">Cancelled</span>
-                        ) : row.status === "CF" ? (
-                          <span className="badge badge-primary">Confirmed</span>
-                        ) : (
-                          <span className="badge badge-success">Validated</span>
-                        );
-                      },
-                      disabled: true,
-                      filterable: true,
-                      filterType: "choices",
-                      choices: [
-                        {
-                          name: "Collected",
-                          value: "CL",
-                        },
-                        {
-                          name: "Cancelled",
-                          value: "CN",
-                        },
-                        {
-                          name: "Confirmed",
-                          value: "CF",
-                        },
-                        {
-                          name: "Validated",
-                          value: "V",
-                        },
-                      ],
-                      others: {
-                        width: 90,
+                        disabled: true,
+                        sortable: true,
+                        filterable: true,
+                        filterType: "choices",
+                        choices: [
+                          {
+                            name: "Pending",
+                            value: "N",
+                          },
+                          {
+                            name: "Accepted",
+                            value: "A",
+                          },
+                        ],
+                        others: {
+                          width: 140,
 
-                        style: { textAlign: "center" },
-                      },
-                    },
-                    {
-                      fieldName: "sample_status",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Specimen Ack." }} />
-                      ),
-                      displayTemplate: (row) => {
-                        return row.sample_status === "N" ? (
-                          <span className="badge badge-warning">Pending</span>
-                        ) : row.sample_status === "A" ? (
-                          <span className="badge badge-success">Accepted</span>
-                        ) : row.sample_status === "R" ? (
-                          <span className="badge badge-danger">Rejected</span>
-                        ) : null;
-                      },
-                      disabled: true,
-                      sortable: true,
-                      filterable: true,
-                      filterType: "choices",
-                      choices: [
-                        {
-                          name: "Pending",
-                          value: "N",
+                          style: { textAlign: "center" },
                         },
-                        {
-                          name: "Accepted",
-                          value: "A",
+                      },
+
+                      {
+                        fieldName: "lab_id_number",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Lab ID Number" }}
+                          />
+                        ),
+                        disabled: true,
+                        sortable: true,
+                        filterable: true,
+                        others: {
+                          width: 140,
+
+                          style: { textAlign: "center" },
                         },
-                      ],
-                      others: {
-                        width: 140,
-
-                        style: { textAlign: "center" },
                       },
-                    },
+                      {
+                        fieldName: "primary_id_no",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "primary_id_no" }} />
+                        ),
+                        disabled: false,
+                        sortable: true,
+                        filterable: true,
+                        others: {
+                          width: 150,
 
-                    {
-                      fieldName: "lab_id_number",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />
-                      ),
-                      disabled: true,
-                      sortable: true,
-                      filterable: true,
-                      others: {
-                        width: 140,
+                          style: { textAlign: "center" },
+                        },
+                      },
+                      {
+                        fieldName: "patient_code",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                        ),
+                        disabled: false,
+                        sortable: true,
+                        filterable: true,
+                        others: {
+                          width: 150,
 
-                        style: { textAlign: "center" },
+                          style: { textAlign: "center" },
+                        },
                       },
-                    },
-                    {
-                      fieldName: "primary_id_no",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "primary_id_no" }} />
-                      ),
-                      disabled: false,
-                      sortable: true,
-                      filterable: true,
-                      others: {
-                        width: 150,
+                      {
+                        fieldName: "full_name",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "patient_name" }} />
+                        ),
+                        disabled: true,
+                        sortable: true,
+                        filterable: true,
+                        others: {
+                          style: { textAlign: "left" },
+                        },
+                      },
+                      {
+                        fieldName: "service_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Test Name" }} />
+                        ),
 
-                        style: { textAlign: "center" },
+                        disabled: true,
+                        sortable: true,
+                        filterable: true,
+                        others: {
+                          style: { textAlign: "center" },
+                        },
                       },
-                    },
-                    {
-                      fieldName: "patient_code",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "patient_code" }} />
-                      ),
-                      disabled: false,
-                      sortable: true,
-                      filterable: true,
-                      others: {
-                        width: 150,
-
-                        style: { textAlign: "center" },
-                      },
-                    },
-                    {
-                      fieldName: "full_name",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "patient_name" }} />
-                      ),
-                      disabled: true,
-                      sortable: true,
-                      filterable: true,
-                      others: {
-                        style: { textAlign: "left" },
-                      },
-                    },
-                    {
-                      fieldName: "service_name",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Test Name" }} />
-                      ),
-
-                      disabled: true,
-                      sortable: true,
-                      filterable: true,
-                      others: {
-                        style: { textAlign: "center" },
-                      },
-                    },
-                  ]}
-                  keyId="patient_code"
-                  data={sample_collection ?? []}
-                  pagination={true}
-                  pageOptions={{ rows: 50, page: currentPage }}
-                  pageEvent={(page) => {
-                    setCurrentPage(page);
-                  }}
-                  isFilterable={true}
-                  noDataText="No data available for selected period"
-                />
+                    ]}
+                    keyId="patient_code"
+                    data={sample_collection ?? []}
+                    pagination={true}
+                    pageOptions={{ rows: 50, page: currentPage }}
+                    pageEvent={(page) => {
+                      setCurrentPage(page);
+                    }}
+                    isFilterable={true}
+                    noDataText="No data available for selected period"
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="hptl-phase1-footer">
-          <div className="row">
-            <div className="col-lg-12">
-              <button
-                type="submit"
-                className="btn btn-primary"
-                style={{ marginLeft: 10 }}
-                onClick={onAcknowledge}
-                disabled={gridData.length > 0 ? false : true}
-              >
-                Acknowledge All
-              </button>
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  style={{ marginLeft: 10 }}
+                  onClick={onAcknowledge}
+                  disabled={gridData.length > 0 ? false : true}
+                >
+                  Acknowledge All
+                </button>
 
-              {/* <button
+                {/* <button
               onClick={() => {
                 setEntryType("R");
                 setBatchList([]);
@@ -752,10 +790,11 @@ export default function AccessionAcknowledgement() {
             >
               Clear
             </button> */}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </Spin>
     </React.Fragment>
   );
 }
