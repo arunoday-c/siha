@@ -261,16 +261,23 @@ export async function getListFromPortal(data) {
       patient_gender,
       package_name,
       details,
+      nationality_id,
+      insurance_user,
+      identity_type,
+      mobile_no,
     } = data[i];
 
     const _mysql = new algaehMysql();
 
     try {
+      const sub_insurance = _.head(details);
       const headerQuery = _mysql.mysqlQueryFormat(
         `INSERT INTO portal_patient_package_header(
         patient_identity,patient_package_id,register_id,package_header_id,
         register_patient_id,portal_user_id,patient_code,patient_name,patient_dob,
-        patient_gender,package_name) values(?,?,?,?,?,?,?,?,?,?,?);`,
+        patient_gender,package_name,nationality_id,total_details_count,insurance_user,
+        identity_type,mobile_no) 
+        values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
         [
           patient_identity,
           patient_package_id,
@@ -283,6 +290,11 @@ export async function getListFromPortal(data) {
           moment(patient_dob).format("YYYY-MM-DD"),
           patient_gender,
           package_name,
+          nationality_id,
+          details.length,
+          insurance_user,
+          identity_type,
+          mobile_no,
         ]
       );
 

@@ -215,31 +215,7 @@ const labModal = {
       next(e);
     }
   },
-  patientPortalData: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    try {
-      let inputValues = req.query;
 
-      _mysql
-        .executeQuery({
-          query: `select * from hims_f_portal_patient where  date(created_date) between date(?) AND date(?)`,
-          values: [inputValues.from_date, inputValues.to_date],
-          printQuery: true,
-        })
-        .then((result) => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
-        })
-        .catch((error) => {
-          _mysql.releaseConnection();
-          next(error);
-        });
-    } catch (e) {
-      _mysql.releaseConnection();
-      next(e);
-    }
-  },
   updateLabOrderServiceForDoc: (req, res, next) => {
     const _mysql = new algaehMysql();
 
@@ -3491,5 +3467,36 @@ export function updateBatchDetail(req, res, next) {
     _mysql.rollBackTransaction(() => {
       next(e);
     });
+  }
+}
+export async function patientPortalData(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    let inputValues = req.query;
+
+    const result = await _mysql
+      .executeQuery({
+        query: `select portal_package_id,patient_identity,patient_package_id,
+        register_id,package_header_id,register_patient_id,portal_user_id,
+        patient_code,patient_name,patient_dob,patient_gender,package_name,
+        processed,nationality_id,identity_type,total_details_count,mobile_no from portal_patient_package_header where  
+        date(create_date) between date(?) AND date(?) and insurance_user=? and is_processed=0;`,
+        values: [
+          inputValues.from_date,
+          inputValues.to_date,
+          inputValues.corporate_id,
+        ],
+        printQuery: true,
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+    _mysql.releaseConnection();
+    req.records = result;
+    next();
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
   }
 }

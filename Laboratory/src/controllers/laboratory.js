@@ -10,8 +10,10 @@ import labModels, {
   updateBatchDetail,
   bulkSampleAcknowledge,
   updateLabSampleStatus,
+  patientPortalData,
 } from "../models/laboratory";
 import { labResultDispatch } from "../models/labDispatch";
+import { patientBillGeneration } from "../models/portalToHims";
 const {
   getLabOrderedServices,
   getLabOrderServiceForDoc,
@@ -35,7 +37,7 @@ const {
   top10LabOrders,
   labDashBoardWithAttachment,
   updateHassanNo,
-  patientPortalData,
+
   getHESNServices,
 } = labModels;
 import { processLabSMS, getValidatedResults } from "../models/labSMS";
@@ -368,6 +370,16 @@ export default () => {
       .json({
         success: true,
         records: req.records,
+      })
+      .end();
+  });
+  api.post("/patientBillGeneration", patientBillGeneration, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        records:
+          "Bulk Patient verification is under process we intimate you after its complete",
       })
       .end();
   });
