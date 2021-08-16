@@ -65,7 +65,6 @@ export default () => {
     postPurchaseReturnOrderEntry,
     (req, res, next) => {
       if (req.records.invalid_input == true) {
-        console.log("4567");
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
           result: req.records,

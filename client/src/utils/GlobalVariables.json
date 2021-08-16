@@ -1705,6 +1705,20 @@
       "value": "INV"
     }
   ],
+  "RETURN_ITEM": [
+    {
+      "name": "Return Items",
+      "value": "R"
+    },
+    {
+      "name": "Return Expiry Items",
+      "value": "E"
+    },
+    {
+      "name": "Dispose Expiry Items",
+      "value": "D"
+    }
+  ],
   "DECIMALS": [
     {
       "name": "0",

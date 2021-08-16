@@ -173,7 +173,7 @@ class POReturnItemList extends Component {
                             {this.state.qtyhand
                               ? this.state.qtyhand +
                                 " " +
-                                this.state.stocking_uom
+                                this.state.uom_description
                               : "-----------"}
                           </h6>
                         </div>
