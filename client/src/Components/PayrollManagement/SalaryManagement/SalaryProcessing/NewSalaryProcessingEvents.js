@@ -335,6 +335,42 @@ const getOptions = ($this) => {
   });
 };
 
+const onClickRevert = ($this, row) => {
+  swal({
+    title: "Revert",
+    html: "Are you sure do you want to revert " + row.salary_number,
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No",
+  }).then((willRevert) => {
+    if (willRevert.value) {
+      algaehApiCall({
+        uri: "/salary/makeSalaryUnfinalized",
+        method: "PUT",
+        module: "hrManagement",
+        data: {
+          salary_number: row.salary_number,
+          hims_f_salary_id: row.hims_f_salary_id,
+        },
+        onSuccess: (res) => {
+          if (res.data.success) {
+            SalaryProcess($this, null, "load");
+          }
+        },
+        onFailure: (err) => {
+          swalMessage({
+            title: err.message,
+            type: "error",
+          });
+        },
+      });
+    }
+  });
+};
+
 const generateMonthlyLoanReport = ($this) => {
   algaehApiCall({
     uri: "/report",
@@ -402,5 +438,6 @@ export {
   closeSalaryComponents,
   getOptions,
   generateMonthlyLoanReport,
+  onClickRevert,
   // generateLevGratReconReport,
 };

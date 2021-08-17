@@ -1,6 +1,9 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import salaryModels, { getHrmsOptions } from "../models/salary";
+import salaryModels, {
+  getHrmsOptions,
+  makeSalaryUnfinalized,
+} from "../models/salary";
 
 const {
   getSalaryProcess,
@@ -45,7 +48,6 @@ export default () => {
         });
       }
     }
-
   );
 
   api.get("/getSalaryProcess", getSalaryProcess, (req, res, next) => {
@@ -74,6 +76,12 @@ export default () => {
       });
     }
   );
+  api.put("/makeSalaryUnfinalized", makeSalaryUnfinalized, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records,
+    });
+  });
 
   api.get("/detailSalaryStatement", detailSalaryStatement, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

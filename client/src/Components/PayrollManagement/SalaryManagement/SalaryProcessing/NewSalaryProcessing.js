@@ -12,11 +12,15 @@ import {
   closeSalaryComponents,
   getOptions,
   generateMonthlyLoanReport,
-
+  onClickRevert,
   // generateLevGratReconReport
 } from "./NewSalaryProcessingEvents.js";
 import SalariesComponents from "./SalariesComponents";
-import { AlgaehSecurityElement, AlgaehDataGrid } from "algaeh-react-components";
+import {
+  AlgaehSecurityElement,
+  AlgaehDataGrid,
+  Tooltip,
+} from "algaeh-react-components";
 const STATUS = {
   CHECK: true,
   UNCHECK: false,
@@ -200,17 +204,35 @@ class NewSalaryProcessing extends Component {
                                 ),
                                 displayTemplate: (row) => {
                                   return (
-                                    <span>
-                                      <i
-                                        className="fas fa-eye"
-                                        aria-hidden="true"
-                                        onClick={openSalaryComponents.bind(
-                                          this,
-                                          this,
-                                          row
-                                        )}
-                                      />
-                                    </span>
+                                    <>
+                                      <Tooltip title="View Salary Details">
+                                        <span>
+                                          <i
+                                            className="fas fa-eye"
+                                            aria-hidden="true"
+                                            onClick={openSalaryComponents.bind(
+                                              this,
+                                              this,
+                                              row
+                                            )}
+                                          />
+                                        </span>
+                                      </Tooltip>
+                                      {row.salary_processed === "Y" &&
+                                      row.salary_paid === "N" ? (
+                                        <Tooltip title="Revert to Unfinalized">
+                                          <span
+                                            onClick={onClickRevert.bind(
+                                              this,
+                                              this,
+                                              row
+                                            )}
+                                          >
+                                            <i className="fas fa-undo-alt"></i>
+                                          </span>
+                                        </Tooltip>
+                                      ) : null}
+                                    </>
                                   );
                                 },
                                 others: {
