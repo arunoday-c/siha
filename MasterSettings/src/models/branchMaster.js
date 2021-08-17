@@ -71,7 +71,7 @@ export default {
         const options = res.data;
         new algaehMail(options.data[0])
           .to(to_mail_id)
-          .subject(MailName)
+          .subject("Test Email")
           .templateHbs("testEmail.hbs", {
             hospital_address,
             hospital_name,
