@@ -146,6 +146,58 @@ function HassanNumber() {
       },
     });
   };
+  const generatePCRPOsitiveReport = () => {
+    const date = getValues().start_date;
+    const from_date = moment(date[0]).format("YYYY-MM-DD");
+    const to_date = moment(date[1]).format("YYYY-MM-DD");
+    algaehApiCall({
+      // uri: "/report",
+      uri: "/excelReport",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "pcrPositiveReport",
+          pageOrentation: "landscape",
+          excelTabName: "PCR Positive Report",
+          excelHeader: false,
+          reportParams: [
+            {
+              name: "from_date",
+              value: from_date,
+            },
+            {
+              name: "to_date",
+              value: to_date,
+            },
+          ],
+          outputFileType: "EXCEL", //"EXCEL", //"PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const a = document.createElement("a");
+        a.href = urlBlob;
+        a.download = `PCR Positive Report.${"xlsx"}`;
+        a.click();
+
+        // const urlBlob = URL.createObjectURL(res.data);
+        // const origin = `${
+        //   window.location.origin
+        // }/reportviewer/web/viewer.html?file=${urlBlob}&filename=${
+        //   $this.state.inputs.hospital_name
+        // } Leave and Airfare Reconciliation - ${moment(
+        //   $this.state.inputs.month,
+        //   "MM"
+        // ).format("MMM")}-${$this.state.inputs.year}`;
+        // window.open(origin);
+      },
+    });
+  };
 
   return (
     <div className="hptl-phase1-result-entry-form">
@@ -569,6 +621,13 @@ function HassanNumber() {
               onClick={generateHesnStatusReport}
             >
               <AlgaehLabel label={{ forceLabel: "Export as Excel" }} />
+            </button>
+            <button
+              type="button"
+              className="btn btn-default"
+              onClick={generatePCRPOsitiveReport}
+            >
+              <AlgaehLabel label={{ forceLabel: "PCR Positive Report" }} />
             </button>
           </div>
         </div>

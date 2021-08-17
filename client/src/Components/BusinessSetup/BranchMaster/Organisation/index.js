@@ -651,7 +651,9 @@ export function Organization(props) {
         </div>
       </div>
       <div className="col-4">
-        {userToken.user_type === "SU" ? <EmailConfig /> : null}
+        {userToken.user_type === "SU" || userToken.user_type === "AD" ? (
+          <EmailConfig />
+        ) : null}
       </div>
     </div>
   );
