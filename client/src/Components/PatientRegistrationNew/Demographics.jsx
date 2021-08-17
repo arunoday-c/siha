@@ -64,6 +64,7 @@ export function Demographics({
   errors,
   patientIdCard,
   patientImage,
+  fieldRef,
   incomeByOp,
   incomeByPoint,
   inModal = false,
@@ -187,7 +188,7 @@ export function Demographics({
   return (
     <Spin spinning={isLoading}>
       <div className="hptl-phase1-patient-details margin-bottom-15 margin-top-15">
-        <div className="patient-section">
+        <div className="patient-section" ref={fieldRef}>
           <Tabs type="card">
             <TabPane
               tab={

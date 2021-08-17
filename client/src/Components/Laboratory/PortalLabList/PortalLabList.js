@@ -14,10 +14,8 @@ import { newAlgaehApi } from "../../../hooks";
 import { Controller, useForm } from "react-hook-form";
 import moment from "moment";
 
-function HassanNumber() {
+function PortalToHimsList() {
   const { userToken } = useContext(MainContext);
-  console.log("userToken", userToken);
-
   const {
     control,
     errors,
@@ -38,10 +36,6 @@ function HassanNumber() {
     ["patientPortalData"],
     patientPortalData,
     {
-      onSuccess: (data) => {
-        debugger;
-        // debugger;
-      },
       onError: (err) => {
         AlgaehMessagePop({
           display: err?.message,
@@ -59,37 +53,34 @@ function HassanNumber() {
       uri: "/laboratory/patientPortalData",
       module: "laboratory",
       method: "GET",
-      data: { from_date, to_date, status: "V" },
+      data: { from_date, to_date, corporate_id: "gamc" },
     });
     return result?.data?.records;
   }
 
-  // useEffect(() => {
-  //   if (accountsForDash?.length >= 4) {
-  //     const expenseAccount = accountsForDash.filter((f) => f.root_id === 5);
-  //     if (expenseAccount.length > 0) {
-  //       const expense =
-  //         parseFloat(
-  //           expenseAccount[0].amount ? expenseAccount[0].amount : 0.0
-  //         ) / parseInt(days);
-  //       setAvgMtdExpense(expense);
-  //     }
-  //     const incomeAccount = accountsForDash.filter((f) => f.root_id === 4);
-  //     if (incomeAccount.length) {
-  //       const income =
-  //         parseFloat(incomeAccount[0].amount ? incomeAccount[0].amount : 0.0) /
-  //         parseInt(days);
-  //       setAvgMtdIncome(income);
-  //     }
-  //   }
-  // }, [days, accountsForDash]);
-  // async function getOrganization(key) {
-  //   const result = await newAlgaehApi({
-  //     uri: "/organization/getOrganizationByUser",
-  //     method: "GET",
-  //   });
-  //   return result?.data?.records;
-  // }
+  async function onSubmitHandler() {
+    try {
+      const patientList = patientData
+        .filter((f) => f.checked !== false)
+        .map((item) => {
+          return item.portal_package_id;
+        });
+      const result = await newAlgaehApi({
+        uri: "/laboratory/patientBillGeneration",
+        module: "laboratory",
+        method: "POST",
+        data: { patientList },
+      }).catch((error) => {
+        throw error;
+      });
+      console.log("result====>", result);
+    } catch (e) {
+      AlgaehMessagePop({
+        display: e?.message,
+        type: "error",
+      });
+    }
+  }
 
   return (
     <>
@@ -165,12 +156,6 @@ function HassanNumber() {
                       { text: "Company 2", value: "" },
                     ],
                   },
-                  // others: {
-                  //   disabled:
-                  //     current.request_status === "APR" &&
-                  //     current.work_status === "COM",
-                  //   tabIndex: "4",
-                  // },
                 }}
               />
             )}
@@ -211,27 +196,16 @@ function HassanNumber() {
                     {
                       label: <input type="checkbox" />,
                       fieldName: "select",
-
                       others: {
                         width: 30,
                         filterable: false,
                         sortable: false,
                       },
+                      displayTemplate: (row) => <input type="checkbox" />,
                     },
-                    {
-                      fieldName: "run_types",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Company Name" }} />
-                      ),
 
-                      disabled: true,
-                      others: {
-                        resizable: false,
-                        style: { textAlign: "center" },
-                      },
-                    },
                     {
-                      fieldName: "full_name",
+                      fieldName: "patient_name",
                       label: (
                         <AlgaehLabel label={{ fieldName: "patient_name" }} />
                       ),
@@ -242,7 +216,7 @@ function HassanNumber() {
                       },
                     },
                     {
-                      fieldName: "service_name",
+                      fieldName: "total_details_count",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "No. of Tests" }} />
                       ),
@@ -255,7 +229,7 @@ function HassanNumber() {
                       },
                     },
                     {
-                      fieldName: "primary_id_no",
+                      fieldName: "identity_type",
                       label: (
                         <AlgaehLabel
                           label={{ forceLabel: "Primary ID Type" }}
@@ -269,7 +243,7 @@ function HassanNumber() {
                       },
                     },
                     {
-                      fieldName: "primary_id_no",
+                      fieldName: "patient_identity",
                       label: (
                         <AlgaehLabel label={{ fieldName: "primary_id_no" }} />
                       ),
@@ -280,20 +254,9 @@ function HassanNumber() {
                         style: { textAlign: "center" },
                       },
                     },
+
                     {
-                      fieldName: "full_name",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "nationality" }} />
-                      ),
-                      disabled: true,
-                      others: {
-                        width: 150,
-                        resizable: false,
-                        style: { textAlign: "left" },
-                      },
-                    },
-                    {
-                      fieldName: "contact_number",
+                      fieldName: "mobile_no",
                       label: (
                         <AlgaehLabel label={{ fieldName: "contact_number" }} />
                       ),
@@ -302,9 +265,6 @@ function HassanNumber() {
                         width: 150,
                         resizable: false,
                         style: { textAlign: "left" },
-                      },
-                      displayTemplate: (row) => {
-                        return `${row.tel_code}-${row.contact_number}`;
                       },
                     },
                   ]}
@@ -326,11 +286,7 @@ function HassanNumber() {
       <div className="hptl-phase1-footer">
         <div className="row">
           <div className="col-lg-12">
-            <button
-              className="btn btn-primary"
-
-              // onClick={}
-            >
+            <button className="btn btn-primary" onClick={onSubmitHandler}>
               Bulk Process
             </button>
           </div>
@@ -340,4 +296,4 @@ function HassanNumber() {
   );
 }
 
-export default HassanNumber;
+export default PortalToHimsList;

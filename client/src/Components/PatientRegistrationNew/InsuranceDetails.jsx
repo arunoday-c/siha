@@ -43,6 +43,7 @@ export function InsuranceDetails({
   insuranceImgBack,
   isInsurance,
   setIsInsurance,
+  // fieldRef,
 }) {
   const { userToken } = useContext(MainContext);
   const {
@@ -137,7 +138,10 @@ export function InsuranceDetails({
               }
               key="insuranceForm"
             >
-              <div className="htpl-phase1-primary-insurance-form">
+              <div
+                className="htpl-phase1-primary-insurance-form"
+                // ref={fieldRef}
+              >
                 <div className="col-12">
                   <div className="row">
                     <div className="col-lg-8 primary-details">

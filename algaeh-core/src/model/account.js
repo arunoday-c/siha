@@ -283,11 +283,8 @@ const resetPassword = (req, res, next) => {
               url: "http://localhost:3006/api/v1//Document/getEmailConfig",
             }).then((res) => {
               const options = res.data;
-              // console.log("email options", options.data, options.data[0]);
-              new algaehMail({
-                ...options.data[0],
-                smtp: options.data[0]["host"],
-              })
+              console.log("email options", options.data, options.data[0]);
+              new algaehMail(options.data[0])
                 .to(work_email)
                 .subject("Password reset PIN")
                 .templateHbs("userPasswodReset.hbs", {
@@ -298,7 +295,7 @@ const resetPassword = (req, res, next) => {
                 .then((result) => {
                   const user = username.toLowerCase();
                   pinSet(user, pin);
-                  console.log("Email sent : ", result);
+
                   next();
                 })
                 .catch((error) => {
