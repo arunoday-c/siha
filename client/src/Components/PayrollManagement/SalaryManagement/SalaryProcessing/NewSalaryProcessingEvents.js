@@ -358,6 +358,11 @@ const onClickRevert = ($this, row) => {
         onSuccess: (res) => {
           if (res.data.success) {
             SalaryProcess($this, null, "load");
+          } else {
+            swalMessage({
+              title: res.data.result.message,
+              type: "error",
+            });
           }
         },
         onFailure: (err) => {

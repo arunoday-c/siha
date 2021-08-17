@@ -77,10 +77,17 @@ export default () => {
     }
   );
   api.put("/makeSalaryUnfinalized", makeSalaryUnfinalized, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      result: req.records,
-    });
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        result: req.records,
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records,
+      });
+    }
   });
 
   api.get("/detailSalaryStatement", detailSalaryStatement, (req, res, next) => {

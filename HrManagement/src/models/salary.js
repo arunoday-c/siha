@@ -5486,33 +5486,45 @@ export function makeSalaryUnfinalized(req, res, next) {
         ) {
           _mysql
             .executeQueryWithTransaction({
-              query: `SELECT finance_day_end_header_id from finance_day_end_header where document_number=?;`,
+              query: `SELECT finance_day_end_header_id, posted from finance_day_end_header where document_number=?;`,
               values: [inputParam.salary_number],
             })
             .then((day_end_result) => {
               const day_end_data = _.head(day_end_result);
-              _mysql
-                .executeQueryWithTransaction({
-                  query: `DELETE FROM finance_day_end_sub_detail WHERE day_end_header_id=?; 
+              if (day_end_data.posted === "N") {
+                _mysql
+                  .executeQueryWithTransaction({
+                    query: `DELETE FROM finance_day_end_sub_detail WHERE day_end_header_id=?; 
                   DELETE FROM finance_day_end_header WHERE finance_day_end_header_id=?;
                   UPDATE hims_f_salary SET salary_processed='N' where hims_f_salary_id=?;`,
-                  values: [
-                    day_end_data.finance_day_end_header_id,
-                    day_end_data.finance_day_end_header_id,
-                    inputParam.hims_f_salary_id,
-                  ],
-                })
-                .then((result) => {
-                  _mysql.commitTransaction(() => {
+                    values: [
+                      day_end_data.finance_day_end_header_id,
+                      day_end_data.finance_day_end_header_id,
+                      inputParam.hims_f_salary_id,
+                    ],
+                  })
+                  .then((result) => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = salary_result;
+                      next();
+                    });
+                  })
+                  .catch((error) => {
                     _mysql.releaseConnection();
-                    req.records = salary_result;
-                    next();
+                    next(error);
                   });
-                })
-                .catch((error) => {
+              } else {
+                _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
-                  next(error);
+                  req.records = {
+                    invalid_input: true,
+                    message:
+                      "Transation posted from Day end , no rights to revert.",
+                  };
+                  next();
                 });
+              }
             })
             .catch((error) => {
               _mysql.releaseConnection();
