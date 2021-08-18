@@ -11,36 +11,36 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      console.log("INPUT:", input);
+      let PCR_RES = "";
 
-      if (input.hassanShow === "withhassan") {
-        str += " and LO.hassan_number is not null";
-      }
-      if (input.hassanShow === "withOuthassan") {
-        str += " and LO.hassan_number is null";
+      if (input.PCR_RES === "B") {
+        PCR_RES = "";
+      } else if (input.PCR_RES === "N") {
+        PCR_RES = " and AL.result='Negative'";
+      } else if (input.PCR_RES === "P") {
+        PCR_RES = " and AL.result='Positive'";
       }
 
       options.mysql
         .executeQuery({
-          query: `select LO.ordered_date,LO.lab_id_number,LO.hassan_number,LO.hassan_number_updated_date,
-          case when LO.hesn_upload='Y' then 'Yes' else 'No' end as hesn_upload,LO.hesn_upload_updated_date,P.patient_code,P.full_name,P.primary_id_no,
-          INV.description,USR.user_display_name as hesn_no_updated_by,USRR.user_display_name as hesn_file_updated_by
-          from hims_f_lab_order LO 
-          inner join hims_d_investigation_test INV on INV.hims_d_investigation_test_id=LO.test_id 
-          inner join hims_f_patient P on P.hims_d_patient_id=LO.patient_id 
-          left join algaeh_d_app_user USR on USR.algaeh_d_app_user_id=LO.hassan_number_updated_by 
-          left join algaeh_d_app_user USRR on USRR.algaeh_d_app_user_id=LO.hesn_upload_updated_by 
-          WHERE INV.isPCR='Y' and LO.billed='Y' and date(ordered_date) between date(?) AND date(?) ${str};`,
-          values: [input.from_date, input.to_date],
+          query: `SELECT P.patient_code,P.full_name,P.primary_id_no,P.date_of_birth,P.contact_number,T.description,AL.result,O.ordered_date
+          FROM hims_f_ord_analytes AL
+          inner join hims_f_lab_order O on O.hims_f_lab_order_id=AL.order_id
+          inner join hims_d_investigation_test T on T.hims_d_investigation_test_id=O.test_id
+          inner join hims_f_patient P on P.hims_d_patient_id=O.patient_id
+          where O.hospital_id=? and O.status='V' and T.isPCR='Y' and date(O.ordered_date) between date(?) and date(?) ${PCR_RES} ;`,
+          values: [input.hospital_id, input.from_date, input.to_date],
           printQuery: true,
         })
-        .then((result) => {
+        .then((res) => {
+          const result = res;
           resolve({
-            result,
+            result: result,
           });
         })
-        .catch((error) => {
+        .catch((e) => {
           options.mysql.releaseConnection();
+          reject(e);
         });
     } catch (e) {
       reject(e);
