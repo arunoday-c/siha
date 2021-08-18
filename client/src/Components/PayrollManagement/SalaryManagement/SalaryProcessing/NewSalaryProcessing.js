@@ -12,11 +12,17 @@ import {
   closeSalaryComponents,
   getOptions,
   generateMonthlyLoanReport,
-
+  onClickRevert,
   // generateLevGratReconReport
 } from "./NewSalaryProcessingEvents.js";
 import SalariesComponents from "./SalariesComponents";
-import { AlgaehSecurityElement, AlgaehDataGrid } from "algaeh-react-components";
+import {
+  AlgaehSecurityElement,
+  AlgaehDataGrid,
+  Tooltip,
+  Modal,
+  AlgaehFormGroup,
+} from "algaeh-react-components";
 const STATUS = {
   CHECK: true,
   UNCHECK: false,
@@ -59,6 +65,9 @@ class NewSalaryProcessing extends Component {
       dis_employee_name: null,
       hrms_options: {},
       selectAll: STATUS.UNCHECK,
+      revert_visible: false,
+      revert_reason: null,
+      emp_salary_details: {},
     };
     this.allChecked = undefined;
     getOptions(this);
@@ -124,26 +133,57 @@ class NewSalaryProcessing extends Component {
               SalaryProcess(this, inputs, "load");
             }}
           />
+          <Modal
+            title="Revert Reason"
+            visible={this.state.revert_visible}
+            width={300}
+            footer={null}
+            onCancel={() =>
+              this.setState({ revert_visible: false, revert_reason: null })
+            }
+            className={`row algaehNewModal preRevertModal`}
+          >
+            <AlgaehFormGroup
+              div={{
+                className: "col-12 form-group mandatory margin-top-15",
+              }}
+              label={{
+                forceLabel: "Reason",
+                isImp: true,
+              }}
+              textBox={{
+                type: "text",
+                value: this.state.revert_reason,
+                className: "form-control",
+                id: "name",
+                onChange: (e) => {
+                  this.setState({ revert_reason: e.target.value });
+                },
+                autoComplete: false,
+              }}
+            />
+
+            <div className="popupFooter">
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-lg-12">
+                    <button
+                      className="btn btn-primary"
+                      onClick={onClickRevert.bind(this, this)}
+                    >
+                      Revert
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Modal>
+
           <div className="row" style={{ marginBottom: 40 }}>
             <div className="col-12">
               <div className="row">
                 <div className="col-12">
                   <div className="portlet portlet-bordered margin-bottom-15">
-                    {/*<div className="portlet-title">
-                      <div className="caption">
-                        <h3 className="caption-subject">
-                          Salary List for month of: <span>{""}</span>
-                        </h3>
-                      </div>
-
-                      <div className="customCheckbox">
-                        <label className="checkbox inline">
-                          <input type="checkbox" value="" name="" />
-                          <span>Select All</span>
-                        </label>
-                      </div>
-                    </div>*/}
-
                     <div className="portlet-body">
                       <div className="row">
                         <div className="col-lg-12" id="Salary_Management_Cntr">
@@ -200,17 +240,36 @@ class NewSalaryProcessing extends Component {
                                 ),
                                 displayTemplate: (row) => {
                                   return (
-                                    <span>
-                                      <i
-                                        className="fas fa-eye"
-                                        aria-hidden="true"
-                                        onClick={openSalaryComponents.bind(
-                                          this,
-                                          this,
-                                          row
-                                        )}
-                                      />
-                                    </span>
+                                    <>
+                                      <Tooltip title="View Salary Details">
+                                        <span>
+                                          <i
+                                            className="fas fa-eye"
+                                            aria-hidden="true"
+                                            onClick={openSalaryComponents.bind(
+                                              this,
+                                              this,
+                                              row
+                                            )}
+                                          />
+                                        </span>
+                                      </Tooltip>
+                                      {row.salary_processed === "Y" &&
+                                      row.salary_paid === "N" ? (
+                                        <Tooltip title="Revert to Unfinalized">
+                                          <span
+                                            onClick={() => {
+                                              this.setState({
+                                                revert_visible: true,
+                                                emp_salary_details: row,
+                                              });
+                                            }}
+                                          >
+                                            <i className="fas fa-undo-alt"></i>
+                                          </span>
+                                        </Tooltip>
+                                      ) : null}
+                                    </>
                                   );
                                 },
                                 others: {

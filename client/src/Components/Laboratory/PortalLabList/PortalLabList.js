@@ -5,7 +5,7 @@ import {
   AlgaehLabel,
   AlgaehDateHandler,
   AlgaehMessagePop,
-  AlgaehAutoComplete,
+  // AlgaehAutoComplete,
   MainContext,
 } from "algaeh-react-components";
 import { useQuery } from "react-query";
@@ -73,7 +73,11 @@ function PortalToHimsList() {
       }).catch((error) => {
         throw error;
       });
-      console.log("result====>", result);
+      AlgaehMessagePop({
+        display: result.data.message,
+        type: "success",
+      });
+      refetch();
     } catch (e) {
       AlgaehMessagePop({
         display: e?.message,
@@ -126,7 +130,7 @@ function PortalToHimsList() {
               />
             )}
           />
-          <Controller
+          {/* <Controller
             name="nphies_status"
             control={control}
             rules={{ required: "Select Company" }}
@@ -144,9 +148,7 @@ function PortalToHimsList() {
                   value,
                   onChange: (_, selected) => {
                     onChange(selected);
-
-                    // setValue("service_amount", _.standard_fee);
-                  },
+               },
 
                   dataSource: {
                     textField: "text",
@@ -159,7 +161,7 @@ function PortalToHimsList() {
                 }}
               />
             )}
-          />
+          /> */}
 
           <div className="col" style={{ marginTop: "21px" }}>
             <button
