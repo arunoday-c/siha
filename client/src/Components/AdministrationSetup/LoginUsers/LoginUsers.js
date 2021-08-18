@@ -34,6 +34,7 @@ class LoginUsers extends Component {
       selectedUSer: {},
       roles_grid: [],
       branch_detail: [],
+      const_branch_detail: [],
       user_type: "",
       hospitals: [],
       password_email: "",
@@ -170,6 +171,7 @@ class LoginUsers extends Component {
       user_type: "",
       full_name: "",
       branch_detail: [],
+      const_branch_detail: [],
       branch_desc: "",
       password_email: "",
       verify_password: true,
@@ -237,8 +239,10 @@ class LoginUsers extends Component {
               ...item,
             };
           });
+
           this.setState({
             branch_detail: data,
+            const_branch_detail: data,
           });
         }
       },
@@ -259,37 +263,37 @@ class LoginUsers extends Component {
   getLoginUsers() {
     this._isMounted = true;
     algaehApiCall({
-      uri: "/algaehappuser/getLoginUserMaster",
+      uri: "/algaehappuser/getLoginUserMasterGrid",
       method: "GET",
       onSuccess: (response) => {
         if (response.data.success === true && this._isMounted === true) {
-          let login_users = Enumerable.from(response.data.records)
-            .groupBy("$.hims_d_employee_id", null, (k, g) => {
-              let firstRecordSet = Enumerable.from(g).firstOrDefault();
+          // let login_users = Enumerable.from(response.data.records)
+          //   .groupBy("$.hims_d_employee_id", null, (k, g) => {
+          //     let firstRecordSet = Enumerable.from(g).firstOrDefault();
 
-              return {
-                email: firstRecordSet.email,
-                work_email: firstRecordSet.work_email,
-                algaeh_d_app_user_id: firstRecordSet.algaeh_d_app_user_id,
-                full_name: firstRecordSet.full_name,
-                employee_code: firstRecordSet.employee_code,
-                username: firstRecordSet.username,
-                user_type: firstRecordSet.user_type,
-                branch_data: g.getSource(),
-                app_group_name: firstRecordSet.app_group_name,
-                app_group_id: firstRecordSet.app_group_id,
-                role_name: firstRecordSet.role_name,
-                role_id: firstRecordSet.role_id,
-                user_status: firstRecordSet.user_status,
-                hospital_id: firstRecordSet.hospital_id,
-                algaeh_m_role_user_mappings_id:
-                  firstRecordSet.algaeh_m_role_user_mappings_id,
-                hims_d_employee_id: firstRecordSet.hims_d_employee_id,
-                hospital_name: firstRecordSet.hospital_name,
-              };
-            })
-            .toArray();
-          this.setState({ login_users: login_users });
+          //     return {
+          //       email: firstRecordSet.email,
+          //       work_email: firstRecordSet.work_email,
+          //       algaeh_d_app_user_id: firstRecordSet.algaeh_d_app_user_id,
+          //       full_name: firstRecordSet.full_name,
+          //       employee_code: firstRecordSet.employee_code,
+          //       username: firstRecordSet.username,
+          //       user_type: firstRecordSet.user_type,
+          //       // branch_data: g.getSource(),
+          //       app_group_name: firstRecordSet.app_group_name,
+          //       app_group_id: firstRecordSet.app_group_id,
+          //       role_name: firstRecordSet.role_name,
+          //       role_id: firstRecordSet.role_id,
+          //       user_status: firstRecordSet.user_status,
+          //       hospital_id: firstRecordSet.hospital_id,
+          //       algaeh_m_role_user_mappings_id:
+          //         firstRecordSet.algaeh_m_role_user_mappings_id,
+          //       hims_d_employee_id: firstRecordSet.hims_d_employee_id,
+          //       hospital_name: firstRecordSet.hospital_name,
+          //     };
+          //   })
+          //   .toArray();
+          this.setState({ login_users: response.data.records });
         }
       },
       onFailure: (error) => {
@@ -656,45 +660,64 @@ class LoginUsers extends Component {
   }
 
   EditLoginUser(row) {
-    let branch_detail = this.state.branch_detail;
+    this.resetSaveState();
+    let branch_detail = this.state.const_branch_detail;
 
-    for (let i = 0; i < row.branch_data.length; i++) {
-      let selecte_branch = _.find(
-        branch_detail,
-        (f) => f.hims_d_hospital_id === row.branch_data[i].hospital_id
-      );
-      const _index = branch_detail.indexOf(selecte_branch);
-      selecte_branch.checked = true;
-      selecte_branch.hims_m_user_employee_id =
-        row.branch_data[i].hims_m_user_employee_id;
-      branch_detail[_index] = selecte_branch;
-    }
-    this.getRoles(row.app_group_id);
-    const email = !!row.work_email
-      ? row.work_email
-      : !!row.email
-      ? row.email
-      : "";
-    this.setState({
-      algaeh_d_app_user_id: row.algaeh_d_app_user_id,
-      username: row.username,
-      full_name: row.full_name,
-      app_group_id: row.app_group_id,
-      role_id: row.role_id,
-      user_type: row.user_type,
-      user_status: row.user_status,
-      employee_id: row.hims_d_employee_id,
-      sub_department_id: row.sub_department_id,
-      hospital_id: row.hospital_id,
-      algaeh_m_role_user_mappings_id: row.algaeh_m_role_user_mappings_id,
-      branch_detail: branch_detail,
-      password_email: email,
-      verify_password: email !== "" ? false : true,
-      editData: true,
-      enableSuggestions: false,
-      checkavilablity: false,
-      suggesteedUserNames: [],
-      // branch_data: branch_data
+    algaehApiCall({
+      uri: "/algaehappuser/getLoginUserMaster",
+      method: "GET",
+      data: { employee_id: row.hims_d_employee_id },
+      onSuccess: (response) => {
+        let data = response.data.records;
+
+        for (let i = 0; i < data.length; i++) {
+          let selecte_branch = _.find(
+            branch_detail,
+            (f) => f.hims_d_hospital_id === data[i].hospital_id
+          );
+          const _index = branch_detail.indexOf(selecte_branch);
+          selecte_branch.checked = true;
+          selecte_branch.hims_m_user_employee_id =
+            data[i].hims_m_user_employee_id;
+          branch_detail[_index] = selecte_branch;
+
+          console.log("selecte_branch", selecte_branch);
+        }
+        this.getRoles(row.app_group_id);
+        const email = !!row.work_email
+          ? row.work_email
+          : !!row.email
+          ? row.email
+          : "";
+        this.setState({
+          algaeh_d_app_user_id: row.algaeh_d_app_user_id,
+          username: row.username,
+          full_name: row.full_name,
+          app_group_id: row.app_group_id,
+          role_id: row.role_id,
+          user_type: row.user_type,
+          user_status: row.user_status,
+          employee_id: row.hims_d_employee_id,
+          sub_department_id: row.sub_department_id,
+          hospital_id: row.hospital_id,
+          algaeh_m_role_user_mappings_id: row.algaeh_m_role_user_mappings_id,
+          branch_detail: branch_detail,
+
+          password_email: email,
+          verify_password: email !== "" ? false : true,
+          editData: true,
+          enableSuggestions: false,
+          checkavilablity: false,
+          suggesteedUserNames: [],
+          // branch_data: branch_data
+        });
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
     });
   }
 
