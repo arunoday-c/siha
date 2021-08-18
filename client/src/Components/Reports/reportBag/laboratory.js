@@ -4,6 +4,7 @@ export default function Laboratory({
   FORMAT_PRIORITY,
   LAB_SAMPLE_COLL,
   LAB_RE_RUN,
+  PCR_RES,
 }) {
   return {
     name: "Laboratory",
@@ -258,6 +259,67 @@ export default function Laboratory({
               textField: "name",
               valueField: "value",
               data: LAB_RE_RUN,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "PCR Result Report",
+        reportName: "pcrPositiveReport",
+        // reportQuery: "subDepartmentIncome",
+        componentCode: "RPT_LAB_PCR",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            label: "Ordered From Date",
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            label: "Ordered To Date",
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "PCR_RES",
+            initialLoad: true,
+            isImp: false,
+            label: "Filter By",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: PCR_RES,
             },
           },
         ],

@@ -5925,5 +5925,19 @@
       "name": "Microbiology",
       "value": "MI"
     }
+  ],
+  "PCR_RES": [
+    {
+      "name": "Both",
+      "value": "B"
+    },
+    {
+      "name": "Negative",
+      "value": "N"
+    },
+    {
+      "name": "Positive",
+      "value": "P"
+    }
   ]
 }

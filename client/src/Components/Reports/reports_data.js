@@ -18,6 +18,7 @@ import {
   LAB_SAMPLE_COLL,
   LAB_RE_RUN,
   INS_STATUS,
+  PCR_RES,
 } from "../../utils/GlobalVariables.json";
 import { getYears } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -98,6 +99,7 @@ export default function loadActiveReports(
             FORMAT_PRIORITY,
             LAB_SAMPLE_COLL,
             LAB_RE_RUN,
+            PCR_RES,
           });
           break;
         case "inventory":
