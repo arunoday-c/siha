@@ -11,10 +11,11 @@ const {
   selectRoles,
   createUserLogin,
   getLoginUserMaster,
+  getLoginUserMasterGrid,
   changePassword,
   updateUser,
   verifyEmployeeEmailID,
-  verifyUserNameExists
+  verifyUserNameExists,
 } = userModel;
 
 export default ({ config, db }) => {
@@ -30,7 +31,7 @@ export default ({ config, db }) => {
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
       next();
@@ -44,12 +45,12 @@ export default ({ config, db }) => {
     if (result.validUser == false) {
       res.status(httpStatus.ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
     next();
@@ -61,12 +62,12 @@ export default ({ config, db }) => {
     if (result.validUser == false) {
       res.status(httpStatus.ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
     next();
@@ -81,12 +82,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
 
@@ -101,12 +102,12 @@ export default ({ config, db }) => {
     if (result.validUser == false) {
       res.status(httpStatus.ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
     next();
@@ -120,7 +121,20 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+  api.get(
+    "/getLoginUserMasterGrid",
+    getLoginUserMasterGrid,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
       });
       next();
     },
@@ -136,12 +150,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
       next();
@@ -157,12 +171,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
       next();
@@ -172,7 +186,7 @@ export default ({ config, db }) => {
   api.post("/verifyEmployeeEmail", verifyEmployeeEmailID, (req, res) => {
     res.status(httpStatus.ok).json({
       success: true,
-      message: `Successfully verified and updated email to employee.`
+      message: `Successfully verified and updated email to employee.`,
     });
   });
   api.get("/verifyUserNameExists", verifyUserNameExists, (req, res) => {
@@ -180,7 +194,9 @@ export default ({ config, db }) => {
     res.status(httpStatus.ok).json({
       success: exists,
       message:
-        exists === true ? `User id is already exists please use another id` : ""
+        exists === true
+          ? `User id is already exists please use another id`
+          : "",
     });
   });
 
