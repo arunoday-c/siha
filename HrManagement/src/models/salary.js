@@ -5496,11 +5496,18 @@ export function makeSalaryUnfinalized(req, res, next) {
                   .executeQueryWithTransaction({
                     query: `DELETE FROM finance_day_end_sub_detail WHERE day_end_header_id=?; 
                   DELETE FROM finance_day_end_header WHERE finance_day_end_header_id=?;
-                  UPDATE hims_f_salary SET salary_processed='N' where hims_f_salary_id=?;`,
+                  UPDATE hims_f_salary SET salary_processed='N' where hims_f_salary_id=?;
+                  INSERT INTO hims_f_salary_history (salary_header_id, salary_number, created_by, created_date, revert_reason) 
+                  VALUE(?, ?, ?, ?, ?) ;`,
                     values: [
                       day_end_data.finance_day_end_header_id,
                       day_end_data.finance_day_end_header_id,
                       inputParam.hims_f_salary_id,
+                      inputParam.hims_f_salary_id,
+                      inputParam.salary_number,
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      inputParam.revert_reason,
                     ],
                   })
                   .then((result) => {
@@ -5533,8 +5540,18 @@ export function makeSalaryUnfinalized(req, res, next) {
         } else {
           _mysql
             .executeQueryWithTransaction({
-              query: `UPDATE hims_f_salary SET salary_processed='N' where hims_f_salary_id=?;`,
-              values: [inputParam.hims_f_salary_id],
+              query: `UPDATE hims_f_salary SET salary_processed='N' where hims_f_salary_id=?;
+              INSERT INTO hims_f_salary_history (salary_header_id, salary_number, created_by, created_date, revert_reason) 
+              VALUE(?, ?, ?, ?, ?) ;`,
+              values: [
+                inputParam.hims_f_salary_id,
+                inputParam.hims_f_salary_id,
+                inputParam.salary_number,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                inputParam.revert_reason,
+              ],
+              printQuery: true,
             })
             .then((salary_result) => {
               _mysql.commitTransaction(() => {

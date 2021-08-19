@@ -14,3 +14,11 @@
     }
   }
 }
+
+.preRevertModal {
+  min-width: 35vw !important;
+  max-width: 35vw !important;
+  .ant-modal-footer {
+    padding: 5px 15px !important;
+  }
+}

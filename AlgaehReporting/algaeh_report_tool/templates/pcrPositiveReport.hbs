@@ -8,41 +8,40 @@
         <thead>
           <tr>
             <th>Sl No.</th>
-            <th>Ordered Date and Time</th>
-            <th>Lab ID No.</th>
-            <th>Primary ID</th>
             <th>Patient Code</th>
             <th>Patient Name</th>
-            <th>HESN No.</th>
-            <th>Updated By</th>
-            <th>Updated Date</th>
-            <th>File Uploaded</th>
-            <th>Uploaded By </th>
-            <th>Uploaded Date</th>
-
+            <th>Primary ID No.</th>
+            <th>Date of Birth</th>
+            <th>Contact No.</th>
+            <th>Investigation Name</th>
+            <th>Test Result</th>
+            <th>Ordered Date & Time</th>
           </tr>
         </thead>
         <tbody>
-          {{#each result}}
+          {{#hasElement result}}
+            {{#each result}}
+              <tr>
+                <td>{{inc @index}}</td>
+                <td>{{patient_code}}</td>
+                <td style="text-align: left;">{{full_name}}</td>
+                <td>{{primary_id_no}}</td>
+                <td>{{date_of_birth}}</td>
+                <td>{{contact_number}}</td>
+                <td>{{description}}</td>
+                <td>{{result}}</td>
+                <td>{{ordered_date}}</td>
+              </tr>
+            {{/each}}
+          {{else}}
             <tr>
-              <td>{{inc @index}}</td>
-              <td>{{ordered_date}}</td>
-              <td>{{lab_id_number}}</td>
-              <td>{{primary_id_no}}</td>
-              <td>{{patient_code}}</td>
-              <td>{{full_name}}</td>
-              <td>{{hassan_number}}</td>
-              <td>{{hesn_no_updated_by}}</td>
-              <td>{{hassan_number_updated_date}}</td>
-              <td>{{hesn_upload}}</td>
-              <td>{{hesn_file_updated_by}}</td>
-              <td>{{hesn_upload_updated_date}}</td>
-            </tr>
-          {{/each}}
+              <td colspan="10" class="noResultTextReport">No Records Found</td>
+            </tr>{{/hasElement}}
         </tbody>
-      </table>
 
+      </table>
     </section>
     {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
   </div>
 </body>

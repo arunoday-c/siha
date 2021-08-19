@@ -76,6 +76,8 @@ export default class NewPackage extends PureComponent {
         ? true
         : false;
 
+    debugger;
+
     if (FIN_Active === true) {
       this.getFinanceAccountsMaping();
     }

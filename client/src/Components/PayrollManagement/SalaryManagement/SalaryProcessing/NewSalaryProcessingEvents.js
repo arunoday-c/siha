@@ -56,7 +56,6 @@ const SalaryProcess = ($this, inputs, from) => {
             onSuccess: (response) => {
               if (response.data.success) {
                 if (response.data.result.length > 0) {
-                  debugger;
                   let data = response.data.result[0];
                   let finalizeBtn = true;
                   let strMessage =
@@ -72,6 +71,8 @@ const SalaryProcess = ($this, inputs, from) => {
                     salaryprocess_header: data.salaryprocess_header,
                     salaryprocess_detail: data.salaryprocess_detail,
                     finalizeBtn: finalizeBtn,
+                    revert_visible: false,
+                    revert_reason: null,
                   });
                   AlgaehLoader({ show: false });
 
@@ -335,10 +336,20 @@ const getOptions = ($this) => {
   });
 };
 
-const onClickRevert = ($this, row) => {
+const onClickRevert = ($this) => {
+  if ($this.state.revert_reason === null || $this.state.revert_reason === "") {
+    swalMessage({
+      type: "warning",
+      title: "Revert reason is Mandatory",
+    });
+    return;
+  }
+
   swal({
     title: "Revert",
-    html: "Are you sure do you want to revert " + row.salary_number,
+    html:
+      "Are you sure do you want to revert " +
+      $this.state.emp_salary_details.salary_number,
     type: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes",
@@ -352,8 +363,9 @@ const onClickRevert = ($this, row) => {
         method: "PUT",
         module: "hrManagement",
         data: {
-          salary_number: row.salary_number,
-          hims_f_salary_id: row.hims_f_salary_id,
+          salary_number: $this.state.emp_salary_details.salary_number,
+          hims_f_salary_id: $this.state.emp_salary_details.hims_f_salary_id,
+          revert_reason: $this.state.revert_reason,
         },
         onSuccess: (res) => {
           if (res.data.success) {
