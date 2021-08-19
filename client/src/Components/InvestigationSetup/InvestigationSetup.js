@@ -6,7 +6,9 @@ import { bindActionCreators } from "redux";
 // import Enumerable from "linq";
 import "./InvestigationSetup.scss";
 import "../../styles/site.scss";
-import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
+import { AlgaehLabel } from "../Wrapper/algaehWrapper";
+
+import { AlgaehDataGrid } from "algaeh-react-components";
 import { AlgaehActions } from "../../actions/algaehActions";
 
 import {
@@ -264,7 +266,7 @@ class InvestigationSetup extends Component {
             <div className="row">
               <div className="col-lg-12" id="investigationGridCntr">
                 <AlgaehDataGrid
-                  id="investigation_grid"
+                  // id="investigation_grid"
                   columns={[
                     {
                       fieldName: "action",
@@ -303,9 +305,7 @@ class InvestigationSetup extends Component {
                     {
                       fieldName: "investigation_type",
                       label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "investigation_type" }}
-                        />
+                        <AlgaehLabel label={{ forceLabel: "Test Type" }} />
                       ),
                       displayTemplate: (row) => {
                         return row.investigation_type === "L"
@@ -316,6 +316,18 @@ class InvestigationSetup extends Component {
                         maxWidth: 150,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
+                      filterType: "choices",
+                      choices: [
+                        {
+                          name: "Lab",
+                          value: "L",
+                        },
+                        {
+                          name: "Radiology",
+                          value: "R",
+                        },
+                      ],
                     },
                     {
                       fieldName: "description",
@@ -323,6 +335,7 @@ class InvestigationSetup extends Component {
                       others: {
                         style: { textAlign: "left" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "service_name",
@@ -334,6 +347,7 @@ class InvestigationSetup extends Component {
                       others: {
                         style: { textAlign: "left" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "category_id",
@@ -364,6 +378,19 @@ class InvestigationSetup extends Component {
                         maxWidth: 250,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
+                      filterType: "choices",
+                      choices:
+                        this.props.invtestcategory === undefined
+                          ? []
+                          : this.props?.invtestcategory?.map(
+                              ({ hims_d_test_category_id, category_name }) => {
+                                return {
+                                  name: category_name,
+                                  value: hims_d_test_category_id,
+                                };
+                              }
+                            ),
                     },
                     {
                       fieldName: "specimen_id",
@@ -391,15 +418,22 @@ class InvestigationSetup extends Component {
                         maxWidth: 250,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                   ]}
                   keyId="investigation_code"
-                  dataSource={{
-                    data: this.state.investigations_data,
-                  }}
-                  // isEditable={true}
-                  filter={true}
-                  paging={{ page: 0, rowsPerPage: 10 }}
+                  // dataSource={{
+                  //   data: this.state.investigations_data,
+                  // }}
+
+                  data={
+                    this.state.investigations_data === undefined
+                      ? []
+                      : this.state.investigations_data
+                  }
+                  pagination={true}
+                  pageOptions={{ rows: 20, page: 1 }}
+                  isFilterable={true}
                 />
               </div>
             </div>

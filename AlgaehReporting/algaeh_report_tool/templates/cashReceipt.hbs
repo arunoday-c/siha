@@ -1,13 +1,12 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
-
+<style>
+      img.specimenBarcode { height:45px; width: 180px; text-align: center;}
+</style>
 
 <body>
     <div class="print-body">
-
         <section>
             <table class="tableDotPrint1" cell-padding="0">
-
-
                 {{!-- <tr>
                     <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
                 </tr> --}}
@@ -26,7 +25,6 @@
                 <tr>
                     <td>Age|Gender/ العمر | الجنس:</td>
                     <td>{{header.age_in_years}}/{{header.gender}}</td>
-
                     <td>Nationality/الجنسية:</td>
                     <td><b>{{header.nationality}}</b></td>
                 </tr>
@@ -48,7 +46,6 @@
                     <td>Cashier Name:</td>
                     <td colspan="3">{{header.cashier_name}}</td>
                 </tr>
-
                 {{!-- <tr>
                     <td>Policy/ Class:<span
                             class="valueText">{{header.network_type}}</span><label class="textArRht"> البوليصة /
@@ -65,10 +62,7 @@
                             class="valueText">{{header.sub_department_name}}</span><label
                             class="textArRht">القسم</label></td>
                 </tr> --}}
-
             </table>
-
-
         </section>
         <section>
             <table class="tableDotPrint2" cell-padding="0">
@@ -117,6 +111,14 @@
                 </tfoot>
             </table>
             </table>
+            <div style="float:left;width:40%;border:1px solid #ccc; margin-top:28px;text-align:center;">
+ <img
+          class="specimenBarcode"
+          src={{barcode "code128" header.primary_id_no false}}
+        />
+        <p>Primary ID No:{{header.primary_id_no}}</p>
+
+            </div>
             <table class="tableTotal">
                 <tr>
                     <td>Gross Amount</td>
