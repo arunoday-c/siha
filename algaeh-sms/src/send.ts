@@ -14,7 +14,7 @@ const {
 } = process.env;
 export async function sendSMS(data) {
   try {
-    const { template, contact_no, processed_by } = data;
+    const { template, contact_no, processed_by, sid } = data;
     const filePath = path.resolve(
       process.cwd(),
       "templates",
@@ -24,17 +24,26 @@ export async function sendSMS(data) {
       const html = fs.readFileSync(filePath, "utf-8");
       const result = await hbs.compile(html)(data);
 
+      const generateUrl = SMS_GATEWAY_SERVER?.replace(
+        /\$user/gi,
+        `${SMS_GATEWAY_USER}`
+      )
+        .replace(/\$password/gi, `${SMS_GATEWAY_PASSWORD}`)
+        .replace(/\$sid/gi, `${sid ? sid : SMS_GATEWAY_SID}`)
+        .replace(/\$mobileNo/gi, contact_no)
+        .replace(/\$msg/gi, result);
+      //   SMS_GATEWAY_SERVER ?? "", {
+      //   params: {
+      //     user: SMS_GATEWAY_USER,
+      //     password: SMS_GATEWAY_PASSWORD,
+      //     sid: SMS_GATEWAY_SID,
+      //     msisdn: contact_no,
+      //     msg: result,
+      //     fl: 0,
+      //   },
+      // }
       const response = await axios
-        .get(SMS_GATEWAY_SERVER ?? "", {
-          params: {
-            user: SMS_GATEWAY_USER,
-            password: SMS_GATEWAY_PASSWORD,
-            sid: SMS_GATEWAY_SID,
-            msisdn: contact_no,
-            msg: result,
-            fl: 0,
-          },
-        })
+        .get(encodeURI(generateUrl ?? ""))
         .catch((error) => {
           throw error;
         });
