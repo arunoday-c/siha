@@ -1,6 +1,7 @@
 // import {swalMessage} from "../../../utils/algaehApiCall";
 import moment from "moment";
 import { newAlgaehApi } from "../../../hooks";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { generateTimeslotsForDoctor } from "../AppointmentHelper";
 export async function getDepartmentAndDoctorList() {
   const { data } = await newAlgaehApi({
@@ -143,4 +144,37 @@ export async function confirmAppointmentSMS(input) {
   });
 
   return result.data;
+}
+export function generateReport(
+  hims_f_patient_appointment_id,
+  rpt_name,
+  rpt_desc
+) {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: rpt_name,
+        reportParams: [
+          {
+            name: "hims_f_patient_appointment_id",
+            value: hims_f_patient_appointment_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${rpt_desc}`;
+      window.open(origin);
+      // myWindow.document.title = rpt_desc;
+    },
+  });
 }
