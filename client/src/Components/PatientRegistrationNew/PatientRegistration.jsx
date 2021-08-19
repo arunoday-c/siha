@@ -347,11 +347,13 @@ export function PatientRegistration() {
         setIdentityType(patientRegistration.identity_type);
         reset({
           ...patientRegistration,
+
           // visit_type: preference.visit_type,
           // doctor: preference.doctor,
           // consultation: "Y",
           // visit_type: default_visit_type?.hims_d_visit_type_id,
         });
+
         preferenceFunction().then((result) => {
           if (result) {
             setValue("visit_type", result.visit_type);
@@ -1508,8 +1510,12 @@ export function PatientRegistration() {
         <>
           <UpdatePatient
             onClose={(isUpdated) => {
+              const previousValue = getValues();
               if (isUpdated) {
-                refetch();
+                refetch().then(() => {
+                  setValue("doctor", previousValue.doctor);
+                  setValue("visit_type", previousValue.visit_type);
+                });
               }
               setUpdateModal(false);
             }}
