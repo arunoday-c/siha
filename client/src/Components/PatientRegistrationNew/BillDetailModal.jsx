@@ -56,7 +56,7 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
                   fieldName: "quantity",
                 }}
               />
-              <h6>{amountWithCur(billData?.quantity)}</h6>
+              <h6>{billData?.quantity}</h6>
             </div>
 
             <div className="col-lg-2">
