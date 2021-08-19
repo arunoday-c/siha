@@ -218,13 +218,28 @@ export default memo(function BookAppointment(props) {
           .add("minutes", duration_minutes)
           .format("HH:mm:ss");
         const dob = moment(date_of_birth).format("YYYY-MM-DD");
-
-        if (getValues().contact_number.length !== maxLength || 10) {
+        const values = getValues();
+        console.log(values);
+        debugger;
+        if (!values.tel_code) {
+          setError("tel_code", {
+            type: "manual",
+            shouldFocus: true,
+            message: `This field is mandatory`,
+          });
+          return;
+        }
+        if (
+          !values.contact_number ||
+          values.contact_number?.length !== maxLength
+        ) {
+          debugger;
           setError("contact_number", {
             type: "maxLength",
             shouldFocus: true,
             message: `This should be ${maxLength} length`,
           });
+          return;
         }
 
         const send_data = {
@@ -702,6 +717,14 @@ export default memo(function BookAppointment(props) {
                         <Input
                           {...props}
                           // disabled={disabled}
+                          onChange={(e) => {
+                            if (e.target.value.length === maxLength) {
+                              clearErrors();
+                              props.onChange(e.target.value);
+                            } else {
+                              props.onChange(e.target.value);
+                            }
+                          }}
                           maxLength={maxLength}
                           placeholder={maxLength ? `${maxLength} digits` : ""}
                         />
