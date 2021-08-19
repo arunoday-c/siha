@@ -141,7 +141,7 @@ export default memo(function TdCell(props) {
                 <i className="fas fa-clock" />
                 <ul className="appStatusList">
                   {app_status
-                    .filter((f) => f.steps > appStep)
+                    ?.filter((f) => f.steps > appStep)
                     .map((item, index) => {
                       return (
                         <LiList

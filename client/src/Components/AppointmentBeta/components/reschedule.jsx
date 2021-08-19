@@ -55,7 +55,20 @@ export default memo(function ReschedulePopup({
 
     setDoctors(filterDoctors[0].children);
     console.log("patient", patient, schAvailable);
+    let time = patient.appointment_from_time;
+    setValue("edit_provider_id", patient.provider_id);
+    // time = time
+    //   .toString()
+    //   .match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
 
+    // if (time.length > 1) {
+    //   // If time format correct
+    //   time = time.slice(1); // Remove full string match value
+    //   time[5] = +time[0] < 12 ? "AM" : "PM"; // Set AM/PM
+    //   time[0] = +time[0] % 12 || 12; // Adjust hours
+    // }
+    // time.join("");
+    // setValue("edit_appt_time", time);
     getTimeSlotsForDropDown(provider_id);
   }, []);
   function isInactiveTimeSlot(time, date) {
@@ -166,15 +179,22 @@ export default memo(function ReschedulePopup({
       },
     });
   };
-  function getDifferenceInMinutes(time1, time2) {
-    const diffInMs = Math.abs(time2 - time1);
-    return diffInMs / (1000 * 60);
+  function getDifferenceInMinutes(start, end) {
+    start = start.split(":");
+    end = end.split(":");
+    let startDate = new Date(0, 0, 0, start[0], start[1], 0);
+    let endDate = new Date(0, 0, 0, end[0], end[1], 0);
+    let diff = endDate.getTime() - startDate.getTime();
+    let hours = Math.floor(diff / 1000 / 60 / 60);
+    diff -= hours * 1000 * 60 * 60;
+    let minutes = Math.floor(diff / 1000 / 60);
+
+    return minutes;
   }
   const addOrUpdate = (data) => {
     const _data = patient;
 
     const duration = timeDifference * parseInt(data.edit_no_of_slots);
-    debugger;
 
     const app_end_time = moment(data.edit_appt_time, "hh:mm a")
       .add("minutes", duration)
