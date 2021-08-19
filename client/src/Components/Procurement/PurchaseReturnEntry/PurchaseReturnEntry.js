@@ -294,9 +294,45 @@ class PurchaseReturnEntry extends Component {
                         data: GlobalVariables.RETURN_ITEM,
                       },
                       others: {
-                        disabled: this.state.dataExitst,
+                        disabled: this.state.dataAdded,
                       },
-                      onChange: poforhandle.bind(this, this),
+                      onChange: (e) => {
+                        debugger;
+                        let name = e.name || e.target.name;
+                        let value = e.value || e.target.value;
+
+                        this.setState({
+                          [name]: value,
+                          pharmcy_location_id: null,
+                          inventory_location_id: null,
+                          vendor_id: null,
+                          item_id: null,
+                          item_category: null,
+                          uom_id: null,
+                          service_id: null,
+                          item_group_id: null,
+                          quantity: 0,
+                          expiry_date: null,
+                          batchno: null,
+                          grn_no: null,
+                          qtyhand: null,
+                          barcode: null,
+                          ItemUOM: [],
+                          Batch_Items: [],
+                          addItemButton: true,
+                          item_description: "",
+                          sales_uom_id: null,
+                          sales_conversion_factor: null,
+                          uom_description: null,
+                          stocking_uom: null,
+                          conversion_factor: null,
+                          sales_qtyhand: null,
+                          stocking_uom_id: null,
+                          average_cost: null,
+                          unit_cost: 0,
+                          Real_unit_cost: 0,
+                        });
+                      },
                       onClear: () => {
                         this.setState({
                           return_items: null,

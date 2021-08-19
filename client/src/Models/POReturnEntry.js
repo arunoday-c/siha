@@ -61,6 +61,7 @@ export default {
       stocking_uom: null,
       sales_price: null,
       unit_cost: 0,
+      dataAdded: false,
     };
     return output;
   },
