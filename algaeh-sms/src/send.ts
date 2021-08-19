@@ -14,7 +14,7 @@ const {
 } = process.env;
 export async function sendSMS(data) {
   try {
-    const { template, contact_no, processed_by, sid } = data;
+    const { template, contact_no, processed_by, sid, extra_params } = data;
     const filePath = path.resolve(
       process.cwd(),
       "templates",
@@ -24,7 +24,7 @@ export async function sendSMS(data) {
       const html = fs.readFileSync(filePath, "utf-8");
       const result = await hbs.compile(html)(data);
 
-      const generateUrl = SMS_GATEWAY_SERVER?.replace(
+      let generateUrl = SMS_GATEWAY_SERVER?.replace(
         /\$user/gi,
         `${SMS_GATEWAY_USER}`
       )
@@ -32,6 +32,7 @@ export async function sendSMS(data) {
         .replace(/\$sid/gi, `${sid ? sid : SMS_GATEWAY_SID}`)
         .replace(/\$mobileNo/gi, contact_no)
         .replace(/\$msg/gi, result);
+      generateUrl = `${generateUrl}${extra_params ? `&${extra_params}` : ""}`;
       //   SMS_GATEWAY_SERVER ?? "", {
       //   params: {
       //     user: SMS_GATEWAY_USER,
