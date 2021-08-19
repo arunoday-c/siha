@@ -55,7 +55,7 @@ export default memo(function ReschedulePopup({
 
     setDoctors(filterDoctors[0].children);
     console.log("patient", patient, schAvailable);
-    let time = patient.appointment_from_time;
+    // let time = patient.appointment_from_time;
     setValue("edit_provider_id", patient.provider_id);
     // time = time
     //   .toString()
