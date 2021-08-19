@@ -254,6 +254,7 @@ export default memo(function ReschedulePopup({
         title="Reschedule Patient"
         visible={showReschedulePopup}
         mask={true}
+        footer={[]}
         maskClosable={true}
         onCancel={setShowReschedulePopup}
       >
