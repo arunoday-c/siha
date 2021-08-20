@@ -26,8 +26,13 @@ export default memo(function BatchDetails({ batch_list, updateState }) {
 
   return (
     <div className="col-12">
-      <div className="row">
-        <div className="col-12" id="batchValidateGridCntr">
+      <div className="portlet portlet-bordered margin-bottom-15">
+        {/* <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Portal Lab List</h3>
+                </div>
+              </div> */}
+        <div className="portlet-body" id="batchGenerationGrid">
           <AlgaehDataGrid
             columns={[
               {
@@ -130,6 +135,7 @@ export default memo(function BatchDetails({ batch_list, updateState }) {
           />
         </div>
       </div>
+
       {/* <div className="CreateBatchList">
         <ul>
           <li>

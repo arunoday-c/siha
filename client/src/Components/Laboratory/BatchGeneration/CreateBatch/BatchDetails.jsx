@@ -228,7 +228,7 @@ export default memo(function BatchDetails({
           control={control}
           render={(props) => (
             <div className="col-3 form-group">
-              <label>Batch Creation</label>
+              <label>Create Batch</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
                   <input
@@ -240,7 +240,7 @@ export default memo(function BatchDetails({
                       updateBatchCreation(e.target.value);
                     }}
                   />
-                  <span>By Loading</span>
+                  <span>By Loading Data</span>
                 </label>
                 <label className="checkbox inline">
                   <input
@@ -259,56 +259,13 @@ export default memo(function BatchDetails({
           )}
         />
 
-        <Controller
-          name="batch_name"
-          control={control}
-          render={(props) => (
-            <AlgaehFormGroup
-              div={{ className: "col mandatory form-group" }}
-              error={errors}
-              label={{
-                forceLabel: "Batch Name",
-              }}
-              textBox={{
-                ...props,
-                className: "txt-fld",
-                name: "batch_name",
-                placeholder: "Batch Name",
-              }}
-            />
-          )}
-        />
-
         {batch_creation === "S" ? (
           <>
-            <Controller
-              name="auto_insert"
-              control={control}
-              render={(props) => (
-                <div className="col-2 mandatory form-group">
-                  <label>Auto Insert</label>
-                  <div className="customCheckbox">
-                    <label className="checkbox inline">
-                      <input
-                        name="auto_insert"
-                        defaultChecked={auto_insert}
-                        type="checkbox"
-                        onChange={(e) => {
-                          updateAutoState(e.target.checked);
-                        }}
-                      />
-                      <span>Yes</span>
-                    </label>
-                  </div>
-                </div>
-              )}
-            />
-
             <Controller
               name="scan_by"
               control={control}
               render={(props) => (
-                <div className="col-3 form-group">
+                <div className="col-2 form-group">
                   <label>Scan Type</label>
                   <div className="customCheckbox">
                     <label className="checkbox inline">
@@ -340,11 +297,34 @@ export default memo(function BatchDetails({
               )}
             />
             <Controller
+              name="auto_insert"
+              control={control}
+              render={(props) => (
+                <div className="col-1 mandatory form-group">
+                  <label>Auto Insert</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input
+                        name="auto_insert"
+                        defaultChecked={auto_insert}
+                        type="checkbox"
+                        onChange={(e) => {
+                          updateAutoState(e.target.checked);
+                        }}
+                      />
+                      <span>Yes</span>
+                    </label>
+                  </div>
+                </div>
+              )}
+            />
+
+            <Controller
               name="barcode_scanner"
               control={control}
               rules={{ required: "Required" }}
               render={(props) => (
-                <div className="col mandatory form-group">
+                <div className="col-2 mandatory form-group">
                   <label className="style_Label undefined">
                     Barcode Scanner<span className="imp">&nbsp;*</span>
                   </label>
@@ -358,6 +338,25 @@ export default memo(function BatchDetails({
                     onChange={onChangeHandeler}
                   />
                 </div>
+              )}
+            />
+            <Controller
+              name="batch_name"
+              control={control}
+              render={(props) => (
+                <AlgaehFormGroup
+                  div={{ className: "col form-group" }}
+                  error={errors}
+                  label={{
+                    forceLabel: "Custom Batch Name",
+                  }}
+                  textBox={{
+                    ...props,
+                    className: "txt-fld",
+                    name: "batch_name",
+                    placeholder: "Batch Name",
+                  }}
+                />
               )}
             />
             {auto_insert === false ? (
@@ -380,7 +379,7 @@ export default memo(function BatchDetails({
               render={(props) => (
                 <AlgaehDateHandler
                   div={{
-                    className: "col mandatory",
+                    className: "col-3 mandatory",
                   }}
                   error={errors}
                   label={{
@@ -408,6 +407,25 @@ export default memo(function BatchDetails({
                       setValue("selected_date", undefined);
                       // onChange(undefined);
                     },
+                  }}
+                />
+              )}
+            />
+            <Controller
+              name="batch_name"
+              control={control}
+              render={(props) => (
+                <AlgaehFormGroup
+                  div={{ className: "col form-group" }}
+                  error={errors}
+                  label={{
+                    forceLabel: "Custom Batch Name",
+                  }}
+                  textBox={{
+                    ...props,
+                    className: "txt-fld",
+                    name: "batch_name",
+                    placeholder: "Batch Name",
                   }}
                 />
               )}

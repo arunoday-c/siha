@@ -89,3 +89,12 @@
     }
   }
 }
+#batchGenerationGrid {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 58vh;
+      max-height: 58vh;
+      overflow: auto;
+    }
+  }
+}
