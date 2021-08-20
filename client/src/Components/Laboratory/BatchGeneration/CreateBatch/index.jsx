@@ -49,36 +49,45 @@ export default memo(function CreateBatch() {
     // return result?.data?.records;
   };
   const onSubmit = () => {
-    debugger;
-    const filterData = batch_list.filter((f) => f.checked);
-    let inpujObj = {
-      batch_name: getValues("batch_name"),
-      batch_list: filterData,
-    };
+    swal({
+      title: `Are you sure to Create Batch & Acknowledge Sample?`,
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willProceed) => {
+      if (willProceed.value) {
+        const filterData = batch_list.filter((f) => f.checked);
+        let inpujObj = {
+          batch_name: getValues("batch_name"),
+          batch_list: filterData,
+        };
 
-    debugger;
-
-    createBatch(inpujObj)
-      .then((result) => {
-        swal({
-          title: "Batch Created Successfully",
-          text: result.batch_number,
-          icon: "success",
-        });
-        reset({
-          barcode_scanner: "",
-          batch_number: "",
-          batch_name: "",
-        });
-        setBatchList([]);
-      })
-      .catch((e) => {
-        debugger;
-        AlgaehMessagePop({
-          display: e.message,
-          type: "error",
-        });
-      });
+        createBatch(inpujObj)
+          .then((result) => {
+            swal({
+              title: "Batch Created Successfully",
+              text: result.batch_number,
+              icon: "success",
+            });
+            reset({
+              barcode_scanner: "",
+              batch_number: "",
+              batch_name: "",
+            });
+            setBatchList([]);
+          })
+          .catch((e) => {
+            debugger;
+            AlgaehMessagePop({
+              display: e.message,
+              type: "error",
+            });
+          });
+      }
+    });
   };
 
   const updateState = (data) => {
