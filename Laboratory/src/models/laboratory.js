@@ -2857,10 +2857,12 @@ export async function updateLabOrderServiceStatus(req, res, next) {
 }
 
 export async function updateLabSampleStatus(req, res, next) {
-  const _mysql = new algaehMysql();
+  const _options = req.connection == null ? {} : req.connection;
+  const _mysql = new algaehMysql(_options);
   try {
     let input = { ...req.body };
 
+    console.log("input", input);
     let collected = ",";
     let strHisQry = "";
     if (input.status == "R") {
@@ -2914,6 +2916,7 @@ export async function updateLabSampleStatus(req, res, next) {
       values: inputs,
       printQuery: true,
     });
+
     // .then((results) => {
     if (input.status == "R") {
       const lab_order = await _mysql.executeQuery({
@@ -2946,21 +2949,41 @@ export async function updateLabSampleStatus(req, res, next) {
           .catch((e) => {
             throw e;
           });
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-          req.records = lab_order;
+
+        if (req.connection == null) {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = lab_order;
+            if (!req.preventNext) {
+              next();
+            }
+          });
+        } else {
           if (!req.preventNext) {
             next();
           }
-        });
+        }
+        // _mysql.commitTransaction(() => {
+        //   _mysql.releaseConnection();
+        //   req.records = lab_order;
+        //   if (!req.preventNext) {
+        //     next();
+        //   }
+        // });
       } else {
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-          req.records = lab_order;
+        if (req.connection == null) {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = lab_order;
+            if (!req.preventNext) {
+              next();
+            }
+          });
+        } else {
           if (!req.preventNext) {
             next();
           }
-        });
+        }
       }
       // })
       // .catch((e) => {
@@ -3029,13 +3052,26 @@ export async function updateLabSampleStatus(req, res, next) {
         });
 
         // .then((ord_analytes) => {
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-          req.records = results;
+        if (req.connection == null) {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = lab_order;
+            if (!req.preventNext) {
+              next();
+            }
+          });
+        } else {
           if (!req.preventNext) {
             next();
           }
-        });
+        }
+        // _mysql.commitTransaction(() => {
+        //   _mysql.releaseConnection();
+        //   req.records = results;
+        //   if (!req.preventNext) {
+        //     next();
+        //   }
+        // });
         // })
         // .catch((e) => {
         //   _mysql.rollBackTransaction(() => {
@@ -3043,13 +3079,26 @@ export async function updateLabSampleStatus(req, res, next) {
         //   });
         // });
       } else {
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-          req.records = results[0];
+        if (req.connection == null) {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = lab_order;
+            if (!req.preventNext) {
+              next();
+            }
+          });
+        } else {
           if (!req.preventNext) {
             next();
           }
-        });
+        }
+        // _mysql.commitTransaction(() => {
+        //   _mysql.releaseConnection();
+        //   req.records = results[0];
+        //   if (!req.preventNext) {
+        //     next();
+        //   }
+        // });
       }
       // })
       // .catch((error) => {
@@ -3193,67 +3242,107 @@ export function checkIDExists(req, res, next) {
     next(e);
   }
 }
-export function createPCRBatch(req, res, next) {
+export async function createPCRBatch(req, res, next) {
   const _mysql = new algaehMysql();
   try {
-    const inputParam = req.body;
+    let buffer = "";
+    req.on("data", (chunk) => {
+      buffer += chunk.toString();
+    });
 
-    const batch_number =
-      "BAT-" +
-      moment().format("YYYYMMDDHHMMSS") +
-      req.userIdentity.algaeh_d_app_user_id;
+    req.on("end", async () => {
+      // const input = JSON.parse(buffer);
 
-    _mysql
-      .executeQueryWithTransaction({
-        query:
-          "INSERT INTO hims_f_lab_batch_header (`batch_number`,`batch_name`, \
+      const inputParam = JSON.parse(buffer);
+
+      const batch_number =
+        "BAT-" +
+        moment().format("YYYYMMDDHHMMSS") +
+        req.userIdentity.algaeh_d_app_user_id;
+
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "INSERT INTO hims_f_lab_batch_header (`batch_number`,`batch_name`, \
       `created_by`, `created_date`, `updated_by`, `updated_date`) values (?, ?, ?, ?, ?, ?);",
-        values: [
-          batch_number,
-          inputParam.batch_name,
-          req.userIdentity.algaeh_d_app_user_id,
-          new Date(),
-          req.userIdentity.algaeh_d_app_user_id,
-          new Date(),
-        ],
-        printQuery: true,
-      })
-      .then((headerResult) => {
-        const IncludeValues = ["lab_id_number", "order_id", "primary_id_no"];
-        _mysql
-          .executeQueryWithTransaction({
-            query: "INSERT INTO hims_f_lab_batch_detail(??) VALUES ?",
-            values: inputParam.batch_list,
-            includeValues: IncludeValues,
-            extraValues: {
-              batch_header_id: headerResult.insertId,
-            },
-            bulkInsertOrUpdate: true,
-            printQuery: true,
-          })
-          .then((result) => {
-            _mysql.commitTransaction(() => {
-              _mysql.releaseConnection();
-              req.records = { batch_number };
-              next();
+          values: [
+            batch_number,
+            inputParam.batch_name,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+          ],
+          printQuery: true,
+        })
+        .then((headerResult) => {
+          const IncludeValues = ["lab_id_number", "order_id", "primary_id_no"];
+          _mysql
+            .executeQueryWithTransaction({
+              query: "INSERT INTO hims_f_lab_batch_detail(??) VALUES ?",
+              values: inputParam.batch_list,
+              includeValues: IncludeValues,
+              extraValues: {
+                batch_header_id: headerResult.insertId,
+              },
+              bulkInsertOrUpdate: true,
+              printQuery: true,
+            })
+            .then(async (result) => {
+              req.connection = {
+                connection: _mysql.connection,
+                isTransactionConnection: _mysql.isTransactionConnection,
+                pool: _mysql.pool,
+              };
+              let collection_done = [];
+              for (let i = 0; i < inputParam.batch_list.length; i++) {
+                let item = inputParam.batch_list[i];
+                item.remarks = "";
+                item.status = "A";
+                req.body = {
+                  ...item,
+                };
+                req.preventNext = true;
+
+                const xyz = await updateLabSampleStatus(req, res, next);
+                collection_done.push(xyz);
+              }
+              Promise.all(collection_done)
+                .then(() => {
+                  console.log("Promise", batch_number);
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = { batch_number };
+                    next();
+                  });
+                })
+                .catch((e) => {
+                  throw e;
+                });
+            })
+            .catch((e) => {
+              mysql.rollBackTransaction(() => {
+                next(e);
+              });
             });
-          })
-          .catch((e) => {
-            mysql.rollBackTransaction(() => {
-              next(e);
-            });
+        })
+        .catch((e) => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
           });
-      })
-      .catch((e) => {
-        _mysql.rollBackTransaction(() => {
-          next(e);
         });
-      });
+    });
   } catch (e) {
     _mysql.rollBackTransaction(() => {
       next(e);
     });
   }
+
+  // const _mysql = new algaehMysql();
+  // try {
+  // } catch (e) {
+
+  // }
 }
 
 export function getBatchDetail(req, res, next) {
@@ -3472,6 +3561,36 @@ export async function patientPortalData(req, res, next) {
           inputValues.to_date,
           inputValues.corporate_id,
         ],
+        printQuery: true,
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+    _mysql.releaseConnection();
+    req.records = result;
+    next();
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}
+
+export async function getSampleCollectedAck(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    let inputValues = req.query;
+
+    const result = await _mysql
+      .executeQuery({
+        query: `SELECT hims_f_lab_order_id, primary_id_no, lab_id_number, 
+        full_name,IT.description as test_name, gender, hims_f_lab_order_id as order_id, 
+        date_of_birth, test_id, hims_d_lab_sample_id, 'O' as status FROM hims_f_lab_order L 
+        INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id
+        INNER JOIN hims_f_patient P ON L.patient_id = P.hims_d_patient_id
+        INNER JOIN hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = L.test_id  
+        where  L.billed='Y' and L.status='CL' and IT.isPCR ='Y' and S.status='N' and date(ordered_date)=date(?);`,
+        values: [inputValues.selected_date],
         printQuery: true,
       })
       .catch((error) => {

@@ -11,6 +11,7 @@ import labModels, {
   bulkSampleAcknowledge,
   updateLabSampleStatus,
   patientPortalData,
+  getSampleCollectedAck,
 } from "../models/laboratory";
 import { labResultDispatch } from "../models/labDispatch";
 import { patientBillGeneration } from "../models/portalToHims";
@@ -346,6 +347,12 @@ export default () => {
       records: req.records,
     });
   });
+  api.get("/getSampleCollectedAck", getSampleCollectedAck, (req, res) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
   api.post("/processLabSMS", processLabSMS, (req, res) => {
     res
       .status(utlities.AlgaehUtilities().httpStatus().ok)
@@ -356,6 +363,7 @@ export default () => {
       .end();
   });
   api.post("/createPCRBatch", createPCRBatch, (req, res) => {
+    console.log("3456", req.records);
     res
       .status(utlities.AlgaehUtilities().httpStatus().ok)
       .json({
