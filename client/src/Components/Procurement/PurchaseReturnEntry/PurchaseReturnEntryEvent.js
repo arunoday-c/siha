@@ -284,6 +284,7 @@ const getCtrlCode = ($this, docNumber) => {
           data.saveEnable = true;
           data.dataExitst = true;
           data.dataFinder = true;
+          data.dataAdded = true;
 
           if (data.is_posted === "N") {
             data.postEnable = false;

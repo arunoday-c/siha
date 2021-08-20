@@ -219,8 +219,6 @@ export default memo(function BookAppointment(props) {
           .format("HH:mm:ss");
         const dob = moment(date_of_birth).format("YYYY-MM-DD");
         const values = getValues();
-        console.log(values);
-        debugger;
         if (!values.tel_code) {
           setError("tel_code", {
             type: "manual",
@@ -233,7 +231,6 @@ export default memo(function BookAppointment(props) {
           !values.contact_number ||
           values.contact_number?.length !== maxLength
         ) {
-          debugger;
           setError("contact_number", {
             type: "maxLength",
             shouldFocus: true,

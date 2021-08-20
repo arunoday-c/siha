@@ -85,6 +85,10 @@ const SampleCollection = React.lazy(() =>
 const DoctorsWorkbench = React.lazy(() =>
   retry(() => import("./Components/DoctorsWorkbench/DoctorsWorkbench"))
 );
+const DoctorsWorkbenchBeta = React.lazy(() =>
+  retry(() => import("./Components/DoctorsWorkbenchBeta"))
+);
+
 //ToDo: not working
 const NurseWorkbench = React.lazy(() =>
   retry(() => import("./Components/NurseWorkbench/NurseWorkbench"))
@@ -412,6 +416,7 @@ const ResultViewForDoc = React.lazy(() =>
 const InsuranceCorrectionList = React.lazy(() =>
   retry(() => import("./Components/DoctorsWorkbench/InsuranceCorrectionList"))
 );
+
 const EmpShiftRost = React.lazy(() =>
   retry(() =>
     import(
@@ -867,6 +872,11 @@ const privateRoutes = [
     path: "/DoctorsWorkbench",
     isExactPath: true,
     component: <DoctorsWorkbench />,
+  },
+  {
+    path: "/DoctorsWorkbenchBeta",
+    isExactPath: true,
+    component: <DoctorsWorkbenchBeta />,
   },
   {
     path: "/ResultViewForDoc",

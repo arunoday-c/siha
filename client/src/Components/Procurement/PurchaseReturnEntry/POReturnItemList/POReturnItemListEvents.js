@@ -268,6 +268,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                   stocking_uom: e.stocking_uom,
                   sales_price: e.sale_price,
                   unit_cost: data.locationResult[0].avgcost,
+                  dataAdded: true,
                 });
               }
             } else {
@@ -362,6 +363,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                   stocking_uom: e.stocking_uom,
                   sales_price: e.sale_price,
                   unit_cost: data.locationResult[0].avgcost,
+                  dataAdded: true,
                 });
               }
             } else {

@@ -75,6 +75,15 @@ const getPatientPackage = async (key, { patient_id }) => {
   });
   return res?.data.records;
 };
+const getIdentities = async (key) => {
+  const res = await newAlgaehApi({
+    uri: "/identity/get",
+    module: "masterSettings",
+    data: { identity_status: "A" },
+    method: "GET",
+  });
+  return res?.data.records;
+};
 
 const savePatient = async (data) => {
   data.ScreenCode = "BL0002";
@@ -214,6 +223,7 @@ export function PatientRegistration() {
     userPreferences,
     countries = [],
     selectedMenu,
+    nationalities = [],
   } = useContext(MainContext);
   const [openPopup, setOpenPopup] = useState(false);
   const [attachmentVisible, setAttachmentVisible] = useState(false);
@@ -323,7 +333,11 @@ export function PatientRegistration() {
       }
     });
   }, []);
+  const { data: identities } = useQuery(["identities"], getIdentities, {
+    // enabled: !!patientData?.patientRegistration,
 
+    onSuccess: (data) => {},
+  });
   const {
     isLoading,
     data: patientData,
@@ -460,7 +474,29 @@ export function PatientRegistration() {
             full_name: data?.patient_name,
             doctor_id: data?.provider_id,
             doctor,
+            nationality_id: userToken?.default_nationality,
+            country_id: userToken?.default_country,
+            patient_type: userToken?.default_patient_type,
           });
+          const res = nationalities?.filter(
+            (n) => n.hims_d_nationality_id == userToken?.default_nationality
+          );
+          if (res[0]?.identity_document_id) {
+            setValue("primary_identity_id", res[0]?.identity_document_id);
+            setIdentityType(res[0]?.identity_type);
+            if (identities?.length > 0) {
+              const initialValue = identities.filter(
+                (f) =>
+                  f.hims_d_identity_document_id === res[0]?.identity_document_id
+              );
+              setValue(
+                "primary_id_no",
+                initialValue.length > 0
+                  ? initialValue[0].initial_value_identity
+                  : null
+              );
+            }
+          }
           preferenceFunction().then((result) => {
             if (result) {
               setValue("visit_type", result.visit_type);
@@ -1249,6 +1285,7 @@ export function PatientRegistration() {
                   fieldRef={fieldRef}
                   errors={errors}
                   fieldRef={fieldRef}
+                  identities={identities}
                   clearErrors={clearErrors}
                   getValues={getValues}
                   patientImage={patientImage}
