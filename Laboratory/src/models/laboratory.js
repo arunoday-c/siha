@@ -3354,12 +3354,12 @@ export function getBatchDetail(req, res, next) {
       strFiled = "",
       strFilter = "";
 
-    if (inputParam.entry_type === "R") {
-      strFiled =
-        ", OA.hims_f_ord_analytes_id, LA.description as analyte_name, CASE WHEN result is null THEN 'Negative' ELSE result END as result";
-      strQuery =
-        " INNER JOIN hims_f_ord_analytes OA ON OA.order_id = L.hims_f_lab_order_id INNER JOIN hims_d_lab_analytes LA ON LA.hims_d_lab_analytes_id = OA.analyte_id ";
-    }
+    // if (inputParam.entry_type === "R") {
+    strFiled =
+      ", OA.hims_f_ord_analytes_id, LA.description as analyte_name, CASE WHEN result is null THEN 'Negative' ELSE result END as result";
+    strQuery =
+      " INNER JOIN hims_f_ord_analytes OA ON OA.order_id = L.hims_f_lab_order_id INNER JOIN hims_d_lab_analytes LA ON LA.hims_d_lab_analytes_id = OA.analyte_id ";
+    // }
     _mysql
       .executeQuery({
         query: `SELECT L.hims_f_lab_order_id, D.order_id, PV.visit_code, L.service_id, D.primary_id_no, D.lab_id_number, P.full_name, MS.description as specimen_name, 
