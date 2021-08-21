@@ -2971,6 +2971,7 @@ export async function updateLabSampleStatus(req, res, next) {
         //   }
         // });
       } else {
+        console.log("req.connection", req.connection);
         if (req.connection == null) {
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
@@ -3052,10 +3053,12 @@ export async function updateLabSampleStatus(req, res, next) {
         });
 
         // .then((ord_analytes) => {
+        console.log("req.connection", req.connection);
+        console.log("req.preventNext", req.preventNext);
         if (req.connection == null) {
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
-            req.records = lab_order;
+            req.records = results;
             if (!req.preventNext) {
               next();
             }
@@ -3082,7 +3085,7 @@ export async function updateLabSampleStatus(req, res, next) {
         if (req.connection == null) {
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
-            req.records = lab_order;
+            req.records = results[0];
             if (!req.preventNext) {
               next();
             }

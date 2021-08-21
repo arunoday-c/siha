@@ -37,23 +37,82 @@ export default {
         .executeQuery({
           query:
             "select hims_d_investigation_test_id, T.test_code, T.description, services_id, \
-            R.hims_d_rad_template_detail_id, R.template_name, R.template_html, T.investigation_type, lab_section_id, \
-            send_out_test, available_in_house, restrict_order, restrict_by, external_facility_required, \
+            T.investigation_type, lab_section_id, send_out_test, available_in_house, \
+            restrict_order, restrict_by, external_facility_required, \
             facility_description,  priority, cpt_id, category_id, film_category, screening_test, film_used,isPCR, \
-            A.analyte_id,A.analyte_report_group,A.includeInReport,  A.hims_m_lab_analyte_id, A.critical_low, A.gender, A.from_age, \
-            A.to_age, A.age_type, A.critical_high,  TC.test_section, A.normal_low, A.normal_high,LA.analyte_type, \
-            S.specimen_id, S.hims_m_lab_specimen_id, S.container_id,SER.service_name,A.formula,A.display_formula,A.decimals, \
-            LA.description as analyte_description, tat_standard_time, culture_test from hims_d_investigation_test T \
-            left  join  hims_d_rad_template_detail R on T.hims_d_investigation_test_id = R.test_id \
+            TC.test_section, S.specimen_id, S.hims_m_lab_specimen_id, S.container_id,SER.service_name, \
+            tat_standard_time, culture_test from hims_d_investigation_test T \
             left join hims_m_lab_specimen S on S.test_id = T.hims_d_investigation_test_id  \
-            left join hims_m_lab_analyte A on A.test_id=T.hims_d_investigation_test_id \
             left join hims_d_test_category TC on TC.hims_d_test_category_id = T.category_id \
             left join hims_d_services as SER on T.services_id = SER.hims_d_services_id \
-            left join hims_d_lab_analytes as LA on LA.hims_d_lab_analytes_id=A.analyte_id \
             where 1=1" +
             _stringData +
-            " order by A.display_order",
+            " order by hims_d_investigation_test_id",
           values: inputValues,
+          printQuery: true,
+        })
+        .then((result) => {
+          // utilities.logger().log("result: ", result);
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getInvestigTestAnalytes: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      const utilities = new algaehUtilities();
+      // utilities.logger().log("getInvestigTestList: ");
+
+      // utilities.logger().log("_stringData: ", _stringData);
+      _mysql
+        .executeQuery({
+          query:
+            "select A.analyte_id,A.analyte_report_group,A.includeInReport,  A.hims_m_lab_analyte_id, A.critical_low, A.gender, A.from_age, \
+            A.to_age, A.age_type, A.critical_high,  LA.analyte_type,\
+            LA.description as analyte_description,  A.normal_low, A.normal_high, \
+            A.formula,A.display_formula,A.decimals from hims_m_lab_analyte A \
+            INNER JOIN hims_d_lab_analytes as LA on LA.hims_d_lab_analytes_id=A.analyte_id \
+            where test_id=? order by A.display_order",
+          values: [req.query.hims_d_investigation_test_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          // utilities.logger().log("result: ", result);
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getInvestigTestTemplate: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      const utilities = new algaehUtilities();
+      // utilities.logger().log("getInvestigTestList: ");
+
+      // utilities.logger().log("_stringData: ", _stringData);
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_d_rad_template_detail_id, template_name, template_html hims_d_rad_template_detail \
+          where test_id=? order by hims_d_rad_template_detail_id",
+          values: [req.query.hims_d_investigation_test_id],
           printQuery: true,
         })
         .then((result) => {

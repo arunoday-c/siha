@@ -181,38 +181,6 @@ class InvestigationSetup extends Component {
   }
 
   render() {
-    // let _Investigations = Enumerable.from(this.props.investigationdetails)
-    //   .groupBy("$.hims_d_investigation_test_id", null, (k, g) => {
-    //     let firstRecordSet = Enumerable.from(g).firstOrDefault();
-    //     return {
-    //       available_in_house: firstRecordSet.available_in_house,
-    //       category_id: firstRecordSet.category_id,
-    //       cpt_id: firstRecordSet.cpt_id,
-    //       description: firstRecordSet.description,
-    //       external_facility_required: firstRecordSet.external_facility_required,
-    //       facility_description: firstRecordSet.facility_description,
-    //       film_category: firstRecordSet.film_category,
-    //       film_used: firstRecordSet.film_used,
-    //       hims_d_investigation_test_id:
-    //         firstRecordSet.hims_d_investigation_test_id,
-    //       investigation_type: firstRecordSet.investigation_type,
-    //       lab_section_id: firstRecordSet.lab_section_id,
-    //       priority: firstRecordSet.priority,
-    //       restrict_by: firstRecordSet.restrict_by,
-    //       restrict_order: firstRecordSet.restrict_order,
-    //       screening_test: firstRecordSet.screening_test,
-    //       send_out_test: firstRecordSet.send_out_test,
-    //       short_description: firstRecordSet.short_description,
-    //       specimen_id: firstRecordSet.specimen_id,
-    //       services_id: firstRecordSet.services_id,
-    //       hims_m_lab_specimen_id: firstRecordSet.hims_m_lab_specimen_id,
-    //       analytes_required: firstRecordSet.test_section === "M" ? false : true,
-    //       container_id: firstRecordSet.container_id,
-    //       analytes: g.getSource(),
-    //       RadTemplate: g.getSource()
-    //     };
-    //   })
-    //   .toArray();
     return (
       <div className="hims_investigationsetup">
         <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
@@ -446,7 +414,6 @@ class InvestigationSetup extends Component {
 
 function mapStateToProps(state) {
   return {
-    investigationdetails: state.investigationdetails,
     invtestcategory: state.invtestcategory,
     labspecimen: state.labspecimen,
     labsection: state.labsection,
@@ -457,7 +424,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getInvestigationDetails: AlgaehActions,
       getTestCategory: AlgaehActions,
       getLabSpecimen: AlgaehActions,
       getLabsection: AlgaehActions,

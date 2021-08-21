@@ -289,7 +289,7 @@ export default function AccessionAcknowledgement() {
           .catch((e) => {
             setAcknowledgeLoading(false);
             AlgaehMessagePop({
-              display: e,
+              display: e.message,
               type: "error",
             });
           });
