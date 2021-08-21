@@ -9,7 +9,7 @@ import { swalMessage } from "../../../utils/algaehApiCall";
 import { AppointmentContext } from "../AppointmentContext";
 import { getDoctorSchedule, confirmAppointmentSMS } from "./events";
 export default memo(function LiList(props) {
-  const { userLanguage } = useContext(MainContext);
+  const { userLanguage, userToken } = useContext(MainContext);
   const history = useHistory();
   const {
     setDoctorSchedules,
@@ -58,7 +58,9 @@ export default memo(function LiList(props) {
             });
 
             if (type === "Confirmed") {
-              confirmAppointmentSMS(edit_details);
+              if (userToken.portal_exists) {
+                confirmAppointmentSMS(edit_details);
+              }
             }
 
             setDoctorSchedules(data);
