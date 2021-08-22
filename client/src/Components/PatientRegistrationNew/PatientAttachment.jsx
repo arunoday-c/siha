@@ -151,20 +151,21 @@ export function PatientAttachments({
   }, [patientData, visible]);
 
   const saveDocument = (files = [], contract_no, contract_id) => {
+    debugger;
     setLoading(true);
-    const formData = new FormData();
-    formData.append("contract_no", contract_no);
-    formData.append("contract_id", contract_id);
-    files.forEach((file, index) => {
-      formData.append(`file_${index}`, file, file.name);
-    });
-    newAlgaehApi({
-      uri: "/saveContractDoc",
-      data: formData,
-      extraHeaders: { "Content-Type": "multipart/form-data" },
-      method: "POST",
-      module: "documentManagement",
-    })
+      const formData = new FormData();
+      formData.append("contract_no", contract_no);
+      formData.append("contract_id", contract_id);
+      files.forEach((file, index) => {
+        formData.append(`file_${index}`, file, file.name);
+      });
+      newAlgaehApi({
+        uri: "/saveContractDoc",
+        data: formData,
+        extraHeaders: { "Content-Type": "multipart/form-data" },
+        method: "POST",
+        module: "documentManagement",
+      })
       .then((value) => {
         setLoading(false);
         setFileList([]);
