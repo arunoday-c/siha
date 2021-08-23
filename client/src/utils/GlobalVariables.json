@@ -5808,6 +5808,14 @@
     {
       "name": "Shift",
       "value": "S"
+    },
+    {
+      "name": "Per Visit",
+      "value": "PV"
+    },
+    {
+      "name": "Per Test",
+      "value": "PS"
     }
   ],
   "SALES_ORDER_STATUS": [

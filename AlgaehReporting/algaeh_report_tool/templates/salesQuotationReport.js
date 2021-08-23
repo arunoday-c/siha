@@ -47,7 +47,9 @@ const executePDF = function executePDFMethod(options) {
               select QS.*, S.service_name, CASE WHEN QS.service_frequency='M' THEN 'Monthly' \
               WHEN QS.service_frequency='W' THEN 'Weekly' WHEN QS.service_frequency='D' THEN 'Daily' \
               WHEN QS.service_frequency='H' THEN 'Hourly' WHEN QS.service_frequency='PT' THEN 'Per Trip' \
-              WHEN QS.service_frequency='PP' THEN 'Per Person' WHEN QS.service_frequency='S' THEN 'Shift' END as service_frequency from hims_f_sales_quotation_services QS \
+              WHEN QS.service_frequency='PP' THEN 'Per Person' WHEN QS.service_frequency='PV' THEN 'Per Visit' \
+              WHEN QS.service_frequency='PS' THEN 'Per Test' \
+              WHEN QS.service_frequency='S' THEN 'Shift' END as service_frequency from hims_f_sales_quotation_services QS \
               inner join hims_d_services S on S.hims_d_services_id = QS.services_id where sales_quotation_id=? ;",
               values: [
                 headerResult[0].hims_f_sales_quotation_id,
