@@ -257,8 +257,7 @@ class LabResult extends Component {
             <div className="col-12">
               <div className="row">
                 <div className="col-3 investigationAttachmentDrag"> </div>
-                <div className="col-3"></div>
-                <div className="col-6">
+                <div className="col">
                   <div className="row">
                     <div className="col-12">
                       <ul className="investigationAttachmentList">

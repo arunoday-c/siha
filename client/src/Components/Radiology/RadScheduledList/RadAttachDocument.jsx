@@ -210,54 +210,13 @@ export default function RadAttachDocument({
                   // disabled={this.state.dataExists && !this.state.editMode}
                   fileList={radiologyDoc}
                 >
-                  {/* <p >
-                              <i className="fas fa-file-upload"></i>
-                            </p> */}
                   <button className="btn btn-default upload-drag-icon">
                     Select File
                   </button>
-                  {/* <p className="ant-upload-text">
-                              {payment_reqDoc
-                                ? `Click to Upload`
-                                : `Click to Upload`}
-                            </p> */}
                 </Dragger>
-                {/* <Dragger
-                    accept=".doc,.docx,application/msword,.jpg,.png,.pdf"
-                    name="attached_files"
-                    onRemove={(file) => {
-                      this.setState((state) => {
-                        const index = state.attached_files.indexOf(file);
-                        const newFileList = [...state.attached_files];
-                        newFileList.splice(index, 1);
-                        return {
-                          attached_files: newFileList,
-                          // saveEnable: state.dataExists && !newFileList.length,
-                        };
-                      });
-                    }}
-                    beforeUpload={(file) => {
-                      this.setState((state) => ({
-                        attached_files: [...state.attached_files, file],
-                        // saveEnable: false,
-                      }));
-                      return false;
-                    }}
-                    // disabled={this.state.dataExists && !this.state.editMode}
-                    fileList={this.state.attached_files}
-                  >
-                    <p className="upload-drag-icon">
-                      <i className="fas fa-file-upload"></i>
-                    </p>
-                    <p className="ant-upload-text">
-                      {this.state.attached_files
-                        ? `Click or Drag a file to replace the current file`
-                        : `Click or Drag a file to this area to upload`}
-                    </p>
-                  </Dragger> */}
               </div>
-              <div className="col-3"></div>
-              <div className="col-6">
+
+              <div className="col">
                 <div className="row">
                   <div className="col-12">
                     <ul className="investigationAttachmentList">
