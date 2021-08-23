@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 
 import { useQuery } from "react-query";
 import { Controller, useForm } from "react-hook-form";
-import {  swalMessage } from "../../../utils/algaehApiCall";
+import { swalMessage } from "../../../utils/algaehApiCall";
 
 import {
   AlgaehDataGrid,
@@ -19,7 +19,7 @@ import "./../../../styles/site.scss";
 import {
   saveDocument,
   getDocuments,
-  reloadAnalytesMaster,
+  // reloadAnalytesMaster,
   printLabWorkListReport,
   generateLabResultReport,
 } from "./ResultEntryListHandaler";
@@ -143,7 +143,7 @@ export default function ResultEntryList() {
       ).catch((error) => {
         throw error;
       });
-      debugger
+      debugger;
       if (after_upload.success === false) {
         AlgaehMessagePop({
           display: after_upload.result,
@@ -155,7 +155,7 @@ export default function ResultEntryList() {
         type: "success",
         title: "Document Upload Successfull...",
       });
-     
+
       const get_upload_doc = await getDocuments(lab_id_number).catch(
         (error) => {
           throw error;
@@ -339,13 +339,13 @@ export default function ResultEntryList() {
             type: "error",
             title: err.message,
           });
-        });
-      },
+      })},
       onCancel() {
         console.log("Cancel");
       },
-    });
-  };
+  
+  })
+};
 
   let _Collected = [];
 
@@ -383,7 +383,7 @@ export default function ResultEntryList() {
           setOpenUploadModal(false);
         }}
         footer={[
-          <div className="col-12">
+          <div className="">
             <button
               onClick={() => saveDocumentCheck()}
               className="btn btn-primary btn-sm"
@@ -426,18 +426,12 @@ export default function ResultEntryList() {
                   }}
                   fileList={attached_files}
                 >
-                  <p className="upload-drag-icon">
-                    <i className="fas fa-file-upload"></i>
-                  </p>
-                  <p className="ant-upload-text">
-                    {attached_files
-                      ? `Click or Drag a file to replace the current file`
-                      : `Click or Drag a file to this area to upload`}
-                  </p>
+                  <button className="btn btn-default upload-drag-icon">
+                    Select File
+                  </button>
                 </Dragger>
               </div>
-              <div className="col-3"></div>
-              <div className="col-6">
+              <div className="col">
                 <div className="row">
                   <div className="col-12">
                     <ul className="investigationAttachmentList">
@@ -445,21 +439,17 @@ export default function ResultEntryList() {
                         attached_docs.map((doc) => (
                           <li>
                             <b> {doc.filename} </b>
-
                             <span>
                               <i
                                 className="fas fa-download"
                                 onClick={() => downloadDoc(doc)}
                               ></i>
-                            </span>
 
-                            <span>
                               <i
                                 className="fas fa-eye"
                                 onClick={() => downloadDoc(doc, true)}
                               ></i>
-                            </span>
-                            <span>
+
                               <i
                                 className="fas fa-trash"
                                 onClick={() => deleteDoc(doc)}
@@ -648,10 +638,9 @@ export default function ResultEntryList() {
                                   aria-hidden="true"
                                   onClick={() => {
                                     setOpenUploadModal(true);
-                                    setLabIdNumber(row.lab_id_number
-                                    );
-                                  
-                                      getSavedDocument(row.lab_id_number)
+                                    setLabIdNumber(row.lab_id_number);
+
+                                    getSavedDocument(row.lab_id_number);
                                     setInventigationTestId(row.test_id);
                                     setDisableUploadBtn(
                                       row.lab_id_number ? false : true
@@ -660,7 +649,7 @@ export default function ResultEntryList() {
                                 />
                               </span>
                             </Tooltip>
-                            <Tooltip title="Reload Analytes">
+                            {/* <Tooltip title="Reload Analytes">
                               <span>
                                 <i
                                   className="fas fa-undo-alt"
@@ -668,7 +657,7 @@ export default function ResultEntryList() {
                                   onClick={() => reloadAnalytesMaster(row)}
                                 />
                               </span>
-                            </Tooltip>
+                            </Tooltip> */}
                             <AlgaehSecurityComponent componentCode="RE_PRI_LAB_RES">
                               <Tooltip title="Print Report">
                                 <span>
@@ -705,7 +694,7 @@ export default function ResultEntryList() {
                         );
                       },
                       others: {
-                        minWidth: 170,
+                        minWidth: 130,
                         style: { textAlign: "center" },
                       },
                     },
@@ -724,7 +713,7 @@ export default function ResultEntryList() {
                       filterType: "date",
                       sortable: true,
                       others: {
-                        width: 200,
+                        minWidth: 190,
                         style: { textAlign: "center" },
                       },
                     },
@@ -779,9 +768,7 @@ export default function ResultEntryList() {
                     // },
                     {
                       fieldName: "status",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Test Status" }} />
-                      ),
+                      label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                       displayTemplate: (row) => {
                         return row.status === "CL" ? (
                           <span className="badge badge-secondary">
@@ -869,7 +856,7 @@ export default function ResultEntryList() {
                       filterable: true,
                       sortable: true,
                       others: {
-                        minWidth: 350,
+                        minWidth: 280,
                         style: { textAlign: "left" },
                       },
                     },
@@ -882,9 +869,7 @@ export default function ResultEntryList() {
                       disabled: true,
                       filterable: true,
                       sortable: true,
-                      others: {
-                        style: { textAlign: "center" },
-                      },
+                      others: { minWidth: 300, style: { textAlign: "left" } },
                     },
                     {
                       fieldName: "run_types",

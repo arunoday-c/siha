@@ -73,13 +73,16 @@
       max-height: 26vh !important;
     }
   }
+  .investigationAttachmentDrag {
+    display: none;
+  }
 }
 .algaeh-col-3 {
   width: 32%;
   margin-right: 15px;
   margin-left: 15px;
 }
-.chiefComplaintFld{
+.chiefComplaintFld {
   min-height: 30vh !important;
 }
 .algaeh-col-8 {
