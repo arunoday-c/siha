@@ -327,14 +327,12 @@ export default function ResultEntryList() {
           module: "documentManagement",
           data: { id: doc._id },
         }).then((res) => {
-         
+        
           if (res.data.success) {
-            setAttachedDocs((state) => {
-              const attached_docs = state.filter(
-                (item) => item._id !== doc._id
-              );
-              return { attached_docs };
-            });
+            const attachedDocs = attached_docs.filter(
+              (item) => item._id !== doc._id
+            );
+            setAttachedDocs(attachedDocs);
           }
         }).catch((err)=>{
           swalMessage({
