@@ -409,7 +409,7 @@ class PurchaseReturnEntry extends Component {
                       data: _mainStore,
                     },
                     others: {
-                      disabled: this.state.dataExitst,
+                      disabled: this.state.dataAdded,
                     },
                     onChange: loctexthandle.bind(this, this),
                     onClear: () => {

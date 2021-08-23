@@ -164,6 +164,7 @@ export default memo(function CreateBatch() {
                   barcode_scanner: "",
                   batch_number: "",
                   batch_name: "",
+                  selected_date: new Date(),
                 });
                 setBatchList([]);
               }}
