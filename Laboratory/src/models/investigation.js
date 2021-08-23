@@ -47,7 +47,7 @@ export default {
             left join hims_d_services as SER on T.services_id = SER.hims_d_services_id \
             where 1=1" +
             _stringData +
-            " order by hims_d_investigation_test_id",
+            " order by hims_d_investigation_test_id desc",
           values: inputValues,
           printQuery: true,
         })
