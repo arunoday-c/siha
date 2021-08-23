@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 
 import { useQuery } from "react-query";
 import { Controller, useForm } from "react-hook-form";
+import {  swalMessage } from "../../../utils/algaehApiCall";
 
 import {
   AlgaehDataGrid,
@@ -111,7 +112,7 @@ export default function ResultEntryList() {
       }
     }
   };
-  const getSavedDocument = async () => {
+  const getSavedDocument = async (lab_id_number) => {
     const get_upload_doc = await getDocuments(lab_id_number).catch((error) => {
       throw error;
     });
@@ -142,6 +143,7 @@ export default function ResultEntryList() {
       ).catch((error) => {
         throw error;
       });
+      debugger
       if (after_upload.success === false) {
         AlgaehMessagePop({
           display: after_upload.result,
@@ -149,21 +151,25 @@ export default function ResultEntryList() {
         });
         return;
       }
-      AlgaehMessagePop({
+      swalMessage({
         type: "success",
-        display: "Document Upload Successfull...",
+        title: "Document Upload Successfull...",
       });
+     
       const get_upload_doc = await getDocuments(lab_id_number).catch(
         (error) => {
           throw error;
         }
       );
       if (get_upload_doc.success === false) {
-        AlgaehMessagePop({
-          display: get_upload_doc.result,
+        swalMessage({
           type: "error",
+          title: get_upload_doc.result,
         });
         return;
+      }
+      if (after_upload.success === true) {
+        setAttachedFiles([]);
       }
       setAttachedDocs(get_upload_doc);
     }
@@ -321,6 +327,7 @@ export default function ResultEntryList() {
           module: "documentManagement",
           data: { id: doc._id },
         }).then((res) => {
+         
           if (res.data.success) {
             setAttachedDocs((state) => {
               const attached_docs = state.filter(
@@ -329,6 +336,11 @@ export default function ResultEntryList() {
               return { attached_docs };
             });
           }
+        }).catch((err)=>{
+          swalMessage({
+            type: "error",
+            title: err.message,
+          });
         });
       },
       onCancel() {
@@ -638,9 +650,10 @@ export default function ResultEntryList() {
                                   aria-hidden="true"
                                   onClick={() => {
                                     setOpenUploadModal(true);
-                                    setLabIdNumber(row.lab_id_number, () =>
-                                      getSavedDocument()
+                                    setLabIdNumber(row.lab_id_number
                                     );
+                                  
+                                      getSavedDocument(row.lab_id_number)
                                     setInventigationTestId(row.test_id);
                                     setDisableUploadBtn(
                                       row.lab_id_number ? false : true

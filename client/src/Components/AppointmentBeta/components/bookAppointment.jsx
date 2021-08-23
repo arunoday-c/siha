@@ -189,6 +189,7 @@ export default memo(function BookAppointment(props) {
           moment(row.date_of_birth, "YYYY-MM-DD"),
           "years"
         );
+        debugger;
         setPatientCode(row.patient_code);
         setTitleId(row.title_id);
         setPatientID(row.hims_d_patient_id);
@@ -199,7 +200,10 @@ export default memo(function BookAppointment(props) {
         // setTeleCode(row.tel_code);
         setEmail(row.email);
         setArabicName(row.arabic_name);
-
+        const maxlength = countries.filter((f) => f.tel_code === row.tel_code)[0]
+        .max_phone_digits;
+        debugger;
+      setMaxLength(maxlength?maxlength:10);
         // setContactNumber(row.contact_number);
         setValue("tel_code", row.tel_code);
         setValue("contact_number", row.contact_number);
@@ -715,12 +719,17 @@ export default memo(function BookAppointment(props) {
                           {...props}
                           // disabled={disabled}
                           onChange={(e) => {
-                            if (e.target.value.length === maxLength) {
-                              clearErrors();
-                              props.onChange(e.target.value);
-                            } else {
-                              props.onChange(e.target.value);
-                            }
+                            const { value } = e.target;
+    const reg = /^-?\d*(\.\d*)?$/;
+    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
+      if (value.length === maxLength) {
+        clearErrors();
+        props.onChange(value);
+      } else {
+        props.onChange(value);
+      }
+    }
+                            
                           }}
                           maxLength={maxLength}
                           placeholder={maxLength ? `${maxLength} digits` : ""}
