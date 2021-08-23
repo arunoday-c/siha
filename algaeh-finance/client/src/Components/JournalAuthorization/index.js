@@ -747,6 +747,7 @@ export default memo(function (props) {
                       isFilterable={true}
                       rowUnique="finance_voucher_header_id"
                       pagination={true}
+                      persistence={null}
                       pageOptions={{ rows: 50, page: 1 }}
                     />
                   </div>

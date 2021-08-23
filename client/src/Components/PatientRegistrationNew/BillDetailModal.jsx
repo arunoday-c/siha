@@ -50,14 +50,14 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
           <hr />
           {/* Amount Details */}
           <div className="row">
-            <div className="col-lg-2">
+            {/* <div className="col-lg-2">
               <AlgaehLabel
                 label={{
                   fieldName: "quantity",
                 }}
               />
-              <h6>{amountWithCur(billData?.quantity)}</h6>
-            </div>
+              <h6>{billData?.quantity}</h6>
+            </div> */}
 
             <div className="col-lg-2">
               <AlgaehLabel

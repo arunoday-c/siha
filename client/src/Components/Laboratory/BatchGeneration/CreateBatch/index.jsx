@@ -14,57 +14,100 @@ export default memo(function CreateBatch() {
       batch_name: "",
       barcode_scanner: "",
       scan_by: "LI",
+      selected_date: new Date(),
     },
   });
 
   const [batch_list, setBatchList] = useState([]);
   const [auto_insert, setAutoInsert] = useState(true);
+  const [batch_creation, setBatchCreation] = useState("L");
 
   const createBatch = async (data) => {
+    const settings = { header: undefined, footer: undefined };
     const result = await newAlgaehApi({
       uri: "/laboratory/createPCRBatch",
+      skipParse: true,
+      data: Buffer.from(JSON.stringify(data), "utf8"),
       module: "laboratory",
+      header: {
+        "content-type": "application/octet-stream",
+        ...settings,
+      },
       method: "POST",
-      data: data,
+      // uri: "/laboratory/bulkSampleAcknowledge",
+      // module: "laboratory",
+      // method: "PUT",
+      // data: data,
     });
     return result?.data?.records;
+    // const result = await newAlgaehApi({
+    //   uri: "/laboratory/createPCRBatch",
+    //   module: "laboratory",
+    //   method: "POST",
+    //   data: data,
+    // });
+    // return result?.data?.records;
   };
   const onSubmit = () => {
-    let inpujObj = {
-      batch_name: getValues("batch_name"),
-      batch_list: batch_list,
-    };
-    createBatch(inpujObj)
-      .then((result) => {
-        swal({
-          title: "Batch Created Successfully",
-          text: result.batch_number,
-          icon: "success",
-        });
-        reset({
-          barcode_scanner: "",
-          batch_number: "",
-          batch_name: "",
-        });
-        setBatchList([]);
-      })
-      .catch((e) => {
-        AlgaehMessagePop({
-          display: e,
-          type: "error",
-        });
-      });
+    swal({
+      title: `Are you sure to Create Batch & Acknowledge Sample?`,
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willProceed) => {
+      if (willProceed.value) {
+        const filterData = batch_list.filter((f) => f.checked);
+        let inpujObj = {
+          batch_name: getValues("batch_name"),
+          batch_list: filterData,
+        };
+
+        createBatch(inpujObj)
+          .then((result) => {
+            swal({
+              title: "Batch Created Successfully",
+              text: result.batch_number,
+              icon: "success",
+            });
+            reset({
+              barcode_scanner: "",
+              batch_number: "",
+              batch_name: "",
+            });
+            setBatchList([]);
+          })
+          .catch((e) => {
+            debugger;
+            AlgaehMessagePop({
+              display: e.message,
+              type: "error",
+            });
+          });
+      }
+    });
   };
 
   const updateState = (data) => {
-    setBatchList((result) => {
-      result.push(data);
-      return [...result];
-    });
+    if (Array.isArray(data)) {
+      setBatchList([]);
+      setBatchList(data);
+    } else {
+      setBatchList((result) => {
+        result.push(data);
+        return [...result];
+      });
+    }
   };
 
   const updateAutoState = (data) => {
     setAutoInsert(data);
+  };
+
+  const updateBatchCreation = (data) => {
+    setBatchCreation(data);
   };
 
   const deleteState = (data) => {
@@ -89,10 +132,16 @@ export default memo(function CreateBatch() {
           updateAutoState={updateAutoState}
           batch_list={batch_list}
           auto_insert={auto_insert}
+          batch_creation={batch_creation}
+          updateBatchCreation={updateBatchCreation}
         />
       </div>
       <div className="row">
-        <ListofBatches batch_list={batch_list} deleteState={deleteState} />
+        <ListofBatches
+          batch_list={batch_list}
+          deleteState={deleteState}
+          updateState={updateState}
+        />
         {/* <div className="col-8">details section here</div> */}
       </div>
 
@@ -106,8 +155,8 @@ export default memo(function CreateBatch() {
               onClick={onSubmit}
               disabled={batch_list.length > 0 ? false : true}
             >
-              Create Batch
-            </button>{" "}
+              Create Batch & Ack Sample
+            </button>
             <button
               onClick={() => {
                 reset({

@@ -38,12 +38,12 @@ async function getDemoData() {
       method: "GET",
       data: { patient_status: "A" },
     }),
-    newAlgaehApi({
-      uri: "/identity/get",
-      module: "masterSettings",
-      data: { identity_status: "A" },
-      method: "GET",
-    }),
+    // newAlgaehApi({
+    //   uri: "/identity/get",
+    //   module: "masterSettings",
+    //   data: { identity_status: "A" },
+    //   method: "GET",
+    // }),
     newAlgaehApi({
       uri: "/doctorsWorkBench/getReferringMaster",
       method: "GET",
@@ -52,8 +52,8 @@ async function getDemoData() {
   return {
     visaTypes: result[0]?.data?.records,
     patientTypes: result[1]?.data?.records,
-    identities: result[2]?.data?.records,
-    referringInstitutes: result[3]?.data?.records,
+    // identities: result[2]?.data?.records,
+    referringInstitutes: result[2]?.data?.records,
   };
 }
 
@@ -70,6 +70,7 @@ export function Demographics({
   inModal = false,
   isEmpIdRequired,
   loadFromReader,
+  identities,
 }) {
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
@@ -108,15 +109,14 @@ export function Demographics({
       initialData: {
         visaTypes: [],
         patientTypes: [],
-        identities: [],
+        // identities: [],
       },
       refetchOnMount: false,
       initialStale: true,
       cacheTime: Infinity,
     }
   );
-  const { visaTypes, patientTypes, identities, referringInstitutes } =
-    dropdownData;
+  const { visaTypes, patientTypes, referringInstitutes } = dropdownData;
   // const requied_emp_id = isEmpIdRequired;
 
   const states = country

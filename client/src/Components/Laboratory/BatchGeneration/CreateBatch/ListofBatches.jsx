@@ -1,23 +1,146 @@
-import React, { memo } from "react";
+import React, { memo, useState, useEffect } from "react";
 import "./CreateBatch.scss";
-// import { AlgaehLabel } from "algaeh-react-components";
-import DisplayComponent from "./DisplayComponent";
+import { Checkbox, AlgaehDataGrid, AlgaehLabel } from "algaeh-react-components";
+// import DisplayComponent from "./DisplayComponent";
+const STATUS = {
+  CHECK: true,
+  UNCHECK: false,
+  INDETERMINATE: true,
+};
 
-export default memo(function BatchDetails({ batch_list, deleteState }) {
+export default memo(function BatchDetails({ batch_list, updateState }) {
+  const [checkAll, setCheckAll] = useState(STATUS.UNCHECK);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const selectAll = (e) => {
+    const stats = e.target.checked === true ? "Y" : "N";
+    let myState = [];
+
+    debugger;
+    myState = batch_list.map((f) => {
+      return { ...f, checked: stats, isDirty: f.id ? true : undefined };
+    });
+    setCheckAll(stats === "Y" ? STATUS.CHECK : STATUS.UNCHECK);
+    updateState(myState);
+  };
+
   return (
     <div className="col-12">
-      {/* <div className="customLISearch">
-        <input
-          type="text"
-          placeholder="Search by Name, Primary ID or Lab ID"
-        ></input>
-      </div> */}
+      <div className="portlet portlet-bordered margin-bottom-15">
+        {/* <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Portal Lab List</h3>
+                </div>
+              </div> */}
+        <div className="portlet-body" id="batchGenerationGrid">
+          <AlgaehDataGrid
+            columns={[
+              {
+                label: (
+                  <Checkbox
+                    indeterminate={checkAll === STATUS.INDETERMINATE}
+                    checked={checkAll === STATUS.CHECK}
+                    onChange={selectAll}
+                  ></Checkbox>
+                ),
+                fieldName: "select",
+                displayTemplate: (row) => {
+                  return (
+                    <CheckBoxPlot
+                      row={row}
+                      fullData={batch_list}
+                      setCheckAll={setCheckAll}
+                    />
+                  );
+                },
+                others: {
+                  maxWidth: 50,
+                  filterable: false,
+                  sortable: false,
+                },
+              },
+              // {
+              //   label: "Action",
+              //   fieldName: "",
+              //   displayTemplate: (row) => {
+              //     return (
+              //       <i
+              //         className="fas fa-sync-alt"
+              //         style={{
+              //           pointerEvents:
+              //             portalState?.portal_exists === "N" ? "none" : "",
+              //         }}
+              //         onClick={() => {
+              //           addOrUpdatePortalSetup(
+              //             { filteredArray: [row] },
+              //             refetch
+              //           );
+              //         }}
+              //       ></i>
+              //     );
+              //   },
+              // },
+              {
+                fieldName: "full_name",
+                label: <AlgaehLabel label={{ fieldName: "Patient Name" }} />,
+                others: {
+                  // filterable: true,
+                  // sortable: true,
+                },
+                filterable: true,
+                sortable: true,
+              },
+              {
+                fieldName: "primary_id_no",
+                label: <AlgaehLabel label={{ forceLabel: "Patient ID" }} />,
 
-      <div className="CreateBatchList">
+                others: {
+                  // filterable: true,
+                  // sortable: true,
+                },
+                filterable: true,
+                sortable: true,
+              },
+              {
+                fieldName: "lab_id_number",
+
+                label: <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />,
+
+                others: {
+                  // filterable: true,
+                  // sortable: true,
+                },
+                filterable: true,
+                sortable: true,
+              },
+              {
+                fieldName: "test_name",
+                label: <AlgaehLabel label={{ fieldName: "Test Name" }} />,
+                others: {
+                  // filterable: true,
+                  // sortable: true,
+                },
+                filterable: true,
+                sortable: true,
+              },
+            ]}
+            data={batch_list}
+            pagination={true}
+            pageOptions={{ rows: 50, page: currentPage }}
+            pageEvent={(page) => {
+              setCurrentPage(page);
+            }}
+            isFilterable={true}
+            noDataText="No data available for selected period"
+          />
+        </div>
+      </div>
+
+      {/* <div className="CreateBatchList">
         <ul>
           <li>
             <p className="actionSec">
-              {/* <i className="fas fa-trash-alt"></i> */}
+              
             </p>
             <p class="valueSec">
               <span>
@@ -44,8 +167,8 @@ export default memo(function BatchDetails({ batch_list, deleteState }) {
             );
           })}
         </ul>
-      </div>
-      <div className="portlet">
+      </div> */}
+      {/* <div className="portlet">
         <div className="portlet-body">
           <div className="row">
             <div className="col-12" style={{ textAlign: "right" }}>
@@ -60,7 +183,49 @@ export default memo(function BatchDetails({ batch_list, deleteState }) {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 });
+
+/**
+ * For checkboxes
+ * @param {row} Object
+ * @param {portalState} Object
+ * @param {fullData} Array
+ * @returns Component
+ */
+function CheckBoxPlot({ row, fullData, setCheckAll }) {
+  const [checked, setChecked] = useState("N");
+  useEffect(() => {
+    setChecked(row.checked);
+  }, [row.checked]);
+  return (
+    <input
+      type="checkbox"
+      checked={checked === "Y" ? true : false}
+      onChange={(e) => {
+        const check = e.target.checked === true ? "Y" : "N";
+
+        if (row.id) {
+          row.isDirty = true;
+        }
+        row.checked = check;
+
+        const hasUncheck = fullData.filter((f) => {
+          return f.checked === undefined || f.checked === "N";
+        });
+        const hasChecks = fullData.filter((f) => f.checked === "Y");
+        setCheckAll(
+          fullData.length === hasChecks.length
+            ? STATUS.CHECK
+            : fullData.length === hasUncheck.length
+            ? STATUS.UNCHECK
+            : STATUS.INDETERMINATE
+        );
+        setChecked(check);
+      }}
+    />
+  );
+}
+React.memo(CheckBoxPlot);

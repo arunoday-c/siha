@@ -8,7 +8,7 @@ import AddPatientIcon from "./addPatient";
 import LiList from "./appointmentStatus";
 import { swalMessage } from "../../../utils/algaehApiCall";
 import { newAlgaehApi } from "../../../hooks";
-import { getDoctorSchedule } from "./events";
+import { getDoctorSchedule, generateReport } from "./events";
 export default memo(function TdCell(props) {
   const { userLanguage } = useContext(MainContext);
   const {
@@ -141,7 +141,7 @@ export default memo(function TdCell(props) {
                 <i className="fas fa-clock" />
                 <ul className="appStatusList">
                   {app_status
-                    .filter((f) => f.steps > appStep)
+                    ?.filter((f) => f.steps > appStep)
                     .map((item, index) => {
                       return (
                         <LiList
@@ -154,12 +154,13 @@ export default memo(function TdCell(props) {
                       );
                     })}
                   <li
-                  // onClick={generateReport.bind(
-                  //   this,
-                  //   patient,
-                  //   "appointmentSlip",
-                  //   "Appointment Slip"
-                  // )}
+                    onClick={() =>
+                      generateReport(
+                        patient.hims_f_patient_appointment_id,
+                        "appointmentSlip",
+                        "Appointment Slip"
+                      )
+                    }
                   >
                     <span>Print App. Slip</span>
                   </li>
@@ -326,7 +327,15 @@ export default memo(function TdCell(props) {
                         />
                       );
                     })}
-                  <li>
+                  <li
+                    onClick={() =>
+                      generateReport(
+                        standByList.hims_f_patient_appointment_id,
+                        "appointmentSlip",
+                        "Appointment Slip"
+                      )
+                    }
+                  >
                     <span>Print App. Slip</span>
                   </li>
                 </ul>

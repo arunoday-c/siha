@@ -6,14 +6,15 @@ export default {
   getUomLocationStock: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      // console.log("req.query.return_items", req.query.return_items);
+      console.log("req.query.return_items", req.query.return_items);
       let strFilter = "";
-      if (req.query.return_items === "D") {
-        strFilter =
-          " and (date(expirydt) < date(CURDATE()) || exp_date_required='N')";
+      if (req.query.return_items === "D" || req.query.return_items === "E") {
+        console.log("1");
+        strFilter = " and (date(expirydt) < date(CURDATE()))";
       } else {
+        console.log("1");
         strFilter =
-          " and (date(expirydt) > date(CURDATE()) || exp_date_required='N')";
+          " and ((date(expirydt) > date(CURDATE()) or expirydt is null))";
       }
       _mysql
         .executeQuery({

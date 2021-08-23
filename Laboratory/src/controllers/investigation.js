@@ -12,6 +12,8 @@ const {
   addTestComments,
   updateTestComments,
   getTestComments,
+  getInvestigTestAnalytes,
+  getInvestigTestTemplate,
 } = invModels;
 
 export default () => {
@@ -22,6 +24,27 @@ export default () => {
       records: req.records,
     });
   });
+
+  api.get(
+    "/getInvestigTestAnalytes",
+    getInvestigTestAnalytes,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.get(
+    "/getInvestigTestTemplate",
+    getInvestigTestTemplate,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
 
   api.post("/addInvestigationTest", addInvestigationTest, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

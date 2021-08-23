@@ -189,6 +189,7 @@ export default memo(function BookAppointment(props) {
           moment(row.date_of_birth, "YYYY-MM-DD"),
           "years"
         );
+        debugger;
         setPatientCode(row.patient_code);
         setTitleId(row.title_id);
         setPatientID(row.hims_d_patient_id);
@@ -199,7 +200,10 @@ export default memo(function BookAppointment(props) {
         // setTeleCode(row.tel_code);
         setEmail(row.email);
         setArabicName(row.arabic_name);
-
+        const maxlength = countries.filter((f) => f.tel_code === row.tel_code)[0]
+        .max_phone_digits;
+        debugger;
+      setMaxLength(maxlength?maxlength:10);
         // setContactNumber(row.contact_number);
         setValue("tel_code", row.tel_code);
         setValue("contact_number", row.contact_number);
@@ -218,13 +222,25 @@ export default memo(function BookAppointment(props) {
           .add("minutes", duration_minutes)
           .format("HH:mm:ss");
         const dob = moment(date_of_birth).format("YYYY-MM-DD");
-
-        if (getValues().contact_number.length !== maxLength || 10) {
+        const values = getValues();
+        if (!values.tel_code) {
+          setError("tel_code", {
+            type: "manual",
+            shouldFocus: true,
+            message: `This field is mandatory`,
+          });
+          return;
+        }
+        if (
+          !values.contact_number ||
+          values.contact_number?.length !== maxLength
+        ) {
           setError("contact_number", {
             type: "maxLength",
             shouldFocus: true,
             message: `This should be ${maxLength} length`,
           });
+          return;
         }
 
         const send_data = {
@@ -702,6 +718,19 @@ export default memo(function BookAppointment(props) {
                         <Input
                           {...props}
                           // disabled={disabled}
+                          onChange={(e) => {
+                            const { value } = e.target;
+    const reg = /^-?\d*(\.\d*)?$/;
+    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
+      if (value.length === maxLength) {
+        clearErrors();
+        props.onChange(value);
+      } else {
+        props.onChange(value);
+      }
+    }
+                            
+                          }}
                           maxLength={maxLength}
                           placeholder={maxLength ? `${maxLength} digits` : ""}
                         />

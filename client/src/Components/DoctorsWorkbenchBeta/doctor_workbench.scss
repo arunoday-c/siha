@@ -1,0 +1,909 @@
+@import "../../styles/algaehCssVariables.scss";
+
+.clinicalDeskScreen {
+  .cldrPatientList {
+    background: $color-white;
+    min-height: calc(100vh - 52px);
+    box-shadow: 0 0 5px lighten($color-black, 80%);
+    position: relative;
+    z-index: 1;
+    width: 250px;
+    margin-right: 15px;
+    .cldrSection {
+      background: lighten($color-black, 80%);
+      height: 289px;
+
+      .react-datepicker {
+        width: 100%;
+        border: none;
+        border-radius: 0;
+        .react-datepicker__month-container {
+          width: 100%;
+          .react-datepicker__current-month,
+          .react-datepicker-time__header {
+            display: none;
+          }
+          .react-datepicker__header {
+            border-radius: 0;
+          }
+
+          .react-datepicker__day-name,
+          .react-datepicker__day,
+          .react-datepicker__time-name {
+            margin: 0.1666rem 0.35rem;
+          }
+          .react-datepicker__day--selected,
+          .react-datepicker__day--in-selecting-range,
+          .react-datepicker__day--in-range {
+            background-color: $primary-color;
+          }
+          .react-datepicker__day--today {
+            border: 1px solid $primary-color;
+            //color: $primary-color;
+            border-radius: 5px;
+          }
+          .react-datepicker__month-select,
+          .react-datepicker__year-select {
+            -webkit-appearance: none;
+            padding: 3px 6px;
+            border: none;
+          }
+          .react-datepicker__day--outside-month {
+            color: lighten($color-black, 80%) !important;
+          }
+          .react-datepicker__today-button {
+            background: lighten($primary-color, 80%) !important;
+          }
+        }
+      }
+    }
+    .viewAllApp {
+      box-shadow: -6px 6px 10px rgba(0, 0, 0, 0.07);
+      padding-bottom: 15px;
+    }
+    .newPatientSec {
+      .appPatientList {
+        .appPatientListCntr {
+          margin: 0;
+          padding: 0;
+          list-style: none;
+          overflow-y: auto;
+          overflow-x: hidden;
+          height: calc(100vh - 407px);
+          .appSection {
+            border-top: 1px solid lighten($color-black, 80%);
+            float: left;
+            font-size: 0.8em;
+            .appIconSec {
+              float: left;
+              width: 60px;
+              text-align: center;
+              font-size: 0.8em;
+              font-weight: bold;
+              i {
+                display: block;
+                font-size: 2em;
+                margin-top: 14px;
+                margin-bottom: 5px;
+              }
+            }
+            .apptDetailsSec {
+              width: 180px;
+              float: left;
+              padding: 5px;
+              border-left: 1px solid lighten($color-black, 80%);
+              min-height: 60px;
+              .patName {
+                display: block;
+                font-weight: bold;
+                font-size: 1.2em;
+                min-height: 29px;
+              }
+              .patVisit {
+                display: inline-block;
+              }
+              .patStatus {
+                text-align: right;
+                float: right;
+                span {
+                  &.inProgress {
+                    font-weight: bold;
+                    color: rgb(236, 92, 9);
+                  }
+                  &.nursingDone {
+                    color: $primary-color;
+                  }
+                  &.nursingGoing {
+                    color: rgb(91, 94, 235);
+                  }
+                  &.checkedIn {
+                    background: #a0c6ff;
+                  }
+                  &.notShown {
+                    background: lighten($color-black, 70%);
+                  }
+                }
+                &.active {
+                  background: $primary-color;
+                  color: $color-white;
+                  &:hover {
+                    background: darken($primary-color, 10%);
+                    color: $color-white;
+                    cursor: pointer;
+                  }
+                }
+              }
+            }
+            &:nth-child(odd) {
+              background: lighten($color-black, 95%);
+            }
+            &:hover {
+              background: lighten($primary-color, 40%);
+              cursor: pointer;
+            }
+          }
+          .active {
+            background: $primary-color !important;
+            color: $color-white;
+          }
+          .noAppRecord {
+            text-align: center;
+            padding-top: 10vh;
+            i {
+              font-size: 4em;
+              margin-bottom: 20px;
+              color: lighten($color-black, 90%);
+            }
+            span {
+              display: block;
+              span {
+                color: $primary-color;
+                font-weight: 700;
+              }
+            }
+          }
+        }
+      }
+    }
+    .completedPatientSec {
+      background: lighten($color-black, 60%);
+      height: 30vh;
+    }
+  }
+  .patientDetailSection {
+    max-width: calc(100vw - 280px);
+  }
+  .patientMainInfo {
+    box-shadow: 0 0 5px lighten($color-black, 80%);
+    min-height: 88px;
+    padding-right: 0;
+    margin-left: 15px;
+    border-radius: 0 0 0 5px;
+    overflow: hidden;
+
+    .PatientProfile {
+      .PatientInfo-Top {
+        background: $color-white;
+        width: calc(100vw - 260px);
+        height: 117px;
+        padding: 5px 0 0;
+        position: fixed;
+        z-index: 999;
+        border-radius: 0 0 0 5px;
+        overflow: hidden;
+        div {
+          float: left;
+          color: #858585;
+          overflow: hidden;
+        }
+
+        .backBtn {
+          border-right: 1px solid #e1e1e1;
+          padding-right: 10px;
+          padding-left: 10px;
+          button {
+            min-height: 60px;
+            border: 1px solid #e1e1e1;
+          }
+          i {
+            display: block;
+            margin-bottom: 5px;
+          }
+        }
+
+        .PatientImg {
+          margin: 1px 10px;
+
+          .image-drop-area {
+            min-height: 72px;
+            max-height: 72px;
+            img {
+              height: 70px;
+              width: auto;
+            }
+          }
+        }
+        .PatientName {
+          max-width: 30%;
+          margin-top: 2px;
+          border-left: 1px solid #e1e1e1;
+          border-right: 1px solid #e1e1e1;
+          padding-left: 10px;
+          padding-right: 10px;
+          h6 {
+            margin-bottom: 2px;
+            color: #000;
+            line-height: 1.6rem;
+            min-height: 50px;
+            font-size: 1.3em;
+          }
+          p {
+            margin: 0;
+            padding: 0;
+            b {
+              color: $primary-color;
+              font-size: 0.9em;
+              font-weight: 700;
+            }
+          }
+        }
+        .PatientDemographic {
+          line-height: 1.3rem;
+          border-right: 1px solid #e1e1e1;
+          padding-left: 10px;
+          padding-right: 10px;
+          span {
+            display: block;
+            line-height: 1.7rem;
+            font-size: 0.9em;
+            font-weight: 700;
+            i {
+              text-align: center;
+              width: 20px;
+            }
+            b {
+              color: $primary-color;
+            }
+          }
+        }
+        .PatientVitals {
+          background: lighten($color-black, 20%);
+          color: lighten($color-black, 90%);
+          width: calc(100vw - 265px);
+          height: 30px;
+          padding: 5px 15px 0;
+          border-radius: 0 0 0 5px;
+          margin-top: 8px;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          span {
+            border-right: 1px solid lighten($color-black, 50%);
+            padding-right: 5px;
+            margin-right: 5px;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            b {
+              font-weight: 700;
+              font-size: 1.3em;
+              color: $color-white;
+            }
+            i {
+              text-transform: capitalize;
+              margin-left: 3px;
+            }
+          }
+        }
+      }
+    }
+  }
+  .patientReportSection {
+    box-shadow: 0 0 5px lighten($color-black, 80%);
+    background: $color-white;
+    margin: 40px 15px 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-radius: 5px;
+    width: calc(100vw - 50px);
+    min-height: calc(100vh - 238px);
+    max-height: calc(100vh - 238px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    .patientSecHdg {
+      font-size: 1em;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .patientVitalsSec {
+      h6 {
+        font-size: 1.1em;
+        label {
+          font-size: 0.7em;
+          text-transform: uppercase;
+          display: block;
+        }
+      }
+    }
+    .patientChiefSec {
+      .chiefComplaintsTextArea {
+        height: 150px;
+        margin-top: 5px;
+        width: 100%;
+      }
+    }
+  }
+  .clinicalAction {
+    margin-top: 40px;
+    width: 50px;
+    height: calc(100vh - 238px);
+    .rightActionSec {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      li {
+        margin: 0 0 5px;
+        padding: 0;
+        list-style: none;
+        background: $color-white;
+        width: 50px;
+        height: 50px;
+        border-radius: 5px 0 0 5px;
+        position: relative;
+        z-index: 6;
+        cursor: pointer;
+
+        i {
+          text-align: center;
+          display: block;
+          /* padding: 18px; */
+          font-size: 1.3em;
+          line-height: 50px;
+        }
+        span {
+          position: absolute;
+          background: #6d6d6d;
+          top: 17px;
+          left: -100px;
+          font-size: 0.8em;
+          text-align: center;
+          z-index: 5;
+          /* word-break: break-all; */
+          padding: 3px 9px;
+          border-radius: 5px 0 0 5px;
+          width: 100px;
+          color: #fff;
+          display: none;
+        }
+        &:hover {
+          span {
+            display: block;
+          }
+        }
+      }
+    }
+  }
+  .clinicalFooter {
+    background: lighten($color-black, 20%);
+    color: lighten($color-black, 90%);
+    .inline-formGroup {
+      padding-top: 5px;
+      padding-bottom: 4px;
+      .style_Label {
+        vertical-align: top;
+        padding-top: 8px;
+        padding-right: 13px;
+      }
+      .ui.fluid.dropdown {
+        padding: 0;
+        width: 50%;
+        display: inline-block;
+      }
+    }
+    .btn {
+      float: right;
+      margin-top: 5px;
+      margin-left: 10px;
+    }
+  }
+
+  .clinicalDeskWrapper {
+    background: lighten($color-black, 60%);
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 9999;
+    display: none;
+    .clinicalDeskPopup {
+      width: 95vw;
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: $color-white;
+      height: calc(100vh - 50px);
+      z-index: 9999;
+      box-shadow: 0 0px 200px lighten($color-black, 10%);
+      display: none;
+    }
+  }
+}
+.doctor_workbench {
+  .panel-layout {
+    margin-top: 10px;
+  }
+
+  .go-button {
+    cursor: pointer;
+    margin-top: 15px;
+  }
+
+  .opPatientList {
+    margin: 0;
+    .opList {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      height: 59vh;
+      overflow: auto;
+      .noPatientDiv {
+        text-align: center;
+        color: #929292;
+        padding: 24.5vh 0;
+        background: none;
+        border: none;
+        i {
+          margin-bottom: 20px;
+          font-size: 4rem;
+        }
+        &:hover {
+          background: none;
+          border: none;
+        }
+      }
+      li {
+        margin: 4px 0;
+        padding: 3px 0;
+        list-style: none;
+        border: 1px solid #f2f2f2;
+        background: #fff;
+        border-radius: 5px;
+        .op-sec-1 {
+          width: 55px;
+          vertical-align: text-top;
+          display: inline-block;
+          text-align: center;
+          i {
+            width: 30px;
+            background: yellow;
+            height: 30px;
+            display: block;
+            margin: auto;
+          }
+          .appointment-icon {
+            background: url("../../assets/icons/appointment-icon.svg") no-repeat
+              center;
+            background-size: 80%;
+          }
+          .walking-icon {
+            background: url("../../assets/icons/walking-icon.svg") no-repeat
+              center;
+            background-size: 80%;
+          }
+          .opTime {
+            font-size: 0.7rem;
+          }
+        }
+        .op-sec-2 {
+          width: calc(100% - 60px);
+          vertical-align: text-top;
+          display: inline-block;
+          border-left: 1px dashed #e6e6e6;
+          padding-left: 10px;
+          .opPatientName {
+            display: block;
+          }
+          .opStatus {
+            display: block;
+            font-size: 0.8rem;
+          }
+          .nursing {
+            color: #34b8bc;
+          }
+          .checkedIn {
+            color: #00bb4b;
+          }
+          .opPatientStatus {
+            display: block;
+            font-size: 0.8rem;
+          }
+          .newVisit {
+            color: #ff8800;
+          }
+          .followUp {
+            color: #ff005f;
+          }
+          .packageVisit {
+            color: #ff005f;
+          }
+        }
+      }
+      li:hover {
+        background: #ebfeff;
+        cursor: pointer;
+      }
+    }
+  }
+
+  #encounter_table {
+    min-height: 63vh;
+    .newStickyGrid {
+      .table-scroll {
+        min-height: 57vh;
+        max-height: 57vh;
+        overflow: auto;
+      }
+      .pageLeft {
+        display: none;
+      }
+    }
+    .pat-code2 {
+      color: navy !important;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+
+  .bottom-layout {
+    padding: 5px;
+
+    .right-bottom-panel {
+      margin-top: 5px;
+    }
+    .appointment-panel {
+      .timeline {
+        position: relative;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      /* The actual timeline (the vertical ruler) */
+      .timeline::after {
+        content: "";
+        position: absolute;
+        width: 2px;
+        background-color: #000;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        margin-left: -3px;
+      }
+
+      /* Container around content */
+      .container {
+        padding: 10px 40px;
+        position: relative;
+        background-color: inherit;
+        width: 50%;
+      }
+
+      /* The circles on the timeline */
+      .container::after {
+        content: "";
+        position: absolute;
+        width: 25px;
+        height: 25px;
+        right: -17px;
+        background-color: white;
+        border: 4px solid #ff9f55;
+        top: 15px;
+        border-radius: 50%;
+        z-index: 1;
+      }
+
+      /* Place the container to the left */
+      .left {
+        left: 0;
+      }
+
+      /* Place the container to the right */
+      .right {
+        left: 50%;
+      }
+
+      /* Add arrows to the left container (pointing right) */
+      .left::before {
+        content: " ";
+        height: 0;
+        position: absolute;
+        top: 22px;
+        width: 0;
+        z-index: 1;
+        right: 30px;
+        border: medium solid white;
+        border-width: 10px 0 10px 10px;
+        border-color: transparent transparent transparent white;
+      }
+
+      /* Add arrows to the right container (pointing left) */
+      .right::before {
+        content: " ";
+        height: 0;
+        position: absolute;
+        top: 22px;
+        width: 0;
+        z-index: 1;
+        left: 30px;
+        border: medium solid white;
+        border-width: 10px 10px 10px 0;
+        border-color: transparent white transparent transparent;
+      }
+
+      /* Fix the circle for containers on the right side */
+      .right::after {
+        left: -16px;
+      }
+
+      /* The actual content */
+      .content {
+        padding: 20px 30px;
+        background-color: white;
+        position: relative;
+        border-radius: 6px;
+      }
+
+      /* Media queries - Responsive timeline on screens less than 600px wide */
+      @media screen and (max-width: 600px) {
+        /* Place the timelime to the left */
+        .timeline::after {
+          left: 31px;
+        }
+
+        /* Full-width containers */
+        .container {
+          width: 100%;
+          padding-left: 70px;
+          padding-right: 25px;
+        }
+
+        /* Make sure that all arrows are pointing leftwards */
+        .container::before {
+          left: 60px;
+          border: medium solid white;
+          border-width: 10px 10px 10px 0;
+          border-color: transparent white transparent transparent;
+        }
+
+        /* Make sure all circles are at the same spot */
+        .left::after,
+        .right::after {
+          left: 15px;
+        }
+
+        /* Make all right containers behave like the left ones */
+        .right {
+          left: 0%;
+        }
+      }
+    }
+
+    .grey-label {
+      color: #292929;
+      padding-left: 10px;
+      padding-top: 5px;
+      font-style: bolder;
+    }
+
+    .grey-label-right {
+      color: #292929;
+      padding-right: 10px;
+      padding-top: 5px;
+      font-style: bolder;
+    }
+  }
+  .rightLabelCount {
+    .countNo {
+      background: #2aafa4;
+      color: #fff;
+      padding: 2px 10px;
+      border-radius: 25%;
+
+      margin-left: 3px;
+      display: inline-block;
+    }
+    .style_Label {
+      text-transform: initial;
+    }
+  }
+}
+
+.appPatientList {
+  margin: 0 -5px;
+  .appList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    height: 64vh;
+    overflow: auto;
+    .noPatientDiv {
+      text-align: center;
+      color: #929292;
+      padding: 24.5vh 0;
+      background: none;
+      border: none;
+      i {
+        margin-bottom: 20px;
+        font-size: 4rem;
+      }
+      &:hover {
+        background: none;
+        border: none;
+      }
+    }
+    li {
+      margin: 4px 0;
+      padding: 3px 0;
+      list-style: none;
+      border: 1px solid #f2f2f2;
+      background: #fff;
+      border-radius: 5px;
+      .app-sec-1 {
+        width: 55px;
+        vertical-align: text-top;
+        display: inline-block;
+        text-align: center;
+        i {
+          width: 30px;
+          background: yellow;
+          height: 30px;
+          display: block;
+          margin: auto;
+        }
+        .appointment-icon {
+          background: url("../../assets/icons/appointment-icon.svg") no-repeat
+            center;
+          background-size: 80%;
+        }
+        .walking-icon {
+          background: url("../../assets/icons/walking-icon.svg") no-repeat
+            center;
+          background-size: 80%;
+        }
+        .appTime {
+          font-size: 0.7rem;
+        }
+      }
+      .app-sec-2 {
+        width: calc(100% - 60px);
+        vertical-align: text-top;
+        display: inline-block;
+        border-left: 1px dashed #e6e6e6;
+        padding-left: 10px;
+        .appPatientName {
+          display: block;
+        }
+        .appStatus {
+          display: block;
+          font-size: 0.8rem;
+        }
+        .nursing {
+          color: #34b8bc;
+        }
+        .checkedIn {
+          color: #00bb4b;
+        }
+        .appPatientStatus {
+          display: block;
+          font-size: 0.8rem;
+        }
+        .newVisit {
+          color: #ff8800;
+        }
+        .followUp {
+          color: #ff005f;
+        }
+        .packageVisit {
+          color: #ff005f;
+        }
+      }
+    }
+  }
+}
+.opStatusLegend {
+  span {
+    padding: 2px 5px;
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: bold;
+    width: 33.33%;
+    border-radius: 0;
+    background: #fff;
+    border: 1px solid #888888;
+
+    small {
+      display: block;
+      font-weight: normal;
+    }
+    &:first-child {
+      border-radius: 3px 0 0 3px;
+    }
+    &:last-child {
+      border-radius: 0 3px 3px 0;
+    }
+  }
+}
+.appoStatusLegend {
+  span {
+    padding: 2px 5px;
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: bold;
+    width: 33.33%;
+    border-radius: 0;
+    color: #007468;
+    background: #e7fffd;
+    border: 1px solid #007468;
+
+    small {
+      display: block;
+      font-weight: normal;
+    }
+    &:first-child {
+      border-radius: 3px 0 0 3px;
+      color: #ab7900;
+      background: #fdffe2;
+      border: 1px solid #ffc959;
+    }
+    &:last-child {
+      border-radius: 0 3px 3px 0;
+      color: red;
+      background: #ffebeb;
+      border: 1px solid #f00;
+    }
+  }
+}
+.ResultViewForDocGrid {
+  min-height: 62vh;
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 55vh;
+      max-height: 55vh;
+      overflow: auto;
+    }
+    .pageLeft {
+      display: none;
+    }
+  }
+  .pat-code2 {
+    color: navy !important;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+.InsuranceCorrectionListGrid {
+  // min-height: 62vh;
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 60vh;
+      max-height: 60vh;
+      overflow: auto;
+    }
+    .pageLeft {
+      display: none;
+    }
+  }
+  .pat-code2 {
+    color: navy !important;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+.cafCorrectionModal {
+  width: 99vw !important;
+  .ant-modal-body {
+    max-height: 85vh !important;
+    .popRightDiv {
+      max-height: 56vh !important;
+    }
+  }
+}

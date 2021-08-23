@@ -11,6 +11,7 @@ import labModels, {
   bulkSampleAcknowledge,
   updateLabSampleStatus,
   patientPortalData,
+  getSampleCollectedAck,
 } from "../models/laboratory";
 import { labResultDispatch } from "../models/labDispatch";
 import { patientBillGeneration } from "../models/portalToHims";
@@ -107,12 +108,21 @@ export default () => {
       records: req.records,
     });
   });
-  api.put("/bulkSampleAcknowledge", bulkSampleAcknowledge, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: req.records,
-    });
-  });
+  api.put(
+    "/bulkSampleAcknowledge",
+    (req, res, next) => {
+      req.connection = null;
+      delete req.connection;
+      next();
+    },
+    bulkSampleAcknowledge,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
   api.put(
     "/updateLabOrderServiceForDoc",
     updateLabOrderServiceForDoc,
@@ -237,12 +247,21 @@ export default () => {
     });
   });
 
-  api.put("/updateLabSampleStatus", updateLabSampleStatus, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: req.records,
-    });
-  });
+  api.put(
+    "/updateLabSampleStatus",
+    (req, res, next) => {
+      req.connection = null;
+      delete req.connection;
+      next();
+    },
+    updateLabSampleStatus,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
   api.put(
     "/updateLabOrderServiceStatus",
     updateLabOrderServiceStatus,
@@ -341,6 +360,12 @@ export default () => {
     }
   });
   api.get("/getBatchDetail", getBatchDetail, (req, res) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+  api.get("/getSampleCollectedAck", getSampleCollectedAck, (req, res) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records,

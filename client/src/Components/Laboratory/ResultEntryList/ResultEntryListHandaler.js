@@ -3,6 +3,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 export async function saveDocument(files = [], contract_no, contract_id) {
+ 
   const formData = new FormData();
   formData.append("contract_no", contract_no);
   formData.append("contract_id", contract_id);
@@ -16,11 +17,11 @@ export async function saveDocument(files = [], contract_no, contract_id) {
     method: "POST",
     module: "documentManagement",
   });
-  return result.data?.success;
+  return result.data;
 }
 
 export async function getDocuments(contract_no) {
-  debugger;
+ 
   const result = await newAlgaehApi({
     uri: "/getContractDoc",
     module: "documentManagement",
@@ -29,7 +30,7 @@ export async function getDocuments(contract_no) {
       contract_no,
     },
   });
-  return result.data;
+  return result.data.data;
 }
 
 const reloadAnalytesMaster = (row) => {

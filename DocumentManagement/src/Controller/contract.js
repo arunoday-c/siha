@@ -58,10 +58,19 @@ export const deleteContractDoc = (req, res) => {
     if (err) {
       res.status(400).json({ error: err.message });
     } else {
+    
       if (docs.fromPath === true) {
         const uploadExists = folder.toUpperCase().includes("UPLOAD");
         const uploadPath = path.resolve(folder, uploadExists ? "" : "UPLOAD");
-        fs.unlinkSync(path.resolve(uploadPath, docs.filename));
+        let completefolderPath=path.resolve(uploadPath, docs.filename)
+     
+        if (fs.existsSync(completefolderPath)) {
+          fs.unlinkSync(completefolderPath);
+        }
+        // if(completefolderPath){
+        //   fs.unlinkSync(completefolderPath);
+        // }
+        
       }
       res.status(200).json({ success: true, data: docs });
     }
