@@ -282,7 +282,7 @@ export default function AccessionAcknowledgement() {
             // });
 
             swal({
-              title: "Batch Acknowledged Successfully",
+              title: "Acknowledged Successfully",
               icon: "success",
             });
           })

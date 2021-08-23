@@ -31,7 +31,7 @@ export async function sendSMS(data) {
         .replace(/\$password/gi, `${SMS_GATEWAY_PASSWORD}`)
         .replace(/\$sid/gi, `${sid ? sid : SMS_GATEWAY_SID}`)
         .replace(/\$mobileNo/gi, contact_no)
-        .replace(/\$msg/gi, result);
+        .replace(/\$msg/gi, encodeURIComponent(result));
       generateUrl = `${generateUrl}${extra_params ? `&${extra_params}` : ""}`;
       //   SMS_GATEWAY_SERVER ?? "", {
       //   params: {
@@ -43,11 +43,10 @@ export async function sendSMS(data) {
       //     fl: 0,
       //   },
       // }
-      const response = await axios
-        .get(encodeURI(generateUrl ?? ""))
-        .catch((error) => {
-          throw error;
-        });
+      console.log("generateUrl===>", generateUrl);
+      const response = await axios.get(generateUrl ?? "").catch((error) => {
+        throw error;
+      });
       let res = response.data;
       console.error("Raw sms response===>", res);
       let resData = {};

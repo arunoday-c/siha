@@ -1779,7 +1779,7 @@ async function InsertEmployeeLeaveSalary(options) {
         // utilities
         //   .logger()
         //   .log("monthly_close_balance: ", monthly_close_balance);
-        const monthly_leave = await_mysql.executeQuery({
+        const monthly_leave = await _mysql.executeQuery({
           query:
             "UPDATE hims_f_employee_monthly_leave set close_balance=?,  projected_applied_leaves=?, \
                           accumulated_leaves=? where hims_f_employee_monthly_leave_id=?;",
