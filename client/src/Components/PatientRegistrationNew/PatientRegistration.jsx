@@ -315,11 +315,16 @@ export function PatientRegistration() {
   const fieldRef = useRef(undefined);
   useEffect(() => {
     const errorsvalues = Object.values(errors);
+    
     if (errorsvalues.length > 0) {
+      AlgaehMessagePop({type:"error", display:errorsvalues[0].message});
       return fieldRef?.current.scrollIntoView({
         behavior: "smooth",
       });
+     
+     
     }
+  
   }, [errors]);
   useEffect(() => {
     preferenceFunction().then((result) => {
