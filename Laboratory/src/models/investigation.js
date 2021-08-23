@@ -110,7 +110,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hims_d_rad_template_detail_id, template_name, template_html hims_d_rad_template_detail \
+            "select hims_d_rad_template_detail_id, template_name, template_html from hims_d_rad_template_detail \
           where test_id=? order by hims_d_rad_template_detail_id",
           values: [req.query.hims_d_investigation_test_id],
           printQuery: true,
