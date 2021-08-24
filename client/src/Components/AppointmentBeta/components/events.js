@@ -102,7 +102,7 @@ export function generateDoctorSlots(data) {
       };
     } else {
       if (isPrevbreak !== null) {
-        tds.push(this.generateChildren(isPrevbreak));
+        // tds.push(this.generateChildren(isPrevbreak));
         isPrevbreak = null;
       }
       const time_ar = new Date(moment(time, "HH:mm:ss")).toLocaleDateString(
