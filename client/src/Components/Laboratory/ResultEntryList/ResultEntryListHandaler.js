@@ -2,36 +2,84 @@ import { newAlgaehApi } from "../../../hooks";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
-export async function saveDocument(files = [], contract_no, contract_id) {
+// export async function saveDocument(files = [], contract_no, contract_id) {
  
-  const formData = new FormData();
-  formData.append("contract_no", contract_no);
-  formData.append("contract_id", contract_id);
-  files.forEach((file, index) => {
-    formData.append(`file_${index}`, file, file.name);
-  });
-  const result = await newAlgaehApi({
-    uri: "/saveContractDoc",
-    data: formData,
-    extraHeaders: { "Content-Type": "multipart/form-data" },
-    method: "POST",
-    module: "documentManagement",
-  });
-  return result.data;
-}
+//   const formData = new FormData();
+//   formData.append("contract_no", contract_no);
+//   formData.append("contract_id", contract_id);
+//   files.forEach((file, index) => {
+//     formData.append(`file_${index}`, file, file.name);
+//   });
+//   const result = await newAlgaehApi({
+//     uri: "/saveContractDoc",
+//     data: formData,
+//     extraHeaders: { "Content-Type": "multipart/form-data" },
+//     method: "POST",
+//     module: "documentManagement",
+//   });
+//   return result.data;
+// }
+// export const saveDocument = async(files = [], contract_no, contract_id) => {
+//   const formData = new FormData();
+//   formData.append("doc_number", contract_no);
+//   formData.append("nameOfTheFolder", "LaboratoryDocuments");
+//   formData.append("PatientFolderName", row.patient_code);
+//   files.forEach((file, index) => {
+//     formData.append(`file_${index}`, file, file.name);
+//     formData.append("fileName", file.name);
+//   });
 
-export async function getDocuments(contract_no) {
+//   newAlgaehApi({
+//     uri: "/uploadPatientDoc",
+//     data: formData,
+//     extraHeaders: { "Content-Type": "multipart/form-data" },
+//     method: "POST",
+//     module: "documentManagement",
+//   })
+//     .then((res) => {
+//       getDocuments(row.hims_f_rad_order_id);
+//       // addDiagramFromMaster(contract_id, res.data.records);
+//       swalMessage({
+//         type: "success",
+//         title: "Request Added successfully",
+//       });
+//       // return;
+//       // getDocuments(contract_no);
+//     })
+//     .catch((e) => {
+//       swalMessage({
+//         type: "error",
+//         title: e.message,
+//       });
+//     });
+// };
+// export async function getDocuments(contract_no,row) {
  
-  const result = await newAlgaehApi({
-    uri: "/getContractDoc",
-    module: "documentManagement",
-    method: "GET",
-    data: {
-      contract_no,
-    },
-  });
-  return result.data.data;
-}
+//   const result = await newAlgaehApi({
+//       uri: "/getUploadedPatientFiles",
+//       module: "documentManagement",
+//       method: "GET",
+//       data: {
+//         doc_id: contract_no,
+//         filePath: `PatientDocuments/${row.patient_code}/LaboratoryDocuments/${contract_no}/`,
+//         nameOfTheFolder:"LaboratoryDocuments",
+//         patient_code:row.patient_code,
+//       },
+//     });
+//     debugger;
+//     return result.data;
+      
+// //   const result = await newAlgaehApi({
+// //     uri: "/getContractDoc",
+// //     module: "documentManagement",
+// //     method: "GET",
+// //     data: {
+// //       contract_no,
+// //     },
+// //   });
+// //   debugger;
+// //   return result.data.data;
+// }
 
 const reloadAnalytesMaster = (row) => {
   AlgaehLoader({ show: true });

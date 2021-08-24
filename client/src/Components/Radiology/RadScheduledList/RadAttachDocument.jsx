@@ -9,11 +9,13 @@ const { Dragger } = Upload;
 export default function RadAttachDocument({
   row,
   openModal,
+  uniqueId,
   state,
+  nameOfTheFolder,
   CloseModal,
 }) {
   useEffect(() => {
-    getDocuments(row.hims_f_rad_order_id);
+    getDocuments(uniqueId);
   }, []);
   const [radiologyDoc, setRadiologyDoc] = useState([]);
   const [radiologyDocList, setRadiologyDocList] = useState([]);
@@ -49,7 +51,7 @@ export default function RadAttachDocument({
   const saveDocument = (files = [], contract_no, contract_id) => {
     const formData = new FormData();
     formData.append("doc_number", contract_no);
-    formData.append("nameOfTheFolder", "RadiologyDocuments");
+    formData.append("nameOfTheFolder", nameOfTheFolder);
     formData.append("PatientFolderName", row.patient_code);
     files.forEach((file, index) => {
       formData.append(`file_${index}`, file, file.name);
@@ -64,7 +66,7 @@ export default function RadAttachDocument({
       module: "documentManagement",
     })
       .then((res) => {
-        getDocuments(row.hims_f_rad_order_id);
+        getDocuments(uniqueId);
         // addDiagramFromMaster(contract_id, res.data.records);
         swalMessage({
           type: "success",
@@ -80,34 +82,40 @@ export default function RadAttachDocument({
         });
       });
   };
-  const downloadDoc = (doc) => {
+  const downloadDoc = (doc, isPreview) => {
     newAlgaehApi({
-      uri: "/downloadPatDocument",
-      module: "documentManagement",
-      method: "GET",
-      extraHeaders: {
-        Accept: "blob",
-      },
-      others: {
-        responseType: "blob",
-      },
-      data: {
-        fileName: doc.value,
-      },
-    })
-      .then((resp) => {
-        const urlBlob = URL.createObjectURL(resp.data);
-        const link = document.createElement("a");
-        link.download = doc.name;
-        link.href = urlBlob;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        uri: "/downloadPatDocument",
+        module: "documentManagement",
+        method: "GET",
+        extraHeaders: {
+          Accept: "blob",
+        },
+        others: {
+          responseType: "blob",
+        },
+        data: {
+          fileName: doc.value,
+        },
       })
-      .catch((error) => {
-        console.log(error);
-        // setLoading(false);
-      });
+        .then((resp) => {
+          const urlBlob = URL.createObjectURL(resp.data);
+          if (isPreview) {
+            window.open(urlBlob);
+          } else {
+            const link = document.createElement("a");
+            link.download = doc.name;
+            link.href = urlBlob;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+          // setPDFLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          // setPDFLoading(false);
+        });
+    
   };
 
   const getDocuments = (doc_no) => {
@@ -117,7 +125,9 @@ export default function RadAttachDocument({
       method: "GET",
       data: {
         doc_number: doc_no,
-        filePath: `PatientDocuments/${row.patient_code}/RadiologyDocuments/${doc_no}/`,
+        filePath: `PatientDocuments/${row.patient_code}/${nameOfTheFolder}/${doc_no}/`,
+        nameOfTheFolder:nameOfTheFolder,
+        patient_code:row.patient_code,
       },
     })
       .then((res) => {
@@ -173,7 +183,7 @@ export default function RadAttachDocument({
           <div className="col-12">
             <button
               onClick={() => {
-                saveDocument(radiologyDoc, row.hims_f_rad_order_id);
+                saveDocument(radiologyDoc, uniqueId);
               }}
               className="btn btn-primary btn-sm"
             >
@@ -224,21 +234,24 @@ export default function RadAttachDocument({
                         radiologyDocList.map((doc) => {
                           return (
                             <li>
-                              <b> {doc.name} </b>
-                              <span>
-                                <a>
-                                  <i
-                                    className="fas fa-download"
-                                    onClick={() => downloadDoc(doc)}
-                                  ></i>
-                                </a>
+                            <b> {doc.name} </b>
+                            <span>
+                              <i
+                                className="fas fa-download"
+                                onClick={() => downloadDoc(doc)}
+                              ></i>
 
-                                <i
-                                  className="fas fa-trash"
-                                  onClick={() => deleteDoc(doc)}
-                                ></i>
-                              </span>
-                            </li>
+                              <i
+                                className="fas fa-eye"
+                                onClick={() => downloadDoc(doc, true)}
+                              ></i>
+
+                              <i
+                                className="fas fa-trash"
+                                onClick={() => deleteDoc(doc)}
+                              ></i>
+                            </span>
+                          </li>
                           );
                         })
                       ) : (

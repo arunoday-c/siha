@@ -914,7 +914,7 @@ export default function RadScheduledList() {
   };
 
   const openResultEntry = (row) => {
-    debugger;
+    
     if (row.billed === "Y") {
       algaehApiCall({
         uri: "/radiology/getRadTemplateList",
@@ -1150,7 +1150,7 @@ export default function RadScheduledList() {
       return f.status === "CN";
     }).length;
   } else {
-    debugger;
+    
     console.log("radtestlist", radtestlist);
   }
 
@@ -1160,6 +1160,8 @@ export default function RadScheduledList() {
         <RadAttachDocument
           openModal={openModal}
           row={activeRow}
+          uniqueId={activeRow.hims_f_rad_order_id}
+          nameOfTheFolder="RadiologyDocuments"
           CloseModal={CloseModal}
         />
       ) : null}

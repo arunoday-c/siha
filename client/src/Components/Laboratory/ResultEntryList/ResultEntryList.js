@@ -2,8 +2,8 @@ import React, { useContext, useState, useEffect } from "react";
 
 import { useQuery } from "react-query";
 import { Controller, useForm } from "react-hook-form";
-import { swalMessage } from "../../../utils/algaehApiCall";
-
+// import { swalMessage } from "../../../utils/algaehApiCall";
+import RadAttachDocument from "../../Radiology/RadScheduledList/RadAttachDocument"
 import {
   AlgaehDataGrid,
   AlgaehLabel,
@@ -11,19 +11,19 @@ import {
   AlgaehMessagePop,
   MainContext,
   Tooltip,
-  AlgaehModal,
+  // AlgaehModal,
   // AlgaehFormGroup,
 } from "algaeh-react-components";
 import "./ResultEntryList.scss";
 import "./../../../styles/site.scss";
 import {
-  saveDocument,
-  getDocuments,
+  // saveDocument,
+  // getDocuments,
   // reloadAnalytesMaster,
   printLabWorkListReport,
   generateLabResultReport,
 } from "./ResultEntryListHandaler";
-import { Upload, Modal } from "antd";
+// import { Upload, Modal } from "antd";
 // import {
 //   AlgaehDataGrid,
 //   AlgaehLabel,
@@ -37,8 +37,8 @@ import MicrobiologyResultEntry from "../MicrobiologyResultEntry/MicrobiologyResu
 import _ from "lodash";
 import sockets from "../../../sockets";
 import { AlgaehSecurityComponent } from "algaeh-react-components";
-const { Dragger } = Upload;
-const { confirm } = Modal;
+// const { Dragger } = Upload;
+// const { confirm } = Modal;
 
 export default function ResultEntryList() {
   const { userToken } = useContext(MainContext);
@@ -54,13 +54,14 @@ export default function ResultEntryList() {
   const [isMicroOpen, setIsMicroOpen] = useState(false);
   const [sample_collection, setSampleCollection] = useState([]);
   const [selected_patient, setSelectedPatient] = useState([]);
-  const [attached_files, setAttachedFiles] = useState([]);
-  const [attached_docs, setAttachedDocs] = useState([]);
+  // const [attached_files, setAttachedFiles] = useState([]);
+  // const [attached_docs, setAttachedDocs] = useState([]);
   const [openUploadModal, setOpenUploadModal] = useState(false);
   const [disableUploadButton, setDisableUploadBtn] = useState(true);
+  const [activeRow, setActiveRow] = useState([]);
   // const [comments_data, setCommentsData] = useState("");
-  const [lab_id_number, setLabIdNumber] = useState(null);
-  const [investigation_test_id, setInventigationTestId] = useState(null);
+  // const [lab_id_number, setLabIdNumber] = useState(null);
+  // const [investigation_test_id, setInventigationTestId] = useState(null);
   // const [pdfLoading, setPDFLoading] = useState(false);
 
   const ResultEntryModel = async (row) => {
@@ -112,68 +113,70 @@ export default function ResultEntryList() {
       }
     }
   };
-  const getSavedDocument = async (lab_id_number) => {
-    const get_upload_doc = await getDocuments(lab_id_number).catch((error) => {
-      throw error;
-    });
+  // const getSavedDocument = async (lab_id_number,row) => {
+  //   const get_upload_doc = await getDocuments(lab_id_number,row).catch((error) => {
+  //     throw error;
+  //   });
+  //   
 
-    if (get_upload_doc.success === false) {
-      AlgaehMessagePop({
-        display: get_upload_doc.result,
-        type: "error",
-      });
-      return;
-    }
-    setAttachedDocs(get_upload_doc);
-  };
+  //   if (get_upload_doc.success === false) {
+  //     
+  //     AlgaehMessagePop({
+  //       display: get_upload_doc.result,
+  //       type: "error",
+  //     });
+  //     return;
+  //   }
+  //   setAttachedDocs(get_upload_doc.data);
+  // };
 
-  const saveDocumentCheck = async () => {
-    if (disableUploadButton) {
-      AlgaehMessagePop({
-        display:
-          "Please Generate The Barcode First And Then Attach The Documents ",
-        type: "error",
-      });
-      return;
-    } else {
-      const after_upload = await saveDocument(
-        attached_files,
-        lab_id_number,
-        investigation_test_id
-      ).catch((error) => {
-        throw error;
-      });
-      debugger;
-      if (after_upload.success === false) {
-        AlgaehMessagePop({
-          display: after_upload.result,
-          type: "error",
-        });
-        return;
-      }
-      swalMessage({
-        type: "success",
-        title: "Document Upload Successfull...",
-      });
+  // const saveDocumentCheck = async () => {
+  //   if (disableUploadButton) {
+  //     AlgaehMessagePop({
+  //       display:
+  //         "Please Generate The Barcode First And Then Attach The Documents ",
+  //       type: "error",
+  //     });
+  //     return;
+  //   } else {
+  //     const after_upload = await saveDocument(
+  //       attached_files,
+  //       lab_id_number,
+  //       investigation_test_id
+  //     ).catch((error) => {
+  //       throw error;
+  //     });
+  //     
+  //     if (after_upload.success === false) {
+  //       AlgaehMessagePop({
+  //         display: "Error",
+  //         type: "error",
+  //       });
+  //       return;
+  //     }
+  //     swalMessage({
+  //       type: "success",
+  //       title: "Document Upload Successfull...",
+  //     });
 
-      const get_upload_doc = await getDocuments(lab_id_number).catch(
-        (error) => {
-          throw error;
-        }
-      );
-      if (get_upload_doc.success === false) {
-        swalMessage({
-          type: "error",
-          title: get_upload_doc.result,
-        });
-        return;
-      }
-      if (after_upload.success === true) {
-        setAttachedFiles([]);
-      }
-      setAttachedDocs(get_upload_doc);
-    }
-  };
+  //     const get_upload_doc = await getDocuments(lab_id_number).catch(
+  //       (error) => {
+  //         throw error;
+  //       }
+  //     );
+  //     if (get_upload_doc.success === false) {
+  //       swalMessage({
+  //         type: "error",
+  //         title: get_upload_doc.result,
+  //       });
+  //       return;
+  //     }
+  //     if (after_upload.success === true) {
+  //       setAttachedFiles([]);
+  //     }
+  //     setAttachedDocs(get_upload_doc.data);
+  //   }
+  // };
 
   const ShowCollectionModel = (row) => {
     try {
@@ -255,97 +258,76 @@ export default function ResultEntryList() {
     }
   };
 
-  const downloadDoc = (doc, isPreview) => {
-    if (doc.fromPath === true) {
-      // setPDFLoading(true);
-
-      newAlgaehApi({
-        uri: "/getContractDoc",
-        module: "documentManagement",
-        method: "GET",
-        extraHeaders: {
-          Accept: "blon",
-        },
-        others: {
-          responseType: "blob",
-        },
-        data: {
-          contract_no: doc.contract_no,
-          filename: doc.filename,
-          download: true,
-        },
-      })
-        .then((resp) => {
-          const urlBlob = URL.createObjectURL(resp.data);
-          if (isPreview) {
-            window.open(urlBlob);
-          } else {
-            const link = document.createElement("a");
-            link.download = doc.filename;
-            link.href = urlBlob;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }
-          // setPDFLoading(false);
-        })
-        .catch((error) => {
-          console.log(error);
-          // setPDFLoading(false);
-        });
-    } else {
-      const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-      const link = document.createElement("a");
-      if (!isPreview) {
-        link.download = doc.filename;
-        link.href = fileUrl;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        fetch(fileUrl)
-          .then((res) => res.blob())
-          .then((fblob) => {
-            const newUrl = URL.createObjectURL(fblob);
-            window.open(newUrl);
-          });
-      }
-    }
-  };
-  const deleteDoc = (doc) => {
-    confirm({
-      title: `Are you sure you want to delete this file?`,
-      content: `${doc.filename}`,
-      icon: "",
-      okText: "Yes",
-      okType: "danger",
-      cancelText: "No",
-      onOk() {
-        newAlgaehApi({
-          uri: "/deleteContractDoc",
-          method: "DELETE",
-          module: "documentManagement",
-          data: { id: doc._id },
-        }).then((res) => {
+ 
+//   const downloadDoc = (doc, isPreview) => {
+//     newAlgaehApi({
+//         uri: "/downloadPatDocument",
+//         module: "documentManagement",
+//         method: "GET",
+//         extraHeaders: {
+//           Accept: "blob",
+//         },
+//         others: {
+//           responseType: "blob",
+//         },
+//         data: {
+//           fileName: doc.value,
+//         },
+//       })
+//         .then((resp) => {
+//           const urlBlob = URL.createObjectURL(resp.data);
+//           if (isPreview) {
+//             window.open(urlBlob);
+//           } else {
+//             const link = document.createElement("a");
+//             link.download = doc.name;
+//             link.href = urlBlob;
+//             document.body.appendChild(link);
+//             link.click();
+//             document.body.removeChild(link);
+//           }
+//           // setPDFLoading(false);
+//         })
+//         .catch((error) => {
+//           console.log(error);
+//           // setPDFLoading(false);
+//         });
+    
+//   };
+//   const deleteDoc = (doc) => {
+//     confirm({
+//       title: `Are you sure you want to delete this file?`,
+//       content: `${doc.filename}`,
+//       icon: "",
+//       okText: "Yes",
+//       okType: "danger",
+//       cancelText: "No",
+//       onOk() {
+//         newAlgaehApi({
+//           uri: "/deleteContractDoc",
+//           method: "DELETE",
+//           module: "documentManagement",
+//           data: { id: doc._id },
+//         }).then((res) => {
         
-          if (res.data.success) {
-            const attachedDocs = attached_docs.filter(
-              (item) => item._id !== doc._id
-            );
-            setAttachedDocs(attachedDocs);
-          }
-        }).catch((err)=>{
-          swalMessage({
-            type: "error",
-            title: err.message,
-          });
-      })},
-      onCancel() {
-        console.log("Cancel");
-      },
+//           if (res.data.success) {
+//             const attachedDocs = attached_docs.filter(
+//               (item) => item._id !== doc._id
+//             );
+//             setAttachedDocs(attachedDocs);
+//           }
+//         }).catch((err)=>{
+//           swalMessage({
+//             type: "error",
+//             title: err.message,
+//           });
+//       })},
+//       onCancel() {
+//         console.log("Cancel");
+//       },
   
-  })
-};
+//   })
+// };
 
   let _Collected = [];
 
@@ -369,10 +351,23 @@ export default function ResultEntryList() {
       return f.status === "CN";
     });
   }
+  const CloseModal = () => {
+    setOpenUploadModal(!openUploadModal);
+  };
 
   return (
     <React.Fragment>
-      <AlgaehModal
+      {openUploadModal ? (
+        <RadAttachDocument
+          openModal={openUploadModal}
+          row={activeRow}
+          uniqueId={activeRow.lab_id_number}
+          disableUploadButton={disableUploadButton}
+          nameOfTheFolder="LaboratoryDocuments"
+          CloseModal={CloseModal}
+        />
+      ) : null}
+      {/* <AlgaehModal
         title="Attach Report"
         visible={openUploadModal}
         mask={true}
@@ -438,7 +433,7 @@ export default function ResultEntryList() {
                       {attached_docs.length ? (
                         attached_docs.map((doc) => (
                           <li>
-                            <b> {doc.filename} </b>
+                            <b> {doc.name} </b>
                             <span>
                               <i
                                 className="fas fa-download"
@@ -469,7 +464,7 @@ export default function ResultEntryList() {
             </div>
           </div>
         </div>
-      </AlgaehModal>
+      </AlgaehModal> */}
       <div className="hptl-phase1-result-entry-form">
         <div className="row inner-top-search" style={{ paddingBottom: "10px" }}>
           <Controller
@@ -638,10 +633,10 @@ export default function ResultEntryList() {
                                   aria-hidden="true"
                                   onClick={() => {
                                     setOpenUploadModal(true);
-                                    setLabIdNumber(row.lab_id_number);
-
-                                    getSavedDocument(row.lab_id_number);
-                                    setInventigationTestId(row.test_id);
+                                    // setLabIdNumber(row.lab_id_number);
+                                    setActiveRow(row);
+                                    // getSavedDocument(row.lab_id_number,row);
+                                    // setInventigationTestId(row.test_id);
                                     setDisableUploadBtn(
                                       row.lab_id_number ? false : true
                                     );

@@ -2,19 +2,21 @@ import path from "path";
 // import stream from "stream";
 import fs from "fs-extra";
 import mime from "mime-types";
-
+import contract from "../Model/contractDocs";
 // import imageThumbnail from "image-thumbnail";
 // import PatientDocModel from "./patientDoc";
 // import CompanyDocModel from "./company";
 // import formidable from "formidable";
 import "regenerator-runtime/runtime";
+import { rename, stat } from 'fs';
+
+
 const folder = process.env.UPLOADFOLDER || process.cwd();
 export async function uploadPatientDoc(req, res, next) {
   try {
     // const fieldObject = req.headers["x-file-details"]
     //   ? JSON.parse(req.headers["x-file-details"])
-    //   : {};
-
+    //   : {}
     const uploadExists = folder.toUpperCase().includes("UPLOAD");
     const uploadPath = path.resolve(folder, uploadExists ? "" : "UPLOAD");
     if (!fs.pathExistsSync(uploadPath)) {
@@ -124,6 +126,7 @@ export async function uploadPatientDoc(req, res, next) {
               success: true,
               records: fileNameWithUnique,
               message: "Updated Successfully",
+              fullImagePath:uploadSpecificFolder
             });
           });
         }
@@ -143,32 +146,99 @@ export async function uploadPatientDoc(req, res, next) {
   }
 }
 
-export function getUploadedPatientFiles(req, res, next) {
+export async function getUploadedPatientFiles(req, res, next) {
   try {
     const input = req.query;
-    const { filePath } = input;
+    const { filePath,doc_id } = input;
     const directoryPath = path.join(folder, "UPLOAD");
-
+    
     const completePath = path.join(directoryPath, filePath);
+
+     
+    if (!fs.pathExistsSync(completePath)) {    
+  contract.find({ contract_no:doc_id }, (err, docs) => {
+   
+    docs.map((item)=>{
+
+     
+  
+// const currentPath = path.join(__dirname, item.document);
+// const destinationPath = path.join(__dirname, completePath,`${item.contract_no}__ALGAEH__${item.filename}`);
+        
+//         fs.rename(item.document, destinationPath, function (err) {
+//             if (err) {
+//                 throw err
+//             } else {
+//               getFilesTopush(completePath)
+//               }})
+//             }  else{
+      
+              req.query.fileName=item.document;
+              req.query.oldMethod=true;
+
+              req.query.oldPath=item.document;
+              req.query.name=item.filename;
+              // req.query.PatientFolderName=true;
+              // req.query.oldMethod=true;
+             downloadPatDocument(req,res);
+//             if(fileData){
+//               console.log("iam herere, 21223123")
+//               const formData = new FormData();
+//             formData.append("doc_number", doc_id);
+//             formData.append("nameOfTheFolder", nameOfTheFolder);
+//             formData.append("PatientFolderName", patient_code);
+//             fileData.forEach((file, index) => {
+//               formData.append(`file_${index}`, file, item.filename);
+//               formData.append("fileName", item.filename);
+//             });
+//       req.body=formData;
+//       console.log("iam here 34",formData);
+//       uploadPatientDoc(req,res,next).then((result) => {
+
+// console.log("test",result);
+//         getFilesTopush(result.fullImagePath)
+//       });
+//             }
+             
+            
+        });
+     
+      
+  
+   
+
+
+
+
+    
+  });}else{
     fs.access(completePath, fs.constants.F_OK, (err) => {
-      // console.log("Iam herererer", "<====>", err);
+      
+
       if (err) {
+        
         res.status(200).json({ success: false }).end();
       } else {
+        
         fs.readdir(completePath, function (err, files) {
-          //handling error
+        
 
           if (err) {
-            // console.log("Iam herererer", "<====>", err);
+       
             res.status(400).json({ error: err.message });
           } else {
-            const arrayFiles = files.map((item) => {
-              const fullPath = `${completePath}${item}`;
-              const nameFile = item.split("__ALGAEH__");
-              return { name: nameFile[nameFile.length - 1], value: fullPath };
-            });
-
-            res.status(200).json({ success: true, data: arrayFiles }).end();
+            // if(files.length>0){
+   
+              const arrayFiles = files.map((item) => {
+                const fullPath = `${completePath}${item}`;
+                const nameFile = item.split("__ALGAEH__");
+                
+                return { name: nameFile[nameFile.length - 1], value: fullPath };
+              });
+              // console.log("Iam herererer", "<====>",fullPath,"name",nameFile);
+              res.status(200).json({ success: true, data: arrayFiles }).end();
+            // } 
+            
           }
           //listing all files using forEach
           // files.forEach(function (file) {
@@ -178,6 +248,9 @@ export function getUploadedPatientFiles(req, res, next) {
         });
       }
     });
+  }
+  
+    
 
     // console.log("completePath====>", completePath);
     //passsing directoryPath and callback function
@@ -218,10 +291,35 @@ export function getUploadedPatientFiles(req, res, next) {
     });
   }
 }
+const getFilesTopush=(completePath) => {
+  fs.access(completePath, fs.constants.F_OK, (err) => {
+    // console.log("Iam herererer", "<====>", err);
+    if (err) {
+      res.status(200).json({ success: false }).end();
+    } else {
+      fs.readdir(completePath, function (err, files) {
+        //handling error
+
+        if (err) {
+          // console.log("Iam herererer", "<====>", err);
+          res.status(400).json({ error: err.message });
+        } else {
+          
+            const arrayFiles = files.map((item) => {
+              const fullPath = `${completePath}${item}`;
+              const nameFile = item.split("__ALGAEH__");
+              return { name: nameFile[nameFile.length - 1], value: fullPath };
+            });
+
+            res.status(200).json({ success: true, data: arrayFiles }).end();
+          }
+        })}})
+}
 export const downloadPatDocument = (req, res) => {
-  const { fileName } = req.query;
-  // console.log("Error in access===>", fileName);
-  fs.access(fileName, fs.constants.F_OK, (err) => {
+
+  const { fileName,oldMethod,oldPath } = req.query;
+  
+   fs.access(fileName, fs.constants.F_OK, (err) => {
     if (err) {
       // console.log("Error in access===>", err);
       res.status(400).json({ error: err.message });
@@ -231,12 +329,101 @@ export const downloadPatDocument = (req, res) => {
   });
   fs.readFile(fileName, (err, content) => {
     if (err) {
-      console.log("Error in reading====>", err);
+  
       res.status(400).json({ error: err.message });
       // throw err;
     } else {
       const extension = mime.contentType(path.extname(fileName));
+      
+      if(oldMethod){
+        const currentPath = path.join(__dirname, oldPath)
+        let fullDocumentPath;
+        const uploadExists = folder.toUpperCase().includes("UPLOAD");
+        const uploadPath = path.resolve(folder, uploadExists ? "" : "UPLOAD");
+        if (!fs.pathExistsSync(uploadPath)) {
+          fs.mkdirSync(uploadPath);
+        }
+        const patientFolderName = path.join(uploadPath, "PatientDocuments");
+        if (!fs.pathExistsSync(patientFolderName)) {
+          fs.mkdirSync(patientFolderName);
+        }
+        const patientFolder = path.join(
+          patientFolderName,
+          req.query.patient_code
+        );
+        if (!fs.pathExistsSync(patientFolder)) {
+          fs.mkdirSync(patientFolder);
+        }
+        const uploadDocFolder = path.join(
+          patientFolder,
+          req.query.nameOfTheFolder
+        );
+        if (!fs.pathExistsSync(uploadDocFolder)) {
+          fs.mkdirSync(uploadDocFolder);
+        }
+        let uploadSpecificFolder = path.join(
+          uploadDocFolder,
+          req.query.doc_id
+        );
+        if (!fs.pathExistsSync(uploadSpecificFolder)) {
+          fs.mkdirSync(uploadSpecificFolder);
+        }
 
+        let fileNameWithUnique = `${req.query.doc_id}__ALGAEH__${req.query.name}`;
+        fullDocumentPath = path.join(uploadSpecificFolder, fileNameWithUnique);
+
+        // console.log("errrror", fullImagePath);
+
+        const existsFileName = fs
+          .readdirSync(uploadSpecificFolder)
+          .map((fileName) => {
+            if (fileName.includes(fileNameWithUnique)) {
+              return fileName;
+            }
+          })
+          .filter((f) => f !== null);
+        const exists =
+          existsFileName.length > 0
+            ? existsFileName?.find((item) => item === fileNameWithUnique)
+            : undefined;
+        // console.log("exists", existsFileName, exists);
+  
+        if (exists) {
+          fileNameWithUnique = `${fieldObject.doc_number}-${
+            parseInt(existsFileName.length) + 1
+          }__ALGAEH__${req.query.name}`;
+          // console.log("iamheteteteetetete", fileNameWithUnique);
+          fullDocumentPath = path.join(
+            uploadSpecificFolder,
+            fileNameWithUnique
+          );
+          const newPath = path.join(__dirname,fullDocumentPath );
+
+            fs.rename(currentPath, newPath, function(err) {
+              if (err) {
+                throw err
+              } else {
+                console.log("Successfully moved the file!")
+                getUploadedPatientFiles(req, res,next)
+              }
+            })
+          }else {
+            const newPath = path.join(__dirname,fullDocumentPath );
+
+            fs.rename(currentPath, newPath, function(err) {
+              if (err) {
+                throw err
+              } else {
+                getUploadedPatientFiles(req, res,next)
+              }
+            })
+           
+          }
+        
+        
+      
+        
+      }
       // console.log(" reading====>", extension);
       res.writeHead(200, {
         "Content-type": extension,
