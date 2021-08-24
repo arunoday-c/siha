@@ -28,7 +28,15 @@ const updatePatient = async (data) => {
   console.log("res.data", res.data);
   return res.data?.records;
 };
-
+const getIdentities = async (key) => {
+  const res = await newAlgaehApi({
+    uri: "/identity/get",
+    module: "masterSettings",
+    data: { identity_status: "A" },
+    method: "GET",
+  });
+  return res?.data.records;
+};
 export function UpdatePatient({
   show,
   onClose,
@@ -73,7 +81,11 @@ export function UpdatePatient({
       patient_type: userToken?.default_patient_type,
     },
   });
+  const { data: identities } = useQuery(["identities"], getIdentities, {
+    // enabled: !!patientData?.patientRegistration,
 
+    onSuccess: (data) => {},
+  });
   const patientImage = useRef(null);
   const patientIdCard = useRef(null);
   const isEmpIdRequired = userToken?.requied_emp_id === "Y";
@@ -185,6 +197,7 @@ export function UpdatePatient({
       getValues={getValues}
       errors={errors}
       clearErrors={clearErrors}
+      identities={identities}
       patientImage={patientImage}
       patientIdCard={patientIdCard}
       inModal={true}
