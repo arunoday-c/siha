@@ -112,7 +112,9 @@ const EditInvestigationTest = ($this, row) => {
     onSuccess: (response) => {
       // console.log("from update", response.data);
 
-      debugger;
+      row.analytes_required =
+        row.test_section === "M" && row.culture_test === "Y" ? false : true;
+
       if (row.investigation_type === "L") {
         row.analytes = response.data.records;
       } else {
