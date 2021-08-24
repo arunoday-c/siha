@@ -1349,6 +1349,10 @@ class NurseWorkbench extends Component {
                           onClick={this.moveToStation.bind(this, data)}
                         >
                           <span className="op-sec-1">
+                          <span >
+                            SlNo: {index+1}
+                           
+                          </span>
                             <i
                               className={
                                 data.appointment_patient === "Y"

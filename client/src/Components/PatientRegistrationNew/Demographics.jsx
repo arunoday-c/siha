@@ -20,6 +20,8 @@ import { newAlgaehApi, useQueryParams } from "../../hooks/";
 import GenericData from "../../utils/GlobalVariables.json";
 import { FrontdeskContext } from "./FrontdeskContext";
 import { useLangFieldName } from "./patientHooks";
+import MaskedInput from "react-maskedinput";
+
 const { TabPane } = Tabs;
 // const { Option } = Select;
 const { FORMAT_GENDER, FORMAT_MARTIALSTS, FORMAT_BLOOD_GROUP } = GenericData;
@@ -75,6 +77,8 @@ export function Demographics({
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
   const [maxLength, setMaxLength] = useState(null);
+const [primaryMasked, setPrimaryMasked] = useState("");
+const [secondaryMasked, setSecondaryMasked] = useState("");
   const { savedPatient, setIdentityType } = useContext(FrontdeskContext);
   const disabled = !inModal && (!!patient_code || !!savedPatient?.patient_code);
   const {
@@ -83,6 +87,7 @@ export function Demographics({
     date_of_birth,
     primary_id_no,
     nationality_id,
+    tel_code
   } = useWatch({
     control,
     name: [
@@ -91,6 +96,7 @@ export function Demographics({
       "date_of_birth",
       "primary_id_no",
       "nationality_id",
+      "tel_code"
     ],
   });
 
@@ -129,18 +135,28 @@ export function Demographics({
 
   useEffect(() => {
     if (!!nationality_id && nationalities?.length) {
+    
       const res = nationalities?.filter(
         (n) => n.hims_d_nationality_id == nationality_id
       );
       if (!patient_code) {
         if (res[0]?.identity_document_id) {
+         debugger
           setValue("primary_identity_id", res[0]?.identity_document_id);
+          setValue("secondary_identity_id",res[0]?.secondary_id_type_id);
           setIdentityType(res[0]?.identity_type);
           if (identities?.length > 0) {
             const initialValue = identities.filter(
               (f) =>
                 f.hims_d_identity_document_id === res[0]?.identity_document_id
             );
+            if(initialValue[0]?.masked_identity)setPrimaryMasked(initialValue[0].masked_identity);
+
+            const secondaryValue=identities.filter(
+              (f) =>
+                f.hims_d_identity_document_id === res[0]?.secondary_id_type_id
+            );
+if(secondaryValue[0]?.masked_identity)setSecondaryMasked(secondaryValue[0].masked_identity);
             setValue(
               "primary_id_no",
               initialValue.length > 0
@@ -150,6 +166,7 @@ export function Demographics({
           }
         } else {
           setValue("primary_identity_id", "");
+          setValue("secondary_identity_id","");
           setIdentityType("");
         }
       }
@@ -169,7 +186,7 @@ export function Demographics({
       )[0].max_phone_digits;
       setMaxLength(maxlength);
     }
-  }, [getValues().tel_code]);
+  }, [tel_code]);
   const calculateAge = (date) => {
     if (date) {
       let fromDate = moment(date);
@@ -1087,6 +1104,7 @@ export function Demographics({
                                     "primary_id_no",
                                     _.initial_value_identity
                                   );
+                                  setPrimaryMasked(_.masked_identity)
                                 },
                                 onClear: () => {
                                   onChange("");
@@ -1099,8 +1117,37 @@ export function Demographics({
                             />
                           )}
                         />
-
-                        <Controller
+                        
+{primaryMasked?(<div className="ui input txt-fld">
+<Controller
+                          control={control}
+                          name="primary_id_no"
+                          rules={{
+                            required: {
+                              value: true,
+                              message: "Please enter primary id no",
+                            },
+                          }}
+                          render={(props) => (
+                            <>
+                            <label className="styleLabel"> ID NUMBER</label>
+                          <MaskedInput
+                          error={errors}
+                            mask={primaryMasked}
+                            className="form-control"
+                            placeholder={"eg: " + primaryMasked}
+                            name="primary_id_no"
+                            value={props.value}
+                            guide={false}
+                            id="my-input-id"
+                            onBlur={() => {}}
+                            onChange={(e)=>props.onChange(e.target.value)}
+                           
+                          />
+                          </>
+                          )}
+                          />)
+                        </div>):(<Controller
                           control={control}
                           name="primary_id_no"
                           rules={{
@@ -1127,7 +1174,8 @@ export function Demographics({
                               }}
                             />
                           )}
-                        />
+                        />)}
+                        
 
                         <Controller
                           control={control}
@@ -1159,6 +1207,8 @@ export function Demographics({
                                 value,
                                 onChange: (_, selected) => {
                                   onChange(selected);
+                                  setSecondaryMasked(_.masked_identity);
+                                  
                                 },
                                 onClear: () => {
                                   onChange("");
@@ -1171,8 +1221,35 @@ export function Demographics({
                             />
                           )}
                         />
-
-                        <Controller
+{secondaryMasked?(<div className="ui input txt-fld">
+<Controller
+                          control={control}
+                          name="secondary_id_no"
+                          // rules={{
+                          //   required: {
+                          //     value: true,
+                          //     message: "Please enter primary id no",
+                          //   },
+                          // }}
+                          render={(props) => (
+                            <>
+                             <label className="styleLabel"> NUMBER</label>
+                          <MaskedInput
+                            mask={secondaryMasked}
+                            className="form-control"
+                            placeholder={"eg: " + secondaryMasked}
+                            name="secondary_id_no"
+                            value={props.value}
+                            guide={false}
+                            id="my-input-id"
+                            onBlur={() => {}}
+                            onChange={(e)=>props.onChange(e.target.value)}
+                           
+                          />
+                          </>
+                          )}
+                          />)
+                        </div>):(<Controller
                           control={control}
                           name="secondary_id_no"
                           // rules={{
@@ -1199,7 +1276,9 @@ export function Demographics({
                               }}
                             />
                           )}
-                        />
+                        />)}
+                        
+                        
                       </div>
                     </div>
                   </div>
