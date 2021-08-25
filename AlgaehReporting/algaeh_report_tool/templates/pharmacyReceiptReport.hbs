@@ -1,9 +1,9 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        {{!-- <section>
+    {{!-- <section>
             <table class="tableForLabel" cell-padding="0">
                 <tr>
                     <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span></td>
@@ -14,78 +14,78 @@
 
 
         </section> --}}
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <tr>
+              <th>Sl No.</th>
+              <th>Receipt No.</th>
+              <th>Receipt Date</th>
+              <th>Purchase No.</th>
+              <th>Delivery No.</th>
+              <th>Invoice No.</th>
+              <th>Invoice Date</th>
+              <th>Vendor Name</th>
+              <th>Created by</th>
+              <th>Net Total</th>
+              <th>Vat</th>
+              <th>Net Payble</th>
+              <th>Return Status</th>
+              <th>Posted Status</th>
+            </tr>
+          </tr>
+        </thead>
+        <tbody>
+          {{#hasElement result}}
+            {{#each result}}
+              <tr>
+                <td datatype="string">{{inc @index}}</td>
+                <td>{{grn_number}}</td>
+                <td>{{grn_date}}</td>
+                <td>{{purchase_number}}</td>
+                <td>{{delivery_note_number}}</td>
+                <td>{{inovice_number}}</td>
+                <td datatype="string">{{invoice_date}}</td>
+                <td class="txtFld" datatype="string">{{vendor_name}}</td>
+                <td class="txtFld" datatype="string">{{created_user}}</td>
+                <td class="numberFld">{{net_total}}</td>
+                <td class="numberFld">{{total_tax}}</td>
+                <td class="numberFld">{{net_payable}}</td>
+                <td class="">{{return_done}}</td>
+                <td class="">{{is_posted}}</td>
+              </tr>
+              {{!-- {{#each poitems}}
                     <tr>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Receipt No.</th>
-                        <th>Receipt Date</th>
-                        <th>Purchase No.</th>
-                        <th>Delivery No.</th>
-                        <th>Invoice No.</th>
-                        <th>Invoice Date</th>
-                        <th>Vendor Name</th>
-                        <th>Created by</th>
-                        <th>Net Total</th>
-                        <th>Vat</th>
-                        <th>Net Payble</th>
-                        <th>Return Status</th>
-                        <th>Posted Status</th>
-                    </tr>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#hasElement result}}
-                    {{#each result}}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{grn_number}}</td>
-                        <td>{{grn_date}}</td>
-                        <td>{{purchase_number}}</td>
-                        <td>{{delivery_note_number}}</td>
-                        <td>{{inovice_number}}</td>
-                        <td>{{invoice_date}}</td>
-                        <td  class="txtFld">{{vendor_name}}</td>
-                        <td class="txtFld">{{created_user}}</td>
-                        <td  class="numberFld">{{ net_total }}</td>
-                        <td  class="numberFld">{{ total_tax }}</td>
-                        <td  class="numberFld">{{net_payable}}</td>
-                        <td  class="">{{return_done}}</td>
-                        <td  class="">{{is_posted}}</td>
-                    </tr>
-                    {{!-- {{#each poitems}}
-                    <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{item_code}}</th>
-                        <td class="txtFld">{{item_description}}</th>
+                        <td class="txtFld" datatype="string">{{item_description}}</th>
                         <td>{{uom_description}}</td>
                         <td class="numberFld">{{authorize_quantity}}</td>
                         <td class="numberFld">{{unit_cost}}</td>
                         <td class="numberFld">{{net_extended_cost}}</td>
                     </tr>
                     {{/each }} --}}
-                    
-                    {{/each }}
-                  <tr class="tableSubHdg2">
-                        <td colspan="9"></td>
-                        <td class="numberFld"><b>{{total_net_total}}</b></td>
-                        <td class="numberFld"><b>{{total_total_tax}}</b></td>
-                        <td class="numberFld"><b>{{total_net_payable}}</b></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    {{else}}
-                    <tr>
-                        <td colspan="14" class="noResultTextReport">No Records Found</td>
-                    </tr>{{/hasElement }}
 
-                </tbody>
+            {{/each}}
+            <tr class="tableSubHdg2">
+              <td colspan="9"></td>
+              <td class="numberFld"><b>{{total_net_total}}</b></td>
+              <td class="numberFld"><b>{{total_total_tax}}</b></td>
+              <td class="numberFld"><b>{{total_net_payable}}</b></td>
+              <td></td>
+              <td></td>
+            </tr>
+          {{else}}
+            <tr>
+              <td colspan="14" class="noResultTextReport">No Records Found</td>
+            </tr>{{/hasElement}}
 
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+        </tbody>
 
-    </div>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+  </div>
 </body>

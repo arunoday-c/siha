@@ -43,9 +43,9 @@
 
                     {{#each location_wise}}
                     <tr>
-                        <td>{{inc @index}}</td>
-                        <td class="txtFld">{{item_description}}</td>
-                        <td class="txtFld">{{category_desc}}</td>
+                        <td datatype="string">{{inc @index}}</td>
+                        <td class="txtFld" datatype="string">{{item_description}}</td>
+                        <td class="txtFld" datatype="string">{{category_desc}}</td>
                         <td class="numberFld">{{quantity}}</td>
                         <td class="numberFld">{{numberFormating extended_cost ../../currency}}</td>
                     </tr>

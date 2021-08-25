@@ -1,70 +1,66 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
-            {{!-- <table class="tableForLabel" cell-padding="0">
+    <section>
+      {{!-- <table class="tableForLabel" cell-padding="0">
                 <tr>
                     <td><label class="textEnLft">Total Employees</label>:<span class="valueText">{{no_employees}}</span>
                     </td>
                 </tr>
             </table> --}}
 
+    </section>
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            {{! <th>Category Name</th> }}
+            <th>Description</th>
+            {{! <th>Total</th> }}
 
-        </section>
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        {{!-- <th>Category Name</th> --}}
-                        <th>Description</th>
-                        {{!-- <th>Total</th> --}}
-                       
-                    </tr>
+          </tr>
 
-                </thead>
-                <tbody>
-                    {{!-- <tr>
+        </thead>
+        <tbody>
+          {{!-- <tr>
                         <td colspan="10"></td>
                         <td colspan="1"><span class="textFloatRight">Total No.
                                 Employees: <b>{{no_employees}}</b></span></td>
 
                     </tr> --}}
-                    {{#hasElement result}}
+          {{#hasElement result}}
 
+            {{#each result}}
+              <tr>
+                <td colspan="8" class="tableSubHdg">{{category_name}}</td>
 
-                    {{#each result}}
-                    <tr>
-                        <td colspan="8" class="tableSubHdg">{{category_name}}</td>
+              </tr>
+              {{#each detailsOf}}
 
-                    </tr>
-                    {{#each detailsOf}}
-  
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{description}}</td>
-                        {{!-- <td>{{length}}</td> --}}
-                      
-                        
-                      
-                    </tr>
-                   
-                     {{!-- <tr class="numberFldTotalBottom">
+                <tr>
+                  <td datatype="string">{{inc @index}}</td>
+                  <td>{{description}}</td>
+                  {{!-- <td>{{length}}</td> --}}
+
+                </tr>
+
+                {{!-- <tr class="numberFldTotalBottom">
                         <td colspan="4"></td>
                         <td class="numberFld">{{total_net_amout}}</td>
                     </tr>  --}}
-                    {{/each }}{{/each }}
-                  
-                    {{else}}
-                    <tr>
-                        <td colspan="6" class="noResultTextReport">No Records Found</td>
-                    </tr>{{/hasElement }}
-                </tbody>
+              {{/each}}{{/each}}
 
-            </table>
-             {{!-- <table class="tableTotal">
+          {{else}}
+            <tr>
+              <td colspan="6" class="noResultTextReport">No Records Found</td>
+            </tr>{{/hasElement}}
+        </tbody>
+
+      </table>
+      {{!-- <table class="tableTotal">
                 <tr class="bold">
                     <td>Net Stock Value</td>
                     <td class="numberFld">{{net_stock_value}}</td>
@@ -72,8 +68,8 @@
                 </tr>
                
             </table> --}}
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
 
-    </div>
+  </div>
 </body>

@@ -1,42 +1,42 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>MRN No.</th>
-                        <th>Patient Name</th>
-                        <th>Package Code</th>
-                        <th>Package Name</th>
-                        <th>Package Type</th>
-                        <th>Package Amount</th>
-                        <th>Package Advance</th>
-                        <th>Utlized Amount</th>
-                        <th>Balance Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>MRN No.</th>
+            <th>Patient Name</th>
+            <th>Package Code</th>
+            <th>Package Name</th>
+            <th>Package Type</th>
+            <th>Package Amount</th>
+            <th>Package Advance</th>
+            <th>Utlized Amount</th>
+            <th>Balance Amount</th>
+          </tr>
+        </thead>
+        <tbody>
 
-                    {{#each details}}
-                    <tr>
-                          <td>{{inc @index}}</td>
-                          <td>{{patient_code}}</td>
-                          <td>{{full_name}}</td>
-                          <td>{{package_code}}</td>
-                          <td>{{package_name}}</td>
-                          <td>{{package_visit_type}}</td>
-                          <td>{{gross_amount}}</td>
-                          <td>{{advance_amount}}</td>
-                          <td>{{utilize_amount}}</td>
-                          <td>{{balance_amount}}</td>
+          {{#each details}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td>{{patient_code}}</td>
+              <td>{{full_name}}</td>
+              <td>{{package_code}}</td>
+              <td>{{package_name}}</td>
+              <td>{{package_visit_type}}</td>
+              <td>{{gross_amount}}</td>
+              <td>{{advance_amount}}</td>
+              <td>{{utilize_amount}}</td>
+              <td>{{balance_amount}}</td>
 
-                    </tr>
-                    {{/each }}
-                    {{!-- <tr class="numberFldTotalBottom">
+            </tr>
+          {{/each}}
+          {{!-- <tr class="numberFldTotalBottom">
                         <td colspan="7"></td>
                         <td class="numberFld">{{total_before_vat}}</td>
                         <td class="numberFld">{{total_after_vat}}</td>
@@ -44,9 +44,9 @@
                         <td class="numberFld">{{company_tax}}</td>
 
                     </tr> --}}
-                </tbody>
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
 </body>

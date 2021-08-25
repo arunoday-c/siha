@@ -1,59 +1,59 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Employee Code</th>
-                        <th>Employee Name</th>
-                        <th>Salary Number</th>
-                        <th>Deducting Month & Year</th>
-                        <th>Loan Number</th>
-                        <th>Loan Type</th>
-                        <th>Approved Amount</th>
-                        <th>Opening Balance</th>
-                        <th>Deducting Amount</th>
-                        <th>Closing Balance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each result}}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{full_name}}</td>
-                        <td>{{salary_number}}</td>
-                        <td>{{loan_application_number}}</td>
-                        <td>{{deducting_month}}-{{year}}</td>
-                        <td>{{loan_description}}</td>
-                        <td>{{approved_amount}}</td>
-                        <td>{{balance_amount}}</td>
-                        <td>{{loan_due_amount}}</td>
-                        <td>{{pending_loan}}</td>
-                    </tr>
-                    
-                    {{/each }}
-                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>{{total_approved_amt}}</td>
-                        <td></td>
-                        <td>{{total_loan_due_amt}}</td>
-                        <td></td>
-                    </tr>
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Employee Code</th>
+            <th>Employee Name</th>
+            <th>Salary Number</th>
+            <th>Deducting Month & Year</th>
+            <th>Loan Number</th>
+            <th>Loan Type</th>
+            <th>Approved Amount</th>
+            <th>Opening Balance</th>
+            <th>Deducting Amount</th>
+            <th>Closing Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each result}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td datatype="string">{{employee_code}}</td>
+              <td>{{full_name}}</td>
+              <td>{{salary_number}}</td>
+              <td>{{loan_application_number}}</td>
+              <td>{{deducting_month}}-{{year}}</td>
+              <td>{{loan_description}}</td>
+              <td>{{approved_amount}}</td>
+              <td>{{balance_amount}}</td>
+              <td>{{loan_due_amount}}</td>
+              <td>{{pending_loan}}</td>
+            </tr>
 
-                </tbody>
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+          {{/each}}
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>{{total_approved_amt}}</td>
+            <td></td>
+            <td>{{total_loan_due_amt}}</td>
+            <td></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
 </body>

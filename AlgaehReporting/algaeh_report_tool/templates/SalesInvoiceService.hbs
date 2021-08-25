@@ -94,10 +94,10 @@
                     {{#each detailList}}
                     <tr>
                         {{!-- <td>{{../currency.decimal_places}}</td> --}}
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{service_name}} - {{comments}} <br /> {{arabic_service_name}} - {{arabic_comments}}</td>
 
-                        <td>{{quantity}}</td>
+                         <td datatype="string">{{quantity}}</td>
                         <td class="numberFld">
                             {{numberFormating unit_cost ../currency}}
                         </td>

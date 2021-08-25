@@ -19,13 +19,13 @@
           {{#hasElement result}}
             <tr class="numberFldTotalBottom">
               <td class="txtFld" colspan="4"></td>
-              <td class="txtFld">{{net_balance_credit}}</td>
+              <td class="txtFld" datatype="string">{{net_balance_credit}}</td>
               {{!-- <td class="numberFld" colspan="3">Age: {{return_age}}</td> --}}
             </tr>
             {{#each result}}
               <tr>
-                <td>{{inc @index}}</td>
-                <td>{{primary_id_no}}</td>
+                <td datatype="string">{{inc @index}}</td>
+                <td datatype="string">{{primary_id_no}}</td>
                 <td>{{patient_code}}</td>
                 <td style="text-align: left;">{{full_name}}</td>
                 <td>{{advance_amount}}</td>

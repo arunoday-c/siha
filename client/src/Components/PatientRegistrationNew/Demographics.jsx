@@ -77,8 +77,8 @@ export function Demographics({
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
   const [maxLength, setMaxLength] = useState(null);
-const [primaryMasked, setPrimaryMasked] = useState("");
-const [secondaryMasked, setSecondaryMasked] = useState("");
+  const [primaryMasked, setPrimaryMasked] = useState("");
+  const [secondaryMasked, setSecondaryMasked] = useState("");
   const { savedPatient, setIdentityType } = useContext(FrontdeskContext);
   const disabled = !inModal && (!!patient_code || !!savedPatient?.patient_code);
   const {
@@ -87,7 +87,7 @@ const [secondaryMasked, setSecondaryMasked] = useState("");
     date_of_birth,
     primary_id_no,
     nationality_id,
-    tel_code
+    tel_code,
   } = useWatch({
     control,
     name: [
@@ -96,7 +96,7 @@ const [secondaryMasked, setSecondaryMasked] = useState("");
       "date_of_birth",
       "primary_id_no",
       "nationality_id",
-      "tel_code"
+      "tel_code",
     ],
   });
 
@@ -135,28 +135,29 @@ const [secondaryMasked, setSecondaryMasked] = useState("");
 
   useEffect(() => {
     if (!!nationality_id && nationalities?.length) {
-    
       const res = nationalities?.filter(
         (n) => n.hims_d_nationality_id == nationality_id
       );
       if (!patient_code) {
         if (res[0]?.identity_document_id) {
-         debugger
+          debugger;
           setValue("primary_identity_id", res[0]?.identity_document_id);
-          setValue("secondary_identity_id",res[0]?.secondary_id_type_id);
+          setValue("secondary_identity_id", res[0]?.secondary_id_type_id);
           setIdentityType(res[0]?.identity_type);
           if (identities?.length > 0) {
             const initialValue = identities.filter(
               (f) =>
                 f.hims_d_identity_document_id === res[0]?.identity_document_id
             );
-            if(initialValue[0]?.masked_identity)setPrimaryMasked(initialValue[0].masked_identity);
+            if (initialValue[0]?.masked_identity)
+              setPrimaryMasked(initialValue[0].masked_identity);
 
-            const secondaryValue=identities.filter(
+            const secondaryValue = identities.filter(
               (f) =>
                 f.hims_d_identity_document_id === res[0]?.secondary_id_type_id
             );
-if(secondaryValue[0]?.masked_identity)setSecondaryMasked(secondaryValue[0].masked_identity);
+            if (secondaryValue[0]?.masked_identity)
+              setSecondaryMasked(secondaryValue[0].masked_identity);
             setValue(
               "primary_id_no",
               initialValue.length > 0
@@ -166,7 +167,7 @@ if(secondaryValue[0]?.masked_identity)setSecondaryMasked(secondaryValue[0].maske
           }
         } else {
           setValue("primary_identity_id", "");
-          setValue("secondary_identity_id","");
+          setValue("secondary_identity_id", "");
           setIdentityType("");
         }
       }
@@ -183,7 +184,7 @@ if(secondaryValue[0]?.masked_identity)setSecondaryMasked(secondaryValue[0].maske
       const country_id = getValues().country_id;
       const maxlength = countries.filter(
         (f) => f.hims_d_country_id === country_id
-      )[0].max_phone_digits;
+      )[0]?.max_phone_digits;
       setMaxLength(maxlength);
     }
   }, [tel_code]);
@@ -1104,7 +1105,7 @@ if(secondaryValue[0]?.masked_identity)setSecondaryMasked(secondaryValue[0].maske
                                     "primary_id_no",
                                     _.initial_value_identity
                                   );
-                                  setPrimaryMasked(_.masked_identity)
+                                  setPrimaryMasked(_.masked_identity);
                                 },
                                 onClear: () => {
                                   onChange("");
@@ -1117,65 +1118,71 @@ if(secondaryValue[0]?.masked_identity)setSecondaryMasked(secondaryValue[0].maske
                             />
                           )}
                         />
-                        
-{primaryMasked?(<div className="ui input txt-fld">
-<Controller
-                          control={control}
-                          name="primary_id_no"
-                          rules={{
-                            required: {
-                              value: true,
-                              message: "Please enter primary id no",
-                            },
-                          }}
-                          render={(props) => (
-                            <>
-                            <label className="styleLabel"> ID NUMBER</label>
-                          <MaskedInput
-                          error={errors}
-                            mask={primaryMasked}
-                            className="form-control"
-                            placeholder={"eg: " + primaryMasked}
-                            name="primary_id_no"
-                            value={props.value}
-                            guide={false}
-                            id="my-input-id"
-                            onBlur={() => {}}
-                            onChange={(e)=>props.onChange(e.target.value)}
-                           
-                          />
-                          </>
-                          )}
-                          />)
-                        </div>):(<Controller
-                          control={control}
-                          name="primary_id_no"
-                          rules={{
-                            required: {
-                              value: true,
-                              message: "Please enter primary id no",
-                            },
-                          }}
-                          render={(props) => (
-                            <AlgaehFormGroup
-                              div={{ className: "col-lg-7 mandatory" }}
-                              label={{
-                                fieldName: "primary_id_no",
-                                isImp: true,
+
+                        {primaryMasked ? (
+                          <div className="col-7 mandatory cardMaskFld">
+                            <Controller
+                              control={control}
+                              name="primary_id_no"
+                              rules={{
+                                required: {
+                                  value: true,
+                                  message: "Please enter primary id no",
+                                },
                               }}
-                              error={errors}
-                              textBox={{
-                                ...props,
-                                className: "txt-fld",
-                                name: "primary_id_no",
-                                disabled,
-                                tabIndex: "16",
-                                placeholder: "Enter ID Number",
-                              }}
+                              render={(props) => (
+                                <>
+                                  <label className="styleLabel">
+                                    Enter Number *
+                                  </label>
+                                  <MaskedInput
+                                    error={errors}
+                                    mask={primaryMasked}
+                                    className="form-control"
+                                    placeholder={"eg: " + primaryMasked}
+                                    name="primary_id_no"
+                                    value={props.value}
+                                    guide={false}
+                                    id="my-input-id"
+                                    onBlur={() => {}}
+                                    onChange={(e) =>
+                                      props.onChange(e.target.value)
+                                    }
+                                  />
+                                </>
+                              )}
                             />
-                          )}
-                        />)}
-                        
+                          </div>
+                        ) : (
+                          <Controller
+                            control={control}
+                            name="primary_id_no"
+                            rules={{
+                              required: {
+                                value: true,
+                                message: "Please enter primary id no",
+                              },
+                            }}
+                            render={(props) => (
+                              <AlgaehFormGroup
+                                div={{ className: "col-lg-7 mandatory" }}
+                                label={{
+                                  fieldName: "primary_id_no",
+                                  isImp: true,
+                                }}
+                                error={errors}
+                                textBox={{
+                                  ...props,
+                                  className: "txt-fld",
+                                  name: "primary_id_no",
+                                  disabled,
+                                  tabIndex: "16",
+                                  placeholder: "Enter ID Number",
+                                }}
+                              />
+                            )}
+                          />
+                        )}
 
                         <Controller
                           control={control}
@@ -1208,7 +1215,6 @@ if(secondaryValue[0]?.masked_identity)setSecondaryMasked(secondaryValue[0].maske
                                 onChange: (_, selected) => {
                                   onChange(selected);
                                   setSecondaryMasked(_.masked_identity);
-                                  
                                 },
                                 onClear: () => {
                                   onChange("");
@@ -1221,64 +1227,69 @@ if(secondaryValue[0]?.masked_identity)setSecondaryMasked(secondaryValue[0].maske
                             />
                           )}
                         />
-{secondaryMasked?(<div className="ui input txt-fld">
-<Controller
-                          control={control}
-                          name="secondary_id_no"
-                          // rules={{
-                          //   required: {
-                          //     value: true,
-                          //     message: "Please enter primary id no",
-                          //   },
-                          // }}
-                          render={(props) => (
-                            <>
-                             <label className="styleLabel"> NUMBER</label>
-                          <MaskedInput
-                            mask={secondaryMasked}
-                            className="form-control"
-                            placeholder={"eg: " + secondaryMasked}
-                            name="secondary_id_no"
-                            value={props.value}
-                            guide={false}
-                            id="my-input-id"
-                            onBlur={() => {}}
-                            onChange={(e)=>props.onChange(e.target.value)}
-                           
-                          />
-                          </>
-                          )}
-                          />)
-                        </div>):(<Controller
-                          control={control}
-                          name="secondary_id_no"
-                          // rules={{
-                          //   required: {
-                          //     value: true,
-                          //     message: "Please enter primary id no",
-                          //   },
-                          // }}
-                          render={(props) => (
-                            <AlgaehFormGroup
-                              div={{ className: "col-lg-7" }}
-                              label={{
-                                fieldName: "secondary_id_no",
-                                isImp: false,
-                              }}
-                              // error={errors}
-                              textBox={{
-                                ...props,
-                                className: "txt-fld",
-                                name: "secondary_id_no",
-                                disabled,
-                                tabIndex: "16",
-                                placeholder: "Enter ID Number",
-                              }}
+                        {secondaryMasked ? (
+                          <div className="col-7 mandatory cardMaskFld">
+                            <Controller
+                              control={control}
+                              name="secondary_id_no"
+                              // rules={{
+                              //   required: {
+                              //     value: true,
+                              //     message: "Please enter primary id no",
+                              //   },
+                              // }}
+                              render={(props) => (
+                                <>
+                                  <label className="styleLabel">
+                                    Enter Number *
+                                  </label>
+                                  <MaskedInput
+                                    mask={secondaryMasked}
+                                    className="form-control"
+                                    placeholder={"eg: " + secondaryMasked}
+                                    name="secondary_id_no"
+                                    value={props.value}
+                                    guide={false}
+                                    id="my-input-id"
+                                    onBlur={() => {}}
+                                    onChange={(e) =>
+                                      props.onChange(e.target.value)
+                                    }
+                                  />
+                                </>
+                              )}
                             />
-                          )}
-                        />)}
-                        
-                        
+                          </div>
+                        ) : (
+                          <Controller
+                            control={control}
+                            name="secondary_id_no"
+                            // rules={{
+                            //   required: {
+                            //     value: true,
+                            //     message: "Please enter primary id no",
+                            //   },
+                            // }}
+                            render={(props) => (
+                              <AlgaehFormGroup
+                                div={{ className: "col-lg-7" }}
+                                label={{
+                                  fieldName: "secondary_id_no",
+                                  isImp: false,
+                                }}
+                                // error={errors}
+                                textBox={{
+                                  ...props,
+                                  className: "txt-fld",
+                                  name: "secondary_id_no",
+                                  disabled,
+                                  tabIndex: "16",
+                                  placeholder: "Enter ID Number",
+                                }}
+                              />
+                            )}
+                          />
+                        )}
                       </div>
                     </div>
                   </div>

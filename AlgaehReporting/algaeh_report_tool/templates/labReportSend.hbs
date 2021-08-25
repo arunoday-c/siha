@@ -1,58 +1,56 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
-     
+  <div class="print-body">
 
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Patient Code</th>
+            <th>Patient Name</th>
+            <th>Doctor Name</th>
+            <th>Test Name</th>
+            <th>Test Type</th>
+            <th>Collected By</th>
+            <th>Collected Date</th>
+            <th>Confirmed By</th>
+            <th>Confirmed Date</th>
+            <th>Validated By</th>
+            <th>Validated Date</th>
+            <th>Send Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#hasElement result}}
 
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Patient Code</th>
-                        <th>Patient Name</th>
-                        <th>Doctor Name</th>
-                        <th>Test Name</th>
-                        <th>Test Type</th>
-                        <th>Collected By</th>
-                        <th>Collected Date</th>
-                        <th>Confirmed By</th>
-                        <th>Confirmed Date</th>
-                        <th>Validated By</th>
-                        <th>Validated Date</th>
-                        <th>Send Type</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#hasElement result}}
-                  
-                    {{#each result}}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{patient_code}}</td>
-                        <td style="text-align: left;">{{pat_name}}</td>
-                        <td style="text-align: left;">{{doc_name}}</td>
-                        <td style="text-align: left;">{{service_name}}</td>
-                        <td>{{test_type}}</td>
-                        <td style="text-align: left;">{{collected_by}}</td>
-                        <td>{{collected_date}}</td>
-                        <td style="text-align: left;">{{confirmed_by}}</td>
-                        <td>{{confirmed_date}}</td>
-                        <td style="text-align: left;">{{validated_by}}</td>
-                        <td>{{validated_date}}</td>
-                        <td>{{send_out_test}}</td>
-                    </tr>
-                    {{/each }}
-                    {{else}}
-                    <tr>
-                        <td colspan="12" class="noResultTextReport">No Records Found</td>
-                    </tr>{{/hasElement }}
-                </tbody>
+            {{#each result}}
+              <tr>
+                <td datatype="string">{{inc @index}}</td>
+                <td>{{patient_code}}</td>
+                <td style="text-align: left;">{{pat_name}}</td>
+                <td style="text-align: left;">{{doc_name}}</td>
+                <td style="text-align: left;">{{service_name}}</td>
+                <td>{{test_type}}</td>
+                <td style="text-align: left;">{{collected_by}}</td>
+                <td datatype="string">{{collected_date}}</td>
+                <td style="text-align: left;">{{confirmed_by}}</td>
+                <td datatype="string">{{confirmed_date}}</td>
+                <td style="text-align: left;">{{validated_by}}</td>
+                <td datatype="string">{{validated_date}}</td>
+                <td>{{send_out_test}}</td>
+              </tr>
+            {{/each}}
+          {{else}}
+            <tr>
+              <td colspan="12" class="noResultTextReport">No Records Found</td>
+            </tr>{{/hasElement}}
+        </tbody>
 
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
 
-    </div>
+  </div>
 </body>

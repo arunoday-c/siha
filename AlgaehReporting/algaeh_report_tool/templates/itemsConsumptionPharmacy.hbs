@@ -26,14 +26,14 @@
                     </tr>
                     {{#each detailList}}
                     <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{consumption_date}}</td>
                         <td>{{consumption_number}}</td>
                         <td>{{category_desc}}</td>
                         <td>{{item_code}}</td>
                         <td>{{item_description}}</td>
                         <td>{{sub_department_name}}</td>
-                        <td>{{quantity}}</td>
+                         <td datatype="string">{{quantity}}</td>
                         <td class="numberFld">{{numberFormating unit_cost ../../currencyOnly}}</td>
                         <td class="numberFld">{{numberFormating extended_cost ../../currencyOnly}}</td>
                     </tr>

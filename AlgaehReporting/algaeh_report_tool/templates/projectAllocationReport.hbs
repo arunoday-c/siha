@@ -30,7 +30,7 @@
                     {{#hasElement result}}
                     {{#each result}}
                     <tr class="tableSubHdg0">
-                        <td class="txtFld">{{project_name}}</td>
+                        <td class="txtFld" datatype="string">{{project_name}}</td>
                         <td class="">{{no_employees}}</span>
                         </td>
                     </tr>
@@ -39,7 +39,7 @@
 
 
                     <tr>
-                        <td class="txtFld">{{designation}}</td>
+                        <td class="txtFld" datatype="string">{{designation}}</td>
                         <td class="">{{no_employees}}</span>
                         </td>
                     </tr>
@@ -48,8 +48,8 @@
 
                     {{!-- {{#each employees}}
                     <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{employee_code}}</td>
+                        <td datatype="string">{{inc @index}}</td>
+                        <td datatype="string">{{employee_code}}</td>
                         <td style="text-align: left;">{{full_name}}</td>
                         <td>{{designation}}</td>
                         <td>{{project_desc}}</td>

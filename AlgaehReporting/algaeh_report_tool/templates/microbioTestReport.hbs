@@ -88,7 +88,7 @@
             {{#each result}}
               {{#if susceptible "Y"}}
                 <tr>
-                  <td class="txtFld">{{antibiotic_name}}</td>
+                  <td class="txtFld" datatype="string">{{antibiotic_name}}</td>
                   <td>{{susceptibleText}}</td>
                   <td>{{intermediateText}}</td>
                   <td>{{resistantText}}</td>
@@ -96,14 +96,14 @@
               {{/if}}
               {{#if intermediate "Y"}}
                 <tr>
-                  <td class="txtFld">{{antibiotic_name}}</td>
+                  <td class="txtFld" datatype="string">{{antibiotic_name}}</td>
                   <td>{{susceptibleText}}</td>
                   <td>{{intermediateText}}</td>
                   <td>{{resistantText}}</td>
                 </tr>{{/if}}
               {{#if resistant "Y"}}
                 <tr>
-                  <td class="txtFld">{{antibiotic_name}}</td>
+                  <td class="txtFld" datatype="string">{{antibiotic_name}}</td>
                   <td>{{susceptibleText}}</td>
                   <td>{{intermediateText}}</td>
                   <td>{{resistantText}}</td>
@@ -118,7 +118,7 @@
     <table class="tableForData">
       <tbody>
         <tr>
-          <td class="txtFld">
+          <td class="txtFld" datatype="string">
             Comments:
             <ol>
               {{#each (commentBreakUp header.comments commentBreakUp)}}
@@ -128,7 +128,8 @@
           </td>
         </tr>
         <tr>
-          <td class="txtFld">Validated By: <b>{{header.validated_by}}</b></td>
+          <td class="txtFld" datatype="string">Validated By:
+            <b>{{header.validated_by}}</b></td>
         </tr>
       </tbody>
     </table>

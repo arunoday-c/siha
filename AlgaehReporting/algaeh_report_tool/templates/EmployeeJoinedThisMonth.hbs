@@ -1,38 +1,38 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Date of Joining </th>
-                        <th>Employee Code</th>
-                        <th>Employee Name</th>
-                        <th>Gender</th>
-                        <th>Designation</th>
-                        <th>Sub Department</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each result}}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                         <td>{{date_of_joining}}</td>
-                         <td>{{employee_code}}</td>
-                         <td>{{full_name}}</td>
-                         <td>{{sex}}</td>
-                         <td>{{designation}}</td>
-                         <td>{{sub_department_name}}</td>
-                    </tr>
-                    {{/each }}
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Date of Joining </th>
+            <th>Employee Code</th>
+            <th>Employee Name</th>
+            <th>Gender</th>
+            <th>Designation</th>
+            <th>Sub Department</th>
 
-                </tbody>
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each result}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td>{{date_of_joining}}</td>
+              <td datatype="string">{{employee_code}}</td>
+              <td>{{full_name}}</td>
+              <td>{{sex}}</td>
+              <td>{{designation}}</td>
+              <td>{{sub_department_name}}</td>
+            </tr>
+          {{/each}}
+
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
 </body>

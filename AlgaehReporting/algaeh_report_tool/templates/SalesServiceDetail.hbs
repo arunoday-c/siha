@@ -39,9 +39,9 @@
                     </tr>
                     {{#each transfer_items}}
                     <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{service_code}}</th>
-                        <td class="txtFld">{{service_name}}</th>
+                        <td class="txtFld" datatype="string">{{service_name}}</th>
                         <td class="numberFld">{{quantity}}</td>
                         <td class="numberFld">{{numberFormating unit_cost ../../currencyOnly}}</td>
                         <td class="numberFld">{{numberFormating net_extended_cost ../../currencyOnly}}</td>

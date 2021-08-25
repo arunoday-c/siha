@@ -14,7 +14,7 @@
                     <td width="55%">
                         <table class="tableNoBorder">
                             <tr>
-                                <td class="txtFld">
+                                <td class="txtFld" datatype="string">
                                     <p>Payment To:</p>
                                     <p><b>{{resultHeader.vendor_code}} - {{resultHeader.vendor_name}}</b></p>
                                     <p>Mob: {{resultHeader.contact_number}}</p>
@@ -43,7 +43,7 @@
             </table>
         </section>
         <section>
-            <td class="txtFld">
+            <td class="txtFld" datatype="string">
                 <p><b> Payment List </b></p>
             </td>
 
@@ -63,9 +63,9 @@
                 <tbody>
                     {{#each resultInvoice}}
                     <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{invoice_ref_no}}</td>
-                        {{!-- <td>{{invoice_date}}</td> --}}
+                        {{!--  <td datatype="string">{{invoice_date}}</td> --}}
                         <td class="numberFld">{{numberFormating opening_amount ../currency}}</td>
                         <td class="numberFld">{{numberFormating paid_amount ../currency}}</td>
                         <td class="numberFld">{{numberFormating previous_amount ../currency}}</td>
@@ -83,7 +83,7 @@
             </table>
             <br>
             {{#ifCond resultDebit_note.length '>' 0 }}
-            <td class="txtFld">
+            <td class="txtFld" datatype="string">
                 <p><b> Debit Note List </b></p>
             </td>
             <table class="tableForData" cell-padding="0">
@@ -101,9 +101,9 @@
                 <tbody>
                     {{#each resultDebit_note}}
                     <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{invoice_ref_no}}</td>
-                        {{!-- <td>{{invoice_date}}</td> --}}
+                        {{!--  <td datatype="string">{{invoice_date}}</td> --}}
                         <td class="numberFld">{{numberFormating opening_amount ../currency}}</td>
                         <td class="numberFld">{{numberFormating amount ../currency}}</td>
                         <td class="numberFld">{{numberFormating closing_amount ../currency}}</td>

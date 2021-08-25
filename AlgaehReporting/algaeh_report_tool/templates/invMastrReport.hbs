@@ -1,60 +1,61 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-<div class="print-body">
+  <div class="print-body">
 
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Item Code</th>
-                        <th>Item Name</th>
-                        <th>Category</th>
-                        <th>Group</th>
-                        <th>Purchase UOM</th>
-                        <th>Sales UOM</th>
-                        {{!-- <th>Type</th> --}}
-                        <th>Stocking UOM</th>
-                        <th>PURCHASE COST</th>
-                        <th> PRICE OF SALES UOM</th>
-                        <th>REORDER QUANTITY</th>
-                        <th>VAT APPLICABLE
-</th>
-                        <th>VAT Percentage</th>
-                        {{!-- <th width="25%">Narration</th> --}}
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each result}}
-                   <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{item_code}}</td>
-                        <td>{{item_description}}</td>
-                       
-                        <td>{{category_desc}}</td> {{!--{{account_name}} >  --}}
-                        <td>{{group_description}}</td> {{!--{{arabic_account_name}} >  --}}
-                       
-                        {{!-- <td>{{payment_type}}</td> --}}
-                        <td>{{purchase_uom}}</td>
-                         <td>{{sales_uom}}</td>
-                          <td>{{stocking_uom}}</td>
-                             <td>{{purchase_cost}}</td>
-                                <td>{{sales_price}}</td>
-                                   <td>{{reorder_qty}}</td>
-                                   <td> {{#if vat_applicable "Y"}} YES {{else}} NO {{/if}}</td>
-                                         <td>{{vat_percent}}%</td>
-                                            {{!-- <td>{{stocking_uom}}</td> --}}
-                           {{!-- <td>{{purchase_uom}}</td> --}}
-                        {{!-- <td class="txtFld">{{narration_detail}}</td> --}}
-                    </tr>
-                    {{/each }}
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Item Code</th>
+            <th>Item Name</th>
+            <th>Category</th>
+            <th>Group</th>
+            <th>Purchase UOM</th>
+            <th>Sales UOM</th>
+            {{! <th>Type</th> }}
+            <th>Stocking UOM</th>
+            <th>PURCHASE COST</th>
+            <th> PRICE OF SALES UOM</th>
+            <th>REORDER QUANTITY</th>
+            <th>VAT APPLICABLE
+            </th>
+            <th>VAT Percentage</th>
+            {{! <th width="25%">Narration</th> }}
+          </tr>
+        </thead>
+        <tbody>
+          {{#each result}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td>{{item_code}}</td>
+              <td>{{item_description}}</td>
 
-                </tbody>
-            </table>
-         
-      
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+              <td>{{category_desc}}</td>
+              {{!--{{account_name}} >  --}}
+              <td>{{group_description}}</td>
+              {{!--{{arabic_account_name}} >  --}}
+
+              {{!-- <td>{{payment_type}}</td> --}}
+              <td>{{purchase_uom}}</td>
+              <td>{{sales_uom}}</td>
+              <td>{{stocking_uom}}</td>
+              <td>{{purchase_cost}}</td>
+              <td>{{sales_price}}</td>
+              <td>{{reorder_qty}}</td>
+              <td> {{#if vat_applicable "Y"}} YES {{else}} NO {{/if}}</td>
+              <td>{{vat_percent}}%</td>
+              {{!-- <td>{{stocking_uom}}</td> --}}
+              {{!-- <td>{{purchase_uom}}</td> --}}
+              {{!-- <td class="txtFld" datatype="string">{{narration_detail}}</td> --}}
+            </tr>
+          {{/each}}
+
+        </tbody>
+      </table>
+
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
 </body>

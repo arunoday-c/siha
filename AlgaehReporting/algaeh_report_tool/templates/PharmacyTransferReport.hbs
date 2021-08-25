@@ -42,10 +42,10 @@
                     </tr>
                     {{#each transfer_items}}
                     <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{category_desc}}</td>
                         <td>{{item_code}}</th>
-                        <td class="txtFld">{{item_description}}</th>
+                        <td class="txtFld" datatype="string">{{item_description}}</th>
                         <td>{{uom_description}}</td>
                         <td class="numberFld">{{quantity_transfer}}</td>
                         <td class="numberFld">{{unit_cost}}</td>

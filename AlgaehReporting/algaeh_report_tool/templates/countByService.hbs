@@ -1,39 +1,39 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Service Code</th>
-                        <th>Service Name</th>
-                        <th>Qty</th>
-                        {{!-- <th>Amount</th> --}}
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each detail}}
-                    <tr>
-                        <td colspan="4" class="tableSubHdg">{{service_type}}</td>
-                    </tr>
-                    {{#each detailList}}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{service_code}}</td>
-                        <td class="txtFld">{{service_name}}</td>
-                        <td >{{service_count}}</td>
-                         {{!-- <td class="numberFld">{{total_amount}}</td> --}}
-                    </tr>
-                    {{/each }}
-                  
-                    {{/each }}
-                  
-                </tbody>
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Service Code</th>
+            <th>Service Name</th>
+            <th>Qty</th>
+            {{! <th>Amount</th> }}
+          </tr>
+        </thead>
+        <tbody>
+          {{#each detail}}
+            <tr>
+              <td colspan="4" class="tableSubHdg">{{service_type}}</td>
+            </tr>
+            {{#each detailList}}
+              <tr>
+                <td datatype="string">{{inc @index}}</td>
+                <td>{{service_code}}</td>
+                <td class="txtFld" datatype="string">{{service_name}}</td>
+                <td>{{service_count}}</td>
+                {{!-- <td class="numberFld">{{total_amount}}</td> --}}
+              </tr>
+            {{/each}}
+
+          {{/each}}
+
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
 </body>

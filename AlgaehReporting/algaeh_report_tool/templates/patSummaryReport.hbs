@@ -1,239 +1,240 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 <style>
-    span.vitalsBox{
-        display: block;
-        width: 81px;
-        float: left;
-        text-align: left;
-        border: 1px dashed rgb(218, 218, 218);
-        padding: 5px;
-    }
+  span.vitalsBox{ display: block; width: 81px; float: left; text-align: left;
+  border: 1px dashed rgb(218, 218, 218); padding: 5px; }
 </style>
 
 <body>
-    <div class="print-body">
-
+  <div class="print-body">
 
     <section>
-        <h3>Patient DETAILS:-</h3>
-        <table class="tableForLabel" cell-padding="0">
-            <tr>
-                <td><label>Patient Code</label></td>
-                <td> <span>{{pat_details.patient_code}}</span></td>
-                <td><label>Name</label></td>
-                <td><span>{{pat_details.full_name}} / {{pat_details.arabic_name}}</span></td>
+      <h3>Patient DETAILS:-</h3>
+      <table class="tableForLabel" cell-padding="0">
+        <tr>
+          <td><label>Patient Code</label></td>
+          <td> <span>{{pat_details.patient_code}}</span></td>
+          <td><label>Name</label></td>
+          <td><span>{{pat_details.full_name}}
+              /
+              {{pat_details.arabic_name}}</span></td>
 
-            </tr>
-            <tr>
-                <td><label>Age & DOB</label></td>
-                <td><span>{{pat_details.gender}}/{{pat_details.date_of_birth}}</span></td>
+        </tr>
+        <tr>
+          <td><label>Age & DOB</label></td>
+          <td><span
+            >{{pat_details.gender}}/{{pat_details.date_of_birth}}</span></td>
 
-                <td><label>Mobile No.</label></td>
-                <td> <span>{{pat_details.tel_code}} {{pat_details.contact_number}}</span></td>
-            </tr>
-        </table>
+          <td><label>Mobile No.</label></td>
+          <td>
+            <span>{{pat_details.tel_code}}
+              {{pat_details.contact_number}}</span></td>
+        </tr>
+      </table>
     </section>
     <section>
-        <h3>VISIT DETAILS:-</h3>
-        <table class="tableForLabel" cell-padding="0">
-            <tr>
-                <td><label>Date & Time</label></td>
-                <td> <span>{{pat_details.visit_date}}</span></td>
-                <td><label>Doctor</label></td>
-                <td><span>Dr. {{pat_details.doctor_name}}</span></td>
+      <h3>VISIT DETAILS:-</h3>
+      <table class="tableForLabel" cell-padding="0">
+        <tr>
+          <td><label>Date & Time</label></td>
+          <td> <span>{{pat_details.visit_date}}</span></td>
+          <td><label>Doctor</label></td>
+          <td><span>Dr. {{pat_details.doctor_name}}</span></td>
 
-            </tr>
-            <tr>
-                <td><label>Visit Code</label></td>
-                <td><span>{{pat_details.visit_code}}</span></td>
+        </tr>
+        <tr>
+          <td><label>Visit Code</label></td>
+          <td><span>{{pat_details.visit_code}}</span></td>
 
-                <td><label>Department</label></td>
-                <td> <span>{{pat_details.sub_department_name}}</span></td>
-            </tr>
-        </table>
-    </section>
-
-
-    <section>
-        <h3>SOAP DETAILS:-</h3>
-        <table class="tableForLabel" cell-padding="0">
-            <tr>
-                <td><label>Chief Complaint Code</label></td>
-                <td> <span>{{chief_details.comment}}</span></td>
-            </tr>
-            <tr>
-                <td><label>Significant Signs</label></td>
-                <td> <span>{{pat_Encounter.significant_signs}}</span></td>
-            </tr>
-            <tr>
-                <td><label>Others</label></td>
-                <td> <span>{{pat_Encounter.other_signs}}</span></td>
-            </tr>
-
-            
-        </table>
+          <td><label>Department</label></td>
+          <td> <span>{{pat_details.sub_department_name}}</span></td>
+        </tr>
+      </table>
     </section>
 
     <section>
-        <h3>VITALS DETAILS:-</h3>
-      
-                {{#each vital_details }}
-                    <span class="vitalsBox"><small><b>{{vitals_name}}</b></small><p style="margin: 3px 0 0; font-size:13px"><b>{{vital_value}}</b></p><small>{{formula_value}}</small></span>
-                {{/each }}
-       
-    </section>
-    <section>
-        <h3>Diagnosis:-</h3>
-       <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th >SL No.</th>
-                        <th>ICD Code</th>
-                        <th>Diagnosis Type</th>
-                        <th>Diagnosis Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each pat_icd }}
-                    <tr>
-                        <td width="20px">{{inc @index}}</td>
-                        <td>{{daignosis_code}}</td>
-                        <td>{{diagnosis_type}}</td>
-                        <td class="txtFld">{{daignosis_description}}</td>
-                    </tr>
-                    {{/each }}
-                </tbody>
-            </table>
-    </section>
-        
-     <section >
-        <h3>Physical Examination:-</h3>
-       <table class="tableForData" cell-padding="0">
-                <thead>
-                <tr>
-                    <th  style="width: 40px;">SL No.</th>
-                    <th>DESCRIPTION</th>
-                    <th>TYPE</th>
-                    <th>Severity</th>
-                    <th>Comments</th>
-                </tr>
-                </thead>
-                <tbody>
-                    {{#each examinationList }}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td class="txtFld">{{ex_desc}}</td>
-                        <td>{{ex_type}}</td>
-                        <td>{{ex_severity}}</td>
-                        <td class="txtFld">{{comments}}</td>
-                    </tr>
-                    {{/each }}
-                </tbody>
-            </table>
+      <h3>SOAP DETAILS:-</h3>
+      <table class="tableForLabel" cell-padding="0">
+        <tr>
+          <td><label>Chief Complaint Code</label></td>
+          <td> <span>{{chief_details.comment}}</span></td>
+        </tr>
+        <tr>
+          <td><label>Significant Signs</label></td>
+          <td> <span>{{pat_Encounter.significant_signs}}</span></td>
+        </tr>
+        <tr>
+          <td><label>Others</label></td>
+          <td> <span>{{pat_Encounter.other_signs}}</span></td>
+        </tr>
+
+      </table>
     </section>
 
     <section>
-        <h3>MEDICATION:-</h3>
-       <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th  style="width: 40px;">SL No.</th>
-                        <th>Item Name</th>
-                        <th>Start Date</th>
-                        <th>Instructions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each medication }}
-                    <tr>
-                        <td width="20px">{{inc @index}}</td>
-                        <td class="txtFld">{{item_description}}</td>
-                        <td>{{start_date}}</td>
-                        <td class="txtFld">{{instructions}}</td>
-                    </tr>
-                    {{/each }}
-                </tbody>
-            </table>
+      <h3>VITALS DETAILS:-</h3>
+
+      {{#each vital_details}}
+        <span class="vitalsBox"><small><b>{{vitals_name}}</b></small><p
+            style="margin: 3px 0 0; font-size:13px"
+          ><b>{{vital_value}}</b></p><small>{{formula_value}}</small></span>
+      {{/each}}
+
     </section>
-     <section>
-        <h3>Lab Order:-</h3>
-       <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th style="width: 40px;">SL No.</th>
-                        <th>Service Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each lab }}
-                    <tr>
-                        <td  style="width: 40px;">{{inc @index}}</td>
-                        <td class="txtFld">{{service_name}}</td>
-                    </tr>
-                    {{/each }}
-                </tbody>
-            </table>
+    <section>
+      <h3>Diagnosis:-</h3>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>SL No.</th>
+            <th>ICD Code</th>
+            <th>Diagnosis Type</th>
+            <th>Diagnosis Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each pat_icd}}
+            <tr>
+              <td width="20px">{{inc @index}}</td>
+              <td>{{daignosis_code}}</td>
+              <td>{{diagnosis_type}}</td>
+              <td
+                class="txtFld"
+                datatype="string"
+              >{{daignosis_description}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
     </section>
-     <section >
-        <h3>Radiology Order:-</h3>
-       <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th  style="width: 40px;">SL No.</th>
-                        <th>Service Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each rad }}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td class="txtFld">{{service_name}}</td>
-                    </tr>
-                    {{/each }}
-                </tbody>
-            </table>
+
+    <section>
+      <h3>Physical Examination:-</h3>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th style="width: 40px;">SL No.</th>
+            <th>DESCRIPTION</th>
+            <th>TYPE</th>
+            <th>Severity</th>
+            <th>Comments</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each examinationList}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td class="txtFld" datatype="string">{{ex_desc}}</td>
+              <td>{{ex_type}}</td>
+              <td>{{ex_severity}}</td>
+              <td class="txtFld" datatype="string">{{comments}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
     </section>
-     <section   >
-        <h3>Package Order:-</h3>
-       <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th  style="width: 40px;">SL No.</th>
-                        <th>Service Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each packageList }}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td class="txtFld">{{service_name}}</td>
-                    </tr>
-                    {{/each }}
-                </tbody>
-            </table>
+
+    <section>
+      <h3>MEDICATION:-</h3>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th style="width: 40px;">SL No.</th>
+            <th>Item Name</th>
+            <th>Start Date</th>
+            <th>Instructions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each medication}}
+            <tr>
+              <td width="20px">{{inc @index}}</td>
+              <td class="txtFld" datatype="string">{{item_description}}</td>
+              <td>{{start_date}}</td>
+              <td class="txtFld" datatype="string">{{instructions}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
     </section>
-     <section   >
-        <h3>Consumable Order:-</h3>
-       <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th  style="width: 40px;">SL No.</th>
-                        <th>Service Name</th>
-                        <th>Instructions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each consumableList }}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td class="txtFld">{{service_name}}</td>
-                        <td class="txtFld">{{instructions}}</td>
-                    </tr>
-                    {{/each }}
-                </tbody>
-            </table>
+    <section>
+      <h3>Lab Order:-</h3>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th style="width: 40px;">SL No.</th>
+            <th>Service Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each lab}}
+            <tr>
+              <td style="width: 40px;">{{inc @index}}</td>
+              <td class="txtFld" datatype="string">{{service_name}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
     </section>
-        
-    </div>
-    
+    <section>
+      <h3>Radiology Order:-</h3>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th style="width: 40px;">SL No.</th>
+            <th>Service Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rad}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td class="txtFld" datatype="string">{{service_name}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h3>Package Order:-</h3>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th style="width: 40px;">SL No.</th>
+            <th>Service Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each packageList}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td class="txtFld" datatype="string">{{service_name}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h3>Consumable Order:-</h3>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th style="width: 40px;">SL No.</th>
+            <th>Service Name</th>
+            <th>Instructions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each consumableList}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td class="txtFld" datatype="string">{{service_name}}</td>
+              <td class="txtFld" datatype="string">{{instructions}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </section>
+
+  </div>
+
 </body>

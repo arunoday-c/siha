@@ -1,91 +1,100 @@
-
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
+    <section>
 
-            <table class="tableForLabel" cell-padding="0">
+      <table class="tableForLabel" cell-padding="0">
 
-                <tr>
-                    <td><label class="textEnLft">PO Return No.</label>:<span
-                            class="valueText">{{purchase_return_number}}</span>
-                    </td>
-                    <td><label class="textEnLft">PO For</label>:<span
-                            class="valueText">{{location_description}}</span></td>
+        <tr>
+          <td><label class="textEnLft">PO Return No.</label>:<span
+              class="valueText"
+            >{{purchase_return_number}}</span>
+          </td>
+          <td><label class="textEnLft">PO For</label>:<span
+              class="valueText"
+            >{{location_description}}</span></td>
 
-                </tr>
-                <tr>
-                    <td><label class="textEnLft">PO Return Date</label>:<span class="valueText">{{return_date }}</span>
-                    </td>
-                    <td><label class="textEnLft">Vendor Name</label>:<span class="valueText">{{vendor_name}}</span></td>
-                </tr>
-  <tr>
-                    <td><label class="textEnLft">PO No.</label>:<span class="valueText">{{purchase_number}}</span>
-                    </td>
-                    <td><label class="textEnLft">Receipt No.</label>:<span class="valueText">{{grn_number}}</span></td>
-                </tr>
-            </table>
+        </tr>
+        <tr>
+          <td><label class="textEnLft">PO Return Date</label>:<span
+              class="valueText"
+            >{{return_date}}</span>
+          </td>
+          <td><label class="textEnLft">Vendor Name</label>:<span
+              class="valueText"
+            >{{vendor_name}}</span></td>
+        </tr>
+        <tr>
+          <td><label class="textEnLft">PO No.</label>:<span
+              class="valueText"
+            >{{purchase_number}}</span>
+          </td>
+          <td><label class="textEnLft">Receipt No.</label>:<span
+              class="valueText"
+            >{{grn_number}}</span></td>
+        </tr>
+      </table>
 
+    </section><section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            {{! <th>Item Name</th>
+                        <th>Item Code</th> }}
+            <th>Unit</th>
+            <th>Vendor Batch No.</th>
+            {{! <th>Expiry Date</th> }}
+            <th>Delivered Qty</th>
+            <th>Before Return Qty</th>
+            <th>Return Qty</th>
+            <th>After Return Qty</th>
+            <th>Unit Price</th>
+            <th>Ext. Price</th>
+            <th>Disc. %</th>
+            <th>Disc. Amt</th>
+            <th>Net Ext. Amt.</th>
+            <th>Tax Amt.</th>
+            <th>Total Amt. </th>
 
-        </section><section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        {{!-- <th>Item Name</th>
-                        <th>Item Code</th> --}}
-                        <th>Unit</th>
-                         <th>Vendor Batch No.</th>
-                        {{!-- <th>Expiry Date</th> --}}
-                        <th>Delivered Qty</th>
-                        <th>Before Return Qty</th>
-                        <th>Return Qty</th>
-                        <th>After Return Qty</th>
-                        <th>Unit Price</th>
-                        <th>Ext. Price</th>
-                        <th>Disc. %</th>
-                        <th>Disc. Amt</th>
-                        <th>Net Ext. Amt.</th>
-                        <th>Tax Amt.</th>
-                        <th>Total Amt. </th>
+          </tr>
+        </thead>
+        <tbody>
 
-                    </tr>
-                </thead>
-                <tbody>
+          {{#each detailList}}
 
-                    {{#each detailList}}
-
-                    <tr>
- <td colspan="14"  class="txtFld"><b>{{item_description}} - ({{item_code}})</b></td>
-                    </tr>
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{uom_description}}</td>
-                        <td>{{vendor_batchno}}</td>
-                        {{!-- <td>{{expiry_date}}</td> --}}
-                        <td class="numberFld">{{dn_quantity}}</td>
-                        <td class="numberFld">{{qtyhand}}</td>
-                        <td class="numberFld">{{return_qty}}</td>
-                        <td class="numberFld">{{after_return_qty}}</td>
-                        <td class="numberFld">{{unit_cost}}</td>
-                        <td class="numberFld">{{extended_cost}}</td>
-                        <td class="numberFld">{{discount_percentage}}</td>
-                        <td class="numberFld">{{discount_amount}}</td>
-                        <td class="numberFld">{{net_extended_cost}}</td>
-                        <td class="numberFld">{{tax_amount}}</td>
-                        <td class="numberFld">{{total_amount}}</td>
-                    </tr>
-                    {{/each }}
-                    <tr class="footerTotalDown">
-                        <td colspan="13"  class="numberFld">Total Net Amount</td>
-                        <td>{{return_total}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-        {{!-- <section>
+            <tr>
+              <td colspan="14" class="txtFld"><b>{{item_description}}
+                  - ({{item_code}})</b></td>
+            </tr>
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td>{{uom_description}}</td>
+              <td>{{vendor_batchno}}</td>
+              {{!-- <td>{{expiry_date}}</td> --}}
+              <td class="numberFld">{{dn_quantity}}</td>
+              <td class="numberFld">{{qtyhand}}</td>
+              <td class="numberFld">{{return_qty}}</td>
+              <td class="numberFld">{{after_return_qty}}</td>
+              <td class="numberFld">{{unit_cost}}</td>
+              <td class="numberFld">{{extended_cost}}</td>
+              <td class="numberFld">{{discount_percentage}}</td>
+              <td class="numberFld">{{discount_amount}}</td>
+              <td class="numberFld">{{net_extended_cost}}</td>
+              <td class="numberFld">{{tax_amount}}</td>
+              <td class="numberFld">{{total_amount}}</td>
+            </tr>
+          {{/each}}
+          <tr class="footerTotalDown">
+            <td colspan="13" class="numberFld">Total Net Amount</td>
+            <td>{{return_total}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    {{!-- <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
@@ -102,7 +111,7 @@
 
                     {{#each detailList}}
                     <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{item_description}}</td>
                         <td>{{item_code}}</td>
                         <td>{{uom_description}}</td>
@@ -115,6 +124,6 @@
                 </tbody>
             </table>
         </section> --}}
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
 </body>

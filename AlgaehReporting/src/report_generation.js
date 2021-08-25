@@ -1400,6 +1400,7 @@ export default {
                       resultData
                     );
 
+                    // console.log("rawData", rawData);
                     //ToDo need to remove only for testing purposes
                     // fs.writeFileSync(
                     //   path.resolve(outputFolder, "test.html"),
@@ -1515,7 +1516,6 @@ export default {
                             var rowID = worksheet.rowCount + 1;
                             const itemRow = worksheet.getRow(rowID);
                             let skipOnMerdge = null;
-
                             $(this)
                               .find("td")
                               .map(function (cellIndex, td) {
@@ -1619,6 +1619,7 @@ export default {
                                       fgColor: { argb: "D1FCFF" },
                                     };
                                   }
+                                  // console.log("value 1 :", cell.value);
                                   if (!isNaN(parseFloat(cell.value))) {
                                     cell.value = parseFloat(
                                       String(cell.value).replace(/,/g, "")
@@ -1645,15 +1646,28 @@ export default {
                                       ? 2
                                       : skipOnMerdge + 1;
                                   // }
-                                  if (!isNaN(parseFloat(cell.value))) {
-                                    cell.value = parseFloat(
-                                      String(cell.value).replace(/,/g, "")
-                                    );
-                                    cell.numFmt = excel_cel_numFmt;
-                                    cell.alignment = {
-                                      vertical: "middle",
-                                      horizontal: "right",
-                                    };
+
+                                  // console.log(
+                                  //   "value 2 :",
+                                  //   parseFloat(cell.value)
+                                  // );
+
+                                  // console.log("cell", cell);
+                                  const datatype = $(this).attr("datatype");
+
+                                  // console.log("datatype", datatype);
+                                  if (datatype === "string") {
+                                  } else {
+                                    if (!isNaN(parseFloat(cell.value))) {
+                                      cell.value = parseFloat(
+                                        String(cell.value).replace(/,/g, "")
+                                      );
+                                      cell.numFmt = excel_cel_numFmt;
+                                      cell.alignment = {
+                                        vertical: "middle",
+                                        horizontal: "right",
+                                      };
+                                    }
                                   }
                                 }
 

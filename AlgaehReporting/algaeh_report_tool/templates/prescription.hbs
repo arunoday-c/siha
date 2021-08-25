@@ -1,103 +1,121 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
+    <section>
 
+      <table class="tableForLabel" cell-padding="0">
+        <tr>
+          <td><label class="textEnLft">Patient Name</label>:<span
+              class="valueText"
+            >{{header.pat_name}}</span><label class="textArRht">اسم المريض</label></td>
+          <td><label class="textEnLft">Visit Date & Time</label>:<span
+              class="valueText"
+            >{{dateTime header.visit_date "date"}}</span><label
+              class="textArRht"
+            >تاريخ الزيارة</label></td>
+        </tr>
+        <tr>
+          <td><label class="textEnLft">MR No</label>:<span
+              class="valueText"
+            >{{header.patient_code}}</span><label class="textArRht">رقم التسجيل</label>
+          </td>
+          <td><label class="textEnLft">Age/Gender</label>:<span
+              class="valueText"
+            >{{header.age_in_years}}/{{header.gender}}</span><label
+              class="textArRht"
+            >العمر / الجنس</label></td>
+        </tr>
+        <tr>
+          <td><label class="textEnLft">Mobile No.</label>:<span
+              class="valueText"
+            >{{header.contact_number}}</span><label class="textArRht">رقم
+              الموبايل</label></td>
+          <td><label class="textEnLft">Nationality</label>:<span
+              class="valueText"
+            >{{header.nationality}}</span><label
+              class="textArRht"
+            >جنسية</label></td>
+        </tr>
+        <tr>
+          <td><label class="textEnLft">Insurance Co.</label>:<span
+              class="valueText"
+            >{{header.insurance_provider_name}}</span><label
+              class="textArRht"
+            >شركة التأمين</label></td>
+          <td><label class="textEnLft">Policy/ Class</label>:<span
+              class="valueText"
+            >{{header.primary_policy_num}} / {{header.card_class}}</span><label
+              class="textArRht"
+            >بوليصة / درجة التأمين</label></td>
+        </tr>
+        <tr>
+          <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+        </tr>
+        <tr>
 
-            <table class="tableForLabel" cell-padding="0">
-                <tr>
-                    <td><label class="textEnLft">Patient Name</label>:<span
-                            class="valueText">{{header.pat_name}}</span><label class="textArRht">اسم المريض</label></td>
-                    <td><label class="textEnLft">Visit Date & Time</label>:<span
-                            class="valueText">{{dateTime header.visit_date "date"}}</span><label class="textArRht">تاريخ
-                            الزيارة</label></td>
-                </tr>
-                <tr>
-                    <td><label class="textEnLft">MR No</label>:<span
-                            class="valueText">{{header.patient_code}}</span><label class="textArRht">رقم التسجيل</label>
-                    </td>
-                    <td><label class="textEnLft">Age/Gender</label>:<span
-                            class="valueText">{{header.age_in_years}}/{{header.gender}}</span><label
-                            class="textArRht">العمر / الجنس</label></td>
-                </tr>
-                <tr>
-                    <td><label class="textEnLft">Mobile No.</label>:<span
-                            class="valueText">{{header.contact_number}}</span><label class="textArRht">رقم
-                            الموبايل</label></td>
-                    <td><label class="textEnLft">Nationality</label>:<span
-                            class="valueText">{{header.nationality}}</span><label class="textArRht">جنسية</label></td>
-                </tr>
-                <tr>
-                    <td><label class="textEnLft">Insurance Co.</label>:<span
-                            class="valueText">{{header.insurance_provider_name}}</span><label class="textArRht">شركة
-                            التأمين</label></td>
-                    <td><label class="textEnLft">Policy/ Class</label>:<span
-                            class="valueText">{{header.primary_policy_num}} / {{header.card_class}}</span><label
-                            class="textArRht">بوليصة / درجة التأمين</label></td>
-                </tr>
-                <tr>
-                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-                </tr>
-                <tr>
+          <td><label class="textEnLft">Doctor</label>:<span
+              class="valueText"
+            >{{header.full_name}}</span><label
+              class="textArRht"
+            >طبيب</label></td>
 
+          <td><label class="textEnLft">Department</label>:<span
+              class="valueText"
+            >{{header.sub_department_name}}</span><label
+              class="textArRht"
+            >قسم</label></td>
 
-
- <td><label class="textEnLft">Doctor</label>:<span
-                            class="valueText">{{header.full_name}}</span><label
-                            class="textArRht">طبيب</label></td>
-
-                             <td><label class="textEnLft">Department</label>:<span
-                            class="valueText">{{header.sub_department_name}}</span><label
-                            class="textArRht">قسم</label></td>
-
-                </tr>
-   {{!-- <tr>
+        </tr>
+        {{!-- <tr>
                     <td colspan="2"><label class="textEnLft">Chief Complaint</label>:<span
                             class="valueText">{{header.comment}}</span><label class="textArRht">الشكوى الرئيسية</label></td>
                     
                 </tr> --}}
 
-   <tr>
-                     <td><label class="textEnLft">ICD Code</label>:<span
-                            class="valueText">{{header.icd_code}}</span><label class="textArRht">ICD Code</label>
-                    </td>
-                    <td><label class="textEnLft">Diagnosis</label>:<span
-                            class="valueText">{{header.icd_description}}</span><label class="textArRht">التشخيص</label>
-                    </td>
-                </tr>
-            </table>
+        <tr>
+          <td><label class="textEnLft">ICD Code</label>:<span
+              class="valueText"
+            >{{header.icd_code}}</span><label class="textArRht">ICD Code</label>
+          </td>
+          <td><label class="textEnLft">Diagnosis</label>:<span
+              class="valueText"
+            >{{header.icd_description}}</span><label
+              class="textArRht"
+            >التشخيص</label>
+          </td>
+        </tr>
+      </table>
 
+    </section>
 
-        </section>
-
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                <tr>
-                    <th>SFAD Code<p>كود SFAD</p></th>
-                    <th>Item Name<p>اسم الدواء العلمي</p></th>
-                    <th>From Date<p>من التاريخ</p></th>
-                    <th>Dosage<p>الجرعة</p></th>
-                    <th>Duration<p>مدة العلاج</p></th>
-                    <th>Instruction<p>التعليمات</p></th>
-                </tr>
-                </thead>
-                <tbody>
-                    {{#each detail}}
-                    <tr>
-                        <td class="txtFld" style="width: 60px;">{{sfda_code}}</td>
-                        <td class="txtFld">{{item_description}}</td>
-                        <td class="" style="width: 70px;">{{from_date}}</td>
-                        <td class="" style="width: 70px;">{{dosage}}</td>
-                        <td class="" style="width: 70px;">{{no_of_days}} days</td>
-                        <td class="txtFld">{{instructions}}</td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </section>
-        <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer>
-    </div>
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>SFAD Code<p>كود SFAD</p></th>
+            <th>Item Name<p>اسم الدواء العلمي</p></th>
+            <th>From Date<p>من التاريخ</p></th>
+            <th>Dosage<p>الجرعة</p></th>
+            <th>Duration<p>مدة العلاج</p></th>
+            <th>Instruction<p>التعليمات</p></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each detail}}
+            <tr>
+              <td class="txtFld" style="width: 60px;">{{sfda_code}}</td>
+              <td class="txtFld" datatype="string">{{item_description}}</td>
+              <td class="" style="width: 70px;">{{from_date}}</td>
+              <td class="" style="width: 70px;">{{dosage}}</td>
+              <td class="" style="width: 70px;">{{no_of_days}} days</td>
+              <td class="txtFld" datatype="string">{{instructions}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </section>
+    <footer>{{{loadPage "doctor_signature_footer.hbs" header}}}</footer>
+  </div>
 </body>

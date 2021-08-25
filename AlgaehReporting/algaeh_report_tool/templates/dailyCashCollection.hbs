@@ -1,55 +1,55 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Handover Date</th>
-                        <th>Total Cash</th>
-                        <th>Total Card</th>
-                        <th>Total Expected</th>
-                        <th>Total Collected</th>
-                        <th>Difference</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#hasElement details}}
-                    {{#each details}}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{daily_handover_date}}</td>
-                        <td class="numberFld">{{expected_cash}}</td>
-                        <td class="numberFld">{{expected_card}}</td>
-                        <td class="numberFld">{{expected_total}}</td>
-                        <td class="numberFld">{{collected_total}}</td>
-                        <td class="numberFld">{{total_diff}}</td>
-                        <td>{{status}}</td>
-                    </tr>
-                    {{/each }}
-                    <tr class="numberFldTotalBottom">
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Handover Date</th>
+            <th>Total Cash</th>
+            <th>Total Card</th>
+            <th>Total Expected</th>
+            <th>Total Collected</th>
+            <th>Difference</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#hasElement details}}
+            {{#each details}}
+              <tr>
+                <td datatype="string">{{inc @index}}</td>
+                <td>{{daily_handover_date}}</td>
+                <td class="numberFld">{{expected_cash}}</td>
+                <td class="numberFld">{{expected_card}}</td>
+                <td class="numberFld">{{expected_total}}</td>
+                <td class="numberFld">{{collected_total}}</td>
+                <td class="numberFld">{{total_diff}}</td>
+                <td>{{status}}</td>
+              </tr>
+            {{/each}}
+            <tr class="numberFldTotalBottom">
 
-                        <td colspan="2" class="numberFld"></td>
-                        <td class="numberFld">{{expected_cash}}</td>
-                        <td class="numberFld">{{expected_card}}</td>
-                        <td class="numberFld">{{expected_total}}</td>
-                        <td class="numberFld">{{collected_total}}</td>
-                        <td class="numberFld">{{total_diff}}</td>
-                        <td class="numberFld"></td>
-                    </tr>
-                    {{else}}
-                    <tr>
-                        <td colspan="6" class="noResultTextReport">No Records Found</td>
-                    </tr>
-                    {{/hasElement }}
+              <td colspan="2" class="numberFld"></td>
+              <td class="numberFld">{{expected_cash}}</td>
+              <td class="numberFld">{{expected_card}}</td>
+              <td class="numberFld">{{expected_total}}</td>
+              <td class="numberFld">{{collected_total}}</td>
+              <td class="numberFld">{{total_diff}}</td>
+              <td class="numberFld"></td>
+            </tr>
+          {{else}}
+            <tr>
+              <td colspan="6" class="noResultTextReport">No Records Found</td>
+            </tr>
+          {{/hasElement}}
 
-                </tbody>
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
 </body>

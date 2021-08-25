@@ -1,38 +1,44 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Sub Department Code</th>
-                        <th>Sub Department Name</th>
-                        <th>Sub Department Arabic Name</th>
-                        <th>Type</th>
-                       
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each detail}}
-                    <tr>
-                        <td colspan="11" class="tableSubHdg">{{department_code}}/ {{department_name}} ({{department_type}}) - {{department_count}}</td>
-                    </tr>
-                        {{#each detailList}}
-                            <tr>
-                                <td>{{inc @index}}</td>
-                                <td>{{sub_department_code}}</td>
-                                <td class="txtFld">{{sub_department_name}}</td>
-                                <td class="numberFld">{{arabic_sub_department_name}}</td>
-                                <td >{{sub_department_type}}</td>
-                            </tr>
-                        {{/each }}
-                    {{/each }}
-                </tbody>
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Sub Department Code</th>
+            <th>Sub Department Name</th>
+            <th>Sub Department Arabic Name</th>
+            <th>Type</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          {{#each detail}}
+            <tr>
+              <td colspan="11" class="tableSubHdg">{{department_code}}/
+                {{department_name}}
+                ({{department_type}}) -
+                {{department_count}}</td>
+            </tr>
+            {{#each detailList}}
+              <tr>
+                <td datatype="string">{{inc @index}}</td>
+                <td>{{sub_department_code}}</td>
+                <td
+                  class="txtFld"
+                  datatype="string"
+                >{{sub_department_name}}</td>
+                <td class="numberFld">{{arabic_sub_department_name}}</td>
+                <td>{{sub_department_type}}</td>
+              </tr>
+            {{/each}}
+          {{/each}}
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
 </body>
