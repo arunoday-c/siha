@@ -506,7 +506,7 @@ export default {
               pf_applicable=?,overtime_group_id=?,employee_group_id=?, reporting_to_id=?,sub_department_id=?,\
               employee_designation_id=?, entitled_daily_ot= ?, employee_bank_id=?,services_id=?, employee_status=?, \
               inactive_date=?, employee_category=?, gratuity_encash=?, identity_type_id=?, identity_no=?,agency_id=?, \
-              service_dis_percentage=?,service_credit_percentage=?, updated_date=?,updated_by=?,eos_id=?,standard_work_hours=?,ramzan_work_hours=? WHERE record_status='A' and  hims_d_employee_id=?",
+              service_dis_percentage=?,service_credit_percentage=?, updated_date=?,updated_by=?,eos_id=?,standard_work_hours=?,ramzan_work_hours=?,employe_exit_type=? WHERE record_status='A' and  hims_d_employee_id=?",
             values: [
               input.employee_code,
               input.full_name,
@@ -588,6 +588,7 @@ export default {
               input.eos_id,
               input.standard_work_hours,
               input.ramzan_work_hours,
+              input.employe_exit_type,
               input.hims_d_employee_id,
             ],
           })
