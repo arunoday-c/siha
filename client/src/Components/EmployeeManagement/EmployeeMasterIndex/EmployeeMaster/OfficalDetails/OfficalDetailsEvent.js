@@ -127,31 +127,41 @@ const employeeStatusHandler = ($this, e) => {
   let _date_of_releaving = "";
   let _other = {};
   if (e.value === "A") {
-    _date_of_releaving = "Date of leaving";
+    _date_of_releaving = "";
+    _other = {
+      exit_date: null,
+      date_of_resignation: null,
+      reliving_date: null,
+      inactive_date: null,
+      employe_exit_type: null,
+    };
   } else if (e.value === "I") {
     _date_of_releaving = "Date of leaving";
     _other = { inactive_date: new Date() };
   } else if (e.value === "R") {
     _date_of_releaving = "Date of Reliving";
+    _other = { employe_exit_type: "R" };
   } else if (e.value === "T") {
     _date_of_releaving = "Date of Terminating";
+    _other = { employe_exit_type: "T" };
   } else if (e.value === "E") {
     _date_of_releaving = "Date of Retirement";
+    _other = { employe_exit_type: "E" };
   }
   $this.setState({
     enable_active_status: e.value,
     date_of_releaving_label: _date_of_releaving,
     employee_status: e.value,
-    exit_date: null,
-    date_of_resignation: null,
-    reliving_date: null,
+    // exit_date: null,
+    // date_of_resignation: null,
+    // reliving_date: null,
     ..._other,
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     employee_status: e.value,
-    exit_date: null,
-    date_of_resignation: null,
-    reliving_date: null,
+    // exit_date: null,
+    // date_of_resignation: null,
+    // reliving_date: null,
     ..._other,
   });
 };

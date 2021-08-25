@@ -1642,6 +1642,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
     let _index = testAnalytes.indexOf(row);
 
     testAnalytes[_index] = row;
+    debugger;
     setTest_analytes(testAnalytes);
     setState({});
   };
@@ -2901,9 +2902,16 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
                                     value: row.normal_low,
                                     className: "txt-fld",
                                     name: "normal_low",
-                                    updateInternally: true,
+                                    // updateInternally: true,
                                     onChange: (e) => {
+                                      debugger;
                                       row.normal_low = e.target.value;
+
+                                      // let testAnalytes = test_analytes;
+
+                                      // let _index = testAnalytes.indexOf(row);
+                                      // testAnalytes[_index] = row;
+                                      // setTest_analytes(testAnalytes);
                                       forceUpdate(row);
                                     },
                                   }}
@@ -2934,7 +2942,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
                                     value: row.normal_high,
                                     className: "txt-fld",
                                     name: "normal_high",
-                                    updateInternally: true,
+                                    // updateInternally: true,
                                     onChange: (e) => {
                                       row.normal_high = e.target.value;
                                       forceUpdate(row);
@@ -2967,7 +2975,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
                                     value: row.critical_low,
                                     className: "txt-fld",
                                     name: "critical_low",
-                                    updateInternally: true,
+                                    // updateInternally: true,
                                     onChange: (e) => {
                                       row.critical_low = e.target.value;
                                       forceUpdate(row);
@@ -3000,7 +3008,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
                                     value: row.critical_high,
                                     className: "txt-fld",
                                     name: "critical_high",
-                                    updateInternally: true,
+                                    // updateInternally: true,
                                     onChange: (e) => {
                                       row.critical_high = e.target.value;
                                       forceUpdate(row);
