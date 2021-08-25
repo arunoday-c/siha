@@ -2378,7 +2378,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
                   className="btn btn-default"
                   onClick={onReRun}
                   disabled={
-                    entered_by_name.name
+                    validate_by_name.name
                       ? run_type === 3
                         ? true
                         : false
