@@ -1477,64 +1477,72 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
       cacheTime: Infinity,
       initialStale: true,
       onSuccess: (data) => {
-        for (let i = 0; i < data.analyteData.length; i++) {
-          if (data.analyteData[i].analyte_type === "T") {
-            data.analyteData[i].dis_text_value =
-              data.analyteData[i].text_value !== null &&
-              data.analyteData[i].text_value !== ""
-                ? data.analyteData[i].text_value.split("<br/>")
-                : [];
-
-            // response.data.records[i].text_value = response.data.records[i].text_value.replace("<br/>", "\n/g")
-            data.analyteData[i].text_value =
-              data.analyteData[i].text_value !== null &&
-              data.analyteData[i].text_value !== ""
-                ? data.analyteData[i].text_value.replace(
-                    new RegExp("<br/>|<br />", "g"),
-                    "\n"
-                  )
-                : null;
-          } else {
-            data.analyteData[i].dis_text_value = [];
-          }
-        }
         debugger;
-        const records_test_formula = _.filter(
-          data.analyteData,
-          (f) => f.formula !== null
-        );
+        if (data.analyteData.length > 0) {
+          for (let i = 0; i < data.analyteData.length; i++) {
+            if (data.analyteData[i].analyte_type === "T") {
+              data.analyteData[i].dis_text_value =
+                data.analyteData[i].text_value !== null &&
+                data.analyteData[i].text_value !== ""
+                  ? data.analyteData[i].text_value.split("<br/>")
+                  : [];
 
-        setTest_analytes(data.analyteData);
-        if (selectedPatient.isPCR === "Y") {
-          data.analyteData[0].result =
-            data.analyteData[0].result === null ||
-            data.analyteData[0].result === ""
-              ? "Negative"
-              : data.analyteData[0].result;
+              // response.data.records[i].text_value = response.data.records[i].text_value.replace("<br/>", "\n/g")
+              data.analyteData[i].text_value =
+                data.analyteData[i].text_value !== null &&
+                data.analyteData[i].text_value !== ""
+                  ? data.analyteData[i].text_value.replace(
+                      new RegExp("<br/>|<br />", "g"),
+                      "\n"
+                    )
+                  : null;
+            } else {
+              data.analyteData[i].dis_text_value = [];
+            }
+          }
+          debugger;
+          const records_test_formula = _.filter(
+            data.analyteData,
+            (f) => f.formula !== null
+          );
+
+          setTest_analytes(data.analyteData);
+          if (selectedPatient.isPCR === "Y") {
+            data.analyteData[0].result =
+              data.analyteData[0].result === null ||
+              data.analyteData[0].result === ""
+                ? "Negative"
+                : data.analyteData[0].result;
+          }
+          setComment_list(
+            data.commentsData.comments !== null
+              ? data.commentsData.comments.split("<br/>")
+              : []
+          );
+
+          setRecords_test_formula(records_test_formula);
+          setOrdered_by_name({
+            name: data.analyteData[0].ordered_by_name,
+            date: data.analyteData[0].ordered_date,
+          });
+          setConfirm_by_name({
+            name: data.analyteData[0].confirm_by_name,
+            date: data.analyteData[0].confirmed_date,
+          });
+          setEntered_by_name({
+            name: data.analyteData[0].entered_by_name,
+            date: data.analyteData[0].entered_date,
+          });
+          setValidate_by_name({
+            name: data.analyteData[0].validate_by_name,
+            date: data.analyteData[0].validated_date,
+          });
+        } else {
+          swalMessage({
+            title: "Analytes Not defined for this test, Please contact admin.",
+            type: "warning",
+          });
         }
-        setComment_list(
-          data.commentsData.comments !== null
-            ? data.commentsData.comments.split("<br/>")
-            : []
-        );
-
-        setRecords_test_formula(records_test_formula);
-        setOrdered_by_name({
-          name: data.analyteData[0].ordered_by_name,
-          date: data.analyteData[0].ordered_date,
-        });
-        setConfirm_by_name({
-          name: data.analyteData[0].confirm_by_name,
-          date: data.analyteData[0].confirmed_date,
-        });
-        setEntered_by_name({
-          name: data.analyteData[0].entered_by_name,
-          date: data.analyteData[0].entered_date,
-        });
-        setValidate_by_name({
-          name: data.analyteData[0].validate_by_name,
-          date: data.analyteData[0].validated_date,
-        });
         setIsLoading(false);
         // records_test_formula, setEntered_by_name;
         // test_analytes: response.data.records,
