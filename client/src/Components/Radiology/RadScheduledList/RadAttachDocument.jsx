@@ -16,6 +16,7 @@ export default function RadAttachDocument({
 }) {
   useEffect(() => {
     getDocuments(uniqueId);
+   
   }, []);
   const [radiologyDoc, setRadiologyDoc] = useState([]);
   const [radiologyDocList, setRadiologyDocList] = useState([]);
@@ -119,6 +120,7 @@ export default function RadAttachDocument({
   };
 
   const getDocuments = (doc_no) => {
+    debugger;
     newAlgaehApi({
       uri: "/getUploadedPatientFiles",
       module: "documentManagement",

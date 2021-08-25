@@ -149,15 +149,15 @@ export async function uploadPatientDoc(req, res, next) {
 export async function getUploadedPatientFiles(req, res, next) {
   try {
     const input = req.query;
-    const { filePath,doc_id } = input;
+    const { filePath,doc_number } = input;
     const directoryPath = path.join(folder, "UPLOAD");
     
     const completePath = path.join(directoryPath, filePath);
 
      
     if (!fs.pathExistsSync(completePath)) {    
-  contract.find({ contract_no:doc_id }, (err, docs) => {
-   
+  contract.find({ contract_no:doc_number }, (err, docs) => {
+   console.log("aim herere docs",doc_number,docs)
     docs.map((item)=>{
 
      
@@ -363,13 +363,13 @@ export const downloadPatDocument = (req, res) => {
         }
         let uploadSpecificFolder = path.join(
           uploadDocFolder,
-          req.query.doc_id
+          req.query.doc_number
         );
         if (!fs.pathExistsSync(uploadSpecificFolder)) {
           fs.mkdirSync(uploadSpecificFolder);
         }
 
-        let fileNameWithUnique = `${req.query.doc_id}__ALGAEH__${req.query.name}`;
+        let fileNameWithUnique = `${req.query.doc_number}__ALGAEH__${req.query.name}`;
         fullDocumentPath = path.join(uploadSpecificFolder, fileNameWithUnique);
 
         // console.log("errrror", fullImagePath);
