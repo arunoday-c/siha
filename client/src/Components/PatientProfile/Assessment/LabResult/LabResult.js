@@ -23,12 +23,13 @@ import moment from "moment";
 import Options from "../../../../Options.json";
 import TestAnalytes from "./TestAnalytes";
 import CompareTest from "./CompareTest";
-import {
-  // AlgaehDataGrid,
-  AlgaehModal,
-  Spin,
-  // AlgaehButton,
-} from "algaeh-react-components";
+// import {
+//   // AlgaehDataGrid,
+//   AlgaehModal,
+//   Spin,
+//   // AlgaehButton,
+// } from "algaeh-react-components";
+import PatientAttachmentModal from "../../../PatientAttachmentModal";
 
 class LabResult extends Component {
   constructor(props) {
@@ -167,7 +168,7 @@ class LabResult extends Component {
   render() {
     return (
       <React.Fragment>
-        <AlgaehModal
+        {/* <AlgaehModal
           title="View the Report"
           visible={this.state.openModal}
           mask={true}
@@ -199,10 +200,6 @@ class LabResult extends Component {
                           className="fas fa-eye"
                           onClick={() => this.downloadDoc(doc, true)}
                         ></i>
-                        {/* <i
-                            className="fas fa-trash"
-                            onClick={() => this.deleteDoc(doc)}
-                          ></i> */}
                       </span>
                     </li>
                   ))
@@ -214,7 +211,22 @@ class LabResult extends Component {
               </ul>
             </div>
           </Spin>
-        </AlgaehModal>
+        </AlgaehModal> */}
+       {this.state.openModal?( <PatientAttachmentModal 
+         openModal={this.state.openModal}
+         row={this.state.activeRow}
+         uniqueId={this.state.activeRow.lab_id_number}
+        //  disableUploadButton={disableUploadButton}
+         nameOfTheFolder="LaboratoryDocuments"
+         CloseModal={() => {
+          this.setState({
+            openModal: false,
+            
+          });
+         
+        }}
+        onlyView={true}
+        />):null}
         <div className="hptl-phase1-lab-result-form">
           <div className="container-fluid">
             <div className="row">
@@ -239,12 +251,14 @@ class LabResult extends Component {
                                 onClick={() => {
                                   this.setState(
                                     {
-                                      openModal: true,
-                                      // currentRow: row,
+                                      // openModal: true,
+                                      activeRow: row,
                                       // lab_id_number: row.lab_id_number,
                                     },
-
-                                    this.getSavedDocument.bind(this, row)
+this.setState({
+  openModal: true,
+})
+                                    
                                   );
                                 }}
                               />

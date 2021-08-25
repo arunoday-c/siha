@@ -864,7 +864,8 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
 import Options from "../../../Options.json";
 import _ from "lodash";
-import RadAttachDocument from "./RadAttachDocument";
+import PatientAttachmentModal from "../../PatientAttachmentModal"
+// import RadAttachDocument from "./RadAttachDocument";
 import { useQuery } from "react-query";
 import { Controller, useForm } from "react-hook-form";
 
@@ -1157,12 +1158,13 @@ export default function RadScheduledList() {
   return (
     <React.Fragment>
       {openModal ? (
-        <RadAttachDocument
+        <PatientAttachmentModal
           openModal={openModal}
           row={activeRow}
           uniqueId={activeRow.hims_f_rad_order_id}
           nameOfTheFolder="RadiologyDocuments"
           CloseModal={CloseModal}
+          
         />
       ) : null}
 

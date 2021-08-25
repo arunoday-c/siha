@@ -3,7 +3,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { Controller, useForm } from "react-hook-form";
 // import { swalMessage } from "../../../utils/algaehApiCall";
-import RadAttachDocument from "../../Radiology/RadScheduledList/RadAttachDocument"
+// import RadAttachDocument from "../../Radiology/RadScheduledList/RadAttachDocument"
 import {
   AlgaehDataGrid,
   AlgaehLabel,
@@ -37,6 +37,7 @@ import MicrobiologyResultEntry from "../MicrobiologyResultEntry/MicrobiologyResu
 import _ from "lodash";
 import sockets from "../../../sockets";
 import { AlgaehSecurityComponent } from "algaeh-react-components";
+import PatientAttachmentModal from "../../PatientAttachmentModal"
 // const { Dragger } = Upload;
 // const { confirm } = Modal;
 
@@ -358,7 +359,7 @@ export default function ResultEntryList() {
   return (
     <React.Fragment>
       {openUploadModal ? (
-        <RadAttachDocument
+        <PatientAttachmentModal
           openModal={openUploadModal}
           row={activeRow}
           uniqueId={activeRow.lab_id_number}

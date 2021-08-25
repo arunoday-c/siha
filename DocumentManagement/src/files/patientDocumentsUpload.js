@@ -154,10 +154,9 @@ export async function getUploadedPatientFiles(req, res, next) {
     
     const completePath = path.join(directoryPath, filePath);
 
-     
     if (!fs.pathExistsSync(completePath)) {    
   contract.find({ contract_no:doc_number }, (err, docs) => {
-   console.log("aim herere docs",doc_number,docs)
+ 
     docs.map((item)=>{
 
      

@@ -1,25 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { AlgaehModal } from "algaeh-react-components";
+import { AlgaehModal,Spin } from "algaeh-react-components";
 import { Upload } from "antd";
-import { newAlgaehApi } from "../../../hooks";
-import { swalMessage } from "../../../utils/algaehApiCall";
+import { newAlgaehApi } from "../../hooks";
+import { swalMessage } from "../../utils/algaehApiCall";
 import swal from "sweetalert2";
 const { Dragger } = Upload;
 
-export default function RadAttachDocument({
+export default function PatientAttachmentModal({
   row,
   openModal,
   uniqueId,
   state,
   nameOfTheFolder,
   CloseModal,
+  onlyView
 }) {
   useEffect(() => {
     getDocuments(uniqueId);
    
   }, []);
-  const [radiologyDoc, setRadiologyDoc] = useState([]);
-  const [radiologyDocList, setRadiologyDocList] = useState([]);
+  const [patientDoc, setPatientDoc] = useState([]);
+  const [patientDocList, setPatientDocList] = useState([]);
+  const [loading, setLoading] = useState(false);
   const deleteDoc = (doc) => {
     swal({
       title: "Are you sure you want to delete this file?",
@@ -49,7 +51,7 @@ export default function RadAttachDocument({
     //   },
     // });
   };
-  const saveDocument = (files = [], contract_no, contract_id) => {
+  const saveDocument = async(files = [], contract_no, contract_id) => {
     const formData = new FormData();
     formData.append("doc_number", contract_no);
     formData.append("nameOfTheFolder", nameOfTheFolder);
@@ -59,29 +61,29 @@ export default function RadAttachDocument({
       formData.append("fileName", file.name);
     });
 
-    newAlgaehApi({
+    await newAlgaehApi({
       uri: "/uploadPatientDoc",
       data: formData,
       extraHeaders: { "Content-Type": "multipart/form-data" },
       method: "POST",
       module: "documentManagement",
     })
-      .then((res) => {
-        getDocuments(uniqueId);
-        // addDiagramFromMaster(contract_id, res.data.records);
-        swalMessage({
-          type: "success",
-          title: "Request Added successfully",
-        });
-        // return;
-        // getDocuments(contract_no);
-      })
-      .catch((e) => {
-        swalMessage({
-          type: "error",
-          title: e.message,
-        });
-      });
+      // .then((res) => {
+      //   getDocuments(uniqueId);
+      //   // addDiagramFromMaster(contract_id, res.data.records);
+      //   swalMessage({
+      //     type: "success",
+      //     title: "Request Added successfully",
+      //   });
+      //   // return;
+      //   // getDocuments(contract_no);
+      // })
+      // .catch((e) => {
+      //   swalMessage({
+      //     type: "error",
+      //     title: e.message,
+      //   });
+      // });
   };
   const downloadDoc = (doc, isPreview) => {
     newAlgaehApi({
@@ -120,6 +122,7 @@ export default function RadAttachDocument({
   };
 
   const getDocuments = (doc_no) => {
+    setLoading(true);
     newAlgaehApi({
       uri: "/getUploadedPatientFiles",
       module: "documentManagement",
@@ -132,14 +135,16 @@ export default function RadAttachDocument({
       },
     })
       .then((res) => {
+     
         if (res.data.success) {
           let { data } = res.data;
-
-          setRadiologyDocList(data);
-          setRadiologyDoc([]);
+          setLoading(false);
+          setPatientDocList(data);
+          setPatientDoc([]);
         }
       })
       .catch((e) => {
+        setLoading(false);
         swalMessage({
           type: "error",
           title: e.message,
@@ -157,7 +162,7 @@ export default function RadAttachDocument({
     })
       .then((res) => {
         if (res.data.success) {
-          const radiologyDocuments = radiologyDocList.filter(
+          const PatientDocuments = patientDocList.filter(
             (item) => item.value !== doc.value
           );
 
@@ -166,7 +171,7 @@ export default function RadAttachDocument({
             title: "Document Deleted Successfully",
           });
           // getDocuments(row.hims_f_rad_order_id);
-          return setRadiologyDocList(radiologyDocuments);
+          return setPatientDocList(PatientDocuments);
         }
       })
       .catch((e) => {});
@@ -174,17 +179,36 @@ export default function RadAttachDocument({
   };
   return (
     <div>
+      <Spin spinning={loading}>
+
       <AlgaehModal
         title="Attach Report"
         visible={openModal}
         mask={true}
         maskClosable={false}
         onCancel={CloseModal}
-        footer={[
+        footer={onlyView?null:[
           <div className="col-12">
             <button
-              onClick={() => {
-                saveDocument(radiologyDoc, uniqueId);
+              onClick={async() => {
+                await saveDocument(patientDoc, uniqueId)
+                .then((res) => {
+                   
+                    // addDiagramFromMaster(contract_id, res.data.records);
+                    swalMessage({
+                      type: "success",
+                      title: "Request Added successfully",
+                    });
+                    // return;
+                    // getDocuments(contract_no);
+                  })
+                  .catch((e) => {
+                    swalMessage({
+                      type: "error",
+                      title: e.message,
+                    });
+                  });
+                  getDocuments(uniqueId);
               }}
               className="btn btn-primary btn-sm"
             >
@@ -200,12 +224,12 @@ export default function RadAttachDocument({
         <div className="portlet-body">
           <div className="col-12">
             <div className="row">
-              <div className="col-3 investigationAttachmentDrag">
+             { onlyView?null:(<div className="col-3 investigationAttachmentDrag">
                 <Dragger
                   accept=".png,.jpg,.pdf,.doc,.docx,application/msword"
                   name="payment_reqDoc"
                   onRemove={(file) => {
-                    setRadiologyDoc((state) => {
+                    setPatientDoc((state) => {
                       const index = state.indexOf(file);
                       const newFileList = [...state];
                       newFileList.splice(index, 1);
@@ -213,26 +237,25 @@ export default function RadAttachDocument({
                     });
                   }}
                   beforeUpload={(file) => {
-                    setRadiologyDoc((state) => {
+                    setPatientDoc((state) => {
                       return [...state, file];
                     });
                     return false;
                   }}
-                  // disabled={this.state.dataExists && !this.state.editMode}
-                  fileList={radiologyDoc}
+                  fileList={patientDoc}
                 >
                   <button className="btn btn-default upload-drag-icon">
                     Select File
                   </button>
                 </Dragger>
-              </div>
+              </div>)}
 
               <div className="col">
                 <div className="row">
                   <div className="col-12">
                     <ul className="investigationAttachmentList">
-                      {radiologyDocList.length ? (
-                        radiologyDocList.map((doc) => {
+                      {patientDocList.length ? (
+                        patientDocList.map((doc) => {
                           return (
                             <li>
                             <b> {doc.name} </b>
@@ -293,6 +316,7 @@ export default function RadAttachDocument({
           </div>
         </div>
       </AlgaehModal>
+      </Spin>
     </div>
   );
 }
