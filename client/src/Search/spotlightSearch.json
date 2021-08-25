@@ -20,6 +20,10 @@
       {
         "fieldName": "contact_number",
         "label": "Contact Number"
+      },
+      {
+        "fieldName": "secondary_id_no",
+        "label": "Secondary ID No."
       }
     ],
     "emp_id_patients": [
@@ -42,6 +46,10 @@
       {
         "fieldName": "contact_number",
         "label": "Contact Number"
+      },
+      {
+        "fieldName": "secondary_id_no",
+        "label": "Secondary ID No."
       },
       {
         "fieldName": "employee_id",
