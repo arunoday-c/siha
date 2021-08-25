@@ -1,60 +1,60 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Application No.</th>
-                        <th>Employee Code</th>
-                        <th>Employee Name</th>
-                        <th>Employee Group</th>
-                        <th>Department</th>
-                        <th>Sub Department</th>
-                        <th>Leave Type</th>
-                        <th>From Date</th>
-                        <th>To Date</th>
-                        <th>Total Days</th>
-                        <th>Salary Mode</th>
-                        <th>Level 1 </th>
-                        <th>Level 2 </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#hasElement detail}}
-                    {{#each detail}}
-                    <tr>
-                        <td colspan="14" class="tableSubHdg">{{status}}</td>
-                    </tr>
-                    {{#each detailList}}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{leave_application_code}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_name}}</td>
-                        <td>{{group_description}}</td>
-                        <td>{{department_name}}</td>
-                        <td>{{sub_department_name}}</td>
-                        <td>{{leave_description}}</td>
-                        <td>{{from_date}}</td>
-                        <td>{{to_date}}</td>
-                        <td>{{total_applied_days}}</td>
-                        <td>{{from_normal_salary}}</td>
-                        <td>{{autho1_by}}</td>
-                        <td>{{autho2_by}}</td>
-                    </tr>
-                    {{/each }}
-                    {{/each }}
-                    {{else}}
-                    <tr>
-                        <td colspan="14" class="noResultTextReport">No Records Found</td>
-                    </tr>{{/hasElement }}
-                </tbody>
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Application No.</th>
+            <th>Employee Code</th>
+            <th>Employee Name</th>
+            <th>Employee Group</th>
+            <th>Department</th>
+            <th>Sub Department</th>
+            <th>Leave Type</th>
+            <th>From Date</th>
+            <th>To Date</th>
+            <th>Total Days</th>
+            <th>Salary Mode</th>
+            <th>Level 1 </th>
+            <th>Level 2 </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#hasElement detail}}
+            {{#each detail}}
+              <tr>
+                <td colspan="14" class="tableSubHdg">{{status}}</td>
+              </tr>
+              {{#each detailList}}
+                <tr>
+                  <td datatype="string">{{inc @index}}</td>
+                  <td>{{leave_application_code}}</td>
+                  <td datatype="string">{{employee_code}}</td>
+                  <td>{{employee_name}}</td>
+                  <td>{{group_description}}</td>
+                  <td>{{department_name}}</td>
+                  <td>{{sub_department_name}}</td>
+                  <td>{{leave_description}}</td>
+                  <td>{{from_date}}</td>
+                  <td>{{to_date}}</td>
+                  <td>{{total_applied_days}}</td>
+                  <td>{{from_normal_salary}}</td>
+                  <td>{{autho1_by}}</td>
+                  <td>{{autho2_by}}</td>
+                </tr>
+              {{/each}}
+            {{/each}}
+          {{else}}
+            <tr>
+              <td colspan="14" class="noResultTextReport">No Records Found</td>
+            </tr>{{/hasElement}}
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
 </body>

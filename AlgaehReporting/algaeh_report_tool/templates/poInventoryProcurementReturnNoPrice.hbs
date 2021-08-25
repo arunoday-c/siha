@@ -67,7 +67,7 @@
  <td colspan="14"  class="txtFld"><b>{{item_description}} - ({{item_code}})</b></td>
                     </tr>
                     <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{uom_description}}</td>
                         <td>{{vendor_batchno}}</td>
                         <td>{{expiry_date}}</td>
@@ -108,7 +108,7 @@
 
                     {{#each detailList}}
                     <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{item_description}}</td>
                         <td>{{item_code}}</td>
                         <td>{{uom_description}}</td>

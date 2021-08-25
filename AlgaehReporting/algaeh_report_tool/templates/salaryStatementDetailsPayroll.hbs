@@ -76,9 +76,9 @@
                     </tr>
                     {{#each employees}}
                     <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{employee_code}}</td>
-                        <td class="txtFld"><span class="textTruncate" style="width: 200px;">{{full_name}}</span></td>
+                        <td datatype="string">{{inc @index}}</td>
+                        <td datatype="string">{{employee_code}}</td>
+                        <td class="txtFld" datatype="string"><span class="textTruncate" style="width: 200px;">{{full_name}}</span></td>
                         <td><span class="textTruncate" style="width: 80px;">{{designation}}</span></td>
                         <td>{{nationality}}</td>
                         {{!-- <td>{{sub_department_name}}</td> --}}

@@ -1,96 +1,116 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 {{#each result}}
 
-<body>
-    <div class="print-body" style="page-break-before: always; page-break-after: always; margin-right:15px">
-        <section>
-            <table class="tableForLabel labelBlock" cell-padding="0">
-                <tr>
-                    <td><label class="textEnLft">Employee Code:</label><span class="valueText">{{employee_code}}</span>
-                    </td>
-                    <td colspan="2"><label class="textEnLft">Employee Name:</label><span
-                            class="valueText">{{full_name}}</span></td> <td><label class="textEnLft">Branch: </label><span class="valueText">{{hospital_name}}</span></td>
-                </tr>
-                <tr>
+  <body>
+    <div
+      class="print-body"
+      style="page-break-before: always; page-break-after: always; margin-right:15px"
+    >
+      <section>
+        <table class="tableForLabel labelBlock" cell-padding="0">
+          <tr>
+            <td><label class="textEnLft">Employee Code:</label><span
+                class="valueText"
+              >{{employee_code}}</span>
+            </td>
+            <td colspan="2"><label class="textEnLft">Employee Name:</label><span
+                class="valueText"
+              >{{full_name}}</span></td>
+            <td><label class="textEnLft">Branch: </label><span
+                class="valueText"
+              >{{hospital_name}}</span></td>
+          </tr>
+          <tr>
 
-                    <td><label class="textEnLft">Date of Joining: </label><span class="valueText">{{date_of_joining}}</span></td>
-                  
+            <td><label class="textEnLft">Date of Joining: </label><span
+                class="valueText"
+              >{{date_of_joining}}</span></td>
 
-                    <td colspan="2"><label class="textEnLft">Sub Department: </label><span class="valueText">
-                        
-                            {{sub_department_name}}</span></td>  <td><label class="textEnLft">Designation:</label><span class="valueText">{{designation}}</span></td>
-                              
-                  
-                </tr>
-            </table>
-        </section>
-        <br />
-        <section>
-            <table class="tableForData">
-                <tr class="footerTotalUp">  <td class="txtFld">Request Status:</td>
-                    <td class="txtFld" colspan="3"><b>{{approval_status}}</b></td></tr>
-                <tr class="footerTotalUp">
-                    <td class="txtFld">Request No:</td>
-                    <td class="txtFld" width="30%"><b>{{leave_application_code}}</b></td>
-               
-                    <td class="txtFld">Request Date:</td>
-                    <td class="txtFld" width="30%"><b>{{application_date}}</b></td>
-                </tr> <tr class="footerTotalUp">
-                    <td class="txtFld">Applied For</td>
-                    <td class="txtFld" width="30%"><b>{{leave_description}}</b></td>
-              
-                    <td class="txtFld">Leave Type:</td>
-                    <td class="txtFld" width="30%"><b>{{leave_type}}</b></td>
-                </tr> <tr class="footerTotalUp">
-                    <td class="txtFld">Leave Start Date:</td>
-                    <td class="txtFld" width="30%"><b>{{from_date}}</b></td>
-               
-                    <td class="txtFld">Leave End Date:</td>
-                    <td class="txtFld" width="30%"><b>{{actual_to_date}}</b></td>
-                </tr>
-                <tr class="footerTotalUp">
-                    <td class="txtFld">Requested Days:</td>
-                    <td class="txtFld"  colspan="3"><b>{{total_applied_days}}</b></td>
-           
-                    {{!-- <td class="txtFld">Approved Days:</td>
+            <td colspan="2"><label class="textEnLft">Sub Department:
+              </label><span class="valueText">
+
+                {{sub_department_name}}</span></td>
+            <td><label class="textEnLft">Designation:</label><span
+                class="valueText"
+              >{{designation}}</span></td>
+
+          </tr>
+        </table>
+      </section>
+      <br />
+      <section>
+        <table class="tableForData">
+          <tr class="footerTotalUp">
+            <td class="txtFld" datatype="string">Request Status:</td>
+            <td class="txtFld" colspan="3"><b>{{approval_status}}</b></td></tr>
+          <tr class="footerTotalUp">
+            <td class="txtFld" datatype="string">Request No:</td>
+            <td class="txtFld" width="30%"><b
+              >{{leave_application_code}}</b></td>
+
+            <td class="txtFld" datatype="string">Request Date:</td>
+            <td class="txtFld" width="30%"><b>{{application_date}}</b></td>
+          </tr>
+          <tr class="footerTotalUp">
+            <td class="txtFld" datatype="string">Applied For</td>
+            <td class="txtFld" width="30%"><b>{{leave_description}}</b></td>
+
+            <td class="txtFld" datatype="string">Leave Type:</td>
+            <td class="txtFld" width="30%"><b>{{leave_type}}</b></td>
+          </tr>
+          <tr class="footerTotalUp">
+            <td class="txtFld" datatype="string">Leave Start Date:</td>
+            <td class="txtFld" width="30%"><b>{{from_date}}</b></td>
+
+            <td class="txtFld" datatype="string">Leave End Date:</td>
+            <td class="txtFld" width="30%"><b>{{actual_to_date}}</b></td>
+          </tr>
+          <tr class="footerTotalUp">
+            <td class="txtFld" datatype="string">Requested Days:</td>
+            <td class="txtFld" colspan="3"><b>{{total_applied_days}}</b></td>
+
+            {{!-- <td class="txtFld" datatype="string">Approved Days:</td>
                     <td class="txtFld" width="30%"><b>{{total_approved_days}}</b></td> --}}
-                </tr>
-            
-              
-                {{!-- <tr class="footerTotalUp">
-                    <td class="txtFld">Approved By:</td>
+          </tr>
+
+          {{!-- <tr class="footerTotalUp">
+                    <td class="txtFld" datatype="string">Approved By:</td>
                     <td class="txtFld" width="30%"><b>{{user_display_name}}</b></td>
                 </tr>
                 <tr class="footerTotalUp">
-                    <td class="txtFld">Approved Date:</td>
+                    <td class="txtFld" datatype="string">Approved Date:</td>
                     <td class="txtFld" width="30%"><b>{{leave_days}}</b></td>
                 </tr> --}}
-            </table></section>
-        <section>
-            <table class="tableForLabelSignature labelBlock" cell-padding="0">
-                <tr>
-                    <td width="50%">
-                        <p>I hereby request to grant me leave as detailed above. and looking forward to your acknowledgment of my leave application.</p>
-                        <span>{{full_name}}</span>
-                        <span>{{employee_code}}</span>
-                        <small>{{designation}}</small>
-                        <br />
-                        <b class="signArea"></b>
-                    </td>
-                    <td width="50%" class="txtFld">
-                        <p>أطلب بموجب هذا منحني إجازة كما هو مفصل أعلاه وأتطلع إلى إقراركم بطلب الإجازة الخاص بي.</p>
-                        <span>{{arabic_name}}</span>
-                        <span>{{employee_code}}</span>
-                        <small>{{designation}}</small>
-                        <br />
-                        <b class="signArea"></b>
-                    </td>
-                </tr>
+        </table></section>
+      <section>
+        <table class="tableForLabelSignature labelBlock" cell-padding="0">
+          <tr>
+            <td width="50%">
+              <p>I hereby request to grant me leave as detailed above. and
+                looking forward to your acknowledgment of my leave application.</p>
+              <span>{{full_name}}</span>
+              <span>{{employee_code}}</span>
+              <small>{{designation}}</small>
+              <br />
+              <b class="signArea"></b>
+            </td>
+            <td width="50%" class="txtFld">
+              <p>أطلب بموجب هذا منحني إجازة كما هو مفصل أعلاه وأتطلع إلى إقراركم
+                بطلب الإجازة الخاص بي.</p>
+              <span>{{arabic_name}}</span>
+              <span>{{employee_code}}</span>
+              <small>{{designation}}</small>
+              <br />
+              <b class="signArea"></b>
+            </td>
+          </tr>
 
-
-            </table>
-        </section>
-        <p style="text-align: center">This is a system generated Leave Request Slip on {{currentDateTime 'date'}}. </p>
+        </table>
+      </section>
+      <p style="text-align: center">This is a system generated Leave Request
+        Slip on
+        {{currentDateTime "date"}}.
+      </p>
     </div>
-</body>
-{{/each }}
+  </body>
+{{/each}}

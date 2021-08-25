@@ -1,41 +1,41 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Request No. </th>
-                        <th>Request Date</th>
-                        <th>Employee Code</th>
-                        <th>Employee Name</th>
-                        <th>Deducting Month & Year</th>
-                        <th>Advance Amount</th>
-                        <th>Reason for Advance</th>
-                        <th>status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each result}}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{request_number}}</td>
-                        <td>{{request_date}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{full_name}}</td>
-                        <td>{{deducting_month}}-{{deducting_year}}</td>
-                        <td>{{payment_amount}}</td>
-                        <td>{{adv_reason}}</td>
-                        <td>{{status}}</td>
-                    </tr>
-                    {{/each }}
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Request No. </th>
+            <th>Request Date</th>
+            <th>Employee Code</th>
+            <th>Employee Name</th>
+            <th>Deducting Month & Year</th>
+            <th>Advance Amount</th>
+            <th>Reason for Advance</th>
+            <th>status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each result}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td>{{request_number}}</td>
+              <td>{{request_date}}</td>
+              <td datatype="string">{{employee_code}}</td>
+              <td>{{full_name}}</td>
+              <td>{{deducting_month}}-{{deducting_year}}</td>
+              <td>{{payment_amount}}</td>
+              <td>{{adv_reason}}</td>
+              <td>{{status}}</td>
+            </tr>
+          {{/each}}
 
-                </tbody>
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
 </body>

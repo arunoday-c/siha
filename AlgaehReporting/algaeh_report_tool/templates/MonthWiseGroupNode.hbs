@@ -38,8 +38,8 @@
                     </tr>
                     {{#each sub_accounts}}
                     <tr>
-                        <td>{{inc @index}}</td>
-                        <td class="txtFld">{{child_name}}</td>
+                        <td datatype="string">{{inc @index}}</td>
+                        <td class="txtFld" datatype="string">{{child_name}}</td>
                         <td class="numberFld ">{{debit_amount}}</td>
                         <td class="numberFld ">{{credit_amount}}</td>
                         <td class="numberFld numberFldTotal">{{balance_amount}}</td>

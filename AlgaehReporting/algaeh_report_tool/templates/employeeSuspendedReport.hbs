@@ -20,13 +20,16 @@
 
             {{#each detailsList}}
               <tr>
-                <td>{{inc @index}}</td>
+                <td datatype="string">{{inc @index}}</td>
                 <td style="width: 100px;">{{hospital_name}}</td>
                 <td style="width: 100px;">{{employee_code}}</td>
-                <td class="txtFld">{{full_name}}</td>
+                <td class="txtFld" datatype="string">{{full_name}}</td>
                 <td style="width: 100px;">{{identity_no}}</td>
-                <td class="txtFld">{{designation}}</td>
-                <td class="txtFld">{{sub_department_name}}</td>
+                <td class="txtFld" datatype="string">{{designation}}</td>
+                <td
+                  class="txtFld"
+                  datatype="string"
+                >{{sub_department_name}}</td>
               </tr>
             {{/each}}
           {{else}}

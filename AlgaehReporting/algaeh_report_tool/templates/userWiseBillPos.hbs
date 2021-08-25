@@ -38,7 +38,7 @@
                     </tr>
                     {{#each detailList}}
                     <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{pos_number}}</td>
                         <td>{{pos_date}}</td>
                         {{!-- <td>{{service_name}}</td> --}}
@@ -46,7 +46,7 @@
                         <td excelborder='{"top":{"style":"thin","color":{"argb":"dddddd"}},"left":{"style":"thin","color":{"argb":"dddddd"}},"bottom":{"style":"thin","color":{"argb":"dddddd"}},"right":{"style":"thin","color":{"argb":"dddddd"}}}'
                             class="txtFld">{{full_name}}</td>
                         <td>{{visit_code}}</td>
-                        <td>{{visit_date}}</td>
+                        <td datatype="string">{{visit_date}}</td>
                         <td class="numberFld">{{numberFormating net_amount ../../decimalOnly}}</td>
                     </tr>
                     {{/each }}{{/each }}

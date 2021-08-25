@@ -1,104 +1,104 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
-            {{!-- <table class="tableForLabel" cell-padding="0">
+    <section>
+      {{!-- <table class="tableForLabel" cell-padding="0">
                 <tr>
                     <td><label class="textEnLft">Total Employees</label>:<span class="valueText">{{no_employees}}</span>
                     </td>
                 </tr>
             </table> --}}
 
+    </section>
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Patient Code</th>
+            <th>Patient Name</th>
+            <th>Service Name</th>
+            <th>Invoice Number</th>
+            <th>Invoice Date</th>
+            <th>Card Number</th>
+            <th>Policy Number</th>
+            <th>Total</th>
+            <th>Vat</th>
+            <th>Net Payable</th>
+          </tr>
 
-        </section>
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Patient Code</th>
-                        <th>Patient Name</th>
-                        <th>Service Name</th>
-                        <th>Invoice Number</th>
-                        <th>Invoice Date</th>
-                        <th>Card Number</th>
-                        <th>Policy Number</th>
-                        <th>Total</th>
-                        <th>Vat</th>
-                        <th>Net Payable</th>
-                    </tr>
-
-                </thead>
-                <tbody>
-                    {{!-- <tr>
+        </thead>
+        <tbody>
+          {{!-- <tr>
                         <td colspan="10"></td>
                         <td colspan="1"><span class="textFloatRight">Total No.
                                 Employees: <b>{{no_employees}}</b></span></td>
 
                     </tr> --}}
-                    {{#hasElement result}}
+          {{#hasElement result}}
 
+            {{#each result}}
+              <tr>
+                <td colspan="8" class="tableSubHdg">{{company_name}}</td>
+                <td class="tableSubHdg numberFld">
+                  {{totalCompanyAmt}}
+                </td>
+                <td class="tableSubHdg numberFld">
+                  {{vatCompanyAmt}}
+                </td>
+                <td class="tableSubHdg numberFld">
+                  {{netCompanyAmt}}
+                </td>
+              </tr>
+              {{#each networkList}}
+                <tr>
+                  <td colspan="8" class="tableSubHdg2">{{policy_name}}
+                  </td>
+                  <td class="tableSubHdg2 numberFld">
+                    {{!-- {{numberFormating totalNetworkAmt .../currencyOnly}} --}}
+                    {{totalNetworkAmt}}
+                  </td>
+                  <td class="tableSubHdg2 numberFld">
+                    {{!-- {{numberFormating totalNetworkAmt .../currencyOnly}} --}}
+                    {{vatNetworkAmt}}
+                  </td>
+                  <td class="tableSubHdg2 numberFld">
+                    {{!-- {{numberFormating totalNetworkAmt .../currencyOnly}} --}}
+                    {{netNetworkAmt}}
+                  </td>
 
-                    {{#each result}}
-                    <tr>
-                        <td colspan="8" class="tableSubHdg">{{company_name}}</td>
-  <td  class="tableSubHdg numberFld">
-                            {{totalCompanyAmt}}
-                        </td>
-  <td  class="tableSubHdg numberFld">
-                            {{vatCompanyAmt}}
-                        </td>
-  <td  class="tableSubHdg numberFld">
-                            {{netCompanyAmt}}
-                        </td>
-                    </tr>
-                    {{#each networkList}}
-                    <tr>
-                        <td colspan="8" class="tableSubHdg2">{{policy_name}}
-                        </td>
-                        <td  class="tableSubHdg2 numberFld">
-                            {{!-- {{numberFormating totalNetworkAmt .../currencyOnly}} --}}
-                            {{totalNetworkAmt}}
-                        </td>  <td  class="tableSubHdg2 numberFld">
-                            {{!-- {{numberFormating totalNetworkAmt .../currencyOnly}} --}}
-                            {{vatNetworkAmt}}
-                        </td>  <td  class="tableSubHdg2 numberFld">
-                            {{!-- {{numberFormating totalNetworkAmt .../currencyOnly}} --}}
-                            {{netNetworkAmt}}
-                        </td>
-                      
-                    </tr>
-                    {{#each docs}}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{patient_code}}</td>
-                        <td>{{full_name}}</td>
-                        <td>{{service_name}}</td>
-                        <td>{{invoice_number}}</td>
-                        <td>{{invoice_date}}</td>
-                        <td>{{card_number}}</td>
-                        <td>{{policy_number}}</td>
-                        <td class="numberFld">{{company_resp}}</td>
-                        <td class="numberFld">{{company_tax}}</td>
-                        <td class="numberFld">{{company_payable}}</td>
-                    </tr>
-                    {{/each }}
-                     {{!-- <tr class="numberFldTotalBottom">
+                </tr>
+                {{#each docs}}
+                  <tr>
+                    <td datatype="string">{{inc @index}}</td>
+                    <td>{{patient_code}}</td>
+                    <td>{{full_name}}</td>
+                    <td>{{service_name}}</td>
+                    <td datatype="string">{{invoice_number}}</td>
+                    <td datatype="string">{{invoice_date}}</td>
+                    <td>{{card_number}}</td>
+                    <td>{{policy_number}}</td>
+                    <td class="numberFld">{{company_resp}}</td>
+                    <td class="numberFld">{{company_tax}}</td>
+                    <td class="numberFld">{{company_payable}}</td>
+                  </tr>
+                {{/each}}
+                {{!-- <tr class="numberFldTotalBottom">
                         <td colspan="4"></td>
                         <td class="numberFld">{{total_net_amout}}</td>
                     </tr>  --}}
-                    {{/each }}{{/each }}
-                  
-                    {{else}}
-                    <tr>
-                        <td colspan="6" class="noResultTextReport">No Records Found</td>
-                    </tr>{{/hasElement }}
-                </tbody>
+              {{/each}}{{/each}}
 
-            </table>
-             {{!-- <table class="tableTotal">
+          {{else}}
+            <tr>
+              <td colspan="6" class="noResultTextReport">No Records Found</td>
+            </tr>{{/hasElement}}
+        </tbody>
+
+      </table>
+      {{!-- <table class="tableTotal">
                 <tr class="bold">
                     <td>Net Stock Value</td>
                     <td class="numberFld">{{net_stock_value}}</td>
@@ -106,8 +106,8 @@
                 </tr>
                
             </table> --}}
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
 
-    </div>
+  </div>
 </body>

@@ -55,9 +55,9 @@
                     </tr>
                     {{#each branch_data}}
                     <tr>
-                        <td>{{inc @index}}</td>
-                        <td class="txtFld">{{item_description}}</td>
-                        <td class="txtFld">{{category_desc}}</td>
+                        <td datatype="string">{{inc @index}}</td>
+                        <td class="txtFld" datatype="string">{{item_description}}</td>
+                        <td class="txtFld" datatype="string">{{category_desc}}</td>
                         <td class="numberFld">{{dispatch_quantity}}</td>
                         <td class="numberFld">{{waited_avg_cost}}</td>
                         <td class="numberFld">{{numberFormating cost_price ../../../currency}}</td>

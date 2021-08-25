@@ -1,43 +1,41 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
+    <section>
 
-            <table class="tableForLabel" cell-padding="0">
-                <tr>
-                    <td>Quotation No.</td>
-                    <td colspan="3"><b>{{sales_quotation_number}}</b></td>
+      <table class="tableForLabel" cell-padding="0">
+        <tr>
+          <td>Quotation No.</td>
+          <td colspan="3"><b>{{sales_quotation_number}}</b></td>
 
-                </tr>
-                <tr>
-                    <td width="12%">Customer</td>
-                    <td><b>{{customer_name}}</b></td>
-                    <td width="12%">Address</td>
-                    <td><b>{{address}}</b></td>
-                </tr>
-                <tr>
-                    <td>Order No.</td>
-                    <td><b>{{sales_order_number}}</b></td>
-                    <td>Order Date</td>
-                    <td><b>{{sales_order_date}}</b></td>
+        </tr>
+        <tr>
+          <td width="12%">Customer</td>
+          <td><b>{{customer_name}}</b></td>
+          <td width="12%">Address</td>
+          <td><b>{{address}}</b></td>
+        </tr>
+        <tr>
+          <td>Order No.</td>
+          <td><b>{{sales_order_number}}</b></td>
+          <td>Order Date</td>
+          <td><b>{{sales_order_date}}</b></td>
 
-                </tr>
-                <tr>
-                    <td>Delivery Date</td>
-                    <td><b>{{delivery_date}}</b></td>
-                    <td>Sales Person</td>
-                    <td><b>{{employee_name}}</b></td>
-                </tr>
+        </tr>
+        <tr>
+          <td>Delivery Date</td>
+          <td><b>{{delivery_date}}</b></td>
+          <td>Sales Person</td>
+          <td><b>{{employee_name}}</b></td>
+        </tr>
 
+      </table>
 
-            </table>
+    </section>
 
-
-        </section>
-
-        {{!-- <section>
+    {{!-- <section>
 
             <table class="tableForLabel" cell-padding="0">
                 <tr>
@@ -73,57 +71,57 @@
 
 
         </section> --}}
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Item Name</th>
-                        <th>UOM</th>
-                        <th>Price</th>
-                        <th>Qty</th>
-                        <th>Ext. Cost</th>
-                        <th>Disc. Amt.</th>
-                        <th>Net Ext. Cost</th>
-                        <th>Tax Amt.</th>
-                        <th>Total Amt. </th>
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Item Name</th>
+            <th>UOM</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Ext. Cost</th>
+            <th>Disc. Amt.</th>
+            <th>Net Ext. Cost</th>
+            <th>Tax Amt.</th>
+            <th>Total Amt. </th>
 
-                    </tr>
-                </thead>
-                <tbody>
+          </tr>
+        </thead>
+        <tbody>
 
-                    {{#each detailList}}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{item_description}}</td>
-                        <td>{{uom_description}}</td>
-                        <td class="numberFld">{{unit_cost}}</td>
-                        <td class="numberFld">{{quantity}}</td>
-                        <td class="numberFld">{{extended_cost}}</td>
-                        <td class="numberFld">{{discount_amount}}</td>
-                        <td class="numberFld">{{net_extended_cost}}</td>
-                        <td class="numberFld">{{tax_amount}}</td>
-                        <td class="numberFld">{{total_amount}}</td>
+          {{#each detailList}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td>{{item_description}}</td>
+              <td>{{uom_description}}</td>
+              <td class="numberFld">{{unit_cost}}</td>
+              <td class="numberFld">{{quantity}}</td>
+              <td class="numberFld">{{extended_cost}}</td>
+              <td class="numberFld">{{discount_amount}}</td>
+              <td class="numberFld">{{net_extended_cost}}</td>
+              <td class="numberFld">{{tax_amount}}</td>
+              <td class="numberFld">{{total_amount}}</td>
 
-                    </tr>
-                    {{/each }}
-                    <tr class="footerTotalDown">
-                        <td colspan="5" class="numberFld">Total</td>
-                        <td class="numberFld">{{sub_total}}</td>
-                        <td class="numberFld">{{discount_amount}}</td>
-                        <td class="numberFld">{{net_total}}</td>
-                        <td class="numberFld">{{total_tax}}</td>
-                        <td class="numberFld">{{net_payable}}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <table class="tableForLabel" cell-padding="0">
-                <tr>
-                    <td>Narration:<span class="valueText"> {{narration}}</span>
-                    </td>
-                </tr>
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+            </tr>
+          {{/each}}
+          <tr class="footerTotalDown">
+            <td colspan="5" class="numberFld">Total</td>
+            <td class="numberFld">{{sub_total}}</td>
+            <td class="numberFld">{{discount_amount}}</td>
+            <td class="numberFld">{{net_total}}</td>
+            <td class="numberFld">{{total_tax}}</td>
+            <td class="numberFld">{{net_payable}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="tableForLabel" cell-padding="0">
+        <tr>
+          <td>Narration:<span class="valueText"> {{narration}}</span>
+          </td>
+        </tr>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
 </body>

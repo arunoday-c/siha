@@ -1,57 +1,57 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.<small>م</small></th>
-                        <th>Data From<small>معلومات من</small></th>
-                        <th>Date<small>التاريخ</small></th>
-                        <th>Badge/Rig No.<small>شارة لا</small></th>
-                        <th>MRN No.<small>كود المريض</small></th>
-                        <th>Patient Name<small>اسم المريض</small></th>
-                        <th>Patient ID<small>رقم المريض</small></th>
-                        <th>Nationality<small>الجنسية</small></th>
-                        <th>Company Name<small>اسم الشركة</small></th>
-                        <th>Total Before VAT<small>الإجمالي قبل ضريبة القيمة المضافة</small></th>
-                        <th>Total After VAT<small>الإجمالي بعد ضريبة القيمة المضافة</small></th>
-                        <th>Company VAT Amount<small>مبلغ ضريبة القيمة المضافة للشركة</small></th>
-                    </tr>
-                </thead>
-                <tbody>
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.<small>م</small></th>
+            <th>Data From<small>معلومات من</small></th>
+            <th>Date<small>التاريخ</small></th>
+            <th>Badge/Rig No.<small>شارة لا</small></th>
+            <th>MRN No.<small>كود المريض</small></th>
+            <th>Patient Name<small>اسم المريض</small></th>
+            <th>Patient ID<small>رقم المريض</small></th>
+            <th>Nationality<small>الجنسية</small></th>
+            <th>Company Name<small>اسم الشركة</small></th>
+            <th>Total Before VAT<small>الإجمالي قبل ضريبة القيمة المضافة</small></th>
+            <th>Total After VAT<small>الإجمالي بعد ضريبة القيمة المضافة</small></th>
+            <th>Company VAT Amount<small>مبلغ ضريبة القيمة المضافة للشركة</small></th>
+          </tr>
+        </thead>
+        <tbody>
 
-                    {{#each details}}
-                    <tr>
-                        <td datatype="string">{{inc @index}}</td>
-                        <td>{{data_from}}/{{doc_number}}</td>
-                        <td datatype="string">{{visit_date}}</td>
-                        <td>{{employee_id}}</td>
-                        <td>{{patient_code}}</td>
-                        <td class="txtFld">{{full_name}}</td>
-                        <td datatype="string">{{primary_id_no}}</td>
-                        <td>{{nationality}}</td>
-                        <td>{{insurance_sub_name}}</td>
-                        <td class="numberFld">{{total_before_vat}}</td>
-                        <td class="numberFld">{{total_after_vat}}</td>
-                        {{!-- <td class="numberFld">{{patient_tax}}</td> --}}
-                        <td class="numberFld">{{company_tax}}</td>
+          {{#each details}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td>{{data_from}}/{{doc_number}}</td>
+              <td datatype="string">{{visit_date}}</td>
+              <td>{{employee_id}}</td>
+              <td>{{patient_code}}</td>
+              <td class="txtFld" datatype="string">{{full_name}}</td>
+              <td datatype="string">{{primary_id_no}}</td>
+              <td>{{nationality}}</td>
+              <td>{{insurance_sub_name}}</td>
+              <td class="numberFld">{{total_before_vat}}</td>
+              <td class="numberFld">{{total_after_vat}}</td>
+              {{!-- <td class="numberFld">{{patient_tax}}</td> --}}
+              <td class="numberFld">{{company_tax}}</td>
 
-                    </tr>
-                    {{/each }}
-                    <tr class="numberFldTotalBottom">
-                        <td colspan="8"></td>
-                        <td class="numberFld">{{total_before_vat}}</td>
-                        <td class="numberFld">{{total_after_vat}}</td>
-                        {{!-- <td class="numberFld">{{patient_tax}}</td> --}}
-                        <td class="numberFld">{{company_tax}}</td>
+            </tr>
+          {{/each}}
+          <tr class="numberFldTotalBottom">
+            <td colspan="8"></td>
+            <td class="numberFld">{{total_before_vat}}</td>
+            <td class="numberFld">{{total_after_vat}}</td>
+            {{!-- <td class="numberFld">{{patient_tax}}</td> --}}
+            <td class="numberFld">{{company_tax}}</td>
 
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
 </body>

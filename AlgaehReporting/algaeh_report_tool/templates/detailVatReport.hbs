@@ -38,9 +38,9 @@
                     {{#each patientList}}
                     {{#each docs}}
                      <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{data_from}}</td>
-                        <td class="txtFld">{{service_name}}</td>
+                        <td class="txtFld" datatype="string">{{service_name}}</td>
                         <td>{{insurance_yesno}}</td>
                         <td class="numberFld">{{total_before_vat}}</td>
                         <td class="numberFld">{{total_tax}}</td>

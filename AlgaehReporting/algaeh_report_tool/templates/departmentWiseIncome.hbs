@@ -1,35 +1,35 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                     <tr>
-    <th>Sl No.</th>
-    <th>Dept. Code</th>
-    <th>Dept. Name</th>
-    <th>Amount</th>
-  </tr>
-                </thead>
-                <tbody>
-                    {{#each details}}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{sub_department_code}}</td>
-    <td>{{sub_department_name}}</td>
-    <td class="numberFld">{{net_income}}</td>
-                    </tr>
-                    {{/each }}
-                <tr class="numberFldTotalBottom">
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Dept. Code</th>
+            <th>Dept. Name</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each details}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td>{{sub_department_code}}</td>
+              <td>{{sub_department_name}}</td>
+              <td class="numberFld">{{net_income}}</td>
+            </tr>
+          {{/each}}
+          <tr class="numberFldTotalBottom">
 
-                        <td colspan="3" class="numberFld">Total</td>
-                        <td class="numberFld">{{net_payable}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+            <td colspan="3" class="numberFld">Total</td>
+            <td class="numberFld">{{net_payable}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
 </body>

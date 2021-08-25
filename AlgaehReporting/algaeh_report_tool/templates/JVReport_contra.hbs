@@ -34,7 +34,7 @@
                 <tbody>
                     {{#each resultInvoice}}
                    <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{cost_center_name}}</td>
                         <td>{{ledger_code}}</td>
                        
@@ -44,7 +44,7 @@
                         <td class="numberFld">{{numberFormating credit_amount ../currency}}</td>
                         {{!-- <td>{{payment_type}}</td> --}}
                         <td>{{payment_date}}</td>
-                        <td class="txtFld">{{narration_detail}}</td>
+                        <td class="txtFld" datatype="string">{{narration_detail}}</td>
                     </tr>
                     {{/each }}
  <tr>

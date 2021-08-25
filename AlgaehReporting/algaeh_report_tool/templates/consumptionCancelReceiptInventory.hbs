@@ -49,12 +49,12 @@
         <tbody>
           {{#each detailList}}
             <tr>
-              <td>{{inc @index}}</td>
+              <td datatype="string">{{inc @index}}</td>
               <td>{{item_description}}</td>
               <td>{{uom_description}}</td>
               <td>{{batchno}}</td>
               <td class="numberFld">{{unit_cost}}</td>
-              <td>{{quantity}}</td>
+              <td datatype="string">{{quantity}}</td>
               <td class="numberFld">{{extended_cost}}</td>
             </tr>
           {{/each}}

@@ -1,53 +1,58 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                     <tr>
-                        <th>Sl No.</th>
-                        <th>Bill No.</th>
-                        <th>Bill Date</th>
-                        <th>Service Name</th>
-                        <th>Service Code</th>
-                        <th>Visit Date</th>
-                    </tr>
+  <div class="print-body">
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Bill No.</th>
+            <th>Bill Date</th>
+            <th>Service Name</th>
+            <th>Service Code</th>
+            <th>Visit Date</th>
+          </tr>
 
-                </thead>
-                <tbody>
-                  
-                    {{#hasElement result}}
-                   
-                    {{#each result}}
-                    <tr>
-                        <td colspan="6" class="tableSubHdg">{{patient_code}} - {{full_name}} / {{nationality}}</td>
-                        
-                    </tr>
-                    {{#each patientList}}
-                    {{#each docs}}
-                     <tr>
-                        <td>{{inc @index}}</td> <td class="">{{bill_number}}</td>
-                        <td class="">{{bill_date}}</td>
-                        <td class="txtFld">{{service_name}}</td>
-                        <td class="">{{service_code}}</td>
-                        <td class="">{{visit_date}}</td>
+        </thead>
+        <tbody>
 
-                    </tr>
-                    {{/each }}
-                 
-                    {{/each }}{{/each }}
-                  
-                    {{else}}
-                    <tr>
-                        <td colspan="6" class="noResultTextReport">No Records Found</td>
-                    </tr>
-                    {{/hasElement }}
-                </tbody>
+          {{#hasElement result}}
 
-            </table>
-            
-        </section>
+            {{#each result}}
+              <tr>
+                <td colspan="6" class="tableSubHdg">{{patient_code}}
+                  -
+                  {{full_name}}
+                  /
+                  {{nationality}}</td>
 
-    </div>
+              </tr>
+              {{#each patientList}}
+                {{#each docs}}
+                  <tr>
+                    <td datatype="string">{{inc @index}}</td>
+                    <td class="">{{bill_number}}</td>
+                    <td class="">{{bill_date}}</td>
+                    <td class="txtFld" datatype="string">{{service_name}}</td>
+                    <td class="">{{service_code}}</td>
+                    <td class="">{{visit_date}}</td>
+
+                  </tr>
+                {{/each}}
+
+              {{/each}}{{/each}}
+
+          {{else}}
+            <tr>
+              <td colspan="6" class="noResultTextReport">No Records Found</td>
+            </tr>
+          {{/hasElement}}
+        </tbody>
+
+      </table>
+
+    </section>
+
+  </div>
 </body>

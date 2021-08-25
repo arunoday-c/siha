@@ -76,11 +76,11 @@
                 </tr> --}}
                 {{!-- {{#each docs}}  --}}
                 <tr>
-                  <td>{{inc @index}}</td>
-                  <td>{{bill_number}}</td>
-                  <td>{{bill_date}}</td>
-                  <td class="txtFld">{{service_type}}</td>
-                  <td class="txtFld">{{service_name}}</td>
+                  <td datatype="string">{{inc @index}}</td>
+                  <td datatype="string">{{bill_number}}</td>
+                  <td datatype="string">{{bill_date}}</td>
+                  <td class="txtFld" datatype="string">{{service_type}}</td>
+                  <td class="txtFld" datatype="string">{{service_name}}</td>
                   <td class="numberFld">{{net_amount}}</td>
                   <td class="numberFld">{{op_cash_comission_amount}}</td>
                   <td class="numberFld">{{op_crd_comission_amount}}</td>

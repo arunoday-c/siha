@@ -1,34 +1,96 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
+{{{importStyle "css/algaehReportStyles.css"}}}
 
 <body>
-    <div class="print-body">
+  <div class="print-body">
 
-        <section>
+    <section>
 
-            <table class="tableForLabel" cell-padding="0">
+      <table class="tableForLabel" cell-padding="0">
 
-                <tr>
-                    <td><label class="textEnLft">Purchase No</label>:<span
-                            class="valueText">{{purchase_return_number}}</span>
-                    </td>
-                    <td><label class="textEnLft">Purchase For</label>:<span
-                            class="valueText">{{location_name}}</span></td>
+        <tr>
+          <td><label class="textEnLft">Purchase No</label>:<span
+              class="valueText"
+            >{{purchase_return_number}}</span>
+          </td>
+          <td><label class="textEnLft">Purchase For</label>:<span
+              class="valueText"
+            >{{location_name}}</span></td>
 
-                </tr>
-                <tr>
-                    <td><label class="textEnLft">Purchase Date</label>:<span class="valueText">{{return_date }}</span>
-                    </td>
-                    <td><label class="textEnLft">Vendor Name</label>:<span class="valueText">{{vendor_name}}</span></td>
-                </tr>
-     <tr>
-                    <td><label class="textEnLft">Invoice No.</label>:<span class="valueText">{{inovice_number}}</span>
-                    </td>
-                    <td><label class="textEnLft">Invoice Date</label>:<span class="valueText">{{invoice_date}}</span></td>
-                </tr>
-            </table>
+        </tr>
+        <tr>
+          <td><label class="textEnLft">Purchase Date</label>:<span
+              class="valueText"
+            >{{return_date}}</span>
+          </td>
+          <td><label class="textEnLft">Vendor Name</label>:<span
+              class="valueText"
+            >{{vendor_name}}</span></td>
+        </tr>
+        <tr>
+          <td><label class="textEnLft">Invoice No.</label>:<span
+              class="valueText"
+            >{{inovice_number}}</span>
+          </td>
+          <td><label class="textEnLft">Invoice Date</label>:<span
+              class="valueText"
+            >{{invoice_date}}</span></td>
+        </tr>
+      </table>
 
+    </section><section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Item Name</th>
+            <th>Item Code</th>
+            <th>Unit</th>
+            <th>Batch No.</th>
+            <th>Expiry Date</th>
+            <th>Delivered Qty</th>
+            <th>Return Qty</th>
+            <th>Qty in Hand</th>
+            <th>Unit Price</th>
+            <th>Ext. Price</th>
+            <th>Disc. %</th>
+            <th>Disc. Amt</th>
+            <th>Net Ext. Amt.</th>
+            <th>Tax Amt.</th>
+            <th>Total Amt. </th>
 
-        </section><section>
+          </tr>
+        </thead>
+        <tbody>
+
+          {{#each detailList}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td>{{item_description}}</td>
+              <td>{{item_code}}</td>
+              <td>{{uom_description}}</td>
+              <td>{{batchno}}</td>
+              <td>{{expiry_date}}</td>
+              <td class="numberFld">{{dn_quantity}}</td>
+              <td class="numberFld">{{return_qty}}</td>
+              <td class="numberFld">{{qtyhand}}</td>
+              <td class="numberFld">{{unit_cost}}</td>
+              <td class="numberFld">{{extended_cost}}</td>
+              <td class="numberFld">{{discount_percentage}}</td>
+              <td class="numberFld">{{discount_amount}}</td>
+              <td class="numberFld">{{net_extended_cost}}</td>
+              <td class="numberFld">{{tax_amount}}</td>
+              <td class="numberFld">{{total_amount}}</td>
+
+            </tr>
+          {{/each}}
+          <tr class="footerTotalDown">
+            <td colspan="15" class="numberFld">Total Net Amount</td>
+            <td>{{return_total}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    {{!-- <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
@@ -36,59 +98,6 @@
                         <th>Item Name</th>
                         <th>Item Code</th>
                         <th>Unit</th>
-                        <th>Batch No.</th>
-                        <th>Expiry Date</th>
-                        <th>Delivered Qty</th>
-                        <th>Return Qty</th>
-                        <th>Qty in Hand</th>
-                        <th>Unit Price</th>
-                        <th>Ext. Price</th>
-                        <th>Disc. %</th>
-                        <th>Disc. Amt</th>
-                        <th>Net Ext. Amt.</th>
-                        <th>Tax Amt.</th>
-                        <th>Total Amt. </th>
-
-                    </tr>
-                </thead>
-                <tbody>
-
-                    {{#each detailList}}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{item_description}}</td>
-                        <td>{{item_code}}</td>
-                        <td>{{uom_description}}</td>
-                        <td>{{batchno}}</td>
-                        <td>{{expiry_date}}</td>
-                        <td class="numberFld">{{dn_quantity}}</td>
-                        <td class="numberFld">{{return_qty}}</td>
-                        <td class="numberFld">{{qtyhand}}</td>
-                        <td class="numberFld">{{unit_cost}}</td>
-                        <td class="numberFld">{{extended_cost}}</td>
-                        <td class="numberFld">{{discount_percentage}}</td>
-                        <td class="numberFld">{{discount_amount}}</td>
-                        <td class="numberFld">{{net_extended_cost}}</td>
-                        <td class="numberFld">{{tax_amount}}</td>
-                        <td class="numberFld">{{total_amount}}</td>
-
-                    </tr>
-                    {{/each }}
-                    <tr class="footerTotalDown">
-                        <td colspan="15"  class="numberFld">Total Net Amount</td>
-                        <td>{{return_total}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-        {{!-- <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Item Name</th>
-                        <th>Item Code</th>
-                        <th>Unit</th>
                         <th>Delivered Qty</th>
                         <th>Return Qty</th>
 
@@ -98,7 +107,7 @@
 
                     {{#each detailList}}
                     <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{item_description}}</td>
                         <td>{{item_code}}</td>
                         <td>{{uom_description}}</td>
@@ -111,6 +120,6 @@
                 </tbody>
             </table>
         </section> --}}
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
 </body>

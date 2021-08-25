@@ -40,15 +40,15 @@
                     {{#hasElement result}}
                     {{#each result}}
                     <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{grn_number}}</td>
                         <td>{{grn_date}}</td>
                         <td>{{purchase_number}}</td>
                         <td>{{delivery_note_number}}</td>
                         <td>{{inovice_number}}</td>
-                        <td>{{invoice_date}}</td>
+                         <td datatype="string">{{invoice_date}}</td>
                         <td  class="txtFld">{{vendor_name}}</td>
-                        <td class="txtFld">{{created_user}}</td>
+                        <td class="txtFld" datatype="string">{{created_user}}</td>
                         <td  class="numberFld">{{ numberFormating net_total ../currencyOnly }}</td>
                         <td  class="numberFld">{{numberFormating total_tax ../currencyOnly}}</td>
                         <td  class="numberFld">{{ numberFormating net_payable ../currencyOnly}}</td>
@@ -57,9 +57,9 @@
                     </tr>
                     {{!-- {{#each poitems}}
                     <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{item_code}}</th>
-                        <td class="txtFld">{{item_description}}</th>
+                        <td class="txtFld" datatype="string">{{item_description}}</th>
                         <td>{{uom_description}}</td>
                         <td class="numberFld">{{authorize_quantity}}</td>
                         <td class="numberFld">{{unit_cost}}</td>

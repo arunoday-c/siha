@@ -26,9 +26,9 @@
 
                     {{#each result}}
                     <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{item_code}}</th>
-                        <td class="txtFld">{{item_description}}</th>
+                        <td class="txtFld" datatype="string">{{item_description}}</th>
                         <td>{{todays_stock}}</td>
                         <td class="numberFld">{{thirty_days_stock}}</td>
                         <td class="numberFld">{{sixty_days_stock}}</td>

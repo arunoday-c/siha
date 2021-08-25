@@ -34,9 +34,9 @@
                 <tbody>
                     {{#each result}}
                     <tr>
-                        <td>{{inc @index}}</td>
+                        <td datatype="string">{{inc @index}}</td>
                         <td>{{ledger_code}}</td> {{!--{{account_name}} >  --}}
-                        <td class="txtFld">{{child_name}}</td> {{!--{{account_name}} >  --}}
+                        <td class="txtFld" datatype="string">{{child_name}}</td> {{!--{{account_name}} >  --}}
                         <td class="numberFld">{{arabic_child_name}}</td> {{!--{{arabic_account_name}} >  --}}
                         <td class="numberFld">{{numberFormating debit_amount ../currency}}</td>
                         <td class="numberFld">{{numberFormating credit_amount ../currency}}</td>

@@ -20,8 +20,8 @@
                 <tbody>
                     {{#each detail}}
                     <tr class="numberFldTotal">
-                        <td>{{inc @index}}</td>
-                        <td class="txtFld">{{invoice_date}}</td>
+                        <td datatype="string">{{inc @index}}</td>
+                        <td class="txtFld" datatype="string">{{invoice_date}}</td>
                         <td class="numberFld">{{invoice_no}}</td>
                         <td class="numberFld">{{due_date}}</td>
                         <td class="numberFld">{{numberFormating invoice_amount ../currencyOnly}}</td>
