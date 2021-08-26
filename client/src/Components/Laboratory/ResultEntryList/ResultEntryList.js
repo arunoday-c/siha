@@ -47,7 +47,6 @@ export default function ResultEntryList() {
   const { control, errors, reset, getValues } = useForm({
     defaultValues: {
       hospital_id: userToken.hims_d_hospital_id,
-      start_date: [moment(new Date()), moment(new Date())],
     },
   });
   const [currentPage, setCurrentPage] = useState(1);
@@ -60,6 +59,10 @@ export default function ResultEntryList() {
   const [openUploadModal, setOpenUploadModal] = useState(false);
   const [disableUploadButton, setDisableUploadBtn] = useState(true);
   const [activeRow, setActiveRow] = useState([]);
+  const [start_date, setStartDate] = useState([
+    moment(new Date()),
+    moment(new Date()),
+  ]);
   // const [comments_data, setCommentsData] = useState("");
   // const [lab_id_number, setLabIdNumber] = useState(null);
   // const [investigation_test_id, setInventigationTestId] = useState(null);
@@ -203,12 +206,14 @@ export default function ResultEntryList() {
   };
 
   useEffect(() => {
+    debugger;
     sockets.on("reload_specimen_collection", (billData) => {
+      debugger;
       const { bill_date } = billData;
-      const date = new Date(moment(bill_date).format("YYYY-MM-DD"));
+      const date = moment(bill_date).format("YYYY-MM-DD");
 
       // socket undefined of zero fix here
-      const _date = getValues().start_date;
+      const _date = start_date;
       const start = moment(_date[0]).format("YYYY-MM-DD");
       const end = moment(_date[1]).format("YYYY-MM-DD");
 
@@ -241,7 +246,7 @@ export default function ResultEntryList() {
     }
   );
   async function getLabOrderedServices(key) {
-    const date = getValues().start_date;
+    const date = start_date;
     const from_date = moment(date[0]).format("YYYY-MM-DD");
     const to_date = moment(date[1]).format("YYYY-MM-DD");
 
@@ -492,7 +497,7 @@ export default function ResultEntryList() {
                 textBox={{
                   className: "txt-fld",
                   name: "start_date",
-                  value,
+                  value: start_date,
                 }}
                 type="range"
                 // others={{ disabled }}
@@ -500,6 +505,7 @@ export default function ResultEntryList() {
                   onChange: (mdate) => {
                     if (mdate) {
                       onChange(mdate);
+                      setStartDate(mdate);
                     } else {
                       onChange(undefined);
                     }

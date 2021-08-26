@@ -36,7 +36,7 @@ export default function AccessionAcknowledgement() {
   const { control, errors, reset, getValues } = useForm({
     defaultValues: {
       hospital_id: userToken.hims_d_hospital_id,
-      start_date: [moment(new Date()), moment(new Date())],
+      // start_date: [moment(new Date()), moment(new Date())],
     },
   });
   const [checkAll, setCheckAll] = useState(STATUS.UNCHECK);
@@ -46,14 +46,26 @@ export default function AccessionAcknowledgement() {
   const [currentPage, setCurrentPage] = useState(1);
   const [remarks, setRemarks] = useState("");
   const [acknowledgeLoading, setAcknowledgeLoading] = useState(false);
+  const [start_date, setStartDate] = useState([
+    moment(new Date()),
+    moment(new Date()),
+  ]);
+
   useEffect(() => {
     sockets.on("reload_specimen_collection", (billData) => {
       const { bill_date } = billData;
-      const date = new Date(moment(bill_date).format("YYYY-MM-DD"));
-      const start = new Date(
-        moment(getValues().from_date).format("YYYY-MM-DD")
-      );
-      const end = new Date(moment(getValues().to_date).format("YYYY-MM-DD"));
+      const date = moment(bill_date).format("YYYY-MM-DD");
+
+      // socket undefined of zero fix here
+      const _date = start_date;
+      const start = moment(_date[0]).format("YYYY-MM-DD");
+      const end = moment(_date[1]).format("YYYY-MM-DD");
+
+      // const date = new Date(moment(bill_date).format("YYYY-MM-DD"));
+      // const start = new Date(
+      //   moment(getValues().from_date).format("YYYY-MM-DD")
+      // );
+      // const end = new Date(moment(getValues().to_date).format("YYYY-MM-DD"));
 
       if (date >= start && date <= end) {
         refetch();
@@ -78,7 +90,7 @@ export default function AccessionAcknowledgement() {
     }
   );
   async function getLabOrderedServices(key) {
-    const date = getValues().start_date;
+    const date = start_date;
     const from_date = moment(date[0]).format("YYYY-MM-DD");
     const to_date = moment(date[1]).format("YYYY-MM-DD");
 
@@ -366,7 +378,7 @@ export default function AccessionAcknowledgement() {
                   textBox={{
                     className: "txt-fld",
                     name: "start_date",
-                    value,
+                    value: start_date,
                   }}
                   type="range"
                   // others={{ disabled }}
@@ -374,6 +386,7 @@ export default function AccessionAcknowledgement() {
                     onChange: (mdate) => {
                       if (mdate) {
                         onChange(mdate);
+                        setStartDate(mdate);
                       } else {
                         onChange(undefined);
                       }

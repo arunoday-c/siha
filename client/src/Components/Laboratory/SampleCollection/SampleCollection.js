@@ -22,15 +22,19 @@ import sockets from "../../../sockets";
 function SampleCollection() {
   const { userToken } = useContext(MainContext);
   const [currentPage, setCurrentPage] = useState(1);
-  const { control, errors, reset, getValues } = useForm({
+  const { control, errors, reset } = useForm({
     defaultValues: {
       hospital_id: userToken.hims_d_hospital_id,
-      start_date: [moment(new Date()), moment(new Date())],
+      // start_date: [moment(new Date()), moment(new Date())],
     },
   });
   const [isOpen, setIsOpen] = useState(false);
   const [sample_collection, setSample_collection] = useState([]);
   const [selected_patient, setSelected_patient] = useState([]);
+  const [start_date, setStartDate] = useState([
+    moment(new Date()),
+    moment(new Date()),
+  ]);
   const ShowCollectionModel = (row, e) => {
     setIsOpen(!isOpen);
     setSelected_patient(row);
@@ -42,12 +46,17 @@ function SampleCollection() {
   };
   useEffect(() => {
     sockets.on("reload_specimen_collection", (billData) => {
+      debugger;
       const { bill_date } = billData;
-      const date = new Date(moment(bill_date).format("YYYY-MM-DD"));
-      const start = new Date(
-        moment(getValues().from_date).format("YYYY-MM-DD")
-      );
-      const end = new Date(moment(getValues().to_date).format("YYYY-MM-DD"));
+      const date = moment(bill_date).format("YYYY-MM-DD");
+      // const start = new Date(
+      //   moment(getValues().from_date).format("YYYY-MM-DD")
+      // );
+      // const end = new Date(moment(getValues().to_date).format("YYYY-MM-DD"));
+
+      const _date = start_date;
+      const start = moment(_date[0]).format("YYYY-MM-DD");
+      const end = moment(_date[1]).format("YYYY-MM-DD");
 
       if (date >= start && date <= end) {
         // if (window.location.pathname === "/RadOrderedList")
@@ -102,7 +111,7 @@ function SampleCollection() {
     }
   );
   async function getLabOrderedServices(key) {
-    const date = getValues().start_date;
+    const date = start_date;
     const from_date = moment(date[0]).format("YYYY-MM-DD");
     const to_date = moment(date[1]).format("YYYY-MM-DD");
 
@@ -144,7 +153,7 @@ function SampleCollection() {
               textBox={{
                 className: "txt-fld",
                 name: "start_date",
-                value,
+                value: start_date,
               }}
               type="range"
               // others={{ disabled }}
@@ -152,6 +161,7 @@ function SampleCollection() {
                 onChange: (mdate) => {
                   if (mdate) {
                     onChange(mdate);
+                    setStartDate(mdate);
                   } else {
                     onChange(undefined);
                   }
