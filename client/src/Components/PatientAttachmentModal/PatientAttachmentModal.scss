@@ -1,4 +1,4 @@
-@import "../../../styles/algaehCssVariables.scss";
+@import "../../styles/algaehCssVariables.scss";
 
 .hptl-phase1-rad-work-list-form {
   .go-button {
@@ -45,7 +45,7 @@
   }
 }
 
-.radInvestigationAttachmentModal {
+.PatientAttachmentModal {
   min-width: 80vw !important;
 
   .investigationAttachmentDrag {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { AlgaehModal,Spin } from "algaeh-react-components";
+import "./PatientAttachmentModal.scss";
+import { AlgaehModal, Spin } from "algaeh-react-components";
 import { Upload } from "antd";
 import { newAlgaehApi } from "../../hooks";
 import { swalMessage } from "../../utils/algaehApiCall";
@@ -13,11 +14,10 @@ export default function PatientAttachmentModal({
   state,
   nameOfTheFolder,
   CloseModal,
-  onlyView
+  onlyView,
 }) {
   useEffect(() => {
     getDocuments(uniqueId);
-   
   }, []);
   const [patientDoc, setPatientDoc] = useState([]);
   const [patientDocList, setPatientDocList] = useState([]);
@@ -51,7 +51,7 @@ export default function PatientAttachmentModal({
     //   },
     // });
   };
-  const saveDocument = async(files = [], contract_no, contract_id) => {
+  const saveDocument = async (files = [], contract_no, contract_id) => {
     const formData = new FormData();
     formData.append("doc_number", contract_no);
     formData.append("nameOfTheFolder", nameOfTheFolder);
@@ -67,58 +67,57 @@ export default function PatientAttachmentModal({
       extraHeaders: { "Content-Type": "multipart/form-data" },
       method: "POST",
       module: "documentManagement",
-    })
-      // .then((res) => {
-      //   getDocuments(uniqueId);
-      //   // addDiagramFromMaster(contract_id, res.data.records);
-      //   swalMessage({
-      //     type: "success",
-      //     title: "Request Added successfully",
-      //   });
-      //   // return;
-      //   // getDocuments(contract_no);
-      // })
-      // .catch((e) => {
-      //   swalMessage({
-      //     type: "error",
-      //     title: e.message,
-      //   });
-      // });
+    });
+    // .then((res) => {
+    //   getDocuments(uniqueId);
+    //   // addDiagramFromMaster(contract_id, res.data.records);
+    //   swalMessage({
+    //     type: "success",
+    //     title: "Request Added successfully",
+    //   });
+    //   // return;
+    //   // getDocuments(contract_no);
+    // })
+    // .catch((e) => {
+    //   swalMessage({
+    //     type: "error",
+    //     title: e.message,
+    //   });
+    // });
   };
   const downloadDoc = (doc, isPreview) => {
     newAlgaehApi({
-        uri: "/downloadPatDocument",
-        module: "documentManagement",
-        method: "GET",
-        extraHeaders: {
-          Accept: "blob",
-        },
-        others: {
-          responseType: "blob",
-        },
-        data: {
-          fileName: doc.value,
-        },
+      uri: "/downloadPatDocument",
+      module: "documentManagement",
+      method: "GET",
+      extraHeaders: {
+        Accept: "blob",
+      },
+      others: {
+        responseType: "blob",
+      },
+      data: {
+        fileName: doc.value,
+      },
+    })
+      .then((resp) => {
+        const urlBlob = URL.createObjectURL(resp.data);
+        if (isPreview) {
+          window.open(urlBlob);
+        } else {
+          const link = document.createElement("a");
+          link.download = doc.name;
+          link.href = urlBlob;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+        // setPDFLoading(false);
       })
-        .then((resp) => {
-          const urlBlob = URL.createObjectURL(resp.data);
-          if (isPreview) {
-            window.open(urlBlob);
-          } else {
-            const link = document.createElement("a");
-            link.download = doc.name;
-            link.href = urlBlob;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }
-          // setPDFLoading(false);
-        })
-        .catch((error) => {
-          console.log(error);
-          // setPDFLoading(false);
-        });
-    
+      .catch((error) => {
+        console.log(error);
+        // setPDFLoading(false);
+      });
   };
 
   const getDocuments = (doc_no) => {
@@ -130,12 +129,11 @@ export default function PatientAttachmentModal({
       data: {
         doc_number: doc_no,
         filePath: `PatientDocuments/${row.patient_code}/${nameOfTheFolder}/${doc_no}/`,
-        nameOfTheFolder:nameOfTheFolder,
-        patient_code:row.patient_code,
+        nameOfTheFolder: nameOfTheFolder,
+        patient_code: row.patient_code,
       },
     })
       .then((res) => {
-     
         if (res.data.success) {
           let { data } = res.data;
           setLoading(false);
@@ -180,110 +178,117 @@ export default function PatientAttachmentModal({
   return (
     <div>
       <Spin spinning={loading}>
-
-      <AlgaehModal
-        title="Attach Report"
-        visible={openModal}
-        mask={true}
-        maskClosable={false}
-        onCancel={CloseModal}
-        footer={onlyView?null:[
-          <div className="col-12">
-            <button
-              onClick={async() => {
-                await saveDocument(patientDoc, uniqueId)
-                .then((res) => {
-                   
-                    // addDiagramFromMaster(contract_id, res.data.records);
-                    swalMessage({
-                      type: "success",
-                      title: "Request Added successfully",
-                    });
-                    // return;
-                    // getDocuments(contract_no);
-                  })
-                  .catch((e) => {
-                    swalMessage({
-                      type: "error",
-                      title: e.message,
-                    });
-                  });
-                  getDocuments(uniqueId);
-              }}
-              className="btn btn-primary btn-sm"
-            >
-              Attach Document
-            </button>
-            <button onClick={CloseModal} className="btn btn-default btn-sm">
-              Cancel
-            </button>
-          </div>,
-        ]}
-        className={`algaehNewModal radInvestigationAttachmentModal`}
-      >
-        <div className="portlet-body">
-          <div className="col-12">
-            <div className="row">
-             { onlyView?null:(<div className="col-3 investigationAttachmentDrag">
-                <Dragger
-                  accept=".png,.jpg,.pdf,.doc,.docx,application/msword"
-                  name="payment_reqDoc"
-                  onRemove={(file) => {
-                    setPatientDoc((state) => {
-                      const index = state.indexOf(file);
-                      const newFileList = [...state];
-                      newFileList.splice(index, 1);
-                      return newFileList;
-                    });
-                  }}
-                  beforeUpload={(file) => {
-                    setPatientDoc((state) => {
-                      return [...state, file];
-                    });
-                    return false;
-                  }}
-                  fileList={patientDoc}
-                >
-                  <button className="btn btn-default upload-drag-icon">
-                    Select File
-                  </button>
-                </Dragger>
-              </div>)}
-
-              <div className="col">
-                <div className="row">
+        <AlgaehModal
+          title="Attach Report"
+          visible={openModal}
+          mask={true}
+          maskClosable={false}
+          onCancel={CloseModal}
+          footer={
+            onlyView
+              ? null
+              : [
                   <div className="col-12">
-                    <ul className="investigationAttachmentList">
-                      {patientDocList.length ? (
-                        patientDocList.map((doc) => {
-                          return (
-                            <li>
-                            <b> {doc.name} </b>
-                            <span>
-                              <i
-                                className="fas fa-download"
-                                onClick={() => downloadDoc(doc)}
-                              ></i>
+                    <button
+                      onClick={async () => {
+                        await saveDocument(patientDoc, uniqueId)
+                          .then((res) => {
+                            // addDiagramFromMaster(contract_id, res.data.records);
+                            swalMessage({
+                              type: "success",
+                              title: "Request Added successfully",
+                            });
+                            // return;
+                            // getDocuments(contract_no);
+                          })
+                          .catch((e) => {
+                            swalMessage({
+                              type: "error",
+                              title: e.message,
+                            });
+                          });
+                        getDocuments(uniqueId);
+                      }}
+                      className="btn btn-primary btn-sm"
+                    >
+                      Attach Document
+                    </button>
+                    <button
+                      onClick={CloseModal}
+                      className="btn btn-default btn-sm"
+                    >
+                      Cancel
+                    </button>
+                  </div>,
+                ]
+          }
+          className={`algaehNewModal PatientAttachmentModal`}
+        >
+          <div className="portlet-body">
+            <div className="col-12">
+              <div className="row">
+                {onlyView ? null : (
+                  <div className="col-3 investigationAttachmentDrag">
+                    <Dragger
+                      accept=".png,.jpg,.pdf,.doc,.docx,application/msword"
+                      name="payment_reqDoc"
+                      onRemove={(file) => {
+                        setPatientDoc((state) => {
+                          const index = state.indexOf(file);
+                          const newFileList = [...state];
+                          newFileList.splice(index, 1);
+                          return newFileList;
+                        });
+                      }}
+                      beforeUpload={(file) => {
+                        setPatientDoc((state) => {
+                          return [...state, file];
+                        });
+                        return false;
+                      }}
+                      fileList={patientDoc}
+                    >
+                      <button className="btn btn-default upload-drag-icon">
+                        Select File
+                      </button>
+                    </Dragger>
+                  </div>
+                )}
 
-                              <i
-                                className="fas fa-eye"
-                                onClick={() => downloadDoc(doc, true)}
-                              ></i>
+                <div className="col">
+                  <div className="row">
+                    <div className="col-12">
+                      <ul className="investigationAttachmentList">
+                        {patientDocList.length ? (
+                          patientDocList.map((doc) => {
+                            return (
+                              <li>
+                                <b> {doc.name} </b>
+                                <span>
+                                  <i
+                                    className="fas fa-download"
+                                    onClick={() => downloadDoc(doc)}
+                                  ></i>
 
-                              <i
-                                className="fas fa-trash"
-                                onClick={() => deleteDoc(doc)}
-                              ></i>
-                            </span>
-                          </li>
-                          );
-                        })
-                      ) : (
-                        <div className="col-12 noAttachment" key={1}>
-                          <p>No Attachments Available</p>
-                        </div>
-                      )}
-                      {/* {this.state.attached_docs.length ? (
+                                  <i
+                                    className="fas fa-eye"
+                                    onClick={() => downloadDoc(doc, true)}
+                                  ></i>
+
+                                  <i
+                                    className="fas fa-trash"
+                                    onClick={() => deleteDoc(doc)}
+                                  ></i>
+                                </span>
+                              </li>
+                            );
+                          })
+                        ) : (
+                          <div className="col-12 noAttachment" key={1}>
+                            <p>No Attachments Available</p>
+                          </div>
+                        )}
+                        {/* {this.state.attached_docs.length ? (
                           this.state.attached_docs.map((doc) => (
                             <li>
                               <b> {doc.filename} </b>
@@ -308,14 +313,14 @@ export default function PatientAttachmentModal({
                             <p>No Attachments Available</p>
                           </div>
                         )} */}
-                    </ul>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </AlgaehModal>
+        </AlgaehModal>
       </Spin>
     </div>
   );
