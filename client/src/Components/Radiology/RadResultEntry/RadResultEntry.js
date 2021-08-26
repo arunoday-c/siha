@@ -64,12 +64,13 @@ class RadResultEntry extends Component {
     }
   }
   UNSAFE_componentWillReceiveProps(newProps) {
-    const { portal_exists } = this.context.userToken;
+    const { portal_exists, full_name } = this.context.userToken;
     if (
       newProps.selectedPatient !== undefined &&
       (newProps.radschlist === undefined || newProps.radschlist.length === 0)
     ) {
       newProps.selectedPatient.portal_exists = portal_exists;
+      newProps.selectedPatient.user_name = full_name;
       if (this.state.changesDone === false) {
         newProps.selectedPatient.pre_exam_status =
           newProps.selectedPatient.exam_status;
@@ -78,6 +79,7 @@ class RadResultEntry extends Component {
       }
     } else {
       newProps.radschlist[0].portal_exists = portal_exists;
+      newProps.radschlist[0].user_name = full_name;
       this.setState({ ...this.state, ...newProps.radschlist[0] });
     }
   }

@@ -2539,128 +2539,128 @@ export async function updateLabOrderServices(req, res, next) {
     inputParam.lab_location_code = update_lab_sample[1][0].lab_location_code;
     const today_date = moment().format("YYYY-MM-DD HH:mm:ss");
 
-    if (inputParam.lab_id_number != null) {
-      const result = await _mysql.executeQuery({
-        query: `update hims_f_lab_order L  \
-                      INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id SET S.container_id=${
-                        inputParam.container_id
-                      }, S.sample_id=${inputParam.sample_id},S.collected='${
-          inputParam.collected
-        }', L.status='CL', send_out_test='${
-          inputParam.send_out_test
-        }',send_in_test='${inputParam.send_in_test}',S.collected_by=${
-          req.userIdentity.algaeh_d_app_user_id
-        }, S.collected_date ='${
-          inputParam.collected_date
-            ? `${inputParam.collected_date}`
-            : `${today_date}`
-        }', S.barcode_gen = now() where hims_f_lab_order_id=${
-          inputParam.hims_f_lab_order_id
-        }`,
-        // values: condition,
-        printQuery: true,
-      });
-      // .then(async (result) => {
-      if (inputParam.portal_exists === "Y") {
-        const portal_data = {
-          service_id: inputParam.service_id,
-          visit_code: inputParam.visit_code,
-          patient_identity: inputParam.primary_id_no,
-          service_status: "SAMPLE COLLECTED",
-        };
+    // if (inputParam.lab_id_number != null) {
+    //   const result = await _mysql.executeQuery({
+    //     query: `update hims_f_lab_order L  \
+    //                   INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id SET S.container_id=${
+    //                     inputParam.container_id
+    //                   }, S.sample_id=${inputParam.sample_id},S.collected='${
+    //       inputParam.collected
+    //     }', L.status='CL', send_out_test='${
+    //       inputParam.send_out_test
+    //     }',send_in_test='${inputParam.send_in_test}',S.collected_by=${
+    //       req.userIdentity.algaeh_d_app_user_id
+    //     }, S.collected_date ='${
+    //       inputParam.collected_date
+    //         ? `${inputParam.collected_date}`
+    //         : `${today_date}`
+    //     }', S.barcode_gen = now() where hims_f_lab_order_id=${
+    //       inputParam.hims_f_lab_order_id
+    //     }`,
+    //     // values: condition,
+    //     printQuery: true,
+    //   });
+    //   // .then(async (result) => {
+    //   if (inputParam.portal_exists === "Y") {
+    //     const portal_data = {
+    //       service_id: inputParam.service_id,
+    //       visit_code: inputParam.visit_code,
+    //       patient_identity: inputParam.primary_id_no,
+    //       service_status: "SAMPLE COLLECTED",
+    //     };
 
-        await axios
-          .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-          .catch((e) => {
-            throw e;
-          });
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-          req.records = {
-            collected: inputParam.collected,
-          };
-          if (!req.preventNext) {
-            next();
-          }
-        });
-      } else {
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-          req.records = {
-            collected: inputParam.collected,
-          };
-          if (!req.preventNext) {
-            next();
-          }
-        });
-      }
-      // })
-      // .catch((e) => {
-      //   _mysql.rollBackTransaction(() => {
-      //     next(e);
-      //   });
-      // });
-    } else {
-      const record = update_lab_sample[2];
-      const test_exists = update_lab_sample[3];
-      let query = "";
-      let condition = [];
-      let padNum = "";
-      let labIdNumber = "";
-      let _newNumber = 1;
+    //     await axios
+    //       .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+    //       .catch((e) => {
+    //         throw e;
+    //       });
+    //     _mysql.commitTransaction(() => {
+    //       _mysql.releaseConnection();
+    //       req.records = {
+    //         collected: inputParam.collected,
+    //       };
+    //       if (!req.preventNext) {
+    //         next();
+    //       }
+    //     });
+    //   } else {
+    //     _mysql.commitTransaction(() => {
+    //       _mysql.releaseConnection();
+    //       req.records = {
+    //         collected: inputParam.collected,
+    //       };
+    //       if (!req.preventNext) {
+    //         next();
+    //       }
+    //     });
+    //   }
+    //   // })
+    //   // .catch((e) => {
+    //   //   _mysql.rollBackTransaction(() => {
+    //   //     next(e);
+    //   //   });
+    //   // });
+    // } else {
+    const record = update_lab_sample[2];
+    const test_exists = update_lab_sample[3];
+    let query = "";
+    let condition = [];
+    let padNum = "";
+    let labIdNumber = "";
+    let _newNumber = 1;
 
-      if (test_exists.length === 0 || test_exists[0].labIdNumber === null) {
-        if (record != null && record.length > 0) {
-          _newNumber = parseInt(record[0].number, 10);
-          _newNumber = _newNumber + 1;
-          padNum = pad(String(_newNumber), 3, "LEFT", "0");
-          condition.push(
-            _newNumber,
-            req.userIdentity.algaeh_d_app_user_id,
-            record[0].hims_m_hospital_container_mapping_id
-          );
-
-          condition.push;
-          query =
-            "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() \
-                      where hims_m_hospital_container_mapping_id =?;";
-        } else {
-          condition.push(
-            inputParam.hims_d_hospital_id,
-            inputParam.container_id,
-            _date,
-            1,
-            req.userIdentity.algaeh_d_app_user_id,
-            req.userIdentity.algaeh_d_app_user_id
-          );
-
-          query =
-            "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,\
-                            `number`,`created_by`,`updated_by`) values (?,?,?,?,?,?);";
-        }
+    if (test_exists.length === 0 || test_exists[0].labIdNumber === null) {
+      if (record != null && record.length > 0) {
+        _newNumber = parseInt(record[0].number, 10);
+        _newNumber = _newNumber + 1;
         padNum = pad(String(_newNumber), 3, "LEFT", "0");
-        const dayOfYear = moment().dayOfYear();
-        labIdNumber =
-          inputParam.lab_location_code +
-          moment().format("YY") +
-          dayOfYear +
-          inputParam.container_code +
-          padNum;
-      } else {
-        labIdNumber = test_exists[0].lab_id_number;
-      }
+        condition.push(
+          _newNumber,
+          req.userIdentity.algaeh_d_app_user_id,
+          record[0].hims_m_hospital_container_mapping_id
+        );
 
-      const final_result = await _mysql.executeQuery({
-        query:
-          query +
-          `UPDATE hims_f_lab_order L 
+        condition.push;
+        query =
+          "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() \
+                      where hims_m_hospital_container_mapping_id =?;";
+      } else {
+        condition.push(
+          inputParam.hims_d_hospital_id,
+          inputParam.container_id,
+          _date,
+          1,
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.algaeh_d_app_user_id
+        );
+
+        query =
+          "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,\
+                            `number`,`created_by`,`updated_by`) values (?,?,?,?,?,?);";
+      }
+      padNum = pad(String(_newNumber), 3, "LEFT", "0");
+      const dayOfYear = moment().dayOfYear();
+      labIdNumber =
+        inputParam.lab_location_code +
+        moment().format("YY") +
+        dayOfYear +
+        inputParam.container_code +
+        padNum;
+    } else {
+      labIdNumber = test_exists[0].lab_id_number;
+    }
+
+    const final_result = await _mysql.executeQuery({
+      query:
+        query +
+        `UPDATE hims_f_lab_order L 
                   INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id 
                   SET S.container_id=${inputParam.container_id}, S.sample_id=${
-            inputParam.sample_id
-          }, 
+          inputParam.sample_id
+        }, 
                   S.collected='${inputParam.collected}', S.status='${
-            inputParam.status
-          }', 
+          inputParam.status
+        }', 
                   S.collected_by=${req.userIdentity.algaeh_d_app_user_id},
                   S.collected_date ='${
                     inputParam.collected_date
@@ -2673,63 +2673,63 @@ export async function updateLabOrderServices(req, res, next) {
                   where L.hims_f_lab_order_id=${
                     inputParam.hims_f_lab_order_id
                   };`,
-        values: condition,
-        printQuery: true,
-      });
-      // .then(async (final_result) => {
-      if (inputParam.portal_exists === "Y") {
-        const portal_data = {
-          service_id: inputParam.service_id,
-          visit_code: inputParam.visit_code,
-          patient_identity: inputParam.primary_id_no,
-          service_status: "SAMPLE COLLECTED",
+      values: condition,
+      printQuery: true,
+    });
+    // .then(async (final_result) => {
+    if (inputParam.portal_exists === "Y") {
+      const portal_data = {
+        service_id: inputParam.service_id,
+        visit_code: inputParam.visit_code,
+        patient_identity: inputParam.primary_id_no,
+        service_status: "SAMPLE COLLECTED",
+      };
+      await axios
+        .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+        .catch((e) => {
+          throw e;
+        });
+      _mysql.commitTransaction(() => {
+        _mysql.releaseConnection();
+        req.records = {
+          collected: inputParam.collected,
+          collected_by: req.userIdentity.algaeh_d_app_user_id,
+          collected_date: inputParam.collected_date
+            ? inputParam.collected_date
+            : new Date(),
+          send_in_test: inputParam.send_in_test,
+          lab_id_number: labIdNumber,
+          status: "CL",
         };
-        await axios
-          .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
-          .catch((e) => {
-            throw e;
-          });
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-          req.records = {
-            collected: inputParam.collected,
-            collected_by: req.userIdentity.algaeh_d_app_user_id,
-            collected_date: inputParam.collected_date
-              ? inputParam.collected_date
-              : new Date(),
-            send_in_test: inputParam.send_in_test,
-            lab_id_number: labIdNumber,
-            status: "CL",
-          };
-          if (!req.preventNext) {
-            next();
-          }
-        });
-      } else {
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-          req.records = {
-            collected: inputParam.collected,
-            collected_by: req.userIdentity.algaeh_d_app_user_id,
-            collected_date: inputParam.collected_date
-              ? inputParam.collected_date
-              : new Date(),
-            send_in_test: inputParam.send_in_test,
-            lab_id_number: labIdNumber,
-            status: "CL",
-          };
-          if (!req.preventNext) {
-            next();
-          }
-        });
-      }
-      // })
-      // .catch((e) => {
-      //   _mysql.rollBackTransaction(() => {
-      //     next(e);
-      //   });
-      // });
+        if (!req.preventNext) {
+          next();
+        }
+      });
+    } else {
+      _mysql.commitTransaction(() => {
+        _mysql.releaseConnection();
+        req.records = {
+          collected: inputParam.collected,
+          collected_by: req.userIdentity.algaeh_d_app_user_id,
+          collected_date: inputParam.collected_date
+            ? inputParam.collected_date
+            : new Date(),
+          send_in_test: inputParam.send_in_test,
+          lab_id_number: labIdNumber,
+          status: "CL",
+        };
+        if (!req.preventNext) {
+          next();
+        }
+      });
     }
+    // })
+    // .catch((e) => {
+    //   _mysql.rollBackTransaction(() => {
+    //     next(e);
+    //   });
+    // });
+    // }
     // });
   } catch (e) {
     // _mysql.releaseConnection();
