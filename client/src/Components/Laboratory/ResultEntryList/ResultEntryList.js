@@ -37,7 +37,7 @@ import MicrobiologyResultEntry from "../MicrobiologyResultEntry/MicrobiologyResu
 import _ from "lodash";
 import sockets from "../../../sockets";
 import { AlgaehSecurityComponent } from "algaeh-react-components";
-import PatientAttachmentModal from "../../PatientAttachmentModal"
+import PatientAttachmentModal from "../../PatientAttachmentModal";
 // const { Dragger } = Upload;
 // const { confirm } = Modal;
 
@@ -118,10 +118,10 @@ export default function ResultEntryList() {
   //   const get_upload_doc = await getDocuments(lab_id_number,row).catch((error) => {
   //     throw error;
   //   });
-  //   
+  //
 
   //   if (get_upload_doc.success === false) {
-  //     
+  //
   //     AlgaehMessagePop({
   //       display: get_upload_doc.result,
   //       type: "error",
@@ -147,7 +147,7 @@ export default function ResultEntryList() {
   //     ).catch((error) => {
   //       throw error;
   //     });
-  //     
+  //
   //     if (after_upload.success === false) {
   //       AlgaehMessagePop({
   //         display: "Error",
@@ -206,10 +206,16 @@ export default function ResultEntryList() {
     sockets.on("reload_specimen_collection", (billData) => {
       const { bill_date } = billData;
       const date = new Date(moment(bill_date).format("YYYY-MM-DD"));
-      const start = new Date(
-        moment(getValues().from_date).format("YYYY-MM-DD")
-      );
-      const end = new Date(moment(getValues().to_date).format("YYYY-MM-DD"));
+
+      // socket undefined of zero fix here
+      const _date = getValues().start_date;
+      const start = moment(_date[0]).format("YYYY-MM-DD");
+      const end = moment(_date[1]).format("YYYY-MM-DD");
+
+      // const start = new Date(
+      //   moment(getValues().from_date).format("YYYY-MM-DD")
+      // );
+      // const end = new Date(moment(getValues().to_date).format("YYYY-MM-DD"));
 
       if (date >= start && date <= end) {
         // if (window.location.pathname === "/RadOrderedList")
@@ -259,76 +265,75 @@ export default function ResultEntryList() {
     }
   };
 
- 
-//   const downloadDoc = (doc, isPreview) => {
-//     newAlgaehApi({
-//         uri: "/downloadPatDocument",
-//         module: "documentManagement",
-//         method: "GET",
-//         extraHeaders: {
-//           Accept: "blob",
-//         },
-//         others: {
-//           responseType: "blob",
-//         },
-//         data: {
-//           fileName: doc.value,
-//         },
-//       })
-//         .then((resp) => {
-//           const urlBlob = URL.createObjectURL(resp.data);
-//           if (isPreview) {
-//             window.open(urlBlob);
-//           } else {
-//             const link = document.createElement("a");
-//             link.download = doc.name;
-//             link.href = urlBlob;
-//             document.body.appendChild(link);
-//             link.click();
-//             document.body.removeChild(link);
-//           }
-//           // setPDFLoading(false);
-//         })
-//         .catch((error) => {
-//           console.log(error);
-//           // setPDFLoading(false);
-//         });
-    
-//   };
-//   const deleteDoc = (doc) => {
-//     confirm({
-//       title: `Are you sure you want to delete this file?`,
-//       content: `${doc.filename}`,
-//       icon: "",
-//       okText: "Yes",
-//       okType: "danger",
-//       cancelText: "No",
-//       onOk() {
-//         newAlgaehApi({
-//           uri: "/deleteContractDoc",
-//           method: "DELETE",
-//           module: "documentManagement",
-//           data: { id: doc._id },
-//         }).then((res) => {
-        
-//           if (res.data.success) {
-//             const attachedDocs = attached_docs.filter(
-//               (item) => item._id !== doc._id
-//             );
-//             setAttachedDocs(attachedDocs);
-//           }
-//         }).catch((err)=>{
-//           swalMessage({
-//             type: "error",
-//             title: err.message,
-//           });
-//       })},
-//       onCancel() {
-//         console.log("Cancel");
-//       },
-  
-//   })
-// };
+  //   const downloadDoc = (doc, isPreview) => {
+  //     newAlgaehApi({
+  //         uri: "/downloadPatDocument",
+  //         module: "documentManagement",
+  //         method: "GET",
+  //         extraHeaders: {
+  //           Accept: "blob",
+  //         },
+  //         others: {
+  //           responseType: "blob",
+  //         },
+  //         data: {
+  //           fileName: doc.value,
+  //         },
+  //       })
+  //         .then((resp) => {
+  //           const urlBlob = URL.createObjectURL(resp.data);
+  //           if (isPreview) {
+  //             window.open(urlBlob);
+  //           } else {
+  //             const link = document.createElement("a");
+  //             link.download = doc.name;
+  //             link.href = urlBlob;
+  //             document.body.appendChild(link);
+  //             link.click();
+  //             document.body.removeChild(link);
+  //           }
+  //           // setPDFLoading(false);
+  //         })
+  //         .catch((error) => {
+  //           console.log(error);
+  //           // setPDFLoading(false);
+  //         });
+
+  //   };
+  //   const deleteDoc = (doc) => {
+  //     confirm({
+  //       title: `Are you sure you want to delete this file?`,
+  //       content: `${doc.filename}`,
+  //       icon: "",
+  //       okText: "Yes",
+  //       okType: "danger",
+  //       cancelText: "No",
+  //       onOk() {
+  //         newAlgaehApi({
+  //           uri: "/deleteContractDoc",
+  //           method: "DELETE",
+  //           module: "documentManagement",
+  //           data: { id: doc._id },
+  //         }).then((res) => {
+
+  //           if (res.data.success) {
+  //             const attachedDocs = attached_docs.filter(
+  //               (item) => item._id !== doc._id
+  //             );
+  //             setAttachedDocs(attachedDocs);
+  //           }
+  //         }).catch((err)=>{
+  //           swalMessage({
+  //             type: "error",
+  //             title: err.message,
+  //           });
+  //       })},
+  //       onCancel() {
+  //         console.log("Cancel");
+  //       },
+
+  //   })
+  // };
 
   let _Collected = [];
 
