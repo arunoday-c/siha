@@ -226,6 +226,7 @@ export default () => {
     "/addEmployeeMaster",
     (req, res, next) => {
       deleteCacheMaster("get_All_Doctors_DepartmentWise");
+      deleteCacheMaster("selectDoctorsAndClinic");
       next();
     },
     addEmployeeMaster,
@@ -254,6 +255,7 @@ export default () => {
     "/updateEmployee",
     (req, res, next) => {
       deleteCacheMaster("get_All_Doctors_DepartmentWise");
+      deleteCacheMaster("selectDoctorsAndClinic");
       next();
     },
     updateEmployee,
