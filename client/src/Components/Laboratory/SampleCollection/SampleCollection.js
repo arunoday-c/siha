@@ -69,6 +69,7 @@ function SampleCollection() {
         let sampleCollection = Enumerable.from(data)
           .groupBy("$.visit_id", null, (k, g) => {
             let firstRecordSet = Enumerable.from(g).firstOrDefault();
+
             return {
               patient_id: firstRecordSet.patient_id,
               visit_id: firstRecordSet.visit_id,
@@ -77,6 +78,13 @@ function SampleCollection() {
               full_name: firstRecordSet.full_name,
               ordered_date: firstRecordSet.ordered_date,
               number_of_tests: g.getSource().length,
+
+              // collected: "Y",
+
+              number_of_tests_collected: g
+                .getSource()
+                .filter((f) => f.collected === "Y").length,
+
               status: firstRecordSet.status,
               test_type: firstRecordSet.test_type,
               // doctor_name: firstRecordSet.doctor_name,
@@ -256,82 +264,104 @@ function SampleCollection() {
                   //     style: { textAlign: "center" },
                   //   },
                   // },
+                  // {
+                  //   fieldName: "test_type",
+                  //   label: <AlgaehLabel label={{ fieldName: "priority" }} />,
+                  //   displayTemplate: (row) => {
+                  //     return row.test_type === "S" ? (
+                  //       <span className="badge badge-danger">Stat</span>
+                  //     ) : (
+                  //       <span className="badge badge-secondary">Routine</span>
+                  //     );
+                  //   },
+                  //   disabled: true,
+                  //   others: {
+                  //     width: 100,
+                  //     resizable: false,
+                  //     style: { textAlign: "center" },
+                  //   },
+                  //   filterable: true,
+                  //   filterType: "choices",
+                  //   choices: [
+                  //     {
+                  //       name: "Stat",
+                  //       value: "S",
+                  //     },
+                  //     {
+                  //       name: "Routine",
+                  //       value: "R",
+                  //     },
+                  //   ],
+                  // },
+
                   {
-                    fieldName: "test_type",
-                    label: <AlgaehLabel label={{ fieldName: "priority" }} />,
-                    displayTemplate: (row) => {
-                      return row.test_type === "S" ? (
-                        <span className="badge badge-danger">Stat</span>
-                      ) : (
-                        <span className="badge badge-secondary">Routine</span>
-                      );
-                    },
-                    disabled: true,
-                    others: {
-                      width: 100,
-                      resizable: false,
-                      style: { textAlign: "center" },
-                    },
-                    filterable: true,
-                    filterType: "choices",
-                    choices: [
-                      {
-                        name: "Stat",
-                        value: "S",
-                      },
-                      {
-                        name: "Routine",
-                        value: "R",
-                      },
-                    ],
-                  },
-                  {
-                    fieldName: "status",
+                    fieldName: "",
                     label: <AlgaehLabel label={{ fieldName: "status" }} />,
                     displayTemplate: (row) => {
-                      return row.status === "O" ? (
-                        <span className="badge badge-light">Ordered</span>
-                      ) : row.status === "CL" ? (
-                        <span className="badge badge-secondary">Collected</span>
-                      ) : row.status === "CN" ? (
-                        <span className="badge badge-danger">Cancelled</span>
-                      ) : row.status === "CF" ? (
-                        <span className="badge badge-primary">Confirmed</span>
-                      ) : (
-                        <span className="badge badge-success">Validated</span>
+                      return (
+                        <span className="badge badge-light">
+                          {row.number_of_tests_collected} /{" "}
+                          {row.number_of_tests} - Collected
+                        </span>
                       );
                     },
                     disabled: true,
+                    filterable: true,
+                    sortable: true,
                     others: {
-                      width: 100,
+                      width: 120,
                       resizable: false,
                       style: { textAlign: "center" },
                     },
-                    filterable: true,
-                    filterType: "choices",
-                    choices: [
-                      {
-                        name: "Ordered",
-                        value: "O",
-                      },
-                      {
-                        name: "Collected",
-                        value: "CL",
-                      },
-                      {
-                        name: "Confirmed",
-                        value: "CF",
-                      },
-                      {
-                        name: "Validated",
-                        value: "V",
-                      },
-                      {
-                        name: "Cancelled",
-                        value: "CN",
-                      },
-                    ],
                   },
+
+                  // {
+                  //   fieldName: "status",
+                  //   label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                  //   displayTemplate: (row) => {
+                  //     return row.status === "O" ? (
+                  //       <span className="badge badge-light">Ordered</span>
+                  //     ) : row.status === "CL" ? (
+                  //       <span className="badge badge-secondary">Collected</span>
+                  //     ) : row.status === "CN" ? (
+                  //       <span className="badge badge-danger">Cancelled</span>
+                  //     ) : row.status === "CF" ? (
+                  //       <span className="badge badge-primary">Confirmed</span>
+                  //     ) : (
+                  //       <span className="badge badge-success">Validated</span>
+                  //     );
+                  //   },
+                  //   disabled: true,
+                  //   others: {
+                  //     width: 100,
+                  //     resizable: false,
+                  //     style: { textAlign: "center" },
+                  //   },
+                  //   filterable: true,
+                  //   filterType: "choices",
+                  //   choices: [
+                  //     {
+                  //       name: "Ordered",
+                  //       value: "O",
+                  //     },
+                  //     {
+                  //       name: "Collected",
+                  //       value: "CL",
+                  //     },
+                  //     {
+                  //       name: "Confirmed",
+                  //       value: "CF",
+                  //     },
+                  //     {
+                  //       name: "Validated",
+                  //       value: "V",
+                  //     },
+                  //     {
+                  //       name: "Cancelled",
+                  //       value: "CN",
+                  //     },
+                  //   ],
+                  // },
 
                   {
                     fieldName: "primary_id_no",
