@@ -58,9 +58,11 @@ export default memo(function LiList(props) {
 
         dateTime.setHours(dateTime.getHours() - props.item.notify_sms_time);
         const dateTime1 = moment(dateTime).format("MM/DD/YYYY HH:mm A");
+
         const data_to_update = {
           ...edit_details,
-          extra_params: `scheduledDate=${dateTime1}`,
+          dateTime1,
+          // extra_params: extraParams,
         };
 
         newAlgaehApi({
@@ -79,8 +81,7 @@ export default memo(function LiList(props) {
             if (type === "Confirmed") {
               if (userToken.portal_exists) {
                 debugger;
-
-                confirmAppointmentSMS(edit_details);
+                confirmAppointmentSMS(data_to_update);
               }
             }
 

@@ -1,11 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useQuery } from "react-query";
-
 import Options from "../../../Options.json";
 import "./AccessionAcknowledgement.scss";
 import "./../../../styles/site.scss";
 import { newAlgaehApi } from "../../../hooks";
-
 import { AcceptandRejectSample } from "./AccessionAcknowledgementHandaler";
 import { Checkbox } from "algaeh-react-components";
 import {
@@ -17,6 +15,7 @@ import {
   Tooltip,
   Modal,
   Spin,
+  RawSecurityComponent,
 } from "algaeh-react-components";
 import swal from "sweetalert2";
 // import Enumerable from "linq";
@@ -45,6 +44,7 @@ export default function AccessionAcknowledgement() {
   const [selected_row, setSelectedRow] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [remarks, setRemarks] = useState("");
+  const [showCheckBoxColumn, setShowCheckBoxColumn] = useState(false);
   const [acknowledgeLoading, setAcknowledgeLoading] = useState(false);
   const [start_date, setStartDate] = useState([
     moment(new Date()),
@@ -74,6 +74,13 @@ export default function AccessionAcknowledgement() {
       }
     });
   }, []);
+  RawSecurityComponent({ componentCode: "BULK_SAMPLE_ACK" }).then((result) => {
+    if (result === "hide") {
+      setShowCheckBoxColumn(false);
+    } else {
+      setShowCheckBoxColumn(true);
+    }
+  });
   const { refetch } = useQuery(
     ["getLabOrderedServices", {}],
     getLabOrderedServices,
@@ -309,6 +316,34 @@ export default function AccessionAcknowledgement() {
     });
   };
   const gridData = sample_collection.filter((f) => f.sample_status !== "A");
+  const manualColumns = showCheckBoxColumn
+    ? {
+        label: (
+          <Checkbox
+            indeterminate={checkAll === STATUS.INDETERMINATE}
+            checked={checkAll === STATUS.CHECK}
+            onChange={selectAll}
+            disabled={gridData.length > 0 ? false : true}
+          ></Checkbox>
+        ),
+        fieldName: "select",
+        displayTemplate: (row) => {
+          return (
+            <CheckBoxPlot
+              row={row}
+              fullData={sample_collection ?? []}
+              setCheckAll={setCheckAll}
+            />
+          );
+        },
+        others: {
+          maxWidth: 50,
+          filterable: false,
+          sortable: false,
+        },
+      }
+    : null;
+
   return (
     <React.Fragment>
       <Spin spinning={acknowledgeLoading}>
@@ -477,31 +512,7 @@ export default function AccessionAcknowledgement() {
                   <AlgaehDataGrid
                     // id="accessionAcknoweldgeGrid"
                     columns={[
-                      {
-                        label: (
-                          <Checkbox
-                            indeterminate={checkAll === STATUS.INDETERMINATE}
-                            checked={checkAll === STATUS.CHECK}
-                            onChange={selectAll}
-                            disabled={gridData.length > 0 ? false : true}
-                          ></Checkbox>
-                        ),
-                        fieldName: "select",
-                        displayTemplate: (row) => {
-                          return (
-                            <CheckBoxPlot
-                              row={row}
-                              fullData={sample_collection ?? []}
-                              setCheckAll={setCheckAll}
-                            />
-                          );
-                        },
-                        others: {
-                          maxWidth: 50,
-                          filterable: false,
-                          sortable: false,
-                        },
-                      },
+                      manualColumns,
                       {
                         fieldName: "action",
                         label: <AlgaehLabel label={{ fieldName: "action" }} />,

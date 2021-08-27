@@ -4,7 +4,7 @@ import _ from "lodash";
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
 }
-const enableSMS = process.env.enableSMS;
+const { enableSMS, EXTRA_PARAMS } = process.env.enableSMS;
 
 let pub = {};
 if (enableSMS === "true") {
@@ -32,7 +32,7 @@ export async function confirmAppointmentSMS(req, res, next) {
         contact_number,
         tel_code,
         doc_name,
-        extra_params,
+        dateTime1,
         appointment_date,
       } = req.body;
 
@@ -55,6 +55,11 @@ export async function confirmAppointmentSMS(req, res, next) {
         new Date(appointment_date) >
         new Date(moment(new Date()).format("YYYY-MM-DD"))
       ) {
+        const extraParams = EXTRA_PARAMS.replace(
+          /\$dateTime1/gi,
+          `${dateTime1}`
+        ).replace(/\$countryCode/gi, "ALL");
+        console.log("extraParams", extraParams);
         await publisher("SMS", {
           template: "RE_SEND_CONFIRM",
           patient_code,
@@ -67,7 +72,7 @@ export async function confirmAppointmentSMS(req, res, next) {
           gender,
           processed_by: username,
           doc_name,
-          extra_params,
+          extra_params: extraParams,
         }).catch((error) => {
           throw error;
         });
