@@ -82,10 +82,10 @@ export default {
             month_start +
             "') and date('" +
             month_end +
-            "') then 'Y' else 'N' end as partial_attendance \
+            "') then 'Y' else 'N' end as partial_attendance, E.suspend_salary \
             from hims_f_attendance_monthly as A \
             inner join  hims_d_employee as E on  E.hims_d_employee_id = A.employee_id and \
-            A.hospital_id = E.hospital_id and E.suspend_salary ='N' \
+            A.hospital_id = E.hospital_id  \
             left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` \
             and S.employee_id = A.employee_id  \
             left join hims_f_employee_annual_leave AL on E.hims_d_employee_id=AL.employee_id \
@@ -97,6 +97,7 @@ export default {
             " and (hims_f_employee_annual_leave_id is null OR from_normal_salary='Y' or date(E.last_salary_process_date ) < date('" +
             month_end +
             "'))";
+          // and E.suspend_salary ='N'
           // and (S.salary_processed is null or  S.salary_processed='N');
           // hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month`
         } else {
@@ -110,11 +111,14 @@ export default {
               inputValues.push(input.employee_id);
             }
             strQuery =
-              "select E.hims_d_employee_id as employee_id, E.sub_department_id, E.employee_code, E.gross_salary, 0 as total_days,0 as absent_days, \
-              0 as unpaid_leave, S.hims_f_salary_id,S.salary_processed, S.salary_type, 0 as pending_unpaid_leave from hims_d_employee E left join hims_f_salary as S on  \
-              E.hims_d_employee_id = S.employee_id and E.suspend_salary ='N' and S.`year`=? and S.`month` = ? \
+              "select E.hims_d_employee_id as employee_id, E.sub_department_id, E.employee_code, \
+              E.gross_salary, 0 as total_days,0 as absent_days, 0 as unpaid_leave, S.hims_f_salary_id, \
+              S.salary_processed, S.salary_type, 0 as pending_unpaid_leave, E.suspend_salary \
+              from hims_d_employee E \
+              left join hims_f_salary as S on  E.hims_d_employee_id = S.employee_id  and S.`year`=? and S.`month` = ? \
               where record_status='A'  and E.hospital_id=?" +
               _stringData;
+            // and E.suspend_salary ='N'
           } else {
             if (input.employee_id != null) {
               _stringData += " and A.employee_id=?";
@@ -207,7 +211,9 @@ export default {
               } else if (o.salary_processed == "N" && o.salary_type == "LS") {
                 _salaryHeader_id.push(o.hims_f_salary_id);
               }
-              _myemp.push(o.employee_id);
+              if (o.suspend_salary === "N") {
+                _myemp.push(o.employee_id);
+              }
             });
 
             if (_salaryHeader_id.length == 0) {
