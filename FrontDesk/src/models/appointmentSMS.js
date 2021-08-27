@@ -1,10 +1,12 @@
 import dotenv from "dotenv";
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
+import moment from "moment";
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
 }
-const { enableSMS, EXTRA_PARAMS } = process.env.enableSMS;
+
+const { enableSMS, EXTRA_PARAMS, SCHEDULE_SMS_DATE_FORMAT } = process.env;
 
 let pub = {};
 if (enableSMS === "true") {
@@ -32,10 +34,18 @@ export async function confirmAppointmentSMS(req, res, next) {
         contact_number,
         tel_code,
         doc_name,
-        dateTime1,
         appointment_date,
+        notify_sms_time,
+        appointment_from_time,
       } = req.body;
-
+      let date = appointment_date;
+      let time = appointment_from_time;
+      // tell moment how to parse the input string
+      let momentObj = moment(date + time, "YYYY-MM-DDLT");
+      // conversion
+      let datetime = new Date(momentObj.format("YYYY-MM-DD HH:mm:s"));
+      datetime.setHours(datetime.getHours() - notify_sms_time);
+      const dateTime = moment(datetime).format(SCHEDULE_SMS_DATE_FORMAT);
       await publisher("SMS", {
         template: "CONFIRM_APPOINTMENT",
         patient_code,
@@ -48,6 +58,7 @@ export async function confirmAppointmentSMS(req, res, next) {
         gender,
         processed_by: username,
         doc_name,
+        appointment_date,
       }).catch((error) => {
         throw error;
       });
@@ -55,11 +66,7 @@ export async function confirmAppointmentSMS(req, res, next) {
         new Date(appointment_date) >
         new Date(moment(new Date()).format("YYYY-MM-DD"))
       ) {
-        const extraParams = EXTRA_PARAMS.replace(
-          /\$dateTime1/gi,
-          `${dateTime1}`
-        ).replace(/\$countryCode/gi, "ALL");
-        console.log("extraParams", extraParams);
+        const extraParams = EXTRA_PARAMS.replace(/\$dateTime/gi, `${dateTime}`);
         await publisher("SMS", {
           template: "RE_SEND_CONFIRM",
           patient_code,

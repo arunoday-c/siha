@@ -8,7 +8,7 @@ import { newAlgaehApi } from "../../../hooks";
 import { swalMessage } from "../../../utils/algaehApiCall";
 import { AppointmentContext } from "../AppointmentContext";
 import { getDoctorSchedule, confirmAppointmentSMS } from "./events";
-import moment from "moment";
+
 export default memo(function LiList(props) {
   const { userLanguage, userToken } = useContext(MainContext);
   const history = useHistory();
@@ -47,21 +47,10 @@ export default memo(function LiList(props) {
           notify_sms_time: props.item.notify_sms_time,
           ...props.doc_name,
         };
-        let date = edit_details.appointment_date;
-        let time = edit_details.appointment_from_time;
-
-        // tell moment how to parse the input string
-        let momentObj = moment(date + time, "YYYY-MM-DDLT");
-
-        // conversion
-        let dateTime = new Date(momentObj.format("YYYY-MM-DD HH:mm:s"));
-
-        dateTime.setHours(dateTime.getHours() - props.item.notify_sms_time);
-        const dateTime1 = moment(dateTime).format("MM/DD/YYYY HH:mm A");
 
         const data_to_update = {
           ...edit_details,
-          dateTime1,
+
           // extra_params: extraParams,
         };
 
@@ -79,10 +68,7 @@ export default memo(function LiList(props) {
             });
 
             if (type === "Confirmed") {
-              if (userToken.portal_exists) {
-                debugger;
-                confirmAppointmentSMS(data_to_update);
-              }
+              confirmAppointmentSMS(data_to_update);
             }
 
             setDoctorSchedules(data);

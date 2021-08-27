@@ -9,7 +9,7 @@ export async function publisher(queueName, data) {
       await channel.bindQueue(queueName, EXCHANGE_NAME, queueName);
       return;
     });
-
+    console.log("Iam Here", queueName, EXCHANGE_NAME, data);
     await channelWrapper.publish(EXCHANGE_NAME, queueName, data, {
       contentType: `application/json`,
       persistent: true,
