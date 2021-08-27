@@ -173,10 +173,14 @@ const apsock = (socket) => {
   });
   socket.on("specimen_acknowledge", ({ collected_date }) => {
     // if (element.service_type === "Lab") {
-    socket.broadcast.emit("reload_specimen_acknowledge", {
-      collected_date: collected_date,
+    socket.broadcast.emit("reload_specimen_collection", {
+      bill_date: collected_date,
       // service_type: service_type,
     });
+    // socket.broadcast.emit("reload_specimen_acknowledge", {
+    //   collected_date: collected_date,
+    //   // service_type: service_type,
+    // });
     // }
   });
   socket.on("result_entry", ({ collected_date }) => {
