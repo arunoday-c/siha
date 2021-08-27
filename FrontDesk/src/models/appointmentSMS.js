@@ -32,6 +32,8 @@ export async function confirmAppointmentSMS(req, res, next) {
         contact_number,
         tel_code,
         doc_name,
+        extra_params,
+        appointment_date,
       } = req.body;
 
       await publisher("SMS", {
@@ -49,6 +51,28 @@ export async function confirmAppointmentSMS(req, res, next) {
       }).catch((error) => {
         throw error;
       });
+      if (
+        new Date(appointment_date) >
+        new Date(moment(new Date()).format("YYYY-MM-DD"))
+      ) {
+        await publisher("SMS", {
+          template: "RE_SEND_CONFIRM",
+          patient_code,
+          full_name: patient_name,
+          primary_id_no,
+          contact_no: String(tel_code + contact_number)
+            .replace("+", "")
+            .trim(),
+          years: age,
+          gender,
+          processed_by: username,
+          doc_name,
+          extra_params,
+        }).catch((error) => {
+          throw error;
+        });
+      }
+
       // await _mysql
       //   .executeQuery({
       //     query: `UPDATE hims_f_lab_order SET send_sms='Y' where visit_id=? and patient_id=? and status='V'`,

@@ -152,7 +152,7 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "select hims_d_appointment_status_id, color_code,description as statusDesc,description_ar, default_status,steps,authorized FROM\
+          "select hims_d_appointment_status_id, color_code,description as statusDesc,description_ar,notify_sms_time, default_status,steps,authorized FROM\
            hims_d_appointment_status where record_status='A'  order by steps ",
       })
       .then((result) => {

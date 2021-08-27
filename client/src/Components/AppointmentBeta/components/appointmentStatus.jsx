@@ -8,6 +8,7 @@ import { newAlgaehApi } from "../../../hooks";
 import { swalMessage } from "../../../utils/algaehApiCall";
 import { AppointmentContext } from "../AppointmentContext";
 import { getDoctorSchedule, confirmAppointmentSMS } from "./events";
+import moment from "moment";
 export default memo(function LiList(props) {
   const { userLanguage, userToken } = useContext(MainContext);
   const history = useHistory();
@@ -20,6 +21,7 @@ export default memo(function LiList(props) {
   const [maxSlots, setMaxSlots] = useState(null);
   const [showCancelPopup, setShowCancelPopup] = useState(false);
   const [showReschedulePopup, setShowReschedulePopup] = useState(false);
+
   function appointmentUpdate(type) {
     swal({
       title: "Are you Sure you want to Update Appointment?",
@@ -42,13 +44,30 @@ export default memo(function LiList(props) {
           confirmed: props.item.default_status === "CF" ? "Y" : "N",
           cancelled: "N",
           appointment_status_id: props.item.hims_d_appointment_status_id,
+          notify_sms_time: props.item.notify_sms_time,
           ...props.doc_name,
         };
+        let date = edit_details.appointment_date;
+        let time = edit_details.appointment_from_time;
+
+        // tell moment how to parse the input string
+        let momentObj = moment(date + time, "YYYY-MM-DDLT");
+
+        // conversion
+        let dateTime = new Date(momentObj.format("YYYY-MM-DD HH:mm:s"));
+
+        dateTime.setHours(dateTime.getHours() - props.item.notify_sms_time);
+        const dateTime1 = moment(dateTime).format("MM/DD/YYYY HH:mm A");
+        const data_to_update = {
+          ...edit_details,
+          extra_params: `scheduledDate=${dateTime1}`,
+        };
+
         newAlgaehApi({
           uri: `/appointment/updatePatientAppointment`,
           module: "frontDesk",
           method: "PUT",
-          data: edit_details,
+          data: data_to_update,
         })
           .then(async (response) => {
             const data = await getDoctorSchedule("", {
@@ -59,6 +78,8 @@ export default memo(function LiList(props) {
 
             if (type === "Confirmed") {
               if (userToken.portal_exists) {
+                debugger;
+
                 confirmAppointmentSMS(edit_details);
               }
             }

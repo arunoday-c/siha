@@ -58,7 +58,7 @@ export default memo(function BookAppointment(props) {
   const [edited_appStatus, setEdited_appStatus] = useState([]);
   // let [, setState] = useState();
   useEffect(() => {
-    const defaultAppStatus = app_status.find(
+    const defaultAppStatus = app_status?.find(
       (f) => f.default_status === "Y"
     )?.hims_d_appointment_status_id;
     setAppointmentStatusId(defaultAppStatus);
