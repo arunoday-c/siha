@@ -52,7 +52,7 @@ export default function AccessionAcknowledgement() {
   ]);
 
   useEffect(() => {
-    sockets.on("reload_specimen_collection", (billData) => {
+    sockets.on("reload_specimen_acknowledge", (billData) => {
       const { bill_date } = billData;
       const date = moment(bill_date).format("YYYY-MM-DD");
 
