@@ -121,8 +121,9 @@ export default memo(function LiList(props) {
                       i
                     ];
                   const _firstChild = _element.children[0];
-                  const _hasPatient =
-                    _firstChild.querySelector("div[appt-pat]");
+                  const _hasPatient = _firstChild.querySelector(
+                    "div[appt-pat]"
+                  );
                   if (_hasPatient) break;
                   else {
                     maxSlots = maxSlots + 1;
