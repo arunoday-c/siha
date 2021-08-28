@@ -8,10 +8,10 @@ import {
   AlgaehDateHandler,
   AlgaehAutoComplete,
 } from "algaeh-react-components";
-import { getDoctorSchedule } from "./events";
+// import { getDoctorSchedule, confirmAppointmentSMS } from "./events";
 import swal from "sweetalert2";
 import { AppointmentContext } from "../AppointmentContext";
-import { newAlgaehApi } from "../../../hooks";
+// import { newAlgaehApi } from "../../../hooks";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 // import { useQuery, useMutation } from "react-query";
@@ -19,6 +19,7 @@ import { useForm, Controller } from "react-hook-form";
 import { generateTimeslotsForDoctor } from "../AppointmentHelper";
 import isEmpty from "lodash/isEmpty";
 import moment from "moment";
+import { rescheduleAppointmentSMS } from "./events";
 // import Enumerable from "linq";
 
 export default memo(function ReschedulePopup({
@@ -224,26 +225,22 @@ export default memo(function ReschedulePopup({
           appointment_from_time: moment(data.edit_appt_time, "hh:mm a").format(
             "HH:mm:ss"
           ),
+          appointment_date: moment(getValues().edit_appt_date).format(
+            "YYYY-MM-DD"
+          ),
           is_stand_by: "N",
           cancelled: "N",
           record_status: "A",
         };
-        newAlgaehApi({
-          uri: "/appointment/updatePatientAppointment",
-          module: "frontDesk",
-          method: "PUT",
-          data: sendingData,
-        }).then(async (response) => {
-          const dataSchedule = await getDoctorSchedule("", {
-            sub_dept_id: sub_department_id,
-            provider_id,
-            schedule_date: appointmentDate,
-          });
-          setDoctorSchedules(dataSchedule);
-          swalMessage({
-            title: "Successfully Updated",
-            type: "success",
-          });
+
+        rescheduleAppointmentSMS(
+          sendingData,
+          sub_department_id,
+          provider_id,
+          appointmentDate
+        ).then((response) => {
+          debugger;
+          setDoctorSchedules(response);
         });
       }
     });

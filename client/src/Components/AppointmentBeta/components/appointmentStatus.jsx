@@ -10,7 +10,7 @@ import { AppointmentContext } from "../AppointmentContext";
 import { getDoctorSchedule, confirmAppointmentSMS } from "./events";
 
 export default memo(function LiList(props) {
-  const { userLanguage, userToken } = useContext(MainContext);
+  const { userLanguage } = useContext(MainContext);
   const history = useHistory();
   const {
     setDoctorSchedules,
