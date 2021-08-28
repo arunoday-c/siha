@@ -146,8 +146,21 @@ const apsock = (socket) => {
     });
   });
   socket.on("opBill_add", ({ bill_date, billdetails }) => {
+    // console.log("billdetails", billdetails);
     const labRecord = billdetails.filter((f) => f.service_type === "Lab");
-    if (labRecord.length > 0) {
+    const packageRecord = billdetails.filter(
+      (f) => f.service_type === "Package"
+    );
+
+    if (packageRecord.length > 0) {
+      console.log("packageRecord", packageRecord);
+      socket.broadcast.emit("reload_specimen_collection", {
+        bill_date: bill_date,
+      });
+      // socket.broadcast.emit("reload_radiology_entry", {
+      //   bill_date: bill_date,
+      // });
+    } else if (labRecord.length > 0) {
       socket.broadcast.emit("reload_specimen_collection", {
         bill_date: bill_date,
         // service_type: service_type,
@@ -174,15 +187,19 @@ const apsock = (socket) => {
   socket.on("specimen_acknowledge", ({ collected_date }) => {
     // if (element.service_type === "Lab") {
     socket.broadcast.emit("reload_specimen_acknowledge", {
-      collected_date: collected_date,
+      bill_date: collected_date,
       // service_type: service_type,
     });
+    // socket.broadcast.emit("reload_specimen_acknowledge", {
+    //   collected_date: collected_date,
+    //   // service_type: service_type,
+    // });
     // }
   });
   socket.on("result_entry", ({ collected_date }) => {
     // if (element.service_type === "Lab") {
     socket.broadcast.emit("reload_result_entry", {
-      collected_date: collected_date,
+      bill_date: collected_date,
       // service_type: service_type,
     });
     // }

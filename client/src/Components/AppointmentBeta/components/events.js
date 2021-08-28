@@ -1,8 +1,9 @@
-// import {swalMessage} from "../../../utils/algaehApiCall";
+import { swalMessage } from "../../../utils/algaehApiCall";
 import moment from "moment";
 import { newAlgaehApi } from "../../../hooks";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { generateTimeslotsForDoctor } from "../AppointmentHelper";
+
 export async function getDepartmentAndDoctorList() {
   const { data } = await newAlgaehApi({
     uri: "/frontdesk/getDoctorAndDepartment",
@@ -145,6 +146,18 @@ export async function confirmAppointmentSMS(input) {
 
   return result.data;
 }
+export async function rescheduleAppointmentSMSApi(input) {
+  const result = await newAlgaehApi({
+    uri: "/frontDesk/rescheduleAppointmentSMS",
+    module: "frontDesk",
+    method: "POST",
+    data: input,
+  }).catch((error) => {
+    throw error;
+  });
+
+  return result.data;
+}
 export function generateReport(
   hims_f_patient_appointment_id,
   rpt_name,
@@ -177,4 +190,33 @@ export function generateReport(
       // myWindow.document.title = rpt_desc;
     },
   });
+}
+export async function rescheduleAppointmentSMS(
+  send_data,
+
+  sub_department_id,
+  provider_id,
+  appointmentDate
+) {
+  await newAlgaehApi({
+    uri: "/appointment/updatePatientAppointment",
+    module: "frontDesk",
+    method: "PUT",
+    data: send_data,
+  });
+  // .then(async (response) => {
+  const dataSchedule = await getDoctorSchedule("", {
+    sub_dept_id: sub_department_id,
+    provider_id,
+    schedule_date: appointmentDate,
+  });
+  debugger;
+  rescheduleAppointmentSMSApi(send_data);
+
+  swalMessage({
+    title: "Successfully Updated",
+    type: "success",
+  });
+  return dataSchedule;
+  // });
 }

@@ -11,7 +11,6 @@ async function consumerSMSStatus(queueName) {
         queueName,
         async (message) => {
           const data = JSON.parse(message?.content.toString() ?? "");
-
           //Here it is data.
           // await updateSMSStatus(data)
           //   .then(() => {
