@@ -10,7 +10,7 @@ import { AppointmentContext } from "../AppointmentContext";
 import { getDoctorSchedule, confirmAppointmentSMS } from "./events";
 
 export default memo(function LiList(props) {
-  const { userLanguage, userToken } = useContext(MainContext);
+  const { userLanguage } = useContext(MainContext);
   const history = useHistory();
   const {
     setDoctorSchedules,
@@ -121,8 +121,9 @@ export default memo(function LiList(props) {
                       i
                     ];
                   const _firstChild = _element.children[0];
-                  const _hasPatient =
-                    _firstChild.querySelector("div[appt-pat]");
+                  const _hasPatient = _firstChild.querySelector(
+                    "div[appt-pat]"
+                  );
                   if (_hasPatient) break;
                   else {
                     maxSlots = maxSlots + 1;
