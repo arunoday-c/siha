@@ -8,7 +8,7 @@ import { Controller } from "react-hook-form";
 import { debounce } from "lodash";
 import "./../../../../styles/site.scss";
 import { newAlgaehApi } from "../../../../hooks";
-
+import moment from "moment";
 export const checkIDExists = async (inputObj) => {
   const result = await newAlgaehApi({
     uri: "/laboratory/checkIDExists",
@@ -392,7 +392,8 @@ export default memo(function BatchDetails({
                     name: "selected_date",
                     // value,
                   }}
-                  maxDate={new Date()}
+                  // maxDate={new Date()}
+                  maxDate={moment().add(1, "days")}
                   events={{
                     onChange: (mdate) => {
                       if (mdate) {
