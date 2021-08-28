@@ -207,7 +207,7 @@ export default function ResultEntryList() {
 
   useEffect(() => {
     debugger;
-    sockets.on("reload_specimen_collection", (billData) => {
+    sockets.on("reload_result_entry", (billData) => {
       debugger;
       const { bill_date } = billData;
       const date = moment(bill_date).format("YYYY-MM-DD");
