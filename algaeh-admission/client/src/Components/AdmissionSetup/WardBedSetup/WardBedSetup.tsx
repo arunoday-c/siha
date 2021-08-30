@@ -27,6 +27,7 @@ import { parseInt } from "lodash";
 // import { debug } from "console";
 const { Panel } = Collapse;
 export default function WardBedSetup(Props: any) {
+  debugger;
   // const [wardRow, setWardRow] = useState<any>({});
   const [wardHeaderRow, setWardHeaderRow] = useState<any>({});
   const [wardHeaderData, setWardHeaderData] = useState([]);

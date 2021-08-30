@@ -54,6 +54,7 @@ export default memo(function BatchDetails({
     debounce(async (e, new_batch_list) => {
       const scan_by = getValues("scan_by");
 
+      debugger;
       const after_ack = await checkIDExists({
         id_number: e.target.value,
         scan_by: getValues("scan_by"),
@@ -61,6 +62,7 @@ export default memo(function BatchDetails({
         throw error;
       });
 
+      debugger;
       if (after_ack.success === false) {
         AlgaehMessagePop({
           display: after_ack.message,
@@ -84,23 +86,9 @@ export default memo(function BatchDetails({
       }
 
       if (scan_by === "LI") {
-        updateState({
-          id_number: e.target.value,
-          lab_id_number: e.target.value,
-          order_id: after_ack.records.hims_f_lab_order_id,
-          primary_id_no: after_ack.records.id_number,
-          patient_name: after_ack.records.patient_name,
-          description: after_ack.records.description,
-        });
+        updateState(after_ack.records);
       } else {
-        updateState({
-          id_number: e.target.value,
-          lab_id_number: after_ack.records.id_number,
-          order_id: after_ack.records.hims_f_lab_order_id,
-          primary_id_no: e.target.value,
-          patient_name: after_ack.records.patient_name,
-          description: after_ack.records.description,
-        });
+        updateState(after_ack.records);
       }
 
       setValue("barcode_scanner", "");

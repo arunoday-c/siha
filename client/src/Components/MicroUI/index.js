@@ -28,7 +28,7 @@ const MicroFrontend = ({ history, host, path }) => {
     else return mainCtx[type];
   }
   function getGlobalVariables(type = undefined) {
-    if (type) return globalVariables;
+    if (!type) return globalVariables;
     else return globalVariables[type];
   }
   useEffect(() => {

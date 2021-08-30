@@ -3199,20 +3199,27 @@ export function checkIDExists(req, res, next) {
   try {
     const inputParam = req.query;
     let strQuery;
+
     if (inputParam.scan_by === "PI") {
       strQuery = mysql.format(
-        `SELECT hims_f_lab_order_id, lab_id_number as id_number, lab_id_number, full_name as patient_name,IT.description FROM hims_f_patient P 
+        `SELECT hims_f_lab_order_id, lab_id_number as id_number, lab_id_number, full_name,IT.description AS test_name,
+        gender, hims_f_lab_order_id as order_id, 
+        date_of_birth, test_id, hims_d_lab_sample_id FROM hims_f_patient P 
         INNER JOIN hims_f_lab_order L ON P.hims_d_patient_id=L.patient_id
+        INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id
         inner join hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = L.test_id  
-        where  L.billed='Y' and L.status='CL' and IT.isPCR ='Y' and primary_id_no=?;`,
+        where  L.billed='Y' and L.status='CL' and IT.isPCR ='Y' and S.status='N' and primary_id_no=?;`,
         [inputParam.id_number]
       );
     } else {
       strQuery = mysql.format(
-        `SELECT hims_f_lab_order_id, primary_id_no as id_number, L.status, lab_id_number, full_name as patient_name,IT.description FROM hims_f_lab_order L 
+        `SELECT hims_f_lab_order_id, primary_id_no as id_number, primary_id_no, L.status, lab_id_number,
+        full_name, IT.description  AS test_name, gender, hims_f_lab_order_id as order_id, 
+        date_of_birth, test_id, hims_d_lab_sample_id FROM hims_f_lab_order L 
+        INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id
         INNER JOIN hims_f_patient P ON L.patient_id=P.hims_d_patient_id         
         INNER JOIN hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = L.test_id  
-        where  L.billed='Y' and L.status='CL' and IT.isPCR ='Y' and lab_id_number=?;`,
+        where  L.billed='Y' and L.status='CL' and IT.isPCR ='Y' and S.status='N' and lab_id_number=?;`,
         [inputParam.id_number]
       );
     }
@@ -3367,15 +3374,15 @@ export function getBatchDetail(req, res, next) {
       .executeQuery({
         query: `SELECT L.hims_f_lab_order_id, D.order_id, PV.visit_code, L.service_id, D.primary_id_no, D.lab_id_number, P.full_name, MS.description as specimen_name, 
           IT.description as test_name, date_of_birth, gender, L.patient_id, L.visit_id,  L.test_id, S.hims_d_lab_sample_id, L.status as lab_status,
-          S.status as specimen_status ${strFiled}
-          FROM hims_f_lab_batch_detail D \
-          INNER JOIN hims_f_lab_order L ON L.hims_f_lab_order_id = D.order_id \
-          INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id = L.visit_id \
-          INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id\
-          INNER JOIN hims_d_lab_specimen MS ON MS.hims_d_lab_specimen_id = S.sample_id \
-          INNER JOIN hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = L.test_id  \
+          S.status as specimen_status , OA.hims_f_ord_analytes_id, LA.description as analyte_name, CASE WHEN result is null THEN 'Negative' ELSE result END as result
+          FROM hims_f_lab_batch_detail D 
+          INNER JOIN hims_f_lab_order L ON L.hims_f_lab_order_id = D.order_id 
+          INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id = L.visit_id 
+          INNER JOIN hims_f_lab_sample S ON S.order_id = L.hims_f_lab_order_id
+          INNER JOIN hims_d_lab_specimen MS ON MS.hims_d_lab_specimen_id = S.sample_id 
+          INNER JOIN hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = L.test_id  
           INNER JOIN hims_f_patient P ON P.hims_d_patient_id = L.patient_id 
-          ${strQuery} where L.status != 'O' and batch_header_id=? ${strFilter};`,
+          INNER JOIN hims_f_ord_analytes OA ON OA.order_id = L.hims_f_lab_order_id INNER JOIN hims_d_lab_analytes LA ON LA.hims_d_lab_analytes_id = OA.analyte_id where L.status != 'O' and batch_header_id=? ${strFilter};`,
         values: [inputParam.hims_f_lab_batch_header_id],
         printQuery: true,
       })
