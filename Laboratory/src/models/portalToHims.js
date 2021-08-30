@@ -77,8 +77,8 @@ export async function patientBillGeneration(req, res, next) {
           and SI.insurance_provider_id =INN.insurance_provider_id 
           inner join hims_d_insurance_network_office as INO on INO.network_id=INN.hims_d_insurance_network_id
             where upper(SI.user_id)=upper(?);
-            select hims_d_patient_id from hims_f_patient where patient_code=?`,
-            values: [insurance_user, patient_code],
+            select hims_d_patient_id from hims_f_patient where primary_id_no=?`,
+            values: [insurance_user, patient_identity],
             printQuery: true,
           })
           .catch((error) => {
