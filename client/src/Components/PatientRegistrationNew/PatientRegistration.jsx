@@ -315,16 +315,13 @@ export function PatientRegistration() {
   const fieldRef = useRef(undefined);
   useEffect(() => {
     const errorsvalues = Object.values(errors);
-    
+
     if (errorsvalues.length > 0) {
-      AlgaehMessagePop({type:"error", display:errorsvalues[0].message});
+      AlgaehMessagePop({ type: "error", display: errorsvalues[0].message });
       return fieldRef?.current.scrollIntoView({
         behavior: "smooth",
       });
-     
-     
     }
-  
   }, [errors]);
   useEffect(() => {
     preferenceFunction().then((result) => {
@@ -651,6 +648,24 @@ export function PatientRegistration() {
   const onSubmit = (input) => {
     let inputData;
     const receiptdetails = [];
+    const identityIntial = identities.filter(
+      (f) =>
+        f.hims_d_identity_document_id ===
+        parseInt(getValues().primary_identity_id)
+    )[0]?.initial_value_identity;
+
+    if (identityIntial) {
+      let intialValue = getValues().primary_id_no[0];
+      if (intialValue !== identityIntial) {
+        setError("primary_id_no", {
+          type: "manual",
+          shouldFocus: true,
+          message: `This field should start with ${identityIntial}`,
+        });
+
+        return;
+      }
+    }
 
     if (billInfo.insurance_yesno === "Y") {
       if (insuranceInfo.creidt_limit_req === "Y") {

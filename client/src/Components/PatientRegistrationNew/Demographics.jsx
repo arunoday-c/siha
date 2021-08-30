@@ -140,7 +140,6 @@ export function Demographics({
       );
       if (!patient_code) {
         if (res[0]?.identity_document_id) {
-          debugger;
           setValue("primary_identity_id", res[0]?.identity_document_id);
           setValue("secondary_identity_id", res[0]?.secondary_id_type_id);
           setIdentityType(res[0]?.identity_type);
@@ -1105,6 +1104,8 @@ export function Demographics({
                                     "primary_id_no",
                                     _.initial_value_identity
                                   );
+                                  setValue("nationality_id", "");
+
                                   setPrimaryMasked(_.masked_identity);
                                 },
                                 onClear: () => {
@@ -1152,6 +1153,10 @@ export function Demographics({
                                 </>
                               )}
                             />
+                            <span style={{ color: "red" }}>
+                              {errors.primary_id_no &&
+                                errors.primary_id_no.message}
+                            </span>
                           </div>
                         ) : (
                           <Controller

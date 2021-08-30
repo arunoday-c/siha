@@ -72,6 +72,7 @@ export function UpdatePatient({
     getValues,
     errors,
     reset,
+    setError,
     clearErrors,
   } = useForm({
     shouldFocusError: true,
@@ -131,7 +132,24 @@ export function UpdatePatient({
   });
 
   const onSubmit = (e) => {
-    debugger;
+    const identityIntial = identities.filter(
+      (f) =>
+        f.hims_d_identity_document_id ===
+        parseInt(getValues().primary_identity_id)
+    )[0]?.initial_value_identity;
+
+    if (identityIntial) {
+      let intialValue = getValues().primary_id_no[0];
+      if (intialValue !== identityIntial) {
+        setError("primary_id_no", {
+          type: "manual",
+          shouldFocus: true,
+          message: `This field should start with ${identityIntial}`,
+        });
+
+        return;
+      }
+    }
     update({
       ...e,
       hims_d_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
