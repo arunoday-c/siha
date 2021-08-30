@@ -10,7 +10,7 @@ import {
 } from "algaeh-react-components";
 // import { useQuery,ReactQueryCacheProvider } from "react-query";
 import { Controller, useForm } from "react-hook-form";
-import _ from "lodash";
+// import _ from "lodash";
 
 // const getBedService = async (key: any) => {
 //   const { response } = await algaehAxios("/bedManagement/getBedService", {

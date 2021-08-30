@@ -36,7 +36,30 @@ export default function ({ visible, voucherNo, inVisible, data }) {
             },
             {
               fieldName: "ledger",
-              label: <AlgaehLabel label={{ forceLabel: "Ledger" }} />,
+              label: <AlgaehLabel label={{ forceLabel: "Head Ledger" }} />,
+              disabled: true,
+              filterable: true,
+              sortable: false,
+              others: {
+                resizable: false,
+                style: { textAlign: "left" },
+              },
+            },
+            {
+              fieldName: "child_ledger_code",
+              label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
+              disabled: true,
+              filterable: true,
+              sortable: false,
+              others: {
+                resizable: false,
+                width: 100,
+                style: { textAlign: "left" },
+              },
+            },
+            {
+              fieldName: "child_ledger",
+              label: <AlgaehLabel label={{ forceLabel: "Child Ledger" }} />,
               disabled: true,
               filterable: true,
               sortable: false,

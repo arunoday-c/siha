@@ -57,9 +57,9 @@ interface Row {
   bed_status: string;
   bed_short_name: string;
 }
-interface Response {
-  data: { records: []; success: boolean };
-}
+// interface Response {
+//   data: { records: []; success: boolean };
+// }
 
 export default function BedStatus(Props: any) {
   const [appointmentStatus, setAppointmentStatus] = useState([]);
@@ -420,7 +420,7 @@ export default function BedStatus(Props: any) {
               },
             }}
           /> */}
-          <Controller
+          {/* <Controller
             name="bed_status"
             control={control}
             rules={{ required: "Select Procedure" }}
@@ -455,7 +455,7 @@ export default function BedStatus(Props: any) {
                 }}
               />
             )}
-          />{" "}
+          /> */}
           {/* <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
             label={{

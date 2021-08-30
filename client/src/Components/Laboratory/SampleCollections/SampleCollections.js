@@ -20,7 +20,7 @@ import { newAlgaehApi } from "../../../hooks";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 // import Options from "../../../Options.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-// import sockets from "../../../sockets";
+import sockets from "../../../sockets";
 import swal from "sweetalert2";
 // import axios from "axios";
 import "./SampleCollections.scss";
@@ -301,6 +301,12 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
             method: "PUT",
             onSuccess: (response) => {
               if (response.data.success === true) {
+                if (sockets.connected) {
+                  sockets.emit("specimen_acknowledge", {
+                    test_details: response.data.records,
+                    collected_date: response.data.records.collected_date,
+                  });
+                }
                 labOrderRefetch();
                 swalMessage({
                   title: "Collected Successfully",
@@ -485,6 +491,12 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
           method: "PUT",
           onSuccess: (response) => {
             if (response.data.success === true) {
+              if (sockets.connected) {
+                sockets.emit("specimen_acknowledge", {
+                  test_details: response.data.records,
+                  collected_date: response.data.records.collected_date,
+                });
+              }
               swalMessage({
                 title: "Cancelled Successfully",
                 type: "success",
