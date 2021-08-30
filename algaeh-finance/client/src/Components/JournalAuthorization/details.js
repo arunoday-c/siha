@@ -24,6 +24,17 @@ export default function ({ visible, voucherNo, inVisible, data }) {
         <AlgaehDataGrid
           columns={[
             {
+              fieldName: "ledger_code",
+              label: <AlgaehLabel label={{ forceLabel: "Ledger Code" }} />,
+              disabled: true,
+              filterable: true,
+              sortable: false,
+              others: {
+                resizable: false,
+                style: { textAlign: "left" },
+              },
+            },
+            {
               fieldName: "ledger",
               label: <AlgaehLabel label={{ forceLabel: "Ledger" }} />,
               disabled: true,
