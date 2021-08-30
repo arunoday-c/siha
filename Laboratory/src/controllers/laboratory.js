@@ -12,6 +12,7 @@ import labModels, {
   updateLabSampleStatus,
   patientPortalData,
   getSampleCollectedAck,
+  getServiceDataPortal,
 } from "../models/laboratory";
 import { labResultDispatch } from "../models/labDispatch";
 import { patientBillGeneration } from "../models/portalToHims";
@@ -71,6 +72,12 @@ export default () => {
       });
     }
   );
+  api.get("/getServiceDataPortal", getServiceDataPortal, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
   api.get("/patientPortalData", patientPortalData, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,

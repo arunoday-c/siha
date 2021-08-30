@@ -3578,7 +3578,30 @@ export async function patientPortalData(req, res, next) {
     next(e);
   }
 }
+export async function getServiceDataPortal(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    let inputValues = req.query;
 
+    const result = await _mysql
+      .executeQuery({
+        query: ` select PP.* from portal_patient_package_detail PP
+        left join portal_patient_package_header PH on PP.portal_package_id=PH.patient_package_id where PH.portal_package_id=? ;`,
+        values: [inputValues.portal_package_id],
+        printQuery: true,
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+    _mysql.releaseConnection();
+    req.records = result;
+    next();
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}
 export async function getSampleCollectedAck(req, res, next) {
   const _mysql = new algaehMysql();
   try {

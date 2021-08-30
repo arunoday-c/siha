@@ -1652,14 +1652,14 @@ export default {
     try {
       _mysql
         .executeQuery({
-          query: `select hims_d_insurance_sub_id as sub_insurance_id, insurance_provider_id as insurance_id ,PS.service_types,PS.hospital_id,insurance_sub_code,user_id,
+          query: `SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));select hims_d_insurance_sub_id as sub_insurance_id, insurance_provider_id as insurance_id ,PS.service_types,PS.hospital_id,insurance_sub_code,user_id,
           S.insurance_sub_name,S.arabic_sub_name,insurance_provider_id,
                         card_format,ins_template_name,transaction_number,
                         if( S.hims_d_insurance_sub_id = PS.insurance_id,'Y','N') as checked,
                         IP.insurance_provider_name,IP.arabic_provider_name
                         from hims_d_insurance_sub as S left join hims_d_portal_setup as PS on
            S.hims_d_insurance_sub_id = PS.sub_insurance_id inner join hims_d_insurance_provider as IP
-           on IP.hims_d_insurance_provider_id= S.insurance_provider_id where S.user_id is not null;`,
+           on IP.hims_d_insurance_provider_id= S.insurance_provider_id where S.user_id is not null group by insurance_sub_code;`,
           printQuery: true,
         })
         .then((result) => {
