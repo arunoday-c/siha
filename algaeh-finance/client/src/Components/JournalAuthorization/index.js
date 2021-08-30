@@ -23,14 +23,15 @@ import {
   LoadVoucherData,
 } from "./event";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
+import moment from "moment";
 // useLocation
 const { confirm } = Modal;
 let rejectText = "";
 let finance_voucher_header_id = "";
 export default memo(function (props) {
   const history = useHistory();
-  // const location = useLocation();
+  const location = useLocation();
   const [search, setSearch] = useState(null);
   const [data, setData] = useState([]);
   const [accounts, setAccounts] = useState([]);
@@ -83,6 +84,27 @@ export default memo(function (props) {
     });
   }, []);
 
+  React.useEffect(() => {
+    loadDataCall();
+    const parameters = new URLSearchParams(location.search);
+    const _level = parameters.get("level");
+    const auth_status = parameters.get("auth_status");
+    const searchQuery = parameters.get("searchQuery");
+    const _from_date = parameters.get("from_date");
+    const _to_date = parameters.get("to_date");
+    if (searchQuery) {
+      setSearch(searchQuery);
+    }
+    if (_from_date && _to_date) {
+      setDates([_from_date, _to_date]);
+    }
+    if (_level) {
+      setLevel(_level);
+    }
+    if (auth_status) {
+      setStatus(auth_status);
+    }
+  }, [location.search]);
   /**
    * To load the journal Authorization data
    */
@@ -97,14 +119,61 @@ export default memo(function (props) {
       return;
     }
     let others = { auth_status: status };
+    let query = `level=${level}`;
+    if (status) {
+      query += `&auth_status=${status === "" ? "ALL" : status}`;
+    }
     if (dates !== undefined && dates.length > 0) {
-      others["from_date"] = dates[0];
-      others["to_date"] = dates[1];
+      others["from_date"] = moment(dates[0]).format("YYYY-MM-DD");
+      others["to_date"] = moment(dates[1]).format("YYYY-MM-DD");
+      query += `&from_date=${moment(dates[0]).format(
+        "YYYY-MM-DD"
+      )}&to_date=${moment(dates[1]).format("YYYY-MM-DD")}`;
+    }
+    if (search) {
+      query += `&searchQuery=${search}`;
+    }
+    history.push(`${location.pathname}?${query}`);
+    // LoadVouchersToAuthorize({
+    //   auth_level: level,
+    //  searchQuery: search,
+    //   ...others,
+    // })
+    //   .then((result) => {
+    //     setLoading(false);
+    //     setData(result);
+    //   })
+    //   .catch((error) => {
+    //     setLoading(false);
+    //     AlgaehMessagePop({
+    //       type: "error",
+    //       display: error,
+    //     });
+    //   });
+  };
+
+  function loadDataCall() {
+    const parameters = new URLSearchParams(location.search);
+    const _level = parameters.get("level");
+    const auth_status = parameters.get("auth_status");
+    const searchQuery = parameters.get("searchQuery");
+    const _from_date = parameters.get("from_date");
+    const _to_date = parameters.get("to_date");
+    let others = {
+      // auth_status: auth_status === "ALL" ? "" : auth_status,
+      searchQuery: searchQuery && searchQuery !== "null" ? searchQuery : search,
+    };
+
+    if (auth_status) {
+      others["auth_status"] = auth_status === "ALL" ? "" : auth_status;
+    }
+    if (_from_date && _to_date) {
+      others["from_date"] = _from_date;
+      others["to_date"] = _to_date;
     }
 
     LoadVouchersToAuthorize({
-      auth_level: level,
-      searchQuery: search,
+      auth_level: _level ?? level,
       ...others,
     })
       .then((result) => {
@@ -118,7 +187,7 @@ export default memo(function (props) {
           display: error,
         });
       });
-  };
+  }
 
   /**
    * Grid Action buttons
@@ -234,6 +303,7 @@ export default memo(function (props) {
             data: result,
             finance_voucher_header_id: record.finance_voucher_header_id,
             voucher_no: record.voucher_no,
+            narration: record.narration,
           });
         })
         .catch((error) => {

@@ -2403,7 +2403,7 @@ export default {
       .executeQuery({
         query: `select finance_voucher_id,ROUND( debit_amount,${decimal_places}) as debit_amount,
           ROUND( credit_amount,${decimal_places}) as credit_amount,VD.narration,
-          concat(H.account_name,'->',C.child_name) as ledger\
+          concat(H.account_name,'->',C.child_name) as ledger,C.ledger_code \
           from finance_voucher_details VD \
           left join finance_account_head H on VD.head_id=H.finance_account_head_id\
           left join finance_account_child C on VD.child_id=C.finance_account_child_id\

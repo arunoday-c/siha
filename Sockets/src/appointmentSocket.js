@@ -146,17 +146,20 @@ const apsock = (socket) => {
     });
   });
   socket.on("opBill_add", ({ bill_date, billdetails }) => {
+    // console.log("billdetails", billdetails);
     const labRecord = billdetails.filter((f) => f.service_type === "Lab");
     const packageRecord = billdetails.filter(
       (f) => f.service_type === "Package"
     );
-    if (packageRecord.lnegth > 0) {
+
+    if (packageRecord.length > 0) {
+      console.log("packageRecord", packageRecord);
       socket.broadcast.emit("reload_specimen_collection", {
         bill_date: bill_date,
       });
-      socket.broadcast.emit("reload_radiology_entry", {
-        bill_date: bill_date,
-      });
+      // socket.broadcast.emit("reload_radiology_entry", {
+      //   bill_date: bill_date,
+      // });
     } else if (labRecord.length > 0) {
       socket.broadcast.emit("reload_specimen_collection", {
         bill_date: bill_date,

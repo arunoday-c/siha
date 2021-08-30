@@ -129,6 +129,7 @@ export default function JournalVoucher() {
   const [SorCDetailValue, setSorCDetailValue] = useState(undefined);
   const [SorCHeaderName, setSorCHeaderName] = useState(undefined);
   const [deletedEntries, setDeletedEntries] = useState([]);
+  const [isEditMode, setIsEditMode] = useState(false);
   useEffect(() => {
     if (location.state?.language) {
       i18next.changeLanguage(location.state?.language);
@@ -407,7 +408,7 @@ export default function JournalVoucher() {
       setDebitNoteTotal(debitNoteTotal);
       setDebitNoteList(filterDebitNotes);
       setDisableFiled(true);
-
+      setNarration(location.state.narration);
       if (type === "Adjust") {
         const credit_data = _.filter(data, (f) => {
           return f.payment_type === "CR";
@@ -418,7 +419,6 @@ export default function JournalVoucher() {
           return { ...m, paytypedisable: true };
         });
 
-        debugger;
         setTotalCredit(
           _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
         );
@@ -433,9 +433,38 @@ export default function JournalVoucher() {
           setFromBank(firstRecord.sourceName);
           setJournerList(debit_data);
         } else {
-          setJournerList(data);
+          if (
+            firstRecord.voucher_type === "receipt" ||
+            firstRecord.voucher_type === "payment"
+          ) {
+            setJournerList(
+              data.map((m) => {
+                return { ...m, disabled: true };
+              })
+            );
+          } else setJournerList(data);
         }
-
+        //---Changes are done here.
+        if (
+          firstRecord.voucher_type === "receipt" ||
+          firstRecord.voucher_type === "payment"
+        ) {
+          setPayment(basePayment);
+          const crDetails =
+            firstRecord.voucher_type === "payment"
+              ? _.head(debit_data)
+              : _.head(credit_data);
+          if (crDetails) {
+            setSorCHeaderValue(crDetails.child_id);
+            setSorCDetailValue(crDetails.invoice_ref_no);
+            setCustomerSupplierID({
+              child_id: crDetails.child_id,
+              // customer_type: selected.customer_type,
+            });
+            setSelInvoice(crDetails.invoice_ref_no);
+            setIsEditMode(true);
+          }
+        }
         setFinanceVoucherHeaderID(location.state.finance_voucher_header_id);
         setVoucherType(firstRecord.voucher_type);
         setVoucherDate(moment(firstRecord.payment_date)._d);
@@ -472,7 +501,6 @@ export default function JournalVoucher() {
             return f.payment_type === "DR";
           });
 
-          debugger;
           setTotalCredit(
             _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
           );
@@ -541,7 +569,6 @@ export default function JournalVoucher() {
                     return f.payment_type === "DR";
                   });
 
-                  debugger;
                   setTotalCredit(
                     _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
                   );
@@ -1030,7 +1057,7 @@ export default function JournalVoucher() {
     );
   };
 
-  function onChangeCustomerOrSupplerHeaderList(selected) {
+  function onChangeCustomerOrSupplerHeaderList(selected, _voucherType) {
     setSorCDetailLoading(true);
     setSorCHeaderName(selected.child_name);
     setSorCHeaderValue(selected.finance_account_child_id);
@@ -1038,15 +1065,16 @@ export default function JournalVoucher() {
       child_id: selected.finance_account_child_id,
       customer_type: selected.customer_type,
     });
+
+    _voucherType = voucherType ?? _voucherType;
     setSorCDetailValue(undefined);
-    if (voucherType === "receipt") {
+    if (_voucherType === "receipt") {
       getCustomerReceivableDetails({
         child_id: selected.finance_account_child_id,
         is_opening_bal: selected.is_opening_bal,
       })
         .then(({ result }) => {
           setSorCDetailLoading(false);
-
           const filterList = result.filter(
             (f) => parseFloat(f.balance_amount) !== parseFloat("0")
           );
@@ -1056,7 +1084,7 @@ export default function JournalVoucher() {
           console.error(e);
           setSorCDetailLoading(false);
         });
-    } else if (voucherType === "payment") {
+    } else if (_voucherType === "payment") {
       getSupplierInvoiceDetails({
         child_id: selected.finance_account_child_id,
       })
@@ -1071,7 +1099,7 @@ export default function JournalVoucher() {
           console.error(e);
           setSorCDetailLoading(false);
         });
-    } else if (voucherType === "debit_note") {
+    } else if (_voucherType === "debit_note") {
       getSupplierDebitNotes({
         child_id: selected.finance_account_child_id,
       })
@@ -1086,7 +1114,7 @@ export default function JournalVoucher() {
           console.error(e);
           setSorCDetailLoading(false);
         });
-    } else if (voucherType === "credit_note") {
+    } else if (_voucherType === "credit_note") {
       getCustomerDebitNotes({
         child_id: selected.finance_account_child_id,
       })
@@ -1171,7 +1199,6 @@ export default function JournalVoucher() {
               return f.payment_type === "DR";
             });
 
-            debugger;
             setTotalCredit(
               _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
             );
@@ -1187,7 +1214,7 @@ export default function JournalVoucher() {
             const debit_data = _.filter(journerList, (f) => {
               return f.payment_type === "DR";
             });
-            debugger;
+
             setTotalCredit(
               _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
             );
@@ -1207,17 +1234,20 @@ export default function JournalVoucher() {
     //     ? { disabled: records.disabled }
     //     : {}
     //   : {};
+    let isDisabled = disableAmount || afterSaveDisabled;
+    if (isEditMode === true) {
+      isDisabled = isEditMode;
+    }
     return (
       <AlgaehFormGroup
         textBox={{
-          disabled: disableAmount || afterSaveDisabled,
+          disabled: isDisabled,
           updateInternally: true,
           value: row,
           type: "number",
           onChange: (e) => {
             // console.log(journerList);
 
-            debugger;
             records["amount"] = e.target.value === "" ? "" : e.target.value;
             const credit_data = _.filter(journerList, (f) => {
               return f.payment_type === "CR";
@@ -1226,7 +1256,6 @@ export default function JournalVoucher() {
               return f.payment_type === "DR";
             });
             if (voucherType !== "expense_voucher") {
-              debugger;
               setTotalCredit(
                 _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
               );
@@ -1268,6 +1297,16 @@ export default function JournalVoucher() {
       />
     );
   };
+  const _editable =
+    isEditMode === true
+      ? {}
+      : {
+          isEditable: "deleteOnly",
+        };
+  let disableMode = disableAmount || afterSaveDisabled;
+  if (isEditMode === true) {
+    disableMode = true;
+  }
   return (
     <Spin spinning={loading}>
       <div className="JournalVoucherScreen">
@@ -1396,7 +1435,6 @@ export default function JournalVoucher() {
                   placeholder: "Enter Amount",
                   value: bankAmount,
                   onChange: (e) => {
-                    debugger;
                     setBankAmount(e.target.value);
                     setTotalCredit(e.target.value);
                   },
@@ -1457,51 +1495,59 @@ export default function JournalVoucher() {
                     others: { disabled: disableFiled },
                   }}
                 />
-                <AlgaehAutoComplete
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: `${
-                      voucherType === "payment" || voucherType === "debit_note"
-                        ? "Supplier Invoices"
-                        : "Customer Invoices"
-                    }`,
-                    imp: true,
-                  }}
-                  selector={{
-                    value: SorCDetailValue,
-                    dataSource: {
-                      //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
-                      data: customerSupplierDetails,
-                      valueField: "invoice_no",
-                      textField: "invoice_no",
-                    },
-                    template: (item) => {
-                      return (
-                        <table>
-                          <thead>
-                            <th width="60%"> Invoice </th>
-                            <th width="40%">Amount</th>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td>{item.invoice_no} </td>
-                              <td>{item.balance_amount}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      );
-                    },
-                    updateInternally: true,
-                    onChange: onChangeCustomerOrSupplerDetails,
-                    onClear: () => {
-                      setSorCDetailValue(undefined);
-                    },
-                    others: {
-                      disabled: disableFiled,
-                      loading: SorCDetailLoading,
-                    },
-                  }}
-                />
+                {isEditMode === false ? (
+                  <AlgaehAutoComplete
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: `${
+                        voucherType === "payment" ||
+                        voucherType === "debit_note"
+                          ? "Supplier Invoices"
+                          : "Customer Invoices"
+                      }`,
+                      imp: true,
+                    }}
+                    selector={{
+                      value: SorCDetailValue,
+                      dataSource: {
+                        //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
+                        data: customerSupplierDetails,
+                        valueField: "invoice_no",
+                        textField: "invoice_no",
+                      },
+                      template: (item) => {
+                        return (
+                          <table>
+                            <thead>
+                              <th width="60%"> Invoice </th>
+                              <th width="40%">Amount</th>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>{item.invoice_no} </td>
+                                <td>{item.balance_amount}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        );
+                      },
+                      updateInternally: true,
+                      onChange: onChangeCustomerOrSupplerDetails,
+                      onClear: () => {
+                        setSorCDetailValue(undefined);
+                      },
+                      others: {
+                        disabled: disableFiled,
+                        loading: SorCDetailLoading,
+                      },
+                    }}
+                  />
+                ) : (
+                  <div className="col ">
+                    <label className="style_Label undefined">Customer</label>
+                    {SorCDetailValue}
+                  </div>
+                )}
               </div>
             </div>
           ) : null}
@@ -1632,8 +1678,8 @@ export default function JournalVoucher() {
                     direction={language}
                     loading={false}
                     data={journerList}
-                    isEditable={"deleteOnly"}
-                    // isEditable={true}
+                    // isEditable={"deleteOnly"}
+                    {..._editable}
                     rowUnique="slno"
                     // xaxis={1500}
                     events={{
@@ -1646,7 +1692,7 @@ export default function JournalVoucher() {
                           });
                           return;
                         }
-                        debugger;
+
                         if (result.payment_type === "CR") {
                           setTotalCredit(
                             (amount) =>
@@ -1690,7 +1736,7 @@ export default function JournalVoucher() {
                 </div>
                 <div className="col-12" style={{ marginTop: 10 }}>
                   <button
-                    disabled={disableAmount || afterSaveDisabled}
+                    disabled={disableMode}
                     className="btn btn-primary btn-small"
                     onClick={() => {
                       setJournerList((result) => {
