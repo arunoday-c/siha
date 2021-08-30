@@ -85,7 +85,6 @@ export default memo(function (props) {
   }, []);
 
   React.useEffect(() => {
-    loadDataCall();
     const parameters = new URLSearchParams(location.search);
     const _level = parameters.get("level");
     const auth_status = parameters.get("auth_status");
@@ -96,7 +95,10 @@ export default memo(function (props) {
       setSearch(searchQuery);
     }
     if (_from_date && _to_date) {
-      setDates([_from_date, _to_date]);
+      setDates([
+        moment(_from_date, "YYYY-MM-DD"),
+        moment(_to_date, "YYYY-MM-DD"),
+      ]);
     }
     if (_level) {
       setLevel(_level);
@@ -104,12 +106,12 @@ export default memo(function (props) {
     if (auth_status) {
       setStatus(auth_status);
     }
+    loadDataCall();
   }, [location.search]);
   /**
    * To load the journal Authorization data
    */
   const loadData = () => {
-    setLoading(true);
     if (level === undefined) {
       setLoading(false);
       AlgaehMessagePop({
@@ -163,13 +165,14 @@ export default memo(function (props) {
       // auth_status: auth_status === "ALL" ? "" : auth_status,
       searchQuery: searchQuery && searchQuery !== "null" ? searchQuery : search,
     };
-
+    setLoading(true);
     if (auth_status) {
       others["auth_status"] = auth_status === "ALL" ? "" : auth_status;
     }
+    debugger;
     if (_from_date && _to_date) {
-      others["from_date"] = _from_date;
-      others["to_date"] = _to_date;
+      others["from_date"] = moment(_from_date, "YYYY-MM-DD");
+      others["to_date"] = moment(_to_date, "YYYY-MM-DD");
     }
 
     LoadVouchersToAuthorize({
@@ -178,7 +181,7 @@ export default memo(function (props) {
     })
       .then((result) => {
         setLoading(false);
-        setData(result);
+        setData([...result]);
       })
       .catch((error) => {
         setLoading(false);
@@ -817,7 +820,7 @@ export default memo(function (props) {
                       isFilterable={true}
                       rowUnique="finance_voucher_header_id"
                       pagination={true}
-                      persistence={null}
+                      // persistence={null}
                       pageOptions={{ rows: 50, page: 1 }}
                     />
                   </div>
