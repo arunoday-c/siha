@@ -239,7 +239,6 @@ export default memo(function ReschedulePopup({
           provider_id,
           appointmentDate
         ).then((response) => {
-          debugger;
           setDoctorSchedules(response);
         });
       }
