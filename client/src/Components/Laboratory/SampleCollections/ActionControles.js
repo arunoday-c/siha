@@ -243,6 +243,12 @@ export default memo(function ActionControles({
           method: "PUT",
           onSuccess: (response) => {
             if (response.data.success === true) {
+              if (sockets.connected) {
+                sockets.emit("specimen_acknowledge", {
+                  test_details: response.data.records,
+                  collected_date: response.data.records.collected_date,
+                });
+              }
               swalMessage({
                 title: "Record Updated Successfully",
                 type: "success",

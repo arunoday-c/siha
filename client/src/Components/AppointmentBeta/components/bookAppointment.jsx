@@ -23,7 +23,7 @@ import GlobalVariables from "../../../utils/GlobalVariables";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import moment from "moment";
 import { AppointmentContext } from "../AppointmentContext";
-import { getDoctorSchedule } from "./events";
+import { getDoctorSchedule, confirmAppointmentSMS } from "./events";
 export default memo(function BookAppointment(props) {
   const location = useLocation();
   // const history = useHistory();
@@ -189,7 +189,7 @@ export default memo(function BookAppointment(props) {
           moment(row.date_of_birth, "YYYY-MM-DD"),
           "years"
         );
-        debugger;
+
         setPatientCode(row.patient_code);
         setTitleId(row.title_id);
         setPatientID(row.hims_d_patient_id);
@@ -200,10 +200,11 @@ export default memo(function BookAppointment(props) {
         // setTeleCode(row.tel_code);
         setEmail(row.email);
         setArabicName(row.arabic_name);
-        const maxlength = countries.filter((f) => f.tel_code === row.tel_code)[0]
-        .max_phone_digits;
-        debugger;
-      setMaxLength(maxlength?maxlength:10);
+        const maxlength = countries.filter(
+          (f) => f.tel_code === row.tel_code
+        )[0].max_phone_digits;
+
+        setMaxLength(maxlength ? maxlength : 10);
         // setContactNumber(row.contact_number);
         setValue("tel_code", row.tel_code);
         setValue("contact_number", row.contact_number);
@@ -270,7 +271,9 @@ export default memo(function BookAppointment(props) {
           cancelled: "N",
           is_stand_by: props.isStandBy,
           title_id,
+          doc_name: props.doc_name,
         };
+
         const result = await newAlgaehApi({
           uri: "/appointment/addPatientAppointment",
           module: "frontDesk",
@@ -284,6 +287,13 @@ export default memo(function BookAppointment(props) {
         });
 
         if (result.data.success) {
+          let status = app_status.filter(
+            (f) => f.hims_d_appointment_status_id === appointment_status_id
+          );
+          if (status.length > 0 && status[0]?.statusDesc === "Confirmed") {
+            confirmAppointmentSMS(send_data);
+          }
+
           if (socket.connected) {
             socket.emit("appointment_created", send_data);
           }
@@ -720,16 +730,19 @@ export default memo(function BookAppointment(props) {
                           // disabled={disabled}
                           onChange={(e) => {
                             const { value } = e.target;
-    const reg = /^-?\d*(\.\d*)?$/;
-    if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
-      if (value.length === maxLength) {
-        clearErrors();
-        props.onChange(value);
-      } else {
-        props.onChange(value);
-      }
-    }
-                            
+                            const reg = /^-?\d*(\.\d*)?$/;
+                            if (
+                              (!isNaN(value) && reg.test(value)) ||
+                              value === "" ||
+                              value === "-"
+                            ) {
+                              if (value.length === maxLength) {
+                                clearErrors();
+                                props.onChange(value);
+                              } else {
+                                props.onChange(value);
+                              }
+                            }
                           }}
                           maxLength={maxLength}
                           placeholder={maxLength ? `${maxLength} digits` : ""}
