@@ -294,6 +294,11 @@ export default function AccessionAcknowledgement() {
 
         AckBatchDetail(inpujObj)
           .then((result) => {
+            if (sockets.connected) {
+              sockets.emit("result_entry", {
+                collected_date: new Date(),
+              });
+            }
             refetch();
             setAcknowledgeLoading(false);
             // swal("Acknowledged Succefully... Batch No." + batch_number, {
