@@ -762,7 +762,7 @@ const labModal = {
           visit_id: req.body.visit_id,
           service_id: s.services_id,
           billed: req.body.billed,
-          ordered_date: s.created_date,
+          ordered_date: new Date(),
           test_type: s.test_type,
           test_id: s.test_id,
           send_out_test: s.send_out_test === "Y" ? "Y" : "N",
