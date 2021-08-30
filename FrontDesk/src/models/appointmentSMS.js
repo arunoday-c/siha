@@ -68,8 +68,9 @@ export async function confirmAppointmentSMS(req, res, next) {
         throw error;
       });
       if (
+        notify_sms_time &&
         new Date(appointment_date) >
-        new Date(moment(new Date()).format("YYYY-MM-DD"))
+          new Date(moment(new Date()).format("YYYY-MM-DD"))
       ) {
         const extraParams = EXTRA_PARAMS.replace(/\$dateTime/gi, `${dateTime}`);
         await publisher("SMS", {
