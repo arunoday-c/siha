@@ -519,9 +519,7 @@ class InvStockEnquiry extends Component {
                 ]}
                 keyId="item_id"
                 noDataText="No Stock available for selected Item in the selected Location"
-                data={
-                  this.state.ListItems === undefined ? [] : this.state.ListItems
-                }
+                data={this.state.ListItems}
                 pagination={true}
                 pageOptions={{ rows: 20, page: 1 }}
                 isFilterable={true}
@@ -539,14 +537,14 @@ class InvStockEnquiry extends Component {
               <div className="col-lg-12">
                 <button
                   className="btn btn-default"
-                  disabled={!this.state.location_id}
+                  disabled={this.state.ListItems.length === 0 ? true : false}
                   onClick={() => downloadInvStockDetails(this)}
                 >
                   Download Stock Details
                 </button>
                 <button
                   className="btn btn-default"
-                  disabled={!this.state.location_id}
+                  disabled={this.state.ListItems.length === 0 ? true : false}
                   onClick={() => downloadInvStock(this)}
                 >
                   Download Stock
