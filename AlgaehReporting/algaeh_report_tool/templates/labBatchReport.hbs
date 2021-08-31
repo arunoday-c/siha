@@ -1,0 +1,42 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div class="print-body">
+
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Primary ID</th>
+            <th>Patient Code</th>
+            <th>Patient Name</th>
+            <th>Test Name</th>
+            <th>Lab ID No.</th>
+            <th>Ordered Date and Time</th>
+            <th>Created By</th>
+            <th>Created On</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          {{#each result}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td datatype="string">{{primary_id_no}}</td>
+              <td datatype="string">{{patient_code}}</td>
+              <td datatype="string">{{full_name}}</td>
+              <td datatype="string">{{description}}</td>
+              <td datatype="string">{{lab_id_number}}</td>
+              <td datatype="string">{{ordered_date}}</td>
+              <td datatype="string">{{batch_created_by}}</td>
+              <td datatype="string">{{created_date}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
+</body>

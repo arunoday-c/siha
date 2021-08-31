@@ -13,6 +13,8 @@ import swal from "sweetalert2";
 import "./ValidateBatch.scss";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
+import { algaehApiCall } from "../../../../utils/algaehApiCall";
+
 // import { Controller } from "react-hook-form";
 // import BatchValidationList from "./listData";
 const STATUS = {
@@ -31,6 +33,7 @@ export default memo(function ValidateBatch() {
   // });
 
   const [batch_number, setBatchNUmber] = useState(null);
+  const [hims_f_lab_batch_header_id, setBatchID] = useState(null);
   const [batch_list, setBatchList] = useState([]);
   const [checkAll, setCheckAll] = useState(STATUS.UNCHECK);
   // const [entry_type, setEntryType] = useState("A");
@@ -148,6 +151,7 @@ export default memo(function ValidateBatch() {
             // setEntryType("R");
             setBatchList([]);
             setBatchNUmber(null);
+            setBatchID(null);
           })
           .catch((e) => {
             AlgaehMessagePop({
@@ -231,6 +235,7 @@ export default memo(function ValidateBatch() {
       },
       onRowSelect: (row) => {
         setBatchNUmber(row.batch_number);
+        setBatchID(row.hims_f_lab_batch_header_id);
         getBatchDetail({
           hims_f_lab_batch_header_id: row.hims_f_lab_batch_header_id,
           // entry_type: entry_type,
@@ -309,6 +314,52 @@ export default memo(function ValidateBatch() {
     let _index = new_batch_list.indexOf(row);
     new_batch_list[_index] = row;
     setBatchList(new_batch_list);
+  };
+
+  const generateLabBatchReport = () => {
+    algaehApiCall({
+      // uri: "/report",
+      uri: "/excelReport",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "labBatchReport",
+          pageOrentation: "landscape",
+          excelTabName: batch_number,
+          excelHeader: false,
+          reportParams: [
+            {
+              name: "hims_f_lab_batch_header_id",
+              value: hims_f_lab_batch_header_id,
+            },
+          ],
+          outputFileType: "EXCEL", //"EXCEL", //"PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const a = document.createElement("a");
+        a.href = urlBlob;
+        a.download = `Lab Batch Report - ${batch_number}.${"xlsx"}`;
+        a.click();
+
+        // const urlBlob = URL.createObjectURL(res.data);
+        // const origin = `${
+        //   window.location.origin
+        // }/reportviewer/web/viewer.html?file=${urlBlob}&filename=${
+        //   $this.state.inputs.hospital_name
+        // } Leave and Airfare Reconciliation - ${moment(
+        //   $this.state.inputs.month,
+        //   "MM"
+        // ).format("MMM")}-${$this.state.inputs.year}`;
+        // window.open(origin);
+      },
+    });
   };
 
   return (
@@ -509,16 +560,16 @@ export default memo(function ValidateBatch() {
                 filterable: true,
                 sortable: true,
               },
-              {
-                fieldName: "specimen_name",
-                label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
-                others: {
-                  // filterable: true,
-                  // sortable: true,
-                },
-                filterable: true,
-                sortable: true,
-              },
+              // {
+              //   fieldName: "specimen_name",
+              //   label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
+              //   others: {
+              //     // filterable: true,
+              //     // sortable: true,
+              //   },
+              //   filterable: true,
+              //   sortable: true,
+              // },
               {
                 fieldName: "specimen_name",
                 label: <AlgaehLabel label={{ fieldName: "Specimen" }} />,
@@ -564,6 +615,7 @@ export default memo(function ValidateBatch() {
             >
               Validate All
             </button>
+
             <button
               type="submit"
               className="btn btn-primary"
@@ -572,6 +624,16 @@ export default memo(function ValidateBatch() {
               disabled={batch_list.length > 0 ? false : true}
             >
               Save All
+            </button>
+            <button
+              type="button"
+              className="btn btn-default"
+              style={{ marginLeft: 10 }}
+              // onClick={onValidate}
+              onClick={generateLabBatchReport}
+              disabled={batch_list.length > 0 ? false : true}
+            >
+              Download Report
             </button>
             {/* {entry_type === "R" ? (
               <>
