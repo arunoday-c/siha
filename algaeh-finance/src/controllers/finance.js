@@ -3,6 +3,8 @@ import utlities from "algaeh-utilities";
 import finance, {
   getSalesOrderAndPersonId,
   getAccountForDashBoard,
+  postDayEndData,
+  bulkPosttoFinance,
 } from "../models/finance";
 import {
   getYearEndData,
@@ -21,7 +23,6 @@ const {
   getFinanceAccountsMaping,
   updateFinanceAccountsMaping,
   getDayEndData,
-  postDayEndData,
   removeAccountHead,
   previewDayEndEntries,
   getAccountHeadsForDropdown,
@@ -188,6 +189,15 @@ export default () => {
         })
         .end();
     }
+  });
+  api.post("/bulkPosttoFinance", bulkPosttoFinance, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records,
+      })
+      .end();
   });
   api.put(
     "/revertDayEnd",
