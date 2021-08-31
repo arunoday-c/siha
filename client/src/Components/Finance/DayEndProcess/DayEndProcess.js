@@ -23,6 +23,7 @@ import {
   persistStateOnBack,
   persistStageOnGet,
   persistStorageOnRemove,
+  AlgaehAutoComplete,
 } from "algaeh-react-components";
 import swal from "sweetalert2";
 import TransationDetails from "./TransationDetails";
@@ -85,7 +86,20 @@ import TransationDetails from "./TransationDetails";
 //     ],
 //   },
 // ];
-
+let dataPayment = [
+  { value: "journal", label: "Journal" },
+  { label: "Contra", value: "contra" },
+  { value: "receipt", label: "Receipt" },
+  { label: "Payment", value: "payment" },
+  { value: "sales", label: "Sales" },
+  { label: "Purchase", value: "purchase" },
+  {
+    value: "credit_note",
+    label: "Credit Note",
+  },
+  { value: "debit_note", label: "Debit Note" },
+  { value: "expense_voucher", label: "Expense Voucher" },
+];
 class DayEndProcess extends Component {
   constructor(props) {
     super(props);
@@ -101,6 +115,8 @@ class DayEndProcess extends Component {
       screen_code: null,
       persistence: null,
       revert_trans: "N",
+      voucherType: null,
+      voucher_list: null,
     };
     this.selectedDayEndIds = "";
   }
@@ -206,6 +222,9 @@ class DayEndProcess extends Component {
       if (this.state.to_date !== null) {
         inputObj.to_date = this.state.to_date;
       }
+      if (this.state.voucherType) {
+        inputObj.voucherType = this.state.voucherType;
+      }
 
       algaehApiCall({
         uri: "/finance/getDayEndData",
@@ -262,6 +281,61 @@ class DayEndProcess extends Component {
         } catch (e) {
           console.error(e);
         }
+      }
+    });
+  }
+
+  bulkProcess() {
+    const sortedList = this.state.dayEnd.filter((f) => f.checked === true);
+
+    if (sortedList.length === 0) {
+      swalMessage({
+        title: "Select atleast one record to proceed",
+        type: "error",
+      });
+      return;
+    }
+    const settings = { header: undefined, footer: undefined };
+
+    swal({
+      title: "Are you sure you want to Processed ?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willProcess) => {
+      if (willProcess.value) {
+        algaehApiCall({
+          uri: "/finance/bulkPosttoFinance",
+          skipParse: true,
+          data: Buffer.from(
+            JSON.stringify({ day_end_list: sortedList }),
+            "utf8"
+          ),
+          module: "finance",
+          method: "POST",
+          header: {
+            "content-type": "application/octet-stream",
+            ...settings,
+          },
+
+          // uri: "/finance/bulkPosttoFinance",
+          // module: "finance",
+          // data: { day_end_list: sortedList },
+          // method: "PUT",
+          onSuccess: (response) => {
+            swalMessage({ type: "success", title: "Successfully Posted" });
+            this.getDayEndProcess();
+          },
+          onFailure: (error) => {
+            swalMessage({
+              title: error.message,
+              type: "error",
+            });
+          },
+        });
       }
     });
   }
@@ -528,8 +602,62 @@ class DayEndProcess extends Component {
       module_id: null,
       screen_code: null,
       revert_trans: "N",
+      voucherType: null,
+      voucher_list: null,
     });
     return this.props.history?.push(this.props.location?.pathname);
+  }
+
+  onChageCheckSelectAll(e) {
+    const staus = e.target.checked;
+    const myState = this.state.dayEnd.map((f) => {
+      return { ...f, checked: staus };
+    });
+
+    const hasProcessed = myState.find((f) => f.salary_processed === "Y");
+    if (hasProcessed !== undefined && staus === true) {
+      this.allChecked.indeterminate = true;
+    } else {
+      this.allChecked.indeterminate = false;
+    }
+    this.setState({
+      dayEnd: myState,
+      selectAll:
+        hasProcessed !== undefined
+          ? "INDETERMINATE"
+          : staus === true
+          ? "CHECK"
+          : "UNCHECK",
+    });
+  }
+
+  onCheckChangeRow(row, e) {
+    const status = e.target.checked;
+    // const currentRow = row;
+    row.checked = status;
+    const records = this.state.dayEnd;
+    const hasUncheck = records.filter((f) => {
+      return f.checked === undefined || f.checked === false;
+    });
+    const hasProceesed = hasUncheck.find((f) => f.salary_processed === "Y");
+    const totalRecords = records.length;
+    let ckStatus =
+      totalRecords === hasUncheck.length
+        ? "UNCHECK"
+        : hasUncheck.length === 0
+        ? "CHECK"
+        : "INDETERMINATE";
+    if (hasProceesed !== undefined) {
+      ckStatus = "INDETERMINATE";
+    }
+    if (ckStatus === "INDETERMINATE") {
+      this.allChecked.indeterminate = true;
+    } else {
+      this.allChecked.indeterminate = false;
+    }
+    this.setState({
+      selectAll: ckStatus,
+    });
   }
 
   render() {
@@ -543,104 +671,6 @@ class DayEndProcess extends Component {
           narration={this.state.narration}
           onClose={this.CloseTransationDetail.bind(this)}
         />
-        {/* <AlgaehModalPopUp
-          title="Accounting Entries"
-          openPopup={this.state.openPopup}
-          events={{
-            onClose: () => {
-              this.setState({ popUpRecords: {}, openPopup: false });
-            },
-          }}
-        >
-          <div className="col-lg-12 popupInner">
-            <div className="row" style={{ paddingTop: 15 }}>              
-              <div className="col-12" id="dayEndProcessDetailsGrid_Cntr">
-                <AlgaehDataGrid
-                  id="dayEndProcessDetailsGrid"
-                  columns={[
-                    {
-                      fieldName: "to_account",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "To Account" }} />
-                      ),
-                    },
-
-                    {
-                      fieldName: "payment_type",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
-                      ),
-                    },
-                    {
-                      fieldName: "payment_date",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Payment Date" }} />
-                      ),
-                    },
-                    {
-                      fieldName: "debit_amount",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Debit Amount" }} />
-                      ),
-                      displayTemplate: (row) => {
-                        return (
-                          <span>
-                            {GetAmountFormart(row.debit_amount, {
-                              appendSymbol: false,
-                            })}
-                          </span>
-                        );
-                      },
-                    },
-                    {
-                      fieldName: "credit_amount",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Credit Amount" }} />
-                      ),
-                      displayTemplate: (row) => {
-                        return (
-                          <span>
-                            {GetAmountFormart(row.credit_amount, {
-                              appendSymbol: false,
-                            })}
-                          </span>
-                        );
-                      },
-                    },
-
-                    // {
-                    //   fieldName: "narration",
-                    //   label: <AlgaehLabel label={{ forceLabel: "Narration" }} />
-                    // }
-                  ]}
-                  dataSource={{
-                    data:
-                      this.state.popUpRecords.entries === undefined
-                        ? []
-                        : this.state.popUpRecords.entries,
-                  }}
-                  isEditable={false}
-                  paging={{ page: 0, rowsPerPage: 10 }}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="popupFooter">
-            <div className="col-lg-12">
-              <div className="row" style={{ textAlign: "right" }}>
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={(e) => {
-                    this.setState({ popUpRecords: {}, openPopup: false });
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </AlgaehModalPopUp> */}
         {this.props.location.state ? null : (
           <div
             className="row inner-top-search margin-bottom-15"
@@ -648,49 +678,6 @@ class DayEndProcess extends Component {
           >
             <div className="col-lg-12">
               <div className="row">
-                {/* <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{ forceLabel: "Select Module" }}
-                  selector={{
-                    name: "module_id",
-                    className: "select-fld",
-                    value: this.state.module_id,
-                    dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: modules,
-                    },
-                    onClear: () => {
-                  this.setState({
-                  module_id: null,
-                  screen_code: null,
-                  trans_type: [],
-                  });
-                    },
-                    onChange: this.dropDownHandle.bind(this),
-                  }}
-                /> */}
-
-                {/* <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{ forceLabel: "Select Screen" }}
-                  selector={{
-                  name: "screen_code",
-                  className: "select-fld",
-                  value: this.state.screen_code,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: this.state.trans_type
-                  },
-                  onChange: this.dropDownHandle.bind(this),
-                  onClear: () => {
-                    this.setState({
-                  screen_code: null
-                    });
-                  }
-                  }}
-                /> */}
                 <AlgaehDateHandler
                   div={{ className: "col-2" }}
                   label={{ fieldName: "from_date" }}
@@ -766,6 +753,67 @@ class DayEndProcess extends Component {
                     </span>
                   </label>
                 </div> */}
+                <AlgaehAutoComplete
+                  div={{ className: "col-2" }}
+                  label={{
+                    fieldName: "voucherType",
+                  }}
+                  selector={{
+                    value: this.state.voucherType,
+                    dataSource: {
+                      data: dataPayment,
+                      valueField: "value",
+                      textField: "label",
+                    },
+                    onChange: (selected) => {
+                      debugger;
+                      this.setState({
+                        voucherType: selected.value,
+                        dayEnd: [],
+                        voucher_list: {
+                          label: (
+                            <input
+                              type="checkbox"
+                              defaultChecked={
+                                this.state.selectAll === "CHECK" ? true : false
+                              }
+                              ref={(input) => {
+                                this.allChecked = input;
+                              }}
+                              onChange={this.onChageCheckSelectAll.bind(this)}
+                            />
+                          ),
+                          fieldName: "select",
+                          displayTemplate: (row) => (
+                            <input
+                              type="checkbox"
+                              checked={row.checked}
+                              disabled={
+                                row.salary_processed === "Y" ? true : false
+                              }
+                              onChange={this.onCheckChangeRow.bind(this, row)}
+                            />
+                          ),
+                          others: {
+                            minWidth: 50,
+                            filterable: false,
+                            sortable: false,
+                          },
+                        },
+                      });
+                    },
+                    onClear: () => {
+                      this.setState({
+                        voucherType: null,
+                        voucher_list: null,
+                        dayEnd: [],
+                      });
+                    },
+                    others: {
+                      // disabled: disableFiled || afterSaveDisabled,
+                    },
+                  }}
+                />
 
                 <div className="col">
                   <label>Show Only Posted Trancation</label>
@@ -849,10 +897,11 @@ class DayEndProcess extends Component {
                     <AlgaehTable
                       id="dayEndProcessGrid"
                       columns={[
+                        this.state.voucher_list,
                         {
                           fieldName: "select_id",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Select" }} />
+                            <AlgaehLabel label={{ forceLabel: "Action" }} />
                           ),
                           displayTemplate: (row) => (
                             <>
@@ -1052,165 +1101,30 @@ class DayEndProcess extends Component {
                       isFilterable={true}
                       persistence={this.state.persistence}
                     />
-                    {/* <AlgaehDataGrid
-                      id="dayEndProcessGrid"
-                      columns={[
-                        {
-                          fieldName: "select_id",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Select" }} />
-                          ),
-                          displayTemplate: (row) => (
-                            <>
-                              {this.state.posted === "N" ? (
-                                <Tooltip title="Post to Finance">
-                                  <i
-                                    className="fas fa-paper-plane"
-                                    onClick={() => {
-                                      this.postDayEndProcess(
-                                        row.finance_day_end_header_id
-                                      );
-                                    }}
-                                  ></i>
-                                </Tooltip>
-                              ) : null}
-
-                              <Tooltip title="View Details">
-                                <i
-                                  className="fas fa-eye"
-                                  onClick={() => {
-                                    this.onOpenPreviewPopUP(row, this);
-                                  }}
-                                ></i>
-                              </Tooltip>
-                              <Tooltip title="DrillDown">
-                                <i
-                                  className="fa fa-exchange-alt"
-                                  onClick={() => {
-                                    this.DrillDownScree(row, this);
-                                  }}
-                                ></i>
-                              </Tooltip>
-
-                              {this.state.posted === "N" &&
-                              (row.from_screen === "PR0004" ||
-                                row.from_screen === "SAL005") ? (
-                                <Tooltip title="Revert">
-                                  <i
-                                    className="fa fa-share fa-flip-horizontal"
-                                    aria-hidden="true"
-                                    onClick={() =>
-                                      this.setState({
-                                        revert_visible: true,
-                                        selected_data: row,
-                                      })
-                                    }
-                                    // onClick={this.RejectProcess.bind(this, row)}
-                                  />
-                                </Tooltip>
-                              ) : null}
-                            </>
-                          ),
-                          others: {
-                            maxWidth: 170,
-                            filterable: false,
-                          },
-                        },
-                        {
-                          fieldName: "document_number",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Document No." }}
-                            />
-                          ),
-                          disabled: true,
-                        },
-                        {
-                          fieldName: "invoice_no",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Invoice No." }}
-                            />
-                          ),
-                          disabled: true,
-                        },
-
-                        {
-                          fieldName: "transaction_date",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Document  Date" }}
-                            />
-                          ),
-                          others: { filterable: false },
-                        },
-
-                        {
-                          fieldName: "voucher_type",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Voucher Type" }}
-                            />
-                          ),
-                          displayTemplate: (row) => {
-                            return _.startCase(
-                              row.voucher_type ? row.voucher_type : ""
-                            );
-                          },
-                          disabled: true,
-                         
-                        },
-                        {
-                          fieldName: "amount",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Amount" }} />
-                          ),
-
-                          displayTemplate: (row) => {
-                            return (
-                              <span>
-                                {GetAmountFormart(row.amount, {
-                                  appendSymbol: false,
-                                })}
-                              </span>
-                            );
-                          },
-                          others: { filterable: false },
-                        },
-
-                        {
-                          fieldName: "screen_name",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "From Document" }}
-                            />
-                          ),
-                          disabled: true,
-                       
-                        },
-                        {
-                          fieldName: "narration",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Narration" }} />
-                          ),
-                          disabled: false,
-                          others: { filterable: true },
-                        },
-                      ]}
-                      keyId="finance_day_end_header_id"
-                      dataSource={{
-                        data: this.state.dayEnd,
-                      }}
-                      isEditable={false}
-                      filter={true}
-                      paging={{ page: 3, rowsPerPage: 20 }}
-                    /> */}
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        {this.state.voucherType === null ? null : (
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  style={{ marginLeft: 10 }}
+                  onClick={this.bulkProcess.bind(this)}
+                  disabled={this.state.dayEnd.length > 0 ? false : true}
+                >
+                  Post to Finance
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <Modal
           title="Revert"
           visible={this.state.revert_visible}

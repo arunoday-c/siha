@@ -8,6 +8,7 @@ import {
   MainContext,
   Tooltip,
   // AlgaehFormGroup,
+  AlgaehSecurityComponent,
 } from "algaeh-react-components";
 import "./SampleCollection.scss";
 import SampleCollectionModal from "../SampleCollections/SampleCollections";
@@ -18,6 +19,8 @@ import { newAlgaehApi } from "../../../hooks";
 import { Controller, useForm } from "react-hook-form";
 import moment from "moment";
 import sockets from "../../../sockets";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
+
 // import _ from "moment";
 function SampleCollection() {
   const { userToken } = useContext(MainContext);
@@ -130,6 +133,59 @@ function SampleCollection() {
     if (date != null) {
       return moment(date).format(Options.datetimeFormat);
     }
+  };
+
+  const printBulkBarcodewithFilter = () => {
+    // const data = test_details;
+    // const filterData = data.filter((f) => f.checked && f.collected === "Y");
+    // if (filterData.length === 0) {
+    //   swalMessage({
+    //     title: "Select alteast one record.",
+    //     type: "warning",
+    //   });
+    //   return;
+    // }
+    // const labOrderId = filterData.map((item) => item.hims_f_lab_order_id);
+
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          others: {
+            width: "50mm",
+            height: "20mm",
+            showHeaderFooter: false,
+          },
+          reportName: "specimenBarcodeBulk",
+          reportParams: [
+            // {
+            //   name: "hims_f_lab_order_id",
+            //   value: labOrderId,
+            // },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+        window.open(origin);
+      },
+
+      // onSuccess: (res) => {
+      //   const urlBlob = URL.createObjectURL(res.data);
+      //   const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Specimen Barcode`;
+      //   window.open(origin);
+      //    window.document.title = "Specimen Barcode";
+      // },
+    });
   };
   return (
     <div className="hptl-phase1-result-entry-form">
@@ -458,6 +514,22 @@ function SampleCollection() {
           selected_patient={selected_patient}
         />
       ) : null}
+
+      <AlgaehSecurityComponent componentCode="BTN_BLK_SAM_BAR_COL_FLTR">
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={printBulkBarcodewithFilter}
+              >
+                <AlgaehLabel label={{ forceLabel: "Bulk Barcode" }} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </AlgaehSecurityComponent>
     </div>
   );
 }
