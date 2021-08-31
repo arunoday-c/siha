@@ -82,12 +82,14 @@ app.use((error, req, res, next) => {
   });
 });
 app.server.listen(_port, () => {
-  const { RABBIT_MQ_SERVER } = process.env;
+  const { RABBIT_MQ_SERVER, enableSMS } = process.env;
   if (RABBIT_MQ_SERVER && RABBIT_MQ_SERVER !== "") {
     //Start Listing to get PCR reports.
     consumerPCR("UPDATE_BULK_PATIENT_SERVRPT");
-    //Update Lab sms status
-    consumerSMSStatus("SMS_STATUS");
+    if (enableSMS === "true") {
+      //Update Lab sms status
+      consumerSMSStatus("SMS_STATUS");
+    }
   }
 });
 console.log(`Laboratory Server is running  on PORT  - ${_port} *`);
