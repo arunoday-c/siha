@@ -19,8 +19,8 @@ import { newAlgaehApi } from "../../../hooks";
 import { Controller, useForm } from "react-hook-form";
 import moment from "moment";
 import sockets from "../../../sockets";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-
+// import { algaehApiCall } from "../../../utils/algaehApiCall";
+import BulkBarcodeModal from "./BulkBarcodeModal";
 // import _ from "moment";
 function SampleCollection() {
   const { userToken } = useContext(MainContext);
@@ -31,6 +31,7 @@ function SampleCollection() {
       // start_date: [moment(new Date()), moment(new Date())],
     },
   });
+  const [bulkBarcodeModalVisible, setBulkBarcodeModalVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [sample_collection, setSample_collection] = useState([]);
   const [selected_patient, setSelected_patient] = useState([]);
@@ -146,46 +147,46 @@ function SampleCollection() {
     //   return;
     // }
     // const labOrderId = filterData.map((item) => item.hims_f_lab_order_id);
+    setBulkBarcodeModalVisible(true);
+    // algaehApiCall({
+    //   uri: "/report",
+    //   method: "GET",
+    //   module: "reports",
+    //   headers: {
+    //     Accept: "blob",
+    //   },
+    //   others: { responseType: "blob" },
+    //   data: {
+    //     report: {
+    //       others: {
+    //         width: "50mm",
+    //         height: "20mm",
+    //         showHeaderFooter: false,
+    //       },
+    //       reportName: "specimenBarcodeBulk",
+    //       reportParams: [
+    //         // {
+    //         //   name: "hims_f_lab_order_id",
+    //         //   value: labOrderId,
+    //         // },
+    //       ],
+    //       outputFileType: "PDF",
+    //     },
+    //   },
 
-    algaehApiCall({
-      uri: "/report",
-      method: "GET",
-      module: "reports",
-      headers: {
-        Accept: "blob",
-      },
-      others: { responseType: "blob" },
-      data: {
-        report: {
-          others: {
-            width: "50mm",
-            height: "20mm",
-            showHeaderFooter: false,
-          },
-          reportName: "specimenBarcodeBulk",
-          reportParams: [
-            // {
-            //   name: "hims_f_lab_order_id",
-            //   value: labOrderId,
-            // },
-          ],
-          outputFileType: "PDF",
-        },
-      },
+    //   onSuccess: (res) => {
+    //     const urlBlob = URL.createObjectURL(res.data);
+    //     const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+    //     window.open(origin);
+    //   },
 
-      onSuccess: (res) => {
-        const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
-        window.open(origin);
-      },
-
-      // onSuccess: (res) => {
-      //   const urlBlob = URL.createObjectURL(res.data);
-      //   const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Specimen Barcode`;
-      //   window.open(origin);
-      //    window.document.title = "Specimen Barcode";
-      // },
-    });
+    //   // onSuccess: (res) => {
+    //   //   const urlBlob = URL.createObjectURL(res.data);
+    //   //   const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Specimen Barcode`;
+    //   //   window.open(origin);
+    //   //    window.document.title = "Specimen Barcode";
+    //   // },
+    // });
   };
   return (
     <div className="hptl-phase1-result-entry-form">
@@ -514,7 +515,15 @@ function SampleCollection() {
           selected_patient={selected_patient}
         />
       ) : null}
-
+      {bulkBarcodeModalVisible ? (
+        <BulkBarcodeModal
+          visible={bulkBarcodeModalVisible}
+          onCancel={() => {
+            setBulkBarcodeModalVisible(!bulkBarcodeModalVisible);
+          }}
+          title={"Bulk Barcode Print"}
+        />
+      ) : null}
       <AlgaehSecurityComponent componentCode="BTN_BLK_SAM_BAR_COL_FLTR">
         <div className="hptl-phase1-footer">
           <div className="row">
