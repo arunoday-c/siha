@@ -39,6 +39,7 @@ export default function EmployeeMasterPopup({
     //   userToken.product_type === "NO_FINANCE"
     //     ? true
     //     : false;
+    console.log("userToken", userToken);
     const HRMS_Active =
       userToken.product_type === "HIMS_ERP" ||
       userToken.product_type === "HRMS" ||
@@ -52,7 +53,6 @@ export default function EmployeeMasterPopup({
     setHRMS_Active(HRMS_Active);
   }, []);
   // console.log("personalDetails", personalDetails);
-  console.log("HRMS_Active", HRMS_Active);
 
   return (
     <AlgaehModal
@@ -86,6 +86,7 @@ export default function EmployeeMasterPopup({
                   />
                 ),
                 componentCode: "EMP_TAB_PER",
+                name: "EMP_TAB_PER",
               },
               {
                 title: (
@@ -101,6 +102,7 @@ export default function EmployeeMasterPopup({
                   />
                 ),
                 componentCode: "EMP_TAB_OFF",
+                name: "EMP_TAB_OFF",
               },
               {
                 title: (
@@ -114,6 +116,8 @@ export default function EmployeeMasterPopup({
                   <PayRollDetails employee_id={employeeDetails?.employee_id} />
                 ),
                 componentCode: "EMP_TAB_PAY",
+                name: "EMP_TAB_PAY",
+                show: HRMS_Active,
               },
               {
                 title: (
@@ -129,6 +133,7 @@ export default function EmployeeMasterPopup({
                   />
                 ),
                 componentCode: "EMP_TAB_FAM",
+                name: "EMP_TAB_FAM",
               },
               {
                 title: (
@@ -142,6 +147,7 @@ export default function EmployeeMasterPopup({
                   <CommissionSetup employee_id={employeeDetails?.employee_id} />
                 ),
                 componentCode: "EMP_TAB_COMM",
+                name: "EMP_TAB_COMM",
               },
               {
                 title: (
@@ -157,9 +163,13 @@ export default function EmployeeMasterPopup({
                   />
                 ),
                 componentCode: "EMP_TAB_RUL",
+                name: "EMP_TAB_RUL",
               },
             ]}
-
+            onClick={(options, cb) => {
+              //Your logic
+              cb();
+            }}
             // renderClass="PrepaymentCntr"
           />
           <div className="popupFooter">
