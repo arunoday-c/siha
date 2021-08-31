@@ -144,7 +144,7 @@ export function UpdatePatient({
         setError("primary_id_no", {
           type: "manual",
           shouldFocus: true,
-          message: `This field should start with ${identityIntial}`,
+          message: `Identity No. should start with ${identityIntial}`,
         });
 
         return;
