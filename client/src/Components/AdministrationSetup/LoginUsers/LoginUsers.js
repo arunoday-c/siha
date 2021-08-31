@@ -10,6 +10,7 @@ import {
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { newAlgaehApi } from "../../../hooks";
 import {
   HIMS_HR_USER_TYPE,
   HIMS_USER_TYPE,
@@ -200,18 +201,19 @@ class LoginUsers extends Component {
 
   getOrganization() {
     this._isMounted = true;
-    algaehApiCall({
+    newAlgaehApi({
       uri: "/organization/getOrganizationByUser",
       method: "GET",
-      onSuccess: (response) => {
+    })
+      .then((response) => {
         if (response.data.success === true && this._isMounted === true) {
           this.setState({
             hospitals: response.data.records,
             hospital_id: response.data.records[0].hims_d_hospital_id,
           });
         }
-      },
-      onFailure: (error) => {
+      })
+      .catch((error) => {
         this.setState({
           branch: {
             loader: false,
@@ -221,8 +223,7 @@ class LoginUsers extends Component {
           title: error.message,
           type: "error",
         });
-      },
-    });
+      });
   }
 
   getBranchDetail() {
@@ -279,7 +280,6 @@ class LoginUsers extends Component {
           //       employee_code: firstRecordSet.employee_code,
           //       username: firstRecordSet.username,
           //       user_type: firstRecordSet.user_type,
-          //       // branch_data: g.getSource(),
           //       app_group_name: firstRecordSet.app_group_name,
           //       app_group_id: firstRecordSet.app_group_id,
           //       role_name: firstRecordSet.role_name,
