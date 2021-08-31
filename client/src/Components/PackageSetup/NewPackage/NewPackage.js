@@ -60,8 +60,6 @@ export default class NewPackage extends PureComponent {
       vat_applicable: "N",
       vat_percent: 0,
       showPackageSection: "none",
-      head_id: null,
-      child_id: null,
     };
     this.baseState = this.state;
   }
@@ -75,8 +73,6 @@ export default class NewPackage extends PureComponent {
       userToken.product_type === "HRMS_ERP"
         ? true
         : false;
-
-    debugger;
 
     if (FIN_Active === true) {
       this.getFinanceAccountsMaping();
@@ -158,6 +154,7 @@ export default class NewPackage extends PureComponent {
   };
 
   eventHandaler(e) {
+    debugger;
     NewPackageEvent().texthandle(this, e);
   }
   getFinanceAccountsMaping() {
