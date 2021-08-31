@@ -45,11 +45,11 @@ hims_d_cpt_code.init(
     ...dateConversions,
   }
 );
-(async () => {
-  await hims_d_cpt_code.sync({
-    alter: true,
-  });
-})();
+// (async () => {
+//   await hims_d_cpt_code.sync({
+//     alter: true,
+//   });
+// })();
 hims_d_services.belongsTo(hims_d_cpt_code, {
   foreignKey: "cpt_code",
   as: "CPT",

@@ -34,11 +34,11 @@ hims_adm_bed_status.init(
     ...dateConversions,
   }
 );
-(async () => {
-  await hims_adm_bed_status.sync({
-    alter: true,
-  });
-})();
+// (async () => {
+//   await hims_adm_bed_status.sync({
+//     alter: true,
+//   });
+// })();
 
 // hims_adm_bed_status.belongsTo(hims_d_services, {
 //   foreignKey: "services_id",

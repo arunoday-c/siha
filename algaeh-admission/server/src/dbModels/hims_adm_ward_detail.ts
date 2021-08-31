@@ -35,10 +35,10 @@ hims_adm_ward_detail.init(
     ...dateConversions,
   }
 );
-(async () => {
-  await hims_adm_ward_detail.sync({
-    alter: true,
-  });
-})();
+// (async () => {
+//   await hims_adm_ward_detail.sync({
+//     alter: true,
+//   });
+// })();
 
 export default hims_adm_ward_detail;

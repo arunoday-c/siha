@@ -216,9 +216,9 @@ hims_f_atd_bed_details.init(
     ...dateConversions,
   }
 );
-(async () => {
-  await hims_f_atd_bed_details.sync({
-    alter: true,
-  });
-})();
+// (async () => {
+//   await hims_f_atd_bed_details.sync({
+//     alter: true,
+//   });
+// })();
 export default hims_f_atd_bed_details;
