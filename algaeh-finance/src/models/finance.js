@@ -836,7 +836,9 @@ export default {
     ) {
       strQry += ` and H.transaction_date between date('${input.from_date}') and  date('${input.to_date}') `;
     }
-
+    if (input.voucherType) {
+      strQry += ` and voucher_type = '${input.voucherType}'`;
+    }
     if (input.document_number !== undefined && input.document_number != null) {
       strQry += ` and  H.document_number like '%${input.document_number}%' `;
     }
