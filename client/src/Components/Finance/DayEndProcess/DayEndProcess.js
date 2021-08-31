@@ -23,6 +23,7 @@ import {
   persistStateOnBack,
   persistStageOnGet,
   persistStorageOnRemove,
+  AlgaehAutoComplete,
 } from "algaeh-react-components";
 import swal from "sweetalert2";
 import TransationDetails from "./TransationDetails";
@@ -85,7 +86,20 @@ import TransationDetails from "./TransationDetails";
 //     ],
 //   },
 // ];
-
+let dataPayment = [
+  { value: "journal", label: "Journal" },
+  { label: "Contra", value: "contra" },
+  { value: "receipt", label: "Receipt" },
+  { label: "Payment", value: "payment" },
+  { value: "sales", label: "Sales" },
+  { label: "Purchase", value: "purchase" },
+  {
+    value: "credit_note",
+    label: "Credit Note",
+  },
+  { value: "debit_note", label: "Debit Note" },
+  { value: "expense_voucher", label: "Expense Voucher" },
+];
 class DayEndProcess extends Component {
   constructor(props) {
     super(props);
@@ -101,6 +115,7 @@ class DayEndProcess extends Component {
       screen_code: null,
       persistence: null,
       revert_trans: "N",
+      voucherType: null,
     };
     this.selectedDayEndIds = "";
   }
@@ -205,6 +220,9 @@ class DayEndProcess extends Component {
       }
       if (this.state.to_date !== null) {
         inputObj.to_date = this.state.to_date;
+      }
+      if (this.state.voucherType) {
+        inputObj.voucherType = this.state.voucherType;
       }
 
       algaehApiCall({
@@ -766,6 +784,31 @@ class DayEndProcess extends Component {
                     </span>
                   </label>
                 </div> */}
+                <AlgaehAutoComplete
+                  div={{ className: "col-2" }}
+                  label={{
+                    fieldName: "voucherType",
+                    isImp: true,
+                  }}
+                  selector={{
+                    value: this.state.voucherType,
+                    dataSource: {
+                      data: dataPayment,
+                      valueField: "value",
+                      textField: "label",
+                    },
+                    onChange: (selected) => {
+                      debugger;
+                      this.setState({ voucherType: selected.value });
+                    },
+                    onClear: () => {
+                      this.setState({ voucherType: null });
+                    },
+                    others: {
+                      // disabled: disableFiled || afterSaveDisabled,
+                    },
+                  }}
+                />
 
                 <div className="col">
                   <label>Show Only Posted Trancation</label>
