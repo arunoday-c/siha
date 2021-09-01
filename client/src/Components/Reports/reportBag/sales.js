@@ -43,7 +43,7 @@ export default function sales({
             link: {
               uri: "/employee/get",
               module: "hrManagement",
-              data: { department_type: "S" },
+              data: { department_type: "S", hospital_requires: false },
             },
             manupulation: (response, reportState, stateProperty) => {
               reportState.setState({
