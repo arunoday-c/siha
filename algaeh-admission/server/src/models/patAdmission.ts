@@ -1,19 +1,29 @@
-import algaehMysql from "algaeh-mysql";
+// import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-
 import hims_f_atd_admission from "../dbModels/hims_f_atd_admission";
 import hims_f_atd_bed_details from "../dbModels/hims_f_atd_bed_details";
+import hims_f_admission_numgen from "../dbModels/hims_f_admission_numgen";
+import { RunningNumber } from "../common/runningNum";
 import { Request, Response, NextFunction } from "express";
-
+import db from "../connection";
 export async function addPatienAdmission(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
+  const t = db.transaction();
   try {
     const input = req.body;
+    //@ts-ignore
+    const _RunningNumber = new RunningNumber<hims_f_admission_numgen, t>();
+    const admission_no = await _RunningNumber
+      .generateNumber("ATD")
+      .catch((error) => {
+        throw error;
+      });
+
     const atd_result = await hims_f_atd_admission.create({
-      admission_number: "ATD",
+      admission_number: admission_no,
       admission_date: new Date(),
       admission_type: input.admission_type,
       patient_id: input.patient_id,
@@ -69,8 +79,10 @@ export async function addPatienAdmission(
       hospital_id: req["userIdentity"].hospital_id,
     });
     req["records"] = atd_result;
+    (await t).commit();
     next();
   } catch (e) {
+    (await t).rollback();
     next(e);
   }
   //finally {

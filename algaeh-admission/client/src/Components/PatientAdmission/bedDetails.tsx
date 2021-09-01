@@ -26,7 +26,7 @@ export default function BedDetails(props: any) {
     <div className="hptl-phase1-insurance-details margin-top-15">
       <div className="insurance-section">
         <AlgaehModal
-          title="select Bed"
+          title="Select Bed"
           visible={visible}
           mask={true}
           maskClosable={true}
@@ -36,6 +36,7 @@ export default function BedDetails(props: any) {
               Close
             </button>,
           ]}
+          className={`row algaehNewModal SelectBedModal`}
         >
           <BedManagement />
         </AlgaehModal>

@@ -73,11 +73,11 @@ hims_f_atd_admission.init(
     ...dateConversions,
   }
 );
-(async () => {
-  await hims_f_atd_admission.sync({
-    alter: true,
-  });
-})();
+// (async () => {
+//   await hims_f_atd_admission.sync({
+//     alter: true,
+//   });
+// })();
 
 // hims_f_atd_admission.belongsTo(hims_d_services, {
 //   foreignKey: "services_id",

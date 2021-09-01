@@ -961,7 +961,7 @@ export async function updateBedStatus(
   res: Response,
   next: NextFunction
 ) {
-  const _mysql = new algaehMysql();
+  // const _mysql = new algaehMysql();
   try {
     const input = req.body;
     // const result = await _mysql

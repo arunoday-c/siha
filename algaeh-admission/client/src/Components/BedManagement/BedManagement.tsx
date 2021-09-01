@@ -45,35 +45,31 @@ export default function BedManagement(props: any) {
   // const context: any = useContext(MainContext);
   return (
     <div className="BedManagementScreen">
-      <div className="portlet portlet-bordered margin-bottom-15">
+      <div className="col-12">
         <SelectWardSection />
-        <div className="portlet-title">
-          <div className="caption">
-            <h3 className="caption-subject">Ward and Bed List</h3>
-          </div>
-
-          <div className="actions">
-            <ul className="ul-legend">
-              {bedStatusData?.length > 0
-                ? bedStatusData.map(
-                    (
-                      data: { bed_color: string; description: string },
-                      index: number
-                    ) => (
-                      <li key={index}>
-                        <span
-                          style={{
-                            backgroundColor: data.bed_color,
-                          }}
-                        />
-                        {/* {context.userLanguage === "ar" */}
-                        {data.description}
-                        {/* : data.statusDesc} */}
-                      </li>
-                    )
-                  )
-                : null}
-              {/* <li>
+      </div>
+      <div className="row">
+        <ul className="ul-legend">
+          {bedStatusData?.length > 0
+            ? bedStatusData.map(
+                (
+                  data: { bed_color: string; description: string },
+                  index: number
+                ) => (
+                  <li key={index}>
+                    <span
+                      style={{
+                        backgroundColor: data.bed_color,
+                      }}
+                    />
+                    {/* {context.userLanguage === "ar" */}
+                    {data.description}
+                    {/* : data.statusDesc} */}
+                  </li>
+                )
+              )
+            : null}
+          {/* <li>
                   <span style={{ backgroundColor: "red" }}></span>Legend 1
                 </li>
                 <li>
@@ -85,42 +81,38 @@ export default function BedManagement(props: any) {
                 <li>
                   <span style={{ backgroundColor: "red" }}></span>Legend 1
                 </li> */}
-            </ul>
-          </div>
-        </div>
-        <div className="portlet-body">
-          <BedColumn />
-        </div>
-        <div className="hptl-phase1-footer">
-          <div className="row">
-            <div className="col">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={(e) => {
-                  e.preventDefault();
-                }}
-                // disabled={disabled}
-              >
-                <AlgaehLabel label={{ fieldName: "btn_save" }} />
-              </button>
-              <button
-                type="button"
-                className="btn btn-default"
-                // onClick={() => onClear(false)}
-                // disabled={
-                //   !disabled &&
-                //   !appointment_id &&
-                //   !patient_code &&
-                //   !formState.isDirty
-                // }
-              >
-                <AlgaehLabel label={{ fieldName: "btn_clear" }} />
-              </button>
-            </div>
-          </div>
-        </div>
+        </ul>
       </div>
+      <div className="col-12">
+        <BedColumn />
+      </div>
+      {/* <div className="row">
+        <div className="col">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+            // disabled={disabled}
+          >
+            <AlgaehLabel label={{ fieldName: "btn_save" }} />
+          </button>
+          <button
+            type="button"
+            className="btn btn-default"
+            // onClick={() => onClear(false)}
+            // disabled={
+            //   !disabled &&
+            //   !appointment_id &&
+            //   !patient_code &&
+            //   !formState.isDirty
+            // }
+          >
+            <AlgaehLabel label={{ fieldName: "btn_clear" }} />
+          </button>
+        </div>
+      </div> */}
     </div>
   );
 }
