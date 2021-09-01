@@ -420,7 +420,7 @@ export default function BedStatus(Props: any) {
               },
             }}
           /> */}
-          {/* <Controller
+          <Controller
             name="bed_status"
             control={control}
             rules={{ required: "Select Procedure" }}
@@ -455,7 +455,7 @@ export default function BedStatus(Props: any) {
                 }}
               />
             )}
-          /> */}
+          />
           {/* <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
             label={{
