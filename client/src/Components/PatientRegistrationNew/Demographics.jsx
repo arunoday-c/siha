@@ -21,7 +21,7 @@ import GenericData from "../../utils/GlobalVariables.json";
 import { FrontdeskContext } from "./FrontdeskContext";
 import { useLangFieldName } from "./patientHooks";
 import MaskedInput from "react-maskedinput";
-
+import { useStateWithCallbackLazy } from "use-state-with-callback";
 const { TabPane } = Tabs;
 // const { Option } = Select;
 const { FORMAT_GENDER, FORMAT_MARTIALSTS, FORMAT_BLOOD_GROUP } = GenericData;
@@ -77,8 +77,9 @@ export function Demographics({
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
   const [maxLength, setMaxLength] = useState(null);
-  const [primaryMasked, setPrimaryMasked] = useState("");
+  const [primaryMasked, setPrimaryMasked] = useStateWithCallbackLazy("");
   const [secondaryMasked, setSecondaryMasked] = useState("");
+
   const { savedPatient, setIdentityType } = useContext(FrontdeskContext);
   const disabled = !inModal && (!!patient_code || !!savedPatient?.patient_code);
   const {
@@ -142,27 +143,31 @@ export function Demographics({
         if (res[0]?.identity_document_id) {
           setValue("primary_identity_id", res[0]?.identity_document_id);
           setValue("secondary_identity_id", res[0]?.secondary_id_type_id);
+
           setIdentityType(res[0]?.identity_type);
           if (identities?.length > 0) {
             const initialValue = identities.filter(
               (f) =>
                 f.hims_d_identity_document_id === res[0]?.identity_document_id
             );
-            if (initialValue[0]?.masked_identity)
-              setPrimaryMasked(initialValue[0].masked_identity);
+            debugger;
+            setValue("primary_id_no", initialValue[0]?.initial_value_identity);
+            if (initialValue[0]?.masked_identity) {
+              setPrimaryMasked(initialValue[0].masked_identity, () =>
+                setValue(
+                  "primary_id_no",
+                  initialValue[0]?.initial_value_identity
+                )
+              );
+            }
 
             const secondaryValue = identities.filter(
               (f) =>
                 f.hims_d_identity_document_id === res[0]?.secondary_id_type_id
             );
-            if (secondaryValue[0]?.masked_identity)
+            if (secondaryValue[0]?.masked_identity) {
               setSecondaryMasked(secondaryValue[0].masked_identity);
-            setValue(
-              "primary_id_no",
-              initialValue.length > 0
-                ? initialValue[0].initial_value_identity
-                : null
-            );
+            }
           }
         } else {
           setValue("primary_identity_id", "");
@@ -201,7 +206,7 @@ export function Demographics({
       return "";
     }
   };
-  console.log("parseInt(incomeByPoint)", parseInt(incomeByPoint));
+
   return (
     <Spin spinning={isLoading}>
       <div className="hptl-phase1-patient-details margin-bottom-15 margin-top-15">
@@ -1095,18 +1100,20 @@ export function Demographics({
                                 },
                                 value,
                                 onChange: (_, selected) => {
+                                  setValue("primary_id_no", undefined);
+
                                   const identity_type =
                                     _.identity_document_name;
                                   onChange(selected);
                                   setIdentityType(identity_type);
                                   setValue("identity_type", identity_type);
-                                  setValue(
-                                    "primary_id_no",
-                                    _.initial_value_identity
-                                  );
                                   setValue("nationality_id", "");
-
-                                  setPrimaryMasked(_.masked_identity);
+                                  setPrimaryMasked(_.masked_identity, () => {
+                                    setValue(
+                                      "primary_id_no",
+                                      _.initial_value_identity
+                                    );
+                                  });
                                 },
                                 onClear: () => {
                                   onChange("");
