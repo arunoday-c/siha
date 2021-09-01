@@ -373,24 +373,27 @@ export default function WardBedSetup(Props: any) {
         }
       });
     } else {
-      addWardHeader(data).then((result: { insertId: number }) => {
-        const wardDetails = wardDetailsData.map((item: any) => {
-          return { ...item, ward_header_id: result.insertId };
-        });
-
-        addWardDetails({
-          wardDetails,
-        }).then(() => {
-          getWardHeaderData().then(() => {
-            AlgaehMessagePop({
-              display: "Successfully Updated",
-              type: "success",
-            });
-            return;
+      addWardHeader(data).then(
+        (result: { hims_adm_ward_header_id: number }) => {
+          const wardDetails = wardDetailsData.map((item: any) => {
+            return { ...item, ward_header_id: result.hims_adm_ward_header_id };
           });
-        });
-        reset({ ward_desc: "", ward_short_name: "", ward_type: null });
-      });
+
+          addWardDetails({
+            wardDetails,
+          }).then(() => {
+            getWardHeaderData().then(() => {
+              setWardDetailsData([]);
+              AlgaehMessagePop({
+                display: "Successfully Updated",
+                type: "success",
+              });
+              return;
+            });
+          });
+          reset({ ward_desc: "", ward_short_name: "", ward_type: null });
+        }
+      );
     }
   };
   const wardDetails = (data: any) => {
