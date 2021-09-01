@@ -19,8 +19,9 @@ export default {
       _mysql
         .executeQuery({
           query:
-            `SELECT hims_f_inventory_can_consumption_header_id, can_consumption_number, can_consumption_date, year,
-          period, location_type,location_id  from  hims_f_inventory_can_consumption_header CH
+            `SELECT hims_f_inventory_can_consumption_header_id, can_consumption_number, can_consumption_date, CH.year,
+          CH.period, CH.location_type, CH.location_id, H.consumption_number from hims_f_inventory_can_consumption_header CH
+          INNER JOIN hims_f_inventory_consumption_header H on hims_f_inventory_consumption_header_id=CH.consumption_header_id
           left join hims_f_inventory_can_consumption_detail ID on  ID.hims_f_inventory_can_consumption_detail_id=CH.hims_f_inventory_can_consumption_header_id
          
           where ` + strQty,
@@ -28,7 +29,7 @@ export default {
         })
         .then((headerResult) => {
           if (headerResult.length != 0) {
-            console.log("sdvhdhsdghsgdhsgdhgsdgja", headerResult);
+            // console.log("sdvhdhsdghsgdhsgdhgsdgja", headerResult);
             _mysql
               .executeQuery({
                 query: `select ID.*,IU.uom_description,IM.item_description from hims_f_inventory_can_consumption_detail ID
@@ -85,9 +86,10 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT hims_f_inventory_consumption_header_id, consumption_number, consumption_date, year,\
-          period, location_type,location_id  from  hims_f_inventory_consumption_header\
-          where " +
+            "SELECT hims_f_inventory_consumption_header_id, consumption_number, consumption_date, \
+            hims_f_inventory_consumption_header_id as consumption_header_id,  year,\
+            period, location_type, location_id  from  hims_f_inventory_consumption_header\
+            where " +
             strQty,
           printQuery: true,
         })
@@ -96,7 +98,10 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select * from hims_f_inventory_consumption_detail where inventory_consumption_header_id=?",
+                  "select CD.*, uom_id as sales_uom, IU.uom_description,IM.item_description from hims_f_inventory_consumption_detail CD\
+                  INNER JOIN hims_d_inventory_item_master IM on  IM.hims_d_inventory_item_master_id=CD.item_id \
+                  left join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id=CD.uom_id \
+                  where inventory_consumption_header_id=?",
                 values: [
                   headerResult[0].hims_f_inventory_consumption_header_id,
                 ],
@@ -136,7 +141,7 @@ export default {
       let input = { ...req.body };
       let document_number = "";
 
-      console.log("input", input);
+      // console.log("input", input);
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
@@ -164,7 +169,7 @@ export default {
             .executeQuery({
               query:
                 "INSERT INTO `hims_f_inventory_consumption_header` (consumption_number, consumption_date, `year`, \
-                period, location_type, location_id, provider_id, patient_id, cancelled, created_date, created_by, \
+                period, location_type, location_id, provider_id, patient_id, created_date, created_by, \
                 updated_date, updated_by, hospital_id) \
               VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
@@ -176,7 +181,6 @@ export default {
                 input.location_id,
                 input.provider_id,
                 input.patient_id,
-                input.cancelled,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
@@ -266,7 +270,7 @@ export default {
       let input = { ...req.body };
       let document_number = "";
 
-      console.log("input", input);
+      // console.log("input", input);
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
@@ -297,8 +301,7 @@ export default {
               query:
                 "INSERT INTO `hims_f_inventory_can_consumption_header` (can_consumption_number, can_consumption_date, `year`, \
                 period, location_type, location_id, provider_id, patient_id, consumption_header_id, created_date, created_by, \
-                updated_date, updated_by, hospital_id) \
-              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                updated_date, updated_by, hospital_id) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
               values: [
                 document_number,
                 today,
@@ -335,15 +338,18 @@ export default {
                 "extended_cost",
               ];
 
-              console.log(
-                "input.inventory_stock_detail",
-                input.inventory_stock_detail
-              );
+              // console.log(
+              //   "input.inventory_stock_detail",
+              //   input.inventory_stock_detail
+              // );
 
               _mysql
                 .executeQuery({
                   query:
-                    "INSERT INTO hims_f_inventory_can_consumption_detail(??) VALUES ?",
+                    "INSERT INTO hims_f_inventory_can_consumption_detail(??) VALUES ?; \
+                    UPDATE hims_f_inventory_consumption_header set cancelled='Y' where hims_f_inventory_consumption_header_id=" +
+                    input.consumption_header_id +
+                    ";",
                   values: input.inventory_stock_detail,
                   includeValues: IncludeValues,
                   extraValues: {
@@ -358,6 +364,10 @@ export default {
                   req.body.transaction_id = headerResult.insertId;
                   req.body.year = year;
                   req.body.period = period;
+                  req.body.ScreenCode = "INV0011";
+                  req.body.transaction_type = "CSN";
+                  req.body.transaction_date = today;
+
                   period;
                   req.records = {
                     can_consumption_number: document_number,
@@ -464,9 +474,78 @@ export default {
 
                 // console.log("item_waited_avg_cost", item_waited_avg_cost)
                 // const
-                const net_payable = _.sumBy(
-                  inputParam.inventory_stock_detail,
-                  (s) => parseFloat(s.extended_cost)
+
+                let insertSubDetail = [];
+                const month = moment().format("M");
+                const year = moment().format("YYYY");
+                for (
+                  let i = 0;
+                  i < inputParam.inventory_stock_detail.length;
+                  i++
+                ) {
+                  const item_avg_cost = item_waited_avg_cost.find(
+                    (f) =>
+                      parseInt(f.hims_d_inventory_item_master_id) ===
+                      parseInt(inputParam.inventory_stock_detail[i].item_id)
+                  );
+
+                  let waited_avg_cost = utilities.decimalPoints(
+                    parseFloat(inputParam.inventory_stock_detail[i].quantity) *
+                      parseFloat(item_avg_cost.waited_avg_cost),
+                    decimal_places
+                  );
+
+                  // console.log("inputParam.cancelled", inputParam.cancelled);
+                  if (inputParam.cancelled === "Y") {
+                    // console.log("1");
+                    //COGS Entry
+                    insertSubDetail.push({
+                      payment_date: new Date(),
+                      head_id: cogs_acc_data.head_id,
+                      child_id: cogs_acc_data.child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: waited_avg_cost,
+                      hospital_id: location_acc[0].hospital_id,
+                    });
+
+                    //Location Wise
+                    insertSubDetail.push({
+                      payment_date: new Date(),
+                      head_id: location_acc[0].head_id,
+                      child_id: location_acc[0].child_id,
+                      debit_amount: waited_avg_cost,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: location_acc[0].hospital_id,
+                    });
+                  } else {
+                    // console.log("2");
+                    //COGS Entry
+                    insertSubDetail.push({
+                      payment_date: new Date(),
+                      head_id: cogs_acc_data.head_id,
+                      child_id: cogs_acc_data.child_id,
+                      debit_amount: waited_avg_cost,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: location_acc[0].hospital_id,
+                    });
+
+                    //Location Wise
+                    insertSubDetail.push({
+                      payment_date: new Date(),
+                      head_id: location_acc[0].head_id,
+                      child_id: location_acc[0].child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: waited_avg_cost,
+                      hospital_id: location_acc[0].hospital_id,
+                    });
+                  }
+                }
+                const net_payable = _.sumBy(insertSubDetail, (s) =>
+                  parseFloat(s.debit_amount)
                 );
 
                 const _narration =
@@ -519,9 +598,6 @@ export default {
                     //   }
                     // }
 
-                    let insertSubDetail = [];
-                    const month = moment().format("M");
-                    const year = moment().format("YYYY");
                     const IncludeValuess = [
                       "payment_date",
                       "head_id",
@@ -531,73 +607,6 @@ export default {
                       "credit_amount",
                       "hospital_id",
                     ];
-                    for (
-                      let i = 0;
-                      i < inputParam.inventory_stock_detail.length;
-                      i++
-                    ) {
-                      const item_avg_cost = item_waited_avg_cost.find(
-                        (f) =>
-                          parseInt(f.hims_d_inventory_item_master_id) ===
-                          parseInt(inputParam.inventory_stock_detail[i].item_id)
-                      );
-
-                      let waited_avg_cost = utilities.decimalPoints(
-                        parseFloat(
-                          inputParam.inventory_stock_detail[i].quantity
-                        ) * parseFloat(item_avg_cost.waited_avg_cost),
-                        decimal_places
-                      );
-
-                      console.log("inputParam.cancelled", inputParam.cancelled);
-                      if (inputParam.cancelled === "Y") {
-                        console.log("1");
-                        //COGS Entry
-                        insertSubDetail.push({
-                          payment_date: new Date(),
-                          head_id: cogs_acc_data.head_id,
-                          child_id: cogs_acc_data.child_id,
-                          debit_amount: 0,
-                          payment_type: "CR",
-                          credit_amount: waited_avg_cost,
-                          hospital_id: location_acc[0].hospital_id,
-                        });
-
-                        //Location Wise
-                        insertSubDetail.push({
-                          payment_date: new Date(),
-                          head_id: location_acc[0].head_id,
-                          child_id: location_acc[0].child_id,
-                          debit_amount: waited_avg_cost,
-                          payment_type: "DR",
-                          credit_amount: 0,
-                          hospital_id: location_acc[0].hospital_id,
-                        });
-                      } else {
-                        console.log("2");
-                        //COGS Entry
-                        insertSubDetail.push({
-                          payment_date: new Date(),
-                          head_id: cogs_acc_data.head_id,
-                          child_id: cogs_acc_data.child_id,
-                          debit_amount: waited_avg_cost,
-                          payment_type: "DR",
-                          credit_amount: 0,
-                          hospital_id: location_acc[0].hospital_id,
-                        });
-
-                        //Location Wise
-                        insertSubDetail.push({
-                          payment_date: new Date(),
-                          head_id: location_acc[0].head_id,
-                          child_id: location_acc[0].child_id,
-                          debit_amount: 0,
-                          payment_type: "CR",
-                          credit_amount: waited_avg_cost,
-                          hospital_id: location_acc[0].hospital_id,
-                        });
-                      }
-                    }
 
                     // console.log("insertSubDetail", insertSubDetail)
                     _mysql
@@ -672,6 +681,15 @@ export default {
             org_data[0]["product_type"] == "HIMS_ERP" ||
             org_data[0]["product_type"] == "FINANCE_ERP"
           ) {
+            let _all_item_id = [];
+            if (inputParam.from_screen === "Direct") {
+              _all_item_id = _.map(inputParam.inventory_stock_detail, (o) => {
+                return o.item_id;
+              });
+            } else {
+              _all_item_id = inputParam.item_id;
+            }
+
             _mysql
               .executeQuery({
                 query:
@@ -684,7 +702,7 @@ export default {
                   select hims_d_sub_department_id from hims_d_sub_department where department_type='I';\
                   select cost_center_type, cost_center_required from finance_options limit 1;",
                 values: [
-                  inputParam.item_id,
+                  _all_item_id,
                   inputParam.location_id,
                   inputParam.location_id,
                 ],
