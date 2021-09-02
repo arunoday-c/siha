@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react";
-import "./modalGlobal.scss";
+import "./QuickSearchFinance.scss";
 import { AlgaehTable } from "algaeh-react-components";
 import { Spin, Button } from "antd";
 import FilterComponent from "./FilterComponent";
@@ -99,7 +99,7 @@ export default memo(function QuickSearch(props) {
                                     })}
                                   </span>
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "updated_date",

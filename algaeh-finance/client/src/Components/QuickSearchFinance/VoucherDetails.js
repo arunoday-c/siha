@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "./QuickSearchFinance.scss";
 import {
   AlgaehModal,
   AlgaehDataGrid,
@@ -66,53 +67,52 @@ export default function VoucherDetails({ visible, data, onClose }) {
         }}
         className={`row algaehNewModal JVModalDetail`}
       >
-        <div className="row">
-          <div className="col-12">
-            <h6>
+        <div className="col-12">
+          {/* <h6>
               <b>Accounting Entries</b>
-            </h6>
-            <AlgaehDataGrid
-              columns={[
-                {
-                  fieldName: "ledger_code",
-                  label: "Ledger Code",
+            </h6> */}
+          <AlgaehDataGrid
+            className="JVModalDetailGrid"
+            columns={[
+              {
+                fieldName: "ledger_code",
+                label: "Ledger Code",
+              },
+              {
+                fieldName: "ledger_name",
+                label: "Ledger Name",
+              },
+              {
+                fieldName: "debit_amount",
+                label: "Debit Amount",
+                displayTemplate: (row) => {
+                  return (
+                    <span>
+                      {getAmountFormart(row.debit_amount, {
+                        appendSymbol: false,
+                      })}
+                    </span>
+                  );
                 },
-                {
-                  fieldName: "ledger_name",
-                  label: "Ledger Name",
+              },
+              {
+                fieldName: "credit_amount",
+                label: "Credit Amount",
+                displayTemplate: (row) => {
+                  return (
+                    <span>
+                      {getAmountFormart(row.credit_amount, {
+                        appendSymbol: false,
+                      })}
+                    </span>
+                  );
                 },
-                {
-                  fieldName: "debit_amount",
-                  label: "Debit Amount",
-                  displayTemplate: (row) => {
-                    return (
-                      <span>
-                        {getAmountFormart(row.debit_amount, {
-                          appendSymbol: false,
-                        })}
-                      </span>
-                    );
-                  }
-                },
-                {
-                  fieldName: "credit_amount",
-                  label: "Credit Amount",
-                  displayTemplate: (row) => {
-                    return (
-                      <span>
-                        {getAmountFormart(row.credit_amount, {
-                          appendSymbol: false,
-                        })}
-                      </span>
-                    );
-                  }
-                },
-              ]}
-              height="40vh"
-              rowUnique="finance_voucher_id"
-              data={Details}
-            />
-          </div>
+              },
+            ]}
+            // height="60vh"
+            rowUnique="finance_voucher_id"
+            data={Details}
+          />
         </div>
       </AlgaehModal>
     );
