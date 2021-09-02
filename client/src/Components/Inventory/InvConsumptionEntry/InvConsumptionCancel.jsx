@@ -106,7 +106,7 @@ export default function InvConsumptionCancel({ breadStyle }) {
 
     for (let i = 0; i < megaState.inventory_stock_detail.length; i++) {
       megaState.inventory_stock_detail[i].location_id = megaState.location_id;
-      megaState.inventory_stock_detail[i].operation = "-";
+      megaState.inventory_stock_detail[i].operation = "+";
     }
     megaState.from_screen = "Direct";
     algaehApiCall({
