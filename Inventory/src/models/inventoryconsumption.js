@@ -171,7 +171,7 @@ export default {
                 "INSERT INTO `hims_f_inventory_consumption_header` (consumption_number, consumption_date, `year`, \
                 period, location_type, location_id, provider_id, patient_id, created_date, created_by, \
                 updated_date, updated_by, hospital_id) \
-              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 document_number,
                 today,

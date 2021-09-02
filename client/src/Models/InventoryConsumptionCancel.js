@@ -5,12 +5,12 @@ export default {
     output = {
       hims_f_inventory_can_consumption_header_id: null,
       can_consumption_number: null,
-      can_consumption_date: undefined,
       consumption_header_id: null,
       location_id: null,
       location_type: null,
       consumption_date: new Date(),
       transaction_date: new Date(),
+      can_consumption_date: new Date(),
       transaction_type: "CS",
 
       addedItem: false,
