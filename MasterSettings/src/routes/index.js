@@ -20,6 +20,7 @@ import branchMaster from "../controllers/branchMaster";
 import favouriteOrders from "../controllers/favouriteOrders";
 import customer from "../controllers/customer";
 import salseSetup from "../controllers/salseSetup";
+import algaehappuser from "../controllers/algaehUser";
 
 const router = express();
 router.use("/department", department());
@@ -43,5 +44,6 @@ router.use("/branchMaster", branchMaster());
 router.use("/favouriteOrders", favouriteOrders());
 router.use("/customer", customer());
 router.use("/salseSetup", salseSetup());
+router.use("/algaehappuser", algaehappuser());
 
 export default router;

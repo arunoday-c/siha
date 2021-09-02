@@ -14,7 +14,7 @@ import Options from "../../../Options.json";
 import { useLocation, useHistory } from "react-router-dom";
 // import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import { newAlgaehApi } from "../../../hooks";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import {
   MainContext,
   AlgaehLabel,
@@ -23,9 +23,14 @@ import {
   AlgaehMessagePop,
   // AlgaehSecurityComponent,
 } from "algaeh-react-components";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
+
 export default function InvConsumptionCancel({ breadStyle }) {
   const [megaState, setMegaState] = useState(ConsumptionIOputs.inputParam());
   const [enable, setEnable] = useState(false);
+  const [saveDisable, setsaveDisable] = useState(true);
   const history = useHistory();
   const location = useLocation();
   const {
@@ -63,7 +68,6 @@ export default function InvConsumptionCancel({ breadStyle }) {
     }
   );
   async function getInventoryConsumptionCancel(key) {
-    debugger;
     const result = await newAlgaehApi({
       uri: "/inventoryconsumption/getInventoryConsumptionCancel",
       module: "inventory",
@@ -80,9 +84,7 @@ export default function InvConsumptionCancel({ breadStyle }) {
       refetchOnMount: false,
       initialStale: true,
       cacheTime: Infinity,
-      onSuccess: (data) => {
-        debugger;
-      },
+      onSuccess: (data) => {},
     }
   );
   async function getInvWiseLocations() {
@@ -95,9 +97,45 @@ export default function InvConsumptionCancel({ breadStyle }) {
         hospital_id: userToken.hims_d_hospital_id,
       },
     });
-    debugger;
+
     return result?.data?.records;
   }
+
+  const SaveConsumptionCancelEntry = () => {
+    AlgaehLoader({ show: true });
+
+    for (let i = 0; i < megaState.inventory_stock_detail.length; i++) {
+      megaState.inventory_stock_detail[i].location_id = megaState.location_id;
+      megaState.inventory_stock_detail[i].operation = "+";
+    }
+    megaState.from_screen = "Direct";
+    algaehApiCall({
+      uri: "/inventoryconsumption/addInvConsumptionCancel",
+      module: "inventory",
+      data: megaState,
+      onSuccess: (response) => {
+        if (response.data.success === true) {
+          setsaveDisable(true);
+          setMegaState({
+            ...megaState,
+            can_consumption_number:
+              response.data.records.can_consumption_number,
+            saveEnable: true,
+            hims_f_inventory_can_consumption_header_id:
+              response.data.records.hims_f_inventory_can_consumption_header_id,
+            year: response.data.records.year,
+            period: response.data.records.period,
+          });
+
+          swalMessage({
+            title: "Saved successfully . .",
+            type: "success",
+          });
+        }
+        AlgaehLoader({ show: false });
+      },
+    });
+  };
 
   const generateConCancelReceipt = () => {
     algaehApiCall({
@@ -130,6 +168,44 @@ export default function InvConsumptionCancel({ breadStyle }) {
     });
   };
 
+  const consumptionSearch = () => {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.ConsumptionEntry.InvConsEntry,
+      },
+      searchName: "InvConsEntry",
+      uri: "/gloabelSearch/get",
+      inputs: "cancelled = 'N' and location_id = " + megaState.location_id,
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: (row) => {
+        AlgaehLoader({ show: true });
+        let IOputs = ConsumptionIOputs.inputParam();
+
+        algaehApiCall({
+          uri: "/inventoryconsumption/getInventoryConsumption",
+          module: "inventory",
+          method: "GET",
+          data: { consumption_number: row.consumption_number },
+          onSuccess: (response) => {
+            if (response.data.success === true) {
+              setsaveDisable(false);
+              setMegaState({ ...IOputs, ...response.data.records });
+              AlgaehLoader({ show: false });
+            }
+          },
+          onFailure: (err) => {
+            swalMessage({
+              title: err.message,
+              type: "error",
+            });
+          },
+        });
+      },
+    });
+  };
+
   return (
     <React.Fragment>
       <div>
@@ -153,7 +229,6 @@ export default function InvConsumptionCancel({ breadStyle }) {
             selectValue: "can_consumption_number",
             events: {
               onChange: (can_consumption_number, e) => {
-                debugger;
                 setMegaState({
                   ...megaState,
                   can_consumption_number,
@@ -202,14 +277,6 @@ export default function InvConsumptionCancel({ breadStyle }) {
                         },
                       },
                     },
-                    // {
-                    //   label: "Print Receipt Small",
-                    //   events: {
-                    //     onClick: () => {
-                    //       generateReceiptSmall(this, this);
-                    //     },
-                    //   },
-                    // },
                   ],
                 }
               : ""
@@ -237,34 +304,26 @@ export default function InvConsumptionCancel({ breadStyle }) {
                     data: invuserwiselocations,
                   },
                   others: {
-                    disabled: true,
+                    disabled: megaState.consumption_number ? true : false,
                   },
-                  // onChange: onChangeHandler,
-                  // onClear: onClearHandler,
-                }}
-              />{" "}
-              {/* <AlgaehAutoComplete
-                div={{ className: "col-lg-4" }}
-                label={{ forceLabel: "Location" }}
-                selector={{
-                  name: "location_id",
-                  className: "select-fld",
-                  value: megaState.location_id,
-                  dataSource: {
-                    textField: "location_description",
-                    valueField: "hims_d_inventory_location_id",
-                    data: invuserwiselocations,
+                  onChange: (e) => {
+                    setMegaState({
+                      ...megaState,
+                      location_id: e.hims_d_inventory_location_id,
+                      location_type: e.location_type,
+                      locationSelect: true,
+                    });
                   },
-                  others: {
-                    // disabled: this.state.addedItem,
-                  },
-                  onChange: (e, value) => {
-                    debugger;
-
-                    // onchangegridcol(row, e);
+                  onClear: () => {
+                    setMegaState({
+                      ...megaState,
+                      location_id: null,
+                      location_type: null,
+                      locationSelect: false,
+                    });
                   },
                 }}
-              /> */}
+              />
               <div className="col-lg-4">
                 <AlgaehLabel
                   label={{
@@ -279,6 +338,32 @@ export default function InvConsumptionCancel({ breadStyle }) {
                       ? "Main Store"
                       : "Sub Store"
                     : "Location Type"}
+                </h6>
+              </div>
+              <div
+                className="col globalSearchCntr"
+                style={{
+                  cursor: "pointer",
+                  pointerEvents:
+                    megaState.locationSelect === true
+                      ? ""
+                      : megaState.consumption_number
+                      ? "none"
+                      : "",
+                }}
+              >
+                <AlgaehLabel label={{ forceLabel: "Consumption Number" }} />
+                <h6
+                  onClick={() => {
+                    consumptionSearch();
+                  }}
+                >
+                  {megaState.consumption_number ? (
+                    megaState.consumption_number
+                  ) : (
+                    <AlgaehLabel label={{ fieldName: "Consumption Number" }} />
+                  )}
+                  <i className="fas fa-search fa-lg"></i>
                 </h6>
               </div>
             </div>
@@ -300,25 +385,27 @@ export default function InvConsumptionCancel({ breadStyle }) {
           <div className="hptl-phase1-footer">
             <div className="row">
               <div className="col-lg-12">
-                {/* <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.SaveConsumptionEntry.bind(this)}
-                    disabled={this.state.saveEnable}
-                  >
-                    <AlgaehLabel
-                      label={{ forceLabel: "Save", returnText: true }}
-                    />
-                  </button> */}
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    SaveConsumptionCancelEntry();
+                  }}
+                  disabled={saveDisable}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Save", returnText: true }}
+                  />
+                </button>
 
                 <button
                   type="button"
                   className="btn btn-default"
                   onClick={() => {
+                    setsaveDisable(true);
                     setMegaState(ConsumptionIOputs.inputParam());
                     history.push(`${location.pathname}`);
                   }}
-                  // disabled={}
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Clear", returnText: true }}

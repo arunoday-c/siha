@@ -373,24 +373,27 @@ export default function WardBedSetup(Props: any) {
         }
       });
     } else {
-      addWardHeader(data).then((result: { insertId: number }) => {
-        const wardDetails = wardDetailsData.map((item: any) => {
-          return { ...item, ward_header_id: result.insertId };
-        });
-
-        addWardDetails({
-          wardDetails,
-        }).then(() => {
-          getWardHeaderData().then(() => {
-            AlgaehMessagePop({
-              display: "Successfully Updated",
-              type: "success",
-            });
-            return;
+      addWardHeader(data).then(
+        (result: { hims_adm_ward_header_id: number }) => {
+          const wardDetails = wardDetailsData.map((item: any) => {
+            return { ...item, ward_header_id: result.hims_adm_ward_header_id };
           });
-        });
-        reset({ ward_desc: "", ward_short_name: "", ward_type: null });
-      });
+
+          addWardDetails({
+            wardDetails,
+          }).then(() => {
+            getWardHeaderData().then(() => {
+              setWardDetailsData([]);
+              AlgaehMessagePop({
+                display: "Successfully Updated",
+                type: "success",
+              });
+              return;
+            });
+          });
+          reset({ ward_desc: "", ward_short_name: "", ward_type: null });
+        }
+      );
     }
   };
   const wardDetails = (data: any) => {
@@ -411,7 +414,7 @@ export default function WardBedSetup(Props: any) {
     <>
       <div className="WardBedSetupScreen" style={{ marginTop: 50 }}>
         <div className="row">
-          <div className="col-7">
+          <div className="col-8">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -512,7 +515,7 @@ export default function WardBedSetup(Props: any) {
                             <AlgaehAutoComplete
                               div={{ className: "col-4 form-group mandatory" }}
                               label={{
-                                forceLabel: "select Bed",
+                                forceLabel: "Select Bed",
                                 isImp: true,
                               }}
                               error={errors2}
@@ -721,6 +724,7 @@ export default function WardBedSetup(Props: any) {
                       }}
                       className="btn btn-default btn-small"
                       // disabled={disabledSave}
+                      style={{ marginRight: "10px" }}
                     >
                       clear
                     </button>
@@ -738,7 +742,7 @@ export default function WardBedSetup(Props: any) {
             </div>
           </div>
 
-          <div className="col-5">
+          <div className="col-4">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -750,27 +754,25 @@ export default function WardBedSetup(Props: any) {
                   return (
                     <Panel
                       header={
-                        <div className="portlet-body">
-                          <h3>
-                            {item.ward_desc}{" "}
-                            <span
-                              className="ediIcon"
-                              onClick={() => {
-                                let filteredItem = item.groupDetail.filter(
-                                  (f: any) => {
-                                    return f.bed_id !== null || undefined;
-                                  }
-                                );
-                                setWardDetailsData(filteredItem);
-                                setWardHeaderRow(item);
-                                reset({ ...item });
-                              }}
-                            >
-                              {" "}
-                              <i className="fas fa-pen"></i>
-                            </span>
-                          </h3>
-                        </div>
+                        <h3 style={{ width: "85%", display: "inline-block" }}>
+                          {item.ward_desc}{" "}
+                          <span
+                            className="ediIcon"
+                            onClick={() => {
+                              let filteredItem = item.groupDetail.filter(
+                                (f: any) => {
+                                  return f.bed_id !== null || undefined;
+                                }
+                              );
+                              setWardDetailsData(filteredItem);
+                              setWardHeaderRow(item);
+                              reset({ ...item });
+                            }}
+                          >
+                            {" "}
+                            <i className="fas fa-pen"></i>
+                          </span>
+                        </h3>
                       }
                       key={key}
                     >

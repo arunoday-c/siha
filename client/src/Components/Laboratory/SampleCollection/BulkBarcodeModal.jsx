@@ -129,7 +129,7 @@ function BulkBarcodeModal({ onCancel, visible, title }) {
             render={({ onChange, value }) => (
               <AlgaehDateHandler
                 div={{
-                  className: "col-2 form-group mandatory",
+                  className: "col-4 form-group mandatory",
                   //   tabIndex: "4",
                 }}
                 error={errors}
@@ -166,7 +166,7 @@ function BulkBarcodeModal({ onCancel, visible, title }) {
             render={({ value, onChange, onBlur }) => (
               <AlgaehAutoComplete
                 div={{
-                  className: "col form-group mandatory",
+                  className: "col-8 form-group mandatory",
                 }}
                 error={errors}
                 label={{

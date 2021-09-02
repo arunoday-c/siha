@@ -265,8 +265,11 @@ class LoginUsers extends Component {
     this._isMounted = true;
     algaehApiCall({
       uri: "/algaehappuser/getLoginUserMasterGrid",
+      module: "masterSettings",
       method: "GET",
+
       onSuccess: (response) => {
+        debugger;
         if (response.data.success === true && this._isMounted === true) {
           // let login_users = Enumerable.from(response.data.records)
           //   .groupBy("$.hims_d_employee_id", null, (k, g) => {
