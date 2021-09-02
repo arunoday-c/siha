@@ -13,6 +13,9 @@ const {
   checkDentalProcedure,
   cancelPackage,
   updateOrderServices,
+  addSendForApproval,
+  getOpBillCancelApproval,
+  approvalBillCancalation,
 } = opModels;
 import recModels from "../models/receiptentry";
 const { getReceiptEntry, addReceiptEntry } = recModels;
@@ -125,6 +128,25 @@ export default () => {
     }
   );
   api.post("/generateAccountEntry", generateAccountingEntry, (req, res) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+    });
+  });
+
+  api.post("/addSendForApproval", addSendForApproval, (req, res) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+    });
+  });
+
+  api.get("/getOpBillCancelApproval", getOpBillCancelApproval, (req, res) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+
+  api.put("/approvalBillCancalation", approvalBillCancalation, (req, res) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
     });

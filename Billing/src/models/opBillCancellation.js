@@ -906,6 +906,115 @@ export default {
     }
   },
 
+  addSendForApproval: (req, res, next) => {
+    try {
+      const _options = req.connection == null ? {} : req.connection;
+
+      const _mysql = new algaehMysql(_options);
+      // const utilities = new algaehUtilities();
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO hims_f_bill_cancel_approval ( billing_header_id, created_by, created_date ) \
+                VALUES (?,?,?); ",
+          values: [
+            req.body.billing_header_id,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+          ],
+          printQuery: true,
+        })
+        .then((app_status) => {
+          _mysql.releaseConnection();
+          req.records = app_status;
+          next();
+        })
+        .catch((error) => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  approvalBillCancalation: (req, res, next) => {
+    try {
+      const _options = req.connection == null ? {} : req.connection;
+
+      const _mysql = new algaehMysql(_options);
+      // const utilities = new algaehUtilities();
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_f_bill_cancel_approval set approved_status='Y', approved_by=?, approved_date=? where hims_f_bill_cancel_approval_id=?;\
+            UPDATE hims_f_billing_header set bill_cancel_appr='Y' where hims_f_billing_header_id=?",
+          values: [
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.body.hims_f_bill_cancel_approval_id,
+            req.body.billing_header_id,
+          ],
+          printQuery: true,
+        })
+        .then((app_status) => {
+          _mysql.releaseConnection();
+          req.records = app_status;
+          next();
+        })
+        .catch((error) => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  getOpBillCancelApproval: (req, res, next) => {
+    try {
+      const _options = req.connection == null ? {} : req.connection;
+
+      const _mysql = new algaehMysql(_options);
+      // const utilities = new algaehUtilities();
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT hims_f_bill_cancel_approval_id, A.billing_header_id, approved_status, H.bill_number, \
+            E.full_name as requested_by, A.created_date  FROM hims_f_bill_cancel_approval A \
+            INNER JOIN hims_f_billing_header H ON H.hims_f_billing_header_id = A.billing_header_id \
+            INNER JOIN algaeh_d_app_user U ON U.algaeh_d_app_user_id = A.created_by\
+            INNER JOIN hims_d_employee E ON E.hims_d_employee_id = U.employee_id;",
+          values: [
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.body.hims_f_bill_cancel_approval_id,
+            req.body.billing_header_id,
+          ],
+          printQuery: true,
+        })
+        .then((app_status) => {
+          _mysql.releaseConnection();
+          req.records = app_status;
+          next();
+        })
+        .catch((error) => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
   //created by:IRFAN
   generateAccountingEntry: (req, res, next) => {
     try {

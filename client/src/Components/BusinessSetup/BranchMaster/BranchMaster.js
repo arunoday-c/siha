@@ -54,6 +54,7 @@ export default class BranchMaster extends Component {
       hospital_name: null,
       hospital_address: null,
       requied_emp_id: null,
+      bill_cancel_approval_required: null,
       editBranch: false,
     });
   }
@@ -221,6 +222,8 @@ export default class BranchMaster extends Component {
               hospital_name: this.state.hospital_name,
               hospital_address: this.state.hospital_address,
               requied_emp_id: this.state.requied_emp_id,
+              bill_cancel_approval_required: this.state
+                .bill_cancel_approval_required,
               hospital_id: this.state.hims_d_hospital_id,
             },
             onSuccess: (response) => {
@@ -258,6 +261,8 @@ export default class BranchMaster extends Component {
               hospital_name: this.state.hospital_name,
               hospital_address: this.state.hospital_address,
               requied_emp_id: this.state.hrequied_emp_id,
+              bill_cancel_approval_required: this.state
+                .bill_cancel_approval_required,
               algaeh_api_auth_id: algaeh_api_auth_id,
             },
             onSuccess: (response) => {
@@ -337,7 +342,10 @@ export default class BranchMaster extends Component {
                         return {
                           ...sub,
                           checked: isChecked === undefined ? false : true,
-                          hims_m_branch_dept_map_id: isChecked === undefined ? undefined : isChecked.hims_m_branch_dept_map_id
+                          hims_m_branch_dept_map_id:
+                            isChecked === undefined
+                              ? undefined
+                              : isChecked.hims_m_branch_dept_map_id,
                         };
                       });
 
@@ -349,7 +357,7 @@ export default class BranchMaster extends Component {
                         indeterminate: anyUnched === undefined ? false : true,
                       };
                     } else {
-                      return item
+                      return item;
                     }
                   })
                   .filter((f) => f !== null);
@@ -494,8 +502,8 @@ export default class BranchMaster extends Component {
       hasUnchecked.length === 0
         ? false
         : hasUnchecked.length === data.subDepts.length
-          ? false
-          : true;
+        ? false
+        : true;
 
     allDepartments[mainStateIndex] = data;
     const hasUncheckedState = this.state.allDepartments.find(
@@ -579,7 +587,7 @@ export default class BranchMaster extends Component {
   }
 
   assignDepartments() {
-    //To build delete inputs    
+    //To build delete inputs
     let inputObj = {};
     const remove_sub = [];
     const add_new_sub = [];
@@ -657,6 +665,7 @@ export default class BranchMaster extends Component {
       hospital_name: data.hospital_name,
       hospital_address: data.hospital_address,
       requied_emp_id: data.requied_emp_id,
+      bill_cancel_approval_required: data.bill_cancel_approval_required,
       editBranch: true,
     });
   }
@@ -751,16 +760,16 @@ export default class BranchMaster extends Component {
       this.state.searchText !== "" && this.state.filterArray.length === 0
         ? this.state.filterArray
         : this.state.searchText === "" && this.state.filterArray.length === 0
-          ? this.state.allBranches
-          : this.state.filterArray;
+        ? this.state.allBranches
+        : this.state.filterArray;
     let departments =
       this.state.searchSubBranchText !== "" &&
-        this.state.filterdDepartmentArray.length === 0
+      this.state.filterdDepartmentArray.length === 0
         ? this.state.filterdDepartmentArray
         : this.state.searchSubBranchText === "" &&
           this.state.filterdDepartmentArray.length === 0
-          ? this.state.allDepartments
-          : this.state.filterdDepartmentArray;
+        ? this.state.allDepartments
+        : this.state.filterdDepartmentArray;
     departments = departments.filter((f) => f !== undefined);
 
     return (
@@ -868,6 +877,25 @@ export default class BranchMaster extends Component {
                     selector={{
                       name: "requied_emp_id",
                       value: this.state.requied_emp_id,
+                      className: "select-fld",
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: FORMAT_YESNO,
+                      },
+                      onChange: this.dropDownHandler.bind(this),
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col-6 form-group mandatory" }}
+                    label={{
+                      forceLabel: "Bill Cancel Appr. Req.",
+                      isImp: true,
+                    }}
+                    selector={{
+                      name: "bill_cancel_approval_required",
+                      value: this.state.bill_cancel_approval_required,
                       className: "select-fld",
                       dataSource: {
                         textField: "name",
