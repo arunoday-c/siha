@@ -21,7 +21,10 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((result) => {
-          const lab_ids = result.map((item) => item.hims_f_lab_order_id);
+          let lab_ids = result.map((item) => item.hims_f_lab_order_id);
+          if (lab_ids.length === 0) {
+            lab_ids = null;
+          }
           options.mysql
             .executeQuery({
               query: `SELECT INV.description,LS.barcode_gen,LO.lab_id_number,P.date_of_birth, P.full_name,P.patient_code, 
@@ -43,6 +46,7 @@ const executePDF = function executePDFMethod(options) {
               printQuery: true,
             })
             .then((result) => {
+              console.log("result", result);
               // const header = result.length ? result[0] : {};
               resolve({ header: result });
             })
