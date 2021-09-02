@@ -310,6 +310,9 @@ const AdministrationSetup = React.lazy(() =>
 const OPBillCancellation = React.lazy(() =>
   retry(() => import("./Components/OPBillCancellation/OPBillCancellation"))
 );
+const OpBillCancelApproval = React.lazy(() =>
+  retry(() => import("./Components/OpBillCancelApproval"))
+);
 const OPBillAdjustment = React.lazy(() =>
   retry(() => import("./Components/OPBillAdjustment/OPBillAdjustment"))
 );
@@ -1051,6 +1054,11 @@ const privateRoutes = [
     path: "/OPBillCancellation",
     isExactPath: true,
     component: <OPBillCancellation />,
+  },
+  {
+    path: "/OpBillCancelApproval",
+    isExactPath: true,
+    component: <OpBillCancelApproval />,
   },
   {
     path: "/OPBillAdjustment",

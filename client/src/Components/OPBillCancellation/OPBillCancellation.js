@@ -53,6 +53,7 @@ class OPBillCancellation extends Component {
       advance: 0,
       cancel_remarks: null,
       cancel_checkin: "N",
+      sendAppEnable: true,
     };
   }
 
@@ -61,6 +62,8 @@ class OPBillCancellation extends Component {
     let IOputs = extend(PatRegIOputs.inputParam(), BillingIOputs.inputParam());
     const userToken = this.context.userToken;
     IOputs.portal_exists = userToken.portal_exists;
+    IOputs.bill_cancel_approval_required =
+      userToken.bill_cancel_approval_required;
 
     this.setState({ ...this.state, ...IOputs });
   }
@@ -184,6 +187,50 @@ class OPBillCancellation extends Component {
         }
       );
     }
+  }
+  SendForApproval() {
+    swal({
+      title: "Are you sure you want to Send For Approval?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willSave) => {
+      if (willSave.value) {
+        algaehApiCall({
+          uri: "/opBillCancellation/addSendForApproval",
+          module: "billing",
+          data: { billing_header_id: this.state.from_bill_id },
+          method: "POST",
+          onSuccess: (response) => {
+            AlgaehLoader({ show: false });
+
+            if (response.data.success) {
+              ClearData(this);
+
+              swalMessage({
+                title: "Sent Successfully",
+                type: "success",
+              });
+            } else {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error",
+              });
+            }
+          },
+          onFailure: (error) => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.response.data.message || error.message,
+              type: "error",
+            });
+          },
+        });
+      }
+    });
   }
 
   CancelOPBill(e) {
@@ -402,6 +449,22 @@ class OPBillCancellation extends Component {
                   label={{ forceLabel: "Cancel Bill", returnText: true }}
                 />
               </button>
+
+              {this.state.bill_cancel_approval_required ? (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.SendForApproval.bind(this)}
+                  disabled={this.state.sendAppEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Send For Approval",
+                      returnText: true,
+                    }}
+                  />
+                </button>
+              ) : null}
 
               <button
                 type="button"

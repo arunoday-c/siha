@@ -31,6 +31,7 @@ const ClearData = ($this, e) => {
       IOputs.patient_payable_h = 0;
       IOputs.counter_id = counter_id;
       IOputs.cancel_remarks = null;
+      IOputs.sendAppEnable = true;
       $this.setState({ ...$this.state, ...IOputs }, () => {
         getCashiersAndShiftMAP($this, $this.state.cancel_checkin);
       });
@@ -186,7 +187,17 @@ const getBillDetails = ($this) => {
         data.counter_id = $this.state.counter_id || null;
         data.shift_id = $this.state.shift_id || null;
         data.mode_of_pay = data.insured === "Y" ? "Insured" : "Self";
-        data.saveEnable = false;
+        if ($this.state.bill_cancel_approval_required === "Y") {
+          if (data.bill_cancel_appr === "Y") {
+            data.saveEnable = false;
+            data.sendAppEnable = true;
+          } else {
+            data.saveEnable = true;
+            data.sendAppEnable = false;
+          }
+        } else {
+          data.saveEnable = false;
+        }
 
         $this.setState(data);
         if (data.insured === "Y") {
