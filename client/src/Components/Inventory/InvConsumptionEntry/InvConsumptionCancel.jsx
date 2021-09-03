@@ -48,7 +48,7 @@ export default function InvConsumptionCancel({ breadStyle }) {
       });
       setEnable(true);
     }
-  }, []);
+  }, []); //eslint-disable-line
   const {} = useQuery(
     ["getInventoryConsumptionCancel"],
     getInventoryConsumptionCancel,

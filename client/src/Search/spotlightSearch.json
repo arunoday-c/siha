@@ -538,6 +538,36 @@
         "fieldName": "insurance_sub_name",
         "label": "Sub Insurance Name"
       }
+    ],
+    "Insurance_field": [
+      {
+        "fieldName": "insurance_provider_name",
+        "label": "Company Name"
+      },
+      {
+        "fieldName": "insurance_sub_name",
+        "label": "Sub Company Name"
+      },
+      {
+        "fieldName": "network_type",
+        "label": "Network Type"
+      },
+      {
+        "fieldName": "insurance_type_d",
+        "label": "Company Type"
+      },
+      {
+        "fieldName": "policy_number",
+        "label": "Policy Number"
+      },
+      {
+        "fieldName": "effective_start_date",
+        "label": "Start Date"
+      },
+      {
+        "fieldName": "effective_end_date",
+        "label": "End Date"
+      }
     ]
   },
   "Purchase": {

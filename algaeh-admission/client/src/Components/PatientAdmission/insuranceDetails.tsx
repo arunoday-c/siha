@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Controller } from "react-hook-form";
-import moment from "moment";
+// import moment from "moment";
 import {
-  MainContext,
+  AlgaehSearch,
   Tabs,
   AlgaehLabel,
   AlgaehAutoComplete,
@@ -13,17 +13,8 @@ import {
 } from "algaeh-react-components";
 const { TabPane } = Tabs;
 
-// const getPatientInsurance = async (key, { patient_id }) => {
-//   const res = await newAlgaehApi({
-//     uri: "/patientRegistration/getPatientInsurance",
-//     module: "frontDesk",
-//     data: { patient_id },
-//     method: "GET",
-//   });
-//   return res?.data?.records;
-// };
-
 export default function insuranceDetails({
+  props,
   control,
   errors,
   clearErrors,
@@ -35,88 +26,31 @@ export default function insuranceDetails({
   setIsInsurance,
   insuranceInfo,
   setInsuranceInfo,
-  insuranceList,
-  setinsuranceList,
+  setInsuranceList,
+  Insurance_field,
+  insurance_list,
+  updateInsuranceState,
 }: any) {
-  //   const { userToken } = useContext(MainContext);
-  //   const [] = useState([]);
-  //   const {
-  //     setInsuranceInfo,
-  //     // setInsurancePayerID,
-  //     disabled: saveDisable,
-  //   } = useContext(FrontdeskContext);
-  //   const [showPolicy, setShowPolicy] = useState(false);
-
-  // const [isInsurance, setIsInsurance] = useState(false);
-  //   const [insuranceList, setInsuranceList] = useState([]);
-  //   const disabled = !isInsurance || saveDisable;
-  //   const { hims_d_patient_id, primary_card_number } = useWatch({
-  //     control,
-  //     name: ["hims_d_patient_id", "primary_card_number"],
-  //   });
-  //   const { isLoading, data: patientInsurance } = useQuery(
-  //     ["patient-insurance", { patient_id: hims_d_patient_id }],
-  //     getPatientInsurance,
-  //     {
-  //       enabled: !!hims_d_patient_id && isInsurance,
-
-  //       initialData: [],
-  //       initialStale: true,
-  //     }
-  //   );
-
   const isLoading = false,
     disabled = false,
     saveDisable = false;
   //   const dropDownData: any = [];
-  const dropDownData = insuranceList?.length ? insuranceList : [];
+  let dropDownData = insurance_list?.length ? insurance_list : [];
 
-  //   useEffect(() => {
-  //     const fieldNames = [
-  //       "primary_insurance_provider_id",
-  //       "primary_sub_id",
-  //       "primary_network_id",
-  //       "primary_network_office_id",
-  //       "primary_policy_num",
-  //       "primary_card_number",
-  //       "primary_effective_start_date",
-  //       "primary_effective_end_date",
-  //     ];
-  //     if (!isInsurance) {
-  //       fieldNames.map((item) => setValue(item, ""));
-  //       clearErrors(fieldNames);
-  //       setInsuranceList([]);
-  //     }
-  //   }, [isInsurance]); //eslint-disable-line
-
-  //   const AddInsurance = () => {
-  //     AlgaehSearch({
-  //       searchGrid: {
-  //         columns: InsuranceFields,
-  //       },
-  //       searchName: "new_insurance",
-  //       uri: "/gloabelSearch/get",
-  //       inputs: `netoff.hospital_id =  ${userToken?.hims_d_hospital_id}`,
-  //       onContainsChange: (text, serchBy, callback) => {
-  //         callback(text);
-  //       },
-  //       onRowSelect: (row) => {
-  //         setInsuranceList([row]);
-  //         setValue("primary_insurance_provider_id", row?.insurance_provider_id);
-  //         setValue("primary_sub_id", row?.sub_insurance_provider_id);
-  //         setValue("primary_network_id", row?.network_id);
-  //         setInsuranceInfo({
-  //           primary_network_office_id: row?.hims_d_insurance_network_office_id,
-  //           payer_id: row?.payer_id,
-  //         });
-  //         // setValue("primary_network_office_id", row?.network_office_id);
-  //         setValue("primary_policy_num", row?.policy_number);
-  //         setValue("primary_effective_start_date", row?.effective_start_date);
-  //         setValue("primary_effective_end_date", row?.effective_end_date);
-  //         // setInsurancePayerID(row?.payer_id);
-  //       },
-  //     });
-  //   };
+  const AddInsurance = () => {
+    debugger;
+    AlgaehSearch({
+      searchName: "new_insurance",
+      columns: props.getsportlightSearch("Insurance")?.Insurance_field,
+      placeHolder: "Insurance Name",
+      onRowSelect: (row: any) => {
+        debugger;
+        updateInsuranceState(row);
+        dropDownData = [row];
+        // setPatientDetails(row);
+      },
+    });
+  };
 
   return (
     <Spin spinning={isLoading}>
@@ -177,7 +111,7 @@ export default function insuranceDetails({
                           <button
                             type="button"
                             className="btn btn-primary btn-rounded"
-                            // onClick={AddInsurance}
+                            onClick={AddInsurance}
                             disabled={!isInsurance}
                           >
                             <i className="fas fa-plus" />
@@ -281,7 +215,7 @@ export default function insuranceDetails({
                                 value,
                                 // onClear: () => onChange(""),
                                 dataSource: {
-                                  textField: insuranceList?.length
+                                  textField: insurance_list?.length
                                     ? "insurance_sub_name"
                                     : "sub_insurance_provider_name",
                                   // this.state.selectedLang == "en" ? "sub_insurance_provider_name" : "name",

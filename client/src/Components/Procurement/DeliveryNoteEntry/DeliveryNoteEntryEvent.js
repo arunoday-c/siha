@@ -385,6 +385,7 @@ const SaveDNEnrty = ($this) => {
   //  moment($this.state.dn_date, "YYYY-MM-DD").format(
   //   "YYYY-MM-DD"
   // );
+  debugger;
 
   if (InputObj.dn_from === "PHR") {
     for (let i = 0; i < InputObj.pharmacy_stock_detail.length; i++) {

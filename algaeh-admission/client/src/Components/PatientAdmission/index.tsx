@@ -7,15 +7,30 @@ import {
   algaehAxios,
   AlgaehMessagePop,
   AlgaehTreeSearch,
-  // MainContext,
+  AlgaehSearch,
 } from "algaeh-react-components";
 import BreadCrumb from "Components/BreadCrumb";
 import InsuranceDetails from "./insuranceDetails";
 import BedDetails from "./bedDetails";
 // import BedManagement from "../BedManagement";
 
+const getPatientInsurance = async (inputdata: any) => {
+  const { error, response } = await algaehAxios(
+    "/patientRegistration/getPatientInsurance",
+    {
+      module: "frontDesk",
+      data: inputdata,
+      method: "GET",
+    }
+  );
+  if (response.data.success === true) {
+    return response.data.records;
+  }
+};
+
 export default function PatientAdmission(props: any) {
-  const [admission_type, setAdmissionType] = useState<any>("D");
+  debugger;
+  const [insurance_list, setInsuranceList] = useState<Array<any>>([]);
   const [patient_details, setPatientDetails] = useState<any>({});
   const [doctor_data, setDoctorData] = useState<Array<any>>([]);
 
@@ -25,6 +40,8 @@ export default function PatientAdmission(props: any) {
   const [isInsurance, setIsInsurance] = useState(false);
   const insuranceImgFront = useRef(null);
   const insuranceImgBack = useRef(null);
+  const [global_state, setGlobalState] = useState<any>({});
+  const [patient_code, setPatientCode] = useState<any>(undefined);
 
   const {
     control,
@@ -65,6 +82,40 @@ export default function PatientAdmission(props: any) {
     if (response.data.success) {
       setDoctorData(response.data.records);
     }
+  };
+
+  const PatientSearch = () => {
+    debugger;
+    AlgaehSearch({
+      //@ts-ignore
+      searchName: "patients",
+      columns: props.getsportlightSearch("frontDesk")?.patients ?? [],
+      placeHolder: "Patient Code",
+      onRowSelect: (row: any) => {
+        debugger;
+        setPatientDetails(row);
+        getPatientInsurance({
+          patient_id: row.hims_d_patient_id,
+          // entry_type: entry_type,
+        })
+          .then((result) => {
+            setInsuranceList(result);
+          })
+          .catch((e) => {
+            AlgaehMessagePop({
+              display: e,
+              type: "error",
+            });
+          });
+      },
+    });
+  };
+
+  const updateInsuranceState = (data: any) => {
+    setInsuranceList((result) => {
+      result.push(data);
+      return [...result];
+    });
   };
 
   useEffect(() => {
@@ -215,13 +266,12 @@ export default function PatientAdmission(props: any) {
           }}
         >
           <AlgaehLabel label={{ fieldName: "s_patient_code" }} />
-          <h6>
-            {/* onClick={PatientSearch.bind(this, this, context)} */}
-            {/* {this.state.patient_code ? (
-                      this.state.patient_code
-                    ) : ( */}
-            <AlgaehLabel label={{ fieldName: "patient_code" }} />
-            {/* )} */}
+          <h6 onClick={PatientSearch}>
+            {patient_details ? (
+              patient_details.patient_code
+            ) : (
+              <AlgaehLabel label={{ fieldName: "patient_code" }} />
+            )}
             <i className="fas fa-search fa-lg"></i>
           </h6>
         </div>
@@ -235,11 +285,11 @@ export default function PatientAdmission(props: any) {
                 }}
               />
               <h6>
-                {patient_details ? patient_details.patient_name : "--------"}
+                {patient_details ? patient_details.full_name : "--------"}
               </h6>
             </div>
 
-            <div className="col-2">
+            {/* <div className="col-2">
               <AlgaehLabel
                 label={{
                   fieldName: "patient_type",
@@ -248,7 +298,7 @@ export default function PatientAdmission(props: any) {
               <h6>
                 {patient_details ? patient_details.patient_type : "--------"}
               </h6>
-            </div>
+            </div> */}
             <Controller
               control={control}
               name="doctor"
@@ -292,6 +342,12 @@ export default function PatientAdmission(props: any) {
         </div>
       </div>
       <InsuranceDetails
+        props={props}
+        Insurance_field={
+          props.getsportlightSearch("Insurance")?.Insurance_field
+        }
+        insurance_list={insurance_list}
+        updateInsuranceState={updateInsuranceState}
         isInsurance={isInsurance}
         setIsInsurance={setIsInsurance}
         control={control}
@@ -303,6 +359,37 @@ export default function PatientAdmission(props: any) {
         insuranceImgBack={insuranceImgBack}
       />
       <BedDetails useState={useState} />
+
+      {/* <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={AdmitPatient}
+            >
+              <AlgaehLabel
+                label={{ fieldName: "btn_save", returnText: true }}
+              />
+            </button>
+            <button
+              type="button"
+              className="btn btn-default"
+              onClick={() => onClear(false)}
+              disabled={
+                !disabled &&
+                !appointment_id &&
+                !patient_code &&
+                !formState.isDirty
+              }
+            >
+              <AlgaehLabel
+                label={{ fieldName: "btn_clear", returnText: true }}
+              />
+            </button>
+          </div>
+        </div>
+      </div> */}
     </div>
   );
 }

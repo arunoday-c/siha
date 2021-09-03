@@ -3,6 +3,7 @@ import { MainContext } from "algaeh-react-components";
 import loadMicroFrontend from "./MicroFrontendService";
 import Config from "../../utils/config.json";
 import globalVariables from "../../utils/GlobalVariables.json";
+import spotlightSearch from "../../Search/spotlightSearch.json";
 // import { algaehApiCall } from "../../utils/algaehApiCall";
 window[`baseImplement`] = {
   ...Config["routersAndPorts"],
@@ -31,6 +32,10 @@ const MicroFrontend = ({ history, host, path }) => {
     if (!type) return globalVariables;
     else return globalVariables[type];
   }
+  function getsportlightSearch(type = undefined) {
+    if (!type) return spotlightSearch;
+    else return spotlightSearch[type];
+  }
   useEffect(() => {
     loadMicroFrontend(hostUrl, () => {
       window[`mount_${appId}`]({
@@ -38,6 +43,7 @@ const MicroFrontend = ({ history, host, path }) => {
         path,
         // mainContext: mainCtx,
         getGlobalVariables: getGlobalVariables,
+        getsportlightSearch: getsportlightSearch,
         getMainContext: getMainContext,
       });
     });

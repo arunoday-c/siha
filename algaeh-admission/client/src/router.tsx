@@ -28,6 +28,7 @@ interface interRouter {
   path: string;
   // mainContext: any;
   getGlobalVariables: Function;
+  getsportlightSearch: Function;
   // globalVariables: any;
   // algaehApiCall: Function;
   // appContext: any;
@@ -36,6 +37,7 @@ interface interRouter {
 export default function Router({
   path,
   // mainContext,
+  getsportlightSearch,
   getGlobalVariables,
   getMainContext,
 }: interRouter) {
@@ -47,6 +49,7 @@ export default function Router({
         filter.component({
           getGlobalVariables,
           getMainContext,
+          getsportlightSearch,
           // mainContext,
           // globalVariables,
           // appContext,

@@ -8,6 +8,7 @@ window[`mount_${APP_ID}`] = ({
   elementId,
   path,
   // mainContext,
+  getsportlightSearch,
   getGlobalVariables,
   getMainContext,
 }: any) => {
@@ -16,6 +17,7 @@ window[`mount_${APP_ID}`] = ({
       path={path}
       // mainContext={mainContext}
       getGlobalVariables={getGlobalVariables}
+      getsportlightSearch={getsportlightSearch}
       getMainContext={getMainContext}
     />,
     document.getElementById(elementId)
