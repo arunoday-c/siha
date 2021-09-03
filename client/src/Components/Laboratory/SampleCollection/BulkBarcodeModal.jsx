@@ -33,6 +33,8 @@ function BulkBarcodeModal({ onCancel, visible, title }) {
     },
   });
   const [loading, setLoading] = useState(false);
+  const [lab_order_ids, setLab_order_ids] = useState([]);
+  const [enablePrintButton, setEnablePrintButton] = useState(true);
   const [plaseWait, setPleaseWait] = useState(
     "Please wait report is preparing.."
   );
@@ -40,8 +42,34 @@ function BulkBarcodeModal({ onCancel, visible, title }) {
     setLoading(false);
     onCancel();
   }
+  const checkLabOrderExists = (hims_d_insurance_sub_id) => {
+    newAlgaehApi({
+      uri: "/laboratory/checkLabOrderExistsCompany",
+      module: "laboratory",
+      method: "GET",
+      data: {
+        hims_d_insurance_sub_id: hims_d_insurance_sub_id,
+        from_date: getValues().from_date,
+      },
+    })
+      .then((response) => {
+        if (response.data.success) {
+          if (response.data.records.length > 0) {
+            let lab_ids = response.data.records.map(
+              (item) => item.hims_f_lab_order_id
+            );
+            setLab_order_ids(lab_ids);
+            setEnablePrintButton(false);
+          } else {
+            setEnablePrintButton(true);
+          }
+        }
+      })
+      .catch((error) => {
+        throw error;
+      });
+  };
   function onPdfGeneration(data) {
-    const sendData = getValues();
     setPleaseWait("Please wait pdf is generating...");
     setLoading(true);
 
@@ -63,12 +91,8 @@ function BulkBarcodeModal({ onCancel, visible, title }) {
           reportName: "specimenBulkBarcodeByCompany",
           reportParams: [
             {
-              name: "from_date",
-              value: sendData.from_date,
-            },
-            {
-              name: "hims_d_insurance_sub_id",
-              value: sendData.hims_d_insurance_sub_id,
+              name: "hims_f_lab_order_id",
+              value: lab_order_ids,
             },
           ],
           outputFileType: "PDF",
@@ -87,9 +111,7 @@ function BulkBarcodeModal({ onCancel, visible, title }) {
     refetchOnWindowFocus: false,
     keepPreviousData: true,
 
-    onSuccess: (data) => {
-      debugger;
-    },
+    onSuccess: (data) => {},
   });
   return (
     <AlgaehModal
@@ -105,6 +127,7 @@ function BulkBarcodeModal({ onCancel, visible, title }) {
       footer={
         <div>
           <span
+            disabled={enablePrintButton}
             className="ant-btn ant-btn-primary ant-btn-circle ant-btn-icon-only"
             onClick={handleSubmit(onPdfGeneration)}
           >
@@ -176,7 +199,10 @@ function BulkBarcodeModal({ onCancel, visible, title }) {
                 selector={{
                   value,
                   onChange: (_, selected) => {
+                    setLab_order_ids([]);
                     onChange(selected);
+                    checkLabOrderExists(selected);
+                    setEnablePrintButton(true);
                   },
                   onClear: () => {
                     onChange("");
