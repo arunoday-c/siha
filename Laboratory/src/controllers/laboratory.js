@@ -18,6 +18,7 @@ import { labResultDispatch } from "../models/labDispatch";
 import { patientBillGeneration } from "../models/portalToHims";
 const {
   getLabOrderedServices,
+  checkLabOrderExistsCompany,
   getLabOrderServiceForDoc,
   getLabOrderedServicesPatient,
   getTestAnalytes,
@@ -62,6 +63,17 @@ export default () => {
       });
     }
   );
+  api.get(
+    "/checkLabOrderExistsCompany",
+    checkLabOrderExistsCompany,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+
   api.get(
     "/getOrderByTestCategory",
     getOrderByTestCategory,

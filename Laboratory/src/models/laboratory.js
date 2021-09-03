@@ -193,8 +193,8 @@ const labModal = {
             INNER JOIN hims_f_patient_visit PV on PV.hims_f_patient_visit_id = LO.visit_id\
             LEFT JOIN hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A'\
             left join hims_d_lab_specimen as DLS on DLS.hims_d_lab_specimen_id = LS.sample_id \
-                       inner join hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = LO.test_id \
-                       left join hims_d_test_category as TC on TC.hims_d_test_category_id = IT.category_id \
+            inner join hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = LO.test_id \
+            left join hims_d_test_category as TC on TC.hims_d_test_category_id = IT.category_id \
             WHERE " +
             _stringData +
             " group by hims_f_lab_order_id order by LO.ordered_date desc",
@@ -216,6 +216,34 @@ const labModal = {
     }
   },
 
+  checkLabOrderExistsCompany: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      const input = req.query;
+      _mysql
+        .executeQuery({
+          query: `SELECT LO.hims_f_lab_order_id,P.patient_code,P.full_name,P.primary_id_no,LO.lab_id_number,INS.primary_insurance_provider_id,INS.primary_sub_id,INS.primary_network_id
+            FROM hims_f_lab_order LO
+            inner join hims_f_patient P on P.hims_d_patient_id=LO.patient_id
+            left join hims_m_patient_insurance_mapping INS on INS.patient_visit_id = LO.visit_id
+            where date(LO.updated_date)=date(?) and INS.primary_sub_id=? and LO.status <> 'O';`,
+          values: [input.from_date, input.hims_d_insurance_sub_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   updateLabOrderServiceForDoc: (req, res, next) => {
     const _mysql = new algaehMysql();
 
