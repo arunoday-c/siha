@@ -15,7 +15,7 @@ const executePDF = function executePDFMethod(options) {
             FROM hims_f_lab_order LO
             inner join hims_f_patient P on P.hims_d_patient_id=LO.patient_id
             left join hims_m_patient_insurance_mapping INS on INS.patient_visit_id = LO.visit_id
-            where date(LO.updated_date)=date(?) and INS.primary_sub_id=?;`,
+            where date(LO.updated_date)=date(?) and INS.primary_sub_id=? and LO.status='CL';`,
 
           values: [input.from_date, input.hims_d_insurance_sub_id],
           printQuery: true,
