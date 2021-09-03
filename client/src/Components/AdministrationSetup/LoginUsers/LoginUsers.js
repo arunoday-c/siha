@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import "./login_users.scss";
 import {
-  AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
   AlagehFormGroup,
@@ -21,7 +20,12 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
 import _ from "lodash";
 import { MainContext } from "algaeh-react-components";
-import { Button, Input, AlgaehSecurityElement } from "algaeh-react-components";
+import {
+  Button,
+  Input,
+  AlgaehSecurityElement,
+  AlgaehDataGrid,
+} from "algaeh-react-components";
 import { generateUserListReport } from "./LoginUsersEvent.js";
 class LoginUsers extends Component {
   _isMounted = false;
@@ -471,14 +475,14 @@ class LoginUsers extends Component {
     }
   }
 
-  updateLoginUser(data) {
-    AlgaehValidation({
-      alertTypeIcon: "warning",
-      onSuccess: () => {
-        //
-      },
-    });
-  }
+  // updateLoginUser(data) {
+  //   AlgaehValidation({
+  //     alertTypeIcon: "warning",
+  //     onSuccess: () => {
+  //       //
+  //     },
+  //   });
+  // }
 
   addLoginUser() {
     AlgaehValidation({
@@ -1234,7 +1238,6 @@ class LoginUsers extends Component {
                       columns={[
                         {
                           fieldName: "action",
-
                           label: (
                             <AlgaehLabel label={{ forceLabel: "action" }} />
                           ),
@@ -1280,9 +1283,12 @@ class LoginUsers extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Full Name" }} />
                           ),
+
                           others: {
+                            resizable: false,
+                            filterable: true,
                             disabled: true,
-                            minWidth: 200,
+                            style: { textAlign: "left" },
                           },
                         },
                         {
@@ -1359,18 +1365,15 @@ class LoginUsers extends Component {
                         },
                       ]}
                       keyId="algaeh_d_app_user_id"
-                      dataSource={{
-                        data: this.state.login_users,
-                      }}
-                      isEditable={false}
-                      paging={{ page: 0, rowsPerPage: 20 }}
-                      filter={true}
-                      actions={{
-                        allowDelete: false,
-                      }}
-                      events={{
-                        onDone: this.updateLoginUser.bind(this),
-                      }}
+                      data={
+                        this.state.login_users === undefined
+                          ? []
+                          : this.state.login_users
+                      }
+                      pagination={true}
+                      pageOptions={{ rows: 20, page: 1 }}
+                      isFilterable={true}
+                      events={{}}
                     />
                   </div>
                 </div>

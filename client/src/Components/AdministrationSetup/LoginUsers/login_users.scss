@@ -1,9 +1,13 @@
 .login_users {
   padding-top: 15px;
   #loginUserGrid_Cntr {
-    .ReactTable {
-      max-width: 98vw !important;
-      max-height: 70vh !important;
+    .newStickyGrid {
+      .table-scroll {
+        // max-width: 98vw !important;
+        min-height: 68vh;
+        max-height: 68vh;
+        overflow: auto;
+      }
     }
   }
   .userNameExt {
