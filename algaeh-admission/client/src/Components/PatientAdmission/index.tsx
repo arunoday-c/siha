@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import "./PatientAdmission.scss";
-import BreadCrumb from "../BreadCrumb/BreadCrumb.js";
+// import BreadCrumb from "../BreadCrumb/BreadCrumb.js";
 import {
   AlgaehLabel,
   algaehAxios,
@@ -9,9 +9,10 @@ import {
   AlgaehTreeSearch,
   // MainContext,
 } from "algaeh-react-components";
+import BreadCrumb from "Components/BreadCrumb";
 import InsuranceDetails from "./insuranceDetails";
 import BedDetails from "./bedDetails";
-import BedManagement from "../BedManagement";
+// import BedManagement from "../BedManagement";
 
 export default function PatientAdmission(props: any) {
   const [admission_type, setAdmissionType] = useState<any>("D");
@@ -78,16 +79,59 @@ export default function PatientAdmission(props: any) {
       <BreadCrumb
         title={
           <AlgaehLabel
+            label={{
+              forceLabel: "Patient Admission",
+              align: "ltr",
+            }}
+          />
+        }
+        spotlightSearch={{
+          searchName: "patients",
+          placeHolder: "Patient Code",
+          label: <AlgaehLabel label={{ forceLabel: "Admission Number" }} />,
+          columns: [
+            { fieldName: "patient_code", label: "Patient Code" },
+            { fieldName: "full_name", label: "Patient Name" },
+            { fieldName: "arabic_name", label: "Arabic Name" },
+            { fieldName: "contact_number", label: "Contact Number" },
+          ],
+          events: {
+            onClick: (cb: Function) => {
+              //If any logic need to call before open
+              cb();
+            },
+            onRowSelect: (row: any) => {
+              //Use the selected data
+              alert(JSON.stringify(row));
+            },
+          },
+        }}
+        userArea={
+          <div className="row">
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Admission Date",
+                }}
+              />
+              <h6>02-03-2025</h6>
+            </div>
+          </div>
+        }
+      />
+      {/* <BreadCrumb
+        title={
+          <AlgaehLabel
             label={{ forceLabel: "Patient Admission", align: "ltr" }}
           />
         }
-        // breadStyle={this.props.breadStyle}
+       
         soptlightSearch={{
           label: <AlgaehLabel label={{ forceLabel: "Admission Number" }} />,
           value: "",
           selectValue: "pos_number",
           events: {
-            // onChange: getCtrlCode.bind(this, this),
+         
           },
           jsonFile: {
             fileName: "spotlightSearch",
@@ -112,15 +156,15 @@ export default function PatientAdmission(props: any) {
             {
               label: "Print Report",
               events: {
-                // onClick: () => {
-                //   generateSalesInvoice(this.state);
-                // },
+                onClick: () => {
+               
+                },
               },
             },
           ],
         }}
-        // selectedLang={this.state.selectedLang}
-      />
+      
+      /> */}
 
       <div
         className="row inner-top-search"
