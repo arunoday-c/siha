@@ -1251,10 +1251,10 @@ class LoginUsers extends Component {
                               </span>
                             );
                           },
+                          // filterable: true,
                           others: {
                             maxWidth: 65,
                             resizable: false,
-                            filterable: false,
                             style: { textAlign: "center" },
                           },
                         },
@@ -1278,40 +1278,27 @@ class LoginUsers extends Component {
                         //     );
                         //   }
                         // },
+
+                        {
+                          fieldName: "employee_code",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "E. code" }} />
+                          ),
+                          filterable: true,
+                          others: {
+                            disabled: true,
+                          },
+                        },
                         {
                           fieldName: "full_name",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Full Name" }} />
                           ),
-
+                          filterable: true,
                           others: {
                             resizable: false,
-                            filterable: true,
                             disabled: true,
                             style: { textAlign: "left" },
-                          },
-                        },
-                        {
-                          fieldName: "hospital_name",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Branch Name" }}
-                            />
-                          ),
-                          others: {
-                            disabled: true,
-                            minWidth: 200,
-                          },
-                        },
-                        {
-                          fieldName: "employee_code",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Employee code" }}
-                            />
-                          ),
-                          others: {
-                            disabled: true,
                           },
                         },
                         {
@@ -1319,9 +1306,10 @@ class LoginUsers extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "username" }} />
                           ),
+                          filterable: true,
                           others: {
                             disabled: true,
-                            minWidth: 250,
+                            // minWidth: 250,
                           },
                         },
                         {
@@ -1343,18 +1331,35 @@ class LoginUsers extends Component {
                               </span>
                             );
                           },
+                          filterable: true,
                         },
                         {
                           fieldName: "app_group_name",
                           label: <AlgaehLabel label={{ fieldName: "group" }} />,
+                          filterable: true,
                         },
                         {
                           fieldName: "role_name",
                           label: <AlgaehLabel label={{ fieldName: "role" }} />,
+                          filterable: true,
+                        },
+                        {
+                          fieldName: "hospital_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Branch Name" }}
+                            />
+                          ),
+                          others: {
+                            disabled: true,
+                            // minWidth: 200,
+                          },
+                          filterable: true,
                         },
                         {
                           fieldName: "user_status",
                           label: <label className="style_Label">Status</label>,
+                          filterable: true,
                           displayTemplate: (row) => {
                             return row.user_status === "A"
                               ? "Active"
