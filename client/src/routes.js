@@ -466,6 +466,9 @@ const SalesQuotation = React.lazy(() =>
 const SalesOrder = React.lazy(() =>
   retry(() => import("./Components/Sales/SalesOrder/SalesOrder"))
 );
+const DentalOrder = React.lazy(() =>
+  retry(() => import("./Components/Sales/DentalOrder/DentalOrder"))
+);
 const DispatchNote = React.lazy(() =>
   retry(() => import("./Components/Sales/DispatchNote/DispatchNote"))
 );
@@ -1224,6 +1227,11 @@ const privateRoutes = [
     path: "/SalesOrder",
     isExactPath: true,
     component: <SalesOrder />,
+  },
+  {
+    path: "/DentalOrder",
+    isExactPath: true,
+    component: <DentalOrder />,
   },
   {
     path: "/DispatchNote",

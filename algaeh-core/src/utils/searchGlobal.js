@@ -1088,6 +1088,16 @@ let algaehSearchConfig = (searchName, req) => {
         orderBy: "hims_f_sales_order_id desc",
       },
       {
+        searchName: "DentalOrder",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS  SO.*,  CASE SO.sales_order_mode WHEN 'I' then 'Items' else 'Services' \
+          end as sales_order_mode, C.customer_name, SQ.sales_quotation_number from hims_f_sales_order SO \
+          inner join hims_d_customer C on SO.customer_id = C.hims_d_customer_id \
+          left join  hims_f_sales_quotation SQ on SO.sales_quotation_id = SQ.hims_f_sales_quotation_id  \
+          where 1=1",
+        orderBy: "hims_f_sales_order_id desc",
+      },
+      {
         searchName: "DispatchNote",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS H.*, L.location_description as location, SO.sales_order_number, \
