@@ -229,7 +229,125 @@ export default {
       next(e);
     }
   },
+  getCustomerEmployees: (req, res, next) => {
+    let input = req.query;
+    const _mysql = new algaehMysql();
 
+    try {
+      _mysql
+        .executeQuery({
+          query: `select * from hims_d_customer_employee where customer_id=?; `,
+          values: [input.hims_d_customer_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  addCustomerEmployee: (req, res, next) => {
+    let inputParam = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query: `INSERT INTO hims_d_customer_employee (employee_name,employee_email,employee_tel_code,employee_contact_number,customer_id,
+          created_date, created_by, updated_date, updated_by)
+            VALUE(?,?,?,?,?,?,?,?,?)`,
+          values: [
+            inputParam.employee_name,
+            inputParam.employee_email,
+            inputParam.employee_tel_code,
+            inputParam.employee_contact_number,
+            inputParam.hims_d_customer_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+          ],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  updateCustomerEmployees: (req, res, next) => {
+    let inputParam = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query: `UPDATE hims_d_customer_employee SET  employee_name=?,employee_email=?, employee_tel_code = ?, employee_contact_number=?
+             ,updated_date=?, updated_by=?  WHERE   hims_d_customer_employee_id=?;`,
+          values: [
+            inputParam.employee_name,
+            inputParam.employee_email,
+            inputParam.employee_tel_code,
+            inputParam.employee_contact_number,
+
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            inputParam.hims_d_customer_employee_id,
+          ],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  deleteCustomerEmployee: (req, res, next) => {
+    let inputParam = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query: `DELETE from hims_d_customer_employee where hims_d_customer_employee_id=?`,
+          values: [inputParam.hims_d_customer_employee_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   updateCustomerMaster: (req, res, next) => {
     let inputParam = req.body;
     const _mysql = new algaehMysql();

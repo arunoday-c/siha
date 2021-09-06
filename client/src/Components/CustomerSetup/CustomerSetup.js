@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./CustomerSetup.scss";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import {
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
@@ -11,6 +11,8 @@ import {
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
+import AddDoctorDetails from "./AddDoctorDetails";
+import { RawSecurityComponent, AlgaehDataGrid } from "algaeh-react-components";
 // import MaskedInput from "react-maskedinput";
 
 class CustomerSetup extends Component {
@@ -40,12 +42,21 @@ class CustomerSetup extends Component {
       finance_inch_number: null,
       finance_inch_emailid: null,
       iban_number: null,
+      showAddEmployeeModal: false,
+      openAddEmployeeModal: false,
     };
   }
 
   componentDidMount() {
     this.getAllCustomers();
     this.getCountries();
+    RawSecurityComponent({ componentCode: "ADD_DOC_DETAILS_CUS_SETUP" }).then(
+      (result) => {
+        if (result === "show") {
+          this.setState({ showAddEmployeeModal: true });
+        }
+      }
+    );
   }
 
   resetSaveState() {
@@ -214,6 +225,12 @@ class CustomerSetup extends Component {
 
     this.getStateCity(data.country_id, data.state_id);
   }
+  addCustomerEmployeeOpen() {
+    this.setState({
+      openAddEmployeeModal: !this.state.openAddEmployeeModal,
+      activeRow: null,
+    });
+  }
 
   changeTexts(e) {
     this.setState({
@@ -285,6 +302,37 @@ class CustomerSetup extends Component {
   }
 
   render() {
+    const manualColumns = this.state.showAddEmployeeModal
+      ? {
+          fieldName: "actions",
+          label: <AlgaehLabel label={{ fieldName: "Add Employee" }} />,
+          displayTemplate: (row) => {
+            return (
+              <div className="row">
+                <div className="col">
+                  <i
+                    className="fas fa-plus"
+                    onClick={() => {
+                      this.setState({
+                        openAddEmployeeModal: true,
+
+                        activeRow: row,
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+            );
+          },
+          others: {
+            maxWidth: 120,
+            style: {
+              textAlign: "center",
+            },
+            filterable: false,
+          },
+        }
+      : null;
     return (
       <div className="customer_setup">
         <AlgaehModalPopUp
@@ -900,7 +948,14 @@ class CustomerSetup extends Component {
             </div>
           </div>
         </AlgaehModalPopUp>
-
+        {this.state.openAddEmployeeModal ? (
+          <AddDoctorDetails
+            visible={this.state.openAddEmployeeModal}
+            onClose={() => this.addCustomerEmployeeOpen()}
+            activeRow={this.state.activeRow}
+            // key={this.state.activeRow.hims_d_customer_id}
+          />
+        ) : null}
         <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="caption">
@@ -950,7 +1005,7 @@ class CustomerSetup extends Component {
                         filterable: false,
                       },
                     },
-
+                    manualColumns,
                     {
                       fieldName: "customer_code",
                       label: (
@@ -1025,11 +1080,12 @@ class CustomerSetup extends Component {
                     },
                   ]}
                   keyId="hims_d_customer_id"
-                  dataSource={{
-                    data: this.state.customers,
-                  }}
+                  // dataSource={{
+                  data={this.state.customers ?? []}
+                  // }}
                   filter={true}
-                  paging={{ page: 0, rowsPerPage: 10 }}
+                  pagination={true}
+                  // paging={{ page: 0, rowsPerPage: 10 }}
                 />
               </div>
             </div>
