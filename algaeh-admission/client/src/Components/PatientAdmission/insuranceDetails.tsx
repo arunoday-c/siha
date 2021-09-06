@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+// import React, { useState, useEffect } from "react";
 import { Controller } from "react-hook-form";
 // import moment from "moment";
 import {
@@ -17,17 +17,17 @@ export default function insuranceDetails({
   props,
   control,
   errors,
-  clearErrors,
+  // clearErrors,
   setValue,
   trigger,
-  insuranceImgFront,
-  insuranceImgBack,
+  // insuranceImgFront,
+  // insuranceImgBack,
   isInsurance,
   setIsInsurance,
-  insuranceInfo,
+  // insuranceInfo,
   setInsuranceInfo,
-  setInsuranceList,
-  Insurance_field,
+  // setInsuranceList,
+  // Insurance_field,
   insurance_list,
   updateInsuranceState,
 }: any) {
@@ -38,13 +38,12 @@ export default function insuranceDetails({
   let dropDownData = insurance_list?.length ? insurance_list : [];
 
   const AddInsurance = () => {
-    debugger;
     AlgaehSearch({
+      //@ts-ignore
       searchName: "new_insurance",
       columns: props.getsportlightSearch("Insurance")?.Insurance_field,
       placeHolder: "Insurance Name",
       onRowSelect: (row: any) => {
-        debugger;
         updateInsuranceState(row);
         dropDownData = [row];
         // setPatientDetails(row);

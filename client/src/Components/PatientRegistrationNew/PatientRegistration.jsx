@@ -753,7 +753,6 @@ export function PatientRegistration() {
             //   insertPatientPortal({ ...data, ...input });
             // }
             if (sockets.connected) {
-              console.log("iiasisisiisisis");
               sockets.emit("patient_checked", {
                 ...data,
                 provider_id: doctor_id,

@@ -1,5 +1,6 @@
-import React, { useState, useContext } from "react";
-import { BedManagementContext } from "./BedMangementContext";
+import { useContext } from "react";
+import { PatAdmissionContext } from "../PatientAdmission/PatientAdmissionContext";
+// import { BedManagementContext } from "./BedMangementContext";
 import "./BedManagement.scss";
 export function SingleCell({
   hims_adm_ward_detail_id,
@@ -7,20 +8,25 @@ export function SingleCell({
   bed_no,
   bed_desc,
   hims_adm_ward_header_id,
+  ward_desc,
 }: {
   hims_adm_ward_detail_id: number;
   bed_short_name: string;
   bed_no: number;
   bed_desc: string;
   hims_adm_ward_header_id: number | string;
+  ward_desc: string;
 }) {
-  const {
-    selectedBedData,
-    setSelectedBedData,
-    // setWardHeaderData,
-    // wardHeaderData,
-  } = useContext(BedManagementContext);
-  const [selectedBed, setSelectedBed] = useState(false);
+  // const {
+  //   selectedBedData,
+  //   setSelectedBedData,
+  //   // setWardHeaderData,
+  //   // wardHeaderData,
+  // } = useContext(BedManagementContext);
+  const { selectedBedData, setSelectedBedData } =
+    useContext(PatAdmissionContext);
+
+  // const [selectedBed, setSelectedBed] = useState(false);
   // const [selectedBedData, setSelectedBedData] = useState<any>([]);
   return (
     <div>
@@ -30,44 +36,27 @@ export function SingleCell({
 
       <div
         onClick={() => {
-          debugger;
-          let bedData = selectedBedData;
-          // setWardHeaderData(wardHeaderData);
-          if (selectedBedData?.length > 0) {
-            for (let i = 0; i < selectedBedData.length; i++) {
-              debugger;
-              if (
-                selectedBedData[i].hims_adm_ward_detail_id ===
-                hims_adm_ward_detail_id
-              ) {
-                setSelectedBed(false);
-
-                setSelectedBedData(null);
-              } else {
-                setSelectedBed(true);
-                setSelectedBedData({
-                  hims_adm_ward_detail_id,
-                  hims_adm_ward_header_id,
-                  bed_short_name,
-                  bed_no,
-                  bed_desc,
-                });
-              }
-            }
-          } else {
-            setSelectedBed(true);
-            setSelectedBedData({
-              hims_adm_ward_detail_id,
-              hims_adm_ward_header_id,
-              bed_short_name,
-              bed_no,
-              bed_desc,
-            });
-          }
+          // console.log("data", selectedBedData);
+          // setSelectedBed(true);
+          setSelectedBedData({
+            hims_adm_ward_detail_id,
+            hims_adm_ward_header_id,
+            bed_short_name,
+            bed_no,
+            bed_desc,
+            ward_desc,
+          });
         }}
-        className={`col-12 bedBox ${selectedBed ? "singleBedSelect" : ""}`}
+        className={`col-12 bedBox ${
+          selectedBedData?.hims_adm_ward_detail_id === hims_adm_ward_detail_id
+            ? "singleBedSelect"
+            : ""
+        }`}
         style={{
-          color: selectedBed ? "white" : "",
+          color:
+            selectedBedData?.hims_adm_ward_detail_id === hims_adm_ward_detail_id
+              ? "white"
+              : "",
         }}
         key={hims_adm_ward_detail_id}
       >

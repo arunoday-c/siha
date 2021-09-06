@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
-import { SingleCell } from "./SingleCell";
+import { useContext } from "react";
 import { BedManagementContext } from "./BedMangementContext";
+import SingleBedColumn from "./SingleBedColumn";
 
 export default function BedColumn() {
   const { wardHeaderData } = useContext(BedManagementContext);
@@ -17,11 +17,15 @@ export default function BedColumn() {
                         <h3>{item.ward_desc}</h3>
                       </div>
                     </div>
-                    <div className="row ">
+                    <SingleBedColumn
+                      groupDetail={item.groupDetail}
+                      item={item}
+                    />
+                    {/* <div className="row ">
                       <div className="col-12 bedCol">
                         <div className="row">
                           {item.groupDetail.map((data: any, index: number) => {
-                            debugger;
+                            
                             const {
                               bed_desc,
                               bed_short_name,
@@ -47,10 +51,10 @@ export default function BedColumn() {
                             );
                           })}
 
-                          {/* <BedCell item={item} /> */}
+                      
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </>
                 </div>
               ))

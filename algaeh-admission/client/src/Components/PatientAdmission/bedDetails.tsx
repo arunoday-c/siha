@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import { useState, useContext } from "react";
 import { Tabs, AlgaehLabel, AlgaehModal } from "algaeh-react-components";
 import BedManagement from "../BedManagement/index";
+import { PatAdmissionContext } from "./PatientAdmissionContext";
 const { TabPane } = Tabs;
 
 // const getPatientInsurance = async (key, { patient_id }) => {
@@ -14,9 +15,10 @@ const { TabPane } = Tabs;
 // };
 
 export default function BedDetails(props: any) {
-  const [bed_details, setBedDetails] = useState({
-    patient_name: undefined,
-  });
+  // const [bed_details, setBedDetails] = useState({
+  //   patient_name: undefined,
+  // });
+  const { selectedBedData } = useContext(PatAdmissionContext);
   const [visible, setVisible] = useState(false);
 
   const onClose = () => {
@@ -63,7 +65,9 @@ export default function BedDetails(props: any) {
                           }}
                         />
                         <h6>
-                          {bed_details ? bed_details.patient_name : "--------"}
+                          {selectedBedData
+                            ? selectedBedData.bed_desc
+                            : "--------"}
                         </h6>
                       </div>
                       <div className="col-3">
@@ -73,7 +77,9 @@ export default function BedDetails(props: any) {
                           }}
                         />
                         <h6>
-                          {bed_details ? bed_details.patient_name : "--------"}
+                          {selectedBedData
+                            ? selectedBedData.ward_desc
+                            : "--------"}
                         </h6>
                       </div>
                       <div className="col-3">
@@ -83,7 +89,9 @@ export default function BedDetails(props: any) {
                           }}
                         />
                         <h6>
-                          {bed_details ? bed_details.patient_name : "--------"}
+                          {selectedBedData
+                            ? selectedBedData.bed_no
+                            : "--------"}
                         </h6>
                       </div>
 

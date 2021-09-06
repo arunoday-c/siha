@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import {
   AlgaehAutoComplete,
@@ -17,9 +17,9 @@ export default function SelectWardSection() {
     useContext(BedManagementContext);
   //   const [wardHeaderData, setWardHeaderData] = useState([]);
   const { control, setValue } = useForm<IFormInputs>();
-  useEffect(() => {
-    getWardHeaderData();
-  }, []);
+  // useEffect(() => {
+  //   getWardHeaderData();
+  // }, []);
   const { hims_adm_ward_header_id } = useWatch({
     control,
     name: ["hims_adm_ward_header_id"],
@@ -72,7 +72,7 @@ export default function SelectWardSection() {
                 onChange: (_: any, selected: any) => {
                   onChange(selected);
 
-                  getWardHeaderData(selected);
+                  // getWardHeaderData(selected);
                   // setValue("service_amount", _.standard_fee);
                 },
 
