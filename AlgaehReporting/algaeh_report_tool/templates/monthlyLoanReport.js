@@ -32,7 +32,9 @@ const executePDF = function executePDFMethod(options) {
       }
       options.mysql
         .executeQuery({
-          query: `select  distinct employee_code, EM.employee_code, EM.full_name,SL.salary_number,SL.year, MONTHNAME(CONCAT('2011-',SL.month,'-01')) as deducting_month, LM.loan_description, LA.loan_application_number,LA.approved_amount, LA.pending_loan, SLL.loan_due_amount, SLL.balance_amount
+          query: `select  distinct employee_code, EM.employee_code, EM.full_name,SL.salary_number,SL.year, 
+          MONTHNAME(CONCAT('2011-',SL.month,'-01')) as deducting_month, LM.loan_description, 
+          LA.loan_application_number,LA.approved_amount, LA.pending_loan, SLL.loan_due_amount, SLL.balance_amount
           from hims_f_salary as SL
           left join hims_d_employee as EM on SL.employee_id = EM.hims_d_employee_id 
           left join hims_f_salary_loans as SLL on SL.hims_f_salary_id = salary_header_id 
@@ -43,16 +45,31 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((result) => {
+          const header = result.length ? result[0] : {};
+          const total_approved_amount = options.currencyFormat(
+            _.sumBy(result, (s) => parseFloat(s.approved_amount)),
+            options.args.crypto
+          );
+          const total_balance_amount = options.currencyFormat(
+            _.sumBy(result, (s) => parseFloat(s.balance_amount)),
+            options.args.crypto
+          );
+          const total_loan_due_amount = options.currencyFormat(
+            _.sumBy(result, (s) => parseFloat(s.loan_due_amount)),
+            options.args.crypto
+          );
+          const total_pending_loan = options.currencyFormat(
+            _.sumBy(result, (s) => parseFloat(s.pending_loan)),
+            options.args.crypto
+          );
+
           resolve({
             result: result,
-            total_approved_amt: options.currencyFormat(
-              _.sumBy(result, (s) => parseFloat(s.approved_amount)),
-              options.args.crypto
-            ),
-            total_loan_due_amt: options.currencyFormat(
-              _.sumBy(result, (s) => parseFloat(s.loan_due_amount)),
-              options.args.crypto
-            ),
+            header,
+            total_approved_amount,
+            total_balance_amount,
+            total_loan_due_amount,
+            total_pending_loan,
             no_employees: result.length,
           });
         })
