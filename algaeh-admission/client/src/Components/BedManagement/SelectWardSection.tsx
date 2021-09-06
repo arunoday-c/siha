@@ -13,8 +13,9 @@ interface IFormInputs {
   hims_adm_ward_header_id: string;
 }
 export default function SelectWardSection() {
-  const { setWardHeaderData, wardHeaderData } =
-    useContext(BedManagementContext);
+  const { setWardHeaderData, wardHeaderData } = useContext(
+    BedManagementContext
+  );
   //   const [wardHeaderData, setWardHeaderData] = useState([]);
   const { control, setValue } = useForm<IFormInputs>();
   // useEffect(() => {
@@ -26,7 +27,7 @@ export default function SelectWardSection() {
   });
   useEffect(() => {
     getWardHeaderData(hims_adm_ward_header_id);
-  }, [hims_adm_ward_header_id]);
+  }, [hims_adm_ward_header_id]); //eslint-disable-line
 
   const getWardHeaderData = async (data?: string) => {
     const { response, error } = await algaehAxios(

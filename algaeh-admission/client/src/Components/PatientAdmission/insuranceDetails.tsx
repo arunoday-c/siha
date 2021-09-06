@@ -1,6 +1,6 @@
-// import React, { useState, useEffect } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Controller } from "react-hook-form";
-// import moment from "moment";
+import moment from "moment";
 import {
   AlgaehSearch,
   Tabs,
@@ -11,31 +11,51 @@ import {
   //   AlgaehHijriDatePicker,
   Spin,
 } from "algaeh-react-components";
+import { PatAdmissionContext } from "./PatientAdmissionContext";
 const { TabPane } = Tabs;
 
-export default function insuranceDetails({
+export default function InsuranceDetails({
   props,
   control,
   errors,
-  // clearErrors,
+  clearErrors,
   setValue,
   trigger,
   // insuranceImgFront,
   // insuranceImgBack,
   isInsurance,
   setIsInsurance,
-  // insuranceInfo,
-  setInsuranceInfo,
-  // setInsuranceList,
-  // Insurance_field,
-  insurance_list,
-  updateInsuranceState,
-}: any) {
+}: // setInsuranceList,
+// Insurance_field,
+// insurance_list,
+// updateInsuranceState,
+any) {
+  const { setInsuranceInfo } = useContext(PatAdmissionContext);
+  const [insurance_list, setInsuranceList] = useState<Array<any>>([]);
+
   const isLoading = false,
     disabled = false,
     saveDisable = false;
   //   const dropDownData: any = [];
   let dropDownData = insurance_list?.length ? insurance_list : [];
+
+  useEffect(() => {
+    const fieldNames = [
+      "primary_insurance_provider_id",
+      "primary_sub_id",
+      "primary_network_id",
+      "primary_network_office_id",
+      "primary_policy_num",
+      "primary_card_number",
+      "primary_effective_start_date",
+      "primary_effective_end_date",
+    ];
+    if (!isInsurance) {
+      fieldNames.map((item) => setValue(item, ""));
+      clearErrors(fieldNames);
+      setInsuranceList([]);
+    }
+  }, [isInsurance]); //eslint-disable-line
 
   const AddInsurance = () => {
     AlgaehSearch({
@@ -44,8 +64,27 @@ export default function insuranceDetails({
       columns: props.getsportlightSearch("Insurance")?.Insurance_field,
       placeHolder: "Insurance Name",
       onRowSelect: (row: any) => {
-        updateInsuranceState(row);
-        dropDownData = [row];
+        debugger;
+        // updateInsuranceState(row);
+        setInsuranceList([row]);
+        setValue("primary_insurance_provider_id", row?.insurance_provider_id);
+        setValue("primary_sub_id", row?.sub_insurance_provider_id);
+        setValue("primary_network_id", row?.network_id);
+        setInsuranceInfo({
+          primary_insurance_provider_id: row?.insurance_provider_id,
+          primary_sub_id: row?.sub_insurance_provider_id,
+          primary_network_id: row?.network_id,
+          primary_policy_num: row?.policy_number,
+          primary_network_office_id: row?.hims_d_insurance_network_office_id,
+        });
+        // setValue("primary_network_office_id", row?.network_office_id);
+        setValue("primary_policy_num", row?.policy_number);
+        setValue("effective_date", [
+          moment(row?.effective_end_date),
+          moment(row?.effective_start_date),
+        ]);
+        // setValue("primary_effective_end_date", row?.net_effective_start_date);
+        // dropDownData = [row];
         // setPatientDetails(row);
       },
     });
@@ -140,7 +179,7 @@ export default function insuranceDetails({
                                   onChange(selected);
                                   const [current] = dropDownData?.filter(
                                     (item: any) =>
-                                      item.insurance_provider_id == selected
+                                      item.insurance_provider_id === selected
                                   );
                                   setValue(
                                     "primary_insurance_provider_id",
@@ -154,11 +193,22 @@ export default function insuranceDetails({
                                     "primary_network_id",
                                     current?.network_id
                                   );
+
                                   setInsuranceInfo({
+                                    primary_insurance_provider_id:
+                                      current?.insurance_provider_id,
+                                    primary_sub_id:
+                                      current?.sub_insurance_provider_id,
+                                    primary_network_id: current?.network_id,
+                                    primary_policy_num: current?.policy_number,
                                     primary_network_office_id:
                                       current?.hims_d_insurance_network_office_id,
-                                    payer_id: current?.payer_id,
                                   });
+                                  // setInsuranceInfo({
+                                  //   primary_network_office_id:
+                                  //     current?.hims_d_insurance_network_office_id,
+                                  //   payer_id: current?.payer_id,
+                                  // });
                                   setValue(
                                     "primary_policy_num",
                                     current?.policy_number
@@ -347,7 +397,7 @@ export default function insuranceDetails({
 
                         <Controller
                           control={control}
-                          name="primary_effective_start_date"
+                          name="effective_date"
                           rules={{
                             required: {
                               value: isInsurance,

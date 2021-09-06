@@ -9,6 +9,8 @@ export function SingleCell({
   bed_desc,
   hims_adm_ward_header_id,
   ward_desc,
+  services_id,
+  service_type_id,
 }: {
   hims_adm_ward_detail_id: number;
   bed_short_name: string;
@@ -16,18 +18,13 @@ export function SingleCell({
   bed_desc: string;
   hims_adm_ward_header_id: number | string;
   ward_desc: string;
+  services_id: number;
+  service_type_id: number;
 }) {
-  // const {
-  //   selectedBedData,
-  //   setSelectedBedData,
-  //   // setWardHeaderData,
-  //   // wardHeaderData,
-  // } = useContext(BedManagementContext);
-  const { selectedBedData, setSelectedBedData } =
-    useContext(PatAdmissionContext);
+  const { selectedBedData, setSelectedBedData } = useContext(
+    PatAdmissionContext
+  );
 
-  // const [selectedBed, setSelectedBed] = useState(false);
-  // const [selectedBedData, setSelectedBedData] = useState<any>([]);
   return (
     <div>
       <span>
@@ -36,8 +33,6 @@ export function SingleCell({
 
       <div
         onClick={() => {
-          // console.log("data", selectedBedData);
-          // setSelectedBed(true);
           setSelectedBedData({
             hims_adm_ward_detail_id,
             hims_adm_ward_header_id,
@@ -45,6 +40,8 @@ export function SingleCell({
             bed_no,
             bed_desc,
             ward_desc,
+            services_id,
+            service_type_id,
           });
         }}
         className={`col-12 bedBox ${

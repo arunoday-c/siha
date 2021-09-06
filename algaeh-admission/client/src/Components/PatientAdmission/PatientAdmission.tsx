@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
 import "./PatientAdmission.scss";
 // import BreadCrumb from "../BreadCrumb/BreadCrumb.js";
@@ -12,8 +12,9 @@ import {
 import BreadCrumb from "Components/BreadCrumb";
 import InsuranceDetails from "./insuranceDetails";
 import BedDetails from "./bedDetails";
-// import BedManagement from "../BedManagement";
+import { PatAdmissionContext } from "./PatientAdmissionContext";
 
+// import BedManagement from "../BedManagement";
 const getPatientInsurance = async (inputdata: any) => {
   const { error, response } = await algaehAxios(
     "/patientRegistration/getPatientInsurance",
@@ -23,6 +24,17 @@ const getPatientInsurance = async (inputdata: any) => {
       method: "GET",
     }
   );
+  if (error) {
+    if (error.show === true) {
+      let extendedError: Error | any = error;
+      AlgaehMessagePop({
+        display: extendedError.response.data.message,
+        type: "error",
+      });
+      throw error;
+    }
+  }
+
   if (response.data.success === true) {
     return response.data.records;
   }
@@ -35,10 +47,17 @@ export default function PatientAdmission(props: any) {
 
   //   const [sub_department_id, setSubDepartment] = useState<any>(undefined);
   //   const [doctor_id, setDoctor] = useState<any>(undefined);
-  const [service_info, setServiceInfo] = useState<any>(undefined);
   const [isInsurance, setIsInsurance] = useState(false);
   const insuranceImgFront = useRef(null);
   const insuranceImgBack = useRef(null);
+  const {
+    selectedBedData,
+    insuranceInfo,
+    setServiceInfo,
+    sub_department_id,
+    doctor_id,
+  } = useContext(PatAdmissionContext);
+
   //   const [global_state, setGlobalState] = useState<any>({});
   //   const [patient_code, setPatientCode] = useState<any>(undefined);
 
@@ -108,10 +127,98 @@ export default function PatientAdmission(props: any) {
     });
   };
 
-  const updateInsuranceState = (data: any) => {
-    setInsuranceList((result) => {
-      result.push(data);
-      return [...result];
+  const NewPatientAdmission = async (data: any) => {
+    const { error, response } = await algaehAxios(
+      "/patAdmission/addPatienAdmission",
+      {
+        module: "admission",
+        method: "POST",
+        data: { ...data },
+      }
+    );
+    if (error) {
+      if (error.show === true) {
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
+      }
+    }
+
+    if (response.data.success) {
+      return response.data.records;
+    }
+  };
+
+  const getBillDetails = async (serviceInput: any) => {
+    debugger;
+    const { error, response } = await algaehAxios("/billing/getBillDetails", {
+      module: "billing",
+      method: "POST",
+      data: serviceInput,
+    });
+    if (error) {
+      if (error.show === true) {
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
+      }
+    }
+
+    if (response.data.success) {
+      return response.data.records;
+    }
+  };
+
+  const AdmitPatient = async () => {
+    debugger;
+    let serviceInput = [
+      {
+        insured: isInsurance === true ? "Y" : "N",
+        vat_applicable: "Y",
+        hims_d_services_id: selectedBedData.services_id,
+        primary_insurance_provider_id: insuranceInfo
+          ? insuranceInfo?.primary_insurance_provider_id
+          : null,
+        primary_network_office_id: insuranceInfo
+          ? insuranceInfo?.primary_network_office_id
+          : null,
+        primary_network_id: insuranceInfo
+          ? insuranceInfo?.primary_network_id
+          : null,
+      },
+    ];
+    getBillDetails(serviceInput).then((result) => {
+      let data = {
+        admission_type: "D",
+        patient_id: patient_details.hims_d_patient_id,
+        ward_id: selectedBedData.hims_adm_ward_header_id,
+        bed_id: selectedBedData.bed_no,
+        sub_department_id: sub_department_id,
+        provider_id: doctor_id,
+        insurance_provider_id: insuranceInfo
+          ? insuranceInfo.primary_insurance_provider_id
+          : null,
+        insurance_sub_id: insuranceInfo ? insuranceInfo.primary_sub_id : null,
+        network_id: insuranceInfo ? insuranceInfo.primary_network_id : null,
+        insurance_network_office_id: insuranceInfo
+          ? insuranceInfo.primary_network_office_id
+          : null,
+        policy_number: insuranceInfo ? insuranceInfo.primary_policy_num : null,
+        insurance_yesno: isInsurance === true ? "Y" : "N",
+        bed_details: result.billdetails[0],
+      };
+      NewPatientAdmission(data).then((result) => {
+        AlgaehMessagePop({
+          display: "Admitted Succesfully...",
+          type: "success",
+        });
+      });
     });
   };
 
@@ -344,7 +451,6 @@ export default function PatientAdmission(props: any) {
           props.props.getsportlightSearch("Insurance")?.Insurance_field
         }
         insurance_list={insurance_list}
-        updateInsuranceState={updateInsuranceState}
         isInsurance={isInsurance}
         setIsInsurance={setIsInsurance}
         control={control}
@@ -357,7 +463,7 @@ export default function PatientAdmission(props: any) {
       />
       <BedDetails useState={useState} />
 
-      {/* <div className="hptl-phase1-footer">
+      <div className="hptl-phase1-footer">
         <div className="row">
           <div className="col">
             <button
@@ -365,11 +471,9 @@ export default function PatientAdmission(props: any) {
               className="btn btn-primary"
               onClick={AdmitPatient}
             >
-              <AlgaehLabel
-                label={{ fieldName: "btn_save", returnText: true }}
-              />
+              <AlgaehLabel label={{ forceLabel: "Admit Patient" }} />
             </button>
-            <button
+            {/* <button
               type="button"
               className="btn btn-default"
               onClick={() => onClear(false)}
@@ -383,10 +487,10 @@ export default function PatientAdmission(props: any) {
               <AlgaehLabel
                 label={{ fieldName: "btn_clear", returnText: true }}
               />
-            </button>
+            </button> */}
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 }

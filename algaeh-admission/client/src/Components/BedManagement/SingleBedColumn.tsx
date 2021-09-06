@@ -12,10 +12,10 @@ function SingleBedColumn(props: any) {
             const {
               bed_desc,
               bed_short_name,
-              // bed_id,
               bed_no,
-              // service_name,
               hims_adm_ward_detail_id,
+              services_id,
+              service_type_id,
             } = data;
             return (
               <div key={hims_adm_ward_detail_id}>
@@ -26,6 +26,8 @@ function SingleBedColumn(props: any) {
                   bed_no={bed_no}
                   bed_desc={bed_desc}
                   ward_desc={item.ward_desc}
+                  services_id={services_id}
+                  service_type_id={service_type_id}
                 />
               </div>
             );
