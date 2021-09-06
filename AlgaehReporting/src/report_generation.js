@@ -20,7 +20,7 @@ import axios from "axios";
 import Excel from "exceljs/modern.browser";
 import utilitites from "algaeh-utilities/utilities";
 import { convertMilimetersToPixel } from "algaeh-utilities/reportConvetions";
-import { generatePDFReport } from "./hummus/index";
+// import { generatePDFReport } from "./hummus/index";
 // const chromePath =
 // chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
 
@@ -863,9 +863,10 @@ export default {
                               });
                               if (reportToPortal === "true") {
                                 const rptParameters = _inputParam.reportParams;
-                                const portal_patient_identity = rptParameters.find(
-                                  (f) => f.name === "patient_identity"
-                                ).value;
+                                const portal_patient_identity =
+                                  rptParameters.find(
+                                    (f) => f.name === "patient_identity"
+                                  ).value;
                                 const portal_service_id = rptParameters.find(
                                   (f) => f.name === "service_id"
                                 )?.value;
@@ -918,7 +919,10 @@ export default {
                               _mysql.releaseConnection();
                               res
                                 .status(400)
-                                .send({ error: "ERROR File does not exist" });
+                                .send({
+                                  error: "ERROR File does not exist",
+                                  filename: _inputParam.reportName,
+                                });
                             }
                           });
                         }
@@ -927,9 +931,8 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } = __non_webpack_require__(
-                      _supportingJS
-                    );
+                    const { executePDF } =
+                      __non_webpack_require__(_supportingJS);
 
                     executePDF({
                       mysql: _mysql,
@@ -980,11 +983,17 @@ export default {
                 })
                 .catch((error) => {
                   _mysql.releaseConnection();
-                  res.status(400).send({ error: JSON.stringify(error) });
+                  res.status(400).send({
+                    error: JSON.stringify(error),
+                    filename: _inputParam.reportName,
+                  });
                 });
             }
           } else {
-            res.status(400).send({ error: "No such report exists" });
+            res.status(400).send({
+              error: "No such report exists",
+              filename: _inputParam.reportName,
+            });
           }
         })
         .catch((error) => {
@@ -993,12 +1002,17 @@ export default {
             "Error in report table query execution : ",
             JSON.stringify(error)
           );
-          res.status(400).send({ error: JSON.stringify(error) });
+          res.status(400).send({
+            error: JSON.stringify(error),
+            filename: _inputParam.reportName,
+          });
         });
     } catch (e) {
       _mysql.releaseConnection();
       console.log("Error in try catch : ", JSON.stringify(error));
-      res.status(400).send({ error: JSON.stringify(e) });
+      res
+        .status(400)
+        .send({ error: JSON.stringify(e), filename: _inputParam.reportName });
     }
   },
   getReportMultiPrint: async (req, res, next) => {
@@ -1181,9 +1195,8 @@ export default {
                       );
 
                       if (fs.existsSync(_supportingJS)) {
-                        const { executePDF } = __non_webpack_require__(
-                          _supportingJS
-                        );
+                        const { executePDF } =
+                          __non_webpack_require__(_supportingJS);
                         executePDF({
                           mysql: _mysql,
                           inputs: _inputParam,
@@ -1574,9 +1587,10 @@ export default {
                                       0,
                                       onlyAlphabets.length - 1
                                     );
-                                    const lastcharacter = onlyAlphabets.charCodeAt(
-                                      onlyAlphabets.length - 1
-                                    );
+                                    const lastcharacter =
+                                      onlyAlphabets.charCodeAt(
+                                        onlyAlphabets.length - 1
+                                      );
 
                                     const numberOfCols =
                                       parseInt($(this).attr("colspan")) - 1;
@@ -1917,9 +1931,8 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } = __non_webpack_require__(
-                      _supportingJS
-                    );
+                    const { executePDF } =
+                      __non_webpack_require__(_supportingJS);
                     executePDF({
                       mysql: _mysql,
                       inputs: _inputOrders,
