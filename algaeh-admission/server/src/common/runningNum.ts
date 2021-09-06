@@ -15,11 +15,17 @@ function padString(
 export class RunningNumber<MdModel extends ModelStatic, T extends Transaction> {
   model?: MdModel;
   transaction?: T;
+  constructor(model_dt, transaction_dt) {
+    this.model = model_dt;
+    this.transaction = transaction_dt;
+  }
   async generateNumber(numGenCode: string): Promise<string | Error> {
+    const t = await this.transaction;
+
     const result = await this.model
       ?.findOne({
         where: {
-          numgen_codes: numGenCode,
+          numgen_code: numGenCode,
           record_status: "A",
         },
         attributes: [
@@ -32,18 +38,19 @@ export class RunningNumber<MdModel extends ModelStatic, T extends Transaction> {
           "intermediate_series_req",
           "preceding_zeros_req",
           "reset_slno_on_year_change",
+          "increment_by",
         ],
-        lock: this.transaction?.LOCK.UPDATE,
+        lock: t?.LOCK.UPDATE,
         raw: true,
-        transaction: this.transaction,
+        transaction: t,
       })
       .catch((error) => {
         throw error;
       });
+
     if (result) {
       const current_year = new Date().getFullYear().toString().substr(-2);
 
-      // let str = "";
       let new_number: number = 0;
       let complete_number = "";
       let {
@@ -57,11 +64,11 @@ export class RunningNumber<MdModel extends ModelStatic, T extends Transaction> {
         intermediate_series_req,
         reset_slno_on_year_change,
       }: any = result;
+
       if (intermediate_series_req === "Y") {
         if (current_year > intermediate_series) {
           intermediate_series = current_year;
-          // str = ", intermediate_series =" + current_year;
-          if (reset_slno_on_year_change == "Y") {
+          if (reset_slno_on_year_change === "Y") {
             postfix = 0;
           }
         }
@@ -80,7 +87,7 @@ export class RunningNumber<MdModel extends ModelStatic, T extends Transaction> {
         }
       } else {
         new_number = parseInt(postfix) + parseInt(increment_by);
-        if (preceding_zeros_req == "Y") {
+        if (preceding_zeros_req === "Y") {
           complete_number = prefix + numgen_seperator;
 
           complete_number = padString(
@@ -101,10 +108,10 @@ export class RunningNumber<MdModel extends ModelStatic, T extends Transaction> {
         },
         {
           where: {
-            numgen_codes: numGenCode,
+            numgen_code: numGenCode,
             record_status: "A",
           },
-          transaction: this.transaction,
+          transaction: t,
         }
       );
       return complete_number;

@@ -17,8 +17,11 @@ export async function addPatienAdmission(
     const input = req.body;
     //@ts-ignore
 
-    const _RunningNumber = new RunningNumber<hims_f_ip_numgen, t>();
-    console.log("admission_no");
+    const _RunningNumber = new RunningNumber<hims_f_ip_numgen, t>(
+      hims_f_ip_numgen,
+      t
+    );
+
     const admission_no = await _RunningNumber
       .generateNumber("ATD")
       .catch((error) => {

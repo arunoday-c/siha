@@ -44,6 +44,10 @@ hims_f_ip_numgen.init(
     pervious_num: {
       type: DataTypes.STRING(200),
     },
+    increment_by: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+    },
     preceding_zeros_req: {
       type: DataTypes.ENUM("Y", "N"),
       defaultValue: "Y",
@@ -66,11 +70,10 @@ hims_f_ip_numgen.init(
     tableName: "hims_f_ip_numgen",
   }
 );
-// (async () => {
-//   await hims_f_ip_numgen.sync({
-//     alter: true,
-//     logging: console.log,
-//   });
-// })();
+(async () => {
+  await hims_f_ip_numgen.sync({
+    alter: true,
+  });
+})();
 
 export default hims_f_ip_numgen;
