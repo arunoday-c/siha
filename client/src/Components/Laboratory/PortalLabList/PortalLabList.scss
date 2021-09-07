@@ -1,9 +1,28 @@
-#resultListEntryCntr {
+#portalLabHeadGrid {
+  margin: 10px 0;
   .newStickyGrid {
     .table-scroll {
-      min-height: 63vh;
-      max-height: 63vh;
+      min-height: 55vh !important;
+      max-height: 55vh !important;
       overflow: auto;
+    }
+  }
+}
+
+.portalLabDetailModal {
+  min-width: 50vw !important;
+  max-width: 50vw !important;
+  .ant-modal-body {
+    max-height: 65vh !important;
+    #portalLabDetailGrid {
+      margin: 10px 0;
+      .newStickyGrid {
+        .table-scroll {
+          min-height: 33vh !important;
+          max-height: 33vh !important;
+          overflow: auto;
+        }
+      }
     }
   }
 }

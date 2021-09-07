@@ -255,14 +255,9 @@ function PortalToHimsList() {
         <div className="row">
           <div className="col-lg-12">
             <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Portal Lab List</h3>
-                </div>
-              </div>
-              <div className="portlet-body" id="resultListEntryCntr">
+              <div className="portlet-body" id="portalLabHeadGrid">
                 <AlgaehDataGrid
-                  id="samplecollection_grid"
+                  // id="samplecollection_grid"
                   columns={[
                     {
                       label: (
@@ -284,7 +279,7 @@ function PortalToHimsList() {
                         );
                       },
                       others: {
-                        maxWidth: 50,
+                        width: 50,
                         filterable: false,
                         sortable: false,
                       },
@@ -301,7 +296,7 @@ function PortalToHimsList() {
                     // },
                     {
                       fieldName: "view_package_details",
-                      label: <AlgaehLabel label={{ forceLabel: "Actions" }} />,
+                      label: <AlgaehLabel label={{ forceLabel: "View" }} />,
 
                       disabled: true,
                       others: {
@@ -383,7 +378,7 @@ function PortalToHimsList() {
                       others: {
                         width: 150,
                         resizable: false,
-                        style: { textAlign: "left" },
+                        style: { textAlign: "center" },
                       },
                     },
                   ]}
@@ -394,6 +389,7 @@ function PortalToHimsList() {
                   }}
                   isFilterable={true}
                   pagination={true}
+                  pageOptions={{ rows: 50, page: 1 }}
                   noDataText="No data available for selected period"
                 />
               </div>
