@@ -94,7 +94,30 @@ const accomodationProvided = ($this, e) => {
     [e.target.name]: e.target.checked ? "Y" : "N",
   });
 };
+const changeChecks = ($this, e) => {
+  e.persist();
+  let name = e.target.name;
+  switch (e.target.name) {
+    case "followup_alert_required":
+      $this.setState(
+        {
+          followup_alert_required: !$this.state.followup_alert_required,
+        },
+        () => {
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            [name]: $this.state.followup_alert_required ? "Y" : "N",
+          });
+        }
+      );
+      break;
 
+    default:
+      this.setState({
+        [name]: "Y",
+      });
+      break;
+  }
+};
 const datehandle = ($this, ctrl, e) => {
   let _notice = {};
 
@@ -226,4 +249,5 @@ export {
   bankEventhandle,
   otEntitleHandaler,
   ondiscountChange,
+  changeChecks,
 };

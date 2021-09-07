@@ -38,7 +38,7 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Allergies from "../Allergies/Allergies";
 import Examination from "../Examination/Examination";
 import { Validations } from "./Validation";
-// import { setGlobal } from "../../../utils/GlobalFunctions";
+import { setGlobal } from "../../../utils/GlobalFunctions";
 import "./basicSubjective.scss";
 import _ from "lodash";
 import moment from "moment";
@@ -46,7 +46,7 @@ import { Dimmer, Loader } from "semantic-ui-react";
 import { PatientAttachments } from "../../PatientRegistrationNew/PatientAttachment";
 import { printPrescription } from "../PatientProfileHandlers";
 import { AlgaehModal, MainContext } from "algaeh-react-components";
-
+import swal from "sweetalert2";
 class BasicSubjective extends Component {
   constructor(props) {
     super(props);
@@ -81,6 +81,7 @@ class BasicSubjective extends Component {
       no_of_days: 0,
       dosage: 1,
       med_units: "",
+      dirty: false,
     };
     this.isMale = Window?.global?.gender === "Male" ? true : false; // String(Window["global"]["gender"]) === "Male" ? true : false;
     this.chiefComplaintMaxLength = 1500;
@@ -131,6 +132,27 @@ class BasicSubjective extends Component {
 
   deletePrecription(medicine, context) {
     SubjectiveHandler().deletePrecription(this, medicine, context);
+  }
+  openConfirmFollowUp() {
+    swal({
+      title: `Are you sure you don't to followup ?`,
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willDelete) => {
+      if (willDelete.value) {
+        this.setState({
+          openMedicaldata: !this.state.openMedicaldata,
+        });
+      } else {
+        setGlobal({});
+
+        this.props.history.push("/DoctorsWorkbench");
+      }
+    });
   }
 
   openTab(e) {
@@ -333,6 +355,7 @@ class BasicSubjective extends Component {
       },
     });
   }
+
   componentWillUnmount() {
     const err = Validations(this);
     if (!err) {
@@ -384,17 +407,17 @@ class BasicSubjective extends Component {
   }
 
   showMedicalData() {
-    const err = Validations(this);
-    if (!err) {
-      if (this.state.hims_f_episode_chief_complaint_id === null) {
-        SubjectiveHandler().addChiefComplainToPatient(this);
-      } else {
-        SubjectiveHandler().updatePatientChiefComplaints(this);
-      }
-      this.setState({
-        openMedicaldata: !this.state.openMedicaldata,
-      });
-    }
+    // const err = Validations(this);
+    // if (!err) {
+    //   if (this.state.hims_f_episode_chief_complaint_id === null) {
+    //     SubjectiveHandler().addChiefComplainToPatient(this);
+    //   } else {
+    //     SubjectiveHandler().updatePatientChiefComplaints(this);
+    //   }
+    this.setState({
+      openMedicaldata: !this.state.openMedicaldata,
+    });
+    // }
   }
 
   showDelta() {
@@ -735,6 +758,10 @@ class BasicSubjective extends Component {
   static contextType = MainContext;
   componentDidMount() {
     const userToken = this.context.userToken;
+    setGlobal({
+      openFollowUp: () => this.openConfirmFollowUp(),
+    });
+
     this.setState({
       portal_exists: userToken.portal_exists,
       hospital_id: userToken.hospital_id,
@@ -1133,9 +1160,8 @@ class BasicSubjective extends Component {
                                     value: this.state.lmp_days,
                                     disabled: !this.state.isPregnancy,
                                     events: {
-                                      onChange: this.ChangeEventHandler.bind(
-                                        this
-                                      ),
+                                      onChange:
+                                        this.ChangeEventHandler.bind(this),
                                     },
                                   }}
                                 />

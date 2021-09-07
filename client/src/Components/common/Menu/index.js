@@ -11,6 +11,7 @@ import localSrc from "./algaehlogo.png";
 import { i18next } from "algaeh-react-components";
 import { Badge } from "antd";
 import { HelpCenter } from "../HelpCenter";
+// import { newAlgaehApi } from "../../../hooks";
 
 function NavBars(props) {
   const {
@@ -31,7 +32,22 @@ function NavBars(props) {
   const [openHelp, setOpenHelp] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(undefined);
   const [count, setCount] = useState(null);
+  // const [show, setshow] = useState();
 
+  //   function checkFollowUP(data){
+  //     newAlgaehApi({
+
+  //     }).then((response) =>{
+  // if(response.data.success){
+  //   if(response.data.result.length > 0){
+  //     location.state = null;
+  //                 history.goBack();
+  //   }else{
+
+  //   }
+  // }
+  //     })
+  //   }
   useEffect(() => {
     // if (is_authenticated) {
     //   getItem("menu").then((result) => {
@@ -106,7 +122,7 @@ function NavBars(props) {
   function addDefaultSrc(e) {
     e.target.src = localSrc;
   }
-  const { product_name } = userToken;
+  const { product_name, followup_alert_required } = userToken;
   return (
     <>
       <nav className="navbar fixed-top navbar-expand-lg navbar-dark mainTheme">
@@ -114,8 +130,23 @@ function NavBars(props) {
           <div
             className="sideBackButton"
             onClick={() => {
-              location.state = null;
-              history.goBack();
+              if (location.state["EHR-STD"] === "PatientProfile") {
+                if (
+                  Window.global.followUpRequired &&
+                  followup_alert_required === "Y"
+                ) {
+                  Window.global.openFollowUp();
+
+                  console.log(Window.global);
+                  return;
+                } else {
+                  location.state = null;
+                  history.goBack();
+                }
+              } else {
+                location.state = null;
+                history.goBack();
+              }
             }}
           >
             <i className="fas fa-angle-double-left  fa-lg" />

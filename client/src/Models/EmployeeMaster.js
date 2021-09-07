@@ -40,6 +40,7 @@ export default {
       sub_department_id: null,
       religion_id: null,
       overtime_group_id: null,
+      followup_alert_required: "N",
 
       appointment_type: null,
       employee_type: null,
