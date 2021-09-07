@@ -190,7 +190,7 @@ export default function BedStatus(Props: any) {
     bedStatusSetUp();
     // eslint-disable-next-line
     // getBedService();
-  }, []);
+  }, []); //eslint-disable-line
   // const onEdit = (row: Row) => {
   //   reset({ ...row });
   //   setCurrentRow(row);

@@ -268,14 +268,144 @@ export async function getWardHeaderData(
           include: [
             {
               model: hims_adm_ip_bed,
-              attributes: ["bed_desc", "bed_short_name"],
-
+              attributes: ["bed_desc", "bed_short_name", "services_id"],
               as: "IP",
-
               include: [
                 {
                   model: hims_d_services,
-                  attributes: ["service_name"],
+                  attributes: ["service_name", "service_type_id"],
+                  as: "S",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+
+      where: {
+        ...whereCondition,
+      },
+      // nest: false,
+      // raw: true,
+      // group: ["hims_adm_ward_header_id"],
+    });
+    // req["records"] = result;
+
+    let arrangedData = _.chain(result)
+      .groupBy((g) => g.hims_adm_ward_header_id)
+      .map((detail, key) => {
+        const {
+          ward_desc,
+          hims_adm_ward_header_id,
+          ward_type,
+          ward_short_name,
+          WD,
+        } = _.head(detail);
+        const item: {
+          // hims_adm_ward_header_id: number;
+          bed_id: number;
+          bed_no: number;
+          status: string;
+          bed_desc: string;
+          services_id: number;
+          bed_short_name: string;
+          service_name: string;
+          service_type_id: number;
+          hims_adm_ward_detail_id: number;
+          isInserted: number;
+        } = WD.map((item: any) => {
+          // const { WD } = item;
+          // return WD.map((wardDetails) => {
+          const { bed_desc, bed_short_name, S, services_id } = item.IP;
+
+          return {
+            // hims_adm_ward_header_id: item.hims_adm_ward_header_id,
+            bed_id: item.bed_id,
+            bed_no: item.bed_no,
+            status: item.status,
+            service_name: S?.service_name ?? undefined,
+            service_type_id: S?.service_type_id ?? undefined,
+            bed_desc: bed_desc ? bed_desc : undefined,
+            services_id: services_id ? services_id : undefined,
+            bed_short_name: bed_short_name ? bed_short_name : undefined,
+            hims_adm_ward_detail_id: item.hims_adm_ward_detail_id,
+            isInserted: 1,
+          };
+          // });
+        });
+
+        return {
+          groupType: key,
+          hims_adm_ward_header_id: hims_adm_ward_header_id,
+          ward_short_name: ward_short_name,
+          ward_type: ward_type,
+          ward_desc: ward_desc,
+
+          groupDetail: item,
+        };
+      })
+      .value();
+    // console.log(result, "result");
+    req["records"] = arrangedData;
+
+    next();
+    // })
+    // .catch((e) => {
+    //   throw e;
+    // });
+    // req["records"] = result;
+    // next();
+  } catch (e) {
+    next(e);
+    // _mysql.releaseConnection();
+
+    // } finally {
+    //   _mysql.releaseConnection();
+    // }
+  }
+}
+
+export async function getWardDataBedManagement(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    let whereCondition = {};
+    if (req.query.hims_adm_ward_header_id) {
+      whereCondition = {
+        hims_adm_ward_header_id: req.query.hims_adm_ward_header_id,
+      };
+    }
+    const result = await hims_adm_ward_header.findAll({
+      attributes: [
+        "hims_adm_ward_header_id",
+        "ward_short_name",
+        "ward_desc",
+        "ward_type",
+      ],
+
+      include: [
+        {
+          model: hims_adm_ward_detail,
+          attributes: [
+            "hims_adm_ward_detail_id",
+            "ward_header_id",
+            "bed_id",
+            "bed_no",
+            "status",
+          ],
+          as: "WD",
+
+          include: [
+            {
+              model: hims_adm_ip_bed,
+              attributes: ["bed_desc", "bed_short_name", "services_id"],
+              as: "IP",
+              include: [
+                {
+                  model: hims_d_services,
+                  attributes: ["service_name", "service_type_id"],
                   as: "S",
                 },
               ],
@@ -347,21 +477,11 @@ export async function getWardHeaderData(
     req["records"] = arrangedData;
 
     next();
-    // })
-    // .catch((e) => {
-    //   throw e;
-    // });
-    // req["records"] = result;
-    // next();
   } catch (e) {
     next(e);
-    // _mysql.releaseConnection();
-
-    // } finally {
-    //   _mysql.releaseConnection();
-    // }
   }
 }
+
 export async function addWardHeader(
   req: Request,
   res: Response,

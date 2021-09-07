@@ -1,10 +1,10 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../connection";
-class hims_f_admission_numgen extends Model {}
+class hims_f_ip_numgen extends Model {}
 
-hims_f_admission_numgen.init(
+hims_f_ip_numgen.init(
   {
-    hims_f_admission_numgen_id: {
+    hims_f_ip_numgen_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -44,6 +44,10 @@ hims_f_admission_numgen.init(
     pervious_num: {
       type: DataTypes.STRING(200),
     },
+    increment_by: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+    },
     preceding_zeros_req: {
       type: DataTypes.ENUM("Y", "N"),
       defaultValue: "Y",
@@ -63,14 +67,13 @@ hims_f_admission_numgen.init(
   },
   {
     sequelize: db,
-    tableName: "hims_f_admission_numgen",
+    tableName: "hims_f_ip_numgen",
   }
 );
 (async () => {
-  await hims_f_admission_numgen.sync({
+  await hims_f_ip_numgen.sync({
     alter: true,
-    logging: console.log,
   });
 })();
 
-export default hims_f_admission_numgen;
+export default hims_f_ip_numgen;

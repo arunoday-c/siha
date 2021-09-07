@@ -4,20 +4,7 @@ import BedManagement from "../BedManagement/index";
 import { PatAdmissionContext } from "./PatientAdmissionContext";
 const { TabPane } = Tabs;
 
-// const getPatientInsurance = async (key, { patient_id }) => {
-//   const res = await newAlgaehApi({
-//     uri: "/patientRegistration/getPatientInsurance",
-//     module: "frontDesk",
-//     data: { patient_id },
-//     method: "GET",
-//   });
-//   return res?.data?.records;
-// };
-
 export default function BedDetails(props: any) {
-  // const [bed_details, setBedDetails] = useState({
-  //   patient_name: undefined,
-  // });
   const { selectedBedData } = useContext(PatAdmissionContext);
   const [visible, setVisible] = useState(false);
 

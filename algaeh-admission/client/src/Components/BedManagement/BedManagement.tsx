@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import "./BedManagement.scss";
 import {
-  AlgaehAutoComplete,
+  // AlgaehAutoComplete,
   algaehAxios,
   AlgaehMessagePop,
   // MainContext,
-  AlgaehLabel,
+  // AlgaehLabel,
 } from "algaeh-react-components";
 import BedColumn from "./BedColumn";
 import { BedManagementContext } from "./BedMangementContext";
@@ -16,7 +16,7 @@ export default function BedManagement(props: any) {
   const { bedStatusData, setBedStatusData } = useContext(BedManagementContext);
   useEffect(() => {
     bedStatusSetUp();
-  }, []);
+  }, []); //eslint-disable-line
 
   const bedStatusSetUp = async () => {
     const { response, error } = await algaehAxios(
