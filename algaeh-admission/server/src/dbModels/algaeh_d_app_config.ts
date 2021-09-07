@@ -1,11 +1,10 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../connection";
-import { dateConversions, userDetails } from "./common";
-class hims_f_patient_encounter extends Model {}
+class algaeh_d_app_config extends Model {}
 
-hims_f_patient_encounter.init(
+algaeh_d_app_config.init(
   {
-    hims_f_patient_encounter_id: {
+    algaeh_d_app_config_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -28,13 +27,11 @@ hims_f_patient_encounter.init(
       type: DataTypes.ENUM("O", "I"),
       defaultValue: "I",
     },
-    ...userDetails,
   },
   {
     sequelize: db,
-    tableName: "hims_f_patient_encounter",
-    ...dateConversions,
+    tableName: "algaeh_d_app_config",
   }
 );
 
-export default hims_f_patient_encounter;
+export default algaeh_d_app_config;

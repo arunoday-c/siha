@@ -37,6 +37,27 @@ hims_adm_atd_admission.init(
         notEmpty: true,
       },
     },
+    age_in_years: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    age_in_months: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    age_in_days: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     ward_id: {
       type: DataTypes.INTEGER,
       allowNull: false,

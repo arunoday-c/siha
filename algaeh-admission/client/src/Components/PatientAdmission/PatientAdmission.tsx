@@ -197,6 +197,7 @@ export default function PatientAdmission(props: any) {
       let data = {
         admission_type: "D",
         patient_id: patient_details.hims_d_patient_id,
+        date_of_birth: patient_details.date_of_birth,
         ward_id: selectedBedData.hims_adm_ward_header_id,
         bed_id: selectedBedData.bed_no,
         sub_department_id: sub_department_id,
