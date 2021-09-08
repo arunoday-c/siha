@@ -1,5 +1,6 @@
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
 import moment from "moment";
+import { setGlobal } from "../../../../utils/GlobalFunctions";
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -77,6 +78,7 @@ const addFollowUp = ($this) => {
             type: "success",
           });
         }
+        setGlobal({ followUpRequired: false });
 
         $this.setState(
           {
