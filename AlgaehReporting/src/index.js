@@ -75,9 +75,29 @@ app.use("/barcode", (req, res) => {
     bwipjs(req, res);
   }
 });
+app.use("/getImage/:image", (req, res) => {
+  const { image } = req.params;
+
+  if (image) {
+    const filePath = path.join(
+      process.cwd(),
+      "algaeh_report_tool",
+      "templates",
+      "images",
+      image
+    );
+    res.writeHead(200);
+    const _fs = fs.createReadStream(filePath);
+    _fs.pipe(res);
+  } else {
+    res.writeHead(400, { "Content-Type": "text/plain" });
+    res.write("No such file exist");
+  }
+});
 app.use((req, res, next) => {
   const xBypassUser = "algaeh";
   const xBypassPassword = "alg_hea2018";
+
   if (
     req.headers["x-bypass-user"] &&
     req.headers["x-bypass-password"] &&
