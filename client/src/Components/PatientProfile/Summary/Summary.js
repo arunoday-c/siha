@@ -167,6 +167,8 @@ class Summary extends Component {
         ? Enumerable.from(this.state.patientEpisode).firstOrDefault()
         : {};
 
+    // console.log("patient details=== ", this.state.patientEpisode, _pat_episode);
+
     return (
       <div id="patientSummary">
         <div className="row">
@@ -177,9 +179,10 @@ class Summary extends Component {
                 <p>Not recorded</p>
               ) : (
                 <p>
-                  Patient {_pat_episode.patient_name}, {_pat_episode.age} Yrs/
-                  {_pat_episode.gender},<br />
-                  visited {_pat_episode.sub_department_name} Department on{" "}
+                  Patient {_pat_episode.patient_name}, {_pat_episode.age}Y{" "}
+                  {_pat_episode.age_in_months}m {_pat_episode.age_in_days}d/
+                  {_pat_episode.gender}, visited{" "}
+                  {_pat_episode.sub_department_name} Department on{" "}
                   {_pat_episode.visit_date} for the chief complaint of{" "}
                   <b>{_pat_episode.comment}</b> from {_pat_episode.onset_date}.
                 </p>

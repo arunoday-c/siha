@@ -77,7 +77,7 @@ export async function patientBillGeneration(req, res, next) {
           and SI.insurance_provider_id =INN.insurance_provider_id 
           inner join hims_d_insurance_network_office as INO on INO.network_id=INN.hims_d_insurance_network_id
             where upper(SI.user_id)=upper(?);
-            select hims_d_patient_id from hims_f_patient where primary_id_no=?`,
+            select hims_d_patient_id,patient_code from hims_f_patient where primary_id_no=?`,
             values: [insurance_user, patient_identity],
             printQuery: true,
           })
@@ -88,6 +88,7 @@ export async function patientBillGeneration(req, res, next) {
         const patientTable = _.head(response[1]);
         const tel_code = "+" + mobile_no.replace("+", "").substring(0, 3);
         const contact_number = mobile_no.substring(3, 12);
+        const _patient_code = patientTable?.patient_code ?? patient_code;
         const insertData = {
           title_id,
           full_name: patient_name,
@@ -110,7 +111,7 @@ export async function patientBillGeneration(req, res, next) {
           primary_effective_start_date: insuranceSub?.effective_start_date,
           primary_effective_end_date: insuranceSub?.effective_end_date,
           visit_type: visitType?.hims_d_visit_type_id,
-          patient_code,
+          patient_code: _patient_code,
           hims_d_patient_id: patientTable?.hims_d_patient_id,
           hims_f_patient_id: patientTable?.hims_d_patient_id,
           patient_id: patientTable?.hims_d_patient_id,
@@ -149,7 +150,7 @@ export async function patientBillGeneration(req, res, next) {
           ],
         };
         let registrationResponse = undefined;
-        if (!patient_code || patient_code === "") {
+        if (!_patient_code || _patient_code === "") {
           registrationResponse = await axios
             .post(
               `http://localhost:3001/api/v1/frontDesk/add`,

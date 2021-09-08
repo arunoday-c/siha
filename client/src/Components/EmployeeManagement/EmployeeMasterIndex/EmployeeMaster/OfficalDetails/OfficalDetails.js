@@ -25,6 +25,7 @@ import { bindActionCreators } from "redux";
 import { getCookie } from "../../../../../utils/algaehApiCall";
 import MaskedInput from "react-maskedinput";
 import { AlgaehSecurityComponent } from "algaeh-react-components";
+
 class OfficalDetails extends Component {
   constructor(props) {
     super(props);
@@ -616,6 +617,7 @@ class OfficalDetails extends Component {
                           />
                         </span>
                       </label>
+
                       <div className="row">
                         {this.state.entitled_daily_ot === "Y" ? (
                           <AlagehAutoComplete
@@ -645,6 +647,26 @@ class OfficalDetails extends Component {
                         ) : null}
                       </div>
                     </div>
+                    {_isDoctor === "Y" ? (
+                      <div className="col-6 form-group">
+                        <label>FollowUp Alert Required</label>
+                        <div className="customCheckbox">
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="followup_alert_required"
+                              checked={
+                                this.state.followup_alert_required === "Y"
+                                  ? true
+                                  : false
+                              }
+                              onChange={otEntitleHandaler.bind(this, this)}
+                            />
+                            <span>Yes</span>
+                          </label>
+                        </div>
+                      </div>
+                    ) : null}
                   </React.Fragment>
                 ) : null}
                 {this.state.HIMS_Active === true ? (
@@ -1010,6 +1032,7 @@ class OfficalDetails extends Component {
                     />
                   )}
                 </div>
+
                 <AlgaehSecurityComponent componentCode="COM_BANK_DETLS">
                   <>
                     <h5>

@@ -1,4 +1,5 @@
 import React from "react";
+import "./PortalLabList.scss";
 import { useQuery } from "react-query";
 import {
   AlgaehModal,
@@ -40,64 +41,49 @@ function PortalServiceDetailModal({ visible, onClose, rowData }) {
   }
   return (
     <AlgaehModal
-      title={"Portal Services For Patient List"}
+      title={"Requested Services"}
       visible={visible}
       mask={true}
       maskClosable={true}
       onCancel={onClose}
-      footer={[<button onClick={onClose}>Close</button>]}
-      width={720}
-      // footer={null}
-
-      // class={this.state.lang_sets}
+      footer={[
+        <button onClick={onClose} className="btn btn-default">
+          Close
+        </button>,
+      ]}
+      // width={720}
+      className={`algaehNewModal portalLabDetailModal`}
     >
-      {/* <Spin spinning={}> */}
       <div className="col popupInner">
         <div className="row">
-          <div className="col-8">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Service List </h3>
-                </div>
-                <div className="actions"></div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-12">
-                    <div id="">
-                      <AlgaehDataGrid
-                        className=""
-                        columns={[
-                          {
-                            fieldName: "package_detail_service_name",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Service Name" }}
-                              />
-                            ),
-                          },
-                          // {
-                          //   fieldName: "full_name",
-                          //   label: (
-                          //     <AlgaehLabel
-                          //       label={{ forceLabel: "Patient Name" }}
-                          //     />
-                          //   ),
-                          // },
-                        ]}
-                        data={serviceData || []}
-                        pagination={true}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <div className="col-12">
+            <div id="portalLabDetailGrid">
+              <AlgaehDataGrid
+                className=""
+                columns={[
+                  {
+                    fieldName: "package_detail_service_name",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Service Name" }} />
+                    ),
+                    others: {
+                      // Width: 120,
+                      style: { textAlign: "left" },
+                    },
+                  },
+                ]}
+                data={serviceData || []}
+                // pagination={false}
+                pagination={false}
+                // editable
+                // actionsStyle={{width:100}}
+                pageOptions={{ rows: 40, page: 1 }}
+                // isFilterable={true}
+              />
             </div>
-          </div>{" "}
+          </div>
         </div>
       </div>
-      {/* </Spin> */}
     </AlgaehModal>
   );
 }

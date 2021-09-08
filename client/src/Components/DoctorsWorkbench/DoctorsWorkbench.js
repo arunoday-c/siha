@@ -200,47 +200,60 @@ class DoctorsWorkbench extends Component {
               visit_date: this.state.activeDateHeader,
             });
           }
-
-          setGlobal({
-            vitals_mandatory: data.vitals_mandatory,
-            "EHR-STD": "PatientProfile",
-            current_patient: data.patient_id,
-            episode_id: data.episode_id,
-            visit_id: data.visit_id,
-            encounter_id: response.data.records.encounter_id,
-            provider_id: data.provider_id,
-            department_type: data.department_type,
-            gender: data.gender,
-            sub_department_id: data.sub_department_id,
-          });
-          setCookie("ScreenName", "PatientProfile");
-          history.push({
-            pathname: "/PatientProfile",
-            state: {
-              vitals_mandatory: data.vitals_mandatory,
-              "EHR-STD": "PatientProfile",
-              current_patient: data.patient_id,
-              episode_id: data.episode_id,
-              visit_id: data.visit_id,
-              encounter_id: response.data.records.encounter_id,
-              provider_id: data.provider_id,
-              department_type: data.department_type,
-              gender: data.gender,
-              sub_department_id: data.sub_department_id,
+          algaehApiCall({
+            uri: "/doctorsWorkBench/getFollowUp",
+            method: "GET",
+            data: { patient_id: data.patient_id },
+            onSuccess: (response) => {
+              if (response.data.success) {
+                setGlobal({
+                  vitals_mandatory: data.vitals_mandatory,
+                  "EHR-STD": "PatientProfile",
+                  current_patient: data.patient_id,
+                  episode_id: data.episode_id,
+                  visit_id: data.visit_id,
+                  encounter_id: response.data.records.encounter_id,
+                  provider_id: data.provider_id,
+                  department_type: data.department_type,
+                  gender: data.gender,
+                  sub_department_id: data.sub_department_id,
+                  followUpRequired:
+                    response.data.records.length > 0 ? false : true,
+                });
+                setCookie("ScreenName", "PatientProfile");
+                history.push({
+                  pathname: "/PatientProfile",
+                  state: {
+                    vitals_mandatory: data.vitals_mandatory,
+                    "EHR-STD": "PatientProfile",
+                    current_patient: data.patient_id,
+                    episode_id: data.episode_id,
+                    visit_id: data.visit_id,
+                    encounter_id: response.data.records.encounter_id,
+                    provider_id: data.provider_id,
+                    department_type: data.department_type,
+                    gender: data.gender,
+                    sub_department_id: data.sub_department_id,
+                    followUpRequired:
+                      response.data.records.length > 0 ? false : true,
+                    // openFollowUpModal:response.data.records.length > 0?this.setState({})
+                  },
+                });
+                // document.getElementById("ehr-router").click();
+                // setGlobal(
+                //   {
+                //     "EHR-STD": "PatientProfile",
+                //     current_patient: patient_id,
+                //     episode_id: patient_encounter_id,
+                //     case_type: "OP"
+                //   },
+                //   () => {
+                //     document.getElementById("ehr-router").click();
+                //   }
+                // );
+              }
             },
           });
-          // document.getElementById("ehr-router").click();
-          // setGlobal(
-          //   {
-          //     "EHR-STD": "PatientProfile",
-          //     current_patient: patient_id,
-          //     episode_id: patient_encounter_id,
-          //     case_type: "OP"
-          //   },
-          //   () => {
-          //     document.getElementById("ehr-router").click();
-          //   }
-          // );
         }
       },
     });
@@ -330,7 +343,7 @@ class DoctorsWorkbench extends Component {
 
       if (records) {
         this.setState({ ...records }, () => {
-          // this.loadListofData();
+          this.loadListofData();
         });
         persistStorageOnRemove();
       } else {

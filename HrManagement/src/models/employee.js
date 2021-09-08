@@ -363,13 +363,13 @@ export default {
             marital_status,present_address,present_address2,present_pincode,present_city_id,\
             present_state_id,present_country_id,permanent_address,permanent_address2,permanent_pincode,\
             permanent_city_id,permanent_state_id,permanent_country_id,isdoctor,license_number, \
-            date_of_joining,appointment_type,employee_type,reliving_date,notice_period,date_of_resignation,\
+            date_of_joining,appointment_type,employee_type,followup_alert_required,reliving_date,notice_period,date_of_resignation,\
             company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
             accomodation_provided,hospital_id,sub_department_id,overtime_group_id,employee_bank_id,services_id,\
             employee_group_id, reporting_to_id, employee_designation_id, entitled_daily_ot, employee_category,\
             gratuity_encash,identity_type_id, identity_no, agency_id, service_dis_percentage,service_credit_percentage,\
             created_date,created_by,updated_date,updated_by,eos_id,standard_work_hours,ramzan_work_hours) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.employee_code,
               input.full_name,
@@ -402,6 +402,7 @@ export default {
               input.date_of_joining,
               input.appointment_type,
               input.employee_type,
+              input.followup_alert_required,
               input.reliving_date,
               input.notice_period,
               input.date_of_resignation,
@@ -498,7 +499,7 @@ export default {
               present_city_id=?, present_state_id=?, present_country_id=?, permanent_address=?,\
               permanent_address2=?, permanent_pincode=?, permanent_city_id=?, permanent_state_id=?,\
               permanent_country_id=?, isdoctor=?, license_number=?, date_of_joining=?, appointment_type=?,\
-              employee_type=?, reliving_date=?, notice_period=?, date_of_resignation=?, company_bank_id=?,\
+              employee_type=?,followup_alert_required=?, reliving_date=?, notice_period=?, date_of_resignation=?, company_bank_id=?,\
               employee_bank_name=?, employee_bank_ifsc_code=?,employee_account_number=?,mode_of_payment=?,\
               accomodation_provided=?,hospital_id=?,gross_salary=?,total_earnings=?,total_deductions=?,\
               total_contributions=?, net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,\
@@ -539,6 +540,7 @@ export default {
               input.date_of_joining,
               input.appointment_type,
               input.employee_type,
+              input.followup_alert_required,
               input.reliving_date,
               input.notice_period,
               input.date_of_resignation,
