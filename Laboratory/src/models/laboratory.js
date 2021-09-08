@@ -796,7 +796,7 @@ const labModal = {
           send_out_test: s.send_out_test === "Y" ? "Y" : "N",
           credit_order: parseFloat(req.body.credit_amount) > 0 ? "Y" : "N",
         };
-      });
+      });      
 
       if (labServices.length > 0) {
         const IncludeValues = [
@@ -2890,7 +2890,7 @@ export async function updateLabSampleStatus(req, res, next) {
   try {
     let input = { ...req.body };
 
-    console.log("input", input);
+    // console.log("input", input);
     let collected = ",";
     let strHisQry = "";
     if (input.status == "R") {
@@ -2999,7 +2999,7 @@ export async function updateLabSampleStatus(req, res, next) {
         //   }
         // });
       } else {
-        console.log("req.connection", req.connection);
+        // console.log("req.connection", req.connection);
         if (req.connection == null) {
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
@@ -3081,8 +3081,8 @@ export async function updateLabSampleStatus(req, res, next) {
         });
 
         // .then((ord_analytes) => {
-        console.log("req.connection", req.connection);
-        console.log("req.preventNext", req.preventNext);
+        // console.log("req.connection", req.connection);
+        // console.log("req.preventNext", req.preventNext);
         if (req.connection == null) {
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
@@ -3347,7 +3347,7 @@ export async function createPCRBatch(req, res, next) {
               }
               Promise.all(collection_done)
                 .then(() => {
-                  console.log("Promise", batch_number);
+                  // console.log("Promise", batch_number);
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.records = { batch_number };
