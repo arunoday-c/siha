@@ -343,7 +343,7 @@ class DoctorsWorkbench extends Component {
 
       if (records) {
         this.setState({ ...records }, () => {
-          // this.loadListofData();
+          this.loadListofData();
         });
         persistStorageOnRemove();
       } else {
