@@ -488,6 +488,26 @@
       }
     ]
   },
+  "patientAdmission": {
+    "admission": [
+      {
+        "fieldName": "admission_number",
+        "label": "Admission Number"
+      },
+      {
+        "fieldName": "primary_id_no",
+        "label": "Primary ID No."
+      },
+      {
+        "fieldName": "patient_code",
+        "label": "Patient Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Name"
+      }
+    ]
+  },
   "Insurance": {
     "InvoiceGen": [
       {

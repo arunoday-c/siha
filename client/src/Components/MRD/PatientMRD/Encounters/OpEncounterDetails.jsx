@@ -503,13 +503,13 @@ export default function OPEncounterDetails({
       },
     });
   };
-  const getPatientPakages = (visit_id, patient_id) => {
+  const getPatientPakages = (visit_id) => {
     algaehApiCall({
       uri: "/orderAndPreApproval/getPatientPackage",
       method: "GET",
       data: {
         package_visit_type: "ALL",
-        patient_id: patient_id,
+        patient_id,
         visit_id: visit_id,
       },
       // cancelRequestId: "getPatientInvestigation",

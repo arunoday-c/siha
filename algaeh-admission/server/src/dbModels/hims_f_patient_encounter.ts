@@ -17,6 +17,13 @@ hims_f_patient_encounter.init(
         notEmpty: true,
       },
     },
+    episode_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     provider_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -28,6 +35,12 @@ hims_f_patient_encounter.init(
       type: DataTypes.ENUM("O", "I"),
       defaultValue: "I",
     },
+    payment_type: {
+      type: DataTypes.ENUM("S", "I"),
+      defaultValue: "S",
+    },
+    ip_id: { type: DataTypes.INTEGER },
+    age: { type: DataTypes.INTEGER },
     ...userDetails,
   },
   {

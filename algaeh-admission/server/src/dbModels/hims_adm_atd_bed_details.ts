@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../connection";
 import { dateConversions, userDetails } from "./common";
-// import hims_d_services from "./hims_d_services";
+
 // import hims_adm_ward_detail from "./hims_adm_ward_detail";
 
 class hims_adm_atd_bed_details extends Model {}
@@ -26,7 +26,7 @@ hims_adm_atd_bed_details.init(
         notEmpty: true,
       },
     },
-    doctor_id: {
+    provider_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
@@ -65,6 +65,13 @@ hims_adm_atd_bed_details.init(
         notEmpty: true,
       },
     },
+    bed_no: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
 
     insurance_yesno: {
       type: DataTypes.ENUM("N", "Y"),
@@ -77,7 +84,7 @@ hims_adm_atd_bed_details.init(
     },
     apprv_status: {
       type: DataTypes.ENUM("NR", "RE", "AP", "RJ"),
-      defaultValue: "N",
+      defaultValue: "NR",
     },
     billed: {
       type: DataTypes.ENUM("N", "Y"),

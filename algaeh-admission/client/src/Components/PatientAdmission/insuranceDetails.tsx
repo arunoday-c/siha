@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { Controller } from "react-hook-form";
 import moment from "moment";
 import {
@@ -21,25 +21,24 @@ export default function InsuranceDetails({
   clearErrors,
   setValue,
   trigger,
-  // insuranceImgFront,
-  // insuranceImgBack,
   isInsurance,
   setIsInsurance,
-}: // setInsuranceList,
-// Insurance_field,
+  insurance_list,
+  setInsuranceList,
+  disable_data,
+}: // Insurance_field,
 // insurance_list,
 // updateInsuranceState,
 any) {
-  const { setInsuranceInfo } = useContext(PatAdmissionContext);
-  const [insurance_list, setInsuranceList] = useState<Array<any>>([]);
+  const { insuranceInfo, setInsuranceInfo } = useContext(PatAdmissionContext);
+  // const [insurance_list, setInsuranceList] = useState<Array<any>>([]);
 
-  const isLoading = false,
-    disabled = false,
-    saveDisable = false;
+  const isLoading = false;
   //   const dropDownData: any = [];
   let dropDownData = insurance_list?.length ? insurance_list : [];
 
   useEffect(() => {
+    debugger;
     const fieldNames = [
       "primary_insurance_provider_id",
       "primary_sub_id",
@@ -54,6 +53,21 @@ any) {
       fieldNames.map((item) => setValue(item, ""));
       clearErrors(fieldNames);
       setInsuranceList([]);
+    } else {
+      if (insuranceInfo) {
+        setValue(
+          "primary_insurance_provider_id",
+          insuranceInfo?.primary_insurance_provider_id
+        );
+        setValue("primary_sub_id", insuranceInfo?.primary_sub_id);
+        setValue("primary_network_id", insuranceInfo?.primary_network_id);
+        setValue("primary_network_office_id", insuranceInfo?.primary_network_office_id);
+        setValue("primary_policy_num", insuranceInfo?.primary_policy_num);
+        setValue("effective_date", [
+          moment(insuranceInfo?.effective_end_date),
+          moment(insuranceInfo?.effective_start_date),
+        ]);
+      }
     }
   }, [isInsurance]); //eslint-disable-line
 
@@ -124,7 +138,7 @@ any) {
                               <input
                                 type="radio"
                                 name="insuredYes"
-                                disabled={saveDisable}
+                                disabled={disable_data}
                                 checked={isInsurance}
                                 onChange={() => setIsInsurance(true)}
                               />
@@ -134,7 +148,7 @@ any) {
                               <input
                                 type="radio"
                                 name="insuredNo"
-                                disabled={saveDisable}
+                                disabled={disable_data}
                                 checked={!isInsurance}
                                 onChange={() => setIsInsurance(false)}
                               />
@@ -150,7 +164,9 @@ any) {
                             type="button"
                             className="btn btn-primary btn-rounded"
                             onClick={AddInsurance}
-                            disabled={!isInsurance}
+                            disabled={
+                              disable_data === true ? true : !isInsurance
+                            }
                           >
                             <i className="fas fa-plus" />
                           </button>
@@ -232,7 +248,7 @@ any) {
                                   data: dropDownData,
                                 },
                                 others: {
-                                  disabled,
+                                  // disabled: disable_data,
                                 },
                               }}
                             />
@@ -273,7 +289,7 @@ any) {
                                 },
                                 // onChange: insurancehandle.bind(this, this, context),
                                 others: {
-                                  disabled,
+                                  disabled: disable_data,
                                 },
                               }}
                             />
@@ -311,7 +327,7 @@ any) {
                                   data: dropDownData,
                                 },
                                 others: {
-                                  disabled,
+                                  disabled: disable_data,
                                 },
                               }}
                             />
@@ -349,7 +365,7 @@ any) {
                                   data: dropDownData,
                                 },
                                 others: {
-                                  disabled,
+                                  disabled: disable_data,
                                 },
                               }}
                             />
@@ -363,7 +379,7 @@ any) {
                             type="button"
                             className="btn btn-primary btn-rounded"
                             // onClick={() => setShowPolicy(true)}
-                            // disabled={!isInsurance}
+                            disabled={disable_data}
                           >
                             <i className="fas fa-plus" />
                           </button>
@@ -389,7 +405,8 @@ any) {
                                 ...props,
                                 className: "txt-fld",
                                 name: "primary_card_number",
-                                disabled,
+
+                                disabled: disable_data,
                               }}
                             />
                           )}
@@ -418,7 +435,7 @@ any) {
                                 value: value || undefined,
                               }}
                               type="range"
-                              others={{ disabled }}
+                              others={{ disabled: disable_data }}
                               events={{
                                 onChange: (mdate) => {
                                   if (mdate) {

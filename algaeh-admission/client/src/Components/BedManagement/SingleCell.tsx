@@ -5,6 +5,7 @@ import "./BedManagement.scss";
 export function SingleCell({
   hims_adm_ward_detail_id,
   bed_short_name,
+  bed_id,
   bed_no,
   bed_desc,
   hims_adm_ward_header_id,
@@ -14,6 +15,7 @@ export function SingleCell({
 }: {
   hims_adm_ward_detail_id: number;
   bed_short_name: string;
+  bed_id: number;
   bed_no: number;
   bed_desc: string;
   hims_adm_ward_header_id: number | string;
@@ -37,6 +39,7 @@ export function SingleCell({
             hims_adm_ward_detail_id,
             hims_adm_ward_header_id,
             bed_short_name,
+            bed_id,
             bed_no,
             bed_desc,
             ward_desc,

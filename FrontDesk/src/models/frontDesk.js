@@ -171,8 +171,9 @@ export default {
             _.chain(result)
               .groupBy((it) => it.doctor_id)
               .map((detail, index) => {
-                const { doctor_id, full_name, sub_department_name } =
-                  _.head(detail);
+                const { doctor_id, full_name, sub_department_name } = _.head(
+                  detail
+                );
                 return {
                   full_name,
                   sub_department_name,

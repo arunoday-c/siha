@@ -1,5 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../connection";
+import { dateConversions, userDetails } from "./common";
+
 class algaeh_d_app_config extends Model {}
 
 algaeh_d_app_config.init(
@@ -9,28 +11,15 @@ algaeh_d_app_config.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    patient_id: {
+    episode_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
     },
-    provider_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    source: {
-      type: DataTypes.ENUM("O", "I"),
-      defaultValue: "I",
-    },
+    ...userDetails,
   },
   {
     sequelize: db,
     tableName: "algaeh_d_app_config",
+    ...dateConversions,
   }
 );
 

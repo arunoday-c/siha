@@ -1573,8 +1573,8 @@ export default {
       _mysql
         .executeQuery({
           query:
-            " SELECT hims_d_insurance_provider_id, insurance_provider_code,\
-        insurance_provider_name, arabic_provider_name from hims_d_insurance_provider where record_status='A' " +
+            " SELECT hims_d_insurance_provider_id,hims_d_insurance_provider_id as insurance_provider_id, insurance_provider_code,\
+        insurance_provider_name, arabic_provider_name, effective_start_date, effective_end_date from hims_d_insurance_provider where record_status='A' " +
             _stringData,
 
           printQuery: false,

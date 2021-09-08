@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Tabs, AlgaehLabel, AlgaehModal } from "algaeh-react-components";
 import BedManagement from "../BedManagement/index";
 import { PatAdmissionContext } from "./PatientAdmissionContext";
