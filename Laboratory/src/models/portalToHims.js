@@ -255,6 +255,7 @@ export async function patientBillGeneration(req, res, next) {
           incharge_or_provider: defaultsData?.default_doc_quick_reg,
           ScreenCode: "BL0001",
           billed: "Y",
+          portal_exists:"Y",
           receiptdetails: [
             {
               pay_type: "CA",
@@ -262,6 +263,9 @@ export async function patientBillGeneration(req, res, next) {
             },
           ],
         };
+
+        // console.log("billInput", billInput)
+        
         const billRepose = await axios
           .post(
             "http://localhost:3014/api/v1/opBilling/addOpBIlling",
@@ -277,7 +281,8 @@ export async function patientBillGeneration(req, res, next) {
           .catch((error) => {
             throw error;
           });
-
+          // consol.log("billInput", billInput)
+          // console.log("billInput", billInput)
         //For Lab
         const getLabOrderedServices = await axios
           .get(
@@ -351,7 +356,7 @@ export async function patientBillGeneration(req, res, next) {
           .catch((error) => {
             throw error;
           });
-        console.log("updateRecord===>", updateRecord.data);
+        // console.log("updateRecord===>", updateRecord.data);
         await _mysql
           .executeQuery({
             query: `update portal_patient_package_header set is_processed=1,bill_number=? where portal_package_id=?`,
@@ -365,8 +370,10 @@ export async function patientBillGeneration(req, res, next) {
           _mysql.releaseConnection();
         }
       } catch (e) {
+        // console.log("catch 2")
         if (portalRecords.length - 1 === i) {
           _mysql.releaseConnection();
+          next(e);
         }
         console.error(
           `Error in billing @ ${new Date()} :==>`,
@@ -375,8 +382,10 @@ export async function patientBillGeneration(req, res, next) {
         );
       }
     }
+    // console.log("3456")
     next();
   } catch (e) {
+    // console.log("catch")
     _mysql.releaseConnection();
     next(e);
   }

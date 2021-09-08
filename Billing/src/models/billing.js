@@ -695,6 +695,7 @@ export default {
       const package_ids = inputParam.package_exists.map((o) => {
         return o.ordered_package_id;
       });
+      consol.log("3456789 billing")
       let strQuery = "SELECT 1=1";
       if (inputParam.package_exists.length > 0) {
         strQuery = mysql.format(
@@ -801,9 +802,9 @@ export default {
             inputParam.delete_data === true
               ? "deletePatientService"
               : "patientService";
-          // console.log("portal_data", strurl);
-          // console.log("portal_data", portal_data);
-          // consol.log("portal_data", portal_data);
+          console.log("strurl", strurl);
+          console.log("portal_data", portal_data);
+          consol.log("portal_data", portal_data);
           await axios
             .post(`${PORTAL_HOST}/info/` + strurl, portal_data)
             .catch((e) => {

@@ -117,10 +117,11 @@ function PortalToHimsList() {
   async function onSubmitHandler() {
     try {
       const patientList = gridData
-        .filter((f) => f.checked !== false)
+        .filter((f) => f.checked === "Y")
         .map((item) => {
           return item.portal_package_id;
         });
+        debugger
       const result = await newAlgaehApi({
         uri: "/laboratory/patientBillGeneration",
         module: "laboratory",
