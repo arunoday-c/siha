@@ -11,6 +11,7 @@ const baseState: any = {
     primary_network_id: null,
   },
   savedPatient: null,
+  disableAfterAdmission: false,
 };
 
 export const PatAdmissionContext = createContext(baseState);
@@ -18,6 +19,7 @@ export const PatAdmissionContext = createContext(baseState);
 const TYPES = {
   setSelectedBedData: "setSelectedBedData",
   setInsuranceInfo: "setInsuranceInfo",
+  setDisableAfterAdmission: "setDisableAfterAdmission",
   setServiceInfo: "setServiceInfo",
   setSavedPatient: "setSavedPatient",
   clearState: "clearState",
@@ -27,7 +29,6 @@ function reducer(
   state: any,
   { type, payload }: { type: string; payload: any }
 ) {
-  debugger;
   switch (type) {
     case TYPES.setServiceInfo:
       if (payload === null) {
@@ -46,6 +47,8 @@ function reducer(
       }
     case TYPES.setSavedPatient:
       return { ...state, savedPatient: payload };
+    case TYPES.setDisableAfterAdmission:
+      return { ...state, disableAfterAdmission: payload };
     case TYPES.setSelectedBedData:
       if (payload === null) {
         return { ...state, selectedBedData: {} };
@@ -87,6 +90,9 @@ export const PatAdmissionContextProvider = ({
     },
     setSavedPatient(e: any) {
       dispatch({ type: TYPES.setSavedPatient, payload: e });
+    },
+    setDisableAfterAdmission(e: any) {
+      dispatch({ type: TYPES.setDisableAfterAdmission, payload: e });
     },
   };
   return (

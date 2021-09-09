@@ -31,7 +31,6 @@ export default function InsuranceDetails({
 // updateInsuranceState,
 any) {
   const { insuranceInfo, setInsuranceInfo } = useContext(PatAdmissionContext);
-  // const [insurance_list, setInsuranceList] = useState<Array<any>>([]);
 
   const isLoading = false;
   //   const dropDownData: any = [];
@@ -61,7 +60,10 @@ any) {
         );
         setValue("primary_sub_id", insuranceInfo?.primary_sub_id);
         setValue("primary_network_id", insuranceInfo?.primary_network_id);
-        setValue("primary_network_office_id", insuranceInfo?.primary_network_office_id);
+        setValue(
+          "primary_network_office_id",
+          insuranceInfo?.primary_network_office_id
+        );
         setValue("primary_policy_num", insuranceInfo?.primary_policy_num);
         setValue("effective_date", [
           moment(insuranceInfo?.effective_end_date),
@@ -78,7 +80,6 @@ any) {
       columns: props.getsportlightSearch("Insurance")?.Insurance_field,
       placeHolder: "Insurance Name",
       onRowSelect: (row: any) => {
-        debugger;
         // updateInsuranceState(row);
         setInsuranceList([row]);
         setValue("primary_insurance_provider_id", row?.insurance_provider_id);
@@ -91,11 +92,19 @@ any) {
           primary_policy_num: row?.policy_number,
           primary_network_office_id: row?.hims_d_insurance_network_office_id,
         });
+
         // setValue("primary_network_office_id", row?.network_office_id);
         setValue("primary_policy_num", row?.policy_number);
         setValue("effective_date", [
           moment(row?.effective_end_date),
           moment(row?.effective_start_date),
+        ]);
+        clearErrors([
+          "primary_policy_num",
+          "effective_date",
+          "primary_insurance_provider_id",
+          "primary_sub_id",
+          "primary_network_id",
         ]);
         // setValue("primary_effective_end_date", row?.net_effective_start_date);
         // dropDownData = [row];
