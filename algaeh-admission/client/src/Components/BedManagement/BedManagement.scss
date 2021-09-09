@@ -65,8 +65,10 @@
   }
   .singleBedSelect {
     background-color: red;
-
-    cursor: pointer;
+    &:hover {
+      background-color: rgb(247, 102, 102);
+      cursor: pointer;
+    }
   }
   .appStatusListCntr {
     &:hover {

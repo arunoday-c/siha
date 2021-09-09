@@ -1,6 +1,11 @@
 import { useContext } from "react";
 import { PatAdmissionContext } from "../PatientAdmission/PatientAdmissionContext";
-// import { BedManagementContext } from "./BedMangementContext";
+import { BedManagementContext } from "./BedMangementContext";
+import {
+  algaehAxios,
+  AlgaehMessagePop,
+  message,
+} from "algaeh-react-components";
 import "./BedManagement.scss";
 export function SingleCell({
   hims_adm_ward_detail_id,
@@ -12,6 +17,7 @@ export function SingleCell({
   ward_desc,
   services_id,
   service_type_id,
+  bed_status,
 }: {
   hims_adm_ward_detail_id: number;
   bed_short_name: string;
@@ -22,18 +28,99 @@ export function SingleCell({
   ward_desc: string;
   services_id: number;
   service_type_id: number;
+  bed_status: string;
 }) {
-  const { selectedBedData, setSelectedBedData } = useContext(
-    PatAdmissionContext
-  );
+  //
+  const { selectedBedData, setSelectedBedData } =
+    useContext(PatAdmissionContext);
+  const { bedStatusData } = useContext(BedManagementContext);
+  const bgColor = bedStatusData?.filter(
+    (f: any) => f.description === bed_status
+  )[0]?.bed_color;
+
+  const getPatBedAdmissionDetails = async () => {
+    debugger;
+    const { response, error } = await algaehAxios(
+      "/bedManagement/getPatBedAdmissionDetails",
+      {
+        module: "admission",
+        method: "GET",
+        data: { bed_id },
+      }
+    );
+    if (error) {
+      if (error.show === true) {
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
+      }
+    }
+    if (response.data.success) {
+      return response.data.records;
+    }
+  };
+  const updateBedReleasingDetails = async (data: any) => {
+    debugger;
+    const { response, error } = await algaehAxios(
+      "/bedManagement/updateBedReleasingDetails",
+      {
+        module: "admission",
+        method: "PUT",
+        data: { ...data, hims_adm_ward_detail_id },
+      }
+    );
+    if (error) {
+      if (error.show === true) {
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
+      }
+    }
+    if (response.data.success) {
+      return response.data.records;
+    }
+  };
 
   return (
     <div>
-      <span>
-        <i className="fas fa-redo-alt"></i>
+      <span
+        style={
+          bed_status === "Booked"
+            ? {}
+            : { pointerEvents: "none", opacity: "0.4" }
+        }
+      >
+        <i
+          className="fas fa-redo-alt"
+          onClick={() => {
+            getPatBedAdmissionDetails()
+              .then((response) => {
+                debugger;
+                updateBedReleasingDetails(response);
+              })
+              .catch((error) =>
+                AlgaehMessagePop({ display: error.message, type: "error" })
+              );
+          }}
+        ></i>
       </span>
-
+      {/* <span disabled={bed_status==="Booked"?true:false}></span> */}
       <div
+        style={
+          bed_status === "Booked"
+            ? {
+                backgroundColor: bgColor,
+                pointerEvents: "none",
+                opacity: "0.4",
+              }
+            : { backgroundColor: bgColor }
+        }
         onClick={() => {
           setSelectedBedData({
             hims_adm_ward_detail_id,
@@ -52,12 +139,12 @@ export function SingleCell({
             ? "singleBedSelect"
             : ""
         }`}
-        style={{
-          color:
-            selectedBedData?.hims_adm_ward_detail_id === hims_adm_ward_detail_id
-              ? "white"
-              : "",
-        }}
+        // style={{
+        //   color:
+        //     selectedBedData?.hims_adm_ward_detail_id === hims_adm_ward_detail_id
+        //       ? "white"
+        //       : "",
+        // }}
         key={hims_adm_ward_detail_id}
       >
         {/* <span>
