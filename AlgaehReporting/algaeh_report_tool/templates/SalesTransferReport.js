@@ -8,11 +8,8 @@ const executePDF = function executePDFMethod(options) {
 
       // const utilities = new algaehUtilities();
       let input = {};
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
       const params = options.args.reportParams;
 
       params.forEach((para) => {
@@ -23,11 +20,27 @@ const executePDF = function executePDFMethod(options) {
 
       let strQuery = "";
 
-      if (input.from_location_id > 0) {
-        strQuery += ` and H.from_location_id= ${input.from_location_id}`;
+      // if (input.from_location_id > 0) {
+      //   strQuery += ` and H.from_location_id= ${input.from_location_id}`;
+      // }
+      // if (input.to_location_id > 0) {
+      //   strQuery += ` and H.to_location_id= ${input.to_location_id}`;
+      // }
+
+      if (
+        input.category_id !== null &&
+        input.category_id !== undefined &&
+        input.category_id !== ""
+      ) {
+        strQuery += ` and DNB.item_category_id = ${input.category_id}`;
       }
-      if (input.to_location_id > 0) {
-        strQuery += ` and H.to_location_id= ${input.to_location_id}`;
+
+      if (
+        input.item_id !== null &&
+        input.item_id !== undefined &&
+        input.item_id !== ""
+      ) {
+        strQuery += ` and DNB.item_id = ${input.item_id}`;
       }
 
       options.mysql
