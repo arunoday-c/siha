@@ -350,7 +350,7 @@ const arrayFirstRowToObject = (data, index) => {
     return {};
   }
 };
-
+const { traceLog } = process.env;
 export default {
   getReport: async (req, res) => {
     const input = req.query;
@@ -460,7 +460,8 @@ export default {
                   printQuery: true,
                 };
               }
-
+              if (traceLog === "true")
+                console.log("queryObject===>", queryObject);
               _mysql
                 .executeQuery(queryObject)
                 .then((result) => {
@@ -480,7 +481,8 @@ export default {
                     "algaeh_report_tool/templates",
                     `${_data.report_name}${usehbs}.js`
                   );
-                  // console.log("_supportingJS===>", _supportingJS);
+                  if (traceLog === "true")
+                    console.log("_supportingJS===>", _supportingJS);
                   const _header = req.headers;
 
                   const startGenerate = async () => {
@@ -651,6 +653,7 @@ export default {
                           "algaeh_report_tool/templates",
                           `${thermalFooterFromDB}.hbs`
                         );
+
                         if (fs.existsSync(filePath)) {
                           footerFormat = await compile(
                             // "Footer" + _data.report_type,
@@ -917,12 +920,10 @@ export default {
                               _fs.pipe(res);
                             } else {
                               _mysql.releaseConnection();
-                              res
-                                .status(400)
-                                .send({
-                                  error: "ERROR File does not exist",
-                                  filename: _inputParam.reportName,
-                                });
+                              res.status(400).send({
+                                error: "ERROR File does not exist",
+                                filename: _inputParam.reportName,
+                              });
                             }
                           });
                         }
@@ -985,6 +986,8 @@ export default {
                   _mysql.releaseConnection();
                   res.status(400).send({
                     error: JSON.stringify(error),
+                    stack: error.stack,
+                    message: error.message,
                     filename: _inputParam.reportName,
                   });
                 });
@@ -1004,15 +1007,20 @@ export default {
           );
           res.status(400).send({
             error: JSON.stringify(error),
+            stack: error.stack,
+            message: error.message,
             filename: _inputParam.reportName,
           });
         });
     } catch (e) {
       _mysql.releaseConnection();
       console.log("Error in try catch : ", JSON.stringify(error));
-      res
-        .status(400)
-        .send({ error: JSON.stringify(e), filename: _inputParam.reportName });
+      res.status(400).send({
+        error: JSON.stringify(e),
+        stack: error.stack,
+        message: error.message,
+        filename: _inputParam.reportName,
+      });
     }
   },
   getReportMultiPrint: async (req, res, next) => {

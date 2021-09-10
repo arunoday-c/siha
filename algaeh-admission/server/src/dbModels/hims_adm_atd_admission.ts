@@ -122,6 +122,13 @@ hims_adm_atd_admission.init(
       type: DataTypes.STRING(100),
       allowNull: true,
     },
+    hospital_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     ...userDetails,
   },
   {

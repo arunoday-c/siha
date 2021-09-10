@@ -68,6 +68,7 @@ export async function addPatienAdmission(
       insurance_network_office_id: input.insurance_network_office_id,
       policy_number: input.policy_number,
 
+      hospital_id: req["userIdentity"].hospital_id,
       created_by: req["userIdentity"].algaeh_d_app_user_id,
       updated_by: req["userIdentity"].algaeh_d_app_user_id,
     });
