@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, memo } from "react";
 import "./BedManagement.scss";
 import {
   // AlgaehAutoComplete,
@@ -11,11 +11,10 @@ import BedColumn from "./BedColumn";
 import { BedManagementContext } from "./BedMangementContext";
 import SelectWardSection from "./SelectWardSection";
 
-export default function BedManagement(props: any) {
+export default memo(function BedManagement(props: any) {
   const { bedStatusData, setBedStatusData, setWardHeaderData } =
     useContext(BedManagementContext);
   useEffect(() => {
-    debugger;
     bedStatusSetUp();
     getWardHeaderData();
   }, []); //eslint-disable-line
@@ -46,7 +45,6 @@ export default function BedManagement(props: any) {
   //eslint-disable-line
 
   const getWardHeaderData = async (data?: string) => {
-    debugger;
     const { response, error } = await algaehAxios(
       "/bedManagement/getWardHeaderData",
       {
@@ -143,4 +141,4 @@ export default function BedManagement(props: any) {
       </div> */}
     </div>
   );
-}
+});

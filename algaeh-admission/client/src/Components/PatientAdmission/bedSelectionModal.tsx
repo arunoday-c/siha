@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { AlgaehModal } from "algaeh-react-components";
 import BedManagement from "../BedManagement/index";
 interface Props {
@@ -6,7 +6,7 @@ interface Props {
   onClose: any;
 }
 
-function BedSelectionModal(props: Props) {
+export default memo(function BedSelectionModal(props: Props) {
   const { visible, onClose } = props;
 
   return (
@@ -26,6 +26,4 @@ function BedSelectionModal(props: Props) {
       {visible ? <BedManagement /> : null}
     </AlgaehModal>
   );
-}
-
-export default BedSelectionModal;
+});

@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, memo } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import {
   AlgaehAutoComplete,
@@ -12,7 +12,7 @@ interface IFormInputs {
   // name: string;
   hims_adm_ward_header_id: string;
 }
-export default function SelectWardSection() {
+export default memo(function SelectWardSection() {
   const { setWardHeaderData, wardHeaderData } =
     useContext(BedManagementContext);
   //   const [wardHeaderData, setWardHeaderData] = useState([]);
@@ -29,7 +29,6 @@ export default function SelectWardSection() {
   }, [hims_adm_ward_header_id]); //eslint-disable-line
 
   const getWardHeaderData = async (data?: string) => {
-    debugger;
     const { response, error } = await algaehAxios(
       "/bedManagement/getWardHeaderData",
       {
@@ -105,4 +104,4 @@ export default function SelectWardSection() {
       </div>
     </div>
   );
-}
+});

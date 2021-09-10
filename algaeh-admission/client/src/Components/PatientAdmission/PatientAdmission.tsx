@@ -64,7 +64,6 @@ const getInsuranceProviders = async () => {
 };
 
 const getAdmissionDetails = async (inputdata: any) => {
-  debugger;
   const { error, response } = await algaehAxios(
     "/patAdmission/getAdmissionDetails",
     {
@@ -146,7 +145,6 @@ export default function PatientAdmission(props: any) {
       }
     );
 
-    debugger;
     if (error) {
       if (error.show === true) {
         let extendedError: Error | any = error;
@@ -188,7 +186,6 @@ export default function PatientAdmission(props: any) {
   };
 
   const NewPatientAdmission = async (data: any) => {
-    debugger;
     const { error, response } = await algaehAxios(
       "/patAdmission/addPatienAdmission",
       {
@@ -214,7 +211,6 @@ export default function PatientAdmission(props: any) {
   };
 
   const getBillDetails = async (serviceInput: any) => {
-    debugger;
     const { error, response } = await algaehAxios("/billing/getBillDetails", {
       module: "billing",
       method: "POST",
@@ -237,7 +233,6 @@ export default function PatientAdmission(props: any) {
   };
 
   const AdmitPatient = async (data: any) => {
-    debugger;
     if (!savedPatient?.full_name || !savedPatient?.patient_code) {
       AlgaehMessagePop({
         display: "Select Patient  first",
@@ -296,7 +291,6 @@ export default function PatientAdmission(props: any) {
         bed_details: result.billdetails[0],
       };
       NewPatientAdmission(data).then((result) => {
-        debugger;
         setAdmissionNumber(result?.admission_number);
         setDisableAfterAdmission(true);
         AlgaehMessagePop({
@@ -367,7 +361,6 @@ export default function PatientAdmission(props: any) {
                   setServiceInfo(doctor);
                   setValue("doctor", doctor);
                   setDisableData(true);
-                  debugger;
                   if (result?.insurance_yesno === "Y") {
                     getInsuranceProviders()
                       .then((result) => {

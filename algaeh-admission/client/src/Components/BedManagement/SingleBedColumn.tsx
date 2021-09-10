@@ -1,7 +1,7 @@
-// import React from 'react';
-import { SingleCell } from "./SingleCell";
+import React, { memo } from "react";
+import SingleCell from "./SingleCell";
 
-function SingleBedColumn(props: any) {
+export default memo(function SingleBedColumn(props: any) {
   const { groupDetail, item } = props;
   return (
     <div className="row ">
@@ -39,6 +39,4 @@ function SingleBedColumn(props: any) {
       </div>
     </div>
   );
-}
-
-export default SingleBedColumn;
+});

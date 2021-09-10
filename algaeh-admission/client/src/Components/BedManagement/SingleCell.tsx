@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext, memo } from "react";
 import { PatAdmissionContext } from "../PatientAdmission/PatientAdmissionContext";
 import { BedManagementContext } from "./BedMangementContext";
 import {
@@ -7,7 +7,7 @@ import {
   message,
 } from "algaeh-react-components";
 import "./BedManagement.scss";
-export function SingleCell({
+export default memo(function SingleCell({
   hims_adm_ward_detail_id,
   bed_short_name,
   bed_id,
@@ -39,7 +39,6 @@ export function SingleCell({
   )[0]?.bed_color;
 
   const getPatBedAdmissionDetails = async () => {
-    debugger;
     const { response, error } = await algaehAxios(
       "/bedManagement/getPatBedAdmissionDetails",
       {
@@ -63,7 +62,6 @@ export function SingleCell({
     }
   };
   const updateBedReleasingDetails = async (data: any) => {
-    debugger;
     const { response, error } = await algaehAxios(
       "/bedManagement/updateBedReleasingDetails",
       {
@@ -101,7 +99,6 @@ export function SingleCell({
           onClick={() => {
             getPatBedAdmissionDetails()
               .then((response) => {
-                debugger;
                 updateBedReleasingDetails(response);
               })
               .catch((error) =>
@@ -161,6 +158,6 @@ export function SingleCell({
       </div>
     </div>
   );
-}
+});
 
 // export function SingleCell;
