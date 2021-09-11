@@ -225,7 +225,7 @@ export default memo(function ({ details }) {
     <Collapse className="accCntr">
       <Panel
         header={
-          <div>
+          <div style={{ display: "inline-block", width: "95%" }}>
             <b>
               {visit_date && moment(visit_date).format("DD-MM-YYYY HH:mm:ss")}
             </b>{" "}
