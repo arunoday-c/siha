@@ -144,7 +144,7 @@ export default {
       // inputParam.patient_id = req.body.patient_id;
 
       // utilities.logger().log("inputParam: ", inputParam);
-
+      // console.log("insertPatientVisitData====>");
       const internalInsertPatientVisitData = () => {
         let fromDate = moment(inputParam.date_of_birth);
         let toDate = new Date();
@@ -313,7 +313,7 @@ export default {
               ).format("YYYY-MM-DD");
               currentPatientEpisodeNo = expResult[0]["episode_id"];
             }
-            console.log("2", existingExparyDate);
+            // console.log("2", existingExparyDate);
             let currentEpisodeNo = null;
             if (
               existingExparyDate == null ||
@@ -449,6 +449,7 @@ export default {
       // const utilities = new algaehUtilities();
       // if (input.consultation == "Y") {
       //utilities.logger().log("consultation: ", input);
+      // console.log("addEpisodeEncounterData====>");
       _mysql
         .executeQuery({
           query:
@@ -459,7 +460,7 @@ export default {
             input.patient_id,
             input.doctor_id ? input.doctor_id : input.provider_id,
             input.visit_id,
-            input.source ? input.source : "0",
+            input.source ? input.source : "O",
             input.episode_id,
             input.age ? input.age : input.age_in_years,
             input.payment_type
@@ -476,6 +477,7 @@ export default {
           printQuery: true,
         })
         .then((encounter_details) => {
+          // console.log("Encounter details");
           _mysql
             .executeQuery({
               query:
@@ -483,7 +485,7 @@ export default {
                   updated_by=? where record_status='A' and hims_f_patient_appointment_id=?",
               values: [
                 new Date(),
-                input.updated_by,
+                req.userIdentity.algaeh_d_app_user_id,
                 input.hims_f_patient_appointment_id,
               ],
               printQuery: true,
@@ -498,14 +500,14 @@ export default {
               // } else {
               //   next();
               // }
-
+              // console.log("input====>", input);
               let result = {
                 patient_code: input.patient_code,
                 receipt_number: input.receipt_number,
                 bill_number: input.bill_number,
                 patient_visit_id: input.visit_id,
                 hims_d_patient_id: input.patient_id,
-                hims_f_billing_header_id: input.hims_f_billing_header_id,
+                hims_f_billing_header_id: input?.hims_f_billing_header_id,
                 full_name: req.full_name,
                 age: input.age_in_years,
                 visit_code: input.visit_code,
@@ -536,12 +538,13 @@ export default {
                 const portal_data = input;
                 delete portal_data.billdetails;
                 delete portal_data.receiptdetails;
-                // console.log("PORTAL_HOST", PORTAL_HOST);
+                // console.log("PORTAL_HOST", portal_data);
                 // consol.log("portal_data", portal_data);
                 await axios
                   .post(`${PORTAL_HOST}/info/patientRegistration`, portal_data)
                   .catch((e) => {
-                    throw e;
+                    console.error("Portal Error===>", e.stack, e.response);
+                    throw e.response.data;
                   });
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
@@ -602,7 +605,7 @@ export default {
       /* Select statemwnt  */
       //utilities.logger().log("addPatientInsuranceData: ");
       //utilities.logger().log("insured: ", input.insured);
-
+      // console.log("addPatientInsuranceData====>");
       if (input.insured == "Y") {
         _mysql
           .executeQuery({
@@ -662,6 +665,7 @@ export default {
             } else {
               next();
             }
+            // console.log("end addPatientInsuranceData");
           })
           .catch((e) => {
             _mysql.rollBackTransaction(() => {
