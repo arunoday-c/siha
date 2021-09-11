@@ -68,11 +68,12 @@ $black: #000;
   width: 100%;
   overflow: auto;
 
-  .ReactTable {
-    max-height: 61vh !important;
-  }
-  .gridToolSec {
-    margin: 0 !important;
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 45vh;
+      max-height: 45vh;
+      overflow: auto;
+    }
   }
 }
 
