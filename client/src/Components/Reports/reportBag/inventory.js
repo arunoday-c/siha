@@ -11,6 +11,198 @@ export default function Inventory({
     excel: "true",
     submenu: [
       {
+        subitem: "Opening Stock Report",
+        reportName: "openingItemsStockInventory",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "portrait", //"landscape",
+        componentCode: "RPT_OPN_INV_ITM_STK",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: (result) => {
+                    reportState.setState({
+                      location_id_list: result.data.records,
+                    });
+                  },
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: [],
+                });
+              },
+            },
+
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Location",
+            link: {
+              uri: "/inventory/getInventoryLocation",
+              module: "inventory",
+              // method: "GET",
+              data: { hospital_id: hospital_id },
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records,
+              });
+            },
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_inventory_location_id",
+              data: [],
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Group",
+
+            link: {
+              uri: "/inventory/getItemGroup",
+              module: "inventory",
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records,
+              });
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_inventory_item_group_id",
+              data: [],
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getItemCategory",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hims_d_item_category_id: currentEvent.value },
+
+                  onSuccess: (result) => {
+                    reportState.setState({
+                      category_id_list: result.data.records,
+                    });
+                  },
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  category_id_list: [],
+                });
+              },
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "category_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Category",
+            dataSource: {
+              textField: "category_desc",
+              valueField: "hims_d_inventory_tem_category_id",
+              data: [],
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getItemMaster",
+                  module: "inventory",
+                  method: "GET",
+                  data: { category_id: currentEvent.value },
+
+                  onSuccess: (result) => {
+                    reportState.setState({
+                      item_id_list: result.data.records,
+                    });
+                  },
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  item_id_list: [],
+                });
+              },
+            },
+          },
+          {
+            className: "col-6 form-group AutosearchClass",
+            type: "Autosearch",
+            name: "item_id",
+            // initialLoad: true,
+            isImp: false,
+            // label: "Item",
+            columns: spotlightSearch.Items.Invitemmaster,
+            displayField: "item_description",
+            primaryDesc: "item_description",
+            secondaryDesc: "uom_description",
+            searchName: "PurchaseOrderForInventry",
+            value: null, //"item_description",
+            label: "Item Name",
+          },
+        ],
+      },
+      {
         subitem: "Items Stock Report",
         reportName: "itemsStockInventory",
         requireIframe: true,
