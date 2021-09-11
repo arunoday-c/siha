@@ -174,6 +174,12 @@ hims_adm_atd_bed_details.init(
         notEmpty: true,
       },
     },
+    released_by: {
+      type: DataTypes.INTEGER,
+    },
+    released_date: {
+      type: DataTypes.DATE,
+    },
 
     ...userDetails,
   },

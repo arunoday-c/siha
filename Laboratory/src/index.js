@@ -72,6 +72,8 @@ app.use((error, req, res, next) => {
           },
         },
         message: errorMessage,
+        stack: error.stack,
+        messageT: error.message,
       },
       "error"
     );

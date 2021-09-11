@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, memo } from "react";
 import "./BedManagement.scss";
 import {
   // AlgaehAutoComplete,
@@ -11,11 +11,12 @@ import BedColumn from "./BedColumn";
 import { BedManagementContext } from "./BedMangementContext";
 import SelectWardSection from "./SelectWardSection";
 
-export default function BedManagement(props: any) {
-  // const [bedStatusData, setBedStatusData] = useState([]);
-  const { bedStatusData, setBedStatusData } = useContext(BedManagementContext);
+export default memo(function BedManagement(props: any) {
+  const { bedStatusData, setBedStatusData, setWardHeaderData } =
+    useContext(BedManagementContext);
   useEffect(() => {
     bedStatusSetUp();
+    getWardHeaderData();
   }, []); //eslint-disable-line
 
   const bedStatusSetUp = async () => {
@@ -39,6 +40,31 @@ export default function BedManagement(props: any) {
 
     if (response.data.success) {
       setBedStatusData(response.data.records.result);
+    }
+  };
+  //eslint-disable-line
+
+  const getWardHeaderData = async (data?: string) => {
+    const { response, error } = await algaehAxios(
+      "/bedManagement/getWardHeaderData",
+      {
+        module: "admission",
+        method: "GET",
+        data: { hims_adm_ward_header_id: data },
+      }
+    );
+    if (error) {
+      if (error.show === true) {
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
+      }
+    }
+    if (response.data.success) {
+      setWardHeaderData(response.data.records);
     }
   };
 
@@ -115,4 +141,4 @@ export default function BedManagement(props: any) {
       </div> */}
     </div>
   );
-}
+});

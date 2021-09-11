@@ -8,6 +8,7 @@ import hims_adm_ward_header from "../dbModels/hims_adm_ward_header";
 import hims_adm_ward_detail from "../dbModels/hims_adm_ward_detail";
 import hims_d_cpt_code from "../dbModels/hims_d_cpt_code";
 import hims_adm_bed_status from "../dbModels/hims_adm_bed_status";
+import hims_adm_atd_bed_details from "../dbModels/hims_adm_atd_bed_details";
 import { Request, Response, NextFunction } from "express";
 // import sequelize from "../connection";
 // const sequelize = require("sequelize");
@@ -260,6 +261,7 @@ export async function getWardHeaderData(
             "hims_adm_ward_detail_id",
             "ward_header_id",
             "bed_id",
+            "bed_status",
             "bed_no",
             "status",
           ],
@@ -281,7 +283,6 @@ export async function getWardHeaderData(
           ],
         },
       ],
-      
 
       where: {
         ...whereCondition,
@@ -308,6 +309,7 @@ export async function getWardHeaderData(
           bed_no: number;
           status: string;
           bed_desc: string;
+          bed_status: string;
           services_id: number;
           bed_short_name: string;
           service_name: string;
@@ -318,12 +320,13 @@ export async function getWardHeaderData(
           // const { WD } = item;
           // return WD.map((wardDetails) => {
           const { bed_desc, bed_short_name, S, services_id } = item.IP;
-
+          console.log("bed_status 123313", item.bed_status);
           return {
             // hims_adm_ward_header_id: item.hims_adm_ward_header_id,
             bed_id: item.bed_id,
             bed_no: item.bed_no,
             status: item.status,
+            bed_status: item.bed_status,
             service_name: S?.service_name ?? undefined,
             service_type_id: S?.service_type_id ?? undefined,
             bed_desc: bed_desc ? bed_desc : undefined,
@@ -794,6 +797,74 @@ export async function updateWardDetails(
   //   _mysql.releaseConnection();
   // }
 }
+export async function updateBedReleasingDetails(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  // const _mysql = new algaehMysql();
+  try {
+    const input = req.body;
+    console.log("iamaherere", input);
+    const result = await hims_adm_ward_detail.update(
+      {
+        bed_status: "Vacant",
+      },
+      {
+        where: {
+          hims_adm_ward_detail_id: input.hims_adm_ward_detail_id,
+        },
+      }
+    );
+    const update_adm_atd_bed_details = await hims_adm_atd_bed_details.update(
+      {
+        released_by: req["userIdentity"].algaeh_d_app_user_id,
+        released_date: new Date(),
+      },
+      {
+        where: {
+          hims_adm_atd_bed_details_id: input.hims_adm_atd_bed_details_id,
+        },
+      }
+    );
+
+    req["records"] = result;
+
+    next();
+  } catch (e) {
+    next(e);
+  }
+  // finally {
+  //   _mysql.releaseConnection();
+  // }
+}
+export async function getPatBedAdmissionDetails(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const _mysql = new algaehMysql();
+  try {
+    const result = await hims_adm_atd_bed_details.findOne({
+      attributes: ["hims_adm_atd_bed_details_id", "bed_id"],
+
+      nest: false,
+      raw: true,
+      where: {
+        bed_id: req.query.bed_id,
+      },
+    });
+    req["records"] = result;
+    next();
+  } catch (e) {
+    next(e);
+  }
+  // { attributes: { include: [[sequelize.fn('COUNT', sequelize.col('id')), 'total']] }
+  // finally {
+  //   _mysql.releaseConnection();
+  // }
+}
+
 export async function onDeleteDetails(
   req: Request,
   res: Response,

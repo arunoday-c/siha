@@ -17,6 +17,8 @@ import {
   bedDataFromMaster,
   bedStatusSetUp,
   updateBedStatus,
+  updateBedReleasingDetails,
+  getPatBedAdmissionDetails,
   addBedStatus,
   onDeleteBedStatus,
 } from "../models/bedMaster";
@@ -81,7 +83,32 @@ export default () => {
         .end();
     }
   );
-
+  api.put(
+    "/updateBedReleasingDetails",
+    updateBedReleasingDetails,
+    (req: newRequest, res: Response, next: NextFunction) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records,
+        })
+        .end();
+    }
+  );
+  api.get(
+    "/getPatBedAdmissionDetails",
+    getPatBedAdmissionDetails,
+    (req: newRequest, res: Response, next: NextFunction) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records,
+        })
+        .end();
+    }
+  );
   api.get(
     "/getWardDetails",
     getWardDetails,

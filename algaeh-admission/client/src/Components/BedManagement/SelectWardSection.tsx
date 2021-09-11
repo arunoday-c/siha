@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, memo } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import {
   AlgaehAutoComplete,
@@ -12,10 +12,9 @@ interface IFormInputs {
   // name: string;
   hims_adm_ward_header_id: string;
 }
-export default function SelectWardSection() {
-  const { setWardHeaderData, wardHeaderData } = useContext(
-    BedManagementContext
-  );
+export default memo(function SelectWardSection() {
+  const { setWardHeaderData, wardHeaderData } =
+    useContext(BedManagementContext);
   //   const [wardHeaderData, setWardHeaderData] = useState([]);
   const { control, setValue } = useForm<IFormInputs>();
   // useEffect(() => {
@@ -105,4 +104,4 @@ export default function SelectWardSection() {
       </div>
     </div>
   );
-}
+});

@@ -55,8 +55,8 @@ export async function patientBillGeneration(req, res, next) {
           nationality_id,
           patient_code,
         } = portalRecords[i];
-        console.log("portalRecords[i]", portalRecords[i])
-        console.log("patient_identity", patient_identity)
+        // console.log("portalRecords[i]", portalRecords[i]);
+        //console.log("patient_identity", patient_identity);
         const primary_identity_id = _.find(identities, (f) =>
           f.identity_document_name
             .toLowerCase()
@@ -228,6 +228,7 @@ export async function patientBillGeneration(req, res, next) {
           .catch((error) => {
             throw error;
           });
+        // console.log("getBillDetails===>", getBillDetails.data);
         const getBillDetailsData = getBillDetails.data?.records?.billdetails;
         //For Bill calculations
 
@@ -253,16 +254,16 @@ export async function patientBillGeneration(req, res, next) {
           patient_id: registrationResponse.data?.records.hims_d_patient_id,
           patient_visit_id: registrationResponse.data?.records.patient_visit_id,
           visit_id: registrationResponse.data?.records.patient_visit_id,
-          visit_code: registrationResponse.data?.records.visit_code,          
+          visit_code: registrationResponse.data?.records.visit_code,
           primary_id_no: patient_identity,
-          hospital_id:hospital_id,
+          hospital_id: hospital_id,
           shift_id: shift.shift_id,
           billdetails: getBillDetailsData,
           incharge_or_provider: defaultsData?.default_doc_quick_reg,
           ScreenCode: "BL0001",
           billed: "Y",
-          portal_exists:"Y",
-          package_exists:[],
+          portal_exists: "Y",
+          package_exists: [],
           receiptdetails: [
             {
               pay_type: "CA",
@@ -272,7 +273,7 @@ export async function patientBillGeneration(req, res, next) {
         };
 
         // console.log("billInput", billInput)
-        
+
         const billRepose = await axios
           .post(
             "http://localhost:3014/api/v1/opBilling/addOpBIlling",
@@ -288,8 +289,8 @@ export async function patientBillGeneration(req, res, next) {
           .catch((error) => {
             throw error;
           });
-          // consol.log("billInput", billInput)
-          // console.log("billInput", billInput)
+        // consol.log("billInput", billInput)
+        // console.log("billInput", billInput)
         //For Lab
         const getLabOrderedServices = await axios
           .get(

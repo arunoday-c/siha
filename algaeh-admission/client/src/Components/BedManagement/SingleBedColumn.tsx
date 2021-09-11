@@ -1,14 +1,13 @@
-// import React from 'react';
-import { SingleCell } from "./SingleCell";
+import React, { memo } from "react";
+import SingleCell from "./SingleCell";
 
-function SingleBedColumn(props: any) {
+export default memo(function SingleBedColumn(props: any) {
   const { groupDetail, item } = props;
   return (
     <div className="row ">
       <div className="col-12 bedCol">
         <div className="row">
           {groupDetail.map((data: any, index: number) => {
-            debugger;
             const {
               bed_desc,
               bed_short_name,
@@ -17,6 +16,7 @@ function SingleBedColumn(props: any) {
               hims_adm_ward_detail_id,
               services_id,
               service_type_id,
+              bed_status,
             } = data;
             return (
               <div key={hims_adm_ward_detail_id}>
@@ -30,6 +30,7 @@ function SingleBedColumn(props: any) {
                   ward_desc={item.ward_desc}
                   services_id={services_id}
                   service_type_id={service_type_id}
+                  bed_status={bed_status}
                 />
               </div>
             );
@@ -38,6 +39,4 @@ function SingleBedColumn(props: any) {
       </div>
     </div>
   );
-}
-
-export default SingleBedColumn;
+});

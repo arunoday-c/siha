@@ -57,7 +57,7 @@ const executePDF = function executePDFMethod(options) {
               );
               //   console.log("3", settled_amount);
               const balance_amount =
-                parseFloat(header.invoice_amount ?? 0) - settled_amount;
+                parseFloat(header ? header.invoice_amount : "0") - settled_amount;
               //   console.log("4", balance_amount);
               return {
                 ...header,

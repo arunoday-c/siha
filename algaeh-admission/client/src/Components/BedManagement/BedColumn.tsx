@@ -1,8 +1,8 @@
-import { useContext } from "react";
+import { useContext, memo } from "react";
 import { BedManagementContext } from "./BedMangementContext";
 import SingleBedColumn from "./SingleBedColumn";
 
-export default function BedColumn() {
+export default memo(function BedColumn() {
   const { wardHeaderData } = useContext(BedManagementContext);
   return (
     <div>
@@ -63,4 +63,4 @@ export default function BedColumn() {
       </div>
     </div>
   );
-}
+});

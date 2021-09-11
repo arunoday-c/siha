@@ -1,11 +1,13 @@
 import React, { useState, useContext } from "react";
-import { Tabs, AlgaehLabel, AlgaehModal } from "algaeh-react-components";
-import BedManagement from "../BedManagement/index";
+import { Tabs, AlgaehLabel } from "algaeh-react-components";
+// import BedManagement from "../BedManagement/index";
+import BedSelectionModal from "./BedSelectionModal";
 import { PatAdmissionContext } from "./PatientAdmissionContext";
 const { TabPane } = Tabs;
 
 export default function BedDetails(props: any) {
-  const { selectedBedData } = useContext(PatAdmissionContext);
+  const { selectedBedData, disableAfterAdmission } =
+    useContext(PatAdmissionContext);
   const [visible, setVisible] = useState(false);
 
   const onClose = () => {
@@ -14,21 +16,9 @@ export default function BedDetails(props: any) {
   return (
     <div className="hptl-phase1-insurance-details margin-top-15">
       <div className="insurance-section">
-        <AlgaehModal
-          title="Select Bed"
-          visible={visible}
-          mask={true}
-          maskClosable={true}
-          onCancel={onClose}
-          footer={[
-            <button onClick={onClose} className="btn btn-default">
-              Close
-            </button>,
-          ]}
-          className={`row algaehNewModal SelectBedModal`}
-        >
-          <BedManagement />
-        </AlgaehModal>
+        {visible ? (
+          <BedSelectionModal onClose={onClose} visible={visible} />
+        ) : null}
         <Tabs type="card">
           <TabPane
             tab={
@@ -89,6 +79,7 @@ export default function BedDetails(props: any) {
                         <button
                           type="button"
                           className="btn btn-primary btn-rounded"
+                          disabled={disableAfterAdmission}
                           onClick={() => setVisible(true)}
                         >
                           <i className="fas fa-plus" />

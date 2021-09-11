@@ -8,6 +8,7 @@ import hims_f_patient_encounter from "../dbModels/hims_f_patient_encounter";
 import hims_adm_ip_bed from "../dbModels/hims_adm_ip_bed";
 import hims_adm_ward_header from "../dbModels/hims_adm_ward_header";
 import hims_f_patient from "../dbModels/hims_f_patient";
+import hims_adm_ward_detail from "../dbModels/hims_adm_ward_detail";
 
 import { RunningNumber } from "../common/runningNum";
 import { Request, Response, NextFunction } from "express";
@@ -67,6 +68,7 @@ export async function addPatienAdmission(
       insurance_network_office_id: input.insurance_network_office_id,
       policy_number: input.policy_number,
 
+      hospital_id: req["userIdentity"].hospital_id,
       created_by: req["userIdentity"].algaeh_d_app_user_id,
       updated_by: req["userIdentity"].algaeh_d_app_user_id,
     });
@@ -131,7 +133,15 @@ export async function addPatienAdmission(
         },
       }
     );
-
+    console.log("input.hims_adm_ward_detail_id", input.hims_adm_ward_detail_id);
+    const update_bed_status: any = await hims_adm_ward_detail.update(
+      { bed_status: "Booked" },
+      {
+        where: {
+          hims_adm_ward_detail_id: input.hims_adm_ward_detail_id,
+        },
+      }
+    );
     // console.log("atd_result", atd_result.dataValues);
     const insert_eposode: any = await hims_f_patient_encounter.create({
       patient_id: input.patient_id,
