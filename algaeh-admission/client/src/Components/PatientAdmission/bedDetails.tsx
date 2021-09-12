@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Tabs, AlgaehLabel } from "algaeh-react-components";
 // import BedManagement from "../BedManagement/index";
-import BedSelectionModal from "./BedSelectionModal";
+import BedSelectionModal from "./bedSelectionModal";
 import { PatAdmissionContext } from "./PatientAdmissionContext";
 const { TabPane } = Tabs;
 

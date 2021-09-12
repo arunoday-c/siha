@@ -10,10 +10,10 @@ export default memo(function BedColumn() {
         <div className="row">
           {wardHeaderData?.length > 0
             ? wardHeaderData?.map((item: any, key: number) => (
-                <div className="col-1 WardCol" key={key}>
+                <div className="col-12 WardCol" key={key}>
                   <>
                     <div className="row">
-                      <div className="col-12 WardHdg">
+                      <div className=" WardHdg">
                         <h3>{item.ward_desc}</h3>
                       </div>
                     </div>

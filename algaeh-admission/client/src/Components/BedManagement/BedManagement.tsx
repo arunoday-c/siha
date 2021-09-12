@@ -70,75 +70,38 @@ export default memo(function BedManagement(props: any) {
 
   // const context: any = useContext(MainContext);
   return (
-    <div className="BedManagementScreen">
-      <div className="col-12">
-        <SelectWardSection />
-      </div>
+    <div className="col-12 BedManagementScreen">
       <div className="row">
-        <ul className="ul-legend">
-          {bedStatusData?.length > 0
-            ? bedStatusData.map(
-                (
-                  data: { bed_color: string; description: string },
-                  index: number
-                ) => (
-                  <li key={index}>
-                    <span
-                      style={{
-                        backgroundColor: data.bed_color,
-                      }}
-                    />
-                    {/* {context.userLanguage === "ar" */}
-                    {data.description}
-                    {/* : data.statusDesc} */}
-                  </li>
-                )
-              )
-            : null}
-          {/* <li>
-                  <span style={{ backgroundColor: "red" }}></span>Legend 1
-                </li>
-                <li>
-                  <span style={{ backgroundColor: "red" }}></span>Legend 1
-                </li>
-                <li>
-                  <span style={{ backgroundColor: "red" }}></span>Legend 1
-                </li>
-                <li>
-                  <span style={{ backgroundColor: "red" }}></span>Legend 1
-                </li> */}
-        </ul>
-      </div>
-      <div className="col-12">
-        <BedColumn />
-      </div>
-      {/* <div className="row">
-        <div className="col">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={(e) => {
-              e.preventDefault();
-            }}
-            // disabled={disabled}
-          >
-            <AlgaehLabel label={{ fieldName: "btn_save" }} />
-          </button>
-          <button
-            type="button"
-            className="btn btn-default"
-            // onClick={() => onClear(false)}
-            // disabled={
-            //   !disabled &&
-            //   !appointment_id &&
-            //   !patient_code &&
-            //   !formState.isDirty
-            // }
-          >
-            <AlgaehLabel label={{ fieldName: "btn_clear" }} />
-          </button>
+        <div className="col-12">
+          <SelectWardSection />
         </div>
-      </div> */}
+        <div className="col-12">
+          <ul className="ul-legend">
+            {bedStatusData?.length > 0
+              ? bedStatusData.map(
+                  (
+                    data: { bed_color: string; description: string },
+                    index: number
+                  ) => (
+                    <li key={index}>
+                      <span
+                        style={{
+                          backgroundColor: data.bed_color,
+                        }}
+                      />
+                      {/* {context.userLanguage === "ar" */}
+                      {data.description}
+                      {/* : data.statusDesc} */}
+                    </li>
+                  )
+                )
+              : null}
+          </ul>
+        </div>
+        <div className="col-12 bedCntr">
+          <BedColumn />
+        </div>
+      </div>
     </div>
   );
 });
