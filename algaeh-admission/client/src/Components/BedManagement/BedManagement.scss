@@ -103,30 +103,29 @@
           }
           .bookedDetails {
             display: none;
-
-            top: 47px;
-            left: 0;
-            position: fixed;
-            width: 100%;
-            border-radius: 0 !important;
-            border-bottom: 1px solid #000;
-            div {
-              // height: auto;
-              padding: 5px 0;
-              margin: 0;
-              // color: #fff;
-              small {
-                display: block;
-              }
-              b {
-                display: block;
+          }
+          &:hover {
+            .bookedDetails {
+              display: block;
+              top: 47px;
+              left: 0;
+              position: fixed;
+              width: 100%;
+              border-radius: 0 !important;
+              border-bottom: 1px solid #000;
+              div {
+                // height: auto;
+                padding: 5px 0;
+                margin: 0;
+                // color: #fff;
+                small {
+                  display: block;
+                }
+                b {
+                  display: block;
+                }
               }
             }
-          }
-        }
-        &:hover {
-          .bookedDetails {
-            display: block;
           }
         }
       }
