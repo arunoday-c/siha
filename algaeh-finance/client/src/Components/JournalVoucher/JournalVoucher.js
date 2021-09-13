@@ -1058,6 +1058,7 @@ export default function JournalVoucher() {
   };
 
   function onChangeCustomerOrSupplerHeaderList(selected, _voucherType) {
+    debugger;
     setSorCDetailLoading(true);
     setSorCHeaderName(selected.child_name);
     setSorCHeaderValue(selected.finance_account_child_id);
@@ -1115,7 +1116,8 @@ export default function JournalVoucher() {
           setSorCDetailLoading(false);
         });
     } else if (_voucherType === "credit_note") {
-      getCustomerDebitNotes({
+      debugger;
+      getCustomerReceivableDetails({
         child_id: selected.finance_account_child_id,
       })
         .then(({ result }) => {
