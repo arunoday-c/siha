@@ -2,3 +2,12 @@
   min-height: 40vh !important;
   max-height: 40vh !important;
 }
+#portalCorporateList {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 56vh !important;
+      max-height: 56vh !important;
+      overflow: auto;
+    }
+  }
+}
