@@ -4,7 +4,7 @@ import path from "path";
 // import connection from "./index";
 import dotenv from "dotenv";
 if (process.env.NODE_ENV !== "production") {
-  dotenv.config({ path: path.join(process.cwd(), "../", ".env_development") });
+  dotenv.config({ path: path.join(process.cwd(), "../", ".env_local") });
 }
 const { RABBIT_MQ_SERVER, RABBIT_MQ_USER, RABBIT_MQ_PASSWORD } = process.env;
 console.log(
