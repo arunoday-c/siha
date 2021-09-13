@@ -12,7 +12,7 @@ const {
   getCostCenterGroups,
   getCostCentersForVoucher,
   getFinanceDate,
-  generateCodes
+  generateCodes,
 } = finance_masters;
 
 export default () => {
@@ -24,7 +24,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
-          message: req.records.message
+          message: req.records.message,
         })
         .end();
     } else {
@@ -32,7 +32,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          result: req.records
+          result: req.records,
         })
         .end();
     }
@@ -44,7 +44,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
-          message: req.records.message
+          message: req.records.message,
         })
         .end();
     } else {
@@ -52,7 +52,8 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          result: req.records
+          result: req.records,
+          records: req.records,
         })
         .end();
     }
@@ -63,7 +64,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
-          message: req.records.message
+          message: req.records.message,
         })
         .end();
     } else {
@@ -71,7 +72,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          result: req.records
+          result: req.records,
         })
         .end();
     }
@@ -83,7 +84,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
-          message: req.records.message
+          message: req.records.message,
         })
         .end();
     } else {
@@ -91,7 +92,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          result: req.records
+          result: req.records,
         })
         .end();
     }
@@ -102,7 +103,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
-          message: req.records.message
+          message: req.records.message,
         })
         .end();
     } else {
@@ -110,7 +111,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          result: req.records
+          result: req.records,
         })
         .end();
     }
@@ -122,7 +123,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
-          message: req.records.message
+          message: req.records.message,
         })
         .end();
     } else {
@@ -130,7 +131,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          result: req.records
+          result: req.records,
         })
         .end();
     }
@@ -141,7 +142,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
-          message: req.records.message
+          message: req.records.message,
         })
         .end();
     } else {
@@ -149,7 +150,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          result: req.records
+          result: req.records,
         })
         .end();
     }
@@ -163,7 +164,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
             success: false,
-            message: req.records.message
+            message: req.records.message,
           })
           .end();
       } else {
@@ -171,7 +172,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().ok)
           .json({
             success: true,
-            result: req.records
+            result: req.records,
           })
           .end();
       }
@@ -183,7 +184,7 @@ export default () => {
       .status(utlities.AlgaehUtilities().httpStatus().ok)
       .json({
         success: true,
-        result: req.records
+        result: req.records,
       })
       .end();
   });
@@ -193,7 +194,7 @@ export default () => {
       .status(utlities.AlgaehUtilities().httpStatus().ok)
       .json({
         success: true,
-        result: req.records
+        result: req.records,
       })
       .end();
   });
