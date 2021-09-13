@@ -741,6 +741,12 @@ export default {
                         others.showHeaderFooter === false ? false : true;
                     }
 
+                    await page.evaluate(() => {
+                      const div = document.createElement("div");
+                      div.className = "watermark";
+                      document.body.appendChild(div);
+                    });
+
                     await page.pdf({
                       path: _outPath,
                       ...pageSize,
@@ -1184,6 +1190,11 @@ export default {
                           _inputParam.pageSize == null
                             ? { format: "A4" }
                             : { format: _inputParam.pageSize };
+                        await page.evaluate(() => {
+                          const div = document.createElement("div");
+                          div.className = "watermark";
+                          document.body.appendChild(div);
+                        });
                         await page.pdf({
                           path: _outPath,
                           ...pageSize,
@@ -2046,6 +2057,11 @@ export default {
           _inputParam.pageSize == null
             ? { format: "A3" }
             : { format: _inputParam.pageSize };
+        await page.evaluate(() => {
+          const div = document.createElement("div");
+          div.className = "watermark";
+          document.body.appendChild(div);
+        });
         const result = await page.pdf({
           // path: _outPath,
           ...pageSize,

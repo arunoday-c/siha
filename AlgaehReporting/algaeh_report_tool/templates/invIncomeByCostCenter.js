@@ -7,17 +7,22 @@ const executePDF = function executePDFMethod(options) {
       const moment = options.moment;
 
       let input = {};
-
+      let str = "";
       const params = options.args.reportParams;
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
 
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
+
+      if (
+        input.cost_center_id !== null &&
+        input.cost_center_id !== undefined &&
+        input.cost_center_id !== ""
+      ) {
+        str += ` and IH.project_id = ${input.cost_center_id}`;
+      }
 
       options.mysql
         .executeQuery({
@@ -36,7 +41,7 @@ const executePDF = function executePDFMethod(options) {
             inner join hims_d_inventory_tem_category TC on TC.hims_d_inventory_tem_category_id =  DB.item_category_id 
             inner join hims_d_project P on P.hims_d_project_id =  IH.project_id 
             inner join hims_d_hospital H on H.hims_d_hospital_id =  IH.hospital_id 
-            where is_cancelled='N' and  date(IH.invoice_date) between date(?) and date(?)  
+            where is_cancelled='N' and  date(IH.invoice_date) between date(?) and date(?)  ${str}
             group by DB.item_id, IH.project_id;`,
           values: [input.from_date, input.to_date],
           printQuery: true,

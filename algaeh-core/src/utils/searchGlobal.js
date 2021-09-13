@@ -851,7 +851,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "hospitalserviceonly",
         searchQuery:
-          "SELECT hims_d_services_id as hims_d_item_master_id,service_code,service_name,arabic_service_name,service_type_id FROM hims_d_services where service_type_id in (1,2,5,11,15,6)",
+          "SELECT hims_d_services_id as hims_d_item_master_id,service_code,service_name,arabic_service_name,service_type_id FROM hims_d_services where service_type_id in (1,2,5,6,7,11,15)",
         orderBy: "hims_d_services_id desc",
         // inputSequence: ["service_type_id", "service_type_id"],
       },

@@ -166,7 +166,14 @@ export default function loadActiveReports(
           });
           break;
         case "sales":
-          result = Sales({});
+          result = Sales({
+            hospital_id: hims_d_hospital_id,
+            algaehApiCall,
+            EXPIRY_STATUS,
+            moment,
+            spotlightSearch,
+            FORMAT_YESNO,
+          });
           break;
         case "misReport":
           result = misReport({

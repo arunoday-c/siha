@@ -1,9 +1,10 @@
 export default function sales({
   hospital_id,
-  // RECEIPT_TYPE,
-  // cashier_id,
-  FORMAT_YESNO,
   algaehApiCall,
+  EXPIRY_STATUS,
+  moment,
+  spotlightSearch,
+  FORMAT_YESNO,
 }) {
   return {
     name: "sales",
@@ -179,6 +180,24 @@ export default function sales({
               minDate: null,
             },
           },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "category_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Category",
+
+            link: {
+              uri: "/inventory/getItemCategory",
+              module: "inventory",
+            },
+            dataSource: {
+              textField: "category_desc",
+              valueField: "hims_d_inventory_tem_category_id",
+              data: [],
+            },
+          },
         ],
       },
       {
@@ -206,6 +225,24 @@ export default function sales({
             others: {
               maxDate: new Date(),
               minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "cost_center_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Cost Center",
+
+            link: {
+              uri: "/finance_masters/getCostCenters",
+              module: "finance",
+            },
+            dataSource: {
+              textField: "cost_center",
+              valueField: "cost_center_id",
+              data: [],
             },
           },
         ],
@@ -237,6 +274,39 @@ export default function sales({
               minDate: null,
             },
           },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "category_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Category",
+
+            link: {
+              uri: "/inventory/getItemCategory",
+              module: "inventory",
+            },
+            dataSource: {
+              textField: "category_desc",
+              valueField: "hims_d_inventory_tem_category_id",
+              data: [],
+            },
+          },
+          {
+            className: "col-6 form-group AutosearchClass",
+            type: "Autosearch",
+            name: "item_id",
+            // initialLoad: true,
+            isImp: false,
+            // label: "Item",
+            columns: spotlightSearch.Items.Invitemmaster,
+            displayField: "item_description",
+            primaryDesc: "item_description",
+            secondaryDesc: "uom_description",
+            searchName: "PurchaseOrderForInventry",
+            value: null, //"item_description",
+            label: "Item Name",
+          },
         ],
       },
       {
@@ -265,6 +335,19 @@ export default function sales({
               maxDate: new Date(),
               minDate: null,
             },
+          },
+          {
+            className: "col-6 form-group AutosearchClass",
+            type: "Autosearch",
+            name: "item_id",
+            isImp: false,
+            columns: spotlightSearch.Services.onlyService,
+            displayField: "service_name",
+            primaryDesc: "service_name",
+            secondaryDesc: "service_code",
+            // value: null,
+            searchName: "hospitalserviceonly",
+            label: "Services List",
           },
         ],
       },

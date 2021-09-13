@@ -7,19 +7,26 @@ const executePDF = function executePDFMethod(options) {
       const moment = options.moment;
       let input = {};
       let params = options.args.reportParams;
+      let str = "";
       // const decimal_places = options.args.crypto.decimal_places;
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
       let crypto_data = { ...options.args.crypto, addSymbol: false };
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
       delete crypto_data.currency_symbol;
       crypto_data.currency_symbol = "";
+
+      if (
+        input.category_id !== null &&
+        input.category_id !== undefined &&
+        input.category_id !== ""
+      ) {
+        str += ` and NB.item_category_id = ${input.category_id}`;
+      }
+
       options.mysql
         .executeQuery({
           query: `SELECT 
@@ -37,7 +44,7 @@ const executePDF = function executePDFMethod(options) {
            INNER JOIN hims_f_sales_dispatch_note_batches NB ON ND.hims_f_sales_dispatch_note_detail_id = NB.sales_dispatch_note_detail_id
            INNER JOIN hims_d_inventory_tem_category IC ON IC.hims_d_inventory_tem_category_id = NB.item_category_id
            INNER JOIN hims_d_customer C ON C.hims_d_customer_id = H.customer_id
-           where DATE(invoice_date) between date(?) AND date(?) AND H.is_cancelled='N'
+           where DATE(invoice_date) between date(?) AND date(?) AND H.is_cancelled='N' ${str}
            GROUP BY NB.item_category_id, H.customer_id;`,
           values: [input.from_date, input.to_date],
           printQuery: true,
