@@ -1652,7 +1652,7 @@ export default {
     try {
       _mysql
         .executeQuery({
-          query: `SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));select hims_d_insurance_sub_id as sub_insurance_id, insurance_provider_id as insurance_id ,PS.service_types,PS.hospital_id,insurance_sub_code,user_id,
+          query: `select hims_d_insurance_sub_id as sub_insurance_id, insurance_provider_id as insurance_id ,PS.service_types,PS.hospital_id,insurance_sub_code,user_id,
           S.insurance_sub_name,S.arabic_sub_name,insurance_provider_id,
                         card_format,ins_template_name,transaction_number,
                         if( S.hims_d_insurance_sub_id = PS.insurance_id,'Y','N') as checked,

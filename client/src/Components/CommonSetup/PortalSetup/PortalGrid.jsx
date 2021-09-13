@@ -74,7 +74,6 @@ export default React.memo(function PortalGrid({
   //   setPortalState({ ...portalState, gridData: [...records] });
   //   // setGridData([...records]);
   // };
-
   return (
     <div className="portlet portlet-bordered margin-bottom-15">
       <div className="portlet-title">
