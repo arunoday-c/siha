@@ -1349,10 +1349,15 @@ class NurseWorkbench extends Component {
                           onClick={this.moveToStation.bind(this, data)}
                         >
                           <span className="op-sec-1">
-                          <span >
-                            SlNo: {index+1}
-                           
-                          </span>
+                            <span
+                              style={{
+                                borderBottom: "1px dashed #d3d3d3",
+                                width: "100%",
+                                display: "inline-block",
+                              }}
+                            >
+                              {index + 1}
+                            </span>
                             <i
                               className={
                                 data.appointment_patient === "Y"
@@ -1723,9 +1728,8 @@ class NurseWorkbench extends Component {
                                   value: this.state.lmp_days,
                                   disabled: this.state.isPregnancy,
                                   events: {
-                                    onChange: this.ChangeEventHandler.bind(
-                                      this
-                                    ),
+                                    onChange:
+                                      this.ChangeEventHandler.bind(this),
                                   },
                                 }}
                               />
@@ -1776,9 +1780,8 @@ class NurseWorkbench extends Component {
                                   valueField: "value",
                                   data: GlobalVariables.ALLERGY_TYPES,
                                 },
-                                onChange: this.allergyDropdownHandler.bind(
-                                  this
-                                ),
+                                onChange:
+                                  this.allergyDropdownHandler.bind(this),
                               }}
                             />
 

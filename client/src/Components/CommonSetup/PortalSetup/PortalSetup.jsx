@@ -159,14 +159,14 @@ export default function PortalSetupComponent() {
           <div className="row">
             <div className="col-lg-12">
               <button
-                className="btn btn-primary"
+                className="btn btn-default"
                 onClick={syncPortalServices}
                 disabled={portalState?.portal_exists === "N"}
               >
                 Publish Services List to Portal
               </button>
               <button
-                className="btn btn-primary"
+                className="btn btn-default"
                 onClick={updateFunction}
                 disabled={portalState?.portal_exists === "N"}
               >

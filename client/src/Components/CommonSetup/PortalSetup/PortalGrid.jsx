@@ -85,10 +85,10 @@ export default React.memo(function PortalGrid({
       <div className="portlet-body">
         <div className="row">
           <div className="col-12">
-            <div id="CardMasterGrid_Cntr">
+            <div id="portalCorporateList">
               <AlgaehDataGrid
-                id="CardMasterGrid"
-                datavalidate="data-validate='cardDiv'"
+                // id="CardMasterGrid"
+                // datavalidate="data-validate='cardDiv'"
                 columns={[
                   {
                     label: (
@@ -110,10 +110,10 @@ export default React.memo(function PortalGrid({
                         />
                       );
                     },
+
                     others: {
-                      maxWidth: 50,
-                      filterable: false,
-                      sortable: false,
+                      width: 50,
+                      style: { textAlign: "center" },
                     },
                   },
                   {
@@ -136,20 +136,26 @@ export default React.memo(function PortalGrid({
                         ></i>
                       );
                     },
+                    others: {
+                      width: 50,
+                      style: { textAlign: "center" },
+                    },
                   },
                   {
                     fieldName: "insurance_sub_code",
                     label: (
-                      <AlgaehLabel label={{ forceLabel: "Corporate Code" }} />
+                      <AlgaehLabel label={{ forceLabel: "Company Code" }} />
                     ),
                   },
                   {
                     fieldName: "insurance_sub_name",
                     label: (
-                      <AlgaehLabel
-                        label={{ forceLabel: "Corporate Company Name" }}
-                      />
+                      <AlgaehLabel label={{ forceLabel: "Company Name" }} />
                     ),
+                    others: {
+                      // Width: 50,
+                      style: { textAlign: "left" },
+                    },
                     filterable: true,
                   },
                   {
