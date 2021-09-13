@@ -28,7 +28,7 @@ export default memo(function TdCell(props) {
             moment(f.appointment_from_time, "HH:mm:ss").format("HHmm"),
             10
           ) <= parseInt(newEndTime.format("HHmm"), 10) &&
-          parseInt(newEndTime.format("HHmm"), 10) <
+          parseInt(newEndTime.format("HHmm"), 10) <=
             parseInt(
               moment(f.appointment_to_time, "HH:mm:ss").format("HHmm"),
               10
