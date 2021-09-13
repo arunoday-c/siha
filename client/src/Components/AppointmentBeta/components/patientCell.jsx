@@ -21,14 +21,34 @@ export default memo(function TdCell(props) {
   const isInactive = isInactiveTimeSlot(props?.time);
   const newEndTime = moment(props.time, "hh:mm a").add(props.slot, "minutes");
   const patient_list = props.patients?.filter(
-    (f) =>
-      parseInt(
-        moment(f.appointment_from_time, "HH:mm:ss").format("HHmm"),
-        10
-      ) >= parseInt(moment(props.time, "HH:mm a").format("HHmm"), 10) &&
-      parseInt(moment(f.appointment_to_time, "HH:mm:ss").format("HHmm"), 10) <=
-        parseInt(newEndTime.format("HHmm"), 10) &&
-      f.cancelled === "N"
+    (f) => {
+      if (f.number_of_slot > 1) {
+        return (
+          parseInt(
+            moment(f.appointment_from_time, "HH:mm:ss").format("HHmm"),
+            10
+          ) <= parseInt(newEndTime.format("HHmm"), 10) &&
+          parseInt(newEndTime.format("HHmm"), 10) <
+            parseInt(
+              moment(f.appointment_to_time, "HH:mm:ss").format("HHmm"),
+              10
+            ) &&
+          f.cancelled === "N"
+        );
+      } else {
+        return (
+          parseInt(
+            moment(f.appointment_from_time, "HH:mm:ss").format("HHmm"),
+            10
+          ) >= parseInt(moment(props.time, "HH:mm a").format("HHmm"), 10) &&
+          parseInt(
+            moment(f.appointment_to_time, "HH:mm:ss").format("HHmm"),
+            10
+          ) <= parseInt(newEndTime.format("HHmm"), 10) &&
+          f.cancelled === "N"
+        );
+      }
+    }
 
     //f.is_stand_by === "N" && f.cancelled === "N"
   );
