@@ -241,9 +241,23 @@ export async function getWardHeaderData(
     //   .then((result) => {
     // _mysql.releaseConnection();
     let whereCondition = {};
+    let whereConditionWardDetail = {};
     if (req.query.hims_adm_ward_header_id) {
       whereCondition = {
         hims_adm_ward_header_id: req.query.hims_adm_ward_header_id,
+      };
+    }
+    console.log(
+      "req.query.hims_adm_bed_status_id",
+      req.query.hims_adm_bed_status_id
+    );
+    if (req.query.hims_adm_bed_status_id) {
+      console.log(
+        "req.query.hims_adm_bed_status_id",
+        req.query.hims_adm_bed_status_id
+      );
+      whereConditionWardDetail = {
+        bed_status: req.query.hims_adm_bed_status_id,
       };
     }
     const result = await hims_adm_ward_header.findAll({
@@ -266,7 +280,9 @@ export async function getWardHeaderData(
             "status",
           ],
           as: "WD",
-
+          where: {
+            ...whereConditionWardDetail,
+          },
           include: [
             {
               model: hims_adm_ip_bed,
@@ -303,54 +319,59 @@ export async function getWardHeaderData(
           ward_short_name,
           WD,
         } = _.head(detail);
-        const item: {
-          // hims_adm_ward_header_id: number;
-          bed_id: number;
-          bed_no: number;
-          status: string;
-          bed_desc: string;
-          bed_status: string;
-          services_id: number;
-          bed_short_name: string;
-          service_name: string;
-          service_type_id: number;
-          hims_adm_ward_detail_id: number;
-          isInserted: number;
-        } = WD.map((item: any) => {
-          // const { WD } = item;
-          // return WD.map((wardDetails) => {
-          const { bed_desc, bed_short_name, S, services_id } = item.IP;
-          console.log("bed_status 123313", item.bed_status);
+        if (WD.length > 0) {
+          const item: {
+            // hims_adm_ward_header_id: number;
+            bed_id: number;
+            bed_no: number;
+            status: string;
+            bed_desc: string;
+            bed_status: string;
+            services_id: number;
+            bed_short_name: string;
+            service_name: string;
+            service_type_id: number;
+            hims_adm_ward_detail_id: number;
+            isInserted: number;
+          } = WD.map((item: any) => {
+            // const { WD } = item;
+            // return WD.map((wardDetails) => {
+            const { bed_desc, bed_short_name, S, services_id } = item.IP;
+
+            return {
+              // hims_adm_ward_header_id: item.hims_adm_ward_header_id,
+              bed_id: item.bed_id,
+              bed_no: item.bed_no,
+              status: item.status,
+              bed_status: item.bed_status,
+              service_name: S?.service_name ?? undefined,
+              service_type_id: S?.service_type_id ?? undefined,
+              bed_desc: bed_desc ? bed_desc : undefined,
+              services_id: services_id ? services_id : undefined,
+              bed_short_name: bed_short_name ? bed_short_name : undefined,
+              hims_adm_ward_detail_id: item.hims_adm_ward_detail_id,
+              isInserted: 1,
+            };
+            // });
+          });
+
           return {
-            // hims_adm_ward_header_id: item.hims_adm_ward_header_id,
-            bed_id: item.bed_id,
-            bed_no: item.bed_no,
-            status: item.status,
-            bed_status: item.bed_status,
-            service_name: S?.service_name ?? undefined,
-            service_type_id: S?.service_type_id ?? undefined,
-            bed_desc: bed_desc ? bed_desc : undefined,
-            services_id: services_id ? services_id : undefined,
-            bed_short_name: bed_short_name ? bed_short_name : undefined,
-            hims_adm_ward_detail_id: item.hims_adm_ward_detail_id,
-            isInserted: 1,
+            groupType: key,
+            hims_adm_ward_header_id: hims_adm_ward_header_id,
+            ward_short_name: ward_short_name,
+            ward_type: ward_type,
+            ward_desc: ward_desc,
+
+            groupDetail: item,
           };
-          // });
-        });
-
-        return {
-          groupType: key,
-          hims_adm_ward_header_id: hims_adm_ward_header_id,
-          ward_short_name: ward_short_name,
-          ward_type: ward_type,
-          ward_desc: ward_desc,
-
-          groupDetail: item,
-        };
+        }
       })
       .value();
-    // console.log(result, "result");
-    req["records"] = arrangedData;
+
+    console.log("arrangedData", arrangedData);
+    req["records"] = arrangedData.filter(function (element) {
+      return element !== undefined;
+    });
 
     next();
     // })
@@ -486,6 +507,38 @@ export async function getWardDataBedManagement(
   }
 }
 
+export async function getWardHeader(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    let whereCondition = {};
+    if (req.query.hims_adm_ward_header_id) {
+      whereCondition = {
+        hims_adm_ward_header_id: req.query.hims_adm_ward_header_id,
+      };
+    }
+    const result = await hims_adm_ward_header.findAll({
+      attributes: [
+        "hims_adm_ward_header_id",
+        "ward_short_name",
+        "ward_desc",
+        "ward_type",
+      ],
+
+      where: {
+        ...whereCondition,
+      },
+    });
+
+    req["records"] = result;
+
+    next();
+  } catch (e) {
+    next(e);
+  }
+}
 export async function addWardHeader(
   req: Request,
   res: Response,
@@ -805,7 +858,7 @@ export async function updateBedReleasingDetails(
   // const _mysql = new algaehMysql();
   try {
     const input = req.body;
-    console.log("iamaherere", input);
+
     const result = await hims_adm_ward_detail.update(
       {
         bed_status: "Vacant",
@@ -837,6 +890,32 @@ export async function updateBedReleasingDetails(
   // finally {
   //   _mysql.releaseConnection();
   // }
+}
+export async function updateBedStatusUnavailable(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const input = req.body;
+
+    const result = await hims_adm_ward_detail.update(
+      {
+        bed_status: "Unavailable",
+      },
+      {
+        where: {
+          hims_adm_ward_detail_id: input.hims_adm_ward_detail_id,
+        },
+      }
+    );
+
+    req["records"] = result;
+
+    next();
+  } catch (e) {
+    next(e);
+  }
 }
 export async function getPatBedAdmissionDetails(
   req: Request,

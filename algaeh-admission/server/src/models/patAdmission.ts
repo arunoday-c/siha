@@ -135,7 +135,7 @@ export async function addPatienAdmission(
     );
     console.log("input.hims_adm_ward_detail_id", input.hims_adm_ward_detail_id);
     const update_bed_status: any = await hims_adm_ward_detail.update(
-      { bed_status: "Booked" },
+      { bed_status: "Occupied" },
       {
         where: {
           hims_adm_ward_detail_id: input.hims_adm_ward_detail_id,

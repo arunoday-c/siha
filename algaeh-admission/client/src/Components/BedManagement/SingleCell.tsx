@@ -1,12 +1,11 @@
 import React, { useContext, memo } from "react";
 import { PatAdmissionContext } from "../PatientAdmission/PatientAdmissionContext";
 import { BedManagementContext } from "./BedMangementContext";
-import {
-  algaehAxios,
-  AlgaehMessagePop,
-  message,
-} from "algaeh-react-components";
+import { algaehAxios, AlgaehMessagePop, Modal } from "algaeh-react-components";
+
 import "./BedManagement.scss";
+
+const { confirm } = Modal;
 export default memo(function SingleCell({
   hims_adm_ward_detail_id,
   bed_short_name,
@@ -31,13 +30,42 @@ export default memo(function SingleCell({
   bed_status: string;
 }) {
   //
+
   const { selectedBedData, setSelectedBedData } =
     useContext(PatAdmissionContext);
-  const { bedStatusData } = useContext(BedManagementContext);
+  const {
+    bedStatusData,
+    setWardHeaderData,
+    hims_adm_bed_status_id,
+    ward_header_id,
+    fromAdmission,
+  } = useContext(BedManagementContext);
   const bgColor = bedStatusData?.filter(
     (f: any) => f.description === bed_status
   )[0]?.bed_color;
-
+  async function getWardHeaderData(data: any) {
+    const { response, error } = await algaehAxios(
+      "/bedManagement/getWardHeaderData",
+      {
+        module: "admission",
+        method: "GET",
+        data: { ...data },
+      }
+    );
+    if (error) {
+      if (error.show === true) {
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
+      }
+    }
+    if (response.data.success) {
+      setWardHeaderData(response.data.records);
+    }
+  }
   const getPatBedAdmissionDetails = async () => {
     const { response, error } = await algaehAxios(
       "/bedManagement/getPatBedAdmissionDetails",
@@ -61,37 +89,78 @@ export default memo(function SingleCell({
       return response.data.records;
     }
   };
+  const updateBedStatusUnavailable = async () => {
+    confirm({
+      okText: "Yes",
+      okType: "primary",
+      icon: "",
+      title: "Are You sure you want to confirm ?",
+      maskClosable: true,
+      onOk: async () => {
+        const { response, error } = await algaehAxios(
+          "/bedManagement/updateBedStatusUnavailable",
+          {
+            module: "admission",
+            method: "PUT",
+            data: { hims_adm_ward_detail_id },
+          }
+        );
+        if (error) {
+          if (error.show === true) {
+            let extendedError: Error | any = error;
+            AlgaehMessagePop({
+              display: extendedError.response.data.message,
+              type: "error",
+            });
+            throw error;
+          }
+        }
+        if (response.data.success) {
+          return response.data.records;
+        }
+      },
+    });
+  };
   const updateBedReleasingDetails = async (data: any) => {
-    const { response, error } = await algaehAxios(
-      "/bedManagement/updateBedReleasingDetails",
-      {
-        module: "admission",
-        method: "PUT",
-        data: { ...data, hims_adm_ward_detail_id },
-      }
-    );
-    if (error) {
-      if (error.show === true) {
-        let extendedError: Error | any = error;
-        AlgaehMessagePop({
-          display: extendedError.response.data.message,
-          type: "error",
-        });
-        throw error;
-      }
-    }
-    if (response.data.success) {
-      return response.data.records;
-    }
+    confirm({
+      okText: "Yes",
+      okType: "primary",
+      icon: "",
+      title: "Are You sure you want to Release The bed ?",
+      maskClosable: true,
+      onOk: async () => {
+        const { response, error } = await algaehAxios(
+          "/bedManagement/updateBedReleasingDetails",
+          {
+            module: "admission",
+            method: "PUT",
+            data: { ...data, hims_adm_ward_detail_id },
+          }
+        );
+        if (error) {
+          if (error.show === true) {
+            let extendedError: Error | any = error;
+            AlgaehMessagePop({
+              display: extendedError.response.data.message,
+              type: "error",
+            });
+            throw error;
+          }
+        }
+        if (response.data.success) {
+          return response.data.records;
+        }
+      },
+    });
   };
 
   return (
     <div
       style={
-        bed_status === "Booked"
+        bed_status === "Occupied"
           ? {
               backgroundColor: bgColor,
-              pointerEvents: "none",
+              // pointerEvents: "none",
               // opacity: "0.4",
             }
           : { backgroundColor: bgColor }
@@ -102,57 +171,116 @@ export default memo(function SingleCell({
           : ""
       }`}
     >
-      <span
-        onClick={() => {
-          setSelectedBedData({
-            hims_adm_ward_detail_id,
-            hims_adm_ward_header_id,
-            bed_short_name,
-            bed_id,
-            bed_no,
-            bed_desc,
-            ward_desc,
-            services_id,
-            service_type_id,
-          });
-        }}
-        className={`bedBox`}
-        key={hims_adm_ward_detail_id}
-      >
-        <span>
-          <b>
-            {bed_short_name}-{bed_no}
-          </b>
-        </span>
-        <span>{bed_desc}</span>
-      </span>
-      <span
-        className="actionSec"
-        style={
-          bed_status === "Booked"
-            ? {}
-            : { pointerEvents: "none", opacity: "0.1" }
-        }
-      >
-        <i
-          className="fas fa-redo-alt"
-          onClick={() => {
-            getPatBedAdmissionDetails()
-              .then((response) => {
-                updateBedReleasingDetails(response);
-              })
-              .catch((error) =>
-                AlgaehMessagePop({ display: error.message, type: "error" })
-              );
-          }}
-        ></i>
-      </span>
+      {!fromAdmission ? (
+        <>
+          {/* <span
+            // style={fromAdmission ? {} : { pointerEvents: "none" }}
+            onClick={() => {
+              setSelectedBedData({
+                hims_adm_ward_detail_id,
+                hims_adm_ward_header_id,
+                bed_short_name,
+                bed_id,
+                bed_no,
+                bed_desc,
+                ward_desc,
+                services_id,
+                service_type_id,
+              });
+            }}
+            className={`bedBox`}
+            key={hims_adm_ward_detail_id}
+          > */}
+          <span>
+            <b>
+              {bed_short_name}-{bed_no}
+            </b>
+          </span>
+          <span>{bed_desc}</span>
+          {/* </span> */}
+          <span
+            // className="actionSec"
+            // style={
+            //   bed_status === "Occupied"
+            //     ? {}
+            //     : { pointerEvents: "none", opacity: "0.1" }
+            // }
+            onClick={() => {
+              updateBedStatusUnavailable()
+                .then((response) => {
+                  getWardHeaderData({
+                    hims_adm_ward_header_id: ward_header_id,
+                    hims_adm_bed_status_id: hims_adm_bed_status_id,
+                  });
+                })
+                .catch((error) =>
+                  AlgaehMessagePop({ display: error.message, type: "error" })
+                );
+            }}
+          >
+            <i className="fas fa-redo-altfas fa-exclamation-triangle"></i>
+          </span>
+          <span
+            className="actionSec"
+            style={
+              bed_status === "Occupied" || bed_status === "Unavailable"
+                ? {}
+                : { pointerEvents: "none", opacity: "0.1" }
+            }
+          >
+            <i
+              className="fas fa-redo-alt"
+              onClick={() => {
+                getPatBedAdmissionDetails()
+                  .then((response) => {
+                    updateBedReleasingDetails(response);
+                    getWardHeaderData({
+                      hims_adm_ward_header_id: ward_header_id,
+                      hims_adm_bed_status_id: hims_adm_bed_status_id,
+                    });
+                  })
+                  .catch((error) =>
+                    AlgaehMessagePop({ display: error.message, type: "error" })
+                  );
+              }}
+            ></i>
+          </span>
+        </>
+      ) : (
+        <>
+          <span
+            // style={fromAdmission ? {} : { pointerEvents: "none" }}
+            onClick={() => {
+              setSelectedBedData({
+                hims_adm_ward_detail_id,
+                hims_adm_ward_header_id,
+                bed_short_name,
+                bed_id,
+                bed_no,
+                bed_desc,
+                ward_desc,
+                services_id,
+                service_type_id,
+              });
+            }}
+            className={`bedBox`}
+            key={hims_adm_ward_detail_id}
+          >
+            <span>
+              <b>
+                {bed_short_name}-{bed_no}
+              </b>
+            </span>
+            <span>{bed_desc}</span>
+          </span>
+        </>
+      )}
 
-      {bed_status === "Booked" ? (
+      {bed_status === "Occupied" ? (
         <div
           className="bookedDetails animated slideInDown faster"
           style={
-            bed_status === "Booked"
+            bed_status === "Occupied"
               ? {
                   backgroundColor: bgColor,
                 }

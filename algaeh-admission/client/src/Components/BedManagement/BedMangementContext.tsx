@@ -3,6 +3,10 @@ import { createContext, useReducer } from "react";
 const baseState: any = {
   wardHeaderData: [],
   bedStatusData: [],
+  wardHeaderDropdown: [],
+  ward_header_id: null,
+  hims_adm_bed_status_id: null,
+  fromAdmission: false,
   // selectedBedData: [],
 };
 
@@ -12,7 +16,11 @@ const TYPES = {
   setWardHeaderData: "setWardHeaderData",
   setBedStatusData: "setBedStatusData",
   // setSelectedBedData: "setSelectedBedData",
+  setWardHeaderId: "setWardHeaderId",
+  setBedStatusId: "setBedStatusId",
   clearState: "clearState",
+  setFromPatientAdmission: "setFromPatientAdmission",
+  setWardHeaderDropdown: "setWardHeaderDropdown",
 };
 
 function reducer(
@@ -24,6 +32,15 @@ function reducer(
       return { ...state, wardHeaderData: payload };
     case TYPES.setBedStatusData:
       return { ...state, bedStatusData: payload };
+    case TYPES.setWardHeaderDropdown:
+      return { ...state, wardHeaderDropdown: payload };
+    case TYPES.setWardHeaderId:
+      return { ...state, ward_header_id: payload };
+    case TYPES.setBedStatusId:
+      return { ...state, hims_adm_bed_status_id: payload };
+    case TYPES.setFromPatientAdmission:
+      return { ...state, fromAdmission: payload };
+
     // case TYPES.setSelectedBedData:
     //   if (payload === null) {
     //     return { ...state, selectedBedData: {} };
@@ -47,6 +64,18 @@ export const BedContextProvider = ({ children }: { children: any }) => {
     },
     setBedStatusData(e: any) {
       dispatch({ type: TYPES.setBedStatusData, payload: e });
+    },
+    setWardHeaderDropdown(e: any) {
+      dispatch({ type: TYPES.setWardHeaderDropdown, payload: e });
+    },
+    setWardHeaderId(e: any) {
+      dispatch({ type: TYPES.setWardHeaderId, payload: e });
+    },
+    setBedStatusId(e: any) {
+      dispatch({ type: TYPES.setBedStatusId, payload: e });
+    },
+    setFromPatientAdmission(e: any) {
+      dispatch({ type: TYPES.setFromPatientAdmission, payload: e });
     },
     // setSelectedBedData(e: any) {
     //   dispatch({ type: TYPES.setSelectedBedData, payload: e });
