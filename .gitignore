@@ -174,3 +174,4 @@ docker-compose.deploy.yml
  
 
  **/Output
+.env_local
