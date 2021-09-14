@@ -1495,19 +1495,32 @@ let getMyDay = (req, res, next) => {
           inner join hims_d_visit_type VT on V.visit_type=VT.hims_d_visit_type_id
           left join hims_f_patient_diagnosis PD on PD.episode_id=V.episode_id and PD.diagnosis_type='P' and PD.record_status='A'
           left join hims_d_icd ICD on ICD.hims_d_icd_id=PD.daignosis_id
-          where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? and ${_query} order by E.updated_date desc`,
-        values: [req.userIdentity.hospital_id],
+          where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? and ${_query} order by E.updated_date desc;
+          
+          select  E.hims_f_patient_encounter_id, P.patient_code, concat(T.title,". ", P.full_name) as full_name,
+          concat(T.arabic_title,". ",P.arabic_name) as pat_arabic_name, P.gender, V.age_in_years, E.patient_id, 
+          E.provider_id, E.status, E.nurse_examine, E.checked_in, 
+          E.payment_type, E.episode_id, E.encounter_id, E.source, E.updated_date as encountered_date,E.ip_id, 
+          V.sub_department_id, SD.department_type, SD.vitals_mandatory,	P.primary_id_no,ID.identity_document_name                  
+          from hims_f_patient_encounter as E  
+          INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id   
+          inner join hims_adm_atd_admission V on E.ip_id=V.hims_adm_atd_admission_id
+          inner join hims_d_sub_department SD on sub_department_id=SD.hims_d_sub_department_id 
+          left join hims_d_identity_document ID on ID.hims_d_identity_document_id = P.primary_identity_id
+          inner join hims_d_title as T on P.title_id = T.his_d_title_id                              
+          where E.cancelled='N' and E.record_status='A' and V.hospital_id=? and ${_query} order by E.updated_date desc`,
+        values: [req.userIdentity.hospital_id, req.userIdentity.hospital_id],
         printQuery: true,
       })
       .then((result) => {
         let final_result = null;
-        if (result.length == 0) {
+        if (result[0].length == 0 && result[1].length == 0) {
           final_result = {
             provider_id: req.userIdentity.employee_id,
             sub_department_id: req.userIdentity.sub_department_id,
           };
         } else {
-          final_result = result;
+          final_result = result[0].concat(result[1]);
         }
         // console.log("final_result", final_result);
         _mysql.releaseConnection();
@@ -1585,9 +1598,27 @@ let getPatientProfile = (req, res, next) => {
     // }
     // let db = req.db;
     let inputData = extend({}, req.query);
+    let strQuery = "",
+      strField = "",
+      strWhereCon = "",
+      strWhereCon1 = "";
 
     // db.getConnection((error, connection) => {
     //   connection.query(
+    if (inputData.source === "I") {
+      strField = " ,PV.admission_number as visit_code ";
+      strQuery =
+        " INNER JOIN hims_adm_atd_admission PV ON PV.hims_adm_atd_admission_id = PE.ip_id ";
+      strWhereCon = " AND ip_id = " + inputData.ip_id;
+      strWhereCon1 = " AND PE.ip_id = " + inputData.ip_id;
+    } else {
+      strField = " ,PV.visit_code ";
+      strQuery =
+        " INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id = PE.visit_id \
+        INNER JOIN hims_d_visit_type VT ON VT.hims_d_visit_type_id = PV.visit_type and VT.consultation='Y'";
+      strWhereCon = " AND visit_id =  " + inputData.visit_id;
+      strWhereCon1 = " AND PE.visit_id !=  " + inputData.visit_id;
+    }
     _mysql
       .executeQuery({
         query:
@@ -1597,22 +1628,25 @@ let getPatientProfile = (req, res, next) => {
           P.secondary_contact_number,P.email,P.emergency_contact_name,P.emergency_contact_number,\
           P.relationship_with_patient,P.blood_group,P.marital_status,P.address1 AS patient_address,\
           P.address2 AS emergency_address,P.postal_code,N.nationality,PV.age_in_years, PV.age_in_months, \
-          PV.age_in_days,PV.sub_department_id,PE.payment_type,PE.created_date AS Encounter_Date, PV.visit_code \
-          FROM ((hims_f_patient P INNER JOIN hims_f_patient_encounter PE ON P.hims_d_patient_id = PE.patient_id)\
-          INNER JOIN hims_d_nationality N ON N.hims_d_nationality_id = P.nationality_id) \
-          INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id = PE.visit_id \
-          INNER JOIN hims_d_identity_document ID ON ID.hims_d_identity_document_id = P.primary_identity_id \
+          PV.age_in_days,PV.sub_department_id,PE.payment_type,PE.created_date AS Encounter_Date" +
+          strField +
+          "FROM ((hims_f_patient P INNER JOIN hims_f_patient_encounter PE ON P.hims_d_patient_id = PE.patient_id)\
+          INNER JOIN hims_d_nationality N ON N.hims_d_nationality_id = P.nationality_id) " +
+          strQuery +
+          "INNER JOIN hims_d_identity_document ID ON ID.hims_d_identity_document_id = P.primary_identity_id \
           INNER JOIN hims_d_hospital H ON H.hims_d_hospital_id = P.hospital_id \
-          WHERE P.hims_d_patient_id = ? AND PE.episode_id = ? AND visit_id = ? ORDER BY PE.created_date DESC LIMIT 1;\
-          select PE.created_date from hims_f_patient_encounter PE INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id = PE.visit_id \
-          INNER JOIN hims_d_visit_type VT ON VT.hims_d_visit_type_id = PV.visit_type and VT.consultation='Y'  \
-          where PE.patient_id = ? and PE.visit_id != ? order by PE.created_date DESC LIMIT 1; ",
+          WHERE P.hims_d_patient_id = ? AND PE.episode_id = ? " +
+          strWhereCon +
+          " ORDER BY PE.created_date DESC LIMIT 1;\
+          select PE.created_date from hims_f_patient_encounter PE " +
+          strQuery +
+          "where PE.patient_id = ? " +
+          strWhereCon1 +
+          " order by PE.created_date DESC LIMIT 1; ",
         values: [
           inputData.patient_id,
           inputData.episode_id,
-          inputData.visit_id,
           inputData.patient_id,
-          inputData.visit_id,
         ],
         printQuery: true,
       })
@@ -1645,18 +1679,22 @@ let getPatientVitals = (req, res, next) => {
     if (inputs.visit_id > 0) {
       strQuery += " and visit_id= " + inputs.visit_id;
     }
+    if (inputs.ip_id > 0) {
+      strQuery += " and ip_id= " + inputs.ip_id;
+    }
     if (inputs.patient_id > 0) {
       strQuery += " and patient_id= " + inputs.patient_id;
     }
     _mysql
       .executeQuery({
-        query: `select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time, PV.updated_by, PV.updated_Date,\
-      case_type, vital_id, PH.vitals_name, vital_short_name, PH.uom, vital_value, vital_value_one, vital_value_two, \
-      formula_value, PH.sequence_order, PH.display, AU.user_display_name,PH.box_type,PV.created_date from hims_f_patient_vitals PV \
-      inner join hims_d_vitals_header PH on PV.vital_id=PH.hims_d_vitals_header_id  \
-      left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id=PV.updated_by  \
-      where PV.record_status='A' and PH.record_status='A' ${strQuery}
-       group by PV.created_date  , vital_id order by PH.sequence_order asc;`,
+        query: `select hims_f_patient_vitals_id, patient_id, visit_id, ip_id, visit_date, visit_time, PV.updated_by, \
+        PV.updated_Date, case_type, vital_id, PH.vitals_name, vital_short_name, PH.uom, vital_value, vital_value_one, \
+        vital_value_two, formula_value, PH.sequence_order, PH.display, AU.user_display_name,PH.box_type, PV.created_date \
+        from hims_f_patient_vitals PV \
+        inner join hims_d_vitals_header PH on PV.vital_id=PH.hims_d_vitals_header_id  \
+        left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id=PV.updated_by  \
+        where PV.record_status='A' and PH.record_status='A' ${strQuery}
+        group by PV.created_date  , vital_id order by PH.sequence_order asc;`,
         // printQuery: true,
       })
       .then((result) => {
@@ -2784,6 +2822,7 @@ let addPatientVitals = (req, res, next) => {
         vital_value,
         patient_id,
         visit_id,
+        ip_id,
         visit_date,
         visit_time,
         case_type,
@@ -2797,12 +2836,13 @@ let addPatientVitals = (req, res, next) => {
       } = input[i];
       if (parseFloat(vital_value) !== 0) {
         query += mysql.format(
-          `INSERT INTO hims_f_patient_vitals(patient_id,visit_id,visit_date,visit_time,case_type,
+          `INSERT INTO hims_f_patient_vitals(patient_id,visit_id, ip_id, visit_date,visit_time,case_type,
             vital_id,vital_value,vital_value_one,vital_value_two,formula_value,hospital_id,created_date,created_by,
-            updated_date,updated_by) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
+            updated_date,updated_by) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
           [
             patient_id,
             visit_id,
+            ip_id,
             visit_date,
             visit_time,
             case_type,

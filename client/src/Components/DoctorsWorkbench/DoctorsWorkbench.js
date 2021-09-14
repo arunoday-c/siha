@@ -211,7 +211,7 @@ class DoctorsWorkbench extends Component {
                   "EHR-STD": "PatientProfile",
                   current_patient: data.patient_id,
                   episode_id: data.episode_id,
-                  visit_id: data.visit_id,
+                  visit_id: data?.visit_id ?? null,
                   encounter_id: response.data.records.encounter_id,
                   provider_id: data.provider_id,
                   department_type: data.department_type,
@@ -219,6 +219,8 @@ class DoctorsWorkbench extends Component {
                   sub_department_id: data.sub_department_id,
                   followUpRequired:
                     response.data.records.length > 0 ? false : true,
+                  ip_id: data?.ip_id ?? null,
+                  source: data.source,
                 });
                 setCookie("ScreenName", "PatientProfile");
                 history.push({
@@ -228,7 +230,7 @@ class DoctorsWorkbench extends Component {
                     "EHR-STD": "PatientProfile",
                     current_patient: data.patient_id,
                     episode_id: data.episode_id,
-                    visit_id: data.visit_id,
+                    visit_id: data?.visit_id ?? null,
                     encounter_id: response.data.records.encounter_id,
                     provider_id: data.provider_id,
                     department_type: data.department_type,
@@ -236,6 +238,8 @@ class DoctorsWorkbench extends Component {
                     sub_department_id: data.sub_department_id,
                     followUpRequired:
                       response.data.records.length > 0 ? false : true,
+                    ip_id: data?.ip_id ?? null,
+                    source: data.source,
                     // openFollowUpModal:response.data.records.length > 0?this.setState({})
                   },
                 });
@@ -489,17 +493,20 @@ class DoctorsWorkbench extends Component {
       return;
     }
 
+    debugger;
     setGlobal({
       vitals_mandatory: data.vitals_mandatory,
       "EHR-STD": "PatientProfile",
       current_patient: data.patient_id,
       episode_id: data.episode_id,
-      visit_id: data.visit_id,
+      visit_id: data?.visit_id ?? null,
+      ip_id: data?.ip_id ?? null,
       encounter_id: data.encounter_id,
       provider_id: data.provider_id,
       department_type: data.department_type,
       gender: data.gender,
       sub_department_id: data.sub_department_id,
+      source: data.source,
     });
     const history = this.props.history;
     setCookie("ScreenName", "PatientProfile");
@@ -512,12 +519,14 @@ class DoctorsWorkbench extends Component {
           "EHR-STD": "PatientProfile",
           current_patient: data.patient_id,
           episode_id: data.episode_id,
-          visit_id: data.visit_id,
+          visit_id: data?.visit_id ?? null,
           encounter_id: data.encounter_id,
           provider_id: data.provider_id,
           department_type: data.department_type,
           gender: data.gender,
           sub_department_id: data.sub_department_id,
+          source: data.source,
+          ip_id: data?.ip_id ?? null,
         },
       },
     });
@@ -792,7 +801,11 @@ class DoctorsWorkbench extends Component {
                                 </span>
                               )}
 
-                              {data.new_visit_patient === "Y" ? (
+                              {data.source === "I" ? (
+                                <span className="opPatientStatus newVisit">
+                                  IP/Day Care
+                                </span>
+                              ) : data.new_visit_patient === "Y" ? (
                                 <span className="opPatientStatus newVisit">
                                   New Visit ({data.visit_type_desc})
                                 </span>

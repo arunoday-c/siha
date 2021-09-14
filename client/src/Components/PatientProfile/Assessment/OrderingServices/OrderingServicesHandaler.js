@@ -142,6 +142,8 @@ const ProcessService = ($this, favouriteOrder, e) => {
                             ) {
                               Service_data.billdetails[i].visit_id =
                                 $this.state.visit_id;
+                              Service_data.billdetails[i].ip_id =
+                                $this.state.ip_id;
                               Service_data.billdetails[i].patient_id =
                                 $this.state.patient_id;
 
@@ -237,6 +239,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
                   let existingservices = $this.state.orderservicesdata;
 
                   data.billdetails[0].visit_id = $this.state.visit_id;
+                  data.billdetails[0].ip_id = $this.state.ip_id;
                   data.billdetails[0].patient_id = $this.state.patient_id;
 
                   data.billdetails[0].insurance_provider_id =
@@ -510,6 +513,7 @@ const deleteServices = ($this, row) => {
                 if (response.data.success) {
                   for (let i = 0; i < data.billdetails.length; i++) {
                     data.billdetails[i].visit_id = $this.state.visit_id;
+                    data.billdetails[i].ip_id = $this.state.ip_id;
                     data.billdetails[i].patient_id = $this.state.patient_id;
 
                     data.billdetails[i].doctor_id =
@@ -653,8 +657,10 @@ const deleteServices = ($this, row) => {
 const SaveOrdersServices = ($this, e) => {
   AlgaehLoader({ show: true });
 
+  debugger
   let inputObj = {
     visit_id: $this.state.visit_id,
+    ip_id: $this.state.ip_id,    
     approval_amt: $this.state.approval_amt,
     approval_limit_yesno: $this.state.approval_limit_yesno,
     patient_id: $this.state.patient_id,
@@ -666,6 +672,7 @@ const SaveOrdersServices = ($this, e) => {
     deleteserviceInput: $this.state.deleteserviceInput,
     date_of_birth: $this.props.date_of_birth,
     gender: $this.props.gender,
+    source: $this.state.source,
     bill_date: new Date(),
   };
   const settings = { header: undefined, footer: undefined };
@@ -687,6 +694,7 @@ const SaveOrdersServices = ($this, e) => {
             selectedLang: "en",
             patient_id: Window.global["current_patient"],
             visit_id: Window.global["visit_id"],
+            ip_id: Window.global["ip_id"],
             doctor_id: null,
             vat_applicable: $this.props.vat_applicable,
 
@@ -1152,6 +1160,8 @@ const ProcessFromFavourite = ($this, from) => {
                     for (let i = 0; i < Service_data.billdetails.length; i++) {
                       Service_data.billdetails[i].visit_id =
                         $this.state.visit_id;
+                      Service_data.billdetails[i].ip_id =
+                        $this.state.ip_id;
                       Service_data.billdetails[i].patient_id =
                         $this.state.patient_id;
 
@@ -1252,6 +1262,7 @@ const ProcessFromFavourite = ($this, from) => {
           let preapp_limit_amount = 0;
           for (let c = 0; c < data.billdetails.length; c++) {
             data.billdetails[c].visit_id = $this.state.visit_id;
+            data.billdetails[c].ip_id = $this.state.ip_id;
             data.billdetails[c].patient_id = $this.state.patient_id;
 
             data.billdetails[c].insurance_provider_id =

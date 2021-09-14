@@ -180,6 +180,19 @@ export default {
     }
   },
   //created by:irfan
+  getAdmissionInsurance: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let inputParam = req.query;
+
+      const utilities = new algaehUtilities();
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  //created by:irfan
   getPatientInsurance: (req, res, next) => {
     const _mysql = new algaehMysql();
 
@@ -189,13 +202,30 @@ export default {
       const utilities = new algaehUtilities();
       /* Select statemwnt  */
 
-      // utilities.logger().log("inputParam: ", inputParam);
-
-      if (req.query.patient_visit_id != null) {
+      console.log("inputParam", inputParam);
+      if (req.query.source === "I") {
         _mysql
           .executeQuery({
             query:
-              "SELECT A.* ,B.* FROM \
+              "SELECT insurance_yesno, insurance_provider_id, insurance_network_office_id, network_id FROM hims_adm_atd_admission where hims_adm_atd_admission_id=?;",
+            values: [inputParam.ip_id],
+            printQuery: true,
+          })
+          .then((result) => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          })
+          .catch((e) => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      } else {
+        if (req.query.patient_visit_id != null) {
+          _mysql
+            .executeQuery({
+              query:
+                "SELECT A.* ,B.* FROM \
               (select mIns.patient_id as pri_patient_id, mIns.patient_visit_id as pri_patient_visit_id,\
               mIns.primary_insurance_provider_id as insurance_provider_id,\
               Ins.insurance_provider_name as insurance_provider_name,\
@@ -230,28 +260,28 @@ export default {
               INNER JOIN hims_d_insurance_network net ON mIns.secondary_network_id=net.hims_d_insurance_network_id)\
               INNER JOIN hims_d_insurance_network_office netoff ON mIns.secondary_policy_num=netoff.policy_number and mIns.primary_network_id = netoff.network_id) where mIns.patient_id=? and mIns.patient_visit_id =?\
               GROUP BY mIns.secondary_policy_num) AS B  on A.pri_patient_id=B.sec_patient_id ;",
-            values: [
-              inputParam.patient_id,
-              inputParam.patient_visit_id,
-              inputParam.patient_id,
-              inputParam.patient_visit_id,
-            ],
-            printQuery: true,
-          })
-          .then((result) => {
-            _mysql.releaseConnection();
-            req.records = result;
-            next();
-          })
-          .catch((e) => {
-            _mysql.releaseConnection();
-            next(e);
-          });
-      } else {
-        _mysql
-          .executeQuery({
-            query:
-              "(select  mIns.patient_id,mIns.primary_insurance_provider_id as insurance_provider_id,Ins.insurance_provider_name,\
+              values: [
+                inputParam.patient_id,
+                inputParam.patient_visit_id,
+                inputParam.patient_id,
+                inputParam.patient_visit_id,
+              ],
+              printQuery: true,
+            })
+            .then((result) => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            })
+            .catch((e) => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql
+            .executeQuery({
+              query:
+                "(select  mIns.patient_id,mIns.primary_insurance_provider_id as insurance_provider_id,Ins.insurance_provider_name,\
                 mIns.primary_sub_id as sub_insurance_provider_id, sIns.insurance_sub_name as sub_insurance_provider_name,\
                 sIns.user_id, sIns.creidt_limit_req, \
                 sIns.creidt_limit, sIns.creidt_amount_till, \
@@ -279,18 +309,19 @@ export default {
                  INNER JOIN hims_d_insurance_network net ON mIns.secondary_network_id=net.hims_d_insurance_network_id)\
                  INNER JOIN hims_d_insurance_network_office netoff ON mIns.secondary_policy_num=netoff.policy_number and mIns.primary_network_id = netoff.network_id) where mIns.patient_id=?\
                  GROUP BY mIns.secondary_policy_num);",
-            values: [inputParam.patient_id, inputParam.patient_id],
-            printQuery: true,
-          })
-          .then((result) => {
-            _mysql.releaseConnection();
-            req.records = result;
-            next();
-          })
-          .catch((e) => {
-            _mysql.releaseConnection();
-            next(e);
-          });
+              values: [inputParam.patient_id, inputParam.patient_id],
+              printQuery: true,
+            })
+            .then((result) => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            })
+            .catch((e) => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        }
       }
     } catch (e) {
       _mysql.releaseConnection();

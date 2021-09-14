@@ -309,6 +309,7 @@ class Dental extends Component {
       });
       return;
     }
+    debugger
     algaehApiCall({
       // uri: "/insurance/getPatientInsurance",
       uri: "/patientRegistration/getPatientInsurance",

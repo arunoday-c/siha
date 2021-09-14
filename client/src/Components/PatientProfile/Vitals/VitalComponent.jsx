@@ -55,12 +55,14 @@ class VitalComponent extends Component {
             //   };
             // }
 
+            debugger;
             bodyArray.push({
               primary_id_no: this.props.primary_id_no,
               visit_code: this.props.visit_code,
               vital_name: elementName,
               patient_id: this.props.current_patient, //Window.global["current_patient"],
               visit_id: this.props.visit_id, //Window.global["visit_id"],
+              ip_id: this.props.ip_id, //Window.global["visit_id"],
               visit_date: this.props.state.recorded_date,
               visit_time: moment().format(config.formators.time),
               case_type: this.props.case_type, //Window.global["case_type"],
