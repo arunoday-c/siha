@@ -537,6 +537,7 @@ class PatientProfile extends Component {
     });
     setCookie("ScreenName", "DoctorsWorkbench");
     setGlobal({ "EHR-STD": "DoctorsWorkbench" });
+
     //document.getElementById("ehr-router").click();
     this.props.history.push("/DoctorsWorkbench");
   }
@@ -1276,6 +1277,7 @@ class PatientProfile extends Component {
               <Dental
                 vat_applicable={this.vatApplicable()}
                 age_in_years={_pat_profile.age_in_years}
+                patient_code={_pat_profile.patient_code}
               />
             ) : this.state.pageDisplay === "summary" ? (
               <Summary />

@@ -42,6 +42,7 @@ import {
   getUploadedPatientFiles,
   downloadPatDocument,
   deletePatientDocs,
+  deleteMultipleFiles,
 } from "../files/patientDocumentsUpload";
 
 import {
@@ -67,6 +68,7 @@ initializedDb((db) => {
   router.get("/getUploadedPatientFiles", getUploadedPatientFiles);
   router.get("/downloadPatDocument", downloadPatDocument);
   router.delete("/deletePatientDocs", deletePatientDocs);
+  router.delete("/deleteMultipleFiles", deleteMultipleFiles);
 
   router.get("/getUploadedCommonFile", getUploadedCommonFile);
   router.delete("/deleteCommonFile", deleteCommonFile);

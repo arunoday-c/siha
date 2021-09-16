@@ -1,0 +1,60 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Receipt Number</th>
+                        <th>Receipt Date</th>
+                        <th>Patient Code</th>
+                        <th>Patient Name</th>
+                        <th>Dept. Name</th>
+                        <th>Doctor Name</th>
+                        <th>Cashier Name</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="numberFldTotalBottom">
+                        <td colspan="8" class="numberFld"></td>
+                         <td class="numberFld">{{numberFormating total_cash currencyheader}}</td>
+
+
+                         {{!-- <td class="numberFld">{{total_cash}}</td>
+                          <td class="numberFld">{{total_card}}</td>
+                           <td class="numberFld">{{total_collection}}</td> --}}
+                    </tr>
+                    {{#each details}}
+                    <tr>
+                        <td datatype="string">{{inc @index}}</td>
+                        <td class="txtFld" datatype="string">{{receipt_number}} / {{bill_number}}</td>
+                        <td>{{receipt_date}}</td>
+                        <td>{{patient_code}}</td>
+                        <td class="txtFld" datatype="string">{{full_name}}</td>
+
+                        <td class="txtFld" datatype="string">{{sub_department_name}}</td>
+                        <td class="txtFld" datatype="string">{{doctor_name}}</td>
+                        <td class="txtFld" datatype="string">{{cashier_name}}</td>
+                         <td class="numberFld">{{numberFormating total ../currency}}</td>
+
+                    </tr>
+                    {{/each }}
+                    <tr class="numberFldTotalBottom">
+                        <td colspan="8" class="numberFld"></td>
+                         <td class="numberFld">{{numberFormating total_cash currencyheader}}</td>
+
+
+                         {{!-- <td class="numberFld">{{total_cash}}</td>
+                          <td class="numberFld">{{total_card}}</td>
+                           <td class="numberFld">{{total_collection}}</td> --}}
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

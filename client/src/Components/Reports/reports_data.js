@@ -19,6 +19,7 @@ import {
   LAB_RE_RUN,
   INS_STATUS,
   PCR_RES,
+  PO_FROM,
 } from "../../utils/GlobalVariables.json";
 import { getYears } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -37,6 +38,7 @@ import Clinical from "./reportBag/clinical";
 import Laboratory from "./reportBag/laboratory";
 import misReport from "./reportBag/misReport";
 import Sales from "./reportBag/sales";
+import Procurement from "./reportBag/procurement";
 import spotlightSearch from "../../Search/spotlightSearch.json";
 let allYears = getYears();
 
@@ -70,6 +72,7 @@ export default function loadActiveReports(
             FORMAT_YESNO,
             spotlightSearch,
             SENDOUT_TYPE,
+            FORMAT_PAYTYPE,
           });
           break;
         case "hr":
@@ -170,6 +173,16 @@ export default function loadActiveReports(
             hospital_id: hims_d_hospital_id,
             algaehApiCall,
             EXPIRY_STATUS,
+            moment,
+            spotlightSearch,
+            FORMAT_YESNO,
+          });
+          break;
+        case "procurement":
+          result = Procurement({
+            hospital_id: hims_d_hospital_id,
+            algaehApiCall,
+            PO_FROM,
             moment,
             spotlightSearch,
             FORMAT_YESNO,

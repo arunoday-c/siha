@@ -5,6 +5,7 @@ export default function Income({
   FORMAT_YESNO,
   spotlightSearch,
   SENDOUT_TYPE,
+  FORMAT_PAYTYPE,
 }) {
   return {
     name: "Income",
@@ -593,6 +594,138 @@ export default function Income({
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
               data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "sub_department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Department",
+            link: {
+              uri: "/department/get/get_All_Doctors_DepartmentWise",
+              module: "masterSettings",
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records.departmets,
+              });
+            },
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "sub_department_id",
+              data: undefined,
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                reportState.setState({
+                  sub_department_id: currentEvent.value,
+                  provider_id_list: currentEvent.selected.doctors,
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  provider_id_list: [],
+                });
+              },
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "provider_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Filter by Doctor",
+            dataSource: {
+              textField: "full_name",
+              valueField: "employee_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "cashier_name",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Cashier",
+            link: {
+              uri: "/shiftAndCounter/getCashiers",
+              module: "masterSettings",
+            },
+            value: cashier_id,
+            dataSource: {
+              textField: "cashier_name",
+              valueField: "cashier_id",
+              data: undefined,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Income by Payment Type",
+        reportName: "opBillIncomebyType",
+        requireIframe: true,
+        componentCode: "RPT_INC_PAY_TYP",
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "pay_type",
+            initialLoad: true,
+            isImp: true,
+            label: "Payment Type",
+            sort: "off",
+            others: {
+              sort: "off",
+            },
+
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: FORMAT_PAYTYPE,
             },
           },
           {

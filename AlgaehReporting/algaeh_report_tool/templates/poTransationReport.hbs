@@ -1,0 +1,63 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div class="print-body">
+
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>PO From</th>
+            <th>PO No.</th>
+            <th>PO Date</th>
+            <th>PO Created By</th>
+            <th>Receipt No.</th>
+            <th>Receipt Date</th>
+            <th>Receipt Created By</th>
+            <th>Posted to Finance</th>
+            <th>Posted by</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#hasElement result}}
+            {{!-- <tr class="numberFldTotalBottom">
+              <td class="txtFld" colspan="8"></td>
+              <td class="txtFld" colspan="8">{{net_balance_credit}}</td>
+               <td class="numberFld" colspan="3">Age: {{return_age}}</td>
+            </tr> --}}
+            {{#each result}}
+              <tr>
+                <td datatype="string">{{inc @index}}</td>
+                <td datatype="string">{{grn_for_name}}</td>
+                <td datatype="string">{{purchase_number}}</td>
+                <td datatype="string">{{po_date}}</td>
+                <td datatype="string" style="text-align: left;">{{PO_NAME}}</td>
+                <td datatype="string">{{grn_number}}</td>
+                <td datatype="string">{{posted_date}}</td>
+                <td
+                  datatype="string"
+                  style="text-align: left;"
+                >{{GRN_NAME}}</td>
+                <td
+                  datatype="string"
+                  style="text-align: left;"
+                >{{posted_date}}</td>
+                <td
+                  datatype="string"
+                  style="text-align: left;"
+                >{{FIN_NAME}}</td>
+              </tr>
+            {{/each}}
+          {{else}}
+            <tr>
+              <td colspan="10" class="noResultTextReport">No Records Found</td>
+            </tr>{{/hasElement}}
+        </tbody>
+
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+  </div>
+</body>

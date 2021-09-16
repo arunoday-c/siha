@@ -975,6 +975,7 @@ class DayEndProcess extends Component {
                           ),
                           disabled: true,
                           filterable: true,
+                          sortable: true,
                           // filterType: "choices",
                           // choices: [
                           //   {
@@ -1000,6 +1001,7 @@ class DayEndProcess extends Component {
                           ),
                           disabled: true,
                           filterable: true,
+                          sortable: false,
 
                           others: {
                             width: 130,
@@ -1014,6 +1016,7 @@ class DayEndProcess extends Component {
                             />
                           ),
                           filterable: true,
+                          sortable: false,
                           filterType: "date",
 
                           others: {
@@ -1035,6 +1038,7 @@ class DayEndProcess extends Component {
                           },
                           disabled: true,
                           filterable: true,
+                          sortable: false,
 
                           others: {
                             width: 120,
@@ -1070,6 +1074,7 @@ class DayEndProcess extends Component {
                           ),
                           disabled: true,
                           filterable: true,
+                          sortable: false,
                           others: {
                             width: 140,
                           },
@@ -1082,6 +1087,7 @@ class DayEndProcess extends Component {
                           ),
                           disabled: true,
                           filterable: true,
+                          sortable: false,
                           others: {
                             width: 140,
                           },
@@ -1093,6 +1099,7 @@ class DayEndProcess extends Component {
                           ),
                           disabled: true,
                           filterable: true,
+                          sortable: false,
                         },
                       ]}
                       data={this.state.dayEnd}

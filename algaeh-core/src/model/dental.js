@@ -521,7 +521,7 @@ let getDentalTreatment = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "select hims_f_dental_treatment_id, patient_id, episode_id, treatment_plan_id, service_id, teeth_number\
+          "select hims_f_dental_treatment_id, patient_id, remarks, episode_id, treatment_plan_id, service_id, teeth_number\
           , scheduled_date, distal, incisal, occlusal, mesial, buccal, labial, cervical, palatal, lingual,\
           billed, treatment_status from hims_f_dental_treatment  where record_status='A' " +
           strQuery,
@@ -887,10 +887,11 @@ let updateDentalTreatmentStatus = (req, res, next) => {
     _mysql
       .executeQueryWithTransaction({
         query:
-          "update hims_f_dental_treatment set treatment_status=? , updated_date=?, updated_by=? \
+          "update hims_f_dental_treatment set treatment_status=? , remarks=?, updated_date=?, updated_by=? \
           WHERE  `record_status`='A' and `hims_f_dental_treatment_id`=?;",
         values: [
           input.treatment_status,
+          input.remarks,
           new Date(),
           input.updated_by,
           input.hims_f_dental_treatment_id,
