@@ -633,6 +633,8 @@ class OPBilling extends Component {
             </div>
           }
           printArea={
+            parseFloat(this.state.patient_payable_h) > 0 &&
+            this.state.patient_payable_h !== null &&
             this.state.bill_number !== null
               ? {
                   menuitems: this.smallRecipt,
