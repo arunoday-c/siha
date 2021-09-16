@@ -119,6 +119,9 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
     if (selected_patient.selected_patient.visit_id !== null) {
       inputobj.visit_id = selected_patient.selected_patient.visit_id;
     }
+    if (selected_patient.selected_patient.ip_id !== null) {
+      inputobj.ip_id = selected_patient.selected_patient.ip_id;
+    }
 
     const result = await newAlgaehApi({
       uri: "/laboratory/getLabOrderedServices",

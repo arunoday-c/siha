@@ -410,6 +410,9 @@ const getSampleCollectionDetails = ($this, selected_patient) => {
   if (selected_patient.visit_id !== null) {
     inputobj.visit_id = selected_patient.visit_id;
   }
+  if (selected_patient.ip_id !== null) {
+    inputobj.ip_id = selected_patient.ip_id;
+  }
   algaehApiCall({
     uri: "/laboratory/getLabOrderedServices",
     module: "laboratory",

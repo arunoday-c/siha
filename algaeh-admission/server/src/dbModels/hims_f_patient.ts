@@ -31,6 +31,12 @@ hims_f_patient.init(
         notEmpty: true,
       },
     },
+    nationality_id: {
+      type: DataTypes.INTEGER,
+    },
+    primary_id_no: {
+      type: DataTypes.STRING(50),
+    },
     gender: {
       type: DataTypes.STRING(15),
     },

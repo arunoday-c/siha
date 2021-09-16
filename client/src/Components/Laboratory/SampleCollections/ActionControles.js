@@ -273,8 +273,9 @@ export default memo(function ActionControles({
         <Tooltip title="Collect Specimen" zIndex={99999} placement={"right"}>
           <i
             style={{
-              pointerEvents: row.billed === "N" ? "none" : "",
-              opacity: row.billed === "N" ? "0.1" : "",
+              pointerEvents:
+                row.ip_id > 0 ? "" : row.billed === "N" ? "none" : "",
+              opacity: row.ip_id > 0 ? "" : row.billed === "N" ? "0.1" : "",
             }}
             className="fas fa-check"
             onClick={() => CollectSample(row)}
@@ -285,8 +286,9 @@ export default memo(function ActionControles({
           <Tooltip title="Generate Barcode" zIndex={99999} placement={"left"}>
             <i
               style={{
-                pointerEvents: row.billed === "N" ? "none" : "",
-                opacity: row.billed === "N" ? "0.1" : "",
+                pointerEvents:
+                  row.ip_id > 0 ? "" : row.billed === "N" ? "none" : "",
+                opacity: row.ip_id > 0 ? "" : row.billed === "N" ? "0.1" : "",
               }}
               className="fas fa-barcode"
               onClick={() => printBarcode(row)}

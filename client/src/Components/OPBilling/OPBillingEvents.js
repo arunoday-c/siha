@@ -270,6 +270,7 @@ const selectVisit = ($this) => {
     uri: "/orderAndPreApproval/load_orders_for_bill",
     method: "GET",
     data: {
+      ip_id: $this.state.ip_id,
       visit_id: $this.state.visit_id,
     },
     onSuccess: (response) => {
@@ -447,6 +448,70 @@ const ClosePackage = ($this, e) => {
       }
     }
   );
+};
+
+const getAdmissionDetails = ($this, admission_number) => {
+  AlgaehLoader({ show: true });
+
+  debugger;
+  algaehApiCall({
+    uri: "/patAdmission/getAdmissionDetails",
+    module: "admission",
+    method: "GET",
+    data: { admission_number: admission_number },
+    onSuccess: (response) => {
+      if (response.data.success) {
+        let data = response.data.records;
+        if (
+          $this.context.userToken.local_vat_applicable === "N" &&
+          $this.context.userToken.default_nationality ===
+            data["PAT.nationality_id"]
+        ) {
+          data.vat_applicable = "N";
+        } else {
+          data.vat_applicable = "Y";
+        }
+
+        //Insurance
+        data.insurance_provider_name = null;
+        data.sub_insurance_provider_name = null;
+        data.network_type = null;
+        data.policy_number = null;
+        data.card_number = null;
+        data.effective_end_date = null;
+
+        data.insured = data.insurance_yesno;
+        data.incharge_or_provider = data.provider_id;
+        data.ip_id = data.hims_adm_atd_admission_id;
+        data.patient_code = data["PAT.patient_code"];
+        data.full_name = data["PAT.full_name"];
+        data.primary_id_no = data["PAT.primary_id_no"];
+
+        data.addNewService = false;
+
+        if (data.insurance_yesno === "Y") {
+          data.mode_of_pay = "Insurance";
+          data.applydiscount = true;
+        } else {
+          data.mode_of_pay = "Self";
+          data.applydiscount = false;
+        }
+        $this.setState(data, () => {
+          selectVisit($this);
+        });
+
+        // visit_id
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: (error) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
 };
 
 const getPatientDetails = ($this, patient_code) => {
@@ -663,4 +728,5 @@ export {
   getPatientDetails,
   ShowPackageUtilize,
   ClosePackageUtilize,
+  getAdmissionDetails,
 };

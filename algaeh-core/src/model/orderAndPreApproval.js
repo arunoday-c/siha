@@ -1273,11 +1273,39 @@ let getVisitConsumable = (req, res, next) => {
 let load_orders_for_bill = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.query.visit_id > 0) {
-      _mysql
-        .executeQuery({
-          query:
-            "SELECT  OS.`hims_f_ordered_services_id`, OS.`hims_f_ordered_services_id` as ordered_services_id,\
+    console.log("req.query.visit_id", req.query.visit_id);
+
+    let strQuery = " and visit_id= " + req.query.visit_id,
+      strBed = "SELECT 1=1";
+    console.log("req.query.ip_id", req.query.ip_id);
+    if (req.query.ip_id > 0) {
+      strQuery = " and ip_id= " + req.query.ip_id;
+      strBed =
+        "SELECT  OS.`hims_adm_atd_bed_details_id`,\
+      OS.`patient_id`, OS.`admission_id`,\
+      OS.`provider_id`, OS.`service_type_id`, OS.`services_id`, OS.`insurance_yesno`, \
+      OS.`pre_approval`, OS.`apprv_status`, \
+      OS.`billed`, OS.`quantity`, OS.`unit_cost`, OS.`gross_amount`, OS.`discount_amout`, OS.`discount_percentage`, \
+      OS.`net_amout`, OS.`copay_percentage`, OS.`copay_amount`, OS.`deductable_amount`, OS.`deductable_percentage`, \
+      OS.`tax_inclusive`, OS.`patient_tax`, OS.`company_tax`, OS.`total_tax`, OS.`patient_resp`, OS.`patient_payable`, \
+      OS.`comapany_resp`, OS.`company_payble`, \
+      OS.`created_by`, OS.`created_date`, \
+      OS.`updated_by`, OS.`updated_date`, S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, \
+      S.`service_name`, S.`arabic_service_name`, S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, \
+      S.`procedure_type`, S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, \
+      S.`vat_applicable`, S.`vat_percent`, S.`service_status`, S.`physiotherapy_service`, ST.`service_type`\
+      FROM `hims_adm_atd_bed_details` OS \
+      inner join  `hims_d_services` S on OS.services_id = S.hims_d_services_id  \
+      inner join  `hims_d_service_type` ST on OS.service_type_id = ST.hims_d_service_type_id  \
+      WHERE  OS.`billed`='N' and admission_id = " +
+        req.query.ip_id +
+        ";";
+    }
+    console.log("strQuery", strQuery);
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT  OS.`hims_f_ordered_services_id`, OS.`hims_f_ordered_services_id` as ordered_services_id,\
              OS.`patient_id`, OS.`visit_id`,OS.`trans_package_detail_id`,\
           OS.`doctor_id`, OS.`service_type_id`, OS.`services_id`, OS.`test_type`, OS.`insurance_yesno`, \
           OS.`insurance_provider_id`, OS.`insurance_sub_id`, OS.`d_treatment_id`,\
@@ -1296,7 +1324,9 @@ let load_orders_for_bill = (req, res, next) => {
           inner join  `hims_d_services` S on OS.services_id = S.hims_d_services_id  \
           inner join  `hims_d_service_type` ST on OS.service_type_id = ST.hims_d_service_type_id  \
           left join  `hims_f_package_detail` PD on OS.trans_package_detail_id = PD.hims_f_package_detail_id  \
-          WHERE visit_id=? AND OS.`billed`='N'; \
+          WHERE  OS.`billed`='N' " +
+          strQuery +
+          "; \
             SELECT  OS.`hims_f_ordered_inventory_id` as ordered_inventory_id, OS.`patient_id`, OS.`visit_id`,\
           OS.`doctor_id`, OS.`service_type_id`, OS.`trans_package_detail_id`,\
           OS.`services_id`, OS.`insurance_yesno`, OS.`insurance_provider_id`, OS.`insurance_sub_id`, \
@@ -1315,7 +1345,9 @@ let load_orders_for_bill = (req, res, next) => {
           S.`vat_percent`, S.`service_status`, ST.`service_type` FROM `hims_f_ordered_inventory` OS\
           inner join  `hims_d_services` S on OS.services_id = S.hims_d_services_id  \
           inner join  `hims_d_service_type` ST on OS.service_type_id = ST.hims_d_service_type_id  \
-          WHERE OS.`record_status`='A' and item_notchargable='N' and  OS.visit_id=? AND OS.`billed`='N';\
+          WHERE OS.`record_status`='A' and item_notchargable='N' " +
+          strQuery +
+          " AND OS.`billed`='N';\
             SELECT  OS.`hims_f_package_header_id` as ordered_package_id, OS.`patient_id`, OS.`visit_id`, OS.`doctor_id`,\
           OS.`service_type_id`, OS.`services_id`, OS.`insurance_yesno`, OS.`insurance_provider_id`,\
           OS.`insurance_sub_id`, OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`,\
@@ -1332,28 +1364,27 @@ let load_orders_for_bill = (req, res, next) => {
           S.`vat_applicable`, S.`vat_percent`, S.`service_status`, ST.`service_type` FROM `hims_f_package_header` OS \
           inner join  `hims_d_services` S on OS.services_id = S.hims_d_services_id  \
           inner join  `hims_d_service_type` ST on OS.service_type_id = ST.hims_d_service_type_id  \
-          WHERE OS.`record_status`='A' and visit_id=? AND OS.`billed`='N' AND OS.package_visit_type='S';",
-          values: [req.query.visit_id, req.query.visit_id, req.query.visit_id],
-          printQuery: true,
-        })
-        .then((result) => {
-          _mysql.releaseConnection();
-          let final_Result = result[0].concat(result[1]);
-          final_Result = final_Result.concat(result[2]);
-          req.records = final_Result;
-          next();
-        })
-        .catch((error) => {
-          _mysql.releaseConnection();
-          next(error);
-        });
-    } else {
-      req.records = {
-        invalid_input: true,
-        message: "Please send valid visit id",
-      };
-      next();
-    }
+          WHERE OS.`record_status`='A' " +
+          strQuery +
+          " AND OS.`billed`='N' AND OS.package_visit_type='S';" +
+          strBed,
+        // values: [req.query.visit_id, req.query.visit_id, req.query.visit_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        let final_Result = result[0].concat(result[1]);
+        final_Result = final_Result.concat(result[2]);
+        if (req.query.ip_id > 0) {
+          final_Result = final_Result.concat(result[3]);
+        }
+        req.records = final_Result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
     _mysql.releaseConnection();
     next(e);

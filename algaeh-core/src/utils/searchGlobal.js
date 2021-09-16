@@ -47,15 +47,16 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "bills",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS hims_f_billing_header_id, BH.patient_id, visit_id, bill_number,\
+          "select SQL_CALC_FOUND_ROWS hims_f_billing_header_id, BH.patient_id, visit_id, bill_number, \
+          CASE WHEN billing_mode='O' THEN 'OP' else 'Day Care' END as billing_mode,\
           incharge_or_provider, bill_date, BH.advance_amount, advance_adjust, discount_amount, sub_total_amount, total_tax, \
           net_total, billing_status, copay_amount, deductable_amount, sec_copay_amount, sec_deductable_amount, gross_total, \
           sheet_discount_amount, sheet_discount_percentage, net_amount, patient_res, company_res, sec_company_res, \
           patient_payable, company_payable, sec_company_payable, patient_tax, company_tax, sec_company_tax, net_tax, \
           credit_amount, receiveable_amount, BH.created_by, BH.created_date, BH.updated_by, BH.updated_date, BH.record_status, \
-          cancel_remarks,cancel_by, bill_comments, PAT.patient_code, PAT.full_name, PAT.primary_id_no,PAT.contact_number,PATV.visit_code \
+          cancel_remarks,cancel_by, bill_comments, PAT.patient_code, PAT.full_name, PAT.primary_id_no,PAT.contact_number \
           from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
-        BH.patient_id = PAT.hims_d_patient_id inner join hims_f_patient_visit as PATV on BH.visit_id = PATV.hims_f_patient_visit_id where BH.record_status = 'A' and BH.hospital_id = " +
+        BH.patient_id = PAT.hims_d_patient_id where BH.record_status = 'A' and BH.hospital_id = " +
           hospitalId,
         orderBy: "hims_f_billing_header_id desc",
       },

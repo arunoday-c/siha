@@ -50,7 +50,6 @@ function SampleCollection() {
   };
   useEffect(() => {
     sockets.on("reload_specimen_collection", (billData) => {
-      debugger;
       const { bill_date } = billData;
       const date = moment(bill_date).format("YYYY-MM-DD");
       // const start = new Date(
@@ -90,8 +89,8 @@ function SampleCollection() {
               patient_code: firstRecordSet.patient_code,
               full_name: firstRecordSet.full_name,
               ordered_date: firstRecordSet.ordered_date,
+              ip_id: firstRecordSet.ip_id,
               number_of_tests: g.getSource().length,
-
               // collected: "Y",
 
               number_of_tests_collected: g

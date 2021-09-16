@@ -26,6 +26,7 @@ import {
   getPatientDetails,
   ShowPackageUtilize,
   ClosePackageUtilize,
+  getAdmissionDetails,
 } from "./OPBillingEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
@@ -450,6 +451,7 @@ class OPBilling extends Component {
               Inputobj.insurance_yesno = $this.state.insured;
               Inputobj.primary_sub_id = $this.state.sub_insurance_provider_id;
               Inputobj.ScreenCode = "BL0001";
+              Inputobj.source = Inputobj.ip_id > 0 ? "I" : "O";
 
               const package_exists = Inputobj.billdetails.filter(
                 (f) => f.service_type_id === 14
@@ -650,6 +652,8 @@ class OPBilling extends Component {
                   Object.keys(obj).forEach((key) => {
                     if (key === "patient_code") {
                       getPatientDetails(this, this.state.patient_code);
+                    } else if (key === "admission_number") {
+                      getAdmissionDetails(this, this.state.admission_number);
                     }
                   });
                 });

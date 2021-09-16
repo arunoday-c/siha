@@ -7,7 +7,11 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import "./PatientDetails.scss";
 import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
-import { PatientSearch, selectVisit } from "./DisPatientHandlers";
+import {
+  PatientSearch,
+  selectVisit,
+  AdmissionSearch,
+} from "./DisPatientHandlers";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import moment from "moment";
 import QuickRegistration from "../QuickRegistration";
@@ -56,65 +60,143 @@ class DisPatientForm extends Component {
               >
                 {/* Patient code */}
 
-                <div
-                  className="col-2 globalSearchCntr"
-                  style={{
-                    cursor: "pointer",
-                    pointerEvents:
-                      this.state.Billexists === true
-                        ? "none"
-                        : this.state.patient_code
-                        ? "none"
-                        : "",
-                  }}
-                >
-                  <AlgaehLabel label={{ fieldName: "s_patient_code" }} />
-                  <h6 onClick={PatientSearch.bind(this, this, context)}>
-                    {this.state.patient_code ? (
-                      this.state.patient_code
-                    ) : (
-                      <AlgaehLabel label={{ fieldName: "patient_code" }} />
-                    )}
-                    <i className="fas fa-search fa-lg"></i>
-                  </h6>
+                <div className="col-2">
+                  <label>Load By</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        name="billing_mode"
+                        checked={this.state.billing_mode === "O" ? true : false}
+                        onChange={() => {
+                          this.setState({
+                            billing_mode: "O",
+                          });
+                          context.updateState({ billing_mode: "O" });
+                        }}
+                      />
+                      <span>OP</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        name="billing_mode"
+                        checked={this.state.billing_mode === "D" ? true : false}
+                        onChange={() => {
+                          this.setState({
+                            billing_mode: "D",
+                          });
+                          context.updateState({ billing_mode: "D" });
+                        }}
+                      />
+                      <span>Day Care</span>
+                    </label>
+                  </div>
                 </div>
+
+                {this.state.billing_mode === "D" ? (
+                  <div
+                    className="col-2 globalSearchCntr"
+                    style={{
+                      cursor: "pointer",
+                      pointerEvents:
+                        this.state.Billexists === true
+                          ? "none"
+                          : this.state.patient_code
+                          ? "none"
+                          : "",
+                    }}
+                  >
+                    <AlgaehLabel label={{ forceLabel: "Admission Number" }} />
+                    <h6 onClick={AdmissionSearch.bind(this, this, context)}>
+                      {this.state.admission_number ? (
+                        this.state.admission_number
+                      ) : (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Admission Number" }}
+                        />
+                      )}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
+                ) : (
+                  <div
+                    className="col-2 globalSearchCntr"
+                    style={{
+                      cursor: "pointer",
+                      pointerEvents:
+                        this.state.Billexists === true
+                          ? "none"
+                          : this.state.patient_code
+                          ? "none"
+                          : "",
+                    }}
+                  >
+                    <AlgaehLabel label={{ fieldName: "s_patient_code" }} />
+                    <h6 onClick={PatientSearch.bind(this, this, context)}>
+                      {this.state.patient_code ? (
+                        this.state.patient_code
+                      ) : (
+                        <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                      )}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
+                )}
 
                 <div className="col-10">
                   <div className="row">
-                    <AlagehAutoComplete
-                      div={{ className: "col-2 mandatory" }}
-                      label={{
-                        fieldName: "select_visit",
-                        isImp: true,
-                      }}
-                      selector={{
-                        name: "visit_id",
-                        className: "select-fld",
-                        autoComplete: "off",
-                        value: this.state.visit_id,
-                        dataSource: {
-                          textField: "visit_code",
-                          valueField: "hims_f_patient_visit_id",
-                          data: this.state.visitDetails,
-                        },
-                        others: { disabled: this.state.Billexists },
-                        onChange: selectVisit.bind(this, this, context),
-                        template: (item) => (
-                          <div className="multiInfoList">
-                            <h5>
-                              {item.visit_date
-                                ? moment(item.visit_date).format(
-                                    "DD/MM/YYYY, hh:mm A"
-                                  )
-                                : "DD/MM/YYYY"}
-                            </h5>
-                            <h6>{item.visit_code}</h6>
-                            <p>{item.full_name}</p>
-                            <p>{item.sub_department_name}</p>
-                          </div>
-                        ),
-                      }}
-                    />
+                    {this.state.billing_mode === "D" ? (
+                      <div className="col-3">
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "patient_code",
+                          }}
+                        />
+                        <h6>
+                          {this.state.patient_code
+                            ? this.state.patient_code
+                            : "--------"}
+                        </h6>
+                      </div>
+                    ) : (
+                      <AlagehAutoComplete
+                        div={{ className: "col-2 mandatory" }}
+                        label={{
+                          fieldName: "select_visit",
+                          isImp: true,
+                        }}
+                        selector={{
+                          name: "visit_id",
+                          className: "select-fld",
+                          autoComplete: "off",
+                          value: this.state.visit_id,
+                          dataSource: {
+                            textField: "visit_code",
+                            valueField: "hims_f_patient_visit_id",
+                            data: this.state.visitDetails,
+                          },
+                          others: { disabled: this.state.Billexists },
+                          onChange: selectVisit.bind(this, this, context),
+                          template: (item) => (
+                            <div className="multiInfoList">
+                              <h5>
+                                {item.visit_date
+                                  ? moment(item.visit_date).format(
+                                      "DD/MM/YYYY, hh:mm A"
+                                    )
+                                  : "DD/MM/YYYY"}
+                              </h5>
+                              <h6>{item.visit_code}</h6>
+                              <p>{item.full_name}</p>
+                              <p>{item.sub_department_name}</p>
+                            </div>
+                          ),
+                        }}
+                      />
+                    )}
+
                     <div className="col-3">
                       <AlgaehLabel
                         label={{
@@ -131,12 +213,12 @@ class DisPatientForm extends Component {
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          fieldName: "patient_type",
+                          fieldName: "primary_id_no",
                         }}
                       />
                       <h6>
-                        {this.state.patient_type
-                          ? this.state.patient_type
+                        {this.state.primary_id_no
+                          ? this.state.primary_id_no
                           : "--------"}
                       </h6>
                     </div>
