@@ -191,6 +191,7 @@ export default ({ config, db }) => {
     authUser,
     (req, res, next) => {
       let result = req.records;
+      // console.log("result===>", result);
       if (result[0].length === 0) {
         next(
           httpStatus.generateError(

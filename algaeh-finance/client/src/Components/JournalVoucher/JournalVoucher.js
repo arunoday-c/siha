@@ -345,6 +345,7 @@ export default function JournalVoucher() {
       //   voucherType === "debit_note"
       // ) {
       if (voucherType === "receipt" || voucherType === "credit_note") {
+        // debugger;
         getCustomerListReceivable()
           .then(({ result }) => {
             setCustomerSupplierList(result);
@@ -383,6 +384,7 @@ export default function JournalVoucher() {
     // console.log("location.state====>", location.state);
 
     if (location.state) {
+      // debugger;
       if (!location.state?.type) {
         return;
       }
@@ -465,6 +467,7 @@ export default function JournalVoucher() {
             setIsEditMode(true);
           }
         }
+
         setFinanceVoucherHeaderID(location.state.finance_voucher_header_id);
         setVoucherType(firstRecord.voucher_type);
         setVoucherDate(moment(firstRecord.payment_date)._d);
@@ -523,12 +526,14 @@ export default function JournalVoucher() {
               ? "receipt"
               : voucher_type === "purchase"
               ? "payment"
-              : null;
+              : voucher_type;
           if (merdge !== undefined) {
             // if (Array.isArray(merdge) && merdge.length === 1) {
             //   setDisableAmount(false);
             // } else {
-            setDisableAmount(true);
+            if (voucher_type === "credit_note") {
+              setDisableAmount(false);
+            } else setDisableAmount(true);
             // }
 
             setMerdgeRecords(merdge);
@@ -1058,6 +1063,7 @@ export default function JournalVoucher() {
   };
 
   function onChangeCustomerOrSupplerHeaderList(selected, _voucherType) {
+    // debugger;
     setSorCDetailLoading(true);
     setSorCHeaderName(selected.child_name);
     setSorCHeaderValue(selected.finance_account_child_id);
@@ -1117,6 +1123,7 @@ export default function JournalVoucher() {
     } else if (_voucherType === "credit_note") {
       getCustomerDebitNotes({
         child_id: selected.finance_account_child_id,
+        voucherType: _voucherType,
       })
         .then(({ result }) => {
           setSorCDetailLoading(false);
@@ -1134,14 +1141,19 @@ export default function JournalVoucher() {
   function onChangeCustomerOrSupplerDetails(selected) {
     setSorCDetailValue(selected.invoice_no);
     setSelInvoice(selected.invoice_no);
-
+    // debugger;
     history.push("/JournalVoucher", {
       data: {
         narration: selected.narration,
         child_id: selected.child_id,
         head_id: selected.head_id,
         balance_amount: selected.balance_amount,
-        voucher_type: voucherType === "payment" ? "purchase" : "sales",
+        voucher_type:
+          voucherType === "payment"
+            ? "purchase"
+            : voucherType === "credit_note"
+            ? "credit_note"
+            : "sales",
         invoice_no: selected.invoice_no,
         disabled: true,
         customer_type:
