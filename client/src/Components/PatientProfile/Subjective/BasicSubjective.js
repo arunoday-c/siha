@@ -38,7 +38,7 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Allergies from "../Allergies/Allergies";
 import Examination from "../Examination/Examination";
 import { Validations } from "./Validation";
-import { setGlobal } from "../../../utils/GlobalFunctions";
+import { setGlobal, removeGlobal } from "../../../utils/GlobalFunctions";
 import "./basicSubjective.scss";
 import _ from "lodash";
 import moment from "moment";
@@ -148,8 +148,8 @@ class BasicSubjective extends Component {
           openMedicaldata: !this.state.openMedicaldata,
         });
       } else {
-        setGlobal({});
-
+        removeGlobal("EHR-STD");
+        removeGlobal("encounter_id");
         this.props.history.push("/DoctorsWorkbench");
       }
     });
@@ -358,6 +358,8 @@ class BasicSubjective extends Component {
 
   componentWillUnmount() {
     const err = Validations(this);
+    removeGlobal("EHR-STD");
+    removeGlobal("encounter_id");
     if (!err) {
       if (this.state.hims_f_episode_chief_complaint_id === null) {
         SubjectiveHandler().addChiefComplainToPatient(this);
@@ -1203,7 +1205,7 @@ class BasicSubjective extends Component {
                         </button>
                       </div>
                     </div>
-                    <div className="portlet portlet-bordered  margin-top-15 margin-bottom-15 mandatoryBox">
+                    <div className="portlet portlet-bordered  margin-top-15 margin-bottom-15">
                       <div className="portlet-title">
                         <div className="caption">
                           <h3 className="caption-subject">Significant Signs</h3>
@@ -1213,12 +1215,7 @@ class BasicSubjective extends Component {
                         <div className="row">
                           <div className="col-12">
                             <textarea
-                              value={
-                                this.state.significant_signs === null ||
-                                this.state.significant_signs === undefined
-                                  ? ""
-                                  : this.state.significant_signs
-                              }
+                              value={this.state.significant_signs}
                               name="significant_signs"
                               onChange={this.textAreaEvent.bind(this)}
                               maxLength={this.significantSignsLength}
