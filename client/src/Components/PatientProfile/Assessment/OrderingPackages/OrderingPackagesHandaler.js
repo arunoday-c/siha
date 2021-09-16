@@ -161,8 +161,7 @@ const ProcessService = ($this) => {
                     ) {
                       swal({
                         title: "Pre-Approval limit reached.",
-                        text:
-                          "Service amount have exceeded insurance limit. If proceed all services will be senting for Pre Approval.",
+                        text: "Service amount have exceeded insurance limit. If proceed all services will be senting for Pre Approval.",
                         type: "warning",
                         showCancelButton: true,
                         confirmButtonText: "Yes!",
@@ -201,6 +200,10 @@ const ProcessService = ($this) => {
                                     .then((result) => {
                                       Service_data.billdetails[i].visit_id =
                                         $this.state.visit_id;
+                                      Service_data.billdetails[i].source =
+                                        $this.state.source;
+                                      Service_data.billdetails[i].ip_id =
+                                        $this.state.ip_id;
                                       Service_data.billdetails[i].patient_id =
                                         $this.state.patient_id;
 
@@ -255,6 +258,10 @@ const ProcessService = ($this) => {
 
                                       Service_data.billdetails[i].visit_id =
                                         $this.state.visit_id;
+                                      Service_data.billdetails[i].source =
+                                        $this.state.source;
+                                      Service_data.billdetails[i].ip_id =
+                                        $this.state.ip_id;
                                       Service_data.billdetails[i].patient_id =
                                         $this.state.patient_id;
                                       Service_data.billdetails[
@@ -346,6 +353,8 @@ const ProcessService = ($this) => {
                       let existingservices = $this.state.orderpackagedata;
 
                       data.billdetails[0].visit_id = $this.state.visit_id;
+                      data.billdetails[0].source = $this.state.source;
+                      data.billdetails[0].ip_id = $this.state.ip_id;
                       data.billdetails[0].patient_id = $this.state.patient_id;
 
                       data.billdetails[0].insurance_provider_id =
@@ -393,6 +402,8 @@ const ProcessService = ($this) => {
                         data.billdetails[0].pre_approval = "N";
                       }
                       data.billdetails[0].visit_id = $this.state.visit_id;
+                      data.billdetails[0].source = $this.state.source;
+                      data.billdetails[0].ip_id = $this.state.ip_id;
                       data.billdetails[0].patient_id = $this.state.patient_id;
                       data.billdetails[0].incharge_or_provider =
                         $this.state.provider_id;
@@ -612,6 +623,8 @@ const SaveOrdersServices = ($this, e) => {
           selectedLang: "en",
           patient_id: $this.props.patient_id,
           visit_id: $this.props.visit_id,
+          ip_id: $this.props.ip_id,
+          source: $this.props.source,
           doctor_id: null,
           vat_applicable: $this.props.vat_applicable,
 

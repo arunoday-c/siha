@@ -42,6 +42,8 @@ class OrderingPackages extends Component {
 
       patient_id: this.props.patient_id,
       visit_id: this.props.visit_id,
+      source: this.props.source,
+      ip_id: this.props.ip_id,
       doctor_id: this.props.provider_id,
       vat_applicable: this.props.vat_applicable,
       provider_id: this.props.provider_id,
@@ -94,22 +96,23 @@ class OrderingPackages extends Component {
   }
 
   getPatientInsurance() {
-    this.props.getPatientInsurance({
-      uri: "/patientRegistration/getPatientInsurance",
-      module: "frontDesk",
-      method: "GET",
-      data: {
-        patient_id: this.state.patient_id,
-        patient_visit_id: this.state.visit_id,
-      },
-      redux: {
-        type: "EXIT_INSURANCE_GET_DATA",
-        mappingName: "existinginsurance",
-      },
-      afterSuccess: (data) => {
-        if (data.length > 0) {
+    debugger;
+    if (this.props.source === "I") {
+      this.props.getPatientInsurance({
+        uri: "/patientRegistration/getPatientInsurance",
+        module: "frontDesk",
+        method: "GET",
+        data: {
+          source: this.state.source,
+          ip_id: this.state.ip_id,
+        },
+        redux: {
+          type: "EXIT_INSURANCE_GET_DATA",
+          mappingName: "existinginsurance",
+        },
+        afterSuccess: (data) => {
           this.setState({
-            insured: "Y",
+            insured: data[0].insurance_yesno,
             primary_insurance_provider_id: data[0].insurance_provider_id,
             primary_network_office_id:
               data[0].hims_d_insurance_network_office_id,
@@ -120,20 +123,50 @@ class OrderingPackages extends Component {
             secondary_network_id: data[0].secondary_network_id,
             secondary_network_office_id: data[0].secondary_network_office_id,
           });
-        } else {
-          this.setState({
-            insured: "N",
-            primary_insurance_provider_id: null,
-            primary_network_office_id: null,
-            primary_network_id: null,
-            sec_insured: null,
-            secondary_insurance_provider_id: null,
-            secondary_network_id: null,
-            secondary_network_office_id: null,
-          });
-        }
-      },
-    });
+        },
+      });
+    } else {
+      this.props.getPatientInsurance({
+        uri: "/patientRegistration/getPatientInsurance",
+        module: "frontDesk",
+        method: "GET",
+        data: {
+          patient_id: this.state.patient_id,
+          patient_visit_id: this.state.visit_id,
+        },
+        redux: {
+          type: "EXIT_INSURANCE_GET_DATA",
+          mappingName: "existinginsurance",
+        },
+        afterSuccess: (data) => {
+          if (data.length > 0) {
+            this.setState({
+              insured: "Y",
+              primary_insurance_provider_id: data[0].insurance_provider_id,
+              primary_network_office_id:
+                data[0].hims_d_insurance_network_office_id,
+              primary_network_id: data[0].network_id,
+              sec_insured: data[0].sec_insured,
+              secondary_insurance_provider_id:
+                data[0].secondary_insurance_provider_id,
+              secondary_network_id: data[0].secondary_network_id,
+              secondary_network_office_id: data[0].secondary_network_office_id,
+            });
+          } else {
+            this.setState({
+              insured: "N",
+              primary_insurance_provider_id: null,
+              primary_network_office_id: null,
+              primary_network_id: null,
+              sec_insured: null,
+              secondary_insurance_provider_id: null,
+              secondary_network_id: null,
+              secondary_network_office_id: null,
+            });
+          }
+        },
+      });
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -142,7 +175,7 @@ class OrderingPackages extends Component {
       nextProps.existinginsurance.length !== 0
     ) {
       let output = nextProps.existinginsurance[0];
-      output.insured = "Y";
+      output.insured = this.props.source === "I" ? output.insurance_yesno : "Y";
       output.patient_id = this.props.patient_id;
       output.visit_id = this.props.visit_id;
       output.doctor_id = this.props.provider_id;

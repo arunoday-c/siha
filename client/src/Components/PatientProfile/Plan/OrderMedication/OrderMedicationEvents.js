@@ -110,6 +110,7 @@ const SaveMedication = ($this, context, e) => {
       provider_id: $this.state.provider_id,
       episode_id: $this.state.episode_id,
       visit_id: $this.state.visit_id,
+      ip_id: $this.state.ip_id,
 
       insurance_provider_id: $this.state.insurance_provider_id,
       insurance_network_office_id:

@@ -11,7 +11,7 @@ const texthandle = ($this, ctrl, e) => {
   let value = e.value === "" ? null : e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -71,8 +71,7 @@ const ProcessService = ($this, e) => {
           ) {
             swal({
               title: "Pre-Approval limit reached.",
-              text:
-                "Service amount have exceeded insurance limit. If proceed all services will be senting for Pre Approval.",
+              text: "Service amount have exceeded insurance limit. If proceed all services will be senting for Pre Approval.",
               type: "warning",
               showCancelButton: true,
               confirmButtonText: "Yes!",
@@ -107,6 +106,7 @@ const ProcessService = ($this, e) => {
                       ) {
                         Service_data.billdetails[i].visit_id =
                           $this.state.visit_id;
+                        Service_data.billdetails[i].ip_id = $this.state.ip_id;
                         Service_data.billdetails[i].patient_id =
                           $this.state.patient_id;
 
@@ -243,6 +243,7 @@ const ProcessService = ($this, e) => {
             let existingservices = $this.state.orderconsumabledata;
 
             data.billdetails[0].visit_id = $this.state.visit_id;
+            data.billdetails[0].ip_id = $this.state.ip_id;
             data.billdetails[0].patient_id = $this.state.patient_id;
 
             data.billdetails[0].insurance_provider_id =
@@ -286,8 +287,7 @@ const ProcessService = ($this, e) => {
             data.billdetails[0].test_type = $this.state.test_type;
             data.billdetails[0].item_notchargable =
               $this.state.item_notchargable;
-            data.billdetails[0].instructions =
-              $this.state.instructions;
+            data.billdetails[0].instructions = $this.state.instructions;
             //If pre-approval required for selected service
 
             if (
@@ -322,7 +322,7 @@ const ProcessService = ($this, e) => {
               // s_service_type: null,
               s_service: null,
               test_type: "R",
-              instructions: null
+              instructions: null,
             });
 
             algaehApiCall({
@@ -493,6 +493,8 @@ const SaveOrdersServices = ($this, e) => {
   AlgaehLoader({ show: true });
   let inputObj = {
     visit_id: $this.state.visit_id,
+    ip_id: $this.state.ip_id,
+    source: $this.state.source,
     patient_id: $this.state.patient_id,
     incharge_or_provider: Window.global["provider_id"],
     doctor_id: Window.global["provider_id"],
@@ -507,18 +509,25 @@ const SaveOrdersServices = ($this, e) => {
     onSuccess: (response) => {
       if (response.data.success === true) {
         if (response.data.records.ResultOfFetchOrderIds.length > 1) {
-          const splice_data = response.data.records.ResultOfFetchOrderIds.length - $this.state.orderconsumabledata.length
-          response.data.records.ResultOfFetchOrderIds.splice(0, splice_data)
+          const splice_data =
+            response.data.records.ResultOfFetchOrderIds.length -
+            $this.state.orderconsumabledata.length;
+          response.data.records.ResultOfFetchOrderIds.splice(0, splice_data);
         }
         for (let i = 0; i < $this.state.orderconsumabledata.length; i++) {
+          const service_data = response.data.records.ResultOfFetchOrderIds.find(
+            (f) => {
+              return (
+                f.services_id == $this.state.orderconsumabledata[i].services_id
+              );
+            }
+          );
 
-          const service_data = response.data.records.ResultOfFetchOrderIds.find((f) => {
-            return f.services_id == $this.state.orderconsumabledata[i].services_id;
-          });
-
-          const index = response.data.records.ResultOfFetchOrderIds.indexOf(service_data);
-          response.data.records.ResultOfFetchOrderIds.splice(index, 1)
-          $this.state.orderconsumabledata[i].ordered_inventory_id = service_data.hims_f_ordered_inventory_id
+          const index =
+            response.data.records.ResultOfFetchOrderIds.indexOf(service_data);
+          response.data.records.ResultOfFetchOrderIds.splice(index, 1);
+          $this.state.orderconsumabledata[i].ordered_inventory_id =
+            service_data.hims_f_ordered_inventory_id;
         }
         let inputOb = $this.state;
         inputOb.transaction_type = "CS";
@@ -548,6 +557,7 @@ const SaveOrdersServices = ($this, e) => {
 
                   patient_id: Window.global["current_patient"],
                   visit_id: Window.global["visit_id"],
+                  ip_id: Window.global["ip_id"],
                   doctor_id: null,
                   vat_applicable: $this.props.vat_applicable,
 

@@ -831,6 +831,7 @@ class NurseWorkbench extends Component {
       current_patient: data.patient_id,
       episode_id: data.episode_id,
       visit_id: data.visit_id,
+      ip_id: data.ip_id,
       encounter_id: data.hims_f_patient_encounter_id,
       provider_id: data.provider_id,
       sub_department_id: data.sub_department_id,
@@ -853,6 +854,7 @@ class NurseWorkbench extends Component {
       method: "GET",
       data: {
         visit_id: data.visit_id,
+        ip_id: data.ip_id,
       },
       redux: {
         type: "ORDER_SERVICES_GET_DATA",
@@ -881,6 +883,7 @@ class NurseWorkbench extends Component {
         encounter_id: data.hims_f_patient_encounter_id,
         patient_id: data.patient_id,
         visit_id: data.visit_id,
+        ip_id: data.ip_id,
         inventory_location_id: data.inventory_location_id,
         location_type: data.location_type,
         primary_id_no: data.primary_id_no,
@@ -1554,6 +1557,7 @@ class NurseWorkbench extends Component {
                           texthandle={(e) => this.texthandle(e)}
                           current_patient={this.state.patient_id}
                           visit_id={this.state.visit_id}
+                          ip_id={this.state.ip_id}
                           case_type={this.state.case_type}
                           dropDownHandle={(e) => this.dropDownHandle(e)}
                           fromNurseWorkBench={true}

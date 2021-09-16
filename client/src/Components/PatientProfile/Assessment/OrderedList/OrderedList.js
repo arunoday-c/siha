@@ -50,12 +50,13 @@ class OrderedList extends PureComponent {
     this.setState({
       selectedLang: prevLang,
     });
-    const { visit_id, current_patient } = Window.global;
+    const { visit_id, current_patient, ip_id } = Window.global;
     this.props.getOrderList({
       uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
       method: "GET",
       data: {
         visit_id: visit_id, //Window.global["visit_id"]
+        ip_id: ip_id,
       },
       redux: {
         type: "ORDER_SERVICES_GET_DATA",
@@ -68,6 +69,7 @@ class OrderedList extends PureComponent {
       method: "GET",
       data: {
         visit_id: visit_id, //Window.global["visit_id"]
+        ip_id: ip_id,
       },
       redux: {
         type: "ORDER_SERVICES_GET_DATA",
@@ -115,8 +117,8 @@ class OrderedList extends PureComponent {
           module: "masterSettings",
           data: {
             location_wise: "Y",
-            hims_d_sub_department_id: this.props.patient_profile[0]
-              .sub_department_id,
+            hims_d_sub_department_id:
+              this.props.patient_profile[0].sub_department_id,
           },
           onSuccess: (response) => {
             if (response.data.success === true) {
@@ -164,6 +166,7 @@ class OrderedList extends PureComponent {
         hims_f_patient_visit_id: visit_id, //Window.global["visit_id"]
       },
       onSuccess: (response) => {
+        debugger;
         if (response.data.success) {
           let orderedList = this.props.orderedList;
 
@@ -189,8 +192,14 @@ class OrderedList extends PureComponent {
             }
           }
           this.setState({
-            approval_amt: response.data.records[0].ins_services_amount,
-            approval_limit_yesno: response.data.records[0].approval_limit_yesno,
+            approval_amt:
+              response.data.records.length > 0
+                ? response.data.records[0].ins_services_amount
+                : 0,
+            approval_limit_yesno:
+              response.data.records.length > 0
+                ? response.data.records[0].approval_limit_yesno
+                : "N",
             preserviceInput: preserviceInput,
             isOpen: !this.state.isOpen,
           });
@@ -236,12 +245,13 @@ class OrderedList extends PureComponent {
         isOpen: !this.state.isOpen,
       },
       () => {
-        const { visit_id } = Window.global;
+        const { visit_id, ip_id } = Window.global;
         this.props.getOrderList({
           uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
           method: "GET",
           data: {
             visit_id: visit_id, // Window.global["visit_id"]
+            ip_id: ip_id,
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -253,14 +263,15 @@ class OrderedList extends PureComponent {
   }
 
   ShowConsumableModel() {
+    debugger;
     algaehApiCall({
       uri: "/department/get/subdepartment",
       method: "GET",
       module: "masterSettings",
       data: {
         location_wise: "Y",
-        hims_d_sub_department_id: this.props.patient_profile[0]
-          .sub_department_id,
+        hims_d_sub_department_id:
+          this.props.patient_profile[0].sub_department_id,
       },
       onSuccess: (response) => {
         if (response.data.success === true) {
@@ -280,9 +291,17 @@ class OrderedList extends PureComponent {
                   inventory_location_id:
                     Departmant_Location[0].inventory_location_id,
                   location_type: Departmant_Location[0].location_type,
-                  approval_amt: response.data.records[0].ins_services_amount,
+                  approval_amt:
+                    response.data.records.length > 0
+                      ? response.data.records[0].ins_services_amount
+                      : 0,
                   approval_limit_yesno:
-                    response.data.records[0].approval_limit_yesno,
+                    response.data.records.length > 0
+                      ? response.data.records[0].approval_limit_yesno
+                      : "N",
+                  // approval_amt: response.data.records[0].ins_services_amount,
+                  // approval_limit_yesno:
+                  //   response.data.records[0].approval_limit_yesno,
                   // preserviceInput: preserviceInput
                 });
               }
@@ -312,7 +331,7 @@ class OrderedList extends PureComponent {
   }
 
   CloseConsumableModel(e) {
-    const { visit_id } = Window.global;
+    const { visit_id, ip_id } = Window.global;
     this.setState(
       {
         isConsOpen: !this.state.isConsOpen,
@@ -323,6 +342,7 @@ class OrderedList extends PureComponent {
           method: "GET",
           data: {
             visit_id: visit_id, //Window.global["visit_id"]
+            ip_id: ip_id, //Window.global["visit_id"]
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -340,8 +360,8 @@ class OrderedList extends PureComponent {
       module: "masterSettings",
       data: {
         location_wise: "Y",
-        hims_d_sub_department_id: this.props.patient_profile[0]
-          .sub_department_id,
+        hims_d_sub_department_id:
+          this.props.patient_profile[0].sub_department_id,
       },
       onSuccess: (response) => {
         if (response.data.success === true) {
@@ -369,7 +389,7 @@ class OrderedList extends PureComponent {
         isPackUtOpen: !this.state.isPackUtOpen,
       },
       () => {
-        const { current_patient, visit_id } = Window.global;
+        const { current_patient, visit_id, ip_id } = Window.global;
         this.props.getPakageList({
           uri: "/orderAndPreApproval/getPatientPackage",
           method: "GET",
@@ -388,6 +408,7 @@ class OrderedList extends PureComponent {
           method: "GET",
           data: {
             visit_id: visit_id, //Window.global["visit_id"]
+            ip_id: ip_id,
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -399,6 +420,7 @@ class OrderedList extends PureComponent {
           method: "GET",
           data: {
             visit_id: visit_id, //Window.global["visit_id"]
+            ip_id: ip_id, //Window.global["visit_id"]
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -426,8 +448,8 @@ class OrderedList extends PureComponent {
               module: "masterSettings",
               data: {
                 location_wise: "Y",
-                hims_d_sub_department_id: this.props.patient_profile[0]
-                  .sub_department_id,
+                hims_d_sub_department_id:
+                  this.props.patient_profile[0].sub_department_id,
               },
               onSuccess: (response) => {
                 if (response.data.success === true) {
@@ -521,13 +543,14 @@ class OrderedList extends PureComponent {
             pre_approval: row.pre_approval,
           },
           onSuccess: (response) => {
-            const { visit_id, current_patient } = Window.global;
+            const { visit_id, current_patient, ip_id } = Window.global;
             if (response.data.success === true) {
               this.props.getOrderList({
                 uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
                 method: "GET",
                 data: {
                   visit_id: visit_id, //Window.global["visit_id"]
+                  ip_id: ip_id,
                 },
                 redux: {
                   type: "ORDER_SERVICES_GET_DATA",
@@ -599,12 +622,13 @@ class OrderedList extends PureComponent {
           data: inputOb,
           onSuccess: (response) => {
             if (response.data.success === true) {
-              const { visit_id } = Window.global;
+              const { visit_id, ip_id } = Window.global;
               this.props.getConsumableOrderList({
                 uri: "/orderAndPreApproval/getVisitConsumable",
                 method: "GET",
                 data: {
                   visit_id: visit_id, //Window.global["visit_id"]
+                  ip_id: ip_id,
                 },
                 redux: {
                   type: "ORDER_SERVICES_GET_DATA",
@@ -736,7 +760,8 @@ class OrderedList extends PureComponent {
       this.props.patient_profile !== undefined
         ? this.props.patient_profile
         : [];
-    const { current_patient, visit_id, provider_id } = Window.global;
+    const { current_patient, visit_id, provider_id, source, ip_id } =
+      Window.global;
     return (
       <>
         <div className="hptl-phase1-ordering-services-form">
@@ -1307,6 +1332,8 @@ class OrderedList extends PureComponent {
             vat_applicable={this.props.vat_applicable}
             patient_id={current_patient} //Window.global["current_patient"]}
             visit_id={visit_id} //Window.global["visit_id"]}
+            source={source} //Window.global["visit_id"]}
+            ip_id={ip_id} //Window.global["visit_id"]}
             provider_id={provider_id} //Window.global["provider_id"]}
             addNew={true}
           />
