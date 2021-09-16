@@ -652,14 +652,15 @@ let addPatientPrescription = (req, res, next) => {
       .executeQueryWithTransaction({
         query:
           "INSERT INTO `hims_f_prescription` (`patient_id`, `encounter_id`, `provider_id`, `episode_id`,\
-        `visit_id`, `prescription_date`, `created_by`, `created_date`, `updated_by`, `updated_date`,hospital_id) \
-        values(?,?,?,?,?,?,?,?,?,?,?);",
+        `visit_id`, `ip_id`,`prescription_date`, `created_by`, `created_date`, `updated_by`, `updated_date`,hospital_id) \
+        values(?,?,?,?,?,?,?,?,?,?,?,?);",
         values: [
           input.patient_id,
           input.encounter_id,
           input.provider_id,
           input.episode_id,
           input.visit_id,
+          input.ip_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),

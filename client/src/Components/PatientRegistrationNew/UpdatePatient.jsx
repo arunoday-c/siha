@@ -28,6 +28,16 @@ const updatePatient = async (data) => {
   console.log("res.data", res.data);
   return res.data?.records;
 };
+const savePatient = async (data) => {
+  data.ScreenCode = "BL0002";
+  const result = await newAlgaehApi({
+    uri: "/frontDesk/newPatientRegister",
+    module: "frontDesk",
+    data,
+    method: "POST",
+  });
+  return result.data?.records;
+};
 const getIdentities = async (key) => {
   const res = await newAlgaehApi({
     uri: "/identity/get",
@@ -43,6 +53,7 @@ export function UpdatePatient({
   patient_code,
   identity_type,
   component = false,
+  addNewPat = false,
 }) {
   const { userToken, userLanguage } = useContext(MainContext);
   const [patientCode, setPatientCode] = useState(null);
@@ -112,9 +123,28 @@ export function UpdatePatient({
   //     patientIdCard.current = null;
   //     patientImage.current = null;
   //   }
-  //   // eslint-disable-next-line
+  // eslint-disable-next-line
   // }, [patientData, show, component]);
-
+  const [save, { isLoading: saveLoading }] = useMutation(savePatient, {
+    onSuccess: (data) => {
+      if (!component) {
+        onClose(true);
+      }
+      AlgaehMessagePop({
+        display: "Patient Updated Successfully",
+        type: "success",
+      });
+    },
+    onError: (err) => {
+      if (err.message?.includes("hims_f_patient.primary_id_no_UNIQUE")) {
+        AlgaehMessagePop({
+          display:
+            "Duplicate primary id number, Please provide a new ID number",
+          type: "error",
+        });
+      }
+    },
+  });
   const [update, { isLoading: mutationLoading }] = useMutation(updatePatient, {
     onSuccess: (data) => {
       if (!component) {
@@ -150,62 +180,67 @@ export function UpdatePatient({
         return;
       }
     }
-    update({
-      ...e,
-      hims_d_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
-      portal_exists: userToken?.portal_exists,
-      identity_type: identity_type,
-      patient_code: patient_code,
-    }).then(async (data) => {
-      if (data === undefined) {
-        return;
-      }
+    if (addNewPat) {
+      debugger;
+      save(e);
+    } else {
+      update({
+        ...e,
+        hims_d_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
+        portal_exists: userToken?.portal_exists,
+        identity_type: identity_type,
+        patient_code: patient_code,
+      }).then(async (data) => {
+        if (data === undefined) {
+          return;
+        }
 
-      const images = [];
+        const images = [];
 
-      if (
-        patientImage?.current !== null &&
-        patientImage.current?.state?.fileExtention
-      ) {
-        images.push(
-          new Promise((resolve, reject) => {
-            patientImage.current.SavingImageOnServer(
-              undefined,
-              undefined,
-              undefined,
-              data?.patient_code,
-              () => {
-                resolve();
-              }
-            );
-          })
-        );
-      }
-      if (
-        patientIdCard.current !== null &&
-        patientIdCard.current?.state?.fileExtention
-      ) {
-        images.push(
-          new Promise((resolve, reject) => {
-            patientIdCard.current.SavingImageOnServer(
-              undefined,
-              undefined,
-              undefined,
-              data?.primary_id_no,
-              () => {
-                resolve();
-              }
-            );
-          })
-        );
-      }
-      const result = await Promise.all(images);
-      AlgaehMessagePop({
-        display: "Patient details updated successfully",
-        type: "success",
+        if (
+          patientImage?.current !== null &&
+          patientImage.current?.state?.fileExtention
+        ) {
+          images.push(
+            new Promise((resolve, reject) => {
+              patientImage.current.SavingImageOnServer(
+                undefined,
+                undefined,
+                undefined,
+                data?.patient_code,
+                () => {
+                  resolve();
+                }
+              );
+            })
+          );
+        }
+        if (
+          patientIdCard.current !== null &&
+          patientIdCard.current?.state?.fileExtention
+        ) {
+          images.push(
+            new Promise((resolve, reject) => {
+              patientIdCard.current.SavingImageOnServer(
+                undefined,
+                undefined,
+                undefined,
+                data?.primary_id_no,
+                () => {
+                  resolve();
+                }
+              );
+            })
+          );
+        }
+        const result = await Promise.all(images);
+        AlgaehMessagePop({
+          display: "Patient details updated successfully",
+          type: "success",
+        });
+        return result;
       });
-      return result;
-    });
+    }
   };
 
   const InputForm = (
@@ -226,13 +261,13 @@ export function UpdatePatient({
   if (!component) {
     return (
       <AlgaehModal
-        title="Update Patient"
+        title={addNewPat ? "Register Patient" : "Update Patient"}
         visible={show}
         okButtonProps={{
           loading: isLoading,
           className: "btn btn-primary",
         }}
-        okText={"Update"}
+        okText={addNewPat ? "Register Patient" : "Update"}
         maskClosable={false}
         cancelButtonProps={{
           disabled: isLoading,
@@ -246,7 +281,9 @@ export function UpdatePatient({
         width={1080}
         className={`${userLanguage}_comp row algaehNewModal patientUpdateModal`}
       >
-        <Spin spinning={isLoading || mutationLoading}>{InputForm}</Spin>
+        <Spin spinning={isLoading || mutationLoading || saveLoading}>
+          {InputForm}
+        </Spin>
       </AlgaehModal>
     );
   } else {

@@ -17,6 +17,7 @@ const { insertPatientData } = regModels;
 const {
   selectFrontDesk,
   addFrontDesk,
+  newPatientRegister,
   updateFrontDesk,
   getCashHandoverDetails,
   getCashForDashBoard,
@@ -105,15 +106,30 @@ export default () => {
       });
     }
   );
-
   api.post(
-    "/confirmAppointmentSMS",
-    confirmAppointmentSMS,
+    "/newPatientRegister",
+    newPatientRegister,
+    insertPatientData,
+
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
         records: req.records,
       });
+    }
+  );
+
+  api.post(
+    "/confirmAppointmentSMS",
+    confirmAppointmentSMS,
+    (req, res, next) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          message: "Messages are in progress state",
+        })
+        .end();
     }
   );
   api.post(

@@ -66,7 +66,11 @@ class BreadCrumb extends PureComponent {
         <AlgaehSecurityComponent componentCode="PAT_DATA_EDIT">
           <li onClick={EditDetails.bind(this, this)}>
             {" "}
-            <i className="fas fa-user-edit bredcrumpIconBig" />
+            {this.props.editData.events.addNewPat ? (
+              <i class="fas fa-user-plus"></i>
+            ) : (
+              <i className="fas fa-user-edit bredcrumpIconBig" />
+            )}
           </li>
         </AlgaehSecurityComponent>
       );
@@ -84,6 +88,7 @@ class BreadCrumb extends PureComponent {
       );
     }
   }
+
   showUserArea() {
     if (this.props.userArea !== undefined) {
       return this.props.userArea;

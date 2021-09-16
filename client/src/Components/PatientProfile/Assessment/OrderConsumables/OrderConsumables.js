@@ -32,7 +32,7 @@ import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 class OrderConsumables extends Component {
   constructor(props) {
     super(props);
-    const { current_patient, visit_id } = Window.global;
+    const { current_patient, visit_id, source, ip_id } = Window.global;
     this.state = {
       s_service_type: null,
       s_service: null,
@@ -40,6 +40,8 @@ class OrderConsumables extends Component {
 
       patient_id: current_patient, //Window.global["current_patient"],
       visit_id: visit_id, // Window.global["visit_id"],
+      source: source,
+      ip_id: ip_id,
       doctor_id: null,
       vat_applicable: this.props.vat_applicable,
 
@@ -88,22 +90,23 @@ class OrderConsumables extends Component {
   }
 
   getPatientInsurance() {
-    this.props.getPatientInsurance({
-      uri: "/patientRegistration/getPatientInsurance",
-      module: "frontDesk",
-      method: "GET",
-      data: {
-        patient_id: this.state.patient_id,
-        patient_visit_id: this.state.visit_id,
-      },
-      redux: {
-        type: "EXIT_INSURANCE_GET_DATA",
-        mappingName: "existinginsurance",
-      },
-      afterSuccess: (data) => {
-        if (data.length > 0) {
+    debugger;
+    if (this.state.source === "I") {
+      this.props.getPatientInsurance({
+        uri: "/patientRegistration/getPatientInsurance",
+        module: "frontDesk",
+        method: "GET",
+        data: {
+          source: this.state.source,
+          ip_id: this.state.ip_id,
+        },
+        redux: {
+          type: "EXIT_INSURANCE_GET_DATA",
+          mappingName: "existinginsurance",
+        },
+        afterSuccess: (data) => {
           this.setState({
-            insured: "Y",
+            insured: data[0].insurance_yesno,
             primary_insurance_provider_id: data[0].insurance_provider_id,
             primary_network_office_id:
               data[0].hims_d_insurance_network_office_id,
@@ -114,23 +117,54 @@ class OrderConsumables extends Component {
             secondary_network_id: data[0].secondary_network_id,
             secondary_network_office_id: data[0].secondary_network_office_id,
           });
-        } else {
-          this.setState({
-            insured: "N",
-            primary_insurance_provider_id: null,
-            primary_network_office_id: null,
-            primary_network_id: null,
-            sec_insured: null,
-            secondary_insurance_provider_id: null,
-            secondary_network_id: null,
-            secondary_network_office_id: null,
-          });
-        }
-      },
-    });
+        },
+      });
+    } else {
+      this.props.getPatientInsurance({
+        uri: "/patientRegistration/getPatientInsurance",
+        module: "frontDesk",
+        method: "GET",
+        data: {
+          patient_id: this.state.patient_id,
+          patient_visit_id: this.state.visit_id,
+        },
+        redux: {
+          type: "EXIT_INSURANCE_GET_DATA",
+          mappingName: "existinginsurance",
+        },
+        afterSuccess: (data) => {
+          if (data.length > 0) {
+            this.setState({
+              insured: "Y",
+              primary_insurance_provider_id: data[0].insurance_provider_id,
+              primary_network_office_id:
+                data[0].hims_d_insurance_network_office_id,
+              primary_network_id: data[0].network_id,
+              sec_insured: data[0].sec_insured,
+              secondary_insurance_provider_id:
+                data[0].secondary_insurance_provider_id,
+              secondary_network_id: data[0].secondary_network_id,
+              secondary_network_office_id: data[0].secondary_network_office_id,
+            });
+          } else {
+            this.setState({
+              insured: "N",
+              primary_insurance_provider_id: null,
+              primary_network_office_id: null,
+              primary_network_id: null,
+              sec_insured: null,
+              secondary_insurance_provider_id: null,
+              secondary_network_id: null,
+              secondary_network_office_id: null,
+            });
+          }
+        },
+      });
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+    debugger;
     let Location_name =
       this.props.inventorylocations !== undefined &&
       this.props.inventorylocations.length > 0
@@ -146,7 +180,7 @@ class OrderConsumables extends Component {
       nextProps.existinginsurance.length !== 0
     ) {
       let output = nextProps.existinginsurance[0];
-      output.insured = "Y";
+      output.insured = this.state.source === "I" ? output.insurance_yesno : "Y";
       output.approval_amt = nextProps.approval_amt;
       output.approval_limit_yesno = nextProps.approval_limit_yesno;
       output.preserviceInput = [];

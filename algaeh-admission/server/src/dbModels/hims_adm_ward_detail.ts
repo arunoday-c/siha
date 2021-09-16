@@ -28,8 +28,9 @@ hims_adm_ward_detail.init(
       comment: "A = Active \\\\n I = Inactive",
     },
     bed_status: {
-      type: DataTypes.ENUM("Booked", "Vacant"),
-      comment: "B = Booked \\\\\\\\n V = Vacant",
+      type: DataTypes.ENUM("Booked", "Vacant", "Occupied", "Unavailable"),
+      comment:
+        "B = Booked \\\\\\\\n V = Vacant\\\\\\n O=Occupied\\\\\n U=Unavailable",
       defaultValue: "Vacant",
     },
 

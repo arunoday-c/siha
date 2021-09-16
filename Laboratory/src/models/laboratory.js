@@ -776,6 +776,7 @@ const labModal = {
           ? req.body.billdetails
           : req.records.ResultOfFetchOrderIds;
 
+      console.log("Services", Services);
       const labServices = Services.filter(
         (f) =>
           f.service_type_id ==
@@ -788,6 +789,7 @@ const labModal = {
           patient_id: req.body.patient_id,
           provider_id: req.body.incharge_or_provider,
           visit_id: req.body.visit_id,
+          ip_id: req.body.ip_id,
           service_id: s.services_id,
           billed: req.body.billed,
           ordered_date: new Date(),
@@ -796,8 +798,9 @@ const labModal = {
           send_out_test: s.send_out_test === "Y" ? "Y" : "N",
           credit_order: parseFloat(req.body.credit_amount) > 0 ? "Y" : "N",
         };
-      });      
+      });
 
+      console.log("labServices", labServices);
       if (labServices.length > 0) {
         const IncludeValues = [
           "ordered_services_id",
@@ -805,6 +808,7 @@ const labModal = {
           "billing_header_id",
           "patient_id",
           "visit_id",
+          "ip_id",
           "provider_id",
           "service_id",
           "billed",
@@ -865,6 +869,10 @@ const labModal = {
                   return s.hims_d_investigation_test_id;
                 });
 
+                let strSource = " and visit_id= " + req.body.visit_id;
+                if (req.body.source === "I") {
+                  strSource = " and ip_id= " + req.body.ip_id;
+                }
                 _mysql
                   .executeQuery({
                     query:
@@ -872,8 +880,10 @@ const labModal = {
                     where hims_d_investigation_test_id=hims_m_lab_specimen.test_id and \
                     hims_m_lab_specimen.record_status='A' and test_id in (?); \
                     select hims_f_lab_order_id,service_id from hims_f_lab_order where record_status='A' \
-                    and visit_id =? and service_id in (?);",
-                    values: [test_id, req.body.visit_id, get_services_id],
+                    " +
+                      strSource +
+                      " and service_id in (?);",
+                    values: [test_id, get_services_id],
                     printQuery: true,
                   })
                   .then((specimentRecords) => {

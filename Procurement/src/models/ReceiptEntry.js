@@ -168,7 +168,7 @@ export default {
             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                   values: [
                     grn_number,
-                    today,
+                    new Date(),
                     input.receipt_mode,
                     input.grn_for,
                     year,

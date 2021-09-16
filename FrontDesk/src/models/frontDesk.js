@@ -171,9 +171,8 @@ export default {
             _.chain(result)
               .groupBy((it) => it.doctor_id)
               .map((detail, index) => {
-                const { doctor_id, full_name, sub_department_name } = _.head(
-                  detail
-                );
+                const { doctor_id, full_name, sub_department_name } =
+                  _.head(detail);
                 return {
                   full_name,
                   sub_department_name,
@@ -281,6 +280,33 @@ export default {
         next(e);
       });
     }
+  },
+  newPatientRegister: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .generateRunningNumber({
+        user_id: req.userIdentity.algaeh_d_app_user_id,
+        numgen_codes: ["PAT_REGS"],
+        table_name: "hims_f_app_numgen",
+      })
+      .then((generatedNumbers) => {
+        console.log("generatedNumbers", generatedNumbers);
+        req.connection = {
+          connection: _mysql.connection,
+          isTransactionConnection: _mysql.isTransactionConnection,
+          pool: _mysql.pool,
+        };
+        // req.connection = null;
+        req.body.patient_code = generatedNumbers.PAT_REGS;
+        req.pat_reg = true;
+        next();
+      })
+      .catch((e) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
   },
   updateFrontDesk: (req, res, next) => {
     const _mysql = new algaehMysql();

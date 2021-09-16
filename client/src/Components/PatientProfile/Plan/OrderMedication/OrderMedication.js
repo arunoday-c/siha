@@ -57,12 +57,21 @@ class OrderMedication extends Component {
       storedState = Window.global["orderMedicationState"];
       removeGlobal("orderMedicationState");
     }
-    const { current_patient, encounter_id, visit_id, provider_id, episode_id } =
-      Window.global;
+    const {
+      current_patient,
+      encounter_id,
+      visit_id,
+      provider_id,
+      episode_id,
+      source,
+      ip_id,
+    } = Window.global;
     this.state = {
       patient_id: current_patient, // Window.global["current_patient"],
       encounter_id: encounter_id, // Window.global["encounter_id"],
       visit_id: visit_id, // Window.global["visit_id"],
+      source: source, // Window.global["visit_id"],
+      ip_id: ip_id, // Window.global["visit_id"],
 
       provider_id: provider_id, // Window.global["provider_id"],
       episode_id: episode_id, //Window.global["episode_id"],
@@ -140,41 +149,73 @@ class OrderMedication extends Component {
   }
 
   getPatientInsurance(userToken) {
-    this.props.getPatientInsurance({
-      uri: "/patientRegistration/getPatientInsurance",
-      module: "frontDesk",
-      method: "GET",
-      data: {
-        patient_id: this.state.patient_id,
-        patient_visit_id: this.state.visit_id,
-      },
-      redux: {
-        type: "EXIT_INSURANCE_GET_DATA",
-        mappingName: "existinginsurance",
-      },
-      afterSuccess: (data) => {
-        if (data.length > 0) {
+    debugger;
+    if (this.state.source === "I") {
+      this.props.getPatientInsurance({
+        uri: "/patientRegistration/getPatientInsurance",
+        module: "frontDesk",
+        method: "GET",
+        data: {
+          source: this.state.source,
+          ip_id: this.state.ip_id,
+        },
+        redux: {
+          type: "EXIT_INSURANCE_GET_DATA",
+          mappingName: "existinginsurance",
+        },
+        afterSuccess: (data) => {
           this.setState({
-            insured: "Y",
-            primary_insurance_provider_id: data.insurance_provider_id,
-            primary_network_office_id: data.hims_d_insurance_network_office_id,
-            primary_network_id: data.network_id,
-            sec_insured: data.sec_insured,
+            insured: data[0].insurance_yesno,
+            primary_insurance_provider_id: data[0].insurance_provider_id,
+            primary_network_office_id:
+              data[0].hims_d_insurance_network_office_id,
+            primary_network_id: data[0].network_id,
+            sec_insured: data[0].sec_insured,
             secondary_insurance_provider_id:
-              data.secondary_insurance_provider_id,
-            secondary_network_id: data.secondary_network_id,
-            secondary_network_office_id: data.secondary_network_office_id,
-            portal_exists: userToken.portal_exists,
-            hospital_id: userToken.hospital_id,
+              data[0].secondary_insurance_provider_id,
+            secondary_network_id: data[0].secondary_network_id,
+            secondary_network_office_id: data[0].secondary_network_office_id,
           });
-        } else {
-          this.setState({
-            portal_exists: userToken.portal_exists,
-            hospital_id: userToken.hospital_id,
-          });
-        }
-      },
-    });
+        },
+      });
+    } else {
+      this.props.getPatientInsurance({
+        uri: "/patientRegistration/getPatientInsurance",
+        module: "frontDesk",
+        method: "GET",
+        data: {
+          patient_id: this.state.patient_id,
+          patient_visit_id: this.state.visit_id,
+        },
+        redux: {
+          type: "EXIT_INSURANCE_GET_DATA",
+          mappingName: "existinginsurance",
+        },
+        afterSuccess: (data) => {
+          if (data.length > 0) {
+            this.setState({
+              insured: "Y",
+              primary_insurance_provider_id: data.insurance_provider_id,
+              primary_network_office_id:
+                data.hims_d_insurance_network_office_id,
+              primary_network_id: data.network_id,
+              sec_insured: data.sec_insured,
+              secondary_insurance_provider_id:
+                data.secondary_insurance_provider_id,
+              secondary_network_id: data.secondary_network_id,
+              secondary_network_office_id: data.secondary_network_office_id,
+              portal_exists: userToken.portal_exists,
+              hospital_id: userToken.hospital_id,
+            });
+          } else {
+            this.setState({
+              portal_exists: userToken.portal_exists,
+              hospital_id: userToken.hospital_id,
+            });
+          }
+        },
+      });
+    }
   }
   componentWillUnmount() {
     setGlobal({ orderMedicationState: this.state });
@@ -185,7 +226,7 @@ class OrderMedication extends Component {
       nextProps.existinginsurance.length !== 0
     ) {
       let output = nextProps.existinginsurance[0];
-      output.insured = "Y";
+      output.insured = this.state.source === "I" ? output.insurance_yesno : "Y";
       this.setState({ ...output });
     }
   }

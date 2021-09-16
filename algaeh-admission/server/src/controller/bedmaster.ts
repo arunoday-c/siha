@@ -20,7 +20,9 @@ import {
   updateBedReleasingDetails,
   getPatBedAdmissionDetails,
   addBedStatus,
+  getWardHeader,
   onDeleteBedStatus,
+  updateBedStatusUnavailable,
 } from "../models/bedMaster";
 import { Router, Request, Response, NextFunction } from "express";
 // const { getBedStatus } = bedMaster;
@@ -84,6 +86,20 @@ export default () => {
     }
   );
   api.put(
+    "/updateBedStatusUnavailable",
+    updateBedStatusUnavailable,
+    (req: newRequest, res: Response, next: NextFunction) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records,
+        })
+        .end();
+    }
+  );
+
+  api.put(
     "/updateBedReleasingDetails",
     updateBedReleasingDetails,
     (req: newRequest, res: Response, next: NextFunction) => {
@@ -109,6 +125,20 @@ export default () => {
         .end();
     }
   );
+  api.get(
+    "/getWardHeader",
+    getWardHeader,
+    (req: newRequest, res: Response, next: NextFunction) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records,
+        })
+        .end();
+    }
+  );
+  getWardHeader;
   api.get(
     "/getWardDetails",
     getWardDetails,

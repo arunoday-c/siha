@@ -233,6 +233,7 @@ export function PatientRegistration() {
   const [showAdvModal, setShowAdvModal] = useState(false);
   const [isInsurance, setIsInsurance] = useState(false);
   const [incomeByOp, setIncomeByOp] = useState("");
+  const [addNewPat, setAddNewPat] = useState(false);
   const [incomeByPoint, setIncomeByPoint] = useState("");
   const [loadFromReader, setLoadFromReader] = useState(false);
   const location = useLocation();
@@ -1146,6 +1147,7 @@ export function PatientRegistration() {
     //   },
     // });
   };
+
   return (
     <Spin
       spinning={
@@ -1221,8 +1223,13 @@ export function PatientRegistration() {
               onClick: () => {
                 if (!!patient_code || !!savedPatient?.patient_code) {
                   setUpdateModal(true);
+                } else {
+                  setAddNewPat(true);
+                  setUpdateModal(true);
                 }
               },
+              addNewPat:
+                !!patient_code || !!savedPatient?.patient_code ? false : true,
             },
           }}
           attachments={{
@@ -1303,7 +1310,6 @@ export function PatientRegistration() {
                   setValue={setValue}
                   fieldRef={fieldRef}
                   errors={errors}
-                  fieldRef={fieldRef}
                   identities={identities}
                   clearErrors={clearErrors}
                   getValues={getValues}
@@ -1562,7 +1568,7 @@ export function PatientRegistration() {
           </form>
         </div>
       </div>
-      {(!!patient_code || !!savedPatient?.patient_code) && (
+      {!!patient_code || !!savedPatient?.patient_code ? (
         <>
           <UpdatePatient
             onClose={(isUpdated) => {
@@ -1574,7 +1580,9 @@ export function PatientRegistration() {
                 });
               }
               setUpdateModal(false);
+              setAddNewPat(false);
             }}
+            addNewPat={addNewPat}
             patient_code={patient_code || savedPatient?.patient_code}
             identity_type={identity_type}
             show={showUpdateModal}
@@ -1620,6 +1628,16 @@ export function PatientRegistration() {
             }
           />
         </>
+      ) : (
+        <UpdatePatient
+          onClose={(isUpdated) => {
+            setUpdateModal(false);
+            setAddNewPat(false);
+          }}
+          addNewPat={addNewPat}
+          identity_type={identity_type}
+          show={showUpdateModal}
+        />
       )}
     </Spin>
   );

@@ -4,13 +4,14 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import config from "../../../utils/config.json";
 
 const getVitalHistory = ($this, callBack) => {
-  const { current_patient, visit_id } = Window.global;
+  const { current_patient, visit_id, ip_id } = Window.global;
   $this.props.getVitalHistory({
     uri: "/doctorsWorkBench/getPatientVitals",
     method: "GET",
     data: {
       patient_id: current_patient, //Window.global["current_patient"],
       visit_id: visit_id, //Window.global["visit_id"]
+      ip_id: ip_id, //Window.global["visit_id"]
     },
     cancelRequestId: "getPatientVitals",
     redux: {

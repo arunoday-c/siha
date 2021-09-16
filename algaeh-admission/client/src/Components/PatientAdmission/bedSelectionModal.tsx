@@ -23,7 +23,7 @@ export default memo(function BedSelectionModal(props: Props) {
       ]}
       className={`row algaehNewModal SelectBedModal`}
     >
-      {visible ? <BedManagement /> : null}
+      {visible ? <BedManagement fromAdmission={true} /> : null}
     </AlgaehModal>
   );
 });

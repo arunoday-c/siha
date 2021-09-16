@@ -47,7 +47,7 @@ class OrderingServices extends PureComponent {
   constructor(props) {
     super(props);
     this.serviceSocket = sockets;
-    const { current_patient, visit_id } = Window.global;
+    const { current_patient, visit_id, ip_id, source } = Window.global;
     this.state = {
       s_service_type: null,
       s_service: null,
@@ -57,6 +57,8 @@ class OrderingServices extends PureComponent {
 
       patient_id: current_patient, //Window.global["current_patient"],
       visit_id: visit_id, //Window.global["visit_id"],
+      ip_id: ip_id, //Window.global["visit_id"],
+      source: source, //Window.global["visit_id"],
       doctor_id: null,
       vat_applicable: this.props.vat_applicable,
       date_of_birth: this.props.date_of_birth,
@@ -145,22 +147,23 @@ class OrderingServices extends PureComponent {
   }
 
   getPatientInsurance() {
-    this.props.getPatientInsurance({
-      uri: "/patientRegistration/getPatientInsurance",
-      module: "frontDesk",
-      method: "GET",
-      data: {
-        patient_id: this.state.patient_id,
-        patient_visit_id: this.state.visit_id,
-      },
-      redux: {
-        type: "EXIT_INSURANCE_GET_DATA",
-        mappingName: "existinginsurance",
-      },
-      afterSuccess: (data) => {
-        if (data.length > 0) {
+    debugger;
+    if (this.state.source === "I") {
+      this.props.getPatientInsurance({
+        uri: "/patientRegistration/getPatientInsurance",
+        module: "frontDesk",
+        method: "GET",
+        data: {
+          source: this.state.source,
+          ip_id: this.state.ip_id,
+        },
+        redux: {
+          type: "EXIT_INSURANCE_GET_DATA",
+          mappingName: "existinginsurance",
+        },
+        afterSuccess: (data) => {
           this.setState({
-            insured: "Y",
+            insured: data[0].insurance_yesno,
             primary_insurance_provider_id: data[0].insurance_provider_id,
             primary_network_office_id:
               data[0].hims_d_insurance_network_office_id,
@@ -171,43 +174,74 @@ class OrderingServices extends PureComponent {
             secondary_network_id: data[0].secondary_network_id,
             secondary_network_office_id: data[0].secondary_network_office_id,
           });
+        },
+      });
+    } else {
+      this.props.getPatientInsurance({
+        uri: "/patientRegistration/getPatientInsurance",
+        module: "frontDesk",
+        method: "GET",
+        data: {
+          patient_id: this.state.patient_id,
+          patient_visit_id: this.state.visit_id,
+        },
+        redux: {
+          type: "EXIT_INSURANCE_GET_DATA",
+          mappingName: "existinginsurance",
+        },
+        afterSuccess: (data) => {
+          if (data.length > 0) {
+            this.setState({
+              insured: "Y",
+              primary_insurance_provider_id: data[0].insurance_provider_id,
+              primary_network_office_id:
+                data[0].hims_d_insurance_network_office_id,
+              primary_network_id: data[0].network_id,
+              sec_insured: data[0].sec_insured,
+              secondary_insurance_provider_id:
+                data[0].secondary_insurance_provider_id,
+              secondary_network_id: data[0].secondary_network_id,
+              secondary_network_office_id: data[0].secondary_network_office_id,
+            });
 
-          // this.props.getServices({
-          //   uri: "/serviceType/getServiceInsured",
-          //   module: "masterSettings",
-          //   method: "GET",
-          //   data: { insurance_id: data[0].insurance_provider_id },
-          //   redux: {
-          //     type: "SERVICES_INS_GET_DATA",
-          //     mappingName: "services",
-          //   },
-          // });
-        } else {
-          this.setState({
-            insured: "N",
-            primary_insurance_provider_id: null,
-            primary_network_office_id: null,
-            primary_network_id: null,
-            sec_insured: null,
-            secondary_insurance_provider_id: null,
-            secondary_network_id: null,
-            secondary_network_office_id: null,
-          });
-          // this.props.getServices({
-          //   uri: "/serviceType/getService",
-          //   module: "masterSettings",
-          //   method: "GET",
-          //   redux: {
-          //     type: "SERVICES_GET_DATA",
-          //     mappingName: "services",
-          //   },
-          // });
-        }
-      },
-    });
+            // this.props.getServices({
+            //   uri: "/serviceType/getServiceInsured",
+            //   module: "masterSettings",
+            //   method: "GET",
+            //   data: { insurance_id: data[0].insurance_provider_id },
+            //   redux: {
+            //     type: "SERVICES_INS_GET_DATA",
+            //     mappingName: "services",
+            //   },
+            // });
+          } else {
+            this.setState({
+              insured: "N",
+              primary_insurance_provider_id: null,
+              primary_network_office_id: null,
+              primary_network_id: null,
+              sec_insured: null,
+              secondary_insurance_provider_id: null,
+              secondary_network_id: null,
+              secondary_network_office_id: null,
+            });
+            // this.props.getServices({
+            //   uri: "/serviceType/getService",
+            //   module: "masterSettings",
+            //   method: "GET",
+            //   redux: {
+            //     type: "SERVICES_GET_DATA",
+            //     mappingName: "services",
+            //   },
+            // });
+          }
+        },
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     const orderservicesdata = _.filter(nextProps.orderedList, (f) => {
       return f.trans_package_detail_id === null;
     });
@@ -216,7 +250,7 @@ class OrderingServices extends PureComponent {
       nextProps.existinginsurance.length !== 0
     ) {
       let output = nextProps.existinginsurance[0];
-      output.insured = "Y";
+      output.insured = this.state.source === "I" ? output.insurance_yesno : "Y";
       output.approval_amt = nextProps.approval_amt;
       output.approval_limit_yesno = nextProps.approval_limit_yesno;
       output.orderservicesdata = orderservicesdata;
@@ -237,7 +271,7 @@ class OrderingServices extends PureComponent {
   }
 
   onClose = (e) => {
-    const { current_patient, visit_id } = Window.global;
+    const { current_patient, visit_id, ip_id } = Window.global;
     getFavouriteServices(this);
     this.setState(
       {
@@ -247,6 +281,7 @@ class OrderingServices extends PureComponent {
 
         patient_id: current_patient, //Window.global["current_patient"],
         visit_id: visit_id, //Window.global["visit_id"],
+        ip_id: ip_id, //Window.global["ip_id"],
         doctor_id: null,
         vat_applicable: this.props.vat_applicable,
 

@@ -244,7 +244,7 @@ class Vitals extends Component {
         : this.props.department_vitals;
     const _vitalsGroup =
       this.props.patient_vitals !== undefined ? this.props.patient_vitals : [];
-    const { visit_id, current_patient, case_type } = Window.global;
+    const { visit_id, current_patient, case_type, ip_id } = Window.global;
     return (
       <React.Fragment>
         <div className="row">
@@ -323,6 +323,7 @@ class Vitals extends Component {
                             // editDateValidate={this.editDateValidate}
                             current_patient={current_patient}
                             visit_id={visit_id}
+                            ip_id={ip_id}
                             case_type={case_type}
                             dropDownHandle={(e) => this.dropDownHandle(e)}
                             // setstates={(name, value) =>

@@ -2,14 +2,16 @@ import Enumerable from "linq";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 
 const getPatientProfile = ($this) => {
-  const { current_patient, episode_id, visit_id } = Window.global;
+  const { current_patient, episode_id, visit_id, source, ip_id } = Window.global;
   $this.props.getPatientProfile({
     uri: "/doctorsWorkBench/getPatientProfile",
     method: "GET",
     data: {
       patient_id: current_patient, //Window.global["current_patient"],
       episode_id: episode_id, //Window.global["episode_id"]
-      visit_id: visit_id, //Window.global["episode_id"]
+      visit_id: visit_id, //Window.global["visit_id"]
+      source: source, //Window.global["source"]
+      ip_id: ip_id //Window.global["ip_id"]
     },
     cancelRequestId: "getPatientProfile",
     redux: {

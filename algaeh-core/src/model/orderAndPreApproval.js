@@ -413,6 +413,7 @@ let insertOrderedServices = (req, res, next) => {
       const IncludeValues = [
         "patient_id",
         "visit_id",
+        "ip_id",
         "doctor_id",
         "service_type_id",
         "services_id",
@@ -454,16 +455,18 @@ let insertOrderedServices = (req, res, next) => {
         "d_treatment_id",
       ];
 
+      let strQuery = "SELECT 1=1;";
+      if (input.source === "O") {
+        strQuery = _mysql.mysqlQueryFormat(
+          "update hims_f_patient_visit set ins_services_amount=?, approval_limit_yesno=? where hims_f_patient_visit_id=?;",
+          [input.approval_amt, input.approval_limit_yesno, input.visit_id]
+        );
+      }
+
       let resultOrder = [];
       _mysql
         .executeQueryWithTransaction({
-          query:
-            "update hims_f_patient_visit set ins_services_amount=?, approval_limit_yesno=? where hims_f_patient_visit_id=?;",
-          values: [
-            input.approval_amt,
-            input.approval_limit_yesno,
-            input.visit_id,
-          ],
+          query: strQuery,
           printQuery: true,
         })
         .then((visitUpdate) => {
@@ -621,6 +624,7 @@ let insertOrderedServices = (req, res, next) => {
                       let patient_id = input["patient_id"];
                       let doctor_id = input["doctor_id"];
                       let visit_id = input["visit_id"];
+                      let ip_id = input["ip_id"];
 
                       let services = [];
                       input["billdetails"].forEach((e) => {
@@ -631,6 +635,10 @@ let insertOrderedServices = (req, res, next) => {
 
                       console.log("services", services);
                       if (services.length > 0) {
+                        let strSource = " and OS.visit_id= " + visit_id;
+                        if (input.source === "I") {
+                          strSource = " and OS.ip_id= " + ip_id;
+                        }
                         _mysql
                           .executeQueryWithTransaction({
                             query:
@@ -641,8 +649,10 @@ let insertOrderedServices = (req, res, next) => {
                               inner join hims_d_services S on  S.hims_d_services_id = OS.services_id\
                               left join hims_d_investigation_test IT on OS.services_id=IT.services_id \
                               left join hims_f_service_approval SA on SA.ordered_services_id=OS.hims_f_ordered_services_id\
-                             where   OS.patient_id=? and OS.doctor_id=? and OS.visit_id=? and OS.services_id in (?)  and hims_f_service_approval_id is null ;",
-                            values: [patient_id, doctor_id, visit_id, services],
+                             where   OS.patient_id=? and OS.doctor_id=? " +
+                              strSource +
+                              " and OS.services_id in (?)  and hims_f_service_approval_id is null ;",
+                            values: [patient_id, doctor_id, services],
                             printQuery: true,
                           })
                           .then((ResultOfFetchOrderIds) => {
@@ -706,7 +716,8 @@ let insertOrderedServices = (req, res, next) => {
                                 .then((resultPreAprvl) => {
                                   req.records = {
                                     resultPreAprvl,
-                                    ResultOfFetchOrderIds: ResultOfFetchOrderIds,
+                                    ResultOfFetchOrderIds:
+                                      ResultOfFetchOrderIds,
                                   };
                                   next();
                                 })
@@ -1157,6 +1168,10 @@ let selectOrderServicesbyDoctor = (req, res, next) => {
       _stringData += " and OS.visit_id=?";
       inputValues.push(req.query.visit_id);
     }
+    if (req.query.ip_id != null) {
+      _stringData += " and OS.ip_id=?";
+      inputValues.push(req.query.ip_id);
+    }
     _mysql
       .executeQuery({
         query:
@@ -1208,6 +1223,11 @@ let getVisitConsumable = (req, res, next) => {
       _stringData += " and visit_id=?";
       inputValues.push(req.query.visit_id);
     }
+    if (req.query.ip_id != null) {
+      _stringData += " and OS.ip_id=?";
+      inputValues.push(req.query.ip_id);
+    }
+
     _mysql
       .executeQuery({
         query:
@@ -1585,6 +1605,7 @@ let insertInvOrderedServices = (req, res, next) => {
     let IncludeValues = [
       "patient_id",
       "visit_id",
+      "ip_id",
       "doctor_id",
       "inventory_item_id",
       "inventory_location_id",
@@ -1651,12 +1672,14 @@ let insertInvOrderedServices = (req, res, next) => {
         let patient_id;
         let doctor_id;
         let visit_id;
+        let ip_id;
 
         let services = new LINQ(req.body.billdetails)
           .Select((s) => {
             patient_id = s.patient_id;
             doctor_id = s.doctor_id;
             visit_id = s.visit_id;
+            ip_id = s.ip_id;
             return s.services_id;
           })
           .ToArray();
@@ -1664,14 +1687,26 @@ let insertInvOrderedServices = (req, res, next) => {
         if (services.length > 0) {
           servicesForPreAproval.push(patient_id);
           servicesForPreAproval.push(doctor_id);
-          servicesForPreAproval.push(visit_id);
+          if (req.body.source === "I") {
+            servicesForPreAproval.push(ip_id);
+          } else {
+            servicesForPreAproval.push(visit_id);
+          }
+
           servicesForPreAproval.push(services);
+
+          let stQry = " and `visit_id`=? ";
+          if (req.body.source === "I") {
+            stQry = " and `ip_id`=? ";
+          }
 
           _mysql
             .executeQuery({
               query:
                 "SELECT hims_f_ordered_inventory_id,services_id,created_date, service_type_id from hims_f_ordered_inventory\
-              where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
+              where `patient_id`=? and `doctor_id`=? " +
+                stQry +
+                " and `services_id` in (?)",
               values: servicesForPreAproval,
               printQuery: true,
             })
@@ -1957,12 +1992,13 @@ let addPackage = (req, res, next) => {
         }
       });
 
-      const { doctor_id, visit_id, patient_id } = input[0];
+      const { doctor_id, visit_id, patient_id, ip_id, source } = input[0];
 
       let insurtColumns = [
         "package_id",
         "patient_id",
         "visit_id",
+        "ip_id",
         "doctor_id",
         "service_type_id",
         "services_id",
@@ -2009,6 +2045,10 @@ let addPackage = (req, res, next) => {
         "pack_expiry_date",
       ];
 
+      let strSource = " and visit_id= " + visit_id;
+      if (source === "I") {
+        strSource = " and ip_id= " + ip_id;
+      }
       _mysql
         .executeQueryWithTransaction({
           query: "INSERT INTO hims_f_package_header (??) VALUES ?;",
@@ -2030,8 +2070,8 @@ let addPackage = (req, res, next) => {
           _mysql
             .executeQuery({
               query: ` select hims_f_package_header_id,package_id from hims_f_package_header
-                       where patient_id= ? and visit_id=? and doctor_id=? and record_status='A' and billed='N' ; `,
-              values: [patient_id, visit_id, doctor_id],
+                       where patient_id= ? ${strSource} and doctor_id=? and record_status='A' and billed='N' ; `,
+              values: [patient_id, doctor_id],
               printQuery: true,
             })
             .then((headder) => {
