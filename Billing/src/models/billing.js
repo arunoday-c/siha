@@ -218,7 +218,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO hims_f_billing_header ( patient_id, visit_id, bill_number,receipt_header_id,\
+            "INSERT INTO hims_f_billing_header ( patient_id, visit_id, ip_id, billing_mode, bill_number,receipt_header_id,\
               incharge_or_provider, bill_date, advance_amount,advance_adjust, pack_advance_adjust, \
               pack_advance_amount, discount_amount, sub_total_amount, total_tax,  billing_status, \
               sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
@@ -226,11 +226,13 @@ export default {
               , patient_tax, s_patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,\
               balance_credit, from_bill_id, shift_id, created_by, created_date, updated_by, updated_date, copay_amount,\
               deductable_amount,hospital_id)\
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?); " +
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?); " +
             strQuery,
           values: [
             inputParam.patient_id,
             inputParam.visit_id,
+            inputParam.ip_id,
+            inputParam.billing_mode,
             inputParam.bill_number,
             inputParam.receipt_header_id,
             inputParam.incharge_or_provider,

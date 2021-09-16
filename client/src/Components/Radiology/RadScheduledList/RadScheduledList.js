@@ -864,7 +864,7 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
 import Options from "../../../Options.json";
 import _ from "lodash";
-import PatientAttachmentModal from "../../PatientAttachmentModal"
+import PatientAttachmentModal from "../../PatientAttachmentModal";
 // import RadAttachDocument from "./RadAttachDocument";
 import { useQuery } from "react-query";
 import { Controller, useForm } from "react-hook-form";
@@ -915,8 +915,7 @@ export default function RadScheduledList() {
   };
 
   const openResultEntry = (row) => {
-    
-    if (row.billed === "Y") {
+    if (row.ip_id > 0 || row.billed === "Y") {
       algaehApiCall({
         uri: "/radiology/getRadTemplateList",
         module: "radiology",
@@ -1151,7 +1150,6 @@ export default function RadScheduledList() {
       return f.status === "CN";
     }).length;
   } else {
-    
     console.log("radtestlist", radtestlist);
   }
 
@@ -1164,7 +1162,6 @@ export default function RadScheduledList() {
           uniqueId={activeRow.hims_f_rad_order_id}
           nameOfTheFolder="RadiologyDocuments"
           CloseModal={CloseModal}
-          
         />
       ) : null}
 

@@ -3,7 +3,7 @@ const common = require("./webpack.common.js");
 const path = require("path");
 const fs = require("fs");
 module.exports = (env) => {
-  const cPath = "../Client_Builds/algaeh-finance-integration";
+  const cPath = "../Client_Builds/algaeh-qr-scanner";
   const _path =
     env && env["Client_Builds"] === true
       ? path.resolve(__dirname, cPath, "build")
@@ -24,8 +24,9 @@ module.exports = (env) => {
                   path.join(__dirname, "package.json"),
                   { encoding: "utf-8" }
                 );
-                let { devDependencies, ...packageDependencies } =
-                  JSON.parse(pJSON);
+                let { devDependencies, ...packageDependencies } = JSON.parse(
+                  pJSON
+                );
                 const packagePath = path.resolve(
                   __dirname,
                   cPath,

@@ -274,6 +274,8 @@ class RadOrderedList extends Component {
                                     pointerEvents:
                                       row.arrived !== "N"
                                         ? "none"
+                                        : row.ip_id > 0
+                                        ? ""
                                         : row.billed === "N"
                                         ? "none"
                                         : "",
@@ -281,6 +283,8 @@ class RadOrderedList extends Component {
                                     opacity:
                                       row.arrived !== "N"
                                         ? "0.1"
+                                        : row.ip_id > 0
+                                        ? ""
                                         : row.billed === "N"
                                         ? "0.1"
                                         : "",

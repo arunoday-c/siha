@@ -90,6 +90,10 @@
         "label": "Bill Number"
       },
       {
+        "fieldName": "billing_mode",
+        "label": "Bill Type"
+      },
+      {
         "fieldName": "patient_code",
         "label": "Patient Code"
       },
@@ -104,10 +108,6 @@
       {
         "fieldName": "contact_number",
         "label": "Mobile Num."
-      },
-      {
-        "fieldName": "visit_code",
-        "label": "Visit Code"
       },
       {
         "fieldName": "bill_date",

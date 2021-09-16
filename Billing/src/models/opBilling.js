@@ -207,6 +207,69 @@ export default {
       });
     }
   },
+  updateBedServices: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      const utilities = new algaehUtilities();
+      // utilities.logger().log("updateOrderedServicesBilled: ");
+
+      // utilities.logger().log("OrderServices: ", req.body.billdetails);
+
+      let OrderServices = new LINQ(req.body.billdetails)
+        .Where((w) => w.service_type_id == 9)
+        .Select((s) => {
+          return {
+            hims_adm_atd_bed_details_id: s.hims_adm_atd_bed_details_id,
+            billed: "Y",
+            updated_date: new Date(),
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
+          };
+        })
+        .ToArray();
+      let qry = "";
+      if (OrderServices.length > 0) {
+        for (let i = 0; i < OrderServices.length; i++) {
+          qry += mysql.format(
+            "UPDATE `hims_adm_atd_bed_details` SET billed=?,\
+              updated_date=?,updated_by=? where hims_adm_atd_bed_details_id=?;",
+            [
+              OrderServices[i].billed,
+              moment().format("YYYY-MM-DD HH:mm"),
+              OrderServices[i].updated_by,
+              OrderServices[i].hims_adm_atd_bed_details_id,
+            ]
+          );
+        }
+
+        _mysql
+          .executeQuery({
+            query: qry,
+            printQuery: true,
+          })
+          .then((updateOrder) => {
+            if (req.connection == null) {
+              req.records = updateOrder;
+              next();
+            } else {
+              next();
+            }
+          })
+          .catch((error) => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      } else {
+        // utilities.logger().log("Else: ");
+        next();
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
 
   updateOrderedPackageBilled: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
@@ -280,9 +343,8 @@ export default {
                 }
                 // consol.log("rad_data", rad_data);
 
-                req.body.billdetails = req.body.billdetails.concat(
-                  package_details
-                );
+                req.body.billdetails =
+                  req.body.billdetails.concat(package_details);
 
                 if (req.connection == null) {
                   // console.log("1");
@@ -371,15 +433,15 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT bh.*, PAT.*, VST.*, emp.full_name as doctor_name, bh.patient_payable as patient_payable_h, \
-            VST.sub_department_id, \
+            "SELECT bh.*, PAT.*, VST.*, ATD.*, emp.full_name as doctor_name, bh.patient_payable as patient_payable_h, \
             max(if(AU.algaeh_d_app_user_id=bh.created_by, EU.full_name,'' )) as created_name, \
             max(if(AU.algaeh_d_app_user_id=bh.cancel_by, EU.full_name,'' )) as cancelled_name,\
             max(if(AU.algaeh_d_app_user_id=bh.adjusted_by, EU.full_name,'' )) as adjusted_name, \
             FBH.bill_number as from_bill_number FROM hims_f_billing_header bh \
             left join hims_d_employee as emp on bh.incharge_or_provider = emp.hims_d_employee_id \
             inner join hims_f_patient as PAT on bh.patient_id = PAT.hims_d_patient_id \
-            inner join hims_f_patient_visit as VST on bh.visit_id = VST.hims_f_patient_visit_id \
+            left join hims_f_patient_visit as VST on bh.visit_id = VST.hims_f_patient_visit_id \
+            left join hims_adm_atd_admission as ATD on bh.ip_id = ATD.hims_adm_atd_admission_id \
             inner join algaeh_d_app_user AU on (bh.created_by = AU.algaeh_d_app_user_id or \
             bh.cancel_by = AU.algaeh_d_app_user_id or bh.adjusted_by = AU.algaeh_d_app_user_id) \
             inner join hims_d_employee EU on AU.employee_id = EU.hims_d_employee_id \

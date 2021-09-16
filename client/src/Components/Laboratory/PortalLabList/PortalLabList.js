@@ -104,7 +104,7 @@ function PortalToHimsList() {
     if (data.success === false) {
       throw new Error(data.message);
     } else {
-      return data.records[1];
+      return data.records;
     }
   }
 
@@ -121,7 +121,7 @@ function PortalToHimsList() {
         .map((item) => {
           return item.portal_package_id;
         });
-        debugger
+      debugger;
       const result = await newAlgaehApi({
         uri: "/laboratory/patientBillGeneration",
         module: "laboratory",
