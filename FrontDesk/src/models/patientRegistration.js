@@ -45,7 +45,6 @@ export default {
           isTransactionConnection: _mysql.isTransactionConnection,
           pool: _mysql.pool,
         };
-
         req.body.patient_code = generatedNumbers.PAT_REGS;
         next();
       })
@@ -132,7 +131,7 @@ export default {
         .then((result) => {
           req.body.patient_id = result.insertId;
 
-          if (req.connection == null) {
+          if (req.connection == null || req.pat_reg === true) {
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
               req.records = result;

@@ -28,14 +28,15 @@ export default memo(function BookAppointment(props) {
   const location = useLocation();
   // const history = useHistory();
   // const pathName = history.location.pathname;
-  const { userLanguage, titles, countries, socket } = useContext(MainContext);
+  const { userLanguage, titles, countries, socket, userToken } =
+    useContext(MainContext);
   const {
     appointmentDate,
     setDoctorSchedules,
     app_status,
     sub_department_id,
     provider_id,
-    userToken,
+
     // dataFromRecall,
     // setDataFromRecall,
   } = useContext(AppointmentContext);
@@ -75,6 +76,7 @@ export default memo(function BookAppointment(props) {
   const [currentCountry] = countries?.filter(
     (item) => item.hims_d_country_id === userToken?.default_country
   );
+
   const {
     control,
     setValue,
@@ -200,9 +202,9 @@ export default memo(function BookAppointment(props) {
         // setTeleCode(row.tel_code);
         setEmail(row.email);
         setArabicName(row.arabic_name);
-        const maxlength = countries.filter(
+        const maxlength = countries?.filter(
           (f) => f.tel_code === row.tel_code
-        )[0].max_phone_digits;
+        )[0]?.max_phone_digits;
 
         setMaxLength(maxlength ? maxlength : 10);
         // setContactNumber(row.contact_number);
