@@ -60,40 +60,46 @@ class DisPatientForm extends Component {
               >
                 {/* Patient code */}
 
-                <div className="col-2">
-                  <label>Load By</label>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="billing_mode"
-                        checked={this.state.billing_mode === "O" ? true : false}
-                        onChange={() => {
-                          this.setState({
-                            billing_mode: "O",
-                          });
-                          context.updateState({ billing_mode: "O" });
-                        }}
-                      />
-                      <span>OP</span>
-                    </label>
+                {this.state.userToken.admission_exists === "Y" ? (
+                  <div className="col-2">
+                    <label>Load By</label>
+                    <div className="customRadio">
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          name="billing_mode"
+                          checked={
+                            this.state.billing_mode === "O" ? true : false
+                          }
+                          onChange={() => {
+                            this.setState({
+                              billing_mode: "O",
+                            });
+                            context.updateState({ billing_mode: "O" });
+                          }}
+                        />
+                        <span>OP</span>
+                      </label>
 
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="billing_mode"
-                        checked={this.state.billing_mode === "D" ? true : false}
-                        onChange={() => {
-                          this.setState({
-                            billing_mode: "D",
-                          });
-                          context.updateState({ billing_mode: "D" });
-                        }}
-                      />
-                      <span>Day Care</span>
-                    </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          name="billing_mode"
+                          checked={
+                            this.state.billing_mode === "D" ? true : false
+                          }
+                          onChange={() => {
+                            this.setState({
+                              billing_mode: "D",
+                            });
+                            context.updateState({ billing_mode: "D" });
+                          }}
+                        />
+                        <span>Day Care</span>
+                      </label>
+                    </div>
                   </div>
-                </div>
+                ) : null}
 
                 {this.state.billing_mode === "D" ? (
                   <div
