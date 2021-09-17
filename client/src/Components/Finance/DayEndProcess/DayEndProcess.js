@@ -749,7 +749,7 @@ class DayEndProcess extends Component {
                     />
 
                     <span style={{ fontSize: "0.8rem" }}>
-                      Posted Trancation
+                      Posted Transaction
                     </span>
                   </label>
                 </div> */}
@@ -816,7 +816,7 @@ class DayEndProcess extends Component {
                 />
 
                 <div className="col">
-                  <label>Show Only Posted Trancation</label>
+                  <label>Show Only Posted Transaction</label>
                   <div className="customCheckbox">
                     <label className="checkbox inline">
                       <input
@@ -833,7 +833,7 @@ class DayEndProcess extends Component {
                   </div>
                 </div>
                 <div className="col">
-                  <label>Show Only Reverted Trancation</label>
+                  <label>Show Only Reverted Transaction</label>
                   <div className="customCheckbox">
                     <label className="checkbox inline">
                       <input
@@ -860,7 +860,7 @@ class DayEndProcess extends Component {
                     />
 
                     <span style={{ fontSize: "0.8rem" }}>
-                      Reverted Trancation
+                      Reverted Transaction
                     </span>
                   </label>
                 </div> */}

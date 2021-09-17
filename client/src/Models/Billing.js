@@ -5,6 +5,8 @@ export default {
     output = {
       hims_f_billing_header_id: null,
       patient_id: null,
+      admission_number: null,
+      ip_id: null,
       billing_type_id: null,
       visit_id: null,
       hims_f_patient_visit_id: null,
@@ -32,7 +34,7 @@ export default {
       addNewService: true,
       cancelled: "N",
       insurance_yesno: "N",
-
+      billing_mode: "O",
       sec_company_res: 0,
       patient_payable: 0,
       company_payble: 0,
@@ -104,8 +106,8 @@ export default {
       insured: "N",
       promo_code: null,
       pack_advance_amount: 0,
-      pack_advance_adjust: 0
+      pack_advance_adjust: 0,
     };
     return output;
-  }
+  },
 };

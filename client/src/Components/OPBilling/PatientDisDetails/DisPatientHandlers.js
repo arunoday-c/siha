@@ -24,6 +24,28 @@ const PatientSearch = ($this, context, e) => {
   });
 };
 
+const AdmissionSearch = ($this, context, e) => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.patientAdmission.admission,
+    },
+    searchName: "admission",
+    uri: "/gloabelSearch/get",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: (row) => {
+      $this.setState({ admission_number: row.admission_number });
+
+      if (context !== null) {
+        context.updateState({
+          admission_number: row.admission_number,
+        });
+      }
+    },
+  });
+};
+
 const selectVisit = ($this, context, e) => {
   //   let $this = this;
 
@@ -240,4 +262,4 @@ const selectVisit = ($this, context, e) => {
     });
   }
 };
-export { PatientSearch, selectVisit };
+export { PatientSearch, selectVisit, AdmissionSearch };

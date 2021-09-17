@@ -51,7 +51,32 @@ export default memo(function Modal(props) {
   function onExcelGeneration() {
     setPleaseWait("Please wait excel is generating...");
     setLoading(true);
-    onOk("excel");
+
+    resultdata["nodeName"] = selectedNode?.node?.full_name;
+
+    generateReport("excel", resultdata)
+      .then((res) => {
+        onOk("excel");
+        // const urlBlob = URL.createObjectURL(res.data);
+        const a = document.createElement("a");
+        a.href = res;
+        a.download = `${selectedNode?.node?.label}_${moment(
+          dateRange[0]
+        ).format("DD-MM-YYYY")}-${moment(dateRange[1]).format(
+          "DD-MM-YYYY"
+        )}.${"xlsx"}`;
+        a.click();
+      })
+
+      .catch((error) => {
+        setLoading(false);
+        AlgaehMessagePop({
+          type: "error",
+          display: error,
+        });
+      });
+
+    // onOk("excel");
   }
   function onCancelClick() {
     setLoading(false);

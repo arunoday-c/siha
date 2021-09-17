@@ -33,6 +33,7 @@ const {
   updateOldBill,
   updatePackageAdvance,
   generateAccountingEntryAdjustBill,
+  updateBedServices,
 } = opModels;
 const { getReceiptEntry } = recModels;
 const { insertLadOrderedServices, updateLabOrderedBilled } = labModels;
@@ -70,6 +71,7 @@ export default () => {
     updatePackageAdvance,
     updateOrderedPackageBilled,
     updatePhysiotherapyServices,
+    updateBedServices,
     (req, res, next) => {
       if (req.body.portal_exists == "Y") {
         getPackageServices(req, res, next);
