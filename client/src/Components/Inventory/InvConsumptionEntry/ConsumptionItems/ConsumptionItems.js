@@ -112,6 +112,9 @@ class ConsumptionItems extends Component {
   CloseItemBatch(context, e) {
     ConsumptionItemsEvents().CloseItemBatch(this, context, e);
   }
+  onchangegridcolauthqty(context, row, e) {
+    ConsumptionItemsEvents().onchangegridcolauthqty(this, context, row, e);
+  }
 
   render() {
     return (
@@ -446,6 +449,9 @@ class ConsumptionItems extends Component {
                                   </span>
                                 );
                               },
+                              others: {
+                                filterable: false,
+                              },
                             },
 
                             {
@@ -473,6 +479,9 @@ class ConsumptionItems extends Component {
                                   </span>
                                 );
                               },
+                              others: {
+                                filterable: false,
+                              },
                             },
 
                             {
@@ -497,6 +506,9 @@ class ConsumptionItems extends Component {
                                       : ""}
                                   </span>
                                 );
+                              },
+                              others: {
+                                filterable: false,
                               },
                             },
 
@@ -523,6 +535,9 @@ class ConsumptionItems extends Component {
                                   </span>
                                 );
                               },
+                              others: {
+                                filterable: false,
+                              },
                               disabled: true,
                             },
                             {
@@ -532,6 +547,41 @@ class ConsumptionItems extends Component {
                                   label={{ forceLabel: "Quantity" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return this.state
+                                  .hims_f_inventory_consumption_header_id !==
+                                  null ? (
+                                  parseFloat(row.quantity)
+                                ) : (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      number: {
+                                        allowNegative: false,
+                                        thousandSeparator: ",",
+                                      },
+                                      dontAllowKeys: ["-", "e", "."],
+                                      value:
+                                        row.quantity !== ""
+                                          ? parseFloat(row.quantity)
+                                          : "",
+                                      className: "txt-fld",
+                                      name: "quantity",
+                                      events: {
+                                        onChange:
+                                          this.onchangegridcolauthqty.bind(
+                                            this,
+                                            context,
+                                            row
+                                          ),
+                                      },
+                                    }}
+                                  />
+                                );
+                              },
+                              others: {
+                                filterable: false,
+                              },
                               disabled: true,
                             },
                             {
@@ -541,6 +591,9 @@ class ConsumptionItems extends Component {
                                   label={{ forceLabel: "Qty in Hand" }}
                                 />
                               ),
+                              others: {
+                                filterable: false,
+                              },
                               disabled: true,
                             },
                           ]}
@@ -549,6 +602,7 @@ class ConsumptionItems extends Component {
                             data: this.state.inventory_stock_detail,
                           }}
                           isEditable={false}
+                          filter={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{}}
                         />

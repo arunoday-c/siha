@@ -206,7 +206,9 @@ export default {
         _mysql
           .executeQuery({
             query:
-              "SELECT insurance_yesno, insurance_provider_id, insurance_network_office_id, network_id FROM hims_adm_atd_admission where hims_adm_atd_admission_id=?;",
+              "SELECT insurance_yesno, insurance_provider_id, insurance_network_office_id, \
+              insurance_network_office_id as  hims_d_insurance_network_office_id, network_id FROM \
+              hims_adm_atd_admission where hims_adm_atd_admission_id=?;",
             values: [inputParam.ip_id],
             printQuery: true,
           })
