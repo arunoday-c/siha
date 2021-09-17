@@ -179,6 +179,19 @@ export default function ConsumptionItemsEvents() {
       } else {
         let inventory_stock_detail = $this.state.inventory_stock_detail;
 
+        let BatchExists = _.filter(
+          inventory_stock_detail,
+          (f) => f.batchno === $this.state.batchno
+        );
+
+        if (BatchExists.length > 0) {
+          swalMessage({
+            title: "Selected Batch Already Exists",
+            type: "warning",
+          });
+          return;
+        }
+
         let ItemInput = {
           location_id: $this.state.location_id,
           location_type: $this.state.location_type,
@@ -321,6 +334,39 @@ export default function ConsumptionItemsEvents() {
           qtyhand: qtyhand,
           unit_cost: sale_price,
         });
+      }
+    },
+
+    onchangegridcolauthqty: ($this, context, row, e) => {
+      let name = e.target.name;
+      let value = e.target.value === "" ? null : e.target.value;
+
+      if (parseFloat(value) > parseFloat(row.qtyhand)) {
+        swalMessage({
+          title: "Cannot be greater than QTY in Hand.",
+          type: "warning",
+        });
+      } else if (parseFloat(value) < 0) {
+        swalMessage({
+          title: "Cannot be less than Zero.",
+          type: "warning",
+        });
+      } else {
+        let inventory_stock_detail = $this.state.inventory_stock_detail;
+        let _index = inventory_stock_detail.indexOf(row);
+
+        row[name] = value;
+        inventory_stock_detail[_index] = row;
+
+        $this.setState({
+          inventory_stock_detail: inventory_stock_detail,
+        });
+
+        if (context !== undefined) {
+          context.updateState({
+            inventory_stock_detail: inventory_stock_detail,
+          });
+        }
       }
     },
   };
