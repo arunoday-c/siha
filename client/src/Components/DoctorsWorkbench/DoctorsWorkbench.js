@@ -193,7 +193,7 @@ class DoctorsWorkbench extends Component {
       onSuccess: (response) => {
         if (response.data.success) {
           this.loadListofData();
-
+          let encounterData = response.data.records;
           if (sockets.connected) {
             sockets.emit("encounter_dash", {
               ...data,
@@ -212,7 +212,7 @@ class DoctorsWorkbench extends Component {
                   current_patient: data.patient_id,
                   episode_id: data.episode_id,
                   visit_id: data?.visit_id ?? null,
-                  encounter_id: response.data.records.encounter_id,
+                  encounter_id: encounterData.encounter_id,
                   provider_id: data.provider_id,
                   department_type: data.department_type,
                   gender: data.gender,
@@ -231,7 +231,7 @@ class DoctorsWorkbench extends Component {
                     current_patient: data.patient_id,
                     episode_id: data.episode_id,
                     visit_id: data?.visit_id ?? null,
-                    encounter_id: response.data.records.encounter_id,
+                    encounter_id: encounterData.encounter_id,
                     provider_id: data.provider_id,
                     department_type: data.department_type,
                     gender: data.gender,
@@ -493,7 +493,6 @@ class DoctorsWorkbench extends Component {
       return;
     }
 
-    debugger;
     setGlobal({
       vitals_mandatory: data.vitals_mandatory,
       "EHR-STD": "PatientProfile",
