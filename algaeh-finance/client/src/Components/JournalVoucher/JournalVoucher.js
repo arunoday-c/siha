@@ -17,6 +17,7 @@ import {
   // AlgaehFormGroupGrid,
   AlgaehButton,
   i18next,
+  RawSecurityComponent,
 } from "algaeh-react-components";
 import { AllAccounts } from "../FinanceAccounts";
 import {
@@ -39,18 +40,27 @@ import { getAmountFormart } from "../../utils/GlobalFunctions";
 
 // let records_av = {};
 let dataPayment = [
-  { value: "journal", label: "Journal" },
-  { label: "Contra", value: "contra" },
-  { value: "receipt", label: "Receipt" },
-  { label: "Payment", value: "payment" },
-  { value: "sales", label: "Sales" },
-  { label: "Purchase", value: "purchase" },
+  { value: "journal", label: "Journal", componentCode: "V_TYP_JOURNAL" },
+  { label: "Contra", value: "contra", componentCode: "V_TYP_CONTRA" },
+  { value: "receipt", label: "Receipt", componentCode: "V_TYP_RECEIPT" },
+  { label: "Payment", value: "payment", componentCode: "V_TYP_PAYMENT" },
+  { value: "sales", label: "Sales", componentCode: "V_TYP_SALES" },
+  { label: "Purchase", value: "purchase", componentCode: "V_TYP_PURCHASE" },
   {
     value: "credit_note",
     label: "Credit Note",
+    componentCode: "V_TYP_CREDIT_NOTE",
   },
-  { value: "debit_note", label: "Debit Note" },
-  { value: "expense_voucher", label: "Expense Voucher" },
+  {
+    value: "debit_note",
+    label: "Debit Note",
+    componentCode: "V_TYP_DEBIT_NOTE",
+  },
+  {
+    value: "expense_voucher",
+    label: "Expense Voucher",
+    componentCode: "V_TYP_EXPENSE",
+  },
 ];
 
 const baseJournalList = [
@@ -106,6 +116,7 @@ export default function JournalVoucher() {
   const [costCenterField, setCostCenterField] = useState(undefined);
   const [samePage, setSamePage] = useState(true);
   const [columns, setColumns] = useState([]);
+  const [dataPaymentBySec, setDataPaymentBySec] = useState([]);
   const [afterSaveDisabled, setAfterSaveDisabled] = useState(false);
   const [journerList, setJournerList] = useState(
     baseJournalList.map((m) => {
@@ -138,6 +149,21 @@ export default function JournalVoucher() {
   }, [location.state]);
   /** above code is for changing language */
   useEffect(() => {
+    dataPayment.forEach(async (item) => {
+      const { componentCode, value, label } = item;
+
+      const data = await RawSecurityComponent({
+        componentCode: componentCode,
+      });
+      console.log("data===>", data);
+      if (data === "show") {
+        setDataPaymentBySec((state) => {
+          state.push({ value, label });
+          return [...state];
+        });
+      }
+    });
+    // .filter((f) => f !== null);
     plotCostCenter();
   }, []);
 
@@ -345,7 +371,6 @@ export default function JournalVoucher() {
       //   voucherType === "debit_note"
       // ) {
       if (voucherType === "receipt" || voucherType === "credit_note") {
-        // debugger;
         getCustomerListReceivable()
           .then(({ result }) => {
             setCustomerSupplierList(result);
@@ -384,7 +409,6 @@ export default function JournalVoucher() {
     // console.log("location.state====>", location.state);
 
     if (location.state) {
-      // debugger;
       if (!location.state?.type) {
         return;
       }
@@ -1063,7 +1087,6 @@ export default function JournalVoucher() {
   };
 
   function onChangeCustomerOrSupplerHeaderList(selected, _voucherType) {
-    // debugger;
     setSorCDetailLoading(true);
     setSorCHeaderName(selected.child_name);
     setSorCHeaderValue(selected.finance_account_child_id);
@@ -1141,7 +1164,7 @@ export default function JournalVoucher() {
   function onChangeCustomerOrSupplerDetails(selected) {
     setSorCDetailValue(selected.invoice_no);
     setSelInvoice(selected.invoice_no);
-    // debugger;
+
     history.push("/JournalVoucher", {
       data: {
         narration: selected.narration,
@@ -1368,7 +1391,7 @@ export default function JournalVoucher() {
             selector={{
               value: voucherType,
               dataSource: {
-                data: dataPayment,
+                data: dataPaymentBySec,
                 valueField: "value",
                 textField: "label",
               },
