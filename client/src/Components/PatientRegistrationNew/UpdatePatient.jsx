@@ -55,7 +55,7 @@ export function UpdatePatient({
   component = false,
   addNewPat = false,
 }) {
-  const { userToken, userLanguage } = useContext(MainContext);
+  const { userToken, userLanguage, countries } = useContext(MainContext);
   const [patientCode, setPatientCode] = useState(null);
 
   // const patientData = queryCache.getQueryData(["patient", { patient_code }]);
@@ -105,6 +105,14 @@ export function UpdatePatient({
   useEffect(() => {
     if (show) {
       setPatientCode(patient_code);
+    }
+
+    if (addNewPat) {
+      debugger;
+      const [currentCountry] = countries?.filter(
+        (item) => item.hims_d_country_id === userToken?.default_country
+      );
+      setValue("tel_code", currentCountry?.tel_code);
     }
     if (!show) {
       reset();
@@ -259,7 +267,7 @@ export function UpdatePatient({
   );
 
   if (!component) {
-    return (
+    return show ? (
       <AlgaehModal
         title={addNewPat ? "Register Patient" : "Update Patient"}
         visible={show}
@@ -285,7 +293,7 @@ export function UpdatePatient({
           {InputForm}
         </Spin>
       </AlgaehModal>
-    );
+    ) : null;
   } else {
     return (
       <>

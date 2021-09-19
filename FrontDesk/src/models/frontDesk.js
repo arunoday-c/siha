@@ -291,7 +291,6 @@ export default {
         table_name: "hims_f_app_numgen",
       })
       .then((generatedNumbers) => {
-        console.log("generatedNumbers", generatedNumbers);
         req.connection = {
           connection: _mysql.connection,
           isTransactionConnection: _mysql.isTransactionConnection,
