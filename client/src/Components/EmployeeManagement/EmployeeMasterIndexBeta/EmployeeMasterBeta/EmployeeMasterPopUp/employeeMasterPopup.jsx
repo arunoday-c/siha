@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   AlgaehTabs,
   AlgaehModal,
@@ -8,9 +8,9 @@ import {
 } from "algaeh-react-components";
 import "../EmployeeMaster.scss";
 import { ContextProviderForEmployee } from "../../EmployeeMasterContextForEmployee";
-
+import { useForm, Controller } from "react-hook-form";
 // import { EmployeeMasterContextForEmployee } from "../../EmployeeMasterContextForEmployee";
-
+// import { updatePersonalDetails } from "../events";
 import CommissionSetup from "../CommissionSetup/CommissionSetup";
 import PersonalDetails from "../PersonalDetails/PersonalDetails";
 import FamilyAndIdentification from "../FamilyAndIdentification/FamilyAndIdentification";
@@ -18,6 +18,8 @@ import FamilyAndIdentification from "../FamilyAndIdentification/FamilyAndIdentif
 import PayRollDetails from "../PayRollDetails/PayRollDetails";
 import OfficalDetails from "../OfficalDetails/OfficalDetails";
 import RulesDetails from "../RulesDetails/RulesDetails";
+// import { EmployeeMasterContextForEmployee } from "../../EmployeeMasterContextForEmployee";
+
 export default function EmployeeMasterPopup({
   visible,
   onClose,
@@ -26,12 +28,103 @@ export default function EmployeeMasterPopup({
 }) {
   // const { clearState } = useContext(EmployeeMasterContextForEmployee);
   const [HRMS_Active, setHRMS_Active] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
   // const [pageDisplay, setPageDisplay] = useState("PersonalDetails");
   // const [personalDetails, setPersonalDetails] = useState({});
   const {
     // userLanguage,
     userToken,
   } = useContext(MainContext);
+  // let { setEmployeeUpdateDetails } = useContext(
+  //   EmployeeMasterContextForEmployee
+  // );
+  const employeeImage = useRef();
+
+  const {
+    control,
+    errors,
+    // trigger,
+    reset,
+    setValue,
+    getValues,
+    clearErrors,
+    handleSubmit,
+  } = useForm({
+    shouldFocusError: true,
+    defaultValues: {},
+  });
+
+  const {
+    control: control2,
+    // getValues: getValues2,
+    reset: reset2,
+    watch: watch3,
+    // setValue: setValue2,
+    // watch: watch2,
+    // register: register2,
+    errors: errors2,
+    handleSubmit: handleSubmit2,
+  } = useForm({
+    defaultValues: {
+      employee_status: "A",
+    },
+  });
+  const {
+    control: control3,
+    // getValues: getValues2,
+    reset: reset3,
+    // setValue: setValue2,
+    // watch: watch2,
+    // register: register2,
+    errors: errors3,
+    handleSubmit: handleSubmit3,
+  } = useForm({
+    shouldFocusError: true,
+    defaultValues: {},
+  });
+  const {
+    control: control4,
+    // getValues: getValues2,
+    reset: reset4,
+    // setValue: setValue2,
+    // watch: watch2,
+    // register: register2,
+    errors: errors4,
+    handleSubmit: handleSubmit4,
+  } = useForm({
+    defaultValues: {},
+  });
+
+  // const updatePersonalDetails = (data) => {
+  //   debugger;
+  //   const images = [];
+  //   // setEmployeeUpdateDetails(data);
+  //   if (
+  //     employeeImage.current !== null &&
+  //     employeeImage.current?.state?.fileExtention
+  //   ) {
+  //     images.push(
+  //       new Promise((resolve, reject) => {
+  //         employeeImage.current.SavingImageOnServer(
+  //           undefined,
+  //           undefined,
+  //           undefined,
+  //           data?.employee_code,
+  //           () => {
+  //             resolve();
+  //           }
+  //         );
+  //       })
+  //     );
+  //   }
+  // };
+  // useEffect(() => {
+  //   const errorsvalues = Object.values(errors);
+  //   debugger;
+  //   if (errorsvalues.length <= 0) {
+  //     // updatePersonalDetails(getValues());
+  //   }
+  // }, [errors]);
   useEffect(() => {
     // const HIMS_Active =
     //   userToken.product_type === "HIMS_ERP" ||
@@ -83,6 +176,15 @@ export default function EmployeeMasterPopup({
                 children: (
                   <PersonalDetails
                     EmpMasterIOputs={employeeDetails?.employee_id}
+                    control={control}
+                    reset={reset}
+                    employeeImage={employeeImage}
+                    handleSubmit={handleSubmit}
+                    errors={errors}
+                    Controller={Controller}
+                    getValues={getValues}
+                    clearErrors={clearErrors}
+                    setValue={setValue}
                   />
                 ),
                 componentCode: "EMP_TAB_PER",
@@ -99,6 +201,15 @@ export default function EmployeeMasterPopup({
                 children: (
                   <OfficalDetails
                     EmpMasterIOputs={employeeDetails?.employee_id}
+                    control={control2}
+                    reset={reset2}
+                    handleSubmit={handleSubmit2}
+                    errors={errors2}
+                    Controller={Controller}
+                    watch={watch3}
+
+                    // clearErrors={clearErrors}
+                    // setValue={setValue2}
                   />
                 ),
                 componentCode: "EMP_TAB_OFF",
@@ -130,6 +241,13 @@ export default function EmployeeMasterPopup({
                 children: (
                   <FamilyAndIdentification
                     employee_id={employeeDetails?.employee_id}
+                    control={control3}
+                    reset={reset3}
+                    handleSubmit={handleSubmit3}
+                    errors={errors3}
+                    Controller={Controller}
+                    // clearErrors={clearErrors}
+                    // setValue={setValue2}
                   />
                 ),
                 componentCode: "EMP_TAB_FAM",
@@ -160,15 +278,40 @@ export default function EmployeeMasterPopup({
                 children: (
                   <RulesDetails
                     EmpMasterIOputs={employeeDetails?.employee_id}
+                    control={control4}
+                    reset={reset4}
+                    handleSubmit={handleSubmit4}
+                    errors={errors4}
+                    Controller={Controller}
+                    // clearErrors={clearErrors}
+                    // setValue={setValue2}
                   />
                 ),
                 componentCode: "EMP_TAB_RUL",
                 name: "EMP_TAB_RUL",
               },
             ]}
+            defaultActive={activeTab}
             onClick={(options, cb) => {
-              //Your logic
+              debugger;
+
+              setActiveTab(options.index);
               cb();
+              // clearErrors();
+              // const activeTab = options.active;
+              // if (activeTab.name === "EMP_TAB_PER") {
+              //   trigger();
+
+              //   if (Object.values(errors).length > 0) {
+              //     debugger;
+              //   } else {
+              //     cb();
+              //   }
+              //   debugger;
+              // } else {
+              //   debugger;
+              //   cb();
+              // }
             }}
             // renderClass="PrepaymentCntr"
           />
