@@ -9,6 +9,58 @@ import { swalMessage } from "../../../../utils/algaehApiCall";
 import { newAlgaehApi } from "../../../../hooks";
 export function ViewAttachmentsModal({ rowData, visible, onClose }) {
   const [attached_docs, setAttached_docs] = useState([]);
+
+  const getDocuments = (row) => {
+    newAlgaehApi({
+      uri: "/getRadiologyDoc",
+      module: "documentManagement",
+      method: "GET",
+      data: {
+        hims_f_rad_order_id: row.hims_f_rad_order_id,
+      },
+    })
+      .then((res) => {
+        if (res.data.success) {
+          let { data } = res.data;
+          setAttached_docs(data);
+          // this.setState({
+          //   attached_docs: data,
+          // });
+        }
+      })
+      .catch((e) => {
+        // AlgaehLoader({ show: false });
+        swalMessage({
+          title: e.message,
+          type: "error",
+        });
+      });
+  };
+  const getSavedDocument = (row) => {
+    newAlgaehApi({
+      uri: "/getContractDoc",
+      module: "documentManagement",
+      method: "GET",
+      data: {
+        contract_no: row.lab_id_number,
+      },
+    })
+      .then((res) => {
+        if (res.data.success) {
+          let { data } = res.data;
+          setAttached_docs(data);
+          //   attached_docs: data,
+          // });
+        }
+      })
+      .catch((e) => {
+        swalMessage({
+          title: e.message,
+          type: "error",
+        });
+      });
+  };
+
   useEffect(() => {
     if (rowData.attach_type === "LAB") {
       getSavedDocument(rowData);
@@ -72,56 +124,6 @@ export function ViewAttachmentsModal({ rowData, visible, onClose }) {
           });
       }
     }
-  };
-  const getDocuments = (row) => {
-    newAlgaehApi({
-      uri: "/getRadiologyDoc",
-      module: "documentManagement",
-      method: "GET",
-      data: {
-        hims_f_rad_order_id: row.hims_f_rad_order_id,
-      },
-    })
-      .then((res) => {
-        if (res.data.success) {
-          let { data } = res.data;
-          setAttached_docs(data);
-          // this.setState({
-          //   attached_docs: data,
-          // });
-        }
-      })
-      .catch((e) => {
-        // AlgaehLoader({ show: false });
-        swalMessage({
-          title: e.message,
-          type: "error",
-        });
-      });
-  };
-  const getSavedDocument = (row) => {
-    newAlgaehApi({
-      uri: "/getContractDoc",
-      module: "documentManagement",
-      method: "GET",
-      data: {
-        contract_no: row.lab_id_number,
-      },
-    })
-      .then((res) => {
-        if (res.data.success) {
-          let { data } = res.data;
-          setAttached_docs(data);
-          //   attached_docs: data,
-          // });
-        }
-      })
-      .catch((e) => {
-        swalMessage({
-          title: e.message,
-          type: "error",
-        });
-      });
   };
   return (
     <div>

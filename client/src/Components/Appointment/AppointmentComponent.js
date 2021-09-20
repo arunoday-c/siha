@@ -64,7 +64,7 @@ function AppointmentComponent(props) {
     } else {
       return;
     }
-  }, [location.state]);
+  }, [location.state]); // eslint-disable-next-line
 
   useLayoutEffect(() => {
     const getAllTables = document.getElementsByTagName("table");

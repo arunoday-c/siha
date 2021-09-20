@@ -6,12 +6,7 @@ import { successfulMessage } from "../../../../utils/GlobalFunctions";
 
 function ReferralDataGrid({ patient_id, changed, setState }) {
   const [referralData, setReferralData] = useState([]);
-  useEffect(() => {
-    getPatientReferralDoc();
-  }, []);
-  useEffect(() => {
-    getPatientReferralDoc();
-  }, [changed === true]);
+
   const getPatientReferralDoc = () => {
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientReferralDoc",
@@ -32,6 +27,14 @@ function ReferralDataGrid({ patient_id, changed, setState }) {
       },
     });
   };
+
+  useEffect(() => {
+    getPatientReferralDoc();
+  }, []); // eslint-disable-next-line
+  useEffect(() => {
+    getPatientReferralDoc();
+  }, [changed === true]); // eslint-disable-next-line
+
   const printReferral = (row) => {
     algaehApiCall({
       uri: "/report",

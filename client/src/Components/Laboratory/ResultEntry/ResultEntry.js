@@ -99,7 +99,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
     //     }
     //   }
     // );
-  }, []);
+  }, []); //eslint-disable-line
 
   // const { data: providers } = useQuery(
   //   ["getProviderDetails", {}],
@@ -1721,13 +1721,13 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
                                     name="text_value"
                                     onChange={
                                       (e) => {
-                                        const text_value = e.target.value.replace(
-                                          /\r?\n/g,
-                                          "<br/>"
-                                        );
-                                        row.dis_text_value = text_value.split(
-                                          "<br/>"
-                                        );
+                                        const text_value =
+                                          e.target.value.replace(
+                                            /\r?\n/g,
+                                            "<br/>"
+                                          );
+                                        row.dis_text_value =
+                                          text_value.split("<br/>");
                                         row.text_value = e.target.value;
                                         forceUpdate(row);
                                       }

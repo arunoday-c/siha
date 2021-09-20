@@ -952,7 +952,7 @@ function MicrobiologyResultEntry({ onClose, selectedPatient, open }) {
     //     }
     //   }
     // );
-  }, []);
+  }, []); //eslint-disable-line
 
   // const { data: providers } = useQuery(
   //   ["getProviderDetails", {}],

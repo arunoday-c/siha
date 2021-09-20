@@ -191,7 +191,7 @@ export function Demographics({
       )[0]?.max_phone_digits;
       setMaxLength(maxlength);
     }
-  }, [tel_code]);
+  }, [tel_code]); // eslint-disable-next-line
   const calculateAge = (date) => {
     if (date) {
       let fromDate = moment(date);
