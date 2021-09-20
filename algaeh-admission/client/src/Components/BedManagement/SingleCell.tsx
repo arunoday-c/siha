@@ -191,35 +191,13 @@ export default memo(function SingleCell({
             className={`bedBox`}
             key={hims_adm_ward_detail_id}
           > */}
-          <span>
+          <span className="bedBox">
             <b>
               {bed_short_name}-{bed_no}
             </b>
+            {bed_desc}
           </span>
-          <span>{bed_desc}</span>
-          {/* </span> */}
-          <span
-            // className="actionSec"
-            // style={
-            //   bed_status === "Occupied"
-            //     ? {}
-            //     : { pointerEvents: "none", opacity: "0.1" }
-            // }
-            onClick={() => {
-              updateBedStatusUnavailable()
-                .then((response) => {
-                  getWardHeaderData({
-                    hims_adm_ward_header_id: ward_header_id,
-                    hims_adm_bed_status_id: hims_adm_bed_status_id,
-                  });
-                })
-                .catch((error) =>
-                  AlgaehMessagePop({ display: error.message, type: "error" })
-                );
-            }}
-          >
-            <i className="fas fa-redo-altfas fa-exclamation-triangle"></i>
-          </span>
+
           <span
             className="actionSec"
             style={
@@ -243,6 +221,21 @@ export default memo(function SingleCell({
                     AlgaehMessagePop({ display: error.message, type: "error" })
                   );
               }}
+            ></i>{" "}
+            <i
+              onClick={() => {
+                updateBedStatusUnavailable()
+                  .then((response) => {
+                    getWardHeaderData({
+                      hims_adm_ward_header_id: ward_header_id,
+                      hims_adm_bed_status_id: hims_adm_bed_status_id,
+                    });
+                  })
+                  .catch((error) =>
+                    AlgaehMessagePop({ display: error.message, type: "error" })
+                  );
+              }}
+              className="fas fa-times-circle"
             ></i>
           </span>
         </>

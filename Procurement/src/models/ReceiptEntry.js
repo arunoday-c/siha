@@ -124,8 +124,8 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hims_f_procurement_grn_header_id from hims_f_procurement_grn_header where inovice_number=?;",
-          values: [input.inovice_number],
+            "select hims_f_procurement_grn_header_id from hims_f_procurement_grn_header where inovice_number=? and vendor_id=?;",
+          values: [input.inovice_number, input.vendor_id],
           printQuery: true,
         })
         .then((invocie_detail) => {
