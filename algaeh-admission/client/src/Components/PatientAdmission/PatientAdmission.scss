@@ -4,7 +4,7 @@
     .ul-legend {
       display: none;
     }
-    .BedManagementScreen {
+    .ModalBedManagement {
       padding: 0 15px;
       .bedCntr {
         min-height: 60vh;
@@ -23,7 +23,7 @@
   }
 }
 
-.BedManagementScreen {
+.ModalBedManagement {
   .ul-legend {
     width: 100%;
     float: left;

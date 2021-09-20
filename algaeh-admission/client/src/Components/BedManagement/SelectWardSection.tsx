@@ -105,77 +105,43 @@ export default memo(function SelectWardSection(props: any) {
   };
   return (
     <div>
-      {/* <form onSubmit={handleSubmit(getWardHeaderData)}> */}
       <div className="row inner-top-search">
-        {/* <Controller
-            name="hims_adm_ward_header_id"
-            control={control}
-            // rules={{ required: "Select Ward Type " }}
-            render={({ value, onChange }: { value: any; onChange: any }) => ( */}
         <AlgaehAutoComplete
-          div={{ className: "col-2  form-group mandatory" }}
+          div={{ className: "col-2  form-group" }}
           label={{
             forceLabel: "Filter By Ward",
-            // isImp: true,
           }}
-          // error={errors}
           selector={{
             name: "hims_adm_ward_header_id",
             value: ward_header_id,
             onChange: (_: any, selected: any) => {
-              // onChange(selected);
               setWardHeaderId(selected);
-              // getWardHeaderData(selected);
-              // setValue("service_amount", _.standard_fee);
             },
-
             onClear: () => {
-              // onChange("");
               setWardHeaderId("");
             },
-
             dataSource: {
               textField: "ward_desc",
               valueField: "hims_adm_ward_header_id",
               data: wardHeaderDropdown,
             },
-            // others: {
-            //   disabled: hims_adm_ward_header_id,
-
-            //   tabIndex: "4",
-            // },
           }}
         />
-        {/* )}
-          />{" "} */}
-        {/* <Controller
-            name="hims_adm_bed_status_id"
-            control={control}
-            // rules={{ required: "Select Ward Type " }}
-            render={({ value, onChange }: { value: any; onChange: any }) => ( */}
         {fromAdmission ? null : (
           <AlgaehAutoComplete
-            div={{ className: "col-2  form-group mandatory" }}
+            div={{ className: "col-2  form-group" }}
             label={{
               forceLabel: "Bed Status",
-              // isImp: true,
             }}
-            // error={errors}
             selector={{
               name: "hims_adm_bed_status_id",
               value: hims_adm_bed_status_id,
               onChange: (_: any, selected: any) => {
-                // onChange(selected);
-
                 setBedStatusId(selected);
-
-                // getWardHeaderData(selected);
-                // setValue("service_amount", _.standard_fee);
               },
 
               onClear: () => {
                 setBedStatusId("");
-                // onChange("");
               },
 
               dataSource: {
@@ -183,37 +149,25 @@ export default memo(function SelectWardSection(props: any) {
                 valueField: "description",
                 data: bedStatusData,
               },
-              // others: {
-              //   disabled: hims_adm_ward_header_id,
-
-              //   tabIndex: "4",
-              // },
             }}
           />
         )}
-
-        {/* )}
-          />{" "} */}
-        <button
-          className="btn btn-primary btn-sm"
-          onClick={() => {
-            getWardHeaderData({
-              hims_adm_ward_header_id: ward_header_id,
-              hims_adm_bed_status_id: hims_adm_bed_status_id,
-            });
-          }}
-        >
-          Load
-        </button>
-        <button
-          className="btn btn-default btn-small"
-          style={{ marginTop: 21 }}
-          // onClick={() => setValue("hims_adm_ward_header_id", undefined)}
-        >
-          clear
-        </button>
+        <div className="col" style={{ marginTop: 21 }}>
+          <button className="btn btn-default btn-sm">clear</button>
+          <button
+            style={{ marginLeft: 10 }}
+            className="btn btn-primary btn-sm"
+            onClick={() => {
+              getWardHeaderData({
+                hims_adm_ward_header_id: ward_header_id,
+                hims_adm_bed_status_id: hims_adm_bed_status_id,
+              });
+            }}
+          >
+            Load
+          </button>
+        </div>
       </div>
-      {/* </form> */}
     </div>
   );
 });
