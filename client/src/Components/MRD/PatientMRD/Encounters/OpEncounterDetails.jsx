@@ -105,7 +105,7 @@ export default function OPEncounterDetails({
     } else {
       return;
     }
-  }, [episode_id, encounter_id, visit_id, patient_id]);
+  }, [episode_id, encounter_id, visit_id, patient_id]); //eslint-disable-line
 
   // componentDidMount() {
   //   this.getPatientEncounterDetails();

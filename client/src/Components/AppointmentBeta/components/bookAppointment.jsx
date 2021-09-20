@@ -72,7 +72,7 @@ export default memo(function BookAppointment(props) {
           f.default_status !== "NS"
       )
     );
-  }, []);
+  }, []); // eslint-disable-next-line
   const [currentCountry] = countries?.filter(
     (item) => item.hims_d_country_id === userToken?.default_country
   );
@@ -131,7 +131,7 @@ export default memo(function BookAppointment(props) {
       //     }&provider_id=${dataFromRecall.doctor_id}`
       // );
     }
-  }, [location?.state?.data]);
+  }, [location?.state?.data]); // eslint-disable-next-line
   useEffect(() => {
     const telCode = getValues().tel_code;
     if (telCode) {
@@ -139,7 +139,7 @@ export default memo(function BookAppointment(props) {
         .max_phone_digits;
       setMaxLength(maxlength);
     }
-  }, [getValues().tel_code]);
+  }, [getValues().tel_code]); // eslint-disable-next-line
   useEffect(() => {
     let dataFromRecall = location.state?.data;
     if (dataFromRecall) {
@@ -153,7 +153,7 @@ export default memo(function BookAppointment(props) {
         setValue("contact_number", dataFromRecall.contact_number);
       });
     }
-  }, [props.showEditPopup]);
+  }, [props.showEditPopup]); // eslint-disable-next-line
   function clearAllState() {
     setNoOfSlots(1);
     setPatientCode(undefined);
