@@ -28,10 +28,10 @@
                     </tr>
                     {{#each details}}
                     <tr>
-                        <td  class="txtFld">{{payment_date}}</td>
-                        <td  class="txtFld">{{voucher_type}}</td>
-                        <td  class="txtFld">{{voucher_no}}</td>
-                        <td  class="txtFld" width="16%"><small>{{narration}}</small></td>
+                        <td datatype="string"  class="txtFld">{{payment_date}}</td>
+                        <td datatype="string"  class="txtFld">{{voucher_type}}</td>
+                        <td datatype="string"  class="txtFld">{{voucher_no}}</td>
+                        <td datatype="string"  class="txtFld" width="16%"><small>{{narration}}</small></td>
                         <td class="numberFld ">{{numberFormating debit_amount ../currencyOnly}}</td>
                         <td class="numberFld ">{{numberFormating credit_amount ../currencyOnly}}</td>
                         <td class="numberFld ">{{numberFormating row_closing_balance ../currencyOnly}}</td>
