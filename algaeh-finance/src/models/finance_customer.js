@@ -9,6 +9,14 @@ export default {
     // const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     const decimal_places = req.userIdentity.decimal_places;
+
+    // Below query cut from below due to performance issue ------ in Customer List
+    // select count(finance_day_end_header_id) as day_end_pending from finance_day_end_header H
+    // inner join finance_day_end_sub_detail SD on H.finance_day_end_header_id= SD.day_end_header_id
+    // where SD.child_id in(select child_id from hims_d_customer
+    //   union all
+    //   select child_id from hims_d_insurance_sub  where child_id is not null)  and  H.posted='N';
+
     _mysql
       .executeQuery({
         query: `select C.finance_account_child_id ,C.child_name,VD.is_opening_bal,customer_type,
@@ -33,11 +41,10 @@ export default {
           select child_id from hims_d_insurance_sub  where child_id is not null)
         and H.settlement_status='P';
 
-        select count(finance_day_end_header_id) as day_end_pending from finance_day_end_header H
-        inner join finance_day_end_sub_detail SD on H.finance_day_end_header_id= SD.day_end_header_id
-        where SD.child_id in(select child_id from hims_d_customer
-          union all
-          select child_id from hims_d_insurance_sub  where child_id is not null)  and  H.posted='N';   `,
+       
+          
+          `,
+
         printQuery: true,
       })
       .then((result) => {
@@ -47,7 +54,7 @@ export default {
           result: result[0],
           over_due: result[1][0]["over_due"],
           total_receivable: result[2][0]["open"],
-          day_end_pending: result[3][0]["day_end_pending"],
+          // day_end_pending: result[3][0]["day_end_pending"],
         };
         next();
       })
