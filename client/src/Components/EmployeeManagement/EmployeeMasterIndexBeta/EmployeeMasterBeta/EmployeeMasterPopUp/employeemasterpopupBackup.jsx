@@ -8,7 +8,7 @@ import {
 } from "algaeh-react-components";
 import "../EmployeeMaster.scss";
 import { ContextProviderForEmployee } from "../../EmployeeMasterContextForEmployee";
-// import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 // import { EmployeeMasterContextForEmployee } from "../../EmployeeMasterContextForEmployee";
 // import { updatePersonalDetails } from "../events";
 import CommissionSetup from "../CommissionSetup/CommissionSetup";
@@ -40,60 +40,60 @@ export default function EmployeeMasterPopup({
   // );
   const employeeImage = useRef();
 
-  // const {
-  //   control,
-  //   errors,
-  //   // trigger,
-  //   reset,
-  //   setValue,
-  //   getValues,
-  //   clearErrors,
-  //   handleSubmit,
-  // } = useForm({
-  //   shouldFocusError: true,
-  //   defaultValues: {},
-  // });
+  const {
+    control,
+    errors,
+    // trigger,
+    reset,
+    setValue,
+    getValues,
+    clearErrors,
+    handleSubmit,
+  } = useForm({
+    shouldFocusError: true,
+    defaultValues: {},
+  });
 
-  // const {
-  //   control: control2,
-  //   // getValues: getValues2,
-  //   reset: reset2,
-  //   watch: watch3,
-  //   // setValue: setValue2,
-  //   // watch: watch2,
-  //   // register: register2,
-  //   errors: errors2,
-  //   handleSubmit: handleSubmit2,
-  // } = useForm({
-  //   defaultValues: {
-  //     employee_status: "A",
-  //   },
-  // });
-  // const {
-  //   control: control3,
-  //   // getValues: getValues2,
-  //   reset: reset3,
-  //   // setValue: setValue2,
-  //   // watch: watch2,
-  //   // register: register2,
-  //   errors: errors3,
-  //   handleSubmit: handleSubmit3,
-  // } = useForm({
-  //   shouldFocusError: true,
-  //   defaultValues: {},
-  // });
-  // const {
-  //   control: control4,
-  //   // getValues: getValues2,
-  //   reset: reset4,
-  //   // setValue: setValue2,
-  //   // watch: watch2,
-  //   // register: register2,
-  //   errors: errors4,
-  //   handleSubmit: handleSubmit4,
-  // } = useForm({
-  //   defaultValues: {},
-  // });
+  const {
+    control: control2,
+    // getValues: getValues2,
+    reset: reset2,
+    watch: watch3,
+    // setValue: setValue2,
+    // watch: watch2,
+    // register: register2,
+    errors: errors2,
+    handleSubmit: handleSubmit2,
+  } = useForm({
+    defaultValues: {
+      employee_status: "A",
+    },
+  });
+  const {
+    control: control3,
+    // getValues: getValues2,
+    reset: reset3,
+    // setValue: setValue2,
+    // watch: watch2,
+    // register: register2,
+    errors: errors3,
+    handleSubmit: handleSubmit3,
+  } = useForm({
+    shouldFocusError: true,
+    defaultValues: {},
+  });
+  const {
+    control: control4,
+    // getValues: getValues2,
+    reset: reset4,
+    // setValue: setValue2,
+    // watch: watch2,
+    // register: register2,
+    errors: errors4,
+    handleSubmit: handleSubmit4,
+  } = useForm({
+    defaultValues: {},
+  });
 
   // const updatePersonalDetails = (data) => {
   //   debugger;
@@ -176,15 +176,15 @@ export default function EmployeeMasterPopup({
                 children: (
                   <PersonalDetails
                     EmpMasterIOputs={employeeDetails?.employee_id}
-                    // control={control}
-                    // reset={reset}
+                    control={control}
+                    reset={reset}
                     employeeImage={employeeImage}
-                    // handleSubmit={handleSubmit}
-                    // errors={errors}
-                    // Controller={Controller}
-                    // getValues={getValues}
-                    // clearErrors={clearErrors}
-                    // setValue={setValue}
+                    handleSubmit={handleSubmit}
+                    errors={errors}
+                    Controller={Controller}
+                    getValues={getValues}
+                    clearErrors={clearErrors}
+                    setValue={setValue}
                   />
                 ),
                 componentCode: "EMP_TAB_PER",
@@ -200,16 +200,16 @@ export default function EmployeeMasterPopup({
                 ),
                 children: (
                   <OfficalDetails
-                  // EmpMasterIOputs={employeeDetails?.employee_id}
-                  // control={control2}
-                  // reset={reset2}
-                  // handleSubmit={handleSubmit2}
-                  // errors={errors2}
-                  // Controller={Controller}
-                  // watch={watch3}
+                    EmpMasterIOputs={employeeDetails?.employee_id}
+                    control={control2}
+                    reset={reset2}
+                    handleSubmit={handleSubmit2}
+                    errors={errors2}
+                    Controller={Controller}
+                    watch={watch3}
 
-                  // clearErrors={clearErrors}
-                  // setValue={setValue2}
+                    // clearErrors={clearErrors}
+                    // setValue={setValue2}
                   />
                 ),
                 componentCode: "EMP_TAB_OFF",
@@ -240,14 +240,14 @@ export default function EmployeeMasterPopup({
                 ),
                 children: (
                   <FamilyAndIdentification
-                  // employee_id={employeeDetails?.employee_id}
-                  // control={control3}
-                  // reset={reset3}
-                  // handleSubmit={handleSubmit3}
-                  // errors={errors3}
-                  // Controller={Controller}
-                  // clearErrors={clearErrors}
-                  // setValue={setValue2}
+                    employee_id={employeeDetails?.employee_id}
+                    control={control3}
+                    reset={reset3}
+                    handleSubmit={handleSubmit3}
+                    errors={errors3}
+                    Controller={Controller}
+                    // clearErrors={clearErrors}
+                    // setValue={setValue2}
                   />
                 ),
                 componentCode: "EMP_TAB_FAM",
@@ -277,26 +277,25 @@ export default function EmployeeMasterPopup({
                 ),
                 children: (
                   <RulesDetails
-                  // EmpMasterIOputs={employeeDetails?.employee_id}
-                  // control={control4}
-                  // reset={reset4}
-                  // handleSubmit={handleSubmit4}
-                  // errors={errors4}
-                  // Controller={Controller}
-                  // clearErrors={clearErrors}
-                  // setValue={setValue2}
+                    EmpMasterIOputs={employeeDetails?.employee_id}
+                    control={control4}
+                    reset={reset4}
+                    handleSubmit={handleSubmit4}
+                    errors={errors4}
+                    Controller={Controller}
+                    // clearErrors={clearErrors}
+                    // setValue={setValue2}
                   />
                 ),
                 componentCode: "EMP_TAB_RUL",
                 name: "EMP_TAB_RUL",
               },
             ]}
-            // defaultActive={activeTab}
             onClick={(options, cb) => {
               debugger;
-              // trigger();
-              // setActiveTab(options.index);
+
               cb();
+
               // clearErrors();
               // const activeTab = options.active;
               // if (activeTab.name === "EMP_TAB_PER") {

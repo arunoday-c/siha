@@ -35,7 +35,7 @@ import {
 // import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 import { RawSecurityElement } from "algaeh-react-components";
 import MaskedInput from "react-maskedinput";
-import { useForm, Controller } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { newAlgaehApi } from "../../../../../hooks";
 import { useQuery } from "react-query";
 
@@ -82,14 +82,35 @@ const getPersonalDetails = async (key, { employee_id }) => {
 //   return result?.data?.records;
 // };
 
-export default function PersonalDetails({ EmpMasterIOputs }) {
+export default function PersonalDetails({
+  EmpMasterIOputs,
+  // control,
+  // errors,
+  // reset,
+  // setValue,
+  // getValues,
+  // Controller,
+  // clearErrors,
+  employeeImage,
+}) {
+  // const {
+  //   userToken,
+  // relegions = [],
+  //   countries = [],
+  //   nationalities = [],
+  // } = useContext(MainContext);
   const {
     userToken,
-    // relegions = [],
-    countries = [],
     nationalities = [],
+    countries = [],
   } = useContext(MainContext);
-  const { setDropDownData, dropdownData } = useContext(EmployeeMasterContext);
+  // useEffect(() => {
+  //   debugger;
+  //   console.log(nationalities);
+  // }, []);
+  const { setDropDownData, dropdownData, formControlPersonal } = useContext(
+    EmployeeMasterContext
+  );
   const { setEmployeeUpdateDetails } = useContext(
     EmployeeMasterContextForEmployee
   );
@@ -104,9 +125,9 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
   const [permanentCountry, setPermanentCountry] = useState([]);
   const [permanentCities, setPermanentCities] = useState([]);
   console.log("FldEditable", FldEditable);
-  const { control, errors, reset, setValue, getValues } = useForm({
-    defaultValues: {},
-  });
+  // const { control, errors, reset, setValue, getValues } = useForm({
+  //   defaultValues: {},
+  // });
   const { data: presonalDetails } = useQuery(
     ["personal-details", { employee_id: EmpMasterIOputs }],
     getPersonalDetails,
@@ -158,7 +179,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
           date_of_birth: moment(data[0].date_of_birth, "YYYY-MM-DD"),
         };
 
-        reset(rest);
+        formControlPersonal.reset(rest);
         setIdentity_no(data[0].identity_no);
         setIsdoctor(data[0].isdoctor);
       },
@@ -199,6 +220,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
       initialStale: true,
       cacheTime: Infinity,
       onSuccess: (data) => {
+        debugger;
         setDropDownData({ ...data, countries, nationalities });
         if (EmpMasterIOputs !== undefined || EmpMasterIOputs === null) {
           let maskedIdentity = data.idtypes.find((item) => {
@@ -249,24 +271,20 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
       return {
         employee_code_placeHolder: result[0]?.data?.records,
         relegions: result[1]?.data?.records,
-        // nationalities: result[1]?.data?.records,
+        // nationalities: result[2]?.data?.records,
         idtypes: result[2]?.data?.records,
       };
     } else {
       return {
         employee_code_placeHolder: dropdownData.employee_code_placeHolder,
         relegions: dropdownData.relegions,
-        // nationalities: result[1]?.data?.records,
+        // nationalities: dropdownData.nationalities,
         idtypes: dropdownData.idtypes,
       };
     }
   }
-  const {
-    employee_code_placeHolder,
-    relegions,
-    // nationalities,
-    idtypes,
-  } = dropdownDataPersonalDetails;
+  const { employee_code_placeHolder, relegions, idtypes } =
+    dropdownDataPersonalDetails;
   // useEffect(() => {
   //   return () => {
   //     debugger;
@@ -315,15 +333,30 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
     const value = e.target.checked ? "Y" : "N";
 
     if (value === "Y") {
-      setValue("permanent_address", data.present_address);
-      setValue("permanent_country_id", data.present_country_id);
-      setValue("permanent_state_id", data.present_state_id);
-      setValue("permanent_city_id", data.present_city_id);
+      formControlPersonal.setValue("permanent_address", data.present_address);
+      formControlPersonal.setValue(
+        "permanent_country_id",
+        data.present_country_id
+      );
+      formControlPersonal.setValue("permanent_state_id", data.present_state_id);
+      formControlPersonal.setValue("permanent_city_id", data.present_city_id);
     } else {
-      setValue("permanent_address", presonalDetails[0].permanent_address);
-      setValue("permanent_country_id", presonalDetails[0].permanent_country_id);
-      setValue("permanent_state_id", presonalDetails[0].permanent_state_id);
-      setValue("permanent_city_id", presonalDetails[0].permanent_city_id);
+      formControlPersonal.setValue(
+        "permanent_address",
+        presonalDetails[0].permanent_address
+      );
+      formControlPersonal.setValue(
+        "permanent_country_id",
+        presonalDetails[0].permanent_country_id
+      );
+      formControlPersonal.setValue(
+        "permanent_state_id",
+        presonalDetails[0].permanent_state_id
+      );
+      formControlPersonal.setValue(
+        "permanent_city_id",
+        presonalDetails[0].permanent_city_id
+      );
     }
     setsamechecked(value);
   };
@@ -347,19 +380,18 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                 <div className="row paddin-bottom-5">
                   <Controller
                     name="employee_code"
-                    control={control}
+                    control={formControlPersonal.control}
                     rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{
                           className: "col-lg-2 col-md-2 col-sm-12 mandatory",
                         }}
-                        error={errors}
+                        error={formControlPersonal.errors}
                         label={{
                           forceLabel: "Emp. Code",
                           isImp: true,
                         }}
-                        P
                         textBox={{
                           name: "employee_code",
                           type: "text",
@@ -405,7 +437,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     /> */}
                   <Controller
                     name="full_name"
-                    control={control}
+                    control={formControlPersonal.control}
                     rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
@@ -456,7 +488,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     /> */}
                   <Controller
                     name="arabic_name"
-                    control={control}
+                    control={formControlPersonal.control}
                     rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
@@ -464,7 +496,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                           className:
                             "col-lg-3 col-sm-12 arabic-txt-fld mandatory",
                         }}
-                        error={errors}
+                        error={formControlPersonal.errors}
                         label={{
                           fieldName: "arabic_name",
                           isImp: true,
@@ -500,7 +532,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       }}
                     /> */}
                   <Controller
-                    control={control}
+                    control={formControlPersonal.control}
                     name="date_of_birth"
                     rules={{ required: "Please Select DOB" }}
                     render={({ onChange, value }) => (
@@ -509,7 +541,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                           className: "col-lg-2 col-md-2 col-sm-12 mandatory",
                           tabIndex: "4",
                         }}
-                        error={errors}
+                        error={formControlPersonal.errors}
                         label={{
                           fieldName: "date_of_birth",
                           isImp: true,
@@ -556,7 +588,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       value={this.state.date_of_birth}
                     /> */}
                   <Controller
-                    control={control}
+                    control={formControlPersonal.control}
                     name="sex"
                     rules={{ required: "Required" }}
                     render={({ value, onChange, onBlur }) => (
@@ -564,7 +596,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         div={{
                           className: "col-lg-2 col-md-2 col-sm-12 mandatory",
                         }}
-                        error={errors}
+                        error={formControlPersonal.errors}
                         label={{
                           fieldName: "gender",
                           isImp: true,
@@ -626,6 +658,43 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                 </h5>
                 <div className="row paddin-bottom-5">
                   <Controller
+                    control={formControlPersonal.control}
+                    rules={{ required: "Please Select Nationality" }}
+                    name="nationality"
+                    render={({ onBlur, onChange, value }) => (
+                      <AlgaehAutoComplete
+                        div={{ className: "col-lg-3 mandatory" }}
+                        label={{
+                          fieldName: "nationality_id",
+                          isImp: true,
+                        }}
+                        error={formControlPersonal.errors}
+                        selector={{
+                          name: "nationality",
+                          className: "select-fld",
+
+                          dataSource: {
+                            textField: "nationality",
+                            valueField: "hims_d_nationality_id",
+                            data: nationalities,
+                          },
+
+                          value,
+                          onChange: (_, selected) => {
+                            onChange(selected);
+                          },
+                          onClear: () => {
+                            onChange("");
+                          },
+                          others: {
+                            // disabled,
+                            tabIndex: "13",
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <Controller
                     control={control}
                     name="nationality"
                     rules={{ required: "Required" }}
@@ -652,12 +721,12 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                           dataSource: {
                             textField: "nationality",
                             valueField: "hims_d_nationality_id",
-                            data: dropdownData?.nationalities ?? [],
+                            data: nationalities ?? [],
                           },
                         }}
                       />
                     )}
-                  />
+                  /> */}
                   {/* <AlagehAutoComplete
                       div={{
                         className:
@@ -688,7 +757,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       }}
                     /> */}
                   <Controller
-                    control={control}
+                    control={formControlPersonal.control}
                     name="religion_id"
                     rules={{ required: "Required" }}
                     render={({ value, onChange, onBlur }) => (
@@ -697,7 +766,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                           className:
                             "col-lg-2 col-md-2 col-sm-12 mandatory form-group",
                         }}
-                        error={errors}
+                        error={formControlPersonal.errors}
                         label={{
                           forceLabel: "Religion",
                           isImp: true,
@@ -754,7 +823,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     /> */}
                   <Controller
                     name="primary_contact_no"
-                    control={control}
+                    control={formControlPersonal.control}
                     // rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
@@ -804,7 +873,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     /> */}
                   <Controller
                     name="secondary_contact_no"
-                    control={control}
+                    control={formControlPersonal.control}
                     // rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
@@ -852,7 +921,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       }}
                     /> */}
                   <Controller
-                    control={control}
+                    control={formControlPersonal.control}
                     name="identity_type_id"
                     render={({ value, onChange, onBlur }) => (
                       <AlgaehAutoComplete
@@ -923,7 +992,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     ) : (
                       <Controller
                         name="identity_no"
-                        control={control}
+                        control={formControlPersonal.control}
                         // rules={{ required: "Required" }}
                         render={(props) => (
                           <AlgaehFormGroup
@@ -984,7 +1053,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     /> */}
                   <Controller
                     name="email"
-                    control={control}
+                    control={formControlPersonal.control}
                     // rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
@@ -1033,7 +1102,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     /> */}
                   <Controller
                     name="work_email"
-                    control={control}
+                    control={formControlPersonal.control}
                     // rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
@@ -1081,7 +1150,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       }}
                     /> */}
                   <Controller
-                    control={control}
+                    control={formControlPersonal.control}
                     name="blood_group"
                     render={({ value, onChange, onBlur }) => (
                       <AlgaehAutoComplete
@@ -1138,7 +1207,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       }}
                     /> */}
                   <Controller
-                    control={control}
+                    control={formControlPersonal.control}
                     name="marital_status"
                     render={({ value, onChange, onBlur }) => (
                       <AlgaehAutoComplete
@@ -1202,7 +1271,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     <div className="row paddin-bottom-5">
                       <Controller
                         name="present_address"
-                        control={control}
+                        control={formControlPersonal.control}
                         // rules={{ required: "Add Service Amount" }}
                         render={(props) => (
                           <AlgaehFormGroup
@@ -1244,7 +1313,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         /> */}
                       <Controller
                         name="present_country_id"
-                        control={control}
+                        control={formControlPersonal.control}
                         // rules={{ required: "Select Procedure" }}
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
@@ -1262,8 +1331,14 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                               value,
                               onChange: (_, selected) => {
                                 onChange(selected);
-                                setValue("present_state_id", undefined);
-                                setValue("present_city_id", undefined);
+                                formControlPersonal.setValue(
+                                  "present_state_id",
+                                  undefined
+                                );
+                                formControlPersonal.setValue(
+                                  "present_city_id",
+                                  undefined
+                                );
                                 setPresentCountry(_);
                               },
 
@@ -1313,7 +1388,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         /> */}
                       <Controller
                         name="present_state_id"
-                        control={control}
+                        control={formControlPersonal.control}
                         // rules={{ required: "Select Procedure" }}
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
@@ -1383,7 +1458,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         /> */}
                       <Controller
                         name="present_city_id"
-                        control={control}
+                        control={formControlPersonal.control}
                         // rules={{ required: "Select Procedure" }}
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
@@ -1402,7 +1477,10 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                               onChange: (_, selected) => {
                                 onChange(selected);
 
-                                setValue("service_amount", _.standard_fee);
+                                formControlPersonal.setValue(
+                                  "service_amount",
+                                  _.standard_fee
+                                );
                               },
 
                               dataSource: {
@@ -1466,9 +1544,9 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         <label className="checkbox inline">
                           <Controller
                             name="samechecked"
-                            control={control}
+                            control={formControlPersonal.control}
                             // defaultValue={"N"}
-                            rules={{ required: true }}
+                            // rules={{ required: true }}
                             render={(props) => (
                               <input
                                 type="checkbox"
@@ -1489,7 +1567,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                             value={samechecked}
                             checked={samechecked === "Y" ? true : false}
                             onChange={(e) => {
-                              sameAsPresent(e, getValues());
+                              sameAsPresent(e, formControlPersonal.getValues());
                             }}
                           />
                           <span>
@@ -1501,7 +1579,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       </div>
                       <Controller
                         name="permanent_address"
-                        control={control}
+                        control={formControlPersonal.control}
                         // rules={{ required: "Add Service Amount" }}
                         render={(props) => (
                           <AlgaehFormGroup
@@ -1546,7 +1624,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         /> */}
                       <Controller
                         name="permanent_country_id"
-                        control={control}
+                        control={formControlPersonal.control}
                         // rules={{ required: "Select Procedure" }}
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
@@ -1564,8 +1642,14 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                               value,
                               onChange: (_, selected) => {
                                 onChange(selected);
-                                setValue("permanent_state_id", undefined);
-                                setValue("permanent_city_id", undefined);
+                                formControlPersonal.setValue(
+                                  "permanent_state_id",
+                                  undefined
+                                );
+                                formControlPersonal.setValue(
+                                  "permanent_city_id",
+                                  undefined
+                                );
                                 setPermanentCountry(_);
                               },
 
@@ -1586,7 +1670,8 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                             className:
                               "col-lg-4 col-sm-12 form-group form-group",
                           }}
-                          label={{
+                          label={{PROFILE IMAGE
+
                             fieldName: "country_id",
                             isImp: false,
                           }}
@@ -1618,7 +1703,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         /> */}
                       <Controller
                         name="permanent_state_id"
-                        control={control}
+                        control={formControlPersonal.control}
                         // rules={{ required: "Select Procedure" }}
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
@@ -1694,7 +1779,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         /> */}
                       <Controller
                         name="permanent_city_id"
-                        control={control}
+                        control={formControlPersonal.control}
                         // rules={{ required: "Select Procedure" }}
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
@@ -1782,13 +1867,18 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                   <div className="col">
                     <div>
                       <AlgaehFileUploader
-                        key={getValues().employee_code || "image"}
-                        // ref={employeeImage}
+                        key={
+                          formControlPersonal.getValues().employee_code ||
+                          "image"
+                        }
+                        ref={employeeImage}
                         name="employeeImage"
                         accept="image/*"
                         textAltMessage="Employee Image"
                         serviceParameters={{
-                          uniqueID: getValues().employee_code || null,
+                          uniqueID:
+                            formControlPersonal.getValues().employee_code ||
+                            null,
                           fileType: "Employees",
                           // processDelay: (...val) => {
                           //   console.log(val, "val");
@@ -1796,7 +1886,9 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         }}
                         //Need to add undefined. if no record exists
                         renderPrevState={true}
-                        forceRefresh={!getValues().employee_code}
+                        forceRefresh={
+                          !formControlPersonal.getValues().employee_code
+                        }
                       />
                       {/* <AlgaehFile
                           ref={(employeeImage) => {
@@ -1851,7 +1943,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       </div>
                       <Controller
                         name="license_number"
-                        control={control}
+                        control={formControlPersonal.control}
                         // rules={{ required: "Add Service Amount" }}
                         render={(props) => (
                           <AlgaehFormGroup

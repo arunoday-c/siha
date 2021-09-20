@@ -1,4 +1,24 @@
 import React, { createContext, useReducer } from "react";
+// import { useForm } from "react-hook-form";
+// const formControlPersonal = useForm({
+//   shouldFocusError: true,
+//   defaultValues: {},
+// });
+
+// const formControlOfficial = useForm({
+//   shouldFocusError: true,
+//   defaultValues: {
+//     employee_status: "A",
+//   },
+// });
+// const formControlFamily = useForm({
+//   shouldFocusError: true,
+//   defaultValues: {},
+// });
+// const formControlRules = useForm({
+//   shouldFocusError: true,
+//   // defaultValues: {},
+// });
 
 const baseState = {
   output: {
@@ -111,6 +131,10 @@ const baseState = {
     service_dis_percentage: 100,
     service_credit_percentage: 100,
   },
+  // formControlPersonal: formControlPersonal,
+  // formControlOfficial: formControlOfficial,
+  // formControlFamily: formControlFamily,
+  // formControlRules: formControlRules,
 };
 
 export const EmployeeMasterContextForEmployee = createContext(baseState);

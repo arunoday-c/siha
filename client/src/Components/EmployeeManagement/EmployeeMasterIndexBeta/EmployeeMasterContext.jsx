@@ -10,6 +10,26 @@ import React, { createContext, useReducer } from "react";
 //     </EmployeeMasterContext>
 //   );
 // }
+import { useForm } from "react-hook-form";
+const formControlPersonal = useForm({
+  shouldFocusError: true,
+  defaultValues: {},
+});
+
+const formControlOfficial = useForm({
+  shouldFocusError: true,
+  defaultValues: {
+    employee_status: "A",
+  },
+});
+const formControlFamily = useForm({
+  shouldFocusError: true,
+  defaultValues: {},
+});
+const formControlRules = useForm({
+  shouldFocusError: true,
+  // defaultValues: {},
+});
 
 const baseState = {
   dropdownData: {
@@ -30,16 +50,22 @@ const baseState = {
     // depservices:[],
     subdepartment: [],
   },
+  employee_id: null,
   personalDetails: {
     emloyeeInsertOrUpdateData: [],
   },
   OfficalDetails: {},
+  formControlPersonal: formControlPersonal,
+  formControlOfficial: formControlOfficial,
+  formControlFamily: formControlFamily,
+  formControlRules: formControlRules,
 };
 
 export const EmployeeMasterContext = createContext(baseState);
 
 const TYPES = {
   setDropDownData: "setDropDownData",
+  setEmployee_id: "setEmployee_id",
   setPersonalDetails: "setPersonalDetails",
   setOfficialDetails: "setOfficialDetails",
   setFamilyAndIdentificationDetails: "setFamilyAndIdentificationDetails",
@@ -55,6 +81,8 @@ function reducer(state, { type, payload }) {
       return { ...state, dropdownData: { ...payload } };
     case TYPES.setPersonalDetails:
       return { ...state, personalDetails: payload };
+    case TYPES.setEmployee_id:
+      return { ...state, employee_id: payload };
     case TYPES.setOfficialDetails:
       return { ...state, OfficalDetails: { ...payload } };
     case TYPES.setFamilyAndIdentificationDetails:
@@ -84,6 +112,9 @@ export const FProvider = ({ children }) => {
     },
     setPersonalDetails(e) {
       dispatch({ type: TYPES.setPersonalDetails, payload: e });
+    },
+    setEmployee_id(e) {
+      dispatch({ type: TYPES.setEmployee_id, payload: e });
     },
     setOfficialDetails(e) {
       dispatch({ type: TYPES.setOfficialDetails, payload: e });

@@ -141,7 +141,18 @@ const getDepServices = async (key) => {
 //   return result?.data?.records;
 // };
 
-export default function OfficialDetails({ EmpMasterIOputs }) {
+export default function OfficialDetails(
+  {
+    // control,
+    // errors,
+    // // register,
+    // reset,
+    // setValue,
+    // // getValues,
+    // watch,
+    // Controller,
+  }
+) {
   const [masked_bank_account, setMasked_bank_account] = useState("");
   const [selectedLang, setSelectedLang] = useState(getCookie("Language"));
   const [HIMS_Active, setHIMS_Active] = useState(false);
@@ -150,36 +161,36 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
     {}
   );
   const { userToken } = useContext(MainContext);
-  const { dropdownData, setDropDownData } = useContext(EmployeeMasterContext);
+  const { dropdownData, setDropDownData, employee_id, formControlOfficial } =
+    useContext(EmployeeMasterContext);
   const { setEmployeeUpdateDetails } = useContext(
     EmployeeMasterContextForEmployee
   );
-  const {
-    control,
-    errors,
-    // register,
-    reset,
-    setValue,
-    // getValues,
-    watch,
-  } = useForm({
-    defaultValues: {
-      employee_status: "A",
-    },
-  });
+  // const {
+  //   control,
+  //   errors,
+  //   // register,
+  //   reset,
+  //   setValue,
+  //   // getValues,
+  //   watch,
+  // } = useForm({
+  //   defaultValues: {
+  //     employee_status: "A",
+  //   },
+  // });
   const { entitled_daily_ot, employee_status, employee_type } = watch([
     "entitled_daily_ot",
     "employee_status",
     "employee_type",
   ]);
   const { data: officialDetails } = useQuery(
-    ["official-details", { employee_id: EmpMasterIOputs }],
+    ["official-details", { employee_id: employee_id }],
     getOfficialDetails,
     {
-      enabled: !!EmpMasterIOputs,
+      enabled: !!employee_id,
       initialStale: true,
       onSuccess: (data) => {
-        debugger;
         console.log("dropdowndata", dropdownData);
 
         setSelectedLang(getCookie("Language"));
@@ -222,9 +233,7 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
         subdepartment: [],
       },
       enabled:
-        !!officialDetails ||
-        EmpMasterIOputs === null ||
-        EmpMasterIOputs === undefined,
+        !!officialDetails || employee_id === null || employee_id === undefined,
       // refetchOnMount: false,
       // // refetchOnReconnect: false,
       // // keepPreviousData: true,
@@ -249,7 +258,7 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
         setHIMS_Active(HIMS_Active);
         setHRMS_Active(HRMS_Active);
         setDropDownData({ ...data });
-        if (EmpMasterIOputs !== undefined || EmpMasterIOputs === null) {
+        if (employee_id !== undefined || employee_id === null) {
           let employeeBankAccFormat = data.banks.find((item) => {
             return item.hims_d_bank_id === officialDetails[0].employee_bank_id;
           });
@@ -295,7 +304,7 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
 
   // const { data: designations } = useQuery("DSGTN_GET_DATA", getDesignations, {
   //   onSuccess: (data) => {
-  //     debugger;
+  //
   //   },
   // });
 
@@ -305,12 +314,10 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
   //   onSuccess: (data) => {},
   // });
   async function getDropDownDataOfficial(key) {
-    debugger;
     if (
       dropdownData.designations === undefined ||
       dropdownData.designations.length === 0
     ) {
-      debugger;
       const result = await Promise.all([
         newAlgaehApi({
           uri: "/endofservice/eosOptions",
@@ -366,7 +373,7 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
           method: "GET",
         }),
       ]);
-      debugger;
+
       return {
         eosReasons: result[0]?.data?.records,
         agency_list: result[1]?.data?.records,
@@ -443,7 +450,7 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
             </h5>
             <div className="row paddin-bottom-5">
               <Controller
-                control={control}
+                control={formControlOfficial.control}
                 name="hospital_id"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
@@ -500,7 +507,7 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
                   }}
                 /> */}
               <Controller
-                control={control}
+                control={formControlOfficial.control}
                 name="appointment_type"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
@@ -561,7 +568,7 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
 
               {officialDetailsOfEmployee?.appointment_type === "A" ? (
                 <Controller
-                  control={control}
+                  control={formControlOfficial.control}
                   name="agency_id"
                   render={({ value, onChange, onBlur }) => (
                     <AlgaehAutoComplete
@@ -616,7 +623,7 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
               // />
               null}
               <Controller
-                control={control}
+                control={formControlOfficial.control}
                 name="employee_type"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
@@ -1549,7 +1556,7 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
                         }}
                         events={{
                           onChange: (mdate) => {
-                            debugger;
+                            
                             if (mdate) {
                               onChange(mdate._d);
                             } else {
