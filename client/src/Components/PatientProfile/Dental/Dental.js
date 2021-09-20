@@ -18,6 +18,9 @@ import {
   AlgaehDateHandler,
   AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
+
+import { Tooltip } from "algaeh-react-components";
+
 import {
   algaehApiCall,
   swalMessage,
@@ -3190,28 +3193,30 @@ class Dental extends Component {
         </AlgaehModalPopUp>
 
         <div className="portlet portlet-bordered margin-bottom-15">
-          <div className="portlet-title" data-validate="addTreatementDiv">
+          <div className="portlet-body">
             <div className="row margin-bottom-15">
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "treatment_plan",
-                  isImp: true,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "plan_name",
-                  value: this.state.plan_name,
-                  events: {
-                    onChange: this.textHandle.bind(this),
-                  },
-                  others: {
-                    placeholder: "Enter Treatment Name",
-                  },
-                }}
-              />
+              <div className="col-4">
+                <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col-12" }}
+                    label={{
+                      fieldName: "treatment_plan",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "plan_name",
+                      value: this.state.plan_name,
+                      events: {
+                        onChange: this.textHandle.bind(this),
+                      },
+                      others: {
+                        placeholder: "Enter Treatment Name",
+                      },
+                    }}
+                  />
 
-              {/* <AlagehFormGroup
+                  {/* <AlagehFormGroup
                 div={{ className: "col-lg-4" }}
                 label={{
                   fieldName: "remarks",
@@ -3229,72 +3234,39 @@ class Dental extends Component {
                   },
                 }}
               /> */}
-              <div className="col-12">
-                <AlgaehLabel label={{ forceLabel: "Remarks" }} />
-                <textarea
-                  defaultValue={this.state.remarks}
-                  name="remarks"
-                  onChange={(e) => this.textHandle(e)}
-                  maxLength={this.dentalRemarksMaxLength}
-                />{" "}
+                  <div className="col-12">
+                    <AlgaehLabel label={{ forceLabel: "Remarks" }} />
+                    <textarea
+                      defaultValue={this.state.remarks}
+                      name="remarks"
+                      onChange={(e) => this.textHandle(e)}
+                      maxLength={this.dentalRemarksMaxLength}
+                    />{" "}
+                  </div>
+                  <div className="col-4">
+                    <small className="float-left">
+                      Max Char.
+                      {maxCharactersLeft(
+                        this.dentalRemarksMaxLength,
+                        this.state.remarks
+                      )}
+                      /{this.dentalRemarksMaxLength}
+                    </small>
+                  </div>
+                  <div className="col-8" style={{ textAlign: "right" }}>
+                    <ButtonType
+                      classname="btn-primary"
+                      onClick={this.addTreatementPlan.bind(this, this)}
+                      label={{
+                        forceLabel: "Add Plan",
+                        returnText: true,
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
-              <small className="float-left">
-                Max Char.
-                {maxCharactersLeft(
-                  this.dentalRemarksMaxLength,
-                  this.state.remarks
-                )}
-                /{this.dentalRemarksMaxLength}
-              </small>
-
-              {/* <AlgaehDateHandler
-                  div={{ className: "col-lg-2" }}
-                  label={{ fieldName: "Consult Date", isImp: false }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "consult_date"
-                  }}
-                  minDate={new Date()}
-                  events={{
-                    onChange: selectedDate => {
-                      this.setState({
-                        consult_date: selectedDate
-                      });
-                    }
-                  }}
-                  value={this.state.consult_date}
-                /> */}
-
-              <div className="col-lg-2" style={{ marginTop: 20 }}>
-                <ButtonType
-                  classname="btn-primary"
-                  onClick={this.addTreatementPlan.bind(this, this)}
-                  label={{
-                    forceLabel: "Add Plan",
-                    returnText: true,
-                  }}
-                />
-                {/*<button
-                  onClick={this.addTreatementPlan.bind(this)}
-                  className="btn btn-primary"
-                >
-                  Add Plan
-                </button>*/}
-              </div>
-            </div>
-          </div>
-          <div className="portlet-body">
-            <div className="row">
-              <div className="col-12">
-                <h6 style={{ marginBottom: 0 }}>Treatment Plan</h6>
-              </div>
-              <div
-                className="col-12"
-                data-validate="treatmentDiv"
-                id="treatmentGridCntr"
-              >
+              <div className="col-8" id="treatment-grid">
                 <AlgaehDataGrid
-                  id="treatment-grid"
                   datavalidate="data-validate='treatmentDiv'"
                   columns={[
                     {
@@ -3352,7 +3324,7 @@ class Dental extends Component {
                         );
                       },
                       others: {
-                        width: 130,
+                        width: 100,
                       },
                     },
                     {
@@ -3384,22 +3356,17 @@ class Dental extends Component {
                     },
                     {
                       fieldName: "remarks",
-
                       label: <AlgaehLabel label={{ forceLabel: "Remarks" }} />,
-
                       disabled: true,
                       others: {
-                        width: 250,
+                        // Width: 120,
+                        style: { textAlign: "left" },
                       },
                     },
                     {
                       fieldName: "approve_status",
 
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Approval Status" }}
-                        />
-                      ),
+                      label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
 
                       displayTemplate: (row) => {
                         return (
@@ -3409,6 +3376,9 @@ class Dental extends Component {
                               : "Plan Not Approved"}
                           </span>
                         );
+                      },
+                      others: {
+                        width: 100,
                       },
                     },
                     {
@@ -3428,11 +3398,17 @@ class Dental extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        width: 100,
+                      },
                     },
                     {
                       fieldName: "consult_date",
 
                       label: <AlgaehLabel label={{ forceLabel: "Date" }} />,
+                      others: {
+                        width: 100,
+                      },
                     },
                   ]}
                   keyId="algaeh_app_screens_id"
@@ -3453,6 +3429,10 @@ class Dental extends Component {
                   }}
                 />
               </div>
+            </div>
+            {/* </div> */}
+
+            <div className="row">
               <div className="col-12 margin-top-15">
                 <h6 style={{ marginBottom: 0 }}>
                   Selected Treatement: {this.state.selected_plan}
@@ -3469,9 +3449,54 @@ class Dental extends Component {
                   datavalidate="data-validate='denGrid'"
                   columns={[
                     {
+                      fieldName: "billed",
+                      label: "Billing",
+                      displayTemplate: (row) => {
+                        return row.billed === "N" ? (
+                          <Tooltip title="View Bill Details">
+                            <span>
+                              <i
+                                className="fas fa-eye"
+                                aria-hidden="true"
+                                onClick={this.addToBill.bind(this, row)}
+                              />
+                            </span>
+                          </Tooltip>
+                        ) : row.billed === "SB" ? (
+                          // <span>Billing in Progress</span>
+                          <span className="badge badge-warning">
+                            Billing in Progress
+                          </span>
+                        ) : row.billed === "Y" ? (
+                          // <span>Billed</span>
+                          <span className="badge badge-sccuess">Billed</span>
+                        ) : null;
+                      },
+                      editorTemplate: (row) => {
+                        return row.billed === "N" ? (
+                          <button
+                            onClick={this.addToBill.bind(this, row)}
+                            className="btn btn-primary"
+                          >
+                            View Bill &amp; Send
+                          </button>
+                        ) : row.billed === "SB" ? (
+                          <span>Billing in Progress</span>
+                        ) : row.billed === "Y" ? (
+                          <span>Billed</span>
+                        ) : null;
+                      },
+                      others: {
+                        width: 120,
+                      },
+                    },
+                    {
                       fieldName: "teeth_number",
                       label: "Tooth",
                       disabled: true,
+                      others: {
+                        width: 100,
+                      },
                     },
                     {
                       fieldName: "distal",
@@ -3502,41 +3527,57 @@ class Dental extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        width: 100,
+                      },
                     },
                     {
                       fieldName: "hims_f_dental_treatment_id",
                       label: "Attachments",
                       displayTemplate: (row) => {
                         return (
-                          <i
-                            className="fas fa-file-upload"
-                            onClick={() => {
-                              this.setState({
-                                openUploadModal: true,
-                                activeRow: {
-                                  ...row,
-                                  patient_code: this.props.patient_code,
-                                },
-                              });
-                            }}
-                          ></i>
+                          <Tooltip title="Attach Image">
+                            <span>
+                              <i
+                                className="fas fa-file-alt"
+                                aria-hidden="true"
+                                onClick={() => {
+                                  this.setState({
+                                    openUploadModal: true,
+                                    activeRow: {
+                                      ...row,
+                                      patient_code: this.props.patient_code,
+                                    },
+                                  });
+                                }}
+                              />
+                            </span>
+                          </Tooltip>
                         );
                       },
                       editorTemplate: (row) => {
                         return (
-                          <i
-                            className="fas fa-file-upload"
-                            onClick={() => {
-                              this.setState({
-                                openUploadModal: true,
-                                activeRow: {
-                                  ...row,
-                                  patient_code: this.props.patient_code,
-                                },
-                              });
-                            }}
-                          ></i>
+                          <Tooltip title="Attach Image">
+                            <span>
+                              <i
+                                className="fas fa-file-alt"
+                                aria-hidden="true"
+                                onClick={() => {
+                                  this.setState({
+                                    openUploadModal: true,
+                                    activeRow: {
+                                      ...row,
+                                      patient_code: this.props.patient_code,
+                                    },
+                                  });
+                                }}
+                              />
+                            </span>
+                          </Tooltip>
                         );
+                      },
+                      others: {
+                        width: 100,
                       },
                     },
                     {
@@ -3562,6 +3603,10 @@ class Dental extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        width: 200,
+                        style: { textAlign: "left" },
+                      },
                     },
                     {
                       fieldName: "scheduled_date",
@@ -3580,6 +3625,9 @@ class Dental extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        width: 100,
+                      },
                     },
 
                     {
@@ -3591,6 +3639,7 @@ class Dental extends Component {
                       editorTemplate: (row) => {
                         return (
                           <textarea
+                            row="4"
                             defaultValue={row.remarks}
                             name="remarks"
                             onChange={(e) => (row.remarks = e.target.value)}
@@ -3614,6 +3663,10 @@ class Dental extends Component {
                           //   }}
                           // />
                         );
+                      },
+                      others: {
+                        minWidth: 350,
+                        style: { textAlign: "left" },
                       },
                     },
                     {
@@ -3653,37 +3706,8 @@ class Dental extends Component {
                           />
                         );
                       },
-                    },
-                    {
-                      fieldName: "billed",
-                      label: "Billing",
-                      displayTemplate: (row) => {
-                        return row.billed === "N" ? (
-                          <button
-                            onClick={this.addToBill.bind(this, row)}
-                            className="btn btn-primary"
-                          >
-                            View Bill &amp; Send
-                          </button>
-                        ) : row.billed === "SB" ? (
-                          <span>Billing in Progress</span>
-                        ) : row.billed === "Y" ? (
-                          <span>Billed</span>
-                        ) : null;
-                      },
-                      editorTemplate: (row) => {
-                        return row.billed === "N" ? (
-                          <button
-                            onClick={this.addToBill.bind(this, row)}
-                            className="btn btn-primary"
-                          >
-                            View Bill &amp; Send
-                          </button>
-                        ) : row.billed === "SB" ? (
-                          <span>Billing in Progress</span>
-                        ) : row.billed === "Y" ? (
-                          <span>Billed</span>
-                        ) : null;
+                      others: {
+                        width: 100,
                       },
                     },
                   ]}

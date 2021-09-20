@@ -2,11 +2,12 @@ import React, { memo, useState, useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import {
   AlgaehMessagePop,
-  AlgaehTable,
+  AlgaehDataGrid,
   AlgaehButton,
   RawSecurityComponent,
   Tooltip,
   AlgaehFormGroup,
+  AlgaehLabel,
 } from "algaeh-react-components";
 import { InfoBar } from "../../../Wrappers";
 import StatementReport from "../../StatementReport";
@@ -49,7 +50,8 @@ export default memo(function (props) {
           {
             fieldName: "checked",
             indeterminate: indeterminate.toString(),
-            label: "Revert",
+            // label: "Revert",
+            label: <AlgaehLabel label={{ forceLabel: "Revert" }} />,
             sortable: false,
             filterable: false,
             displayTemplate: (row) => {
@@ -86,11 +88,8 @@ export default memo(function (props) {
 
     if (location.state) {
       setLoading(true);
-      const {
-        finance_account_child_id,
-        is_opening_bal,
-        child_name,
-      } = location.state.data;
+      const { finance_account_child_id, is_opening_bal, child_name } =
+        location.state.data;
       setChildName(child_name);
       getInvoicesForCustomer(finance_account_child_id, is_opening_bal)
         .then((res) => {
@@ -163,10 +162,8 @@ export default memo(function (props) {
       });
       if (res.data.success) {
         setLoading(true);
-        const {
-          finance_account_child_id,
-          is_opening_bal,
-        } = location.state.data;
+        const { finance_account_child_id, is_opening_bal } =
+          location.state.data;
         getInvoicesForCustomer(finance_account_child_id, is_opening_bal)
           .then((res) => {
             if (res.data.success) {
@@ -313,13 +310,8 @@ export default memo(function (props) {
         }
         grandTotal = totalAmount - creditNoteTotal;
       }
-      const {
-        narration,
-        child_id,
-        head_id,
-        voucher_type,
-        invoice_no,
-      } = filterCheck[0];
+      const { narration, child_id, head_id, voucher_type, invoice_no } =
+        filterCheck[0];
       Modal.confirm({
         title: "Are you sure do you want to process ?",
         className: "debitNoteConfirmModal",
@@ -496,11 +488,14 @@ export default memo(function (props) {
                       className="col-lg-12 customCheckboxGrid"
                       id="customerDetailGrid_Cntr"
                     >
-                      <AlgaehTable
+                      <AlgaehDataGrid
                         columns={revert_option.concat([
                           {
                             fieldName: "view",
-                            label: "View",
+                            // label: "View",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "View" }} />
+                            ),
                             sortable: false,
                             filterable: false,
                             displayTemplate: (row) => {
@@ -532,6 +527,10 @@ export default memo(function (props) {
                                 </spam>
                               );
                             },
+                            others: {
+                              minWidth: 80,
+                              style: { textAlign: "center" },
+                            },
                           },
                           {
                             fieldName: "checked",
@@ -543,7 +542,10 @@ export default memo(function (props) {
                             //     onChange={onChangeCheckAll}
                             //   />
                             // ),
-                            label: "Select",
+                            // label: "Select",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Select" }} />
+                            ),
                             sortable: false,
                             filterable: false,
                             displayTemplate: (row) => {
@@ -558,33 +560,63 @@ export default memo(function (props) {
                                 />
                               );
                             },
+                            others: {
+                              minWidth: 80,
+                              style: { textAlign: "center" },
+                            },
                           },
                           {
                             fieldName: "invoice_date",
-                            label: "Date",
+                            // label: "Date",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Date" }} />
+                            ),
                             sortable: true,
                             filterable: true,
                           },
                           {
                             fieldName: "invoice_no",
-                            label: "Invoice No",
+                            // label: "Invoice No",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Invoice No." }}
+                              />
+                            ),
                             sortable: true,
                             filterable: true,
                           },
                           {
                             fieldName: "narration",
-                            label: "Description",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Description" }}
+                              />
+                            ),
                             filterable: true,
+                            others: {
+                              minWidth: 300,
+                              style: { textAlign: "left" },
+                            },
                           },
                           {
                             fieldName: "due_date",
-                            label: "Due Date",
+                            // label: "Due Date",
+
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Due Date" }} />
+                            ),
                             sortable: true,
                             filterable: true,
                           },
                           {
                             fieldName: "invoice_amount",
-                            label: "Invoice Amount",
+                            // label: "Invoice Amount",
+
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Invoice Amt." }}
+                              />
+                            ),
                             sortable: true,
                             filterable: true,
                             displayTemplate: (row) => {
@@ -599,7 +631,12 @@ export default memo(function (props) {
                           },
                           {
                             fieldName: "settled_amount",
-                            label: "Paid Amount",
+
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Paid Amt." }}
+                              />
+                            ),
                             sortable: true,
                             filterable: true,
                             displayTemplate: (row) => {
@@ -614,7 +651,12 @@ export default memo(function (props) {
                           },
                           {
                             fieldName: "balance_amount",
-                            label: "Balance Amount",
+
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Balance Amt." }}
+                              />
+                            ),
                             sortable: true,
                             filterable: true,
                             displayTemplate: (row) => {
@@ -629,7 +671,10 @@ export default memo(function (props) {
                           },
                           {
                             fieldName: "invoice_status",
-                            label: "Status",
+
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Status" }} />
+                            ),
                             displayTemplate: (row) =>
                               row.invoice_status.toUpperCase(),
                             sortable: true,
@@ -637,13 +682,25 @@ export default memo(function (props) {
                           },
                           {
                             fieldName: "last_modified",
-                            label: "Last Modified Date",
+                            // label: "Last Modified Date",
+
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Modified Date" }}
+                              />
+                            ),
                             sortable: true,
                             filterable: true,
                           },
                           {
                             fieldName: "modified_amount",
-                            label: "",
+                            // label: "",
+
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Modified Amt." }}
+                              />
+                            ),
                             displayTemplate: (row) => {
                               return row.invoice_status !== "closed" ? (
                                 <AlgaehFormGroup

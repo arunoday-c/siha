@@ -1,7 +1,11 @@
 import React, { memo, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { InfoBar } from "../../Wrappers";
-import { AlgaehMessagePop, AlgaehTable } from "algaeh-react-components";
+import {
+  AlgaehMessagePop,
+  AlgaehDataGrid,
+  AlgaehLabel,
+} from "algaeh-react-components";
 import { LoadCustomerReceivables } from "./event";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 
@@ -57,10 +61,31 @@ function CustomerList(props) {
                     className="col-lg-12 customCheckboxGrid"
                     id="customerGrid_Cntr"
                   >
-                    <AlgaehTable
+                    <AlgaehDataGrid
                       columns={[
                         {
-                          label: "Customer / Company",
+                          // label: "Code",
+
+                          label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
+                          sortable: true,
+                          fieldName: "ledger_code",
+                          filterable: true,
+                          displayTemplate: (record) => {
+                            return <span>{record.ledger_code}</span>;
+                          },
+                          others: {
+                            width: 200,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          // label: "Customer / Company",
+
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Customer/ Company" }}
+                            />
+                          ),
                           sortable: true,
                           fieldName: "child_name",
                           filterable: true,
@@ -79,9 +104,19 @@ function CustomerList(props) {
                               </p>
                             );
                           },
+                          others: {
+                            // width: 200,
+                            style: { textAlign: "left" },
+                          },
                         },
                         {
-                          label: "Balance",
+                          // label: "Balance",
+
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Balance Amt." }}
+                            />
+                          ),
                           sortable: true,
                           fieldName: "balance_amount",
                           others: {
@@ -96,15 +131,18 @@ function CustomerList(props) {
                                 })}
                               </span>
                             );
-                          }
+                          },
                         },
                       ]}
                       // height="80vh"
-                      isFilterable={true}
+
                       // rowUnique="finance_voucher_header_id"
                       rowUniqueId="finance_voucher_header_id"
                       // dataSource={{ data: customer_receivables }}
                       data={customer_receivables || []}
+                      isFilterable={true}
+                      pagination={true}
+                      pageOptions={{ rows: 50, page: 1 }}
                     />
                   </div>
                 </div>
