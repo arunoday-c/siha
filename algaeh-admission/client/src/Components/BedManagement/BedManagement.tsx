@@ -88,7 +88,9 @@ export default memo(function BedManagement(props: any) {
 
   // const context: any = useContext(MainContext);
   return (
-    <div className="BedManagementScreen">
+    <div
+      className={fromAdmission ? "ModalBedManagement" : "BedManagementScreen"}
+    >
       <div className="row">
         <div className="col-12">
           <SelectWardSection

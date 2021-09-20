@@ -63,34 +63,48 @@
           cursor: pointer;
 
           div {
-            overflow: auto;
             border-radius: 5px;
             margin: 5px 5px 5px 0px;
-            padding: 3px 0 3px 9px;
+            padding: 0 0 0 9px;
             height: auto;
+            overflow: hidden;
 
             .bedBox {
-              width: calc(100% - 30px);
+              width: calc(100% - 35px);
               float: left;
-              span {
+              b {
                 display: block;
-                &:last-child {
-                  font-size: 10px;
-                  // display: block;
-                }
+                margin-top: 7px;
+              }
+              span {
+                font-size: 10px;
               }
             }
             .actionSec {
               text-align: center;
-              display: inline-block;
-              width: 30px;
-              line-height: 35px;
+              float: right;
+
+              // line-height: 35px;
+              i {
+                width: 30px;
+                height: 30px;
+                display: block;
+                border-left: 1px solid #000;
+                text-align: center;
+                padding-top: 7px;
+                &:first-child {
+                  border-bottom: 1px solid #000;
+                }
+                &:hover {
+                  background-color: rgba(0, 0, 0, 0.2);
+                }
+              }
             }
-            &:hover {
-              border-inline: 0.2rem solid;
-              // writing-mode: horizontal-tb;
-              direction: rtl;
-            }
+            // &:hover {
+            //   // border-inline: 0.2rem solid;
+            //   // writing-mode: horizontal-tb;
+            //   // direction: rtl;
+            // }
           }
           .singleBedSelect {
             background-color: #ffec0d !important;

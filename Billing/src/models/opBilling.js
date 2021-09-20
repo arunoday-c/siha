@@ -437,7 +437,7 @@ export default {
             max(if(AU.algaeh_d_app_user_id=bh.created_by, EU.full_name,'' )) as created_name, \
             max(if(AU.algaeh_d_app_user_id=bh.cancel_by, EU.full_name,'' )) as cancelled_name,\
             max(if(AU.algaeh_d_app_user_id=bh.adjusted_by, EU.full_name,'' )) as adjusted_name, \
-            FBH.bill_number as from_bill_number FROM hims_f_billing_header bh \
+            FBH.bill_number as from_bill_number, hims_d_patient_id as patient_id FROM hims_f_billing_header bh \
             left join hims_d_employee as emp on bh.incharge_or_provider = emp.hims_d_employee_id \
             inner join hims_f_patient as PAT on bh.patient_id = PAT.hims_d_patient_id \
             left join hims_f_patient_visit as VST on bh.visit_id = VST.hims_f_patient_visit_id \
