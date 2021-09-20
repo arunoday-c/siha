@@ -684,9 +684,8 @@ export function generateExcelTimesheet(input) {
               emp["data"].push({
                 attendance_date: attendance_date,
                 status: TimeSheetUploaded.status,
-                [moment(attendance_date, "YYYY-MM-DD").format(
-                  "YYYYMMDD"
-                )]: TimeSheetUploaded.status,
+                [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                  TimeSheetUploaded.status,
                 isTimeSheet: "Y",
                 color: color,
               });
@@ -694,9 +693,8 @@ export function generateExcelTimesheet(input) {
               emp["data"].push({
                 attendance_date: attendance_date,
                 status: TimeSheetUploaded.status,
-                [moment(attendance_date, "YYYY-MM-DD").format(
-                  "YYYYMMDD"
-                )]: TimeSheetUploaded.worked_hours,
+                [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                  TimeSheetUploaded.worked_hours,
                 isTimeSheet: "Y",
                 color: color,
               });
@@ -784,9 +782,8 @@ export function generateExcelTimesheet(input) {
                 status: leave.status,
                 project_desc: leave.leave_description,
                 attendance_date: attendance_date,
-                [moment(attendance_date, "YYYY-MM-DD").format(
-                  "YYYYMMDD"
-                )]: leave.status,
+                [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                  leave.status,
                 color: color,
               });
             } else if (holiday_or_weekOff != null) {
@@ -795,9 +792,8 @@ export function generateExcelTimesheet(input) {
                   status: "WO",
 
                   attendance_date: attendance_date,
-                  [moment(attendance_date, "YYYY-MM-DD").format(
-                    "YYYYMMDD"
-                  )]: "WO",
+                  [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                    "WO",
 
                   color: "#E7FEFD",
                 });
@@ -805,9 +801,8 @@ export function generateExcelTimesheet(input) {
                 emp["data"].push({
                   status: "HO",
                   attendance_date: attendance_date,
-                  [moment(attendance_date, "YYYY-MM-DD").format(
-                    "YYYYMMDD"
-                  )]: "HO",
+                  [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                    "HO",
                   color: "#EAEAFD",
                 });
               }
@@ -815,9 +810,8 @@ export function generateExcelTimesheet(input) {
               emp["data"].push({
                 status: "PR",
                 attendance_date: attendance_date,
-                [moment(attendance_date, "YYYY-MM-DD").format(
-                  "YYYYMMDD"
-                )]: "PR",
+                [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                  "PR",
                 color: "#F5F5F5",
               });
             } else {
@@ -870,9 +864,8 @@ export function generateExcelTimesheet(input) {
                 emp["data"].push({
                   attendance_date: attendance_date,
                   status: TimeSheetUploaded.status,
-                  [moment(attendance_date, "YYYY-MM-DD").format(
-                    "YYYYMMDD"
-                  )]: TimeSheetUploaded.status,
+                  [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                    TimeSheetUploaded.status,
                   isTimeSheet: "Y",
                   color: color,
                 });
@@ -880,9 +873,8 @@ export function generateExcelTimesheet(input) {
                 emp["data"].push({
                   attendance_date: attendance_date,
                   status: TimeSheetUploaded.status,
-                  [moment(attendance_date, "YYYY-MM-DD").format(
-                    "YYYYMMDD"
-                  )]: TimeSheetUploaded.worked_hours,
+                  [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                    TimeSheetUploaded.worked_hours,
                   isTimeSheet: "Y",
                   color: color,
                 });
@@ -971,9 +963,8 @@ export function generateExcelTimesheet(input) {
                   status: leave.status,
                   project_desc: leave.leave_description,
                   attendance_date: attendance_date,
-                  [moment(attendance_date, "YYYY-MM-DD").format(
-                    "YYYYMMDD"
-                  )]: leave.status,
+                  [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                    leave.status,
                   color: color,
                 });
               } else if (holiday_or_weekOff != null) {
@@ -982,9 +973,8 @@ export function generateExcelTimesheet(input) {
                     status: "WO",
 
                     attendance_date: attendance_date,
-                    [moment(attendance_date, "YYYY-MM-DD").format(
-                      "YYYYMMDD"
-                    )]: "WO",
+                    [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                      "WO",
 
                     color: "#E7FEFD",
                   });
@@ -992,9 +982,8 @@ export function generateExcelTimesheet(input) {
                   emp["data"].push({
                     status: "HO",
                     attendance_date: attendance_date,
-                    [moment(attendance_date, "YYYY-MM-DD").format(
-                      "YYYYMMDD"
-                    )]: "HO",
+                    [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                      "HO",
                     color: "#EAEAFD",
                   });
                 }
@@ -1002,18 +991,16 @@ export function generateExcelTimesheet(input) {
                 emp["data"].push({
                   status: "PR",
                   attendance_date: attendance_date,
-                  [moment(attendance_date, "YYYY-MM-DD").format(
-                    "YYYYMMDD"
-                  )]: "PR",
+                  [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                    "PR",
                   color: "#F5F5F5",
                 });
               } else {
                 emp["data"].push({
                   status: "N",
                   attendance_date: attendance_date,
-                  [moment(attendance_date, "YYYY-MM-DD").format(
-                    "YYYYMMDD"
-                  )]: "N",
+                  [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                    "N",
                   color: "",
                 });
               }
@@ -1122,9 +1109,8 @@ export function generateProjectRosterTimesheet(input) {
                 outputArray.push({
                   attendance_date: attendance_date,
                   status: TimeSheetUploaded.status,
-                  [moment(attendance_date, "YYYY-MM-DD").format(
-                    "YYYYMMDD"
-                  )]: TimeSheetUploaded.status,
+                  [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                    TimeSheetUploaded.status,
                   project_id: TimeSheetUploaded.project_id,
                   project_desc: TimeSheetUploaded.project_desc,
                   isTimeSheet: "Y",
@@ -1134,9 +1120,8 @@ export function generateProjectRosterTimesheet(input) {
                 outputArray.push({
                   attendance_date: attendance_date,
                   status: TimeSheetUploaded.status,
-                  [moment(attendance_date, "YYYY-MM-DD").format(
-                    "YYYYMMDD"
-                  )]: TimeSheetUploaded.worked_hours,
+                  [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                    TimeSheetUploaded.worked_hours,
                   project_id: TimeSheetUploaded.project_id,
                   project_desc: TimeSheetUploaded.project_desc,
                   isTimeSheet: "Y",
@@ -1228,9 +1213,8 @@ export function generateProjectRosterTimesheet(input) {
                     status: leave.status,
                     project_desc: leave.leave_description,
                     attendance_date: attendance_date,
-                    [moment(attendance_date, "YYYY-MM-DD").format(
-                      "YYYYMMDD"
-                    )]: leave.status,
+                    [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                      leave.status,
                     project_id: ProjAssgned.project_id,
 
                     color: color,
@@ -1264,9 +1248,8 @@ export function generateProjectRosterTimesheet(input) {
                   outputArray.push({
                     status: "PR",
                     attendance_date: attendance_date,
-                    [moment(attendance_date, "YYYY-MM-DD").format(
-                      "YYYYMMDD"
-                    )]: "PR",
+                    [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                      "PR",
                     project_id: ProjAssgned.project_id,
                     project_desc: ProjAssgned.project_desc,
                     color: "#F5F5F5",
@@ -1276,9 +1259,8 @@ export function generateProjectRosterTimesheet(input) {
                 outputArray.push({
                   attendance_date: attendance_date,
                   status: "N",
-                  [moment(attendance_date, "YYYY-MM-DD").format(
-                    "YYYYMMDD"
-                  )]: "N",
+                  [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                    "N",
                   project_id: null,
                   project_desc: "Not Assigned",
                   color: "#F5F5F5",
@@ -1336,9 +1318,8 @@ export function generateProjectRosterTimesheet(input) {
                   outputArray.push({
                     attendance_date: attendance_date,
                     status: TimeSheetUploaded.status,
-                    [moment(attendance_date, "YYYY-MM-DD").format(
-                      "YYYYMMDD"
-                    )]: TimeSheetUploaded.status,
+                    [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                      TimeSheetUploaded.status,
                     project_id: TimeSheetUploaded.project_id,
                     project_desc: TimeSheetUploaded.project_desc,
                     isTimeSheet: "Y",
@@ -1348,9 +1329,8 @@ export function generateProjectRosterTimesheet(input) {
                   outputArray.push({
                     attendance_date: attendance_date,
                     status: TimeSheetUploaded.status,
-                    [moment(attendance_date, "YYYY-MM-DD").format(
-                      "YYYYMMDD"
-                    )]: TimeSheetUploaded.worked_hours,
+                    [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                      TimeSheetUploaded.worked_hours,
                     project_id: TimeSheetUploaded.project_id,
                     project_desc: TimeSheetUploaded.project_desc,
                     isTimeSheet: "Y",
@@ -1490,9 +1470,8 @@ export function generateProjectRosterTimesheet(input) {
                   outputArray.push({
                     attendance_date: attendance_date,
                     status: "N",
-                    [moment(attendance_date, "YYYY-MM-DD").format(
-                      "YYYYMMDD"
-                    )]: "N",
+                    [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                      "N",
                     project_id: null,
                     project_desc: "Not Assigned",
                     color: "#F5F5F5",
@@ -1504,9 +1483,8 @@ export function generateProjectRosterTimesheet(input) {
               outputArray.push({
                 attendance_date: attendance_date,
                 status: "EXT",
-                [moment(attendance_date, "YYYY-MM-DD").format(
-                  "YYYYMMDD"
-                )]: "EXT",
+                [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]:
+                  "EXT",
                 project_id: null,
                 project_desc: "employee is resigned",
                 color: "#FCF802",
@@ -2584,7 +2562,7 @@ export function processBulkAtt_Normal(data) {
           )} group by TS.employee_id having count(*)< ?; 
           select L.from_date,L.to_date, L.employee_joined, L.actual_to_date, L.employee_id from hims_f_leave_application L 
           inner join hims_f_employee_annual_leave AL on AL.leave_application_id=L.hims_f_leave_application_id and from_normal_salary='N'
-          where month=? and year=? and L.employee_id in (?);`,
+          where status ='APR' and month=? and year=? and L.employee_id in (?);`,
           values: [
             input.year,
             input.month,
@@ -3395,7 +3373,7 @@ export function processBulkAtt_Normal(data) {
                                       "days"
                                     );
 
-                                    console.log("total_no_Days", total_no_Days);
+                                    // console.log("total_no_Days", total_no_Days);
 
                                     _salary_paid_days =
                                       total_no_Days -
@@ -3425,9 +3403,8 @@ export function processBulkAtt_Normal(data) {
                                 ann_to_date_mnth !== null &&
                                 employee_join == false
                               ) {
-                                DilayResult[i][
-                                  "total_work_days"
-                                ] = total_work_days;
+                                DilayResult[i]["total_work_days"] =
+                                  total_work_days;
                               }
 
                               // console.log(
@@ -3451,9 +3428,8 @@ export function processBulkAtt_Normal(data) {
                               ) {
                                 // console.log("DilayResult", DilayResult[i]);
                                 // let _earlyjoin;
-                                const month_days = moment(
-                                  month_start
-                                ).daysInMonth();
+                                const month_days =
+                                  moment(month_start).daysInMonth();
                                 DilayResult[i]["total_days"] = month_days;
 
                                 // console.log(
@@ -4168,11 +4144,12 @@ export function processBulkAtt_with_cutoff(data) {
                         });
                         const leaveLen = empLeave.length;
 
-                        const empHolidayweekoff = getEmployeeWeekOffsandHolidays(
-                          cutoff_next_day,
-                          AttenResult[0],
-                          allHolidays
-                        );
+                        const empHolidayweekoff =
+                          getEmployeeWeekOffsandHolidays(
+                            cutoff_next_day,
+                            AttenResult[0],
+                            allHolidays
+                          );
 
                         // const empUnpaidPending = pending_leaves.filter((f) => {
                         //   return f.employee_id == AttenResult[0].employee_id;
@@ -4948,11 +4925,12 @@ export function processBulkAtt_with_cutoff(data) {
                         });
                         const leaveLen = empLeave.length;
 
-                        const empHolidayweekoff = getEmployeeWeekOffsandHolidays(
-                          cutoff_next_day,
-                          AttenResult[0],
-                          allHolidays
-                        );
+                        const empHolidayweekoff =
+                          getEmployeeWeekOffsandHolidays(
+                            cutoff_next_day,
+                            AttenResult[0],
+                            allHolidays
+                          );
 
                         const holidayLen = empHolidayweekoff.length;
 
@@ -6072,21 +6050,25 @@ export function processBulkAtt_with_cutoff(data) {
                                   parseFloat(DilayResult[i]["paid_leave"]) +
                                   parseFloat(DilayResult[i]["unpaid_leave"]),
 
-                                prev_month_shortage_hr: prevs_data.prev_month_shortage_hr
-                                  ? prevs_data.prev_month_shortage_hr
-                                  : 0,
+                                prev_month_shortage_hr:
+                                  prevs_data.prev_month_shortage_hr
+                                    ? prevs_data.prev_month_shortage_hr
+                                    : 0,
                                 prev_month_ot_hr: prevs_data.prev_month_ot_hr
                                   ? prevs_data.prev_month_ot_hr
                                   : 0,
-                                prev_month_week_off_ot: prevs_data.prev_month_week_off_ot
-                                  ? prevs_data.prev_month_week_off_ot
-                                  : 0,
-                                prev_month_holiday_ot: prevs_data.prev_month_holiday_ot
-                                  ? prevs_data.prev_month_holiday_ot
-                                  : 0,
-                                pending_unpaid_leave: prevs_data.pending_unpaid_leave
-                                  ? prevs_data.pending_unpaid_leave
-                                  : 0,
+                                prev_month_week_off_ot:
+                                  prevs_data.prev_month_week_off_ot
+                                    ? prevs_data.prev_month_week_off_ot
+                                    : 0,
+                                prev_month_holiday_ot:
+                                  prevs_data.prev_month_holiday_ot
+                                    ? prevs_data.prev_month_holiday_ot
+                                    : 0,
+                                pending_unpaid_leave:
+                                  prevs_data.pending_unpaid_leave
+                                    ? prevs_data.pending_unpaid_leave
+                                    : 0,
 
                                 created_date: new Date(),
                                 created_by: user_id,
@@ -6109,21 +6091,25 @@ export function processBulkAtt_with_cutoff(data) {
                                   parseFloat(DilayResult[i]["paid_leave"]) +
                                   parseFloat(DilayResult[i]["unpaid_leave"]) +
                                   parseFloat(pending_unpaid_leave),
-                                prev_month_shortage_hr: prevs_data.prev_month_shortage_hr
-                                  ? prevs_data.prev_month_shortage_hr
-                                  : 0,
+                                prev_month_shortage_hr:
+                                  prevs_data.prev_month_shortage_hr
+                                    ? prevs_data.prev_month_shortage_hr
+                                    : 0,
                                 prev_month_ot_hr: prevs_data.prev_month_ot_hr
                                   ? prevs_data.prev_month_ot_hr
                                   : 0,
-                                prev_month_week_off_ot: prevs_data.prev_month_week_off_ot
-                                  ? prevs_data.prev_month_week_off_ot
-                                  : 0,
-                                prev_month_holiday_ot: prevs_data.prev_month_holiday_ot
-                                  ? prevs_data.prev_month_holiday_ot
-                                  : 0,
-                                pending_unpaid_leave: prevs_data.pending_unpaid_leave
-                                  ? prevs_data.pending_unpaid_leave
-                                  : 0,
+                                prev_month_week_off_ot:
+                                  prevs_data.prev_month_week_off_ot
+                                    ? prevs_data.prev_month_week_off_ot
+                                    : 0,
+                                prev_month_holiday_ot:
+                                  prevs_data.prev_month_holiday_ot
+                                    ? prevs_data.prev_month_holiday_ot
+                                    : 0,
+                                pending_unpaid_leave:
+                                  prevs_data.pending_unpaid_leave
+                                    ? prevs_data.pending_unpaid_leave
+                                    : 0,
                                 created_date: new Date(),
                                 created_by: user_id,
                                 updated_date: new Date(),
