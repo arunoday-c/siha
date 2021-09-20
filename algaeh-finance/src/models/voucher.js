@@ -1780,11 +1780,12 @@ export default {
 
                 mysql
                   .executeQuery({
-                    query: `SELECT invoice_ref_no,amount FROM finance_voucher_sub_header WHERE finance_voucher_header_id =?`,
+                    query: `SELECT finance_voucher_sub_header_id,invoice_ref_no,amount FROM finance_voucher_sub_header WHERE finance_voucher_header_id =?`,
                     values: [input.voucher_header_id],
                   })
                   .then((subResponse) => {
                     let updateHeader = "";
+                    let deleteInSubHeader = "";
                     if (subResponse.length === 1) {
                       updateHeader += _mysql.mysqlQueryFormat(
                         `
@@ -1812,15 +1813,22 @@ export default {
                     `,
                           [srItems.invoice_ref_no, srItems.amount]
                         );
+                        // deleteInSubHeader += _mysql.mysqlQueryFormat(
+                        //   `delete from finance_voucher_sub_header where finance_voucher_sub_header_id=?;`,
+                        //   [srItems.finance_voucher_sub_header_id]
+                        // );
                       }
                     }
+                    deleteInSubHeader = _mysql.mysqlQueryFormat(
+                      `delete from finance_voucher_sub_header where finance_voucher_header_id=?;`,
+                      [input.voucher_header_id]
+                    );
 
                     _mysql
                       .executeQuery({
                         query: `update finance_voucher_details set 
                         auth_status=?,rejected_by=?,rejected_date=?,rejected_reason=? where voucher_header_id=? and auth_status='P';
-                        ${updateHeader}`,
-
+                        ${updateHeader}${deleteInSubHeader}`,
                         values: [
                           "R",
                           req.userIdentity.algaeh_d_app_user_id,
@@ -2230,10 +2238,10 @@ export default {
                   })
                   .then((subResponse) => {
                     let updateHeader = "";
+                    let deleteInSubHeader = "";
                     if (subResponse.length === 1) {
                       updateHeader += _mysql.mysqlQueryFormat(
-                        `
-                    select @invoice_ref_no_h := invoice_ref_no,
+                        ` select @invoice_ref_no_h := invoice_ref_no,
                     @amount_h := amount from finance_voucher_header where
                     finance_voucher_header_id= ? limit 1;
                     select @finance_voucher_header_id_h := finance_voucher_header_id
@@ -2259,12 +2267,15 @@ export default {
                         );
                       }
                     }
-
+                    deleteInSubHeader = _mysql.mysqlQueryFormat(
+                      `delete from finance_voucher_sub_header where finance_voucher_header_id=?;`,
+                      [input.voucher_header_id]
+                    );
                     _mysql
                       .executeQuery({
                         query: `update finance_voucher_details set 
                           auth_status=?,rejected_by=?,rejected_date=?,rejected_reason=? where voucher_header_id=? and auth_status='P';
-                          ${updateHeader}`,
+                          ${updateHeader}${deleteInSubHeader}`,
 
                         values: [
                           "R",

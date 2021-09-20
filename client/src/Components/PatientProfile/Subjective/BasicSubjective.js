@@ -87,9 +87,10 @@ class BasicSubjective extends Component {
     this.chiefComplaintMaxLength = 1500;
     this.significantSignsLength = 500;
     this.otherConditionMaxLength = 500;
-    this.getPatientEncounterDetails();
+    // this.getPatientEncounterDetails();
     this.complaintType = [];
     SubjectiveHandler().getPatientChiefComplaints(this);
+    SubjectiveHandler().getPatientEncounterDetails(this);
   }
 
   dropDownHandler(value) {
@@ -320,46 +321,46 @@ class BasicSubjective extends Component {
       }
     );
   }
+  // getPatientEncounterDetails
 
-  getPatientEncounterDetails() {
-    algaehApiCall({
-      uri: "/doctorsWorkBench/getPatientEncounter",
-      method: "GET",
-      data: {
-        encounter_id: Window?.global?.encounter_id, //Window.global.encounter_id
-      },
-      onSuccess: (response) => {
-        let data = response.data.records[0];
-        if (response.data.success) {
-          this.setState(
-            {
-              significant_signs: data.significant_signs,
-              other_signs: data.other_signs,
-            },
-            () => {
-              Window.global["significant_signs"] = this.state.significant_signs;
-              Window.global["other_signs"] = this.state.other_signs;
-            }
-          );
+  // getPatientEncounterDetails() {
+  //   algaehApiCall({
+  //     uri: "/doctorsWorkBench/getPatientEncounter",
+  //     method: "GET",
+  //     data: {
+  //       encounter_id: Window?.global?.encounter_id, //Window.global.encounter_id
+  //     },
+  //     onSuccess: (response) => {
+  //       let data = response.data.records[0];
+  //       if (response.data.success) {
+  //         this.setState(
+  //           {
+  //             significant_signs: data.significant_signs,
+  //             other_signs: data.other_signs,
+  //           },
+  //           () => {
+  //             Window.global["significant_signs"] = this.state.significant_signs;
+  //             Window.global["other_signs"] = this.state.other_signs;
+  //           }
+  //         );
 
-          // setGlobal({
-          //   significant_signs: data.significant_signs
-          // });
-        }
-      },
-      onFailure: (error) => {
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      },
-    });
-  }
+  //         // setGlobal({
+  //         //   significant_signs: data.significant_signs
+  //         // });
+  //       }
+  //     },
+  //     onFailure: (error) => {
+  //       swalMessage({
+  //         title: error.message,
+  //         type: "error",
+  //       });
+  //     },
+  //   });
+  // }
 
   componentWillUnmount() {
     const err = Validations(this);
     removeGlobal("EHR-STD");
-    removeGlobal("encounter_id");
     if (!err) {
       if (this.state.hims_f_episode_chief_complaint_id === null) {
         SubjectiveHandler().addChiefComplainToPatient(this);

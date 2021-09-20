@@ -96,8 +96,7 @@ export function InsuranceForm({
         insured: "N",
       });
     }
-    // eslint-disable-next-line
-  }, [patientInsurance]);
+  }, [patientInsurance]); // eslint-disable-next-line
 
   useEffect(() => {
     if (selected_visit === null) {
@@ -113,7 +112,7 @@ export function InsuranceForm({
         primary_card_number: "",
       });
     }
-  }, [selected_visit]);
+  }, [selected_visit]); // eslint-disable-next-line
 
   const disabled = !isInsurance;
   const dropDownData = insuranceList?.length ? insuranceList : patientInsurance;

@@ -11,7 +11,7 @@ import {
   swalMessage,
   setCookie,
 } from "../../utils/algaehApiCall";
-import { setGlobal } from "../../utils/GlobalFunctions";
+import { setGlobal, removeGlobal } from "../../utils/GlobalFunctions";
 import moment from "moment";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -247,6 +247,17 @@ class PatientProfile extends Component {
     cancelRequest("getPatientVitals");
     cancelRequest("getPatientDiet");
     cancelRequest("getPatientDiagnosis");
+    removeGlobal("encounter_id");
+    removeGlobal("vitals_mandatory");
+    removeGlobal("current_patient");
+    // removeGlobal("episode_id");
+    removeGlobal("visit_id");
+    removeGlobal("ip_id");
+    removeGlobal("provider_id");
+    removeGlobal("department_type");
+    removeGlobal("gender");
+    removeGlobal("sub_department_id");
+    removeGlobal("source");
     this.props.getPatientAllergies({
       redux: {
         type: "PATIENT_ALLERGIES",

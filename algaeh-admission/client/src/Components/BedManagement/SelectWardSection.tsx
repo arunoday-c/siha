@@ -8,10 +8,10 @@ import {
 } from "algaeh-react-components";
 
 import { BedManagementContext } from "./BedMangementContext";
-interface IFormInputs {
-  // name: string;
-  hims_adm_ward_header_id: string;
-}
+// interface IFormInputs {
+//   // name: string;
+//   hims_adm_ward_header_id: string;
+// }
 export default memo(function SelectWardSection(props: any) {
   const { fromAdmissionprop } = props;
   // props: {

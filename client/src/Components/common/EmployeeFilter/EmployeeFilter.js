@@ -219,7 +219,9 @@ export default function EmployeeFilter(props) {
       return;
     }
     let input_data =
-      " hospital_id=" + inputs.hospital_id === -1 ? null : inputs.hospital_id;
+      inputs.hospital_id === -1
+        ? " hospital_id > 0"
+        : " hospital_id=" + inputs.hospital_id;
     if (inputs.sub_department_id !== null) {
       input_data += " and  sub_department_id=" + inputs.sub_department_id;
       if (inputs.designation_id !== null) {

@@ -78,7 +78,6 @@ export default function SubjectiveHandler() {
             callBack(text);
           },
           onRowSelect: (row) => {
-            debugger;
             if (diagType === "Final") {
               const existingComplaints =
                 $this.props.patient_diagnosis === undefined
@@ -203,8 +202,7 @@ export default function SubjectiveHandler() {
             if (forceSave === "forceSave") {
               swalMessage({
                 // title: "Saved Successfully",
-                html:
-                  "Chief Complaint, Significant Signs and Other Comments</br></br> <b>Saved Successfully</b>",
+                html: "Chief Complaint, Significant Signs and Other Comments</br></br> <b>Saved Successfully</b>",
                 type: "success",
               });
             }
@@ -243,7 +241,7 @@ export default function SubjectiveHandler() {
         return;
       }
       let patChiefComp = [];
-      debugger;
+
       patChiefComp.push({
         hims_f_episode_chief_complaint_id:
           $this.state.hims_f_episode_chief_complaint_id,
@@ -273,8 +271,7 @@ export default function SubjectiveHandler() {
             if (forceSave === "forceSave") {
               swalMessage({
                 // title: "Updated Successfully",
-                html:
-                  "Chief Complaint, Significant Signs and Other Comments</br></br> <b>Saved Successfully</b>",
+                html: "Chief Complaint, Significant Signs and Other Comments</br></br> <b>Saved Successfully</b>",
                 type: "success",
               });
             }
@@ -306,6 +303,7 @@ export default function SubjectiveHandler() {
           },
           onSuccess: (response) => {
             if (response.data.success) {
+              getPatientEncounterDetails($this);
             }
           },
         });
@@ -314,6 +312,9 @@ export default function SubjectiveHandler() {
 
     getPatientChiefComplaints: ($this) => {
       getPatientChiefComplaints($this);
+    },
+    getPatientEncounterDetails: ($this) => {
+      getPatientEncounterDetails($this);
     },
     deletePrecription: ($this, medicine, context) => {
       swal({
@@ -329,7 +330,6 @@ export default function SubjectiveHandler() {
         cancelButtonText: "Cancel",
       }).then((willDelete) => {
         if (willDelete.value) {
-          debugger;
           algaehApiCall({
             uri: "/orderMedication/deletePatientPrescription",
             data: {
@@ -358,7 +358,6 @@ export default function SubjectiveHandler() {
                       data["active_medication"] =
                         response.data.records.active_medication;
 
-                      debugger;
                       if ($this.state.portal_exists === "Y") {
                         uploadPrescriptiontoPortal($this);
                       }
@@ -393,7 +392,34 @@ export default function SubjectiveHandler() {
     },
   };
 }
+function getPatientEncounterDetails($this) {
+  algaehApiCall({
+    uri: "/doctorsWorkBench/getPatientEncounter",
+    method: "GET",
+    data: {
+      encounter_id: Window?.global?.encounter_id, //Window.global.encounter_id
+    },
+    onSuccess: (response) => {
+      let data = response.data.records[0];
+      if (response.data.success) {
+        $this.setState({
+          significant_signs: data.significant_signs,
+          other_signs: data.other_signs,
+        });
 
+        // setGlobal({
+        //   significant_signs: data.significant_signs
+        // });
+      }
+    },
+    onFailure: (error) => {
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
+}
 function getPatientChiefComplaints($this) {
   algaehApiCall({
     uri: "/doctorsWorkBench/getPatientBasicChiefComplaints",
@@ -493,7 +519,6 @@ function showconfirmDialog($this, row) {
     cancelButtonText: "Cancel",
   }).then((willDelete) => {
     if (willDelete.value) {
-      debugger;
       let data = {
         hims_f_patient_diagnosis_id: row.hims_f_patient_diagnosis_id,
         diagnosis_type: row.diagnosis_type,
@@ -588,7 +613,6 @@ export function IcdCodeForChronic(cb) {
 }
 
 export function uploadPrescriptiontoPortal($this) {
-  debugger;
   return new Promise((resolve, reject) => {
     let portalParams = {};
     if ($this.state.portal_exists === "Y") {
@@ -632,7 +656,7 @@ export function uploadPrescriptiontoPortal($this) {
         },
       },
       onSuccess: (res) => {
-        // debugger;
+        //
         // const urlBlob = URL.createObjectURL(res.data);
         // const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Prescription`;
         // window.open(origin);
