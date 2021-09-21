@@ -363,6 +363,87 @@ class HistoricalData extends Component {
     return (
       <div className="historical-data">
         <div className="row">
+          <div className="col-3">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">History Category</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <ul className="historyCategoryList">
+                    <li>
+                      <span className="active">Vitals</span>
+                    </li>
+
+                    <li>
+                      <span>Nursing Notes</span>
+                    </li>
+                    <li>
+                      <span>Diagnosis</span>
+                    </li>
+                    <li>
+                      <span>Treatments/ Procedure</span>
+                    </li>
+                    <li>
+                      <span>Prescription History</span>
+                    </li>
+                    <li>
+                      <span>Investigations</span>
+                    </li>
+                    <li>
+                      <span>Payment History</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-9">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">
+                    History Details - [Vitals]
+                  </h3>
+                </div>
+              </div>
+              <div className="portlet-body historyDetailsCntr">
+                {" "}
+                <ul>
+                  <li>
+                    <span>Vitals</span>
+                  </li>
+                  <li>
+                    <span>Vitals</span>
+                  </li>
+                  <li>
+                    <span>Vitals</span>
+                  </li>
+                  <li>
+                    <span>Vitals</span>
+                  </li>
+                  <li>
+                    <span>Vitals</span>
+                  </li>
+                  <li>
+                    <span>Vitals</span>
+                  </li>
+                  <li>
+                    <span>Vitals</span>
+                  </li>
+                  <li>
+                    <span>Vitals</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
           <div className="col-lg-6">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
@@ -430,6 +511,7 @@ class HistoricalData extends Component {
         </div>
         {/* First Two Sections Start*/}
         <div className="row">
+          {/* sdfhsgfjhgsfjdhgkjg */}
           <div className="col-lg-6">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
