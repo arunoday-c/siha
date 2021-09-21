@@ -31,65 +31,57 @@ export default function BedDetails(props: any) {
             key="insuranceForm"
           >
             <div className="htpl-phase1-primary-insurance-form">
-              <div className="col-12">
-                <div className="row">
-                  <div className="col-lg-8 primary-details">
-                    <div className="row primary-box-container">
-                      <div className="col-3">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Bed Name",
-                          }}
-                        />
-                        <h6>
-                          {selectedBedData
-                            ? selectedBedData.bed_desc
-                            : "--------"}
-                        </h6>
-                      </div>
-                      <div className="col-3">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Ward Name",
-                          }}
-                        />
-                        <h6>
-                          {selectedBedData
-                            ? selectedBedData.ward_desc
-                            : "--------"}
-                        </h6>
-                      </div>
-                      <div className="col-3">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Bed No.",
-                          }}
-                        />
-                        <h6>
-                          {selectedBedData
-                            ? selectedBedData.bed_no
-                            : "--------"}
-                        </h6>
-                      </div>
+              {/* <div className="row"> */}
+              <div className="col primary-details">
+                <div className="row primary-box-container">
+                  <div className="col-6">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Bed Name",
+                      }}
+                    />
+                    <h6>
+                      {selectedBedData ? selectedBedData.bed_desc : "--------"}
+                    </h6>
+                  </div>
+                  <div className="col-12">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Ward Name",
+                      }}
+                    />
+                    <h6>
+                      {selectedBedData ? selectedBedData.ward_desc : "--------"}
+                    </h6>
+                  </div>
+                  <div className="col-12">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Bed No.",
+                      }}
+                    />
+                    <h6>
+                      {selectedBedData ? selectedBedData.bed_no : "--------"}
+                    </h6>
+                  </div>
 
-                      <div
-                        className="col-1"
-                        style={{ paddingRight: 0, marginTop: 20 }}
-                      >
-                        <button
-                          type="button"
-                          className="btn btn-primary btn-rounded"
-                          disabled={disableAfterAdmission}
-                          onClick={() => setVisible(true)}
-                        >
-                          <i className="fas fa-plus" />
-                        </button>
-                      </div>
-                    </div>
+                  <div
+                    className="col-12"
+                    style={{ paddingRight: 0, marginTop: 19 }}
+                  >
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      disabled={disableAfterAdmission}
+                      onClick={() => setVisible(true)}
+                    >
+                      Select Bed
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
+            {/* </div> */}
           </TabPane>
         </Tabs>
       </div>

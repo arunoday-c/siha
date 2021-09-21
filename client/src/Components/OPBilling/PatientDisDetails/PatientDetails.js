@@ -151,10 +151,10 @@ class DisPatientForm extends Component {
                   </div>
                 )}
 
-                <div className="col-10">
+                <div className="col">
                   <div className="row">
                     {this.state.billing_mode === "D" ? (
-                      <div className="col-3">
+                      <div className="col-2">
                         <AlgaehLabel
                           label={{
                             fieldName: "patient_code",
@@ -203,7 +203,7 @@ class DisPatientForm extends Component {
                       />
                     )}
 
-                    <div className="col-3">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
                           fieldName: "full_name",
@@ -243,7 +243,7 @@ class DisPatientForm extends Component {
                     </div>
 
                     {this.state.Billexists === true ? (
-                      <div className="col">
+                      <div className="col-2">
                         <AlgaehLabel label={{ forceLabel: "Bill Status" }} />
                         <h6>
                           {this.state.adjusted === "Y" ? (

@@ -1,4 +1,5 @@
 import React, { useEffect, useContext } from "react";
+import "./MicroUI.scss";
 import { MainContext } from "algaeh-react-components";
 import loadMicroFrontend from "./MicroFrontendService";
 import Config from "../../utils/config.json";
@@ -58,7 +59,15 @@ const MicroFrontend = ({ history, host, path }) => {
     elementId,
   ]);
 
-  return <div id={elementId}>Loading micro...</div>;
+  return (
+    <div className="loadingMicro" id={elementId}>
+      <i className="fas fa-cog fa-spin loadingIcon"></i>
+      <p className="loadingText">Starting Module...</p>
+      <small className="loadingTextSmall">
+        Please make sure server is started.
+      </small>
+    </div>
+  );
 };
 
 export default MicroFrontend;
