@@ -63,6 +63,9 @@ const MicroFrontend = ({ history, host, path }) => {
     <div className="loadingMicro" id={elementId}>
       <i className="fas fa-cog fa-spin loadingIcon"></i>
       <p className="loadingText">Starting Module...</p>
+      <small className="loadingTextSmall">
+        Please make sure server is started.
+      </small>
     </div>
   );
 };
