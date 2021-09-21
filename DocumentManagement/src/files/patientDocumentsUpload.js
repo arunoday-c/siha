@@ -148,12 +148,15 @@ export async function uploadPatientDoc(req, res, next) {
 export async function getUploadedPatientFiles(req, res, next) {
   try {
     const input = req.query;
-    const { filePath, doc_number } = input;
+    const { filePath, doc_number, nameOfTheFolder } = input;
     const directoryPath = path.join(folder, "UPLOAD");
 
     const completePath = path.join(directoryPath, filePath);
 
-    if (!fs.pathExistsSync(completePath)) {
+    if (
+      !fs.pathExistsSync(completePath) &&
+      nameOfTheFolder == "LaboratoryDocuments"
+    ) {
       contract.find({ contract_no: doc_number }, (err, docs) => {
         docs.map((item) => {
           // const currentPath = path.join(__dirname, item.document);
