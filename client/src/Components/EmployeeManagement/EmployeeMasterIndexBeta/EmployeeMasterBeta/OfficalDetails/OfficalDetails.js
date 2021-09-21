@@ -33,7 +33,7 @@ import { EmployeeMasterContextForEmployee } from "../../EmployeeMasterContextFor
 // import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 // import { RawSecurityElement } from "algaeh-react-components";
 import MaskedInput from "react-maskedinput";
-import { useForm, Controller } from "react-hook-form";
+import { Controller } from "react-hook-form";
 
 import { newAlgaehApi } from "../../../../../hooks";
 import { useQuery } from "react-query";
@@ -179,11 +179,12 @@ export default function OfficialDetails(
   //     employee_status: "A",
   //   },
   // });
-  const { entitled_daily_ot, employee_status, employee_type } = watch([
-    "entitled_daily_ot",
-    "employee_status",
-    "employee_type",
-  ]);
+  const { entitled_daily_ot, employee_status, employee_type } =
+    formControlOfficial.watch([
+      "entitled_daily_ot",
+      "employee_status",
+      "employee_type",
+    ]);
   const { data: officialDetails } = useQuery(
     ["official-details", { employee_id: employee_id }],
     getOfficialDetails,
@@ -194,7 +195,7 @@ export default function OfficialDetails(
         console.log("dropdowndata", dropdownData);
 
         setSelectedLang(getCookie("Language"));
-        reset({ ...data[0] });
+        formControlOfficial.reset({ ...data[0] });
         setOfficialDetailsOfEmployee(data[0]);
         setEmployeeUpdateDetails({
           ...data[0],
@@ -683,13 +684,13 @@ export default function OfficialDetails(
               {employee_type === "PB" ? (
                 <Controller
                   name="probation_date"
-                  control={control}
+                  control={formControlOfficial.control}
                   render={({ onChange, value }) => (
                     <AlgaehDateHandler
                       div={{
                         className: "col mandatory form-group",
                       }}
-                      error={errors}
+                      error={formControlOfficial.errors}
                       label={{
                         fieldName: "probation_date",
                         isImp: true,
@@ -722,7 +723,7 @@ export default function OfficialDetails(
               ) : null}
               <Controller
                 name="date_of_joining"
-                control={control}
+                control={formControlOfficial.control}
                 render={({ onChange, value }) => (
                   <AlgaehDateHandler
                     div={{
@@ -795,7 +796,7 @@ export default function OfficialDetails(
                 </h6>
               </div>
               <Controller
-                control={control}
+                control={formControlOfficial.control}
                 name="sub_department_id"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
@@ -864,7 +865,7 @@ export default function OfficialDetails(
                     </h6>
                   </div>*/}
               <Controller
-                control={control}
+                control={formControlOfficial.control}
                 name="reporting_to_id"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
@@ -921,7 +922,7 @@ export default function OfficialDetails(
                   }}
                 /> */}
               <Controller
-                control={control}
+                control={formControlOfficial.control}
                 name="employee_designation_id"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
@@ -1009,12 +1010,12 @@ export default function OfficialDetails(
                 <>
                   <Controller
                     name="service_dis_percentage"
-                    control={control}
+                    control={formControlOfficial.control}
                     rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{ className: "col-3  form-group" }}
-                        error={errors}
+                        error={formControlOfficial.errors}
                         label={{
                           forceLabel: "Elgible Max. Discount %",
                           isImp: false,
@@ -1034,12 +1035,12 @@ export default function OfficialDetails(
                   />
                   <Controller
                     name="service_credit_percentage"
-                    control={control}
+                    control={formControlOfficial.control}
                     rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{ className: "col-3  form-group" }}
-                        error={errors}
+                        error={formControlOfficial.errors}
                         label={{
                           forceLabel: "Elgible Min. Credit %",
                           isImp: false,
@@ -1081,7 +1082,7 @@ export default function OfficialDetails(
 
               {HRMS_Active === true ? (
                 <Controller
-                  control={control}
+                  control={formControlOfficial.control}
                   name="employee_group_id"
                   render={({ value, onChange, onBlur }) => (
                     <AlgaehAutoComplete
@@ -1157,7 +1158,7 @@ export default function OfficialDetails(
               ) : null}
               {HRMS_Active === true ? (
                 <Controller
-                  control={control}
+                  control={formControlOfficial.control}
                   name="employee_category"
                   render={({ value, onChange, onBlur }) => (
                     <AlgaehAutoComplete
@@ -1226,7 +1227,7 @@ export default function OfficialDetails(
                     >
                       <Controller
                         name="entitled_daily_ot"
-                        control={control}
+                        control={formControlOfficial.control}
                         // defaultValue={"N"}
                         render={(props) => (
                           <input
@@ -1267,7 +1268,7 @@ export default function OfficialDetails(
                     <div className="row">
                       {entitled_daily_ot === "Y" ? (
                         <Controller
-                          control={control}
+                          control={formControlOfficial.control}
                           name="overtime_group_id"
                           render={({ value, onChange, onBlur }) => (
                             <AlgaehAutoComplete
@@ -1327,7 +1328,7 @@ export default function OfficialDetails(
               ) : null}
               {officialDetailsOfEmployee?.isDoctor === "Y" ? (
                 <Controller
-                  control={control}
+                  control={formControlOfficial.control}
                   name="services_id"
                   render={({ value, onChange, onBlur }) => (
                     <AlgaehAutoComplete
@@ -1388,7 +1389,7 @@ export default function OfficialDetails(
             </h5>
             <div className="row paddin-bottom-5">
               <Controller
-                control={control}
+                control={formControlOfficial.control}
                 name="employee_status"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
@@ -1405,8 +1406,14 @@ export default function OfficialDetails(
                         onChange(selected);
 
                         selected === "I"
-                          ? setValue("inactive_date", new Date())
-                          : setValue("inactive_date", undefined);
+                          ? formControlOfficial.setValue(
+                              "inactive_date",
+                              new Date()
+                            )
+                          : formControlOfficial.setValue(
+                              "inactive_date",
+                              undefined
+                            );
                       },
                       onClear: () => {
                         onChange("");
@@ -1456,7 +1463,7 @@ export default function OfficialDetails(
                     }}
                   />
                   <Controller
-                    control={control}
+                    control={formControlOfficial.control}
                     name="inactive_date"
                     render={(props) => (
                       <>
@@ -1475,7 +1482,7 @@ export default function OfficialDetails(
                 <>
                   <Controller
                     name="date_of_resignation"
-                    control={control}
+                    control={formControlOfficial.control}
                     rules={{ required: "Please select a start date" }}
                     render={({ value, onChange }) => (
                       <>
@@ -1508,7 +1515,7 @@ export default function OfficialDetails(
                             onChange: (mdate) => {
                               if (mdate) {
                                 onChange(mdate._d);
-                                setValue(
+                                formControlOfficial.setValue(
                                   "reliving_date",
                                   mdate.add(-1, "days")
                                 );
@@ -1610,12 +1617,12 @@ export default function OfficialDetails(
                     /> */}
                   <Controller
                     name="notice_period"
-                    control={control}
+                    control={formControlOfficial.control}
                     rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{ className: "col-2" }}
-                        error={errors}
+                        error={formControlOfficial.errors}
                         label={{
                           forceLabel: "Notice Period",
                           isImp: false,
@@ -1662,7 +1669,7 @@ export default function OfficialDetails(
                     />
 
                     <Controller
-                      control={control}
+                      control={formControlOfficial.control}
                       name="reliving_date"
                       render={(props) => (
                         <>
@@ -1678,7 +1685,7 @@ export default function OfficialDetails(
                   </div>
                   <Controller
                     name="exit_date"
-                    control={control}
+                    control={formControlOfficial.control}
                     render={({ onChange, value }) => (
                       <AlgaehDateHandler
                         div={{ className: "col-3" }}
@@ -1723,7 +1730,7 @@ export default function OfficialDetails(
                   {officialDetailsOfEmployee.eosReasons === undefined ||
                   officialDetailsOfEmployee.eosReasons.length === 0 ? null : (
                     <Controller
-                      control={control}
+                      control={formControlOfficial.control}
                       name="eos_reason"
                       render={({ value, onChange, onBlur }) => (
                         <AlgaehAutoComplete
@@ -1826,7 +1833,7 @@ export default function OfficialDetails(
 
               <div className="row paddin-bottom-5">
                 <Controller
-                  control={control}
+                  control={formControlOfficial.control}
                   name="employee_bank_id"
                   render={({ value, onChange, onBlur }) => (
                     <AlgaehAutoComplete
@@ -1881,12 +1888,12 @@ export default function OfficialDetails(
                   /> */}
                 <Controller
                   name="employee_bank_ifsc_code"
-                  control={control}
+                  control={formControlOfficial.control}
                   rules={{ required: "Required" }}
                   render={(props) => (
                     <AlgaehFormGroup
                       div={{ className: "col-6 mandatory form-group" }}
-                      error={errors}
+                      error={formControlOfficial.errors}
                       label={{
                         forceLabel: "SWIFT Code",
                         isImp: true,
@@ -1939,12 +1946,12 @@ export default function OfficialDetails(
                 ) : (
                   <Controller
                     name="employee_account_number"
-                    control={control}
+                    control={formControlOfficial.control}
                     rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{ className: "col-12 mandatory form-group" }}
-                        error={errors}
+                        error={formControlOfficial.errors}
                         label={{
                           forceLabel: "Account No.",
                           isImp: true,
@@ -1989,7 +1996,7 @@ export default function OfficialDetails(
               </h5>
               <div className="row paddin-bottom-5">
                 <Controller
-                  control={control}
+                  control={formControlOfficial.control}
                   name="company_bank_id"
                   render={({ value, onChange, onBlur }) => (
                     <AlgaehAutoComplete
@@ -2043,7 +2050,7 @@ export default function OfficialDetails(
                     }}
                   /> */}
                 <Controller
-                  control={control}
+                  control={formControlOfficial.control}
                   name="mode_of_payment"
                   render={({ value, onChange, onBlur }) => (
                     <AlgaehAutoComplete
