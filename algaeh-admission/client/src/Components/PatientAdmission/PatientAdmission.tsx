@@ -463,7 +463,7 @@ export default function PatientAdmission(props: any) {
 
           <div className="col-10">
             <div className="row">
-              <div className="col-3">
+              <div className="col-6">
                 <AlgaehLabel
                   label={{
                     fieldName: "full_name",
@@ -480,7 +480,7 @@ export default function PatientAdmission(props: any) {
                 rules={{ required: "Please Select a doctor" }}
                 render={({ onChange, value }) => (
                   <AlgaehTreeSearch
-                    div={{ className: "col mandatory" }}
+                    div={{ className: "col-6 mandatory" }}
                     label={{
                       fieldName: "doctor_id",
                       isImp: true,
@@ -517,23 +517,30 @@ export default function PatientAdmission(props: any) {
             </div>
           </div>
         </div>
-        <InsuranceDetails
-          props={props.props}
-          Insurance_field={
-            props.props.getsportlightSearch("Insurance")?.Insurance_field
-          }
-          insurance_list={insurance_list}
-          setInsuranceList={setInsuranceList}
-          isInsurance={isInsurance}
-          setIsInsurance={setIsInsurance}
-          control={control}
-          trigger={trigger}
-          errors={errors}
-          clearErrors={clearErrors}
-          setValue={setValue}
-          disable_data={disable_data}
-        />
-        <BedDetails useState={useState} />
+
+        <div className="row">
+          <div className="col-3">
+            <BedDetails useState={useState} />
+          </div>
+          <div className="col-9">
+            <InsuranceDetails
+              props={props.props}
+              Insurance_field={
+                props.props.getsportlightSearch("Insurance")?.Insurance_field
+              }
+              insurance_list={insurance_list}
+              setInsuranceList={setInsuranceList}
+              isInsurance={isInsurance}
+              setIsInsurance={setIsInsurance}
+              control={control}
+              trigger={trigger}
+              errors={errors}
+              clearErrors={clearErrors}
+              setValue={setValue}
+              disable_data={disable_data}
+            />
+          </div>
+        </div>
 
         <div className="hptl-phase1-footer">
           <div className="row">
