@@ -8,6 +8,7 @@ import {
 } from "algaeh-react-components";
 import "../EmployeeMaster.scss";
 import { ContextProviderForEmployee } from "../../EmployeeMasterContextForEmployee";
+import { EmployeeMasterContext } from "../../EmployeeMasterContext";
 // import { useForm, Controller } from "react-hook-form";
 // import { EmployeeMasterContextForEmployee } from "../../EmployeeMasterContextForEmployee";
 // import { updatePersonalDetails } from "../events";
@@ -38,6 +39,12 @@ export default function EmployeeMasterPopup({
   // let { setEmployeeUpdateDetails } = useContext(
   //   EmployeeMasterContextForEmployee
   // );
+  let {
+    formControlPersonal,
+    // formControlOfficial,
+    // formControlFamily,
+    // formControlRules,
+  } = useContext(EmployeeMasterContext);
   const employeeImage = useRef();
 
   // const {
@@ -296,22 +303,24 @@ export default function EmployeeMasterPopup({
               debugger;
               // trigger();
               // setActiveTab(options.index);
-              cb();
+              // cb();
               // clearErrors();
-              // const activeTab = options.active;
-              // if (activeTab.name === "EMP_TAB_PER") {
-              //   trigger();
+              const activeTab = options.active;
+              if (activeTab.name === "EMP_TAB_PER") {
+                debugger;
+                formControlPersonal.trigger();
 
-              //   if (Object.values(errors).length > 0) {
-              //     debugger;
-              //   } else {
-              //     cb();
-              //   }
-              //   debugger;
-              // } else {
-              //   debugger;
-              //   cb();
-              // }
+                if (Object.values(formControlPersonal.errors).length > 0) {
+                  debugger;
+                } else {
+                  debugger;
+                  cb();
+                }
+                debugger;
+              } else {
+                debugger;
+                cb();
+              }
             }}
             // renderClass="PrepaymentCntr"
           />
