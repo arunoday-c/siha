@@ -451,7 +451,7 @@ export default function OfficialDetails(
             </h5>
             <div className="row paddin-bottom-5">
               <Controller
-                control={formControlOfficial.control}
+                control={formControlOfficial?.control}
                 name="hospital_id"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
@@ -508,7 +508,7 @@ export default function OfficialDetails(
                   }}
                 /> */}
               <Controller
-                control={formControlOfficial.control}
+                control={formControlOfficial?.control}
                 name="appointment_type"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
@@ -569,7 +569,7 @@ export default function OfficialDetails(
 
               {officialDetailsOfEmployee?.appointment_type === "A" ? (
                 <Controller
-                  control={formControlOfficial.control}
+                  control={formControlOfficial?.control}
                   name="agency_id"
                   render={({ value, onChange, onBlur }) => (
                     <AlgaehAutoComplete
@@ -624,7 +624,7 @@ export default function OfficialDetails(
               // />
               null}
               <Controller
-                control={formControlOfficial.control}
+                control={formControlOfficial?.control}
                 name="employee_type"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
@@ -684,13 +684,13 @@ export default function OfficialDetails(
               {employee_type === "PB" ? (
                 <Controller
                   name="probation_date"
-                  control={formControlOfficial.control}
+                  control={formControlOfficial?.control}
                   render={({ onChange, value }) => (
                     <AlgaehDateHandler
                       div={{
                         className: "col mandatory form-group",
                       }}
-                      error={formControlOfficial.errors}
+                      error={formControlOfficial?.errors}
                       label={{
                         fieldName: "probation_date",
                         isImp: true,
@@ -723,7 +723,7 @@ export default function OfficialDetails(
               ) : null}
               <Controller
                 name="date_of_joining"
-                control={formControlOfficial.control}
+                control={formControlOfficial?.control}
                 render={({ onChange, value }) => (
                   <AlgaehDateHandler
                     div={{
@@ -796,7 +796,7 @@ export default function OfficialDetails(
                 </h6>
               </div>
               <Controller
-                control={formControlOfficial.control}
+                control={formControlOfficial?.control}
                 name="sub_department_id"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
@@ -865,7 +865,7 @@ export default function OfficialDetails(
                     </h6>
                   </div>*/}
               <Controller
-                control={formControlOfficial.control}
+                control={formControlOfficial?.control}
                 name="reporting_to_id"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
@@ -922,7 +922,7 @@ export default function OfficialDetails(
                   }}
                 /> */}
               <Controller
-                control={formControlOfficial.control}
+                control={formControlOfficial?.control}
                 name="employee_designation_id"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
@@ -1010,7 +1010,7 @@ export default function OfficialDetails(
                 <>
                   <Controller
                     name="service_dis_percentage"
-                    control={formControlOfficial.control}
+                    control={formControlOfficial?.control}
                     rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup

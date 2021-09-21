@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useEffect, useReducer } from "react";
 // import React from "react";
 // import { EmployeeMasterContext } from "./EmployeeMasterContext";
 // import { EmployeeMasterIndex } from "./EmployeeMasterIndexBeta";
@@ -11,25 +11,25 @@ import React, { createContext, useReducer } from "react";
 //   );
 // }
 import { useForm } from "react-hook-form";
-const formControlPersonal = useForm({
-  shouldFocusError: true,
-  defaultValues: {},
-});
+// const formControlPersonal = useForm({
+//   shouldFocusError: true,
+//   defaultValues: {},
+// });
 
-const formControlOfficial = useForm({
-  shouldFocusError: true,
-  defaultValues: {
-    employee_status: "A",
-  },
-});
-const formControlFamily = useForm({
-  shouldFocusError: true,
-  defaultValues: {},
-});
-const formControlRules = useForm({
-  shouldFocusError: true,
-  // defaultValues: {},
-});
+// const formControlOfficial = useForm({
+//   shouldFocusError: true,
+//   defaultValues: {
+//     employee_status: "A",
+//   },
+// });
+// const formControlFamily = useForm({
+//   shouldFocusError: true,
+//   defaultValues: {},
+// });
+// const formControlRules = useForm({
+//   shouldFocusError: true,
+//   // defaultValues: {},
+// });
 
 const baseState = {
   dropdownData: {
@@ -55,10 +55,10 @@ const baseState = {
     emloyeeInsertOrUpdateData: [],
   },
   OfficalDetails: {},
-  formControlPersonal: formControlPersonal,
-  formControlOfficial: formControlOfficial,
-  formControlFamily: formControlFamily,
-  formControlRules: formControlRules,
+  formControlPersonal: undefined,
+  formControlOfficial: undefined,
+  formControlFamily: undefined,
+  formControlRules: undefined,
 };
 
 export const EmployeeMasterContext = createContext(baseState);
@@ -73,6 +73,7 @@ const TYPES = {
   setRolesDetails: "setRolesDetails",
   setCommonSetup: "setCommonSetup",
   clearState: "clearState",
+  SET_REACT_FORM: "SET_REACT_FORM",
 };
 
 function reducer(state, { type, payload }) {
@@ -94,13 +95,41 @@ function reducer(state, { type, payload }) {
     case TYPES.setCommonSetup:
       return { ...state, commonSetup: payload };
     case TYPES.clearState:
-      return { ...baseState };
+      const {
+        formControlPersonal,
+        formControlOfficial,
+        formControlFamily,
+        formControlRules,
+        ...others
+      } = baseState;
+      return { ...others };
+    case TYPES.SET_REACT_FORM:
+      return { ...state, ...payload };
     default:
       return state;
   }
 }
 
 export const FProvider = ({ children }) => {
+  const formControlPersonal = useForm({
+    shouldFocusError: true,
+    defaultValues: {},
+  });
+
+  const formControlOfficial = useForm({
+    shouldFocusError: true,
+    defaultValues: {
+      employee_status: "A",
+    },
+  });
+  const formControlFamily = useForm({
+    shouldFocusError: true,
+    defaultValues: {},
+  });
+  const formControlRules = useForm({
+    shouldFocusError: true,
+    // defaultValues: {},
+  });
   const [state, dispatch] = useReducer(reducer, {});
 
   const dispatches = {
@@ -135,6 +164,19 @@ export const FProvider = ({ children }) => {
       dispatch({ type: TYPES.clearState, payload: e });
     },
   };
+
+  useEffect(() => {
+    dispatch({
+      type: TYPES.SET_REACT_FORM,
+      payload: {
+        formControlPersonal,
+        formControlOfficial,
+        formControlFamily,
+        formControlRules,
+      },
+    });
+  }, []);
+
   return (
     <EmployeeMasterContext.Provider value={{ ...state, ...dispatches }}>
       {children}

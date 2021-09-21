@@ -360,7 +360,9 @@ export default function PersonalDetails({
     }
     setsamechecked(value);
   };
-
+  if (!formControlPersonal) {
+    return <p>Please wait page is setting up</p>;
+  }
   return (
     <>
       <div
