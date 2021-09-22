@@ -567,39 +567,76 @@ export default {
 
         console.log("req.query", req.query);
 
+        let period = parseInt(req.query.period) + 1;
+        let dis_period = parseInt(req.query.period);
+        let interval = parseInt(req.query.interval) - 3;
+        let xyz = { 0: "", [`1-${dis_period}`]: "" };
         if (req.query.date_wise === "Y") {
           strQuery = ` select    ROUND(  sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id from             
             finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id where
             head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date <=date('${req.query.till_date}')
             group by child_id  with rollup;`;
         } else {
-          strQuery = ` select    ROUND(  sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id from             
-              finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id where
-              head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date =CURDATE()
-              group by child_id  with rollup;
+          //Current and 1st day to give period
+          strQuery = ` select   0 as days, ROUND(  sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id from             
+                finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id where
+                head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date =CURDATE()
+                group by child_id  with rollup;
+              select  '1-30' as days, ROUND(sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id from 
+                finance_voucher_header H inner join finance_voucher_details D  on H.finance_voucher_header_id=D.voucher_header_id where
+                head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between  
+                DATE_SUB(CURDATE(),INTERVAL ${period} DAY)  and DATE_SUB(CURDATE(),INTERVAL 1 DAY)  group by child_id  with rollup;`;
 
-              select  ROUND(sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id from 
-              finance_voucher_header H inner join finance_voucher_details D  on H.finance_voucher_header_id=D.voucher_header_id where
-              head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between  
-              DATE_ADD(CURDATE(),INTERVAL 1 DAY)  and DATE_ADD(CURDATE(),INTERVAL 31 DAY)  group by child_id  with rollup;
+          //Rest period based on interval
+          for (let i = 0; i < interval; i++) {
+            xyz[`${dis_period}-${dis_period + parseInt(req.query.period)}`] =
+              "";
+            strQuery += `select '${dis_period}-${
+              dis_period + parseInt(req.query.period)
+            }' as days, ROUND(sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id from 
+            finance_voucher_header H inner join finance_voucher_details D  on H.finance_voucher_header_id=D.voucher_header_id where
+            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between  
+            DATE_SUB(CURDATE(),INTERVAL ${
+              period + 1 + parseInt(req.query.period)
+            } DAY)  and DATE_SUB(CURDATE(),INTERVAL ${
+              period + 1
+            }  DAY)  group by child_id  with rollup;`;
 
-
-              select  ROUND(sum(debit_amount)-sum(H.settled_amount) , ${decimal_places}) as debit_amount ,child_id from 
-              finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id where
-              head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between DATE_ADD(CURDATE(),INTERVAL 32 DAY) and DATE_ADD(CURDATE(),INTERVAL 62 DAY)
-              group by child_id  with rollup;
-
-
-              select ROUND( sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id 
-              from finance_voucher_header H inner join finance_voucher_details D on  H.finance_voucher_header_id=D.voucher_header_id where
-              head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between DATE_ADD(CURDATE(),INTERVAL 63 DAY) and DATE_ADD(CURDATE(),INTERVAL 93 DAY)  
-              group by child_id  with rollup;
-
-
-              select  ROUND(sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id 
+            period = period + 1 + parseInt(req.query.period);
+            dis_period = dis_period + parseInt(req.query.period);
+          }
+          //Last record
+          strQuery += `select 'OVER-${dis_period}' as days, ROUND(sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id
               from finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id where
-              head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date > DATE_ADD(CURDATE(),INTERVAL 93 DAY)
+              head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date > DATE_SUB(CURDATE(),INTERVAL ${period} DAY)
               group by child_id  with rollup;`;
+
+          xyz[`OVER-${dis_period}`] = "";
+          console.log("strQuery ==== ", strQuery);
+          // strQuery = ` select    ROUND(  sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id from
+          //     finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id where
+          //     head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date =CURDATE()
+          //     group by child_id  with rollup;
+
+          //     select  ROUND(sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id from
+          //     finance_voucher_header H inner join finance_voucher_details D  on H.finance_voucher_header_id=D.voucher_header_id where
+          //     head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between
+          //     DATE_ADD(CURDATE(),INTERVAL 1 DAY)  and DATE_ADD(CURDATE(),INTERVAL 31 DAY)  group by child_id  with rollup;
+
+          //     select  ROUND(sum(debit_amount)-sum(H.settled_amount) , ${decimal_places}) as debit_amount ,child_id from
+          //     finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id where
+          //     head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between DATE_ADD(CURDATE(),INTERVAL 32 DAY) and DATE_ADD(CURDATE(),INTERVAL 62 DAY)
+          //     group by child_id  with rollup;
+
+          //     select ROUND( sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id
+          //     from finance_voucher_header H inner join finance_voucher_details D on  H.finance_voucher_header_id=D.voucher_header_id where
+          //     head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between DATE_ADD(CURDATE(),INTERVAL 63 DAY) and DATE_ADD(CURDATE(),INTERVAL 93 DAY)
+          //     group by child_id  with rollup;
+
+          //     select  ROUND(sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id
+          //     from finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id where
+          //     head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date > DATE_ADD(CURDATE(),INTERVAL 93 DAY)
+          //     group by child_id  with rollup;`;
         }
 
         _mysql
@@ -607,7 +644,6 @@ export default {
             query:
               ` select finance_account_child_id,concat(child_name,' / ',COALESCE(ledger_code,'')) as child_name  from finance_account_child
               where head_id in (${head_ids});` + strQuery,
-
             printQuery: true,
           })
           .then((Result) => {
@@ -640,6 +676,8 @@ export default {
                 }
               });
             } else {
+              // console.log("Result", Result);
+
               if (Result[1].length > 1) {
                 todays_total = Result[1].pop().debit_amount;
               }
@@ -649,79 +687,171 @@ export default {
               if (Result[3].length > 1) {
                 sixty_days_total = Result[3].pop().debit_amount;
               }
-              if (Result[4].length > 1) {
-                ninety_days_total = Result[4].pop().debit_amount;
-              }
-              if (Result[5].length > 1) {
-                above_ninety_days_total = Result[5].pop().debit_amount;
-              }
+              // if (Result[4].length > 1) {
+              //   ninety_days_total = Result[4].pop().debit_amount;
+              // }
+              // if (Result[5].length > 1) {
+              //   above_ninety_days_total = Result[5].pop().debit_amount;
+              // }
 
-              console.log("todays_total", todays_total);
-
-              // console.log("2");
+              // console.log("2", ledgers);
               ledgers.forEach((ledger) => {
-                let todays_amount = parseFloat(0).toFixed(decimal_places);
-                let thirty_days_amount = parseFloat(0).toFixed(decimal_places);
-                let sixty_days_amount = parseFloat(0).toFixed(decimal_places);
-                let ninety_days_amount = parseFloat(0).toFixed(decimal_places);
-                let above_ninety_days_amount = parseFloat(0).toFixed(
-                  decimal_places
-                );
+                // let bef_out_array=[]
+                let bef_out_obj = { customer: ledger.child_name };
+                // Object.keys(xyz).map((item) => {
+                //   // console.log("item", item);
+                //   for (let i = 1; i < Result.length; i++) {
+                //     // console.log("Result[i]", i);
+                //     console.log("Result[i]", Result[i]);
+                //     console.log("item", item);
+                //     console.log(
+                //       "finance_account_child_id",
+                //       ledger.finance_account_child_id
+                //     );
 
-                const todays = Result[1].find(
-                  (f) => f.child_id == ledger.finance_account_child_id
-                );
+                //     if (Result[i].length > 0) {
+                //       const _data = Result[i].filter(
+                //         (f) =>
+                //           f.days === item &&
+                //           f.child_id === ledger.finance_account_child_id
+                //       );
 
-                if (todays) {
-                  todays_amount = todays.debit_amount;
-                }
-                const thirty_days = Result[2].find(
-                  (f) => f.child_id == ledger.finance_account_child_id
-                );
+                //       console.log("_data", _data);
 
-                if (thirty_days) {
-                  thirty_days_amount = thirty_days.debit_amount;
-                }
-                const sixty_days = Result[3].find(
-                  (f) => f.child_id == ledger.finance_account_child_id
-                );
-                if (sixty_days) {
-                  sixty_days_amount = sixty_days.debit_amount;
-                }
-                const ninety_days = Result[4].find(
-                  (f) => f.child_id == ledger.finance_account_child_id
-                );
-                if (ninety_days) {
-                  ninety_days_amount = ninety_days.debit_amount;
-                }
-                const above_ninety_days = Result[5].find(
-                  (f) => f.child_id == ledger.finance_account_child_id
-                );
+                //       bef_out_obj[item] =
+                //         _data.length > 0
+                //           ? _.sumBy(_data, (s) =>
+                //               parseFloat(s.debit_amount)
+                //             ).toFixed(decimal_places)
+                //           : parseFloat(0).toFixed(decimal_places);
+                //       bef_out_obj["child_id"] = ledger.finance_account_child_id;
+                //       // if (_data.length > 0) {
 
-                if (above_ninety_days) {
-                  above_ninety_days_amount = above_ninety_days.debit_amount;
-                }
+                //       //   //   parseFloat(
+                //       //   //   final_data.debit_amount
+                //       //   // ).toFixed(decimal_places);
+                //       //   bef_out_obj["child_id"] =
+                //       //     ledger.finance_account_child_id;
 
-                const balance = (
-                  parseFloat(todays_amount) +
-                  parseFloat(thirty_days_amount) +
-                  parseFloat(sixty_days_amount) +
-                  parseFloat(ninety_days_amount) +
-                  parseFloat(above_ninety_days_amount)
-                ).toFixed(decimal_places);
+                //       //   // const final_data = _data.find(
+                //       //   //   (f) => f.child_id == ledger.finance_account_child_id
+                //       //   // );
+                //       //   // if (final_data) {
+                //       //   //   bef_out_obj[item] = parseFloat(
+                //       //   //     final_data.debit_amount
+                //       //   //   ).toFixed(decimal_places);
+                //       //   //   bef_out_obj["child_id"] =
+                //       //   //     ledger.finance_account_child_id;
+                //       //   // } else {
+                //       //   //   bef_out_obj[item] =
+                //       //   //     parseFloat(0).toFixed(decimal_places);
+                //       //   // }
+                //       // } else {
+                //       //   bef_out_obj[item] =
+                //       //     parseFloat(0).toFixed(decimal_places);
+                //       // }
+                //     } else {
+                //       bef_out_obj[item] = parseFloat(0).toFixed(decimal_places);
+                //     }
+                //   }
+                //   // console.log("bef_out_obj", bef_out_obj);
+                // });
 
-                if (balance > 0) {
-                  outputArray.push({
-                    customer: ledger.child_name,
-                    todays_amount: todays_amount,
-                    thirty_days_amount: thirty_days_amount,
-                    sixty_days_amount: sixty_days_amount,
-                    ninety_days_amount: ninety_days_amount,
-                    above_ninety_days_amount: above_ninety_days_amount,
-                    balance: balance,
-                  });
+                for (let i = 1; i < Result.length; i++) {
+                  // console.log("Result[i]", i);
+                  if (ledger.finance_account_child_id === 537) {
+                    console.log("Result[i]", Result[i]);
+                    console.log(
+                      "finance_account_child_id",
+                      ledger.finance_account_child_id
+                    );
+                  }
+                  if (Result[i].length > 0) {
+                    const _data = Result[i].filter(
+                      (f) => f.child_id == ledger.finance_account_child_id
+                    );
+
+                    console.log("_data", _data);
+                    Object.keys(xyz).map((item) => {
+                      console.log("item", item);
+                      const final_data = Result[i].filter(
+                        (f) => f.days === item
+                      );
+                      bef_out_obj[item] =
+                        final_data.length > 0
+                          ? _.sumBy(_data, (s) =>
+                              parseFloat(s.debit_amount)
+                            ).toFixed(decimal_places)
+                          : parseFloat(0).toFixed(decimal_places);
+                      bef_out_obj["child_id"] = ledger.finance_account_child_id;
+                    });
+                  }
                 }
+                outputArray.push(bef_out_obj);
+
+                // let todays_amount = parseFloat(0).toFixed(decimal_places);
+                // let thirty_days_amount = parseFloat(0).toFixed(decimal_places);
+                // let sixty_days_amount = parseFloat(0).toFixed(decimal_places);
+                // let ninety_days_amount = parseFloat(0).toFixed(decimal_places);
+                // let above_ninety_days_amount =
+                //   parseFloat(0).toFixed(decimal_places);
+
+                // const todays = Result[1].find(
+                //   (f) => f.child_id == ledger.finance_account_child_id
+                // );
+
+                // let final_object = {};
+                // if (todays) {
+                //   todays_amount = todays.debit_amount;
+                // }
+                // const thirty_days = Result[2].find(
+                //   (f) => f.child_id == ledger.finance_account_child_id
+                // );
+
+                // if (thirty_days) {
+                //   thirty_days_amount = thirty_days.debit_amount;
+                // }
+                // const sixty_days = Result[3].find(
+                //   (f) => f.child_id == ledger.finance_account_child_id
+                // );
+                // if (sixty_days) {
+                //   sixty_days_amount = sixty_days.debit_amount;
+                // }
+                // const ninety_days = Result[4].find(
+                //   (f) => f.child_id == ledger.finance_account_child_id
+                // );
+                // if (ninety_days) {
+                //   ninety_days_amount = ninety_days.debit_amount;
+                // }
+                // const above_ninety_days = Result[5].find(
+                //   (f) => f.child_id == ledger.finance_account_child_id
+                // );
+
+                // if (above_ninety_days) {
+                //   above_ninety_days_amount = above_ninety_days.debit_amount;
+                // }
+
+                // const balance = (
+                //   parseFloat(todays_amount) +
+                //   parseFloat(thirty_days_amount) +
+                //   parseFloat(sixty_days_amount) +
+                //   parseFloat(ninety_days_amount) +
+                //   parseFloat(above_ninety_days_amount)
+                // ).toFixed(decimal_places);
+
+                // if (balance > 0) {
+                //   outputArray.push({
+                //     customer: ledger.child_name,
+                //     todays_amount: todays_amount,
+                //     thirty_days_amount: thirty_days_amount,
+                //     sixty_days_amount: sixty_days_amount,
+                //     ninety_days_amount: ninety_days_amount,
+                //     above_ninety_days_amount: above_ninety_days_amount,
+                //     balance: balance,
+                //   });
+                // }
               });
+              // console.log("outputArray", outputArray);
             }
 
             // console.log("3");
@@ -835,9 +965,8 @@ export default {
               let thirty_days_amount = parseFloat(0).toFixed(decimal_places);
               let sixty_days_amount = parseFloat(0).toFixed(decimal_places);
               let ninety_days_amount = parseFloat(0).toFixed(decimal_places);
-              let above_ninety_days_amount = parseFloat(0).toFixed(
-                decimal_places
-              );
+              let above_ninety_days_amount =
+                parseFloat(0).toFixed(decimal_places);
 
               const todays = Result[1].find(
                 (f) => f.child_id == ledger.finance_account_child_id
@@ -1046,9 +1175,8 @@ export default {
                 let thirty_days_amount = parseFloat(0).toFixed(decimal_places);
                 let sixty_days_amount = parseFloat(0).toFixed(decimal_places);
                 let ninety_days_amount = parseFloat(0).toFixed(decimal_places);
-                let above_ninety_days_amount = parseFloat(0).toFixed(
-                  decimal_places
-                );
+                let above_ninety_days_amount =
+                  parseFloat(0).toFixed(decimal_places);
 
                 const todays = Result[1].find(
                   (f) => f.child_id == ledger.finance_account_child_id

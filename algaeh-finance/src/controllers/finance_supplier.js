@@ -1,5 +1,8 @@
 import { Router } from "express";
-import finance_supplier, { getAllDebitNotes } from "../models/finance_supplier";
+import finance_supplier, {
+  getAllDebitNotes,
+  getSuppReporttoPrint,
+} from "../models/finance_supplier";
 import utlities from "algaeh-utilities";
 
 const { getSupplierPayables, getSupplierInvoiceDetails } = finance_supplier;
@@ -13,7 +16,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
-          message: req.records.message
+          message: req.records.message,
         })
         .end();
     } else {
@@ -21,7 +24,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          result: req.records
+          result: req.records,
         })
         .end();
     }
@@ -35,7 +38,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
             success: false,
-            message: req.records.message
+            message: req.records.message,
           })
           .end();
       } else {
@@ -43,7 +46,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().ok)
           .json({
             success: true,
-            result: req.records
+            result: req.records,
           })
           .end();
       }
@@ -54,7 +57,16 @@ export default () => {
       .status(utlities.AlgaehUtilities().httpStatus().ok)
       .json({
         success: true,
-        result: req.records
+        result: req.records,
+      })
+      .end();
+  });
+  api.get("/getSuppReporttoPrint", getSuppReporttoPrint, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records,
       })
       .end();
   });
