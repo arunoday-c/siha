@@ -7,9 +7,10 @@ import {
   AlgaehMessagePop,
 } from "algaeh-react-components";
 import moment from "moment";
-// import CostCenter from "../../costCenterComponent";
+import { GenerateExcel } from "../FinanceReports/printlayout/workers/worker";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 let resultdata = {};
+
 export default memo(function Modal(props) {
   const {
     selectedNode,
@@ -50,11 +51,78 @@ export default memo(function Modal(props) {
         });
       });
   }
-  //   function onExcelGeneration() {
-  //     setPleaseWait("Please wait excel is generating...");
-  //     setLoading(true);
-  //     onOk("excel");
-  //   }
+  function onExcelGeneration() {
+    setPleaseWait("Please wait excel is generating...");
+    setLoading(true);
+    const from_date =
+      dateRange.length === 0 ? null : moment(dateRange[0]).format("YYYY-MM-DD");
+    const to_date =
+      dateRange.length === 0 ? null : moment(dateRange[1]).format("YYYY-MM-DD");
+    algaehApiCall({
+      uri:
+        screenFrom === "CUST"
+          ? "/finance_customer/getCustomerReporttoPrint"
+          : "/finance_supplier/getSuppReporttoPrint",
+      method: "GET",
+      module: "finance",
+      data: {
+        child_id: selectedNode.finance_account_child_id,
+        from_date: from_date,
+        to_date: to_date,
+      },
+      onSuccess: (response) => {
+        debugger;
+        if (response.data.success === true) {
+          GenerateExcel({
+            columns: [
+              { label: "Date", fieldName: "invoice_date" },
+              { label: "Invoice Number", fieldName: "invoice_no" },
+              { label: "Due Date", fieldName: "due_date" },
+              { label: "Invoice Amount", fieldName: "invoice_amount" },
+              { label: "Paid Amount", fieldName: "settled_amount" },
+              { label: "Balance Amount", fieldName: "balance_amount" },
+              { label: "Status", fieldName: "invoice_status" },
+            ],
+            data: response.data.result,
+
+            excelBodyRender: (records, cb) => {
+              console.log("records= = ", records);
+
+              records.ledger_code = records.group_code ?? records.ledger_code;
+              cb(records);
+            },
+            sheetName: title,
+          })
+            .then((result) => {
+              setLoading(false);
+              if (typeof result !== "boolean") {
+                const a: HTMLAnchorElement = document.createElement("a");
+                a.style.display = "none";
+                document.body.appendChild(a);
+                const url: string = window.URL.createObjectURL(result);
+                a.href = url;
+                a.download = `${title}-${moment()._d}.xlsx`;
+                a.click();
+
+                window.URL.revokeObjectURL(url);
+
+                if (a && a.parentElement) {
+                  a.parentElement.removeChild(a);
+                }
+              }
+            })
+            .catch((error) => {
+              console.error("Error", error);
+              setLoading(false);
+            });
+        }
+      },
+      onCatch: (error) => {
+        console.error("Error", error);
+        setLoading(false);
+      },
+    });
+  }
   function onCancelClick() {
     setLoading(false);
     onCancel();
@@ -211,12 +279,12 @@ export default memo(function Modal(props) {
           <span className="ant-btn ant-btn-primary ant-btn-circle ant-btn-icon-only">
             <i className="fas fa-file-pdf" onClick={onPdfGeneration}></i>
           </span>
-          {/* <span
+          <span
             className="ant-btn ant-btn-success ant-btn-circle ant-btn-icon-only"
             style={{ backgroundColor: "#00a796", color: "#fff" }}
           >
             <i className="fas fa-file-excel" onClick={onExcelGeneration}></i>
-          </span> */}
+          </span>
           <span className="ant-btn ant-btn-dangerous ant-btn-circle ant-btn-icon-only">
             <i className="fas fa-times" onClick={onCancelClick}></i>
           </span>
