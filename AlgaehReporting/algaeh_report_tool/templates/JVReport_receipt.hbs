@@ -61,9 +61,9 @@
                 <tbody>
                     {{#each resultInvoice}}
                     <tr>
-                        <td datatype="string">{{inc @index}}</td>
-                         <td datatype="string">{{invoice_number}}</td>
-                         <td datatype="string">{{invoice_date}}</td>
+                        <td>{{inc @index}}</td>
+                        <td>{{invoice_number}}</td>
+                        <td>{{invoice_date}}</td>
                         <td class="numberFld">{{numberFormating sub_total ../currency}}</td>
                         <td class="numberFld">{{numberFormating net_total ../currency}}</td>
                         <td class="numberFld">{{numberFormating detail_discount ../currency}}</td>

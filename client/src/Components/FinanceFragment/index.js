@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { Spin } from "algaeh-react-components";
 import axios from "axios";
 
 export default function FinanceFragment(props) {
   const [Component, setComp] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [err, setErr] = useState(null);
 
   useEffect(() => {
     const PREFIX = window.location.port
       ? `http://${window.location.hostname}:3007/finbuild`
       : "/finance/finbuild";
-
+    setLoading(true);
     function loadManifest() {
       return axios.get(`${PREFIX}/manifest.micro.json`, {});
     }
@@ -58,17 +60,26 @@ export default function FinanceFragment(props) {
           setComp(window[componentName]);
         }
       })
-      .catch((err) => setErr(err));
+      .catch((err) => setErr(err))
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
-  if (Component) {
-    const ReqComp = Component[props.path];
-    // console.log(ReqComp);
-    return <ReqComp hello="this is from hims" />;
+  function LoadComponent() {
+    if (Component) {
+      const ReqComp = Component[props.path];
+      return <ReqComp />;
+    }
   }
   if (err) {
     return <div>Error occurred in loading finance</div>;
   }
+  // if (Component) {
+  // const ReqComp = Component[props.path];
+  // console.log(ReqComp);
+  return <Spin spinning={loading}>{LoadComponent()}</Spin>;
+  // }
 
   return null;
 }
