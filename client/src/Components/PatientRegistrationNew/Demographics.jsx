@@ -181,8 +181,8 @@ export function Demographics({
   useEffect(() => {
     const telCode = getValues().tel_code;
     if (telCode) {
-      const maxlength = countries.filter((f) => f.tel_code === telCode)[0]
-        .max_phone_digits;
+      const maxlength = countries?.filter((f) => f.tel_code === telCode)[0]
+        ?.max_phone_digits;
       setMaxLength(maxlength);
     } else {
       const country_id = getValues().country_id;

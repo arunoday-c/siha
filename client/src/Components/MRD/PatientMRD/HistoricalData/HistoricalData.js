@@ -9,8 +9,8 @@ import moment from "moment";
 import Enumerable from "linq";
 import config from "../../../../utils/config.json";
 import NursesNotes from "../../../PatientProfile/Examination/NursesNotes";
-import _ from "lodash";
-
+// import _ from "lodash";
+import HistoricalDataComponent from "./HistoricalDataComponent";
 const TreeTable = treeTableHOC(ReactTable);
 
 class HistoricalData extends Component {
@@ -149,6 +149,7 @@ class HistoricalData extends Component {
       onSuccess: (response) => {
         algaehLoader({ show: false });
         if (response.data.success) {
+          debugger;
           this.setState({ patientPayments: response.data.records });
         }
       },
@@ -258,9 +259,9 @@ class HistoricalData extends Component {
     let _yAxes = [];
     let _plotGraph = [];
 
-    let _vitalsGroup = [];
+    // let _vitalsGroup = [];
 
-    _vitalsGroup = this.state.patientVitals;
+    // _vitalsGroup = this.state.patientVitals;
 
     // Enumerable.from(
     //   this.state.patientVitals !== undefined ? this.state.patientVitals : []
@@ -363,130 +364,6 @@ class HistoricalData extends Component {
     return (
       <div className="historical-data">
         <div className="row">
-          <div className="col-3">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">History Category</h3>
-                </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <ul className="historyCategoryList">
-                    <li>
-                      <span className="active">Vitals</span>
-                    </li>
-
-                    <li>
-                      <span>Nursing Notes</span>
-                    </li>
-                    <li>
-                      <span>Diagnosis</span>
-                    </li>
-                    <li>
-                      <span>Treatments/ Procedure</span>
-                    </li>
-                    <li>
-                      <span>Prescription History</span>
-                    </li>
-                    <li>
-                      <span>Investigations</span>
-                    </li>
-                    <li>
-                      <span>Payment History</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-9">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">
-                    History Details - [Vitals]
-                  </h3>
-                </div>
-              </div>
-              <div className="portlet-body historyDetailsCntr">
-                {" "}
-                <ul>
-                  <li>
-                    <span>Vitals</span>
-                  </li>
-                  <li>
-                    <span>Vitals</span>
-                  </li>
-                  <li>
-                    <span>Vitals</span>
-                  </li>
-                  <li>
-                    <span>Vitals</span>
-                  </li>
-                  <li>
-                    <span>Vitals</span>
-                  </li>
-                  <li>
-                    <span>Vitals</span>
-                  </li>
-                  <li>
-                    <span>Vitals</span>
-                  </li>
-                  <li>
-                    <span>Vitals</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-lg-6">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Vitals</h3>
-                </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-12 vitalsTimeLineSec">
-                    <div className="timeline">
-                      {_vitalsGroup.map((data, index) => (
-                        <div key={index} className="timelineContainer right">
-                          <div className="content">
-                            <p className="dateStamp">
-                              Recorded by:<span>{data.recorded_by}</span>
-                              Recorded on: <span>{data.dateTime}</span>
-                            </p>
-                            <div className="vitalsCntr">
-                              <ul className="vitals-box">
-                                {_.orderBy(
-                                  data.list,
-                                  (o) => o.sequence_order
-                                ).map((vitals, ind) => (
-                                  <li className="each-vitals-box" key={ind}>
-                                    <p>{vitals.vital_short_name}</p>
-                                    <span className="vitalsText">
-                                      {vitals.vital_value}
-                                    </span>
-                                    <span>{vitals.formula_value}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
           <div className="col-lg-6">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
@@ -511,7 +388,8 @@ class HistoricalData extends Component {
         </div>
         {/* First Two Sections Start*/}
         <div className="row">
-          {/* sdfhsgfjhgsfjdhgkjg */}
+          <HistoricalDataComponent />
+
           <div className="col-lg-6">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
