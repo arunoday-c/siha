@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AlgaehLabel,
   AlgaehAutoComplete,
@@ -29,6 +29,7 @@ export default function TransationOption({
   const { control, errors, handleSubmit, reset } = useForm({
     shouldFocusError: true,
   });
+  const [to_location_type, setToLocationType] = useState("WH");
   const { trans_type } = useWatch({
     control,
     name: ["trans_type", "location_description"],
@@ -37,6 +38,13 @@ export default function TransationOption({
     let inputOb = { item_details: item_details };
 
     if (data.trans_type === "C") {
+      if (parseFloat(data.quantity) > parseFloat(item_details.qtyhand)) {
+        swalMessage({
+          title: "Quantity Cannot be greated than QTY in Hand",
+          type: "warning",
+        });
+        return;
+      }
       swal({
         title: "Are you sure you want to Consume ?",
         type: "warning",
@@ -97,6 +105,13 @@ export default function TransationOption({
         }
       });
     } else if (data.trans_type === "T") {
+      if (parseFloat(data.quantity) > parseFloat(item_details.qtyhand)) {
+        swalMessage({
+          title: "Quantity Cannot be greated than QTY in Hand",
+          type: "warning",
+        });
+        return;
+      }
       swal({
         title: "Are you sure you want to Tranfer ?",
         type: "warning",
@@ -123,12 +138,14 @@ export default function TransationOption({
             inputOb.ack_done = "N";
           } else {
             gitLoaction_Exists = {
-              hims_d_inventory_location_id: inputOb.to_location_id,
-              location_type: inputOb.to_location_type,
+              hims_d_inventory_location_id: data.to_location_id,
+              location_type: to_location_type,
             };
             inputOb.ack_done = "Y";
           }
 
+          inputOb.to_location_id = data.to_location_id;
+          inputOb.to_location_type = to_location_type;
           inputOb.item_details.quantity = data.quantity;
           inputOb.item_details.quantity_transfer = data.quantity;
           inputOb.item_details.location_id = item_details.inventory_location_id;
@@ -147,6 +164,8 @@ export default function TransationOption({
           inputOb.transaction_type = "ST";
           inputOb.from_location_id = item_details.inventory_location_id;
           inputOb.from_location_type = location_type;
+          inputOb.from_location_id = item_details.inventory_location_id;
+
           inputOb.direct_transfer = "Y";
           inputOb.stock_detail = [
             {
@@ -241,6 +260,8 @@ export default function TransationOption({
           inputOb.from_location_type = item_details.location_type;
           // inputOb.from_location_id = $this.state.to_location_id;
           // inputOb.from_location_type = $this.props.to_location_type;
+          inputOb.to_location_id = data.to_location_id;
+          inputOb.to_location_type = to_location_type;
           inputOb.is_completed = "N";
           inputOb.cancelled = "N";
           inputOb.requistion_type = "MR";
@@ -414,7 +435,9 @@ export default function TransationOption({
                     selector={{
                       value,
                       onChange: (_, selected) => {
+                        debugger;
                         onChange(selected);
+                        setToLocationType(_.location_type);
                       },
                       onClear: () => {
                         onChange(undefined);
@@ -455,6 +478,7 @@ export default function TransationOption({
                       value,
                       onChange: (_, selected) => {
                         onChange(selected);
+                        setToLocationType(_.location_type);
                       },
                       onClear: () => {
                         onChange(undefined);

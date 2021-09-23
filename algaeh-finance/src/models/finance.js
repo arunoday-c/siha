@@ -882,7 +882,7 @@ export default {
           R.invoice_no, R.from_screen, R.narration, R.entered_date, EMP.full_name as entered_by
           from finance_revert_day_end_header R 
           left join algaeh_d_app_user U on U.algaeh_d_app_user_id = R.entered_by
-          left join hims_d_employee EMP on EMP.hims_d_employee_id = U.employee_id`;
+          left join hims_d_employee EMP on EMP.hims_d_employee_id = U.employee_id order by R.transaction_date desc`;
     } else {
       strQuery = `select finance_day_end_header_id, transaction_date,    
           ROUND( amount , ${decimal_places}) as amount, voucher_type, document_number,  
@@ -893,7 +893,7 @@ export default {
           left join  algaeh_d_app_screens S on H.from_screen=S.screen_code
           left join algaeh_d_app_user U on H.entered_by=U.algaeh_d_app_user_id
           left join hims_d_employee EMP on EMP.hims_d_employee_id = U.employee_id
-          where ${strQry}; `;
+          where ${strQry}  order by transaction_date desc; `;
     }
     _mysql
       .executeQuery({

@@ -296,6 +296,53 @@ class VendorSetup extends Component {
     });
   }
 
+  vendorMasterListReport() {
+    algaehApiCall({
+      // uri: "/report",
+      uri: "/excelReport",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "vendorMasterList",
+          pageOrentation: "landscape",
+          excelTabName: "Vendor Master List",
+          excelHeader: false,
+          reportParams: [
+            // {
+            //   name: "hospital_id",
+            //   value: this.state.inputs.hospital_id,
+            // },
+          ],
+          outputFileType: "EXCEL", //"EXCEL", //"PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const a = document.createElement("a");
+        a.href = urlBlob;
+        a.download = `Vendor Master List.${"xlsx"}`;
+
+        a.click();
+
+        // const urlBlob = URL.createObjectURL(res.data);
+        // const origin = `${
+        //   window.location.origin
+        // }/reportviewer/web/viewer.html?file=${urlBlob}&filename=${
+        //   $this.state.inputs.hospital_name
+        // } Leave and Airfare Reconciliation - ${moment(
+        //   $this.state.inputs.month,
+        //   "MM"
+        // ).format("MMM")}-${$this.state.inputs.year}`;
+        // window.open(origin);
+      },
+    });
+  }
+
   render() {
     return (
       <div className="vendor_setup">
@@ -792,6 +839,12 @@ class VendorSetup extends Component {
               <h3 className="caption-subject">Vendors List</h3>
             </div>
             <div className="actions">
+              <button
+                className="btn btn-default btn-circle"
+                onClick={this.vendorMasterListReport.bind(this)}
+              >
+                <i className="fas fa-download" />
+              </button>
               <button
                 className="btn btn-primary btn-circle active"
                 onClick={() => {

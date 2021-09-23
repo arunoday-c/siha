@@ -93,7 +93,7 @@ export default memo(function OpBillCancelApproval() {
         approvalCancelBill(inpujObj)
           .then((result) => {
             swal({
-              title: "Batch Created Successfully",
+              title: "Bill Cancellation Approved Successfully",
               icon: "success",
             });
             onClickLoad();

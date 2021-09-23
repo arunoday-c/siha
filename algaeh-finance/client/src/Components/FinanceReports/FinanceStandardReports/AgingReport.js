@@ -11,11 +11,16 @@ import Filter from "../filter";
 // import { getItem, tokenDecode } from "algaeh-react-components/storage";
 // import moment from "moment";
 // import jwtDecode from "jwt-decode";
-import { AlgaehDateHandler, AlgaehButton } from "algaeh-react-components";
+import {
+  AlgaehDateHandler,
+  AlgaehButton,
+  AlgaehFormGroup,
+} from "algaeh-react-components";
 // import ReportHeader from "../header";
 import PrintLayout from "../printlayout";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 import moment from "moment";
+import _ from "lodash";
 
 export default function AgingReport({ style, result, layout, type, dates }) {
   const DIFF = {
@@ -29,6 +34,11 @@ export default function AgingReport({ style, result, layout, type, dates }) {
   const [date_wise, setDateWise] = useState("N");
   const [footerData, setFooterData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [interval, setInterval] = useState(30);
+  const [period, setPeriod] = useState(5);
+  const [period_list, setPeriodList] = useState([]);
+  const [trans_type, setTransType] = useState("S");
+
   // const [organisation, setOrganisation] = useState({});
 
   useEffect(() => {
@@ -73,7 +83,6 @@ export default function AgingReport({ style, result, layout, type, dates }) {
   }
 
   function loadReport(excel) {
-    debugger;
     let extraHeaders = {};
     if (excel === true) {
       extraHeaders = {
@@ -93,6 +102,8 @@ export default function AgingReport({ style, result, layout, type, dates }) {
         excel,
         date_wise,
         till_date,
+        interval: interval,
+        period: period,
       },
       ...extraHeaders,
       onSuccess: (response) => {
@@ -100,6 +111,77 @@ export default function AgingReport({ style, result, layout, type, dates }) {
         if (excel) {
           handleFile(response.data, type);
         } else {
+          let display_array = [
+            {
+              fieldName: "customer",
+              label: type === "receivable" ? "Customer Name" : "Vendor Name",
+              filterable: true,
+              sortable: true,
+            },
+            {
+              fieldName: "Current",
+              label: "Current",
+              filterable: true,
+              displayTemplate: (row) => {
+                return getAmountFormart(row["Current"], {
+                  appendSymbol: false,
+                });
+              },
+            },
+            {
+              fieldName: "1-" + interval,
+              label: "1-" + interval + "Days",
+              filterable: true,
+              displayTemplate: (row) => {
+                return getAmountFormart(row["1-" + interval], {
+                  appendSymbol: false,
+                });
+              },
+            },
+          ];
+
+          let p_interval = interval;
+          for (let i = 0; i < period - 3; i++) {
+            const before_interval = parseInt(p_interval) + 1;
+            const after_interval = parseInt(p_interval) + parseInt(interval);
+            const field_name =
+              p_interval.toString() + "-" + after_interval.toString();
+            display_array.push({
+              fieldName: field_name,
+              label: before_interval + "-" + after_interval + " Days",
+              filterable: true,
+              displayTemplate: (row) => {
+                return getAmountFormart(row[field_name], {
+                  appendSymbol: false,
+                });
+              },
+            });
+            p_interval = after_interval;
+          }
+
+          display_array.push(
+            {
+              fieldName: "OVER-" + p_interval,
+              label: "Over " + p_interval + " Days",
+              filterable: true,
+              displayTemplate: (row) => {
+                return getAmountFormart(row["OVER-" + p_interval], {
+                  appendSymbol: false,
+                });
+              },
+            },
+            {
+              fieldName: "balance",
+              label: "Balance",
+              filterable: true,
+              displayTemplate: (row) => {
+                return getAmountFormart(row["balance"], {
+                  appendSymbol: false,
+                });
+              },
+            }
+          );
+          setPeriodList(display_array);
           if (response.data.success === true) {
             setData(response.data.result.data);
             const footer = response.data.result;
@@ -173,6 +255,83 @@ export default function AgingReport({ style, result, layout, type, dates }) {
             disabled: date_wise === "N" ? true : false,
           }}
         />
+
+        <div className="col">
+          <label>Show Transaction By</label>
+          <div className="customRadio">
+            <label className="radio inline">
+              <input
+                type="radio"
+                value="S"
+                checked={trans_type === "S" ? true : false}
+                onChange={(e) => {
+                  setTransType(e.target.value);
+                  setInterval(30);
+                  setPeriod(5);
+                }}
+              />
+              <span>Standard</span>
+            </label>
+            <label className="radio inline">
+              <input
+                type="radio"
+                value="C"
+                checked={trans_type === "C" ? true : false}
+                onChange={(e) => {
+                  setTransType(e.target.value);
+                  setInterval(30);
+                  setPeriod(5);
+                }}
+              />
+              <span>Custom</span>
+            </label>
+          </div>
+        </div>
+        {trans_type === "C" ? (
+          <>
+            <AlgaehFormGroup
+              div={{
+                className: "col-2 form-group  mandatory",
+              }}
+              label={{
+                forceLabel: "Interval",
+                isImp: true,
+              }}
+              textBox={{
+                type: "text",
+                value: interval,
+                className: "form-control",
+                id: "name",
+                onChange: (e) => {
+                  setInterval(e.target.value);
+                },
+                placeholder: "Interval",
+                autoComplete: false,
+              }}
+            />
+
+            <AlgaehFormGroup
+              div={{
+                className: "col-2 form-group  mandatory",
+              }}
+              label={{
+                forceLabel: "Period",
+                isImp: true,
+              }}
+              textBox={{
+                type: "text",
+                value: period,
+                className: "form-control",
+                id: "name",
+                onChange: (e) => {
+                  setPeriod(e.target.value);
+                },
+                placeholder: "Period",
+                autoComplete: false,
+              }}
+            />
+          </>
+        ) : null}
       </div>
 
       <div className="col previewReportBtn">
@@ -211,15 +370,12 @@ export default function AgingReport({ style, result, layout, type, dates }) {
           data={data}
           tableprops={{
             aggregate: (fieldName) => {
-              if (footerData) {
-                debugger;
-                if (fieldName !== "customer") {
-                  return getAmountFormart(footerData[fieldName], {
-                    appendSymbol: false,
-                  });
-                } else {
-                  return "";
-                }
+              if (fieldName !== "customer") {
+                return getAmountFormart(footerData[fieldName], {
+                  appendSymbol: false,
+                });
+              } else {
+                return "";
               }
             },
             footer: true,
@@ -230,86 +386,20 @@ export default function AgingReport({ style, result, layout, type, dates }) {
           title={`Account ${
             type === "receivable" ? "Receivable" : "Payable"
           } Aging Report`}
-          columns={[
-            {
-              fieldName: "customer",
-              label: type === "receivable" ? "Customer Name" : "Vendor Name",
-              filterable: true,
-              sortable: true,
-            },
-            {
-              fieldName: "todays_amount",
-              label: "Current",
-              filterable: true,
-              displayTemplate: (row) => {
-                return getAmountFormart(row["todays_amount"], {
-                  appendSymbol: false,
-                });
-              },
-            },
-            {
-              fieldName: "thirty_days_amount",
-              label: "1-30 Days",
-              filterable: true,
-              displayTemplate: (row) => {
-                return getAmountFormart(row["thirty_days_amount"], {
-                  appendSymbol: false,
-                });
-              },
-            },
-            {
-              fieldName: "sixty_days_amount",
-              label: "31-60 Days",
-              filterable: true,
-              displayTemplate: (row) => {
-                return getAmountFormart(row["sixty_days_amount"], {
-                  appendSymbol: false,
-                });
-              },
-            },
-            {
-              fieldName: "ninety_days_amount",
-              label: "61-90 Days",
-              filterable: true,
-              displayTemplate: (row) => {
-                return getAmountFormart(row["ninety_days_amount"], {
-                  appendSymbol: false,
-                });
-              },
-            },
-            {
-              fieldName: "above_ninety_days_amount",
-              label: "Over 90 Days",
-              filterable: true,
-              displayTemplate: (row) => {
-                return getAmountFormart(row["above_ninety_days_amount"], {
-                  appendSymbol: false,
-                });
-              },
-            },
-            {
-              fieldName: "balance",
-              label: "Balance",
-              filterable: true,
-              displayTemplate: (row) => {
-                return getAmountFormart(row["balance"], {
-                  appendSymbol: false,
-                });
-              },
-            },
-          ]}
+          columns={period_list}
           data={data}
           tableprops={{
             aggregate: (fieldName) => {
-              if (footerData) {
+              if (fieldName !== "customer") {
                 debugger;
-                if (fieldName !== "customer") {
-                  return getAmountFormart(footerData[fieldName], {
-                    appendSymbol: false,
-                  });
-                } else {
-                  return "";
-                }
+                const _data = _.sumBy(data, (s) =>
+                  s[fieldName] !== undefined ? parseFloat(s[fieldName]) : 0
+                );
+                return getAmountFormart(_data, {
+                  appendSymbol: false,
+                });
+              } else {
+                return "";
               }
             },
             footer: true,
@@ -407,3 +497,72 @@ export default function AgingReport({ style, result, layout, type, dates }) {
     // </>
   );
 }
+
+// [
+//   {
+//     fieldName: "customer",
+//     label: type === "receivable" ? "Customer Name" : "Vendor Name",
+//     filterable: true,
+//     sortable: true,
+//   },
+//   {
+//     fieldName: "todays_amount",
+//     label: "Current",
+//     filterable: true,
+//     displayTemplate: (row) => {
+//       return getAmountFormart(row["todays_amount"], {
+//         appendSymbol: false,
+//       });
+//     },
+//   },
+//   {
+//     fieldName: "thirty_days_amount",
+//     label: "1-30 Days",
+//     filterable: true,
+//     displayTemplate: (row) => {
+//       return getAmountFormart(row["thirty_days_amount"], {
+//         appendSymbol: false,
+//       });
+//     },
+//   },
+//   {
+//     fieldName: "sixty_days_amount",
+//     label: "31-60 Days",
+//     filterable: true,
+//     displayTemplate: (row) => {
+//       return getAmountFormart(row["sixty_days_amount"], {
+//         appendSymbol: false,
+//       });
+//     },
+//   },
+//   {
+//     fieldName: "ninety_days_amount",
+//     label: "61-90 Days",
+//     filterable: true,
+//     displayTemplate: (row) => {
+//       return getAmountFormart(row["ninety_days_amount"], {
+//         appendSymbol: false,
+//       });
+//     },
+//   },
+//   {
+//     fieldName: "above_ninety_days_amount",
+//     label: "Over 90 Days",
+//     filterable: true,
+//     displayTemplate: (row) => {
+//       return getAmountFormart(row["above_ninety_days_amount"], {
+//         appendSymbol: false,
+//       });
+//     },
+//   },
+//   {
+//     fieldName: "balance",
+//     label: "Balance",
+//     filterable: true,
+//     displayTemplate: (row) => {
+//       return getAmountFormart(row["balance"], {
+//         appendSymbol: false,
+//       });
+//     },
+//   },
+// ]

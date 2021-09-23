@@ -12,7 +12,7 @@ export default memo(function QuickRegistration(props) {
   }
 
   return (
-    <div className="col">
+    <div className="col-2">
       <Button
         className="btn btn-primary btn-small"
         style={{ marginTop: 10, float: "right" }}

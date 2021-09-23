@@ -765,6 +765,8 @@ export default {
     // return;
     let queryString = "";
     for (let i = 0; i < input.details.length; i++) {
+      console.log("input == ", input.details[i]);
+
       if (input.details[i].finance_voucher_id) {
         queryString += _mysql.mysqlQueryFormat(
           "update finance_voucher_details set head_id=?, child_id=?,credit_amount=?,debit_amount=?,narration=? where finance_voucher_id=?;",
@@ -788,7 +790,7 @@ export default {
           }
       } else {
         const previousInfo = input.details.find((f) => f.finance_voucher_id);
-
+        console.log("previousInfo == ", previousInfo);
         queryString += _mysql.mysqlQueryFormat(
           `INSERT INTO finance_voucher_details(head_id,child_id,
           credit_amount,debit_amount,narration,payment_date,month,year,payment_type,

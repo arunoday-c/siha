@@ -85,6 +85,10 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_physical_examination_details EXD on EXD.hims_d_physical_examination_details_id=EX.exam_details_id
           left join hims_d_physical_examination_subdetails EXS on EXS.hims_d_physical_examination_subdetails_id=EX.exam_subdetails_id
           where EX.episode_id=? and EX.record_status='A';
+          -- Procedure (Result - 11)
+          SELECT S.service_name,S.service_code from hims_f_ordered_services OS
+          inner join hims_d_services S on S.hims_d_services_id = OS.services_id
+          where OS.service_type_id='2' and OS.visit_id=? and OS.patient_id=?;
           `,
           values: [
             input.patient_id,
@@ -107,6 +111,8 @@ const executePDF = function executePDFMethod(options) {
             input.patient_id,
             input.visit_id,
             input.episode_id,
+            input.visit_id,
+            input.patient_id,
           ],
           printQuery: true,
         })
@@ -122,6 +128,7 @@ const executePDF = function executePDFMethod(options) {
           let consumableList = result[8];
           let packageList = result[9];
           let examinationList = result[10];
+          let procedureList = result[11];
           // let rad_details = result[5];
 
           const records = {
@@ -136,6 +143,7 @@ const executePDF = function executePDFMethod(options) {
             consumableList,
             packageList,
             examinationList,
+            procedureList,
           };
           resolve(records);
           // console.log("records = = = ", records);

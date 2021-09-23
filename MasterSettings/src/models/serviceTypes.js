@@ -784,7 +784,7 @@ export default {
         .executeQuery({
           query:
             "select hims_d_procedure_id,procedure_code,procedure_desc,procedure_desc_arabic,procedure_status,PH.procedure_type,\
-            PH.service_id as header_service_id,S.service_code as header_service_code,\
+            PH.service_id as header_service_id, service_id, S.service_code as header_service_code,\
             S.service_name as header_service_name, S.vat_percent, S.vat_applicable, \
             S.standard_fee as procedure_amount,S.service_cost from hims_d_procedure PH \
             inner join hims_d_services S on PH.service_id=S.hims_d_services_id \
