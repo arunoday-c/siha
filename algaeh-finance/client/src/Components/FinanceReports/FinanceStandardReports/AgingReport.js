@@ -20,6 +20,7 @@ import {
 import PrintLayout from "../printlayout";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 import moment from "moment";
+import _ from "lodash";
 
 export default function AgingReport({ style, result, layout, type, dates }) {
   const DIFF = {
@@ -33,9 +34,10 @@ export default function AgingReport({ style, result, layout, type, dates }) {
   const [date_wise, setDateWise] = useState("N");
   const [footerData, setFooterData] = useState({});
   const [loading, setLoading] = useState(false);
-  const [interval, setInterval] = useState(5);
-  const [period, setPeriod] = useState(30);
+  const [interval, setInterval] = useState(30);
+  const [period, setPeriod] = useState(5);
   const [period_list, setPeriodList] = useState([]);
+  const [trans_type, setTransType] = useState("S");
 
   // const [organisation, setOrganisation] = useState({});
 
@@ -81,7 +83,6 @@ export default function AgingReport({ style, result, layout, type, dates }) {
   }
 
   function loadReport(excel) {
-    debugger;
     let extraHeaders = {};
     if (excel === true) {
       extraHeaders = {
@@ -118,53 +119,53 @@ export default function AgingReport({ style, result, layout, type, dates }) {
               sortable: true,
             },
             {
-              fieldName: "0",
+              fieldName: "Current",
               label: "Current",
               filterable: true,
               displayTemplate: (row) => {
-                return getAmountFormart(row["0"], {
+                return getAmountFormart(row["Current"], {
                   appendSymbol: false,
                 });
               },
             },
             {
-              fieldName: "1-" + period,
-              label: "1-" + period + "Days",
+              fieldName: "1-" + interval,
+              label: "1-" + interval + "Days",
               filterable: true,
               displayTemplate: (row) => {
-                return getAmountFormart(row["thirty_days_amount"], {
+                return getAmountFormart(row["1-" + interval], {
                   appendSymbol: false,
                 });
               },
             },
           ];
-          debugger;
-          let p_period = period;
-          for (let i = 0; i < interval - 3; i++) {
-            const before_period = parseInt(p_period) + 1;
-            const after_period = parseInt(p_period) + parseInt(period);
+
+          let p_interval = interval;
+          for (let i = 0; i < period - 3; i++) {
+            const before_interval = parseInt(p_interval) + 1;
+            const after_interval = parseInt(p_interval) + parseInt(interval);
             const field_name =
-              p_period.toString() + "-" + after_period.toString();
+              p_interval.toString() + "-" + after_interval.toString();
             display_array.push({
               fieldName: field_name,
-              label: before_period + "-" + after_period + " Days",
+              label: before_interval + "-" + after_interval + " Days",
               filterable: true,
               displayTemplate: (row) => {
-                return getAmountFormart(row["thirty_days_amount"], {
+                return getAmountFormart(row[field_name], {
                   appendSymbol: false,
                 });
               },
             });
-            p_period = after_period;
+            p_interval = after_interval;
           }
 
           display_array.push(
             {
-              fieldName: "OVER-" + p_period,
-              label: "Over " + p_period + " Days",
+              fieldName: "OVER-" + p_interval,
+              label: "Over " + p_interval + " Days",
               filterable: true,
               displayTemplate: (row) => {
-                return getAmountFormart(row["above_ninety_days_amount"], {
+                return getAmountFormart(row["OVER-" + p_interval], {
                   appendSymbol: false,
                 });
               },
@@ -255,47 +256,82 @@ export default function AgingReport({ style, result, layout, type, dates }) {
           }}
         />
 
-        <AlgaehFormGroup
-          div={{
-            className: "col-12 form-group  mandatory",
-          }}
-          label={{
-            forceLabel: "Interval",
-            isImp: true,
-          }}
-          textBox={{
-            type: "text",
-            value: interval,
-            className: "form-control",
-            id: "name",
-            onChange: (e) => {
-              setInterval(e.target.value);
-            },
-            placeholder: "Interval",
-            autoComplete: false,
-          }}
-        />
+        <div className="col">
+          <label>Show Transaction By</label>
+          <div className="customRadio">
+            <label className="radio inline">
+              <input
+                type="radio"
+                value="S"
+                checked={trans_type === "S" ? true : false}
+                onChange={(e) => {
+                  setTransType(e.target.value);
+                  setInterval(30);
+                  setPeriod(5);
+                }}
+              />
+              <span>Standard</span>
+            </label>
+            <label className="radio inline">
+              <input
+                type="radio"
+                value="C"
+                checked={trans_type === "C" ? true : false}
+                onChange={(e) => {
+                  setTransType(e.target.value);
+                  setInterval(30);
+                  setPeriod(5);
+                }}
+              />
+              <span>Custom</span>
+            </label>
+          </div>
+        </div>
+        {trans_type === "C" ? (
+          <>
+            <AlgaehFormGroup
+              div={{
+                className: "col-2 form-group  mandatory",
+              }}
+              label={{
+                forceLabel: "Interval",
+                isImp: true,
+              }}
+              textBox={{
+                type: "text",
+                value: interval,
+                className: "form-control",
+                id: "name",
+                onChange: (e) => {
+                  setInterval(e.target.value);
+                },
+                placeholder: "Interval",
+                autoComplete: false,
+              }}
+            />
 
-        <AlgaehFormGroup
-          div={{
-            className: "col-12 form-group  mandatory",
-          }}
-          label={{
-            forceLabel: "Period",
-            isImp: true,
-          }}
-          textBox={{
-            type: "text",
-            value: period,
-            className: "form-control",
-            id: "name",
-            onChange: (e) => {
-              setPeriod(e.target.value);
-            },
-            placeholder: "Period",
-            autoComplete: false,
-          }}
-        />
+            <AlgaehFormGroup
+              div={{
+                className: "col-2 form-group  mandatory",
+              }}
+              label={{
+                forceLabel: "Period",
+                isImp: true,
+              }}
+              textBox={{
+                type: "text",
+                value: period,
+                className: "form-control",
+                id: "name",
+                onChange: (e) => {
+                  setPeriod(e.target.value);
+                },
+                placeholder: "Period",
+                autoComplete: false,
+              }}
+            />
+          </>
+        ) : null}
       </div>
 
       <div className="col previewReportBtn">
@@ -334,14 +370,12 @@ export default function AgingReport({ style, result, layout, type, dates }) {
           data={data}
           tableprops={{
             aggregate: (fieldName) => {
-              if (footerData) {
-                if (fieldName !== "customer") {
-                  return getAmountFormart(footerData[fieldName], {
-                    appendSymbol: false,
-                  });
-                } else {
-                  return "";
-                }
+              if (fieldName !== "customer") {
+                return getAmountFormart(footerData[fieldName], {
+                  appendSymbol: false,
+                });
+              } else {
+                return "";
               }
             },
             footer: true,
@@ -356,14 +390,16 @@ export default function AgingReport({ style, result, layout, type, dates }) {
           data={data}
           tableprops={{
             aggregate: (fieldName) => {
-              if (footerData) {
-                if (fieldName !== "customer") {
-                  return getAmountFormart(footerData[fieldName], {
-                    appendSymbol: false,
-                  });
-                } else {
-                  return "";
-                }
+              if (fieldName !== "customer") {
+                debugger;
+                const _data = _.sumBy(data, (s) =>
+                  s[fieldName] !== undefined ? parseFloat(s[fieldName]) : 0
+                );
+                return getAmountFormart(_data, {
+                  appendSymbol: false,
+                });
+              } else {
+                return "";
               }
             },
             footer: true,
