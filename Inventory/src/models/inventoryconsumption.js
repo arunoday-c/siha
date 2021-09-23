@@ -95,13 +95,18 @@ export default {
         })
         .then((headerResult) => {
           if (headerResult.length != 0) {
+            let strQry = "";
+            if (req.query.cancelled == "N") {
+              strQry += ` and cancelled= 'N'`;
+            }
             _mysql
               .executeQuery({
                 query:
                   "select CD.*, uom_id as sales_uom, IU.uom_description,IM.item_description from hims_f_inventory_consumption_detail CD\
                   INNER JOIN hims_d_inventory_item_master IM on  IM.hims_d_inventory_item_master_id=CD.item_id \
                   left join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id=CD.uom_id \
-                  where inventory_consumption_header_id=?",
+                  where inventory_consumption_header_id=?" +
+                  strQry,
                 values: [
                   headerResult[0].hims_f_inventory_consumption_header_id,
                 ],
@@ -301,7 +306,9 @@ export default {
               query:
                 "INSERT INTO `hims_f_inventory_can_consumption_header` (can_consumption_number, can_consumption_date, `year`, \
                 period, location_type, location_id, provider_id, patient_id, consumption_header_id, created_date, created_by, \
-                updated_date, updated_by, hospital_id) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                updated_date, updated_by, hospital_id) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
+                select hims_f_inventory_consumption_detail_id from hims_f_inventory_consumption_detail \
+                where cancelled='N' and inventory_consumption_header_id=?",
               values: [
                 document_number,
                 today,
@@ -317,10 +324,13 @@ export default {
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 req.userIdentity.hospital_id,
+                input.consumption_header_id,
               ],
               printQuery: true,
             })
-            .then((headerResult) => {
+            .then((header_Result) => {
+              const headerResult = header_Result[0];
+              const old_inventory_stock_detail = header_Result[1];
               req.body.consumption_number = document_number;
               req.body.con_cancel = true;
               req.body.hims_f_inventory_can_consumption_header_id =
@@ -342,14 +352,40 @@ export default {
               //   "input.inventory_stock_detail",
               //   input.inventory_stock_detail
               // );
+              let _inventory_consumption_detail_id = [];
+              input.inventory_stock_detail.map((o) => {
+                _inventory_consumption_detail_id.push(
+                  o.hims_f_inventory_consumption_detail_id
+                );
+              });
 
+              // console.log(
+              //   "old_inventory_stock_detail",
+              //   old_inventory_stock_detail.length
+              // );
+              // console.log(
+              //   "inventory_stock_detail",
+              //   input.inventory_stock_detail.length
+              // );
+
+              let strQty = `UPDATE hims_f_inventory_consumption_detail set cancelled='Y' where hims_f_inventory_consumption_detail_id in (${_inventory_consumption_detail_id});`;
+              if (
+                old_inventory_stock_detail.length ===
+                input.inventory_stock_detail.length
+              ) {
+                strQty += `UPDATE hims_f_inventory_consumption_header set cancelled='Y' where hims_f_inventory_consumption_header_id=${input.consumption_header_id};`;
+              }
+
+              // console.log("strQty", strQty);
+              // consol.log(
+              //   "inventory_stock_detail",
+              //   _inventory_consumption_detail_id
+              // );
               _mysql
                 .executeQuery({
                   query:
-                    "INSERT INTO hims_f_inventory_can_consumption_detail(??) VALUES ?; \
-                    UPDATE hims_f_inventory_consumption_header set cancelled='Y' where hims_f_inventory_consumption_header_id=" +
-                    input.consumption_header_id +
-                    ";",
+                    "INSERT INTO hims_f_inventory_can_consumption_detail(??) VALUES ?;" +
+                    strQty,
                   values: input.inventory_stock_detail,
                   includeValues: IncludeValues,
                   extraValues: {

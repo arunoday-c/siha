@@ -56,6 +56,7 @@ export default function InvConsumptionCancel({ breadStyle }) {
       enabled: !!enable,
       initialStale: true,
       onSuccess: (data) => {
+        data.ItemDisable = true;
         setMegaState(data);
         setEnable(false);
       },
@@ -101,6 +102,12 @@ export default function InvConsumptionCancel({ breadStyle }) {
     return result?.data?.records;
   }
 
+  const UpdateMegaState = (inventory_stock_detail) => {
+    setMegaState({
+      ...megaState,
+      inventory_stock_detail: [...inventory_stock_detail],
+    });
+  };
   const SaveConsumptionCancelEntry = () => {
     AlgaehLoader({ show: true });
 
@@ -108,6 +115,7 @@ export default function InvConsumptionCancel({ breadStyle }) {
       megaState.inventory_stock_detail[i].location_id = megaState.location_id;
       megaState.inventory_stock_detail[i].operation = "+";
     }
+
     megaState.from_screen = "Direct";
     algaehApiCall({
       uri: "/inventoryconsumption/addInvConsumptionCancel",
@@ -125,6 +133,7 @@ export default function InvConsumptionCancel({ breadStyle }) {
               response.data.records.hims_f_inventory_can_consumption_header_id,
             year: response.data.records.year,
             period: response.data.records.period,
+            ItemDisable: true,
           });
 
           swalMessage({
@@ -187,7 +196,7 @@ export default function InvConsumptionCancel({ breadStyle }) {
           uri: "/inventoryconsumption/getInventoryConsumption",
           module: "inventory",
           method: "GET",
-          data: { consumption_number: row.consumption_number },
+          data: { consumption_number: row.consumption_number, cancelled: "N" },
           onSuccess: (response) => {
             if (response.data.success === true) {
               setsaveDisable(false);
@@ -379,7 +388,10 @@ export default function InvConsumptionCancel({ breadStyle }) {
                 },
               }}
             > */}
-          <ConsumptionCancelItems ConsumptionIOputs={megaState} />
+          <ConsumptionCancelItems
+            ConsumptionIOputs={megaState}
+            UpdateMegaState={UpdateMegaState}
+          />
           {/* </MyContext.Provider> */}
 
           <div className="hptl-phase1-footer">
