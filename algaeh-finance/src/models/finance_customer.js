@@ -116,7 +116,7 @@ export default {
                H.finance_voucher_header_id=D.voucher_header_id
                and H.voucher_type='sales' and H.invoice_no is not null  and  D.child_id=?
                left join finance_voucher_sub_header FSH on
-               H.invoice_no = FSH.invoice_ref_no 
+               H.invoice_no = FSH.invoice_ref_no and FSH.voucher_type <> 'credit_note'
                inner join finance_account_child as C on D.child_id=C.finance_account_child_id;
         select round(coalesce(sum(amount)-sum(settled_amount),0),${decimal_places})as over_due
         from finance_voucher_header H inner join finance_voucher_details VD
