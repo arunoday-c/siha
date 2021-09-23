@@ -217,10 +217,14 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
   // };
 
   const BulkSampleCollection = () => {
+    debugger;
     const data = test_details;
 
     const filterData = data.filter(
-      (f) => f.checked && (f.collected === "N" || f.collected === null)
+      (f) =>
+        f.checked &&
+        f.billed === "Y" &&
+        (f.collected === "N" || f.collected === null)
     );
 
     const sample_validate = filterData.find((f) => f.sample_id === null);

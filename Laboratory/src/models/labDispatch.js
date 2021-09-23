@@ -10,7 +10,7 @@ export function labResultDispatch(req, res, next) {
         query: `select LO.validated_date,LO.critical_status,LO.send_out_test,
         concat( if(T.title is not null,concat(T.title,". "),""),E.full_name)  as doc_name,PV.maternity_patient,
           PV.mlc_accident_reg_no,LO.billed,LO.status,PV.visit_date,LT.description as service_name,LT.isPCR,TC.category_name,
-          PV.hims_f_patient_visit_id,PV.patient_id,LO.hims_f_lab_order_id
+          PV.hims_f_patient_visit_id,PV.patient_id,LO.hims_f_lab_order_id,LO.credit_order
            from hims_f_lab_order as LO inner join hims_f_patient_visit as PV
           on LO.visit_id = PV.hims_f_patient_visit_id
           inner join hims_d_investigation_test as LT on LT.hims_d_investigation_test_id = LO.test_id

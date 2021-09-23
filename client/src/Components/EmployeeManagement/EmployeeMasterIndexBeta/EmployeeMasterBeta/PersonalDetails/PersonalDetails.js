@@ -1,24 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import "./PersonalDetails.scss";
 import moment from "moment";
-// import _ from "lodash";
+import _ from "lodash";
 import { EmployeeMasterContext } from "../../EmployeeMasterContext";
 import { EmployeeMasterContextForEmployee } from "../../EmployeeMasterContextForEmployee";
-// import { AlgaehActions } from "../../../../../actions/algaehActions";
-// import { withRouter } from "react-router-dom";
-// import { connect } from "react-redux";
-// import { bindActionCreators } from "redux";
-// import {
-//   texthandle,
-//   isDoctorChange,
-//   sameAsPresent,
-// } from "./PersonalDetailsEvents.js";
-// import MyContext from "../../../../../utils/MyContext.js";
-// import {
-//   AlgaehDateHandler,
-//   // AlagehFormGroup,
-//   AlgaehLabel,
-// } from "../../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import AlgaehFileUploader from "../../../../Wrapper/algaehFileUpload";
 // import { getCookie } from "../../../../../utils/algaehApiCall";
@@ -38,7 +23,6 @@ import MaskedInput from "react-maskedinput";
 import { Controller } from "react-hook-form";
 import { newAlgaehApi } from "../../../../../hooks";
 import { useQuery } from "react-query";
-
 // import Enumerable from "linq";
 const getPersonalDetails = async (key, { employee_id }) => {
   const result = await newAlgaehApi({
@@ -108,9 +92,13 @@ export default function PersonalDetails({
   //   debugger;
   //   console.log(nationalities);
   // }, []);
-  const { setDropDownData, dropdownData, formControlPersonal } = useContext(
-    EmployeeMasterContext
-  );
+  const {
+    setDropDownData,
+    dropdownData,
+    formControlPersonal,
+    personalDetails,
+    setPersonalDetails,
+  } = useContext(EmployeeMasterContext);
   const { setEmployeeUpdateDetails } = useContext(
     EmployeeMasterContextForEmployee
   );
@@ -128,6 +116,27 @@ export default function PersonalDetails({
   // const { control, errors, reset, setValue, getValues } = useForm({
   //   defaultValues: {},
   // });
+  // const handleChange = useCallback(
+  //   debounce((name, value) => {
+  //     // e.persist();
+  //     debugger;
+  //   }, 500),
+  //   []
+  // );
+  const delayedQuery = useCallback(
+    _.debounce((name, value) => onChangeHandler(name, value), 500),
+    []
+  );
+  useEffect(() => {
+    const { reset } = formControlPersonal;
+    reset({ ...personalDetails });
+    // debugger;
+  }, []);
+  function onChangeHandler(name, value) {
+    debugger;
+    setPersonalDetails({ ...personalDetails, [name]: value });
+    // console.log("result---->", formControlPersonal.getValues(name));
+  }
   const { data: presonalDetails } = useQuery(
     ["personal-details", { employee_id: EmpMasterIOputs }],
     getPersonalDetails,
@@ -360,9 +369,7 @@ export default function PersonalDetails({
     }
     setsamechecked(value);
   };
-  if (!formControlPersonal) {
-    return <p>Please wait page is setting up</p>;
-  }
+
   return (
     <>
       <div
@@ -398,7 +405,11 @@ export default function PersonalDetails({
                           name: "employee_code",
                           type: "text",
                           className: "form-control",
-                          ...props,
+                          // ...props,
+                          onChange: (e) => {
+                            props.onChange(e);
+                            delayedQuery(e.target.name, e.target.value);
+                          },
                           others: {
                             tabIndex: "1",
                             placeholder: employee_code_placeHolder,

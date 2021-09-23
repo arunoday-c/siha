@@ -84,7 +84,10 @@ const basePayment = {
   ref_no: "",
   cheque_date: undefined,
 };
-export default function JournalVoucher() {
+export default function JournalVoucher({
+  voucher_type,
+  voucher_type_disabled,
+}) {
   const location = useLocation();
   const history = useHistory();
   const [voucherDate, setVoucherDate] = useState(moment());
@@ -149,13 +152,16 @@ export default function JournalVoucher() {
   }, [location.state]);
   /** above code is for changing language */
   useEffect(() => {
+    if (voucher_type) {
+      setVoucherType(voucher_type);
+    }
     dataPayment.forEach(async (item) => {
       const { componentCode, value, label } = item;
 
       const data = await RawSecurityComponent({
         componentCode: componentCode,
       });
-      console.log("data===>", data);
+
       if (data === "show") {
         setDataPaymentBySec((state) => {
           state.push({ value, label });
@@ -1416,7 +1422,8 @@ export default function JournalVoucher() {
                 setAccounts([]);
               },
               others: {
-                disabled: disableFiled || afterSaveDisabled,
+                disabled:
+                  voucher_type_disabled || disableFiled || afterSaveDisabled,
               },
             }}
           />

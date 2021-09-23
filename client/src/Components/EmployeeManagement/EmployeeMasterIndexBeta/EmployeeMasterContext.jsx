@@ -179,7 +179,11 @@ export const FProvider = ({ children }) => {
 
   return (
     <EmployeeMasterContext.Provider value={{ ...state, ...dispatches }}>
-      {children}
+      {state.formControlPersonal ? (
+        children
+      ) : (
+        <p>Please wait component is preparing</p>
+      )}
     </EmployeeMasterContext.Provider>
   );
 };

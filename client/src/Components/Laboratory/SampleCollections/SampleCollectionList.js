@@ -94,6 +94,7 @@ export default memo(function SampleCollectionList({
             <input
               type="checkbox"
               checked={row.checked}
+              disabled={row.ip_id > 0 ? "" : row.billed === "N" ? "none" : ""}
               onChange={(e) => selectToGenerateBarcode(row, e)}
             />
           );

@@ -17,6 +17,8 @@ import SupplierListFinance from "./Components/SupplierListFinance";
 import SupplierPayment from "./Components/SupplierListFinance/SupplierPayment";
 import ProcessAccountingEntry from "./Components/ProcessAccountingEntry";
 import PrePayment from "./Components/PrePayment";
+import AccountsReceivable from "./Components/AccountsReceivable";
+import AccountsPayable from "./Components/AccountsPayable";
 const Pages = {
   JournalAuthorization,
   QuickSearchFinance,
@@ -33,6 +35,8 @@ const Pages = {
   CostCenter,
   CostCenterMaster,
   ProcessAccountingEntry,
+  AccountsReceivable,
+  AccountsPayable,
 };
 
 window.FinanceComponent = Pages;

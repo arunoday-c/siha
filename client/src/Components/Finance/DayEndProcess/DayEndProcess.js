@@ -117,6 +117,7 @@ class DayEndProcess extends Component {
       revert_trans: "N",
       voucherType: null,
       voucher_list: null,
+      transType: "PN",
     };
     this.selectedDayEndIds = "";
   }
@@ -207,8 +208,8 @@ class DayEndProcess extends Component {
       // let inputObj = { posted: this.state.posted };
       // debugger;
       let inputObj = {
-        posted: this.state.posted,
-        revert_trans: this.state.revert_trans,
+        posted: this.state.transType === "PY" ? "Y" : "N",
+        revert_trans: this.state.transType === "RT" ? "Y" : "N",
       };
       if (this.state.screen_code !== null) {
         inputObj.screen_code = this.state.screen_code;
@@ -404,6 +405,12 @@ class DayEndProcess extends Component {
           from_date: undefined,
           to_date: undefined,
           posted: "N",
+        });
+        break;
+      case "transType":
+        this.setState({
+          [e.target.name]: e.target.value,
+          dayEnd: [],
         });
         break;
       default:
@@ -814,9 +821,9 @@ class DayEndProcess extends Component {
                     },
                   }}
                 />
-
+                {/* 
                 <div className="col">
-                  <label>Show Only Posted Transaction</label>
+                  <label>Show Posted Transaction</label>
                   <div className="customCheckbox">
                     <label className="checkbox inline">
                       <input
@@ -833,7 +840,7 @@ class DayEndProcess extends Component {
                   </div>
                 </div>
                 <div className="col">
-                  <label>Show Only Reverted Transaction</label>
+                  <label>Show Reverted Transaction</label>
                   <div className="customCheckbox">
                     <label className="checkbox inline">
                       <input
@@ -843,6 +850,42 @@ class DayEndProcess extends Component {
                         onChange={this.checkHandaler.bind(this)}
                       />
                       <span>Yes</span>
+                    </label>
+                  </div>
+                </div> */}
+
+                <div className="col">
+                  <label>Show Transaction By</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="PN"
+                        name="transType"
+                        checked={this.state.transType === "PN" ? true : false}
+                        onChange={this.checkHandaler.bind(this)}
+                      />
+                      <span>Not Posted</span>
+                    </label>
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="PY"
+                        name="transType"
+                        checked={this.state.transType === "PY" ? true : false}
+                        onChange={this.checkHandaler.bind(this)}
+                      />
+                      <span>Posted</span>
+                    </label>
+                    <label className="radio inline">
+                      <input
+                        value="RT"
+                        type="radio"
+                        name="transType"
+                        checked={this.state.transType === "RT" ? true : false}
+                        onChange={this.checkHandaler.bind(this)}
+                      />
+                      <span>Reverted</span>
                     </label>
                   </div>
                 </div>

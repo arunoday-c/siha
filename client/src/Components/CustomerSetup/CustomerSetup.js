@@ -301,6 +301,53 @@ class CustomerSetup extends Component {
     });
   }
 
+  customerMasterListReport() {
+    algaehApiCall({
+      // uri: "/report",
+      uri: "/excelReport",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "customerMasterList",
+          pageOrentation: "landscape",
+          excelTabName: "Customer Master List",
+          excelHeader: false,
+          reportParams: [
+            // {
+            //   name: "hospital_id",
+            //   value: this.state.inputs.hospital_id,
+            // },
+          ],
+          outputFileType: "EXCEL", //"EXCEL", //"PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const a = document.createElement("a");
+        a.href = urlBlob;
+        a.download = `Customer Master List.${"xlsx"}`;
+
+        a.click();
+
+        // const urlBlob = URL.createObjectURL(res.data);
+        // const origin = `${
+        //   window.location.origin
+        // }/reportviewer/web/viewer.html?file=${urlBlob}&filename=${
+        //   $this.state.inputs.hospital_name
+        // } Leave and Airfare Reconciliation - ${moment(
+        //   $this.state.inputs.month,
+        //   "MM"
+        // ).format("MMM")}-${$this.state.inputs.year}`;
+        // window.open(origin);
+      },
+    });
+  }
+
   render() {
     const manualColumns = this.state.showAddEmployeeModal
       ? {
@@ -963,6 +1010,14 @@ class CustomerSetup extends Component {
             </div>
             <div className="actions">
               <button
+                className="btn btn-default btn-circle"
+                onClick={this.customerMasterListReport.bind(this)}
+              >
+                <i className="fas fa-download" />
+              </button>
+
+              <button
+                style={{ marginLeft: 4 }}
                 className="btn btn-primary btn-circle active"
                 onClick={() => {
                   this.setState({

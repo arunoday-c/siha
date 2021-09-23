@@ -112,6 +112,7 @@ export default {
           printQuery: true,
         })
         .then((resul) => {
+          debugger;
           authLevels = resul[0].auth_level;
           new Promise((resolve, reject) => {
             if (resul[0].allow_negative_balance == "Y") {
@@ -450,31 +451,46 @@ export default {
                               //   ? partial_amount
                               //   : balance_amount;
                               //End Commented coz every transaction its giving full amount as bug reported by abu
+                              // console.log("debitNoteTotal===>", debitNoteTotal);
                               if (debitNoteTotal) {
-                                updateQry += `update finance_voucher_header set settlement_status='S',settled_amount=amount,updated_date='${moment().format(
-                                  "YYYY-MM-DD"
-                                )}',updated_by=${
-                                  req.userIdentity.algaeh_d_app_user_id
-                                } where finance_voucher_header_id=${finance_voucher_header_id};`;
+                                if (input["voucher_type"] !== "credit_note") {
+                                  updateQry += `update finance_voucher_header set settlement_status='S',settled_amount=amount,updated_date='${moment().format(
+                                    "YYYY-MM-DD"
+                                  )}',updated_by=${
+                                    req.userIdentity.algaeh_d_app_user_id
+                                  } where finance_voucher_header_id=${finance_voucher_header_id};`;
+                                }
                               } else {
-                                updateQry += `update finance_voucher_header set settlement_status=if(settled_amount+${parseFloat(
-                                  head_amount
-                                )}=amount,'S','P'),settled_amount=settled_amount+${parseFloat(
-                                  head_amount
-                                )},updated_date='${moment().format(
-                                  "YYYY-MM-DD"
-                                )}',updated_by=${
-                                  req.userIdentity.algaeh_d_app_user_id
-                                } where finance_voucher_header_id=${finance_voucher_header_id};`;
+                                // console.log(
+                                //   "voucher_type===>",
+                                //   input["voucher_type"]
+                                // );
+                                if (input["voucher_type"] !== "credit_note") {
+                                  updateQry += `update finance_voucher_header set settlement_status=if(settled_amount+${parseFloat(
+                                    head_amount
+                                  )}=amount,'S','P'),settled_amount=settled_amount+${parseFloat(
+                                    head_amount
+                                  )},updated_date='${moment().format(
+                                    "YYYY-MM-DD"
+                                  )}',updated_by=${
+                                    req.userIdentity.algaeh_d_app_user_id
+                                  } where finance_voucher_header_id=${finance_voucher_header_id};`;
+                                }
                               }
                             }
                           }
                           let updateDebitNoteQuery = "";
                           if (debitNoteTotal) {
-                            for (let dk = 0; dk < debitNoteList.length; dk++) {
-                              updateDebitNoteQuery += `update finance_voucher_header set settlement_status='S',
-                              settled_amount=${debitNoteList[dk]["balance_amount"]} where finance_voucher_header_id=${debitNoteList[dk]["finance_voucher_header_id"]};
-                              `;
+                            if (input["voucher_type"] !== "credit_note") {
+                              for (
+                                let dk = 0;
+                                dk < debitNoteList.length;
+                                dk++
+                              ) {
+                                updateDebitNoteQuery += `update finance_voucher_header set settlement_status='S',
+                                settled_amount=${debitNoteList[dk]["balance_amount"]} where finance_voucher_header_id=${debitNoteList[dk]["finance_voucher_header_id"]};
+                                `;
+                              }
                             }
                           }
 
@@ -749,6 +765,8 @@ export default {
     // return;
     let queryString = "";
     for (let i = 0; i < input.details.length; i++) {
+      console.log("input == ", input.details[i]);
+
       if (input.details[i].finance_voucher_id) {
         queryString += _mysql.mysqlQueryFormat(
           "update finance_voucher_details set head_id=?, child_id=?,credit_amount=?,debit_amount=?,narration=? where finance_voucher_id=?;",
@@ -772,7 +790,7 @@ export default {
           }
       } else {
         const previousInfo = input.details.find((f) => f.finance_voucher_id);
-
+        console.log("previousInfo == ", previousInfo);
         queryString += _mysql.mysqlQueryFormat(
           `INSERT INTO finance_voucher_details(head_id,child_id,
           credit_amount,debit_amount,narration,payment_date,month,year,payment_type,
