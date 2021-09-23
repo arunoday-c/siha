@@ -40,7 +40,13 @@ export default memo(function ({ details }) {
       //   return item.checked === undefined || item.checked === false;
       // })
       .map((item) => {
-        return { ...item, checked: item.status === "V" ? checkState : false };
+        return {
+          ...item,
+          checked:
+            item.status === "V" && item.credit_order === "N"
+              ? checkState
+              : false,
+        };
       });
     const checkList = test.filter((f) => f.checked === true);
     if (checkList.length === listOfDetails.length) {
@@ -254,6 +260,7 @@ export default memo(function ({ details }) {
                   <th>Critical</th>
                   <th>Status</th>
                   <th>Billed</th>
+                  <th>Credit Amt.</th>
                   <th>Send Out</th>
                 </tr>
               </thead>
@@ -265,6 +272,7 @@ export default memo(function ({ details }) {
                     category_name,
                     critical_status,
                     billed,
+                    credit_order,
                     send_out_test,
                   } = item;
 
@@ -300,6 +308,9 @@ export default memo(function ({ details }) {
                           : "Validation Pending"}
                       </td>
                       <td width="20">{billed === "Y" ? "Yes" : "No"}</td>
+                      <td width="120">
+                        {credit_order === "Y" ? "Payment Pending" : "Paid Full"}
+                      </td>
                       <td width="70">{send_out_test === "Y" ? "Yes" : "No"}</td>
                     </tr>
                   );
@@ -350,6 +361,7 @@ export default memo(function ({ details }) {
                   <th>Critical</th>
                   <th>Status</th>
                   <th>Billed</th>
+                  <th>Credit Amt.</th>
                   <th>Send Out</th>
                   <th>Print Report</th>
                 </tr>
@@ -366,6 +378,7 @@ export default memo(function ({ details }) {
                       category_name,
                       critical_status,
                       billed,
+                      credit_order,
                       send_out_test,
                     } = item;
 
@@ -392,14 +405,24 @@ export default memo(function ({ details }) {
                             : "Validation Pending"}
                         </td>
                         <td width="20">{billed === "Y" ? "Yes" : "No"}</td>
+                        <td width="120">
+                          {credit_order === "Y"
+                            ? "Payment Pending"
+                            : "Paid Full"}
+                        </td>
                         <td width="70">
                           {send_out_test === "Y" ? "Yes" : "No"}
                         </td>
                         <td width="70">
                           {status === "V" ? (
                             <i
-                              style={{ fontSize: 30 }}
-                              className="fas fa-print fa-3x"
+                              style={{
+                                cursor: "pointer",
+                                border: "1px solid #ccc",
+                                borderRadius: "50%",
+                                padding: "6px",
+                              }}
+                              className="fas fa-print fa-md"
                               onClick={(e) => {
                                 showReportPcr(e, item);
                               }}
@@ -426,6 +449,7 @@ export default memo(function ({ details }) {
                   <th>Critical</th>
                   <th>Status</th>
                   <th>Billed</th>
+                  <th>Credit Amt.</th>
                   <th>Send Out</th>
                 </tr>
               </thead>
@@ -441,6 +465,7 @@ export default memo(function ({ details }) {
                       category_name,
                       critical_status,
                       billed,
+                      credit_order,
                       send_out_test,
                     } = item;
 
@@ -454,7 +479,7 @@ export default memo(function ({ details }) {
                               borderRadius: "50%",
                               padding: "6px",
                             }}
-                            className="fas fa-print fa-lg"
+                            className="fas fa-print fa-md"
                             onClick={(e) => {
                               printMicroBiologyReport(e, item);
                             }}
@@ -482,6 +507,11 @@ export default memo(function ({ details }) {
                             : "Validation Pending"}
                         </td>
                         <td width="20">{billed === "Y" ? "Yes" : "No"}</td>
+                        <td width="120">
+                          {credit_order === "Y"
+                            ? "Payment Pending"
+                            : "Paid Full"}
+                        </td>
                         <td width="70">
                           {send_out_test === "Y" ? "Yes" : "No"}
                         </td>
@@ -532,7 +562,7 @@ function CheckBoxCheck({
   }
   return (
     <Checkbox
-      disabled={item.status !== "V" ? true : false}
+      disabled={item.status !== "V" || item.credit_order !== "N" ? true : false}
       name={item.hims_f_lab_order_id}
       checked={checkState}
       onChange={onChangeHandler}

@@ -2,7 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import { LINQ } from "node-linq";
 import moment from "moment";
 import algaehUtilities from "algaeh-utilities/utilities";
-
+import _ from "lodash";
 export default {
   getPatientMrdList: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -204,18 +204,36 @@ export default {
       }
       _mysql
         .executeQuery({
-          query:
-            "select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id,ICD.icd_code as daignosis_code,\
-            ICD.icd_description as daignosis_description  ,diagnosis_type, final_daignosis,\
-            PD.created_date as diagnosis_date  from hims_f_patient_diagnosis PD,hims_d_icd ICD\
-             where PD.record_status='A' and   ICD.record_status='A'\
-             and PD.daignosis_id=ICD.hims_d_icd_id " +
-            _stringData,
+          query: `select hims_f_patient_diagnosis_id,AU.user_display_name, patient_id, episode_id, daignosis_id,ICD.icd_code as daignosis_code,
+            ICD.icd_description as daignosis_description  ,diagnosis_type, final_daignosis,
+            PD.created_date as diagnosis_date    
+              from hims_f_patient_diagnosis PD left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id = PD.created_by,hims_d_icd ICD
+             where PD.record_status='A' and   ICD.record_status='A'
+             and PD.daignosis_id=ICD.hims_d_icd_id
+            ${_stringData}`,
           printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
-          req.records = result;
+          if (input.fromHistoricalData) {
+            const arrangedData = _.chain(result)
+              .groupBy((g) => g.diagnosis_date)
+              .map((details, key) => {
+                const { diagnosis_date, user_display_name } = _.head(details);
+
+                return {
+                  display_date: diagnosis_date,
+                  user_name: user_display_name,
+                  detailsOf: details,
+                };
+              })
+              .value();
+            // console.log("arrangedData", arrangedData);
+            req.records = arrangedData;
+          } else {
+            req.records = result;
+          }
+
           next();
         })
         .catch((error) => {
@@ -246,13 +264,13 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select  hims_f_prescription_id, patient_id, encounter_id, provider_id, episode_id,\
+            "select  hims_f_prescription_id, patient_id,E.full_name as user_name,  encounter_id, provider_id, episode_id,\
             prescription_date, prescription_status , \
             hims_f_prescription_detail_id, prescription_id, item_id,IM.item_description, PD.generic_id, IG.generic_name, \
             dosage,med_units, frequency, no_of_days,\
             dispense, frequency_type, frequency_time, frequency_route, start_date, PD.service_id, uom_id, \
             item_category_id, PD.item_status, PD.instructions\
-             from hims_f_prescription P,hims_f_prescription_detail PD,hims_d_item_master IM,hims_d_item_generic IG\
+             from hims_f_prescription P left join hims_d_employee E on E.hims_d_employee_id=P.provider_id ,hims_f_prescription_detail PD,hims_d_item_master IM,hims_d_item_generic IG\
             where P.record_status='A' and IM.record_status='A' and IG.record_status='A' and \
             P.hims_f_prescription_id=PD.prescription_id and PD.item_id=IM.hims_d_item_master_id \
             and PD.generic_id =IG.hims_d_item_generic_id " +
@@ -262,7 +280,25 @@ export default {
         })
         .then((result) => {
           _mysql.releaseConnection();
-          req.records = result;
+          if (input.fromHistoricalData) {
+            const arrangedData = _.chain(result)
+              .groupBy((g) => g.prescription_date)
+              .map((details, key) => {
+                const { prescription_date, user_name } = _.head(details);
+
+                return {
+                  display_date: prescription_date,
+                  user_name: user_name,
+                  detailsOf: details,
+                };
+              })
+              .value();
+            // console.log("arrangedData", arrangedData);
+            req.records = arrangedData;
+          } else {
+            req.records = result;
+          }
+
           next();
         })
         .catch((error) => {
@@ -322,8 +358,25 @@ export default {
 
           let final_result = result[0];
           final_result = final_result.concat(result[1]);
+          if (input.fromHistoricalData) {
+            const arrangedData = _.chain(final_result)
+              .groupBy((g) => g.visit_date)
+              .map((details, key) => {
+                const { visit_date, provider_name } = _.head(details);
 
-          req.records = final_result;
+                return {
+                  display_date: visit_date,
+                  user_name: provider_name,
+                  detailsOf: details,
+                };
+              })
+              .value();
+            // console.log("arrangedData", arrangedData);
+            req.records = arrangedData;
+          } else {
+            req.records = final_result;
+          }
+
           next();
         })
         .catch((error) => {
@@ -577,14 +630,54 @@ export default {
     try {
       _mysql
         .executeQuery({
-          query: "",
-          values: [],
+          query:
+            "select hims_d_service_type_id from hims_d_service_type  where \
+          record_status='A' and service_type='Procedure'",
           printQuery: true,
         })
         .then((result) => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
+          if (result.length > 0) {
+            _mysql
+              .executeQuery({
+                query: `select hims_f_ordered_services_id,E.full_name as user_name,OS.patient_id,OS.doctor_id,E.full_name as doctor_name,OS.service_type_id,V.visit_date,OS.services_id,OS.teeth_number,
+              S.service_name,S.service_desc from hims_f_ordered_services OS ,hims_f_patient_visit V,hims_d_services S,hims_d_employee E
+              where OS.record_status='A' and V.record_status='A' and S.record_status='A' and E.record_status='A' and 
+              OS.visit_id=V.hims_f_patient_visit_id and OS.services_id=S.hims_d_services_id and OS.doctor_id=E.hims_d_employee_id 
+              and OS.service_type_id=? and OS.patient_id=? order by visit_date desc`,
+                values: [
+                  result[0].hims_d_service_type_id,
+                  req.query.patient_id,
+                ],
+                printQuery: true,
+              })
+              .then((result1) => {
+                _mysql.releaseConnection();
+                const arrangedData = _.chain(result1)
+                  .groupBy((g) => g.visit_date)
+                  .map((details, key) => {
+                    const { visit_date, user_name } = _.head(details);
+
+                    return {
+                      display_date: visit_date,
+                      user_name: user_name,
+                      detailsOf: details,
+                    };
+                  })
+                  .value();
+
+                req.records = arrangedData;
+
+                next();
+              })
+              .catch((error) => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          }
         })
         .catch((error) => {
           _mysql.releaseConnection();
