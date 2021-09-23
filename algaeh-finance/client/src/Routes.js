@@ -8,6 +8,7 @@ const JournalVoucher = lazy(() => import("./Components/JournalVoucher"));
 const FinanceOptions = lazy(() => import("./Components/FinanceOptions"));
 const CostCenter = lazy(() => import("./Components/CostCenterPage"));
 const CostCenterMaster = lazy(() => import("./Components/CostCenterMaster"));
+const AccountReceivable = lazy(() => import("./Components/AccountsReceivable"));
 const QuickSearchFinance = lazy(() =>
   import("./Components/QuickSearchFinance")
 );
@@ -62,6 +63,7 @@ export default function Routes(props) {
             path="/JournalAuthorization"
             component={JournalAuthorization}
           />
+          <Route path="/AccountReceivable" component={AccountReceivable} />
         </Suspense>
       </Switch>
     </Router>
