@@ -434,11 +434,18 @@ export default {
                             ) {
                               b_amt = balance_amount;
                             }
+                            if (input["voucher_type"] !== "credit_note") {
+                              queryString += _mysql.mysqlQueryFormat(
+                                "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount,voucher_type)value(?,?,?,?);",
+                                [
+                                  result.insertId,
+                                  invoice_no,
+                                  b_amt,
+                                  voucher_type,
+                                ]
+                              );
+                            }
 
-                            queryString += _mysql.mysqlQueryFormat(
-                              "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount,voucher_type)value(?,?,?,?);",
-                              [result.insertId, invoice_no, b_amt, voucher_type]
-                            );
                             if (
                               input["voucher_type"] == "credit_note" ||
                               input["voucher_type"] == "debit_note" ||
@@ -493,7 +500,9 @@ export default {
                               }
                             }
                           }
-
+                          if (queryString === "") {
+                            queryString = "select 1;";
+                          }
                           _mysql
                             .executeQueryWithTransaction({
                               query: `${queryString}${updateQry}${updateDebitNoteQuery}`,
