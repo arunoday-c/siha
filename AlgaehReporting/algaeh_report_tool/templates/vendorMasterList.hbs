@@ -1,0 +1,51 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div class="print-body">
+
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Code</th>
+            <th>Name</th>
+            {{! <th>Arabic Name</th> }}
+            <th>Business Reg No.</th>
+            <th>Contact No.</th>
+            <th>Email 1</th>
+            <th>Email 2</th>
+            <th>Website</th>
+            <th>Vat No.</th>
+            <th>IBAN No.</th>
+            <th>Account No.</th>
+          </tr>
+        </thead>
+        <tbody>{{#hasElement detailsList}}
+
+            {{#each detailsList}}
+              <tr>
+                <td datatype="string">{{inc @index}}</td>
+                <td datatype="string" style="width: 100px;">{{vendor_code}}</td>
+                <td datatype="string">{{vendor_name}}</td>
+                <td datatype="string">{{business_registration_no}}</td>
+                <td class="txtFld" datatype="string">{{contact_number}}</td>
+                <td class="txtFld" datatype="string">{{email_id_1}}</td>
+                <td class="txtFld" datatype="string">{{email_id_2}}</td>
+                <td class="txtFld" datatype="string">{{website}}</td>
+                <td class="txtFld" datatype="string">{{vat_number}}</td>
+                <td class="txtFld" datatype="string">{{iban_number}}</td>
+                <td class="txtFld" datatype="string">{{bank_account_no}}</td>
+              </tr>
+            {{/each}}
+          {{else}}
+            <tr>
+              <td colspan="10" class="noResultTextReport">No Records Found</td>
+            </tr>{{/hasElement}}
+
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
+</body>
