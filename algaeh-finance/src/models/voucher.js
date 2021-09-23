@@ -451,7 +451,7 @@ export default {
                               //   ? partial_amount
                               //   : balance_amount;
                               //End Commented coz every transaction its giving full amount as bug reported by abu
-                              console.log("debitNoteTotal===>", debitNoteTotal);
+                              // console.log("debitNoteTotal===>", debitNoteTotal);
                               if (debitNoteTotal) {
                                 if (input["voucher_type"] !== "credit_note") {
                                   updateQry += `update finance_voucher_header set settlement_status='S',settled_amount=amount,updated_date='${moment().format(
@@ -461,10 +461,10 @@ export default {
                                   } where finance_voucher_header_id=${finance_voucher_header_id};`;
                                 }
                               } else {
-                                console.log(
-                                  "voucher_type===>",
-                                  input["voucher_type"]
-                                );
+                                // console.log(
+                                //   "voucher_type===>",
+                                //   input["voucher_type"]
+                                // );
                                 if (input["voucher_type"] !== "credit_note") {
                                   updateQry += `update finance_voucher_header set settlement_status=if(settled_amount+${parseFloat(
                                     head_amount
