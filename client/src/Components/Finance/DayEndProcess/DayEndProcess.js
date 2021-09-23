@@ -814,9 +814,9 @@ class DayEndProcess extends Component {
                     },
                   }}
                 />
-
+                {/* 
                 <div className="col">
-                  <label>Show Only Posted Transaction</label>
+                  <label>Show Posted Transaction</label>
                   <div className="customCheckbox">
                     <label className="checkbox inline">
                       <input
@@ -833,7 +833,7 @@ class DayEndProcess extends Component {
                   </div>
                 </div>
                 <div className="col">
-                  <label>Show Only Reverted Transaction</label>
+                  <label>Show Reverted Transaction</label>
                   <div className="customCheckbox">
                     <label className="checkbox inline">
                       <input
@@ -843,6 +843,45 @@ class DayEndProcess extends Component {
                         onChange={this.checkHandaler.bind(this)}
                       />
                       <span>Yes</span>
+                    </label>
+                  </div>
+                </div> */}
+
+                <div className="col">
+                  <label>Show Transaction By</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="N"
+                        name="transType"
+                        checked={this.state.posted === "N" ? true : false}
+                        onChange={this.checkHandaler.bind(this)}
+                      />
+                      <span>Not Posted</span>
+                    </label>{" "}
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="Y"
+                        name="transType"
+                        checked={this.state.posted === "Y" ? true : false}
+                        // disabled={
+                        //   this.state.revert_trans === "Y" ? true : false
+                        // }
+                        onChange={this.checkHandaler.bind(this)}
+                      />
+                      <span>Posted</span>
+                    </label>{" "}
+                    <label className="radio inline">
+                      <input
+                        value="Y"
+                        type="radio"
+                        name="revert_trans"
+                        checked={this.state.revert_trans === "Y" ? true : false}
+                        onChange={this.checkHandaler.bind(this)}
+                      />
+                      <span>Reverted</span>
                     </label>
                   </div>
                 </div>
