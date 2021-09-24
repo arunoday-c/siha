@@ -11,19 +11,6 @@ function TreatmentTable({ columnsArray, columnData }) {
           {columnsArray.map((item) => (
             <th>{item.name}</th>
           ))}
-          {/* <th>
-                      <Checkbox
-                        indeterminate={indeterminate}
-                        checked={selectAll}
-                        onChange={changeSelectStatus}
-                      ></Checkbox>
-                    </th>
-                    <th>Test Name</th>
-                    <th>Test Category</th>
-                    <th>Critical</th>
-                    <th>Status</th>
-                    <th>Billed</th>
-                    <th>Send Out</th> */}
         </tr>
       </thead>
       <tbody>
