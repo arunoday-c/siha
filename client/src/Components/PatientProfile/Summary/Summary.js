@@ -8,6 +8,7 @@ import Enumerable from "linq";
 import { getPatientHistory, getPatientVitals } from "../PatientProfileHandlers";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 // import moment from "moment";
+import PrescriptionHistory from "../../MRD/PatientMRD/HistoricalData/PrescriptionHistoryTable";
 import _ from "lodash";
 
 class Summary extends Component {
@@ -17,6 +18,7 @@ class Summary extends Component {
       patientMedications: [],
       patientEpisode: [],
       patientFollowUp: [],
+      // patientSummary: {},
     };
 
     if (
@@ -35,7 +37,7 @@ class Summary extends Component {
 
     this.getPatientMedication();
     this.getEpisodeSummary();
-
+    this.getPatientSummary();
     this.getSummaryFollowUp();
     this.getPatientEncounterDetails();
   }
@@ -87,6 +89,33 @@ class Summary extends Component {
     });
   }
 
+  getPatientSummary() {
+    debugger;
+    const { current_patient, episode_id, visit_id } = Window.global;
+    algaehApiCall({
+      uri: "/mrd/getPatientSummary",
+      module: "MRD",
+      method: "GET",
+      data: {
+        patient_id: current_patient,
+        visit_id: visit_id,
+        episode_id: episode_id,
+      },
+      cancelRequestId: "getPatientSummary",
+      onSuccess: (response) => {
+        if (response.data.success) {
+          debugger;
+          this.setState({ patientSummary: response.data.records });
+        }
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
   getPatientMedication() {
     algaehApiCall({
       uri: "/mrd/getPatientMedication",
@@ -249,9 +278,23 @@ class Summary extends Component {
                 </div>
               </div>
             </div>
-            <div className="bd-callout bd-callout-theme">
-              <h6>Medication</h6>
-              <table className="table table-sm table-bordered customTable">
+            {this.state.patientMedications.length > 0 ? (
+              <div className="bd-callout bd-callout-theme">
+                <h6>Medication</h6>
+                <PrescriptionHistory
+                  columnsArray={[
+                    { name: "Start Date" },
+                    { name: "Generic Name" },
+                    { name: "Item Description" },
+                    { name: "Dosage" },
+                    { name: "Unit" },
+                    { name: "Frequency" },
+                    { name: "No. of Days" },
+                  ]}
+                  columnData={this.state.patientMedications}
+                />
+
+                {/* <table className="table table-sm table-bordered customTable">
                 <thead className="table-primary">
                   <tr>
                     <th style={{ width: 30 }}>Sl. No.</th>
@@ -298,8 +341,182 @@ class Summary extends Component {
                       ))
                     : null}
                 </tbody>
-              </table>
-            </div>
+              </table> */}
+              </div>
+            ) : null}
+            {this.state.patientSummary?.lab ? (
+              this.state.patientSummary.lab?.length > 0 ? (
+                <div className="bd-callout bd-callout-theme">
+                  <h3>Lab Order:-</h3>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>SL No.</th>
+                        <th>Service Name</th>
+                      </tr>
+                    </thead>
+                    {this.state.patientSummary?.lab.map((item, index) => {
+                      const { service_name } = item;
+                      return (
+                        <tbody>
+                          <tr>
+                            <td>{index + 1}</td>
+                            <td>{service_name}</td>
+                          </tr>
+                        </tbody>
+                      );
+                    })}
+                  </table>
+                </div>
+              ) : null
+            ) : null}
+            {this.state.patientSummary?.rad ? (
+              this.state.patientSummary.rad?.length > 0 ? (
+                <div className="bd-callout bd-callout-theme">
+                  <h3>Radiology Order:-</h3>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>SL No.</th>
+                        <th>Service Name</th>
+                      </tr>
+                    </thead>
+                    {this.state.patientSummary?.rad.map((item, index) => {
+                      const { service_name } = item;
+                      return (
+                        <tbody>
+                          <tr>
+                            <td>{index + 1}</td>
+                            <td>{service_name}</td>
+                          </tr>
+                        </tbody>
+                      );
+                    })}
+                  </table>
+                </div>
+              ) : null
+            ) : null}
+            {this.state.patientSummary?.consumableList ? (
+              this.state.patientSummary.consumableList?.length > 0 ? (
+                <div className="bd-callout bd-callout-theme">
+                  <h3>Consumable Order:-</h3>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>SL No.</th>
+                        <th>Service Name</th>
+                        <th>Instructions</th>
+                      </tr>
+                    </thead>
+                    {this.state.patientSummary?.consumableList.map(
+                      (item, index) => {
+                        const { service_name, instructions } = item;
+                        return (
+                          <tbody>
+                            <tr>
+                              <td>{index + 1}</td>
+                              <td>{service_name}</td>
+                              <td>{instructions}</td>
+                            </tr>
+                          </tbody>
+                        );
+                      }
+                    )}
+                  </table>
+                </div>
+              ) : null
+            ) : null}
+            {this.state.patientSummary?.packageList ? (
+              this.state.patientSummary.packageList?.length > 0 ? (
+                <div className="bd-callout bd-callout-theme">
+                  <h3>Package Order:-</h3>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>SL No.</th>
+                        <th>Service Name</th>
+                      </tr>
+                    </thead>
+                    {this.state.patientSummary?.packageList.map(
+                      (item, index) => {
+                        const { service_name } = item;
+                        return (
+                          <tbody>
+                            <tr>
+                              <td>{index + 1}</td>
+                              <td>{service_name}</td>
+                            </tr>
+                          </tbody>
+                        );
+                      }
+                    )}
+                  </table>
+                </div>
+              ) : null
+            ) : null}
+            {this.state.patientSummary?.examinationList ? (
+              this.state.patientSummary.examinationList?.length > 0 ? (
+                <div className="bd-callout bd-callout-theme">
+                  <h3>Physical Examination:-</h3>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>SL No.</th>
+                        <th>DESCRIPTION</th>
+                        <th>TYPE</th>
+                        <th>Severity</th>
+                        <th>Comments</th>
+                      </tr>
+                    </thead>
+                    {this.state.patientSummary?.examinationList.map(
+                      (item, index) => {
+                        const { ex_desc, ex_type, ex_severity, comments } =
+                          item;
+                        return (
+                          <tbody>
+                            <tr>
+                              <td>{index + 1}</td>
+                              <td>{ex_desc}</td>
+                              <td>{ex_type}</td>
+                              <td>{ex_severity}</td>
+                              <td>{comments}</td>
+                            </tr>
+                          </tbody>
+                        );
+                      }
+                    )}
+                  </table>
+                </div>
+              ) : null
+            ) : null}
+            {this.state.patientSummary?.procedureList ? (
+              this.state.patientSummary.procedureList?.length > 0 ? (
+                <div className="bd-callout bd-callout-theme">
+                  <h3>Procedure Order:-</h3>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>SL No.</th>
+                        <th>Service Name</th>
+                      </tr>
+                    </thead>
+                    {this.state.patientSummary?.procedureList.map(
+                      (item, index) => {
+                        const { service_name } = item;
+                        return (
+                          <tbody>
+                            <tr>
+                              <td>{index + 1}</td>
+                              <td>{service_name}</td>
+                            </tr>
+                          </tbody>
+                        );
+                      }
+                    )}
+                  </table>
+                </div>
+              ) : null
+            ) : null}
             {history.map((patientHistory, index) => (
               <div className="bd-callout bd-callout-theme" key={index}>
                 <h6>{patientHistory.groupName}</h6>
