@@ -770,7 +770,9 @@ class DoctorsWorkbench extends Component {
                               {/* <i className="appointment-icon" /> */}
                               <i
                                 className={
-                                  data.appointment_patient === "Y"
+                                  data.source === "I"
+                                    ? "bed-icon"
+                                    : data.appointment_patient === "Y"
                                     ? "appointment-icon"
                                     : "walking-icon"
                                 }

@@ -24,11 +24,9 @@ function DiagnosisTable({ columnsArray, columnData }) {
               <td style={{ textAlign: "left", fontWeight: "bold" }}>
                 {daignosis_description}
               </td>
-              <td width="150">{daignosis_code}</td>
-              <td width="20">
-                {diagnosis_type === "S" ? "Secondary" : "Primary"}
-              </td>
-              <td width="120">{final_daignosis === "Y" ? "Yes" : "No"}</td>
+              <td>{daignosis_code}</td>
+              <td>{diagnosis_type === "S" ? "Secondary" : "Primary"}</td>
+              <td>{final_daignosis === "Y" ? "Yes" : "No"}</td>
             </tr>
           );
         })}

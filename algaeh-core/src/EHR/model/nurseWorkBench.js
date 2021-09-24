@@ -9,12 +9,8 @@ import algaehMysql from "algaeh-mysql";
 const keyPath = require("algaeh-keys/keys");
 
 const { debugFunction, debugLog } = logUtils;
-const {
-  paging,
-  whereCondition,
-  releaseDBConnection,
-  jsonArrayToObject,
-} = utils;
+const { paging, whereCondition, releaseDBConnection, jsonArrayToObject } =
+  utils;
 
 // created by : irfan to
 let addPatientNurseChiefComplaintsBackup = (req, res, next) => {
@@ -906,10 +902,9 @@ let getNurseMyDay = (req, res, next) => {
     }
     _mysql
       .executeQuery({
-        query:
-          "select  EMP.full_name as doctor_name,E.hims_f_patient_encounter_id,P.patient_code,P.date_of_birth,P.full_name,P.gender,P.age,E.patient_id, \
-          P.primary_id_no, V.appointment_patient,V.new_visit_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
-          E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id,V.age_in_years, V.age_in_months, \
+        query: `select  EMP.full_name as doctor_name,E.hims_f_patient_encounter_id,P.patient_code,P.date_of_birth,P.full_name,P.gender,P.age,E.patient_id, \
+          P.primary_id_no, V.appointment_patient,V.new_visit_patient,E.provider_id,E.status,E.nurse_examine,E.checked_in,\
+          E.payment_type,E.episode_id,E.encounter_id,E.source,E.updated_date as encountered_date,E.visit_id,V.age_in_years, V.age_in_months, \
           V.age_in_days, V.sub_department_id, visit_type_desc, V.visit_code, V.visit_date, inventory_location_id, L.location_type \
           from hims_f_patient_encounter E\
           INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
@@ -918,14 +913,27 @@ let getNurseMyDay = (req, res, next) => {
           inner join hims_d_visit_type VT on V.visit_type=VT.hims_d_visit_type_id  \
           inner join hims_d_sub_department SD on V.sub_department_id = SD.hims_d_sub_department_id  \
           left join hims_d_inventory_location L on SD.inventory_location_id = L.hims_d_inventory_location_id \
-          where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? AND " +
-          _query,
-        values: [req.userIdentity.hospital_id],
+          where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? AND ${_query};
+
+          select  EMP.full_name as doctor_name,E.hims_f_patient_encounter_id,P.patient_code,P.date_of_birth,P.full_name,P.gender,P.age,E.patient_id, \
+          P.primary_id_no,E.provider_id,E.status,E.nurse_examine,E.checked_in,\
+          E.payment_type,E.episode_id,E.encounter_id,E.source,E.updated_date as encountered_date,E.visit_id,V.age_in_years, V.age_in_months, \
+          V.age_in_days, V.sub_department_id, inventory_location_id, L.location_type,E.ip_id \
+          from hims_f_patient_encounter E\
+          INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
+          INNER JOIN hims_d_employee EMP ON EMP.hims_d_employee_id=E.provider_id \
+          inner join hims_adm_atd_admission V on E.ip_id=V.hims_adm_atd_admission_id          
+          inner join hims_d_sub_department SD on V.sub_department_id = SD.hims_d_sub_department_id  \
+          left join hims_d_inventory_location L on SD.inventory_location_id = L.hims_d_inventory_location_id \
+          where E.cancelled='N' and E.record_status='A' AND V.hospital_id=? AND ${_query}`,
+        values: [req.userIdentity.hospital_id, req.userIdentity.hospital_id],
         printQuery: true,
       })
       .then((result) => {
+        const final_result = result[0].concat(result[1]);
+
         _mysql.releaseConnection();
-        req.records = result;
+        req.records = final_result;
         next();
       })
       .catch((error) => {

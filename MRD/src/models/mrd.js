@@ -217,7 +217,7 @@ export default {
           _mysql.releaseConnection();
           if (input.fromHistoricalData) {
             const arrangedData = _.chain(result)
-              .groupBy((g) => g.diagnosis_date)
+              .groupBy((g) => moment(g.diagnosis_date).format("DD-MM-YYYY"))
               .map((details, key) => {
                 const { diagnosis_date, user_display_name } = _.head(details);
 
@@ -268,7 +268,7 @@ export default {
             prescription_date, prescription_status , \
             hims_f_prescription_detail_id, prescription_id, item_id,IM.item_description, PD.generic_id, IG.generic_name, \
             dosage,med_units, frequency, no_of_days,\
-            dispense, frequency_type, frequency_time, frequency_route, start_date, PD.service_id, uom_id, \
+            dispense, frequency_type, frequency_time, frequency_route, date(start_date) as start_date, PD.service_id, uom_id, \
             item_category_id, PD.item_status, PD.instructions\
              from hims_f_prescription P left join hims_d_employee E on E.hims_d_employee_id=P.provider_id ,hims_f_prescription_detail PD,hims_d_item_master IM,hims_d_item_generic IG\
             where P.record_status='A' and IM.record_status='A' and IG.record_status='A' and \
@@ -318,7 +318,7 @@ export default {
       const input = req.query;
 
       if (input.patient_id != null) {
-        _stringData += " and V.patient_id = ?" + input.patient_id;
+        _stringData += " and LO.patient_id = ?" + input.patient_id;
       }
       if (input.visit_id != null) {
         _stringData += " and visit_id = ?" + input.visit_id;
@@ -339,18 +339,21 @@ export default {
       //       " group by hims_f_ordered_services_id order by OS.visit_id desc",
       _mysql
         .executeQuery({
-          query: `select hims_f_lab_order_id,LO.lab_id_number, LO.visit_id, LO.patient_id,LO.send_out_test, visit_date, E.full_name as provider_name, S.service_name, LO.billed as lab_billed, 
+          query: `select hims_f_lab_order_id,LO.lab_id_number, LO.visit_id, LO.patient_id,LO.send_out_test, case when LO.ip_id is NULL then V.visit_date else ADM.admission_date end as visit_date
+          , E.full_name as provider_name, S.service_name, LO.billed as lab_billed, 
           LO.status as lab_ord_status, S.service_type_id from hims_f_lab_order LO 
-          inner join hims_f_patient_visit V on LO.visit_id = V.hims_f_patient_visit_id
+          left join hims_f_patient_visit V on LO.visit_id = V.hims_f_patient_visit_id
+          left join hims_adm_atd_admission ADM on ADM.hims_adm_atd_admission_id = LO.ip_id
           inner join hims_d_services S on LO.service_id=S.hims_d_services_id 
-          inner join hims_d_employee  E on LO.provider_id=E.hims_d_employee_id where 1=1 ${_stringData} order by hims_f_lab_order_id;
-          select hims_f_rad_order_id, visit_date, E.full_name as provider_name, S.service_name, RO.billed as rad_billed, 
-          RO.status as rad_ord_status,  S.service_type_id from hims_f_rad_order RO 
-          inner join hims_f_patient_visit V on RO.visit_id = V.hims_f_patient_visit_id
-          inner join hims_d_services S on RO.service_id=S.hims_d_services_id 
-          inner join hims_d_employee  E on RO.provider_id=E.hims_d_employee_id where 1=1 ${_stringData}
-          order by hims_f_rad_order_id;`,
-
+          inner join hims_d_employee  E on LO.provider_id=E.hims_d_employee_id where 1=1  ${_stringData} order by hims_f_lab_order_id;
+          select hims_f_rad_order_id, case when LO.ip_id is NULL then V.visit_date else ADM.admission_date end as visit_date
+          , E.full_name as provider_name, S.service_name, LO.billed as rad_billed, 
+          LO.status as rad_ord_status,  S.service_type_id from hims_f_rad_order LO 
+          left join hims_f_patient_visit V on LO.visit_id = V.hims_f_patient_visit_id
+          left join hims_adm_atd_admission ADM on ADM.hims_adm_atd_admission_id = LO.ip_id
+          inner join hims_d_services S on LO.service_id=S.hims_d_services_id 
+          inner join hims_d_employee  E on LO.provider_id=E.hims_d_employee_id where 1=1 ${_stringData} order by hims_f_rad_order_id;`,
+          // values: [req.query.patient_id, req.query.patient_id],
           printQuery: true,
         })
         .then((result) => {

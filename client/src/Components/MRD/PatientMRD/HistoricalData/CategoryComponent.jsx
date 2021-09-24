@@ -104,9 +104,9 @@ export default function CategoryComponent({ componentsName }) {
       getPatientDiagnosis();
       setColumns([
         { name: "Diagnosis" },
-        { name: "Diagnosis Code" },
-        { name: "Diagnosis Type" },
-        { name: "Final Diagnosis" },
+        { name: "Code" },
+        { name: "Type" },
+        { name: "Final Dia." },
       ]);
     } else if (componentsName === "Treatments") {
       getPatientTreatments();
@@ -119,23 +119,24 @@ export default function CategoryComponent({ componentsName }) {
     } else if (componentsName === "Prescription") {
       getPatientMedicationHistoricalData();
       setColumns([
-        { name: "Start Date" },
-        { name: "Generic Name" },
+        // { name: "Generic Name" },
         { name: "Item Description" },
-        { name: "Dosage" },
-        { name: "Unit" },
-        { name: "Frequency" },
-        { name: "No. of Days" },
+        { name: "Start Date" },
+        { name: "Instructions" },
+        // { name: "Dosage" },
+        // { name: "Unit" },
+        // { name: "Frequency" },
+        // { name: "No. of Days" },
       ]);
     } else if (componentsName === "Investigations") {
       getPatientInvestigation();
       setColumns([
-        { name: "Service Name" },
-        { name: "Doctor Name" },
-        { name: "Lab Order Status" },
-        { name: "Lab Billed" },
-        { name: "Radiology Order Status" },
-        { name: "Radiology Billed" },
+        { name: "Investigation Name" },
+        { name: "Ordered By" },
+        { name: "Lab Status" },
+        // { name: "Lab Billed" },
+        { name: "Rad Status" },
+        // { name: "Radiology Billed" },
       ]);
     }
   }, [componentsName]);
