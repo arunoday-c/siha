@@ -125,6 +125,7 @@ export default memo(function SingleCell({
     }
   };
   const updateBedStatusUnavailable = async () => {
+    debugger;
     confirm({
       okText: "Yes",
       okType: "primary",
@@ -215,14 +216,7 @@ export default memo(function SingleCell({
             {bed_desc}
           </span>
 
-          <span
-            className="actionSec"
-            style={
-              bed_status === "Occupied" || bed_status === "Unavailable"
-                ? {}
-                : { pointerEvents: "none", opacity: "0.1" }
-            }
-          >
+          <span className="actionSec">
             <i
               className="fas fa-redo-alt"
               onClick={() => {
@@ -238,6 +232,11 @@ export default memo(function SingleCell({
                     AlgaehMessagePop({ display: error.message, type: "error" })
                   );
               }}
+              style={
+                bed_status === "Occupied" || bed_status === "Unavailable"
+                  ? {}
+                  : { pointerEvents: "none", opacity: "0.2" }
+              }
             ></i>{" "}
             <i
               onClick={() => {
@@ -253,6 +252,12 @@ export default memo(function SingleCell({
                   );
               }}
               className="fas fa-times-circle"
+              // fa-tick
+              style={
+                bed_status !== "Vacant"
+                  ? { pointerEvents: "none", opacity: "0.5" }
+                  : {}
+              }
             ></i>
           </span>
         </>

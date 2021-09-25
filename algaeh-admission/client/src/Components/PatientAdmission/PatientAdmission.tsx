@@ -246,7 +246,7 @@ export default function PatientAdmission(props: any) {
       !selectedBedData?.bed_no
     ) {
       AlgaehMessagePop({
-        display: "Select Bed first",
+        display: "Select a Bed",
         type: "error",
       });
       return;
