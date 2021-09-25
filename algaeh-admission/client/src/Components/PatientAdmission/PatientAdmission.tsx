@@ -235,7 +235,7 @@ export default function PatientAdmission(props: any) {
   const AdmitPatient = async (data: any) => {
     if (!savedPatient?.full_name || !savedPatient?.patient_code) {
       AlgaehMessagePop({
-        display: "Select Patient  first",
+        display: "Select Patient first",
         type: "error",
       });
       return;
@@ -246,7 +246,7 @@ export default function PatientAdmission(props: any) {
       !selectedBedData?.bed_no
     ) {
       AlgaehMessagePop({
-        display: "Select  Bed first",
+        display: "Select Bed first",
         type: "error",
       });
       return;
@@ -520,7 +520,7 @@ export default function PatientAdmission(props: any) {
 
         <div className="row">
           <div className="col-3">
-            <BedDetails useState={useState} />
+            <BedDetails />
           </div>
           <div className="col-9">
             <InsuranceDetails
@@ -586,7 +586,7 @@ export default function PatientAdmission(props: any) {
                   setIsInsurance(false);
                   setServiceInfo(null);
                   setDisableData(false);
-                  reset({});
+                  reset({ doctor_id: undefined });
                 }}
               >
                 <AlgaehLabel label={{ fieldName: "btn_clear" }} />
