@@ -35,6 +35,7 @@ class SickLeave extends Component {
       episode_id: Window?.global?.episode_id,
       patient_id: Window?.global?.current_patient,
       visit_id: Window?.global?.visit_id,
+      ip_id: Window?.global?.ip_id,
       disableEdit: false,
       hims_f_patient_sick_leave_id: null,
     };
@@ -48,6 +49,7 @@ class SickLeave extends Component {
           episode_id: this.props.patientData.episode_id,
           patient_id: this.props.patientData.patient_id,
           visit_id: this.props.patientData.visit_id,
+          ip_id: this.props.patientData.ip_id,
         },
         () => {
           this.getSickLeave();
@@ -92,6 +94,7 @@ class SickLeave extends Component {
       data: {
         patient_id: this.state.patient_id,
         visit_id: this.state.visit_id,
+        ip_id: this.state.ip_id,
       },
       onSuccess: (response) => {
         let data = response.data.records[0];
@@ -176,14 +179,17 @@ class SickLeave extends Component {
     let episode_id;
     let current_patient;
     let visit_id;
+    let ip_id;
     if (this.props.patientData) {
       episode_id = this.props.patientData.episode_id;
       current_patient = this.props.patientData.patient_id;
       visit_id = this.props.patientData.visit_id;
+      ip_id = this.props.patientData.ip_id;
     } else {
       episode_id = Window.global.episode_id;
       current_patient = Window.global.current_patient;
       visit_id = Window.global.visit_id;
+      ip_id = Window.global.ip_id;
     }
 
     algaehApiCall({
@@ -209,6 +215,14 @@ class SickLeave extends Component {
             {
               name: "episode_id",
               value: episode_id, // Window.global["episode_id"]
+            },
+            {
+              name: "episode_id",
+              value: episode_id, // Window.global["episode_id"]
+            },
+            {
+              name: "ip_id",
+              value: ip_id,
             },
           ],
           outputFileType: "PDF",
