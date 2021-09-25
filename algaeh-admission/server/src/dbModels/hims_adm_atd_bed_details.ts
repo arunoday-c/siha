@@ -26,6 +26,13 @@ hims_adm_atd_bed_details.init(
         notEmpty: true,
       },
     },
+    ward_detail_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     provider_id: {
       type: DataTypes.INTEGER,
       allowNull: false,

@@ -80,7 +80,7 @@ export async function addPatienAdmission(
       service_type_id: input.bed_details.service_type_id,
       services_id: input.bed_details.services_id,
       ward_id: input.ward_id,
-
+      ward_detail_id: input.hims_adm_ward_detail_id,
       bed_id: input.bed_id,
       bed_no: input.bed_no,
 

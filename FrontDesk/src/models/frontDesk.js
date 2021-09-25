@@ -905,3 +905,28 @@ export function getDoctorAndDepartment(req, res, next) {
     next(e);
   }
 }
+export function getPatientAdmissionDetails(req, res, next) {
+  const _mysql = new algaehMysql();
+  const { patient_id, hims_adm_ward_detail_id } = req.query;
+  try {
+    _mysql
+      .executeQuery({
+        query: `
+        SELECT BD.*,P.* FROM hims_adm_atd_bed_details BD left join hims_f_patient P on P.hims_d_patient_id=BD.patient_id  where BD.patient_id=? and BD.ward_detail_id=? ;`,
+        values: [patient_id, hims_adm_ward_detail_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}

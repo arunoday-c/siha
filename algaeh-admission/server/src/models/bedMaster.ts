@@ -925,12 +925,13 @@ export async function getPatBedAdmissionDetails(
   const _mysql = new algaehMysql();
   try {
     const result = await hims_adm_atd_bed_details.findOne({
-      attributes: ["hims_adm_atd_bed_details_id", "bed_id"],
+      attributes: ["hims_adm_atd_bed_details_id", "bed_id", "patient_id"],
 
       nest: false,
       raw: true,
       where: {
         bed_id: req.query.bed_id,
+        ward_detail_id: req.query.hims_adm_ward_detail_id,
       },
     });
     req["records"] = result;

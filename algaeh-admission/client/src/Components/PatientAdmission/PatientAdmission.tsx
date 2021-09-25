@@ -277,6 +277,7 @@ export default function PatientAdmission(props: any) {
         bed_no: selectedBedData.bed_no,
         sub_department_id: sub_department_id,
         provider_id: doctor_id,
+
         hims_adm_ward_detail_id: selectedBedData.hims_adm_ward_detail_id,
         insurance_provider_id: insuranceInfo
           ? insuranceInfo.primary_insurance_provider_id
@@ -303,8 +304,6 @@ export default function PatientAdmission(props: any) {
 
   useEffect(() => {
     getClinicalDoctors();
-    // const c = props.appContext();
-    // console.log("mainCtx====>", c);
   }, []);
 
   return (
