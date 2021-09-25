@@ -691,4 +691,81 @@ export default {
       next(e);
     }
   },
+  getPatientSummary: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const input = req.query;
+    try {
+      _mysql
+        .executeQuery({
+          query: ` -- Investigation Lab (Result - 1)
+          select hims_f_lab_order_id, visit_date, E.full_name as provider_name, S.service_name, LO.billed as lab_billed,
+          LO.status as lab_ord_status from hims_f_lab_order LO
+          inner join hims_f_patient_visit V on LO.visit_id = V.hims_f_patient_visit_id
+          inner join hims_d_services S on LO.service_id=S.hims_d_services_id
+          inner join hims_d_employee  E on LO.provider_id=E.hims_d_employee_id where 1=1 and  V.patient_id=? and LO.visit_id=? order by hims_f_lab_order_id;
+          -- Investigation Rad (Result - 2)
+          select hims_f_rad_order_id, visit_date, E.full_name as provider_name, S.service_name, RO.billed as rad_billed,
+          RO.status as rad_ord_status from hims_f_rad_order RO
+          inner join hims_f_patient_visit V on RO.visit_id = V.hims_f_patient_visit_id
+          inner join hims_d_services S on RO.service_id=S.hims_d_services_id
+          inner join hims_d_employee  E on RO.provider_id=E.hims_d_employee_id where 1=1 and  V.patient_id=? and RO.visit_id=? order by hims_f_rad_order_id;
+          -- Consumable (Result - 3)
+          SELECT OS.instructions,S.service_code, S.cpt_code, S.service_name, S.arabic_service_name,S.service_desc, S.procedure_type,
+          S.service_status, ST.service_type FROM hims_f_ordered_inventory OS 
+          inner join  hims_d_services S on OS.services_id = S.hims_d_services_id 
+          inner join  hims_d_service_type ST on OS.service_type_id = ST.hims_d_service_type_id 
+          inner join  hims_d_inventory_item_master IM on OS.inventory_item_id = IM.hims_d_inventory_item_master_id 
+          WHERE OS.record_status='A' and visit_id=?;
+          -- Package (Result - 4)
+          select S.service_name from hims_f_package_header H  
+          inner join hims_f_package_detail D on H.hims_f_package_header_id=D.package_header_id 
+          inner join hims_d_services S on D.service_id = S.hims_d_services_id 
+          inner join hims_d_service_type ST on D.service_type_id = ST.hims_d_service_type_id 
+          where H.record_status='A'  and H.patient_id=? and H.visit_id=?;
+          -- Examination (Result - 5)
+          SELECT EX.episode_id,EXH.description as ex_desc,EXD.description as ex_type,EXS.description  as ex_severity,EX.comments FROM hims_f_episode_examination EX
+          inner join hims_d_physical_examination_header EXH on EXH.hims_d_physical_examination_header_id=EX.exam_header_id
+          left join hims_d_physical_examination_details EXD on EXD.hims_d_physical_examination_details_id=EX.exam_details_id
+          left join hims_d_physical_examination_subdetails EXS on EXS.hims_d_physical_examination_subdetails_id=EX.exam_subdetails_id
+          where EX.episode_id=? and EX.record_status='A';
+          -- Procedure (Result - 6)
+          SELECT S.service_name,S.service_code from hims_f_ordered_services OS
+          inner join hims_d_services S on S.hims_d_services_id = OS.services_id
+          where OS.service_type_id='2' and OS.visit_id=? and OS.patient_id=?;`,
+          printQuery: true,
+          values: [
+            input.patient_id,
+            input.visit_id,
+            input.patient_id,
+            input.visit_id,
+            input.visit_id,
+            input.patient_id,
+            input.visit_id,
+            input.episode_id,
+            input.visit_id,
+            input.patient_id,
+          ],
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = {
+            lab: result[0],
+            rad: result[1],
+            consumableList: result[2],
+            packageList: result[3],
+            examinationList: result[4],
+            procedureList: result[5],
+          };
+
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 };
