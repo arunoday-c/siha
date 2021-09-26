@@ -901,7 +901,7 @@ export async function updateBedStatusUnavailable(
 
     const result = await hims_adm_ward_detail.update(
       {
-        bed_status: "Blocked",
+        bed_status: input.bed_status === "Blocked" ? "Vacant" : "Blocked",
       },
       {
         where: {

@@ -10,13 +10,14 @@ import {
 import BedColumn from "./BedColumn";
 import { BedManagementContext } from "./BedMangementContext";
 import SelectWardSection from "./SelectWardSection";
+import { useStateWithCallbackLazy } from "use-state-with-callback";
 // import { useForm, Controller } from "react-hook-form";
 
 export default memo(function BedManagement(props: any) {
   const { fromAdmission } = props;
   const { setBedStatusData, setFromPatientAdmission } =
     useContext(BedManagementContext);
-  const [bedStatus, setBedStatus] = useState([]);
+  const [bedStatus, setBedStatus] = useStateWithCallbackLazy([]);
   useEffect(() => {
     bedStatusSetUp();
     setFromPatientAdmission(fromAdmission ? fromAdmission : false);
@@ -49,15 +50,16 @@ export default memo(function BedManagement(props: any) {
     }
 
     if (response.data.success) {
-      const allStatus = response.data.records.result;
-      setBedStatus(response.data.records.result);
-      // const allStatus = response.data.records.result;
+      setBedStatus(response.data.records.result, (data: any) => {
+        let allStatus = data;
 
-      allStatus.unshift({
-        description: "All",
+        allStatus.unshift({
+          description: "All",
+        });
+
+        setBedStatusData(allStatus);
       });
-
-      setBedStatusData(allStatus);
+      return response.data.records.result;
     }
   };
   //eslint-disable-line
