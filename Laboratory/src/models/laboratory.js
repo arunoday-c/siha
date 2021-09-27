@@ -189,12 +189,13 @@ const labModal = {
           query:
             "SELECT hims_f_lab_order_id, hims_f_lab_order_id as order_id, test_id, service_id,bacteria_name,organism_type, bacteria_type, LO.patient_id, primary_id_no, patient_code, P.full_name, \
             P.date_of_birth,group_id, P.gender, ordered_date, LS.barcode_gen, LO.credit_order,\
-            LO.status, test_type, visit_id, ip_id, LO.lab_id_number,LO.contaminated_culture, LS.status as sample_status,S.service_code, S.service_name,\
+            LO.status, test_type, visit_id,V.visit_code, ip_id, LO.lab_id_number,LO.contaminated_culture, LS.status as sample_status,S.service_code, S.service_name,\
             case when LO.run_type='1' then '1 Time' when LO.run_type='2' then '2 Times' when LO.run_type='3' then '3 times' else '-' end as run_types, \
             hims_d_lab_sample_id, collected_by,TC.test_section, collected_date, billed,sample_id, container_id, collected, hesn_upload, LO.send_in_test, LO.send_out_test, \
             LS.remarks, IT.isPCR,IT.culture_test, IT.auto_validate FROM hims_f_lab_order LO\
             inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
             INNER JOIN hims_f_patient P on P.hims_d_patient_id = LO.patient_id \
+            inner JOIN hims_f_patient_visit V on V.hims_f_patient_visit_id = LO.visit_id \
             LEFT JOIN hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A'\
             left join hims_d_lab_specimen as DLS on DLS.hims_d_lab_specimen_id = LS.sample_id \
             inner join hims_d_investigation_test as IT on IT.hims_d_investigation_test_id = LO.test_id \
@@ -780,7 +781,7 @@ const labModal = {
           ? req.body.billdetails
           : req.records.ResultOfFetchOrderIds;
 
-      console.log("Services", Services);
+      // console.log("Services", Services);
       const labServices = Services.filter(
         (f) =>
           f.service_type_id ==
@@ -804,7 +805,7 @@ const labModal = {
         };
       });
 
-      console.log("labServices", labServices);
+      // console.log("labServices", labServices);
       if (labServices.length > 0) {
         const IncludeValues = [
           "ordered_services_id",
@@ -1831,6 +1832,7 @@ const labModal = {
                 ],
                 printQuery: true,
               })
+
               .then(async (update_lab_order) => {
                 if (
                   inputParam[0].portal_exists === "Y" &&
@@ -2155,8 +2157,8 @@ const labModal = {
           appsettings.hims_d_service_type.service_type_id.Lab
       );
 
-      console.log("ord_lab_services", ord_lab_services.length);
-      console.log("OrderServices", OrderServices.length);
+      // console.log("ord_lab_services", ord_lab_services.length);
+      // console.log("OrderServices", OrderServices.length);
 
       const credit_order = parseFloat(req.body.credit_amount) > 0 ? "Y" : "N";
       if (OrderServices.length > 0) {
@@ -2722,6 +2724,7 @@ export async function updateLabOrderServices(req, res, next) {
       printQuery: true,
     });
     // .then(async (final_result) => {
+
     if (inputParam.portal_exists === "Y") {
       const portal_data = {
         service_id: inputParam.service_id,
@@ -2729,11 +2732,13 @@ export async function updateLabOrderServices(req, res, next) {
         patient_identity: inputParam.primary_id_no,
         service_status: "SAMPLE COLLECTED",
       };
+
       await axios
         .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
         .catch((e) => {
           throw e;
         });
+
       _mysql.commitTransaction(() => {
         _mysql.releaseConnection();
         req.records = {
