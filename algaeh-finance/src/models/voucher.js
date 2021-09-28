@@ -774,7 +774,7 @@ export default {
     // return;
     let queryString = "";
     for (let i = 0; i < input.details.length; i++) {
-      console.log("input == ", input.details[i]);
+      // console.log("input == ", input.details[i]);
 
       if (input.details[i].finance_voucher_id) {
         queryString += _mysql.mysqlQueryFormat(
@@ -799,7 +799,7 @@ export default {
           }
       } else {
         const previousInfo = input.details.find((f) => f.finance_voucher_id);
-        console.log("previousInfo == ", previousInfo);
+        // console.log("previousInfo == ", previousInfo);
         queryString += _mysql.mysqlQueryFormat(
           `INSERT INTO finance_voucher_details(head_id,child_id,
           credit_amount,debit_amount,narration,payment_date,month,year,payment_type,
@@ -847,8 +847,13 @@ export default {
       .sumBy((s) => parseFloat(s.amount))
       .value();
     queryString += _mysql.mysqlQueryFormat(
-      `update finance_voucher_header set amount=?,narration=? where finance_voucher_header_id=?;`,
-      [headerAmount, input.narration, input.finance_voucher_header_id]
+      `update finance_voucher_header set amount=?,narration=?,payment_date=? where finance_voucher_header_id=?;`,
+      [
+        headerAmount,
+        input.narration,
+        input.transaction_date,
+        input.finance_voucher_header_id,
+      ]
     );
     _mysql
       .executeQueryWithTransaction({
@@ -2468,7 +2473,7 @@ export default {
 
     _mysql
       .executeQuery({
-        query: `select VH.payment_date, VH.narration, VH.voucher_type, VH.invoice_ref_no, 
+        query: `select VH.payment_date as voucher_transaction_date, VH.narration, VH.voucher_type, VH.invoice_ref_no, 
         VD.*, CONCAT(VD.head_id, '-', VD.child_id) as sourceName,VD.head_id as og_head_id, VD.child_id as og_child_id,
         ROUND( debit_amount,${decimal_places}) as debit_amount,
         ROUND( credit_amount,${decimal_places}) as credit_amount,
