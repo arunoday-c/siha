@@ -778,7 +778,7 @@ export default {
 
       if (input.details[i].finance_voucher_id) {
         queryString += _mysql.mysqlQueryFormat(
-          "update finance_voucher_details set head_id=?, child_id=?,credit_amount=?,debit_amount=?,narration=? where finance_voucher_id=?;",
+          "update finance_voucher_details set head_id=?, child_id=?,credit_amount=?,debit_amount=?,narration=?,payment_date=? where finance_voucher_id=?;",
           [
             input.details[i].head_id,
             input.details[i].child_id,
@@ -789,6 +789,7 @@ export default {
               ? input.details[i].amount
               : 0,
             input.details[i].narration,
+            input.transaction_date,
             input.details[i].finance_voucher_id,
           ]
         );
@@ -815,6 +816,7 @@ export default {
               ? input.details[i].amount
               : 0,
             input.details[i].narration,
+            // input.transaction_date,
             previousInfo.payment_date,
             previousInfo.month,
             previousInfo.year,
