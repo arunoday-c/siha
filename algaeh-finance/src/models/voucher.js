@@ -951,11 +951,12 @@ export default {
           if (hasPandL && pl_account) {
             queryPandL = _mysql.mysqlQueryFormat(
               `update finance_voucher_details set debit_amount=?,credit_amount=?,
-  payment_type=? where pl_entry='Y' and finance_voucher_id=?;`,
+  payment_type=?,payment_date=? where pl_entry='Y' and finance_voucher_id=?;`,
               [
                 pl_account.debit_amount,
                 pl_account.credit_amount,
                 pl_account.payment_type,
+                input.transaction_date,
                 hasPandL.finance_voucher_id,
               ]
             );
