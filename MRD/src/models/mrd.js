@@ -217,7 +217,7 @@ export default {
           _mysql.releaseConnection();
           if (input.fromHistoricalData) {
             const arrangedData = _.chain(result)
-              .groupBy((g) => g.diagnosis_date)
+              .groupBy((g) => moment(g.diagnosis_date).format("DD-MM-YYYY"))
               .map((details, key) => {
                 const { diagnosis_date, user_display_name } = _.head(details);
 
@@ -268,7 +268,7 @@ export default {
             prescription_date, prescription_status , \
             hims_f_prescription_detail_id, prescription_id, item_id,IM.item_description, PD.generic_id, IG.generic_name, \
             dosage,med_units, frequency, no_of_days,\
-            dispense, frequency_type, frequency_time, frequency_route, start_date, PD.service_id, uom_id, \
+            dispense, frequency_type, frequency_time, frequency_route, date(start_date) as start_date, PD.service_id, uom_id, \
             item_category_id, PD.item_status, PD.instructions\
              from hims_f_prescription P left join hims_d_employee E on E.hims_d_employee_id=P.provider_id ,hims_f_prescription_detail PD,hims_d_item_master IM,hims_d_item_generic IG\
             where P.record_status='A' and IM.record_status='A' and IG.record_status='A' and \
@@ -318,7 +318,7 @@ export default {
       const input = req.query;
 
       if (input.patient_id != null) {
-        _stringData += " and V.patient_id = ?" + input.patient_id;
+        _stringData += " and LO.patient_id = ?" + input.patient_id;
       }
       if (input.visit_id != null) {
         _stringData += " and visit_id = ?" + input.visit_id;
@@ -339,18 +339,21 @@ export default {
       //       " group by hims_f_ordered_services_id order by OS.visit_id desc",
       _mysql
         .executeQuery({
-          query: `select hims_f_lab_order_id,LO.lab_id_number, LO.visit_id, LO.patient_id,LO.send_out_test, visit_date, E.full_name as provider_name, S.service_name, LO.billed as lab_billed, 
+          query: `select hims_f_lab_order_id,LO.lab_id_number, LO.visit_id, LO.patient_id,LO.send_out_test, case when LO.ip_id is NULL then V.visit_date else ADM.admission_date end as visit_date
+          , E.full_name as provider_name, S.service_name, LO.billed as lab_billed, 
           LO.status as lab_ord_status, S.service_type_id from hims_f_lab_order LO 
-          inner join hims_f_patient_visit V on LO.visit_id = V.hims_f_patient_visit_id
+          left join hims_f_patient_visit V on LO.visit_id = V.hims_f_patient_visit_id
+          left join hims_adm_atd_admission ADM on ADM.hims_adm_atd_admission_id = LO.ip_id
           inner join hims_d_services S on LO.service_id=S.hims_d_services_id 
-          inner join hims_d_employee  E on LO.provider_id=E.hims_d_employee_id where 1=1 ${_stringData} order by hims_f_lab_order_id;
-          select hims_f_rad_order_id, visit_date, E.full_name as provider_name, S.service_name, RO.billed as rad_billed, 
-          RO.status as rad_ord_status,  S.service_type_id from hims_f_rad_order RO 
-          inner join hims_f_patient_visit V on RO.visit_id = V.hims_f_patient_visit_id
-          inner join hims_d_services S on RO.service_id=S.hims_d_services_id 
-          inner join hims_d_employee  E on RO.provider_id=E.hims_d_employee_id where 1=1 ${_stringData}
-          order by hims_f_rad_order_id;`,
-
+          inner join hims_d_employee  E on LO.provider_id=E.hims_d_employee_id where 1=1  ${_stringData} order by hims_f_lab_order_id;
+          select hims_f_rad_order_id, case when LO.ip_id is NULL then V.visit_date else ADM.admission_date end as visit_date
+          , E.full_name as provider_name, S.service_name, LO.billed as rad_billed, 
+          LO.status as rad_ord_status,  S.service_type_id from hims_f_rad_order LO 
+          left join hims_f_patient_visit V on LO.visit_id = V.hims_f_patient_visit_id
+          left join hims_adm_atd_admission ADM on ADM.hims_adm_atd_admission_id = LO.ip_id
+          inner join hims_d_services S on LO.service_id=S.hims_d_services_id 
+          inner join hims_d_employee  E on LO.provider_id=E.hims_d_employee_id where 1=1 ${_stringData} order by hims_f_rad_order_id;`,
+          // values: [req.query.patient_id, req.query.patient_id],
           printQuery: true,
         })
         .then((result) => {
@@ -678,6 +681,83 @@ export default {
             req.records = result;
             next();
           }
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getPatientSummary: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const input = req.query;
+    try {
+      _mysql
+        .executeQuery({
+          query: ` -- Investigation Lab (Result - 1)
+          select hims_f_lab_order_id, visit_date, E.full_name as provider_name, S.service_name, LO.billed as lab_billed,
+          LO.status as lab_ord_status from hims_f_lab_order LO
+          inner join hims_f_patient_visit V on LO.visit_id = V.hims_f_patient_visit_id
+          inner join hims_d_services S on LO.service_id=S.hims_d_services_id
+          inner join hims_d_employee  E on LO.provider_id=E.hims_d_employee_id where 1=1 and  V.patient_id=? and LO.visit_id=? order by hims_f_lab_order_id;
+          -- Investigation Rad (Result - 2)
+          select hims_f_rad_order_id, visit_date, E.full_name as provider_name, S.service_name, RO.billed as rad_billed,
+          RO.status as rad_ord_status from hims_f_rad_order RO
+          inner join hims_f_patient_visit V on RO.visit_id = V.hims_f_patient_visit_id
+          inner join hims_d_services S on RO.service_id=S.hims_d_services_id
+          inner join hims_d_employee  E on RO.provider_id=E.hims_d_employee_id where 1=1 and  V.patient_id=? and RO.visit_id=? order by hims_f_rad_order_id;
+          -- Consumable (Result - 3)
+          SELECT OS.instructions,S.service_code, S.cpt_code, S.service_name, S.arabic_service_name,S.service_desc, S.procedure_type,
+          S.service_status, ST.service_type FROM hims_f_ordered_inventory OS 
+          inner join  hims_d_services S on OS.services_id = S.hims_d_services_id 
+          inner join  hims_d_service_type ST on OS.service_type_id = ST.hims_d_service_type_id 
+          inner join  hims_d_inventory_item_master IM on OS.inventory_item_id = IM.hims_d_inventory_item_master_id 
+          WHERE OS.record_status='A' and visit_id=?;
+          -- Package (Result - 4)
+          select S.service_name from hims_f_package_header H  
+          inner join hims_f_package_detail D on H.hims_f_package_header_id=D.package_header_id 
+          inner join hims_d_services S on D.service_id = S.hims_d_services_id 
+          inner join hims_d_service_type ST on D.service_type_id = ST.hims_d_service_type_id 
+          where H.record_status='A'  and H.patient_id=? and H.visit_id=?;
+          -- Examination (Result - 5)
+          SELECT EX.episode_id,EXH.description as ex_desc,EXD.description as ex_type,EXS.description  as ex_severity,EX.comments FROM hims_f_episode_examination EX
+          inner join hims_d_physical_examination_header EXH on EXH.hims_d_physical_examination_header_id=EX.exam_header_id
+          left join hims_d_physical_examination_details EXD on EXD.hims_d_physical_examination_details_id=EX.exam_details_id
+          left join hims_d_physical_examination_subdetails EXS on EXS.hims_d_physical_examination_subdetails_id=EX.exam_subdetails_id
+          where EX.episode_id=? and EX.record_status='A';
+          -- Procedure (Result - 6)
+          SELECT S.service_name,S.service_code from hims_f_ordered_services OS
+          inner join hims_d_services S on S.hims_d_services_id = OS.services_id
+          where OS.service_type_id='2' and OS.visit_id=? and OS.patient_id=?;`,
+          printQuery: true,
+          values: [
+            input.patient_id,
+            input.visit_id,
+            input.patient_id,
+            input.visit_id,
+            input.visit_id,
+            input.patient_id,
+            input.visit_id,
+            input.episode_id,
+            input.visit_id,
+            input.patient_id,
+          ],
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = {
+            lab: result[0],
+            rad: result[1],
+            consumableList: result[2],
+            packageList: result[3],
+            examinationList: result[4],
+            procedureList: result[5],
+          };
+
+          next();
         })
         .catch((error) => {
           _mysql.releaseConnection();

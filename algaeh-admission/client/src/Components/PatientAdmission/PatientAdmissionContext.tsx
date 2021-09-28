@@ -4,7 +4,7 @@ const baseState: any = {
   department_id: null,
   sub_department_id: null,
   doctor_id: null,
-  selectedBedData: [],
+  selectedBedData: {},
   insuranceInfo: {
     primary_insurance_provider_id: null,
     primary_network_office_id: null,

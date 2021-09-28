@@ -1,6 +1,9 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import frontModels, { getDoctorAndDepartment } from "../models/frontDesk";
+import frontModels, {
+  getDoctorAndDepartment,
+  getPatientAdmissionDetails,
+} from "../models/frontDesk";
 import regModels from "../models/patientRegistration";
 import visitModels, { getPatientDetails } from "../models/visit";
 import billModels from "algaeh-billing/src/models/billing";
@@ -284,5 +287,20 @@ export default () => {
       .end();
     delete req.records;
   });
+  api.get(
+    "/getPatientAdmissionDetails",
+    getPatientAdmissionDetails,
+    (req, res) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records,
+        })
+        .end();
+      delete req.records;
+    }
+  );
+
   return api;
 };

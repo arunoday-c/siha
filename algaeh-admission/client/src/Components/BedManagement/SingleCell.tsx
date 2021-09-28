@@ -1,8 +1,12 @@
-import React, { useContext, memo } from "react";
+import React, { useContext, memo, useEffect, useState } from "react";
 import { PatAdmissionContext } from "../PatientAdmission/PatientAdmissionContext";
 import { BedManagementContext } from "./BedMangementContext";
-import { algaehAxios, AlgaehMessagePop, Modal } from "algaeh-react-components";
-
+import {
+  algaehAxios,
+  AlgaehMessagePop,
+  Modal,
+  Tooltip,
+} from "algaeh-react-components";
 import "./BedManagement.scss";
 
 const { confirm } = Modal;
@@ -29,8 +33,19 @@ export default memo(function SingleCell({
   service_type_id: number;
   bed_status: string;
 }) {
-  //
+  const [patientData, setPatientData] = useState<any>({});
+  useEffect(() => {
+    if (bed_status === "Occupied") {
+      getPatBedAdmissionDetails().then((response) => {
+        getPatientAdmissionDetails(response).then((response) => {
+          setPatientData(response[0]);
 
+          console.log("patientData", patientData);
+          return;
+        });
+      });
+    }
+  }, []);
   const { selectedBedData, setSelectedBedData } =
     useContext(PatAdmissionContext);
   const {
@@ -43,7 +58,7 @@ export default memo(function SingleCell({
   const bgColor = bedStatusData?.filter(
     (f: any) => f.description === bed_status
   )[0]?.bed_color;
-  async function getWardHeaderData(data: any) {
+  const getWardHeaderData = async (data: any) => {
     const { response, error } = await algaehAxios(
       "/bedManagement/getWardHeaderData",
       {
@@ -65,14 +80,14 @@ export default memo(function SingleCell({
     if (response.data.success) {
       setWardHeaderData(response.data.records);
     }
-  }
-  const getPatBedAdmissionDetails = async () => {
+  };
+  const getPatientAdmissionDetails = async (data: any) => {
     const { response, error } = await algaehAxios(
-      "/bedManagement/getPatBedAdmissionDetails",
+      "/frontDesk/getPatientAdmissionDetails",
       {
-        module: "admission",
+        module: "frontDesk",
         method: "GET",
-        data: { bed_id },
+        data: { patient_id: data.patient_id, hims_adm_ward_detail_id },
       }
     );
     if (error) {
@@ -89,8 +104,33 @@ export default memo(function SingleCell({
       return response.data.records;
     }
   };
+
+  const getPatBedAdmissionDetails = async () => {
+    const { response, error } = await algaehAxios(
+      "/bedManagement/getPatBedAdmissionDetails",
+      {
+        module: "admission",
+        method: "GET",
+        data: { bed_id, hims_adm_ward_detail_id },
+      }
+    );
+    if (error) {
+      if (error.show === true) {
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
+      }
+    }
+    if (response.data.success) {
+      return response.data.records;
+    }
+  };
+
   const updateBedStatusUnavailable = async () => {
-    confirm({
+    await confirm({
       okText: "Yes",
       okType: "primary",
       icon: "",
@@ -102,7 +142,7 @@ export default memo(function SingleCell({
           {
             module: "admission",
             method: "PUT",
-            data: { hims_adm_ward_detail_id },
+            data: { hims_adm_ward_detail_id, bed_status },
           }
         );
         if (error) {
@@ -116,13 +156,17 @@ export default memo(function SingleCell({
           }
         }
         if (response.data.success) {
+          getWardHeaderData({
+            hims_adm_ward_header_id: ward_header_id,
+            hims_adm_bed_status_id: hims_adm_bed_status_id,
+          });
           return response.data.records;
         }
       },
     });
   };
   const updateBedReleasingDetails = async (data: any) => {
-    confirm({
+    await confirm({
       okText: "Yes",
       okType: "primary",
       icon: "",
@@ -148,6 +192,10 @@ export default memo(function SingleCell({
           }
         }
         if (response.data.success) {
+          getWardHeaderData({
+            hims_adm_ward_header_id: ward_header_id,
+            hims_adm_bed_status_id: hims_adm_bed_status_id,
+          });
           return response.data.records;
         }
       },
@@ -173,24 +221,6 @@ export default memo(function SingleCell({
     >
       {!fromAdmission ? (
         <>
-          {/* <span
-            // style={fromAdmission ? {} : { pointerEvents: "none" }}
-            onClick={() => {
-              setSelectedBedData({
-                hims_adm_ward_detail_id,
-                hims_adm_ward_header_id,
-                bed_short_name,
-                bed_id,
-                bed_no,
-                bed_desc,
-                ward_desc,
-                services_id,
-                service_type_id,
-              });
-            }}
-            className={`bedBox`}
-            key={hims_adm_ward_detail_id}
-          > */}
           <span className="bedBox">
             <b>
               {bed_short_name}-{bed_no}
@@ -198,51 +228,56 @@ export default memo(function SingleCell({
             {bed_desc}
           </span>
 
-          <span
-            className="actionSec"
-            style={
-              bed_status === "Occupied" || bed_status === "Unavailable"
-                ? {}
-                : { pointerEvents: "none", opacity: "0.1" }
-            }
-          >
-            <i
-              className="fas fa-redo-alt"
-              onClick={() => {
-                getPatBedAdmissionDetails()
-                  .then((response) => {
-                    updateBedReleasingDetails(response);
-                    getWardHeaderData({
-                      hims_adm_ward_header_id: ward_header_id,
-                      hims_adm_bed_status_id: hims_adm_bed_status_id,
-                    });
-                  })
-                  .catch((error) =>
+          <span className="actionSec">
+            <Tooltip title={bed_status === "Occupied" ? "Release Bed" : ""}>
+              <i
+                className="fas fa-redo-alt"
+                onClick={() => {
+                  getPatBedAdmissionDetails()
+                    .then((response) => {
+                      updateBedReleasingDetails(response);
+                    })
+                    .catch((error) =>
+                      AlgaehMessagePop({
+                        display: error.message,
+                        type: "error",
+                      })
+                    );
+                }}
+                style={
+                  bed_status === "Occupied" || bed_status === "Unavailable"
+                    ? {}
+                    : { pointerEvents: "none", opacity: "0.2" }
+                }
+              ></i>{" "}
+            </Tooltip>
+            <Tooltip
+              title={bed_status === "Blocked" ? "Unblock Bed" : "Block Bed"}
+            >
+              <i
+                onClick={() => {
+                  updateBedStatusUnavailable().catch((error) =>
                     AlgaehMessagePop({ display: error.message, type: "error" })
                   );
-              }}
-            ></i>{" "}
-            <i
-              onClick={() => {
-                updateBedStatusUnavailable()
-                  .then((response) => {
-                    getWardHeaderData({
-                      hims_adm_ward_header_id: ward_header_id,
-                      hims_adm_bed_status_id: hims_adm_bed_status_id,
-                    });
-                  })
-                  .catch((error) =>
-                    AlgaehMessagePop({ display: error.message, type: "error" })
-                  );
-              }}
-              className="fas fa-times-circle"
-            ></i>
+                }}
+                className={
+                  bed_status === "Blocked"
+                    ? "fas fa-check"
+                    : `fas fa-times-circle`
+                }
+                // fa-tick
+                style={
+                  bed_status === "Occupied"
+                    ? { pointerEvents: "none", opacity: "0.5" }
+                    : {}
+                }
+              ></i>
+            </Tooltip>
           </span>
         </>
       ) : (
         <>
           <span
-            // style={fromAdmission ? {} : { pointerEvents: "none" }}
             onClick={() => {
               setSelectedBedData({
                 hims_adm_ward_detail_id,
@@ -280,8 +315,19 @@ export default memo(function SingleCell({
               : { backgroundColor: bgColor }
           }
         >
+          {/* {patientData ? ( */}
           <div className="row">
             <div className="col">
+              <small>Patient Name</small>
+              <b>{patientData.full_name}</b>
+            </div>
+            <div className="col">
+              <small>Contact Number</small>
+              <b>
+                {patientData.tel_code} {patientData.contact_number}{" "}
+              </b>
+            </div>
+            {/* <div className="col">
               <small>Name</small>
               <b>Name</b>
             </div>
@@ -292,16 +338,9 @@ export default memo(function SingleCell({
             <div className="col">
               <small>Name</small>
               <b>Name</b>
-            </div>
-            <div className="col">
-              <small>Name</small>
-              <b>Name</b>
-            </div>
-            <div className="col">
-              <small>Name</small>
-              <b>Name</b>
-            </div>
+            </div> */}
           </div>
+          {/* ) : null} */}
         </div>
       ) : null}
     </div>

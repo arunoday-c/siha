@@ -5,7 +5,7 @@ const baseState: any = {
   bedStatusData: [],
   wardHeaderDropdown: [],
   ward_header_id: null,
-  hims_adm_bed_status_id: null,
+  hims_adm_bed_status_id: "All",
   fromAdmission: false,
   // selectedBedData: [],
 };

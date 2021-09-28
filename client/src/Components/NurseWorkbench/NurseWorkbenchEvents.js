@@ -4,7 +4,8 @@ import config from "../../utils/config.json";
 import moment from "moment";
 import Enumerable from "linq";
 const getPatientProfile = ($this) => {
-  const { current_patient, episode_id, visit_id } = Window.global;
+  const { current_patient, episode_id, visit_id, source, ip_id } =
+    Window.global;
   $this.props.getPatientProfile({
     uri: "/doctorsWorkBench/getPatientProfile",
     method: "GET",
@@ -12,13 +13,15 @@ const getPatientProfile = ($this) => {
       patient_id: current_patient, //Window.global["current_patient"],
       episode_id: episode_id, //Window.global["episode_id"]
       visit_id: visit_id, //Window.global["episode_id"]
+      source: source,
+      ip_id: ip_id,
     },
     cancelRequestId: "getPatientProfile",
     redux: {
       type: "PATIENT_PROFILE",
       mappingName: "patient_profile",
     },
-    afterSuccess: (data) => { },
+    afterSuccess: (data) => {},
   });
 };
 const getPatientAllergies = ($this) => {
@@ -42,12 +45,12 @@ const getPatientAllergies = ($this) => {
               k === "F"
                 ? "Food"
                 : k === "A"
-                  ? "Airborne"
-                  : k === "AI"
-                    ? "Animal  &  Insect"
-                    : k === "C"
-                      ? "Chemical & Others"
-                      : "",
+                ? "Airborne"
+                : k === "AI"
+                ? "Animal  &  Insect"
+                : k === "C"
+                ? "Chemical & Others"
+                : "",
             allergyList: g.getSource(),
           };
         })
@@ -211,8 +214,6 @@ const getAllAllergies = ($this, callBack) => {
   });
 };
 
-
-
 const printPrescription = (that, e) => {
   const { current_patient, visit_id } = Window.global;
   const _patient = current_patient; //Window.global["current_patient"];
@@ -222,7 +223,7 @@ const printPrescription = (that, e) => {
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -231,32 +232,29 @@ const printPrescription = (that, e) => {
         reportParams: [
           {
             name: "hims_d_patient_id",
-            value: _patient
+            value: _patient,
           },
           {
             name: "visit_id",
-            value: _visit
+            value: _visit,
           },
           {
             name: "visit_code",
-            value: null
-          }
+            value: null,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
 
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Prescription`;
       window.open(origin);
       // window.document.title = "";
-    }
+    },
   });
 };
-
-
-
 
 const printSickleave = (that, e) => {
   const { episode_id, current_patient, visit_id } = Window.global;
@@ -302,10 +300,7 @@ const printSickleave = (that, e) => {
       });
     },
   });
-}
-
-
-
+};
 
 export {
   getAllChiefComplaints,
@@ -320,5 +315,5 @@ export {
   getAllAllergies,
   getPatientProfile,
   printPrescription,
-  printSickleave
+  printSickleave,
 };

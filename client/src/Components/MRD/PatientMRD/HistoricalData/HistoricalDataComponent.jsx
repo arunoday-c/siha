@@ -10,7 +10,7 @@ function HistoricalDataComponent() {
   const [componentIndex, setComponentIndex] = useState(0);
   const componentsName = [
     "Vitals",
-    "NursingNotes",
+    "Nursing Notes",
     "Diagnosis",
     "Treatments",
     "Prescription",
@@ -34,59 +34,65 @@ function HistoricalDataComponent() {
                   onClick={() => {
                     setComponentIndex(0);
                   }}
-                  value={"Vitals"}
                 >
-                  <span className="active">Vitals</span>
+                  <span className={componentIndex === 0 ? "active" : ""}>
+                    Vitals
+                  </span>
                 </li>
 
                 <li
                   onClick={() => {
                     setComponentIndex(1);
                   }}
-                  value={"NursingNotes"}
                 >
-                  <span>Nursing Notes</span>
+                  <span className={componentIndex === 1 ? "active" : ""}>
+                    Nursing Notes
+                  </span>
                 </li>
                 <li
                   onClick={() => {
                     setComponentIndex(2);
                   }}
-                  value={"NursingNotes"}
                 >
-                  <span>Diagnosis</span>
+                  <span className={componentIndex === 2 ? "active" : ""}>
+                    Diagnosis
+                  </span>
                 </li>
                 <li
                   onClick={() => {
                     setComponentIndex(3);
                   }}
-                  value={"Treatments"}
                 >
-                  <span>Treatments/ Procedure</span>
+                  <span className={componentIndex === 3 ? "active" : ""}>
+                    Treatments/ Procedure
+                  </span>
                 </li>
                 <li
                   onClick={() => {
                     setComponentIndex(4);
                   }}
-                  value={"Prescription"}
                 >
-                  <span>Prescription History</span>
+                  <span className={componentIndex === 4 ? "active" : ""}>
+                    Prescription History
+                  </span>
                 </li>
                 <li
                   onClick={() => {
                     setComponentIndex(5);
                   }}
-                  value={"Investigations"}
                 >
-                  <span>Investigations</span>
+                  <span className={componentIndex === 5 ? "active" : ""}>
+                    Investigations
+                  </span>
                 </li>
-                <li
+                {/* <li
                   onClick={() => {
                     setComponentIndex(6);
                   }}
                   value={"Payments"}
                 >
-                  <span>Payment History</span>
-                </li>
+                  <span className="active">Payment History</span>
+                </li> */}
               </ul>
             </div>
           </div>
@@ -97,11 +103,12 @@ function HistoricalDataComponent() {
         <div className="portlet portlet-bordered margin-bottom-15">
           <div className="portlet-title">
             <div className="caption">
-              <h3 className="caption-subject">History Details - [Vitals]</h3>
+              <h3 className="caption-subject">
+                History Details - {componentsName[componentIndex]}
+              </h3>
             </div>
           </div>
           <div className="portlet-body historyDetailsCntr">
-            {" "}
             {componentIndex === 0 ? (
               <VitalsComponent
                 componentsName={componentsName[componentIndex]}

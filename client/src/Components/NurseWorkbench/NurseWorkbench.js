@@ -826,6 +826,7 @@ class NurseWorkbench extends Component {
       this.complaintType = GlobalVariables.COMPLAINT_TYPE;
     }
 
+    debugger;
     this.setState({ patient_provider_id: data.provider_id });
     setGlobal({
       current_patient: data.patient_id,
@@ -835,6 +836,7 @@ class NurseWorkbench extends Component {
       encounter_id: data.hims_f_patient_encounter_id,
       provider_id: data.provider_id,
       sub_department_id: data.sub_department_id,
+      source: data.source,
     });
 
     this.props.getOrderList({
@@ -842,6 +844,7 @@ class NurseWorkbench extends Component {
       method: "GET",
       data: {
         visit_id: data.visit_id,
+        ip_id: data.ip_id,
       },
       redux: {
         type: "ORDER_SERVICES_GET_DATA",
@@ -1363,7 +1366,9 @@ class NurseWorkbench extends Component {
                             </span>
                             <i
                               className={
-                                data.appointment_patient === "Y"
+                                data.source === "I"
+                                  ? "appointment-icon_1"
+                                  : data.appointment_patient === "Y"
                                   ? "appointment-icon"
                                   : "walking-icon"
                               }
@@ -1393,12 +1398,14 @@ class NurseWorkbench extends Component {
                                 {data.nurse_examine === "Y"
                                   ? "Nursing Done"
                                   : "Nursing Pending"}{" "}
-                              </b>{" "}
-                              /{" "}
+                              </b>
+                              /
                               <b className="newVisit">
-                                {data.new_visit_patient === "Y"
+                                {data.source === "I"
+                                  ? "IP/Day Care"
+                                  : data.new_visit_patient === "Y"
                                   ? "New Visit"
-                                  : "Follow Up"}{" "}
+                                  : "Follow Up"}
                               </b>
                             </span>
                           </p>

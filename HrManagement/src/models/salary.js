@@ -130,7 +130,7 @@ export default {
             A.display_present_days,A.total_weekoff_days, A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, \
             A.total_paid_days,A.pending_unpaid_leave,A.total_hours, A.total_working_hours,A.ot_work_hours, \
             A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours,\
-            E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed, S.salary_type \
+            E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed, S.salary_type,suspend_salary \
             from hims_f_attendance_monthly as A inner join  hims_d_employee as E \
             on  E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id \
             left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` \
@@ -195,11 +195,12 @@ export default {
               })
               .filter((f) => f !== undefined)
               .value();
-            // console.log("empResult --- ", empResult)
+            // console.log("empResult --- ", empResult);
 
             empResult.map((o) => {
-              // console.log("o.salary_type", o.salary_type)
-              // console.log("o.salary_processed", o.salary_processed)
+              // console.log("o.salary_type", o.salary_type);
+              // console.log("o.salary_processed", o.salary_processed);
+              // console.log("o.suspend_salary", o.suspend_salary);
               if (o.salary_type == null) {
                 _salaryHeader_id.push(o.hims_f_salary_id);
               }
@@ -219,8 +220,8 @@ export default {
             if (_salaryHeader_id.length == 0) {
               _salaryHeader_id.push(null);
             }
-            // console.log("_salaryHeader_id --- ", _salaryHeader_id)
-            // console.log("_myemp --- ", _myemp)
+            // console.log("_salaryHeader_id --- ", _salaryHeader_id);
+            // console.log("_myemp --- ", _myemp);
 
             if (_myemp.length == 0) {
               // _mysql.releaseConnection();
@@ -631,9 +632,10 @@ export default {
                                     final_deduction_amount +
                                     advanceOutput.advance_due_amount;
 
-                                  current_deduction_amt_array = current_deduction_amt_array.concat(
-                                    advanceOutput.current_deduct_compoment
-                                  );
+                                  current_deduction_amt_array =
+                                    current_deduction_amt_array.concat(
+                                      advanceOutput.current_deduct_compoment
+                                    );
 
                                   //OT
                                   const _over_time = _.filter(
@@ -647,7 +649,8 @@ export default {
                                   );
                                   getOtManagement({
                                     earnings: _earnings,
-                                    current_earning_amt_array: current_earning_amt_array,
+                                    current_earning_amt_array:
+                                      current_earning_amt_array,
                                     empResult: empResult[i],
                                     hrms_option: results[8],
                                     over_time_comp: results[9],
@@ -664,9 +667,10 @@ export default {
                                         final_earning_amount +
                                         OTManagement.final_earning_amount;
 
-                                      current_earning_amt_array = current_earning_amt_array.concat(
-                                        OTManagement.current_ot_amt_array
-                                      );
+                                      current_earning_amt_array =
+                                        current_earning_amt_array.concat(
+                                          OTManagement.current_ot_amt_array
+                                        );
 
                                       //pJC hour price
                                       pjc_hour_price[
@@ -684,7 +688,8 @@ export default {
                                       getShortAge({
                                         earnings: _earnings,
                                         empResult: empResult[i],
-                                        current_earning_amt_array: current_earning_amt_array,
+                                        current_earning_amt_array:
+                                          current_earning_amt_array,
                                         shortage_comp: results[11],
                                         hrms_option: results[8],
                                         leave_salary: req.query.leave_salary,
@@ -696,9 +701,10 @@ export default {
                                           final_deduction_amount +
                                           ShortAge.final_deduction_amount;
 
-                                        current_deduction_amt_array = current_deduction_amt_array.concat(
-                                          ShortAge.current_shortage_amt_array
-                                        );
+                                        current_deduction_amt_array =
+                                          current_deduction_amt_array.concat(
+                                            ShortAge.current_shortage_amt_array
+                                          );
                                         //Miscellaneous Earning Deduction
                                         const _miscellaneous = _.filter(
                                           results[5],
@@ -715,12 +721,14 @@ export default {
                                           decimal_places:
                                             req.userIdentity.decimal_places,
                                         }).then((miscellaneousOutput) => {
-                                          current_earning_amt_array = current_earning_amt_array.concat(
-                                            miscellaneousOutput.current_earn_compoment
-                                          );
-                                          current_deduction_amt_array = current_deduction_amt_array.concat(
-                                            miscellaneousOutput.current_deduct_compoment
-                                          );
+                                          current_earning_amt_array =
+                                            current_earning_amt_array.concat(
+                                              miscellaneousOutput.current_earn_compoment
+                                            );
+                                          current_deduction_amt_array =
+                                            current_deduction_amt_array.concat(
+                                              miscellaneousOutput.current_deduct_compoment
+                                            );
                                           final_earning_amount =
                                             final_earning_amount +
                                             miscellaneousOutput.final_earning_amount;
@@ -747,9 +755,10 @@ export default {
                                               ? "NS-"
                                               : "LS-";
 
-                                          _salary_number += empResult[i][
-                                            "employee_code"
-                                          ].trim();
+                                          _salary_number +=
+                                            empResult[i][
+                                              "employee_code"
+                                            ].trim();
                                           _salary_number +=
                                             "-" + month_number + "-" + year;
 
@@ -787,87 +796,94 @@ export default {
                                               current_earning_amt_array.length >
                                               0
                                             ) {
-                                              _headerQuery += _mysql.mysqlQueryFormat(
-                                                "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,sub_department_id,salary_date,per_day_sal,total_days,\
+                                              _headerQuery +=
+                                                _mysql.mysqlQueryFormat(
+                                                  "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,sub_department_id,salary_date,per_day_sal,total_days,\
                                                 present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
                                                 unpaid_leave,pending_unpaid_leave,total_hours, total_working_hours, ot_work_hours, ot_weekoff_hours, ot_holiday_hours, leave_salary_accrual_amount, leave_salary_days,\
                                                 shortage_hours,display_present_days,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
                                                 total_contributions,net_salary, total_paid_days, salary_type, hospital_id,created_by, created_date,updated_by,updated_date) \
                                                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
-                                                [
-                                                  _salary_number,
-                                                  parseInt(month_number),
-                                                  parseInt(year),
-                                                  empResult[i]["employee_id"],
-                                                  empResult[i][
-                                                    "sub_department_id"
-                                                  ],
-                                                  month_end,
-                                                  per_day_sal,
-                                                  empResult[i]["total_days"],
-                                                  empResult[i]["present_days"],
-                                                  empResult[i]["absent_days"],
-                                                  empResult[i][
-                                                    "total_work_days"
-                                                  ],
-                                                  empResult[i][
-                                                    "total_weekoff_days"
-                                                  ],
-                                                  empResult[i][
-                                                    "total_holidays"
-                                                  ],
-                                                  empResult[i]["total_leave"],
-                                                  empResult[i]["paid_leave"],
-                                                  empResult[i]["unpaid_leave"],
-                                                  empResult[i][
-                                                    "pending_unpaid_leave"
-                                                  ],
+                                                  [
+                                                    _salary_number,
+                                                    parseInt(month_number),
+                                                    parseInt(year),
+                                                    empResult[i]["employee_id"],
+                                                    empResult[i][
+                                                      "sub_department_id"
+                                                    ],
+                                                    month_end,
+                                                    per_day_sal,
+                                                    empResult[i]["total_days"],
+                                                    empResult[i][
+                                                      "present_days"
+                                                    ],
+                                                    empResult[i]["absent_days"],
+                                                    empResult[i][
+                                                      "total_work_days"
+                                                    ],
+                                                    empResult[i][
+                                                      "total_weekoff_days"
+                                                    ],
+                                                    empResult[i][
+                                                      "total_holidays"
+                                                    ],
+                                                    empResult[i]["total_leave"],
+                                                    empResult[i]["paid_leave"],
+                                                    empResult[i][
+                                                      "unpaid_leave"
+                                                    ],
+                                                    empResult[i][
+                                                      "pending_unpaid_leave"
+                                                    ],
 
-                                                  empResult[i]["total_hours"],
-                                                  empResult[i][
-                                                    "total_working_hours"
-                                                  ],
-                                                  empResult[i]["ot_work_hours"],
-                                                  empResult[i][
-                                                    "ot_weekoff_hours"
-                                                  ],
-                                                  empResult[i][
-                                                    "ot_holiday_hours"
-                                                  ],
-                                                  leave_salary_accrual_amount,
-                                                  empResult[i][
-                                                    "total_applied_days"
-                                                  ],
-                                                  empResult[i][
-                                                    "shortage_hours"
-                                                  ],
-                                                  empResult[i][
-                                                    "display_present_days"
-                                                  ],
+                                                    empResult[i]["total_hours"],
+                                                    empResult[i][
+                                                      "total_working_hours"
+                                                    ],
+                                                    empResult[i][
+                                                      "ot_work_hours"
+                                                    ],
+                                                    empResult[i][
+                                                      "ot_weekoff_hours"
+                                                    ],
+                                                    empResult[i][
+                                                      "ot_holiday_hours"
+                                                    ],
+                                                    leave_salary_accrual_amount,
+                                                    empResult[i][
+                                                      "total_applied_days"
+                                                    ],
+                                                    empResult[i][
+                                                      "shortage_hours"
+                                                    ],
+                                                    empResult[i][
+                                                      "display_present_days"
+                                                    ],
 
-                                                  total_loan_payable_amount,
-                                                  total_loan_due_amount,
-                                                  advance_due_amount,
-                                                  final_earning_amount,
-                                                  final_earning_amount, //Gross salary = total earnings
-                                                  final_deduction_amount,
-                                                  final_contribution_amount,
-                                                  // user created
+                                                    total_loan_payable_amount,
+                                                    total_loan_due_amount,
+                                                    advance_due_amount,
+                                                    final_earning_amount,
+                                                    final_earning_amount, //Gross salary = total earnings
+                                                    final_deduction_amount,
+                                                    final_contribution_amount,
+                                                    // user created
 
-                                                  _net_salary,
-                                                  empResult[i][
-                                                    "total_paid_days"
-                                                  ],
-                                                  salary_type,
-                                                  input.hospital_id,
-                                                  req.userIdentity
-                                                    .algaeh_d_app_user_id,
-                                                  new Date(),
-                                                  req.userIdentity
-                                                    .algaeh_d_app_user_id,
-                                                  new Date(),
-                                                ]
-                                              );
+                                                    _net_salary,
+                                                    empResult[i][
+                                                      "total_paid_days"
+                                                    ],
+                                                    salary_type,
+                                                    input.hospital_id,
+                                                    req.userIdentity
+                                                      .algaeh_d_app_user_id,
+                                                    new Date(),
+                                                    req.userIdentity
+                                                      .algaeh_d_app_user_id,
+                                                    new Date(),
+                                                  ]
+                                                );
 
                                               final_earning_amt_array.push(
                                                 current_earning_amt_array
@@ -936,7 +952,7 @@ export default {
                           inserted_salary = [inserted_header];
                         }
 
-                        // console.log("inserted_salary", inserted_salary)
+                        // console.log("inserted_salary", inserted_salary);
                         if (inserted_salary.length > 0) {
                           let execute_query = "";
 
@@ -1051,7 +1067,8 @@ export default {
                                     decimal_places:
                                       req.userIdentity.decimal_places,
                                     pjc_hour_price: pjc_hour_price,
-                                    employee_basic_earned: employee_basic_earned,
+                                    employee_basic_earned:
+                                      employee_basic_earned,
                                     attendance_type:
                                       Salaryresults[8][0].attendance_type,
                                   })
@@ -1583,7 +1600,8 @@ then round((monthly_accrual_days / 30) * (datediff(E.exit_date, '${month_start}'
                       // console.log("Salary Update")
                       // console.log("salary")
                       InsertEmployeeLeaveSalary({
-                        leave_salary_accrual_detail: leave_salary_accrual_detail,
+                        leave_salary_accrual_detail:
+                          leave_salary_accrual_detail,
                         annual_leave_data: annual_leave_data,
                         _mysql: _mysql,
                         next: next,
@@ -2609,7 +2627,7 @@ function InsertLeaveSalaryAccrual(options) {
       if (header_accrual_exit.length > 0) {
         const header_data_exit = _.head(header_accrual_exit);
 
-        console.log("header_data_exit", header_data_exit);
+        // console.log("header_data_exit", header_data_exit);
 
         const total_leave_salary =
           _.sumBy(leave_salary_accrual_detail, (s) => {
@@ -2621,8 +2639,8 @@ function InsertLeaveSalaryAccrual(options) {
             return parseFloat(s.airfare_amount);
           }) + parseFloat(header_data_exit.total_airfare_amount);
 
-        console.log("total_leave_salary", total_leave_salary);
-        console.log("total_airfare_amount", total_airfare_amount);
+        // console.log("total_leave_salary", total_leave_salary);
+        // console.log("total_airfare_amount", total_airfare_amount);
         // consol.log("header_accrual_exit", header_accrual_exit);
 
         _mysql

@@ -14,6 +14,7 @@ const {
   getPatientInvestigationForDashBoard,
   getPatientPaymentDetails,
   getPatientTreatments,
+  getPatientSummary,
 } = mrdModels;
 
 export default () => {
@@ -29,6 +30,14 @@ export default () => {
     next();
   });
   api.get("/getPatientMrd", getPatientMrd, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.get("/getPatientSummary", getPatientSummary, (req, res, next) => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
