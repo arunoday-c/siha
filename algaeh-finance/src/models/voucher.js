@@ -771,6 +771,7 @@ export default {
 
     let input = req.body;
     let finance_voucher_id = [];
+    const update_by_ = req.userIdentity.algaeh_d_app_user_id;
     // return;
     let queryString = "";
     for (let i = 0; i < input.details.length; i++) {
@@ -778,7 +779,7 @@ export default {
 
       if (input.details[i].finance_voucher_id) {
         queryString += _mysql.mysqlQueryFormat(
-          "update finance_voucher_details set head_id=?, child_id=?,credit_amount=?,debit_amount=?,narration=?,payment_date=? where finance_voucher_id=?;",
+          "update finance_voucher_details set head_id=?, child_id=?,credit_amount=?,debit_amount=?,narration=?,payment_date=?,updated_by=?,updated_date=? where finance_voucher_id=?;",
           [
             input.details[i].head_id,
             input.details[i].child_id,
@@ -790,6 +791,8 @@ export default {
               : 0,
             input.details[i].narration,
             input.transaction_date,
+            update_by_,
+            new Date(),
             input.details[i].finance_voucher_id,
           ]
         );
@@ -804,8 +807,8 @@ export default {
         queryString += _mysql.mysqlQueryFormat(
           `INSERT INTO finance_voucher_details(head_id,child_id,
           credit_amount,debit_amount,narration,payment_date,month,year,payment_type,
-          hospital_id,project_id,sub_department_id,doctor_id,auth1,auth1_by,auth2,auth2_by,auth2_date,auth_status,voucher_header_id)
-          value(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
+          hospital_id,project_id,sub_department_id,doctor_id,auth1,auth1_by,auth2,auth2_by,auth2_date,auth_status,voucher_header_id,entered_by)
+          value(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
           [
             input.details[i].head_id,
             input.details[i].child_id,
@@ -832,6 +835,7 @@ export default {
             previousInfo.auth2_date,
             previousInfo.auth_status,
             input.finance_voucher_header_id,
+            update_by_,
           ]
         );
       }
@@ -849,11 +853,13 @@ export default {
       .sumBy((s) => parseFloat(s.amount))
       .value();
     queryString += _mysql.mysqlQueryFormat(
-      `update finance_voucher_header set amount=?,narration=?,payment_date=? where finance_voucher_header_id=?;`,
+      `update finance_voucher_header set amount=?,narration=?,payment_date=?,updated_date=?,updated_by=? where finance_voucher_header_id=?;`,
       [
         headerAmount,
         input.narration,
         input.transaction_date,
+        new Date(),
+        update_by_,
         input.finance_voucher_header_id,
       ]
     );
