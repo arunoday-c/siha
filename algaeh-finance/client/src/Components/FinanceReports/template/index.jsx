@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Spin } from "algaeh-react-components";
 import _ from "lodash";
-export default function ({ data, generateReport }) {
+export default function ({ aging, data, generateReport }) {
   const {
     account_name,
     ledger_code,
     opening_balance,
     details,
     closing_balance,
+    total_amount,
   } = data;
   const [loading, setLoading] = useState(false);
   async function onGeneratingReport(input) {
@@ -44,23 +45,26 @@ export default function ({ data, generateReport }) {
             <th>Date</th>
             <th>Voucher Type</th>
             <th>Voucher No.</th>
-            <th>Debit Amt</th>
-            <th>Credit Amt</th>
+            {aging === true ? <th>Amount</th> : <th>Credit Amt</th>}
+            {aging === true ? null : <th>Credit Amt</th>}
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td colSpan="3" className="numberFld">
-              Previous Balance
-            </td>
-            <td colSpan="2" className="numberFld">
-              <b>{opening_balance}</b>
-            </td>
-          </tr>
+          {aging === true ? null : (
+            <tr>
+              <td colSpan="3" className="numberFld">
+                Previous Balance
+              </td>
+              <td colSpan="2" className="numberFld">
+                <b>{opening_balance}</b>
+              </td>
+            </tr>
+          )}
+
           {Array.isArray(details) &&
             details.map((item, index) => (
               <tr key={index}>
-                <td>{item.payment_date}</td>
+                <td>{aging === true ? item.due_date : item.payment_date}</td>
                 <td>{_.startCase(item.voucher_type)}</td>
                 <td>
                   {item.voucher_no ? (
@@ -79,17 +83,30 @@ export default function ({ data, generateReport }) {
                   )}
                 </td>
                 <td className="numberFld">{item.debit_amount}</td>
-                <td className="numberFld">{item.credit_amount}</td>
+                {aging === true ? null : (
+                  <td className="numberFld">{item.credit_amount}</td>
+                )}
               </tr>
             ))}
-          <tr>
-            <td colSpan="3" className="numberFld">
-              Closing Balance
-            </td>
-            <td colSpan="2" className="numberFld">
-              <b>{closing_balance}</b>
-            </td>
-          </tr>
+          {aging === true ? (
+            <tr>
+              <td colSpan="3" className="numberFld">
+                Total Amount
+              </td>
+              <td colSpan="2" className="numberFld">
+                <b>{total_amount}</b>
+              </td>
+            </tr>
+          ) : (
+            <tr>
+              <td colSpan="3" className="numberFld">
+                Closing Balance
+              </td>
+              <td colSpan="2" className="numberFld">
+                <b>{closing_balance}</b>
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </Spin>

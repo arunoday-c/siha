@@ -7,11 +7,8 @@ const executePDF = function executePDFMethod(options) {
       let str = "";
       let input = {};
       let params = options.args.reportParams;
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
@@ -22,7 +19,7 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select H.finance_voucher_header_id,H.day_end_header_id,
+          query: `select FC.child_name,H.finance_voucher_header_id,H.day_end_header_id,
             round(H.amount ,${decimal_places}) as invoice_amount,
             round(H.amount-coalesce(FSH.amount,settled_amount),${decimal_places}) as balance_amount,
             round(coalesce(FSH.amount,settled_amount),${decimal_places}) as settled_amount,
@@ -40,35 +37,32 @@ const executePDF = function executePDFMethod(options) {
             H.finance_voucher_header_id=D.voucher_header_id
             and H.voucher_type='sales' and H.invoice_no is not null  and  D.child_id=?
             left join finance_voucher_sub_header FSH on
-            H.invoice_no = FSH.invoice_ref_no where date(H.payment_date) between date(?) and date(?)`,
+            H.invoice_no = FSH.invoice_ref_no 
+            left join finance_account_child FC on FC.finance_account_child_id = D.child_id            
+            where date(H.payment_date) between date(?) and date(?)`,
           values: [input.child_id, input.from_date, input.to_date],
           printQuery: true,
         })
         .then((results) => {
-          //   console.log("34567", results);
           const rptResult = _.chain(results)
             .groupBy((g) => g.invoice_no)
             .map((item, key) => {
-              //   console.log("1", item);
               const header = _.head(item);
-              //   console.log("2", header.invoice_amount);
               const settled_amount = _.sumBy(item, (s) =>
                 parseFloat(s.settled_amount)
               );
-              //   console.log("3", settled_amount);
               const balance_amount =
-                parseFloat(header ? header.invoice_amount : "0") - settled_amount;
-              //   console.log("4", balance_amount);
+                parseFloat(header ? header.invoice_amount : "0") -
+                settled_amount;
               return {
                 ...header,
                 settled_amount,
                 balance_amount,
+                // child_name,
               };
             })
             .orderBy((o) => o.invoice_date, "desc")
             .value();
-
-          //   console.log("rptResult", rptResult);
           resolve({
             detail: rptResult,
             total_amount: _.sumBy(rptResult, (s) =>
