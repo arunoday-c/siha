@@ -14,7 +14,7 @@ const {
   getProfitAndLossMonthWise,
 } = financeReports;
 import { generateExcel } from "../excels/index";
-import { generationLedger } from "../models/drillDown";
+import { generationLedger, AginggenerationLedger } from "../models/drillDown";
 import { trailBalanceRpt } from "../models/trailBalanceReport";
 export default () => {
   const api = Router();
@@ -515,6 +515,12 @@ export default () => {
     generateExcel
   );
   api.get("/generationLedger", generationLedger, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json(req.records)
+      .end();
+  });
+  api.get("/AginggenerationLedger", AginggenerationLedger, (req, res) => {
     res
       .status(utlities.AlgaehUtilities().httpStatus().ok)
       .json(req.records)

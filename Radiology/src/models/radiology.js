@@ -66,15 +66,17 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT hims_f_rad_order_id, patient_id, visit_id, ip_id, provider_id, template_id, billed, service_id,\
+            "SELECT hims_f_rad_order_id, SA.patient_id, visit_id, ip_id, provider_id, template_id, billed, service_id,\
             SR.service_code, SR.service_name, status, cancelled, ordered_by, ordered_date, test_type, technician_id, \
             scheduled_date_time, scheduled_by, arrived_date, arrived, validate_by, result_html, validate_date_time,\
             attended_by, attended_date_time, exam_start_date_time, exam_end_date_time, exam_status, report_type, comments,\
-            PAT.primary_id_no, PAT.patient_code, PAT.full_name, PAT.date_of_birth, PAT.gender, EMP.full_name as refered_name\
-            from ((hims_f_rad_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) \
+            PAT.primary_id_no, PAT.patient_code, PAT.full_name, PAT.date_of_birth, PAT.gender, EMP.full_name as refered_name,\
+            V.visit_code, ADM.admission_number from ((hims_f_rad_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) \
             inner join hims_d_services SR on SR.hims_d_services_id=SA.service_id \
             inner join hims_d_employee EMP on EMP.hims_d_employee_id=SA.provider_id)  \
-            left join hims_d_title as T on T.his_d_title_id = EMP.title_id WHERE " +
+            left join hims_d_title as T on T.his_d_title_id = EMP.title_id \
+            left join hims_f_patient_visit as V on V.hims_f_patient_visit_id=SA.visit_id \
+            LEFT JOIN hims_adm_atd_admission ADM on ADM.hims_adm_atd_admission_id = SA.ip_id  WHERE " +
             _stringData +
             " order by hims_f_rad_order_id desc",
           values: inputValues,

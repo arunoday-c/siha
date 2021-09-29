@@ -746,7 +746,8 @@ export default {
                         balance = balance + parseFloat(final_data.debit_amount);
                       }
 
-                      bef_out_obj["child_id"] = ledger.finance_account_child_id;
+                      bef_out_obj["finance_account_child_id"] =
+                        ledger.finance_account_child_id;
                       bef_out_obj["balance"] = balance.toFixed(decimal_places);
                       // if (ledger.finance_account_child_id === 485) {
                       //   console.log("bef_out_obj", bef_out_obj);
@@ -1230,7 +1231,8 @@ export default {
                           balance + parseFloat(final_data.credit_amount);
                       }
 
-                      bef_out_obj["child_id"] = ledger.finance_account_child_id;
+                      bef_out_obj["finance_account_child_id"] =
+                        ledger.finance_account_child_id;
 
                       bef_out_obj["balance"] = balance.toFixed(decimal_places);
                       // if (ledger.finance_account_child_id === 515) {
