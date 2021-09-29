@@ -86,12 +86,12 @@ export default memo(function Modal(props) {
             data: response.data.result,
 
             excelBodyRender: (records, cb) => {
-              console.log("records= = ", records);
+              // console.log("records= = ", records);
 
               records.ledger_code = records.group_code ?? records.ledger_code;
               cb(records);
             },
-            sheetName: title,
+            sheetName: selectedNode.child_name,
           })
             .then((result) => {
               setLoading(false);
@@ -101,7 +101,7 @@ export default memo(function Modal(props) {
                 document.body.appendChild(a);
                 const url: string = window.URL.createObjectURL(result);
                 a.href = url;
-                a.download = `${title}-${moment()._d}.xlsx`;
+                a.download = `${selectedNode.child_name}-${moment()._d}.xlsx`;
                 a.click();
 
                 window.URL.revokeObjectURL(url);
@@ -229,6 +229,16 @@ export default memo(function Modal(props) {
                 screenFrom === "CUST"
                   ? "customerStatement"
                   : "supplierStatement",
+
+              // excelTabName:
+              //   screenFrom === "CUST"
+              //     ? "customerStatement"
+              //     : "supplierStatement",
+
+              // excelTabName: `${$this.state.inputs.hospital_name} | ${moment(
+              //   $this.state.inputs.month,
+              //   "MM"
+              // ).format("MMM")}-${$this.state.inputs.year}`,
               template_name: null,
               reportQuery: null,
               pageSize: "A4",

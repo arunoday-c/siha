@@ -347,14 +347,14 @@ export default memo(function (props) {
                 </div>
               </div>
             ) : (
-              <span>
-                Payment amount
-                <b>
+              <div className="col" style={{ textAlign: "left" }}>
+                <label className="style_Label ">Payment Amount</label>
+                <h6>
                   {getAmountFormart(totalAmount, {
                     appendSymbol: false,
                   })}
-                </b>
-              </span>
+                </h6>
+              </div>
             )}
           </div>
         ),
@@ -811,19 +811,19 @@ export default memo(function (props) {
         <div className="row">
           <div className="col-12">
             <AlgaehButton
-              className="btn btn-default"
-              loading={loading}
-              onClick={onClickCreditNotes}
-            >
-              Include Credit Note
-            </AlgaehButton>
-            <AlgaehButton
               className="btn btn-primary"
               // disabled={!processList.length}
               loading={loading}
               onClick={onClickSendSelected}
             >
               Process
+            </AlgaehButton>{" "}
+            <AlgaehButton
+              className="btn btn-default"
+              loading={loading}
+              onClick={onClickCreditNotes}
+            >
+              Include Credit Note
             </AlgaehButton>
             <AlgaehButton
               className="btn btn-default"

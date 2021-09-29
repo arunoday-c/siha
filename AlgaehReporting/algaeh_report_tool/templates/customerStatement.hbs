@@ -3,31 +3,60 @@
 <body>
     <div class="print-body">
 
+
+         <section>
+             <div style="width:50%">
+                 <p>Statement of account</p>
+                 {{header.settled_amount}}
+                 {{header.balance_amount}}
+                 {{header.child_name}}
+             </div>
+         </section>
+           <section style="width:50%">
+            <table class="tableForData" width="50%" cell-padding="0">
+                <tbody>
+                    <tr>
+                        <td class="txtFld">Total Outstanding</td>
+                        <td class="numberFld">0.000</th>
+                    </tr>
+                     <tr>
+                        <td class="txtFld"></td>
+                        <td class="numberFld">0.000</th>
+                    </tr>
+                </tbody>
+                </table>
+         </section>
+
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
                         <th>Sl No.</th>
                         <th>Date</th>
-                        <th>Invoice Number</th>
-                        <th>Due Date</th>
-                        <th>Invoice Amount</th>
-                        <th>Paid Amount</th>
+                        <th>Type</th>
+                        <th>No.</th>
                         <th>Balance Amount</th>
+                        <th>Total Before tax.</th>
+                        <th>Tax</th>
+                        <th>Total</th>
                         <th>Status</th>
+                        <th>Balance</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each detail}}
-                    <tr class="numberFldTotal">
+                    <tr>
                         <td datatype="string">{{inc @index}}</td>
-                        <td class="txtFld" datatype="string">{{invoice_date}}</td>
-                        <td class="numberFld">{{invoice_no}}</td>
-                        <td class="numberFld">{{due_date}}</td>
+                        <td  datatype="string">{{invoice_date}}</td>
+                        <td = datatype="string">{{voucher_type}}</td>
+                        <td  datatype="string">{{invoice_no}}</td>
+                        <td class="numberFld">{{numberFormating balance_amount ../currencyOnly}}</td>
+                        {{!-- <td class="numberFld">{{due_date}}</td> --}}
                         <td class="numberFld">{{numberFormating invoice_amount ../currencyOnly}}</td>
                         <td class="numberFld">{{numberFormating settled_amount ../currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating settled_amount ../currencyOnly}}</td>
+                        <td >{{invoice_status}}</td>
                         <td class="numberFld">{{numberFormating balance_amount ../currencyOnly}}</td>
-                        <td class="numberFld">{{invoice_status}}</td>
                     </tr>
                     {{/each }}
                     {{!-- <tr class="numberFldTotalBottom">
