@@ -69,8 +69,15 @@ export default {
       newAxios(req, {
         url: "http://localhost:3006/api/v1//Document/getEmailConfig",
       }).then((res) => {
-        const options = res.data;
-        new algaehMail(options.data[0])
+        const options = res.data.data[0];
+
+        new algaehMail({
+          user: options.user,
+          pass: options.pass,
+          smtp: options.host,
+          port: options.port,
+          useSSL: options.secure,
+        })
           .to(to_mail_id)
           .subject("Test Email")
           .templateHbs("testEmail.hbs", {

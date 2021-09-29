@@ -283,9 +283,15 @@ const resetPassword = (req, res, next) => {
             newAxios(req, {
               url: "http://localhost:3006/api/v1//Document/getEmailConfig",
             }).then((res) => {
-              const options = res.data;
-              console.log("email options", options.data, options.data[0]);
-              new algaehMail(options.data[0])
+              const options = res.data.data[0];
+
+              new algaehMail({
+                user: options.user,
+                pass: options.pass,
+                smtp: options.host,
+                port: options.port,
+                useSSL: options.secure,
+              })
                 .to(work_email)
                 .subject("Password reset PIN")
                 .templateHbs("userPasswodReset.hbs", {

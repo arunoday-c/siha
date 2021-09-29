@@ -1261,7 +1261,7 @@ export default {
                 pass: decrypted,
                 smtp: options.host,
                 port: options.port,
-                useSSL: options.useSSL,
+                useSSL: options.secure,
                 service: options.service,
               })
                 .to(toSendDetails)
