@@ -260,7 +260,7 @@ export default {
               _mysql
                 .generateRunningNumber({
                   user_id: req.userIdentity.algaeh_d_app_user_id,
-                  numgen_codes: [voucher_type],
+                  numgen_codes: [voucher_type, "REF_NUM"],
                   table_name: "finance_numgen",
                 })
                 .then((numgen) => {
@@ -381,8 +381,8 @@ export default {
                         query:
                           "INSERT INTO `finance_voucher_header` (payment_mode,ref_no,cheque_date,amount, payment_date, month, year,\
                        narration, voucher_no, voucher_type,from_screen,invoice_no,invoice_ref_no,posted_from,\
-                       created_by, updated_by, created_date, updated_date,receipt_type)\
-                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                       created_by, updated_by, created_date, updated_date,receipt_type,cust_ref_no)\
+                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         values: [
                           payment_mode,
                           ref_no,
@@ -403,6 +403,7 @@ export default {
                           new Date(),
                           new Date(),
                           isMultipleInvoices,
+                          numgen["REF_NUM"],
                         ],
                         printQuery: true,
                       })
@@ -708,7 +709,8 @@ export default {
                                 _mysql.commitTransaction(() => {
                                   _mysql.releaseConnection();
                                   req.records = {
-                                    voucher_no: numgen[voucher_type],
+                                    main_voucher_no: numgen[voucher_type],
+                                    voucher_no: numgen["REF_NUM"],
                                     finance_voucher_header_id:
                                       finance_voucher_header_id,
                                   };
