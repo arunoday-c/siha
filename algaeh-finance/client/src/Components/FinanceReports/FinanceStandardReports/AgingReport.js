@@ -11,6 +11,7 @@ import Filter from "../filter";
 // import { getItem, tokenDecode } from "algaeh-react-components/storage";
 // import moment from "moment";
 // import jwtDecode from "jwt-decode";
+import DrillDown from "../drillDown";
 import {
   AlgaehDateHandler,
   AlgaehButton,
@@ -38,6 +39,9 @@ export default function AgingReport({ style, result, layout, type, dates }) {
   const [period, setPeriod] = useState(5);
   const [period_list, setPeriodList] = useState([]);
   const [trans_type, setTransType] = useState("S");
+  const [showDrillDown, setShowDrillDown] = useState(false);
+  const [row, setRow] = useState(undefined);
+  const [_dates, setDates] = useState([]);
 
   // const [organisation, setOrganisation] = useState({});
 
@@ -123,27 +127,73 @@ export default function AgingReport({ style, result, layout, type, dates }) {
               label: "Current",
               filterable: true,
               displayTemplate: (row) => {
-                return getAmountFormart(row["Current"], {
-                  appendSymbol: false,
-                });
+                // const opamt = String(row["cb_amount"]).trim(); //.replace(/[^0-9./]+/g, "");
+
+                return (
+                  <a
+                    className="underLine"
+                    href="void(0);"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setDates([moment(new Date()), moment(new Date())]);
+                      OpenDrillDown(row);
+                    }}
+                  >
+                    {getAmountFormart(row["Current"], {
+                      appendSymbol: false,
+                    })}
+                  </a>
+                );
+
+                // return row["Current"];
+                // getAmountFormart(row["Current"], {
+                //   appendSymbol: false,
+                // });
               },
             },
             {
               fieldName: "1-" + interval,
-              label: "1-" + interval + "Days",
+              label: "1-" + interval + " Days",
               filterable: true,
               displayTemplate: (row) => {
-                return getAmountFormart(row["1-" + interval], {
-                  appendSymbol: false,
-                });
+                // const opamt = String(row["cb_amount"]).trim(); //.replace(/[^0-9./]+/g, "");
+
+                return (
+                  <a
+                    className="underLine"
+                    href="void(0);"
+                    name={"1-" + interval}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      console.log("row", row);
+                      const Name = e.target.name;
+
+                      const _before = Name.split("-")[0];
+                      const _after = Name.split("-")[1];
+
+                      setDates([
+                        moment(new Date()).add(-[parseInt(_after) + 1], "days"),
+                        moment(new Date()).add(-1, "days"),
+                      ]);
+                      OpenDrillDown(row);
+                    }}
+                  >
+                    {getAmountFormart(row["1-" + interval], {
+                      appendSymbol: false,
+                    })}
+                  </a>
+                );
+                // return getAmountFormart(row["1-" + interval], {
+                //   appendSymbol: false,
+                // });
               },
             },
           ];
 
           let p_interval = interval;
           for (let i = 0; i < period - 3; i++) {
-            const before_interval = parseInt(p_interval) + 1;
-            const after_interval = parseInt(p_interval) + parseInt(interval);
+            let before_interval = parseInt(p_interval) + 1;
+            let after_interval = parseInt(p_interval) + parseInt(interval);
             const field_name =
               p_interval.toString() + "-" + after_interval.toString();
             display_array.push({
@@ -151,9 +201,39 @@ export default function AgingReport({ style, result, layout, type, dates }) {
               label: before_interval + "-" + after_interval + " Days",
               filterable: true,
               displayTemplate: (row) => {
-                return getAmountFormart(row[field_name], {
-                  appendSymbol: false,
-                });
+                // const opamt = String(row["cb_amount"]).trim(); //.replace(/[^0-9./]+/g, "");
+
+                const na_before_interval = before_interval + i + 1;
+                const na_after_interval = after_interval + i + 2;
+                return (
+                  <a
+                    className="underLine"
+                    href="void(0);"
+                    name={na_before_interval + "-" + na_after_interval}
+                    onClick={(e) => {
+                      e.preventDefault();
+
+                      const Name = e.target.name;
+
+                      const _before = Name.split("-")[0];
+                      const _after = Name.split("-")[1];
+
+                      setDates([
+                        moment(new Date()).add(-[parseInt(_after)], "days"),
+                        moment(new Date()).add(-[parseInt(_before)], "days"),
+                      ]);
+
+                      OpenDrillDown(row);
+                    }}
+                  >
+                    {getAmountFormart(row[field_name], {
+                      appendSymbol: false,
+                    })}
+                  </a>
+                );
+                // return getAmountFormart(row[field_name], {
+                //   appendSymbol: false,
+                // });
               },
             });
             p_interval = after_interval;
@@ -165,9 +245,32 @@ export default function AgingReport({ style, result, layout, type, dates }) {
               label: "Over " + p_interval + " Days",
               filterable: true,
               displayTemplate: (row) => {
-                return getAmountFormart(row["OVER-" + p_interval], {
-                  appendSymbol: false,
-                });
+                // const opamt = String(row["cb_amount"]).trim(); //.replace(/[^0-9./]+/g, "");
+
+                return (
+                  <a
+                    className="underLine"
+                    href="void(0);"
+                    name={p_interval}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const Name = e.target.name;
+
+                      setDates([
+                        moment(new Date()).add(-[parseInt(Name)], "days"),
+                        0,
+                      ]);
+                      OpenDrillDown(row);
+                    }}
+                  >
+                    {getAmountFormart(row["OVER-" + p_interval], {
+                      appendSymbol: false,
+                    })}
+                  </a>
+                );
+                // return getAmountFormart(row["OVER-" + p_interval], {
+                //   appendSymbol: false,
+                // });
               },
             },
             {
@@ -207,8 +310,24 @@ export default function AgingReport({ style, result, layout, type, dates }) {
     });
   }
 
+  function OpenDrillDown(rec) {
+    setShowDrillDown(true);
+    setRow(rec);
+  }
+  function OnCloseDrillDown() {
+    setShowDrillDown(false);
+  }
+
   return (
     <>
+      <DrillDown
+        visible={showDrillDown}
+        onClose={OnCloseDrillDown}
+        row={row}
+        dates={_dates}
+        aging={true}
+        screen_type={type}
+      />
       <div className="row inner-top-search">
         <div className="col-2">
           <label>Date Wise</label>
@@ -391,7 +510,6 @@ export default function AgingReport({ style, result, layout, type, dates }) {
           tableprops={{
             aggregate: (fieldName) => {
               if (fieldName !== "customer") {
-                debugger;
                 const _data = _.sumBy(data, (s) =>
                   s[fieldName] !== undefined ? parseFloat(s[fieldName]) : 0
                 );

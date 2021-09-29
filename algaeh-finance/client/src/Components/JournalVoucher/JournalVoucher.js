@@ -500,7 +500,11 @@ export default function JournalVoucher({
 
         setFinanceVoucherHeaderID(location.state.finance_voucher_header_id);
         setVoucherType(firstRecord.voucher_type);
-        setVoucherDate(moment(firstRecord.payment_date)._d);
+
+        const _voucherTrans_date = firstRecord.voucher_transaction_date
+          ? moment(firstRecord.voucher_transaction_date)._d
+          : moment(firstRecord.payment_date)._d;
+        setVoucherDate(_voucherTrans_date);
         setInvoiceData(firstRecord.invoice_ref_no);
 
         // setPayment(state => ({ ...state, ...data }));

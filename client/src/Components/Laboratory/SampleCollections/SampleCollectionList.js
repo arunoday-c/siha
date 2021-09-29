@@ -34,7 +34,10 @@ export default memo(function SampleCollectionList({
   const selectAll = (e) => {
     const staus = e.target.checked;
     const myState = test_details.map((f) => {
-      return { ...f, checked: staus };
+      return {
+        ...f,
+        checked: f.ip_id > 0 ? staus : f.billed === "Y" ? staus : false,
+      };
     });
 
     const hasUncheck = myState.filter((f) => {

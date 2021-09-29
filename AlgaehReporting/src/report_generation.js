@@ -888,7 +888,6 @@ export default {
                                   portal_service_id &&
                                   portal_visit_code
                                 ) {
-                                  console.log("1234");
                                   const formD = new FormData();
                                   formD.append(
                                     "file",

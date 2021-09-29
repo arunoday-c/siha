@@ -6,7 +6,10 @@ export async function loadData(input) {
       module: "finance",
       method: "GET",
       data: { ...input },
-      uri: "/financeReports/generationLedger",
+      uri:
+        input.aging === true
+          ? "/financeReports/AginggenerationLedger"
+          : "/financeReports/generationLedger",
     });
     return result.data;
   } catch (e) {
@@ -58,7 +61,6 @@ const reportTypes = {
 
 export async function generateReport(input) {
   try {
-    debugger;
     const { voucher_no, from_screen, voucher_type, day_end_header_id } = input;
     let _voucherType = "JVReport_expense";
     let _reportParameter = [];
