@@ -275,6 +275,7 @@ export function BillDetails({
     sendingObject.sec_company_tax = sendingObject.sec_company_tax.toFixed(2);
     sendingObject.patient_res = sendingObject.patient_resp;
     sendingObject.company_res = sendingObject.comapany_resp;
+    sendingObject.billing_mode = "O";
     setBillInfo(billData);
     setBillData(sendingObject);
   }
@@ -710,9 +711,8 @@ export function BillDetails({
                               state.net_amount - amount;
                             state.cash_amount = 0;
                             state.card_amount = 0;
-                            state.unbalanced_amount = state.receiveable_amount.toFixed(
-                              3
-                            );
+                            state.unbalanced_amount =
+                              state.receiveable_amount.toFixed(3);
                             return { ...state };
                           });
                         },
@@ -911,13 +911,15 @@ export function BillDetails({
                               sendingObject.net_amount -
                               sendingObject?.advance_adjust -
                               credit;
-                            sendingObject.cash_amount = sendingObject.receiveable_amount.toFixed(
-                              decimal_places
-                            );
+                            sendingObject.cash_amount =
+                              sendingObject.receiveable_amount.toFixed(
+                                decimal_places
+                              );
                             sendingObject.card_amount = 0;
-                            sendingObject.unbalanced_amount = sendingObject.receiveable_amount.toFixed(
-                              decimal_places
-                            );
+                            sendingObject.unbalanced_amount =
+                              sendingObject.receiveable_amount.toFixed(
+                                decimal_places
+                              );
                             return { ...sendingObject };
                           });
                         },
