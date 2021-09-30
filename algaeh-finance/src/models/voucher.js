@@ -381,7 +381,7 @@ export default {
                         query:
                           "INSERT INTO `finance_voucher_header` (payment_mode,ref_no,cheque_date,amount, payment_date, month, year,\
                        narration, voucher_no, voucher_type,from_screen,invoice_no,invoice_ref_no,posted_from,\
-                       created_by, updated_by, created_date, updated_date,receipt_type,cust_ref_no)\
+                       created_by, updated_by, created_date, updated_date,receipt_type,custom_ref_no)\
                        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         values: [
                           payment_mode,
