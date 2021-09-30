@@ -6,10 +6,7 @@
 
          <section>
              <div style="width:50%">
-                 <p>Statement of account</p>
-                 {{header.settled_amount}}
-                 {{header.balance_amount}}
-                 {{header.child_name}}
+                 <p>Statement of account: {{child_name}}</p>
              </div>
          </section>
            <section style="width:50%">
@@ -17,11 +14,11 @@
                 <tbody>
                     <tr>
                         <td class="txtFld">Total Outstanding</td>
-                        <td class="numberFld">0.000</th>
+                        <td class="numberFld"><b>{{numberFormating total_amount ./currencyOnly}}</b></th>
                     </tr>
                      <tr>
-                        <td class="txtFld"></td>
-                        <td class="numberFld">0.000</th>
+                        <td class="txtFld">Over Due Amount</td>
+                        <td class="numberFld"><b>{{numberFormating overDueAmt ./currencyOnly}}</b></th>
                     </tr>
                 </tbody>
                 </table>
@@ -35,12 +32,11 @@
                         <th>Date</th>
                         <th>Type</th>
                         <th>No.</th>
-                        <th>Balance Amount</th>
-                        <th>Total Before tax.</th>
-                        <th>Tax</th>
-                        <th>Total</th>
+                        <th>Invoice Amt.</th>
+                        <th>Settled Amt.</th>
+                        <th>Balance Amt.</th>
                         <th>Status</th>
-                        <th>Balance</th>
+                       
                     </tr>
                 </thead>
                 <tbody>
@@ -50,15 +46,19 @@
                         <td  datatype="string">{{invoice_date}}</td>
                         <td = datatype="string">{{voucher_type}}</td>
                         <td  datatype="string">{{invoice_no}}</td>
-                        <td class="numberFld">{{numberFormating balance_amount ../currencyOnly}}</td>
-                        {{!-- <td class="numberFld">{{due_date}}</td> --}}
-                        <td class="numberFld">{{numberFormating invoice_amount ../currencyOnly}}</td>
-                        <td class="numberFld">{{numberFormating settled_amount ../currencyOnly}}</td>
-                        <td class="numberFld">{{numberFormating settled_amount ../currencyOnly}}</td>
-                        <td >{{invoice_status}}</td>
-                        <td class="numberFld">{{numberFormating balance_amount ../currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating invoice_amount ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating settled_amount ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating balance_amount ../decimalOnly}}</td>
+                        <td class="numberFld">{{invoice_status}}</td>
                     </tr>
                     {{/each }}
+                     <tr class="numberFldTotalBottom">
+                        <td colspan="4"></td>
+                        <td class="numberFld">{{numberFormating total_invoice_amount ./currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating total_settled_amount ./currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating total_amount ./currencyOnly}}</td>
+                        <td class="numberFld"></td>
+                    </tr>
                     {{!-- <tr class="numberFldTotalBottom">
                         <td colspan="2"></td>
                         <td class="numberFld">{{numberFormating ftr_total_expected_cash ./currencyOnly}}</td>
