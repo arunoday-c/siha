@@ -137,7 +137,7 @@ function NavBars(props) {
                 ) {
                   Window.global.openFollowUp();
 
-                  console.log(Window.global);
+                  // console.log(Window.global);
                   return;
                 } else {
                   location.state = null;
