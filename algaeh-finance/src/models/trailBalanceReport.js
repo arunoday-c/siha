@@ -66,7 +66,7 @@ export async function trailBalanceRpt(req, res, next) {
          VD.payment_date,VD.is_opening_bal
          from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A' and VD.child_id <> 1
-         and date(VD.payment_date) between date(?) and date(?) ${whereCondition}    
+         and date(VD.payment_date) between date(?) and date(?)  and VD.is_opening_bal='N' ${whereCondition}    
           group by C.finance_account_child_id,VD.payment_date,VD.is_opening_bal;
          -- Opening balance query
          select C.head_id,finance_account_child_id as child_id
@@ -76,7 +76,7 @@ export async function trailBalanceRpt(req, res, next) {
           ROUND((coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred,VD.payment_date
           from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
           left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'
-          and date(VD.payment_date) < date(?)  ${whereCondition}   group by C.finance_account_child_id,VD.payment_date,VD.is_opening_bal;`,
+          and date(VD.payment_date) <= date(?)  ${whereCondition}   group by C.finance_account_child_id,VD.payment_date,VD.is_opening_bal;`,
         values: [from_date, to_date, from_date],
         printQuery: true,
       })
@@ -149,9 +149,8 @@ export async function trailBalanceRpt(req, res, next) {
                   parseFloat(SUM_DEB_CREDIT).toFixed(decimal_places)
                 );
               } else {
-                op_amount = parseFloat(SUM_CREDIT_DEBIT).toFixed(
-                  decimal_places
-                );
+                op_amount =
+                  parseFloat(SUM_CREDIT_DEBIT).toFixed(decimal_places);
               }
             }
             // console.log("item===>", item);
