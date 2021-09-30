@@ -63,14 +63,14 @@ export default function Filters({ activeTransaction }) {
       pushToState({ account: "" });
       return;
     }
-
+    debugger;
     if (state.current_year && state.selectRange) {
       pushToState({ account: value });
       const delta = value.split("-");
       if (isNaN(delta[0]) || isNaN(delta[1])) {
         AlgaehMessagePop({
           type: "warning",
-          display: "Can not process for Unknown Accounts",
+          display: "It is not an Child Node please add before selecting.",
         });
         pushToState({ account: "" });
         return;
