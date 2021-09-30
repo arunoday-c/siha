@@ -26,23 +26,22 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select SUM(net_extended_cost) net_extended_cost, SUM(total_amount) total_amount, 
-          MAX(IH.hospital_id) hospital_id, MAX(hospital_name) hospital_name, 
-            MAX(IH.project_id) project_id, MAX(project_desc) project_desc, MAX(waited_avg_cost) waited_avg_cost, 
-            ROUND(SUM(dispatch_quantity),0) dispatch_quantity, 
+          query: `select SUM(net_extended_cost) net_extended_cost, SUM(total_amount) total_amount,
+            IH.hospital_id, hospital_name, IH.project_id, project_desc,
+            MAX(waited_avg_cost) waited_avg_cost,
+            ROUND(SUM(dispatch_quantity),0) dispatch_quantity,
             ROUND(MAX(waited_avg_cost) * SUM(dispatch_quantity),2) cost_price,
             ROUND(SUM(net_extended_cost) - (MAX(waited_avg_cost) * SUM(dispatch_quantity)),2) gross_profit,
-            MAX(item_description) item_description, MAX(category_desc) category_desc 
-            from hims_f_sales_invoice_header IH 
-            inner join hims_f_sales_invoice_detail ID on ID.sales_invoice_header_id =  IH.hims_f_sales_invoice_header_id             
-            inner join hims_f_sales_dispatch_note_detail DD on DD.dispatch_note_header_id = ID.dispatch_note_header_id 
-            inner join hims_f_sales_dispatch_note_batches DB on DB.sales_dispatch_note_detail_id =  DD.hims_f_sales_dispatch_note_detail_id 
-            inner join hims_d_inventory_item_master IT on IT.hims_d_inventory_item_master_id =  DB.item_id 
-            inner join hims_d_inventory_tem_category TC on TC.hims_d_inventory_tem_category_id =  DB.item_category_id 
-            inner join hims_d_project P on P.hims_d_project_id =  IH.project_id 
-            inner join hims_d_hospital H on H.hims_d_hospital_id =  IH.hospital_id 
+            MAX(item_description) item_description, MAX(category_desc) category_desc from hims_f_sales_invoice_header IH
+            inner join hims_f_sales_invoice_detail ID on ID.sales_invoice_header_id =  IH.hims_f_sales_invoice_header_id
+            inner join hims_f_sales_dispatch_note_detail DD on DD.dispatch_note_header_id = ID.dispatch_note_header_id
+            inner join hims_f_sales_dispatch_note_batches DB on DB.sales_dispatch_note_detail_id =  DD.hims_f_sales_dispatch_note_detail_id
+            inner join hims_d_inventory_item_master IT on IT.hims_d_inventory_item_master_id =  DB.item_id
+            inner join hims_d_inventory_tem_category TC on TC.hims_d_inventory_tem_category_id =  DB.item_category_id
+            inner join hims_d_project P on P.hims_d_project_id =  IH.project_id
+            inner join hims_d_hospital H on H.hims_d_hospital_id =  IH.hospital_id
             where is_cancelled='N' and  date(IH.invoice_date) between date(?) and date(?)  ${str}
-            group by DB.item_id, IH.project_id;`,
+            group by DB.item_id;`,
           values: [input.from_date, input.to_date],
           printQuery: true,
         })
