@@ -28,9 +28,9 @@ const executePDF = function executePDFMethod(options) {
             H.payment_date as invoice_date,
             due_date, H.updated_date as last_modified,
             case when settlement_status  ='S' then 'closed'
-            when settlement_status='P' and curdate()> due_date then 'over due'
-            when settlement_status='P' and settled_amount<1 then 'open'
-            when settlement_status='P' and settled_amount>0 then 'paid' end as invoice_status,
+            when settlement_status='P' and curdate()> due_date then 'Over Due'
+            when settlement_status='P' and settled_amount <> H.amount then 'Open'
+            when settlement_status='P' and settled_amount = H.amount then 'Paid' end as invoice_status,
             D.child_id,D.head_id, D.is_opening_bal, H.voucher_no
             from finance_voucher_header H
             inner join finance_voucher_details D on
@@ -44,37 +44,64 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((results) => {
-          const rptResult = _.chain(results)
-            .groupBy((g) => g.invoice_no)
-            .map((item, key) => {
-              const header = _.head(item);
-              const settled_amount = _.sumBy(item, (s) =>
+          if (results.length > 0) {
+            const rptResult = _.chain(results)
+              .groupBy((g) => g.invoice_no)
+              .map((item, key) => {
+                const header = _.head(item);
+                const settled_amount = _.sumBy(item, (s) =>
+                  parseFloat(s.settled_amount)
+                );
+                const balance_amount =
+                  parseFloat(header ? header.invoice_amount : "0") -
+                  settled_amount;
+
+                return {
+                  ...header,
+                  settled_amount,
+                  balance_amount,
+                  // child_name,
+                };
+              })
+              .orderBy((o) => o.invoice_date, "desc")
+              .value();
+            const overDueAmt = _.sumBy(rptResult, (s) => {
+              if (s.invoice_status === "Over Due") {
+                return parseFloat(s.balance_amount);
+              } else {
+                return 0.0;
+              }
+            });
+
+            resolve({
+              detail: rptResult,
+              child_name: results[0].child_name,
+              total_invoice_amount: _.sumBy(rptResult, (s) =>
+                parseFloat(s.invoice_amount)
+              ),
+              total_settled_amount: _.sumBy(rptResult, (s) =>
                 parseFloat(s.settled_amount)
-              );
-              const balance_amount =
-                parseFloat(header ? header.invoice_amount : "0") -
-                settled_amount;
-              return {
-                ...header,
-                settled_amount,
-                balance_amount,
-                // child_name,
-              };
-            })
-            .orderBy((o) => o.invoice_date, "desc")
-            .value();
-          resolve({
-            detail: rptResult,
-            total_amount: _.sumBy(rptResult, (s) =>
-              parseFloat(s.balance_amount)
-            ),
-            currencyOnly: {
-              decimal_places,
-              addSymbol: false,
-              symbol_position,
-              currency_symbol,
-            },
-          });
+              ),
+              total_amount: _.sumBy(rptResult, (s) =>
+                parseFloat(s.balance_amount)
+              ),
+              overDueAmt: overDueAmt,
+              decimalOnly: {
+                decimal_places,
+                addSymbol: false,
+                symbol_position,
+                currency_symbol,
+              },
+              currencyOnly: {
+                decimal_places,
+                addSymbol: true,
+                symbol_position,
+                currency_symbol,
+              },
+            });
+          } else {
+            resolve({});
+          }
         })
         .catch((error) => {
           options.mysql.releaseConnection();
