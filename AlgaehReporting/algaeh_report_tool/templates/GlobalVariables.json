@@ -762,11 +762,11 @@
       "value": "1"
     },
     {
-      "name": "0-1-0",
+      "name": "0-0-1",
       "value": "2"
     },
     {
-      "name": "0-0-1",
+      "name": "0-1-0",
       "value": "3"
     },
     {
@@ -790,12 +790,16 @@
       "value": "8"
     },
     {
-      "name": " Twice daily (Bid)",
+      "name": "Twice daily (Bid)",
       "value": "9"
     },
     {
       "name": "Three times daily (tid)",
       "value": "10"
+    },
+    {
+      "name": "Four times daily (qid)",
+      "value": "18"
     },
     {
       "name": "Five times daily",
@@ -824,10 +828,6 @@
     {
       "name": "Every twelve hours (q12h)",
       "value": "17"
-    },
-    {
-      "name": "Four times daily (qid)",
-      "value": "18"
     },
     {
       "name": "Other (As per need)",
