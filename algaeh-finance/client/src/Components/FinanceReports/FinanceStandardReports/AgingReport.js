@@ -31,7 +31,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
 
   // const createPrintObject = useRef(undefined);
   const [data, setData] = useState([]);
-  const [till_date, setTillDate] = useState(undefined);
+  const [till_date, setTillDate] = useState(new Date());
   const [date_wise, setDateWise] = useState("N");
   const [footerData, setFooterData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -463,7 +463,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
         </AlgaehButton>
       </div>
 
-      {date_wise === "Y" ? (
+      {/* {date_wise === "Y" ? (
         <PrintLayout
           title={`Account ${
             type === "receivable" ? "Receivable" : "Payable"
@@ -500,30 +500,30 @@ export default function AgingReport({ style, result, layout, type, dates }) {
             footer: true,
           }}
         />
-      ) : (
-        <PrintLayout
-          title={`Account ${
-            type === "receivable" ? "Receivable" : "Payable"
-          } Aging Report`}
-          columns={period_list}
-          data={data}
-          tableprops={{
-            aggregate: (fieldName) => {
-              if (fieldName !== "customer") {
-                const _data = _.sumBy(data, (s) =>
-                  s[fieldName] !== undefined ? parseFloat(s[fieldName]) : 0
-                );
-                return getAmountFormart(_data, {
-                  appendSymbol: false,
-                });
-              } else {
-                return "";
-              }
-            },
-            footer: true,
-          }}
-        />
-      )}
+      ) : ( */}
+      <PrintLayout
+        title={`Account ${
+          type === "receivable" ? "Receivable" : "Payable"
+        } Aging Report`}
+        columns={period_list}
+        data={data}
+        tableprops={{
+          aggregate: (fieldName) => {
+            if (fieldName !== "customer") {
+              const _data = _.sumBy(data, (s) =>
+                s[fieldName] !== undefined ? parseFloat(s[fieldName]) : 0
+              );
+              return getAmountFormart(_data, {
+                appendSymbol: false,
+              });
+            } else {
+              return "";
+            }
+          },
+          footer: true,
+        }}
+      />
+      {/* )} */}
     </>
     // <>
     //   <div className="row">
