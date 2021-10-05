@@ -31,7 +31,7 @@ const executePDF = function executePDFMethod(options) {
         COALESCE(IVH.invoice_date,INS.created_date) as invoice_date,
         IVH.sales_invoice_mode,
         FH.amount as sub_total, FSH.amount as net_total,FSH.amount as net_payable,
-        FSH.invoice_ref_no
+        FSH.invoice_ref_no,FSH.voucher_type as voucher_type_group
         from finance_voucher_sub_header FSH
         inner join finance_voucher_header FH on FH.invoice_no in ( FSH.invoice_ref_no)
         left join hims_f_sales_invoice_header IVH on IVH.invoice_number = FSH.invoice_ref_no
@@ -65,13 +65,52 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((result) => {
-          // console.log(subTotal);
+          const creditNoteArray = result[1].filter(
+            (f) => f.voucher_type_group === "credit_note"
+          );
+          const receiptArray = result[1].filter(
+            (f) => f.voucher_type_group === "receipt"
+          );
+
+          console.log("voucher_type_group", creditNoteArray, receiptArray);
           resolve({
             resultHeader: result[0].length > 0 ? result[0][0] : {},
-            resultInvoice: result[1],
+            // resultInvoice: result[1],
             totalNetPayable: _.sumBy(result[1], (s) =>
               parseFloat(s.net_payable)
             ),
+            totalReceiptAmount: _.sumBy(receiptArray, (s) =>
+              parseFloat(s.net_payable)
+            ),
+            totalCreditNoteAmount: _.sumBy(creditNoteArray, (s) =>
+              parseFloat(s.net_payable)
+            ),
+            creditNoteArray: creditNoteArray,
+            creditNoteTotals: {
+              subTotal: _.sumBy(creditNoteArray, (s) =>
+                parseFloat(s.sub_total)
+              ),
+              netTotal: _.sumBy(creditNoteArray, (s) =>
+                parseFloat(s.net_total)
+              ),
+              //   subTotal: _.sumBy(creditNoteArray, (s) =>
+              //   parseFloat(s.sub_total)
+              // ),
+              // netTotal: _.sumBy(creditNoteArray, (s) =>
+              //   parseFloat(s.net_total)
+              // ),
+            },
+            receiptTotals: {
+              subTotal: _.sumBy(receiptArray, (s) => parseFloat(s.sub_total)),
+              netTotal: _.sumBy(receiptArray, (s) => parseFloat(s.net_total)),
+              //   subTotal: _.sumBy(creditNoteArray, (s) =>
+              //   parseFloat(s.sub_total)
+              // ),
+              // netTotal: _.sumBy(creditNoteArray, (s) =>
+              //   parseFloat(s.net_total)
+              // ),
+            },
+            receiptArray: receiptArray,
             currency: {
               decimal_places,
               addSymbol: false,
