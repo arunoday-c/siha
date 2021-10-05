@@ -6,10 +6,10 @@
 
          <section>
              <div style="width:50%">
-                 <p>Statement of account: {{child_name}}</p>
+                 <p>Statement of account</p>
              </div>
          </section>
-           <section style="width:50%">
+           {{!-- <section style="width:50%">
             <table class="tableForData" width="50%" cell-padding="0">
                 <tbody>
                     <tr>
@@ -22,20 +22,20 @@
                     </tr>
                 </tbody>
                 </table>
-         </section>
+         </section> --}}
 
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
                         <th>Sl No.</th>
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>No.</th>
+                        <th>Code</th>
+                        <th>CUSTOMER/ COMPANY</th>
+                        {{!-- <th>No.</th>
                         <th>Invoice Amt.</th>
-                        <th>Settled Amt.</th>
+                        <th>Settled Amt.</th> --}}
                         <th>Balance Amt.</th>
-                        <th>Status</th>
+                        {{!-- <th>Status</th> --}}
                        
                     </tr>
                 </thead>
@@ -43,22 +43,22 @@
                     {{#each detail}}
                     <tr>
                         <td datatype="string">{{inc @index}}</td>
-                        <td  datatype="string">{{invoice_date}}</td>
-                        <td = datatype="string">{{voucher_type}}</td>
-                        <td  datatype="string">{{invoice_no}}</td>
+                        <td  datatype="string">{{ledger_code}}</td>
+                        <td = datatype="string">{{child_name}}</td>
+                        {{!-- <td  datatype="string">{{invoice_no}}</td>
                         <td class="numberFld">{{numberFormating invoice_amount ../decimalOnly}}</td>
-                        <td class="numberFld">{{numberFormating settled_amount ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating settled_amount ../decimalOnly}}</td> --}}
                         <td class="numberFld">{{numberFormating balance_amount ../decimalOnly}}</td>
-                        <td class="numberFld">{{invoice_status}}</td>
+                        {{!-- <td class="numberFld">{{invoice_status}}</td> --}}
                     </tr>
                     {{/each }}
-                     <tr class="numberFldTotalBottom">
+                     {{!-- <tr class="numberFldTotalBottom">
                         <td colspan="4"></td>
                         <td class="numberFld">{{numberFormating total_invoice_amount ./currencyOnly}}</td>
                         <td class="numberFld">{{numberFormating total_settled_amount ./currencyOnly}}</td>
                         <td class="numberFld">{{numberFormating total_amount ./currencyOnly}}</td>
                         <td class="numberFld"></td>
-                    </tr>
+                    </tr> --}}
                     {{!-- <tr class="numberFldTotalBottom">
                         <td colspan="2"></td>
                         <td class="numberFld">{{numberFormating ftr_total_expected_cash ./currencyOnly}}</td>
