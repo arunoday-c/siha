@@ -135,7 +135,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
                     href="void(0);"
                     onClick={(e) => {
                       e.preventDefault();
-                      setDates([moment(new Date()), moment(new Date())]);
+                      setDates([moment(till_date), moment(till_date)]);
                       OpenDrillDown(row);
                     }}
                   >
@@ -172,8 +172,8 @@ export default function AgingReport({ style, result, layout, type, dates }) {
                       const _after = Name.split("-")[1];
 
                       setDates([
-                        moment(new Date()).add(-[parseInt(_after) + 1], "days"),
-                        moment(new Date()).add(-1, "days"),
+                        moment(till_date).add(-[parseInt(_after) + 1], "days"),
+                        moment(till_date).add(-1, "days"),
                       ]);
                       OpenDrillDown(row);
                     }}
@@ -219,8 +219,8 @@ export default function AgingReport({ style, result, layout, type, dates }) {
                       const _after = Name.split("-")[1];
 
                       setDates([
-                        moment(new Date()).add(-[parseInt(_after)], "days"),
-                        moment(new Date()).add(-[parseInt(_before)], "days"),
+                        moment(till_date).add(-[parseInt(_after)], "days"),
+                        moment(till_date).add(-[parseInt(_before)], "days"),
                       ]);
 
                       OpenDrillDown(row);
@@ -257,7 +257,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
                       const Name = e.target.name;
 
                       setDates([
-                        moment(new Date()).add(-[parseInt(Name)], "days"),
+                        moment(till_date).add(-[parseInt(Name)], "days"),
                         0,
                       ]);
                       OpenDrillDown(row);
