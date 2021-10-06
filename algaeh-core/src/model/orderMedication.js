@@ -747,7 +747,7 @@ let addPatientPrescription = (req, res, next) => {
                       ? "Twice daily (Bid)"
                       : m.frequency === "10"
                       ? "Three times daily (tid)"
-                      : row.frequency === "18"
+                      : m.frequency === "18"
                       ? "Four times daily (qid)"
                       : m.frequency === "11"
                       ? "Five times daily"

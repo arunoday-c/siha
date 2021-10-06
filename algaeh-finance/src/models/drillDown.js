@@ -146,7 +146,7 @@ export function AginggenerationLedger(req, res, next) {
       strFiled = "";
     console.log("to_date", to_date);
     if (to_date == 0) {
-      strQry = ` and H.due_date > date('${from_date}')`;
+      strQry = ` and H.due_date < date('${from_date}')`;
     } else if (
       moment(from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
       moment(to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0

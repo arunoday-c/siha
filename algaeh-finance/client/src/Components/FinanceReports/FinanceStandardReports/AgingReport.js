@@ -31,8 +31,8 @@ export default function AgingReport({ style, result, layout, type, dates }) {
 
   // const createPrintObject = useRef(undefined);
   const [data, setData] = useState([]);
-  const [till_date, setTillDate] = useState(undefined);
-  const [date_wise, setDateWise] = useState("N");
+  const [till_date, setTillDate] = useState(new Date());
+  // const [date_wise, setDateWise] = useState("N");
   const [footerData, setFooterData] = useState({});
   const [loading, setLoading] = useState(false);
   const [interval, setInterval] = useState(30);
@@ -75,7 +75,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
   // const { organization_name, address1, address2, full_name } = organisation;
 
   function onPreviewClick() {
-    if (date_wise === "Y" && till_date === undefined) {
+    if (till_date === undefined) {
       swalMessage({
         type: "warning",
         title: "Select Upto Date.",
@@ -104,7 +104,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
         from_date: dates[0],
         to_date: dates[1],
         excel,
-        date_wise,
+        // date_wise,
         till_date,
         interval: interval,
         period: period,
@@ -135,7 +135,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
                     href="void(0);"
                     onClick={(e) => {
                       e.preventDefault();
-                      setDates([moment(new Date()), moment(new Date())]);
+                      setDates([moment(till_date), moment(till_date)]);
                       OpenDrillDown(row);
                     }}
                   >
@@ -172,8 +172,8 @@ export default function AgingReport({ style, result, layout, type, dates }) {
                       const _after = Name.split("-")[1];
 
                       setDates([
-                        moment(new Date()).add(-[parseInt(_after) + 1], "days"),
-                        moment(new Date()).add(-1, "days"),
+                        moment(till_date).add(-[parseInt(_after) + 1], "days"),
+                        moment(till_date).add(-1, "days"),
                       ]);
                       OpenDrillDown(row);
                     }}
@@ -219,8 +219,8 @@ export default function AgingReport({ style, result, layout, type, dates }) {
                       const _after = Name.split("-")[1];
 
                       setDates([
-                        moment(new Date()).add(-[parseInt(_after)], "days"),
-                        moment(new Date()).add(-[parseInt(_before)], "days"),
+                        moment(till_date).add(-[parseInt(_after)], "days"),
+                        moment(till_date).add(-[parseInt(_before)], "days"),
                       ]);
 
                       OpenDrillDown(row);
@@ -257,7 +257,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
                       const Name = e.target.name;
 
                       setDates([
-                        moment(new Date()).add(-[parseInt(Name)], "days"),
+                        moment(till_date).add(-[parseInt(Name)], "days"),
                         0,
                       ]);
                       OpenDrillDown(row);
@@ -329,7 +329,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
         screen_type={type}
       />
       <div className="row inner-top-search">
-        <div className="col-2">
+        {/* <div className="col-2">
           <label>Date Wise</label>
           <div className="customCheckbox">
             <label className="checkbox inline">
@@ -347,7 +347,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
               <span> Yes</span>
             </label>
           </div>
-        </div>
+        </div> */}
 
         <AlgaehDateHandler
           div={{
@@ -370,9 +370,9 @@ export default function AgingReport({ style, result, layout, type, dates }) {
               }
             },
           }}
-          others={{
-            disabled: date_wise === "N" ? true : false,
-          }}
+          // others={{
+          //   disabled: date_wise === "N" ? true : false,
+          // }}
         />
 
         <div className="col">
@@ -463,7 +463,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
         </AlgaehButton>
       </div>
 
-      {date_wise === "Y" ? (
+      {/* {date_wise === "Y" ? (
         <PrintLayout
           title={`Account ${
             type === "receivable" ? "Receivable" : "Payable"
@@ -500,30 +500,30 @@ export default function AgingReport({ style, result, layout, type, dates }) {
             footer: true,
           }}
         />
-      ) : (
-        <PrintLayout
-          title={`Account ${
-            type === "receivable" ? "Receivable" : "Payable"
-          } Aging Report`}
-          columns={period_list}
-          data={data}
-          tableprops={{
-            aggregate: (fieldName) => {
-              if (fieldName !== "customer") {
-                const _data = _.sumBy(data, (s) =>
-                  s[fieldName] !== undefined ? parseFloat(s[fieldName]) : 0
-                );
-                return getAmountFormart(_data, {
-                  appendSymbol: false,
-                });
-              } else {
-                return "";
-              }
-            },
-            footer: true,
-          }}
-        />
-      )}
+      ) : ( */}
+      <PrintLayout
+        title={`Account ${
+          type === "receivable" ? "Receivable" : "Payable"
+        } Aging Report`}
+        columns={period_list}
+        data={data}
+        tableprops={{
+          aggregate: (fieldName) => {
+            if (fieldName !== "customer") {
+              const _data = _.sumBy(data, (s) =>
+                s[fieldName] !== undefined ? parseFloat(s[fieldName]) : 0
+              );
+              return getAmountFormart(_data, {
+                appendSymbol: false,
+              });
+            } else {
+              return "";
+            }
+          },
+          footer: true,
+        }}
+      />
+      {/* )} */}
     </>
     // <>
     //   <div className="row">
