@@ -2067,13 +2067,14 @@ let addPatientChiefComplaints = (req, res, next) => {
         // console.log("portal_exists", portal_exists);
 
         if (portal_exists === "Y") {
+          const _portal_data = _.head(req.body);
           const portal_data = {
-            patient_identity: req.body[0].primary_id_no,
-            visit_code: req.body[0].visit_code,
-            visit_date: req.body[0].Encounter_Date,
-            chief_compliant: req.body[0].comment,
-            significant_signs: req.body[0].significant_signs,
-            other_signs: req.body[0].other_signs,
+            patient_identity: _portal_data.primary_id_no,
+            visit_code: _portal_data.visit_code,
+            visit_date: _portal_data.Encounter_Date,
+            chief_compliant: _portal_data.comment,
+            significant_signs: _portal_data.significant_signs,
+            other_signs: _portal_data.other_signs,
             hospital_id: req.userIdentity.hospital_id,
           };
 
@@ -2461,14 +2462,15 @@ let updatePatientChiefComplaints = (req, res, next) => {
         // console.log("portal_exists", portal_exists);
         // consol.log("portal_exists", portal_exists);
 
+        const _portal_data = _.head(inputParam);
         if (portal_exists === "Y") {
           const portal_data = {
-            patient_identity: inputParam[0].primary_id_no,
-            visit_code: inputParam[0].visit_code,
-            visit_date: inputParam[0].Encounter_Date,
-            chief_compliant: inputParam[0].comment,
-            significant_signs: inputParam[0].significant_signs,
-            other_signs: inputParam[0].other_signs,
+            patient_identity: _portal_data.primary_id_no,
+            visit_code: _portal_data.visit_code,
+            visit_date: _portal_data.Encounter_Date,
+            chief_compliant: _portal_data.comment,
+            significant_signs: _portal_data.significant_signs,
+            other_signs: _portal_data.other_signs,
             hospital_id: req.userIdentity.hospital_id,
           };
 
@@ -2539,13 +2541,14 @@ let addPatientDiagnosis = (req, res, next) => {
         const portal_exists = result[1][0].portal_exists;
         // console.log("portal_exists", portal_exists);
         // consol.log("portal_exists", portal_exists);
+        const _portal_data = _.head(req.body);
         if (portal_exists === "Y") {
           const portal_data = {
-            patient_identity: req.body[0].primary_id_no,
-            visit_code: req.body[0].visit_code,
+            patient_identity: _portal_data.primary_id_no,
+            visit_code: _portal_data.visit_code,
             diagnosis_type:
-              req.body[0].diagnosis_type === "P" ? "Primary" : "Secondary",
-            daignosis_name: req.body[0].daignosis_name,
+              _portal_data.diagnosis_type === "P" ? "Primary" : "Secondary",
+            daignosis_name: _portal_data.daignosis_name,
             hospital_id: req.userIdentity.hospital_id,
           };
 
