@@ -24,7 +24,7 @@ import moment from "moment";
 import ClaimSubmission from "./ClaimSubmission/ClaimSubmission";
 import _ from "lodash";
 // import Enumerable from "linq";
-import { Checkbox } from "algaeh-react-components";
+import { Checkbox, AlgaehModal } from "algaeh-react-components";
 import { StatementTable } from "../InsuranceStatement/StatementTable";
 // let validatedClaims = [];
 
@@ -45,6 +45,8 @@ class RCMWorkbench extends Component {
       indeterminate: false,
       checkAll: false,
       claimData: {},
+      payment_date: new Date(),
+      visible: false,
     };
     this.select = true;
     this.dropDownHandler = this.dropDownHandler.bind(this);
@@ -513,6 +515,7 @@ class RCMWorkbench extends Component {
       });
       const from_date = this.state.from_date;
       const to_date = this.state.to_date;
+
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/insurance/saveMultiStatement",
@@ -523,6 +526,7 @@ class RCMWorkbench extends Component {
           ScreenCode: getCookie("ScreenCode"),
           from_date,
           to_date,
+          payment_date: this.state.payment_date,
         },
         onSuccess: (response) => {
           if (response.data.success) {
@@ -537,6 +541,7 @@ class RCMWorkbench extends Component {
                 submitted: true,
                 selectAll: false,
                 indeterminate: false,
+                visible: false,
               },
               () => {
                 this.getInvoicesForClaims();
@@ -547,10 +552,16 @@ class RCMWorkbench extends Component {
               title: response.data.records,
               type: "error",
             });
+            this.setState({
+              visible: false,
+            });
             AlgaehLoader({ show: false });
           }
         },
         onError: (error) => {
+          this.setState({
+            visible: false,
+          });
           AlgaehLoader({ show: false });
         },
       });
@@ -985,26 +996,27 @@ class RCMWorkbench extends Component {
     }
 
     return (
-      <div className="row">
-        <button
-          id="load-claims"
-          className="d-none"
-          onClick={() => {
-            this.getInvoicesForClaims();
-            this.setState({
-              openClaims: false,
-            });
-          }}
-        />
-        <ValidateBills
-          mode={this.state.rcmMode}
-          data={this.state.sendProps}
-          closeModal={this.handleClose.bind(this)}
-          openPopup={this.state.openClaims}
-          insuranceId={this.state.insurance_statement_id}
-        />
-        {/* <div className="customCheckbox"> */}
-        {/* <label className="checkbox inline" style={{ marginRight: 20 }}>
+      <>
+        <div className="row">
+          <button
+            id="load-claims"
+            className="d-none"
+            onClick={() => {
+              this.getInvoicesForClaims();
+              this.setState({
+                openClaims: false,
+              });
+            }}
+          />
+          <ValidateBills
+            mode={this.state.rcmMode}
+            data={this.state.sendProps}
+            closeModal={this.handleClose.bind(this)}
+            openPopup={this.state.openClaims}
+            insuranceId={this.state.insurance_statement_id}
+          />
+          {/* <div className="customCheckbox"> */}
+          {/* <label className="checkbox inline" style={{ marginRight: 20 }}>
             <input
               type="checkbox"
               value=""
@@ -1015,402 +1027,411 @@ class RCMWorkbench extends Component {
             <span>Select All</span>
           </label> */}
 
-        <div className="col-12">
-          <ClaimSubmission
-            data={this.validatedClaims}
-            claimSubmission={this.state.openSubmit}
-            closeSubmissionModal={this.handleSubmitClose.bind(this)}
-          />
-        </div>
-        <div className="col-12">
-          <div className="row inner-top-search">
-            <div className="col-5">
-              <label>Load By</label>
-              <div className="customRadio">
-                <label className="radio inline">
-                  <input
-                    type="radio"
-                    value="C"
-                    name="rcmMode"
-                    checked={this.state.rcmMode === "C" ? true : false}
-                    onChange={() => {
-                      this.replacePath();
-                      this.setState({
-                        rcmMode: "C",
-                        claims: [],
-                        claimData: {},
-                      });
-                    }}
-                  />
-                  <span>Claim Generation</span>
-                </label>
-
-                <label className="radio inline">
-                  <input
-                    type="radio"
-                    value="S"
-                    name="rcmMode"
-                    checked={this.state.rcmMode === "S" ? true : false}
-                    onChange={() => {
-                      this.replacePath();
-                      this.setState({
-                        rcmMode: "S",
-                        claims: [],
-                        claimData: {},
-                      });
-                    }}
-                  />
-                  <span>Remittance Advice</span>
-                </label>
-                <label className="radio inline">
-                  <input
-                    type="radio"
-                    value="S"
-                    name="rcmMode"
-                    checked={this.state.rcmMode === "R" ? true : false}
-                    onChange={() => {
-                      this.replacePath();
-                      this.setState({
-                        rcmMode: "R",
-                        claims: [],
-                        claimData: {},
-                      });
-                    }}
-                  />
-                  <span>Re submission</span>
-                </label>
-              </div>
-            </div>
-
-            {this.state.rcmMode === "C" ? (
-              <>
-                <AlagehAutoComplete
-                  div={{ className: "col-4 form-group mandatory" }}
-                  label={{ isImp: true, forceLabel: "Company Name" }}
-                  selector={{
-                    name: "insurance_provider_id",
-                    className: "select-fld",
-                    value: this.state.insurance_provider_id,
-                    dataSource: {
-                      textField: "insurance_provider_name",
-                      valueField: "hims_d_insurance_provider_id",
-                      data: this.state.insurance_providers,
-                    },
-                    onChange: this.dropDownHandler,
-                    onClear: () => {
-                      this.setState({
-                        insurance_provider_id: null,
-                        sub_insurance_id: null,
-                        claims: [],
-                      });
-                    },
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col-3 form-group mandatory" }}
-                  label={{ isImp: true, forceLabel: "Sub Company Name" }}
-                  selector={{
-                    name: "sub_insurance_id",
-                    className: "select-fld",
-                    value: this.state.sub_insurance_id,
-                    dataSource: {
-                      textField: "insurance_sub_name",
-                      valueField: "hims_d_insurance_sub_id",
-                      data: this.state.sub_ins_companies,
-                    },
-                    onChange: this.dropDownHandler,
-                    onClear: () => {
-                      this.setState({
-                        sub_insurance_id: null,
-                        claims: [],
-                      });
-                    },
-                  }}
-                />
-                <AlgaehDateHandler
-                  div={{ className: "col-2 form-group mandatory" }}
-                  label={{ isImp: true, fieldName: "from_date" }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "from_date",
-                  }}
-                  maxDate={new Date()}
-                  events={{
-                    onChange: (selDate) => {
-                      this.setState({
-                        from_date: selDate,
-                        claims: [],
-                      });
-                    },
-                  }}
-                  value={this.state.from_date}
-                />
-                <AlgaehDateHandler
-                  div={{ className: "col-2 form-group mandatory" }}
-                  label={{ isImp: true, fieldName: "to_date" }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "to_date",
-                  }}
-                  maxDate={new Date()}
-                  events={{
-                    onChange: (selDate) => {
-                      this.setState({
-                        to_date: selDate,
-                        claims: [],
-                      });
-                    },
-                  }}
-                  value={this.state.to_date}
-                />
-
-                <div className="col-3 globalSearchCntr">
-                  <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
-                  <h6 onClick={this.patientSearch.bind(this)}>
-                    {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
-                    {this.state.patient_code
-                      ? this.state.patient_code
-                      : "Search Patient"}
-                    <i className="fas fa-search fa-lg"></i>
-                  </h6>
-                </div>
-                <div className="col">
-                  <button
-                    onClick={this.getInvoicesForClaims}
-                    className="btn btn-primary"
-                    style={{ marginTop: 20, marginLeft: 5, float: "right" }}
-                  >
-                    Load
-                  </button>
-                  <button
-                    onClick={this.clearSearch}
-                    className="btn btn-default"
-                    style={{ marginTop: 20, float: "right" }}
-                  >
-                    Clear
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="col-3 globalSearchCntr form-group">
-                  <AlgaehLabel label={{ forceLabel: "Search Statement No." }} />
-                  <h6 onClick={ClaimSearch.bind(this)}>
-                    {new URLSearchParams(this.props.location?.search).get(
-                      "insurance_statement_number"
-                    ) ?? "Search Statement No."}
-                    <i className="fas fa-search fa-lg"></i>
-                  </h6>
-                </div>{" "}
-                <div className="col">
-                  {" "}
-                  <button
-                    // onClick={this.clearSearch}
-                    onClick={() => this.props.history.push("/RCMWorkbench")}
-                    className="btn btn-default"
-                    style={{ marginTop: 20, float: "left" }}
-                  >
-                    Clear
-                  </button>
-                </div>
-                <div className="col">
-                  {new URLSearchParams(this.props.location?.search).get(
-                    "insurance_statement_number"
-                  ) ? (
-                    <div className="row">
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Status",
-                          }}
-                        />
-                        <h6>
-                          {new URLSearchParams(this.props.location?.search).get(
-                            "insurance_status"
-                          ) === "C" ? (
-                            <span className="badge badge-success">Closed</span>
-                          ) : (
-                            <span className="badge badge-success">Open</span>
-                          )}
-                        </h6>
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-        {this.state.rcmMode === "S" ? (
           <div className="col-12">
-            <StatementTable
-              insurance_status={new URLSearchParams(
-                this.props.location?.search
-              ).get("insurance_status")}
+            <ClaimSubmission
+              data={this.validatedClaims}
+              claimSubmission={this.state.openSubmit}
+              closeSubmissionModal={this.handleSubmitClose.bind(this)}
             />
           </div>
-        ) : (
           <div className="col-12">
-            {this.state.rcmMode === "R" ? (
-              <div className="portlet portlet-bordered margin-bottom-15">
-                <div className="portlet-body">
-                  <div className="row">
-                    <div className="col-12">
+            <div className="row inner-top-search">
+              <div className="col-5">
+                <label>Load By</label>
+                <div className="customRadio">
+                  <label className="radio inline">
+                    <input
+                      type="radio"
+                      value="C"
+                      name="rcmMode"
+                      checked={this.state.rcmMode === "C" ? true : false}
+                      onChange={() => {
+                        this.replacePath();
+                        this.setState({
+                          rcmMode: "C",
+                          claims: [],
+                          claimData: {},
+                        });
+                      }}
+                    />
+                    <span>Claim Generation</span>
+                  </label>
+
+                  <label className="radio inline">
+                    <input
+                      type="radio"
+                      value="S"
+                      name="rcmMode"
+                      checked={this.state.rcmMode === "S" ? true : false}
+                      onChange={() => {
+                        this.replacePath();
+                        this.setState({
+                          rcmMode: "S",
+                          claims: [],
+                          claimData: {},
+                        });
+                      }}
+                    />
+                    <span>Remittance Advice</span>
+                  </label>
+                  <label className="radio inline">
+                    <input
+                      type="radio"
+                      value="S"
+                      name="rcmMode"
+                      checked={this.state.rcmMode === "R" ? true : false}
+                      onChange={() => {
+                        this.replacePath();
+                        this.setState({
+                          rcmMode: "R",
+                          claims: [],
+                          claimData: {},
+                        });
+                      }}
+                    />
+                    <span>Re submission</span>
+                  </label>
+                </div>
+              </div>
+
+              {this.state.rcmMode === "C" ? (
+                <>
+                  <AlagehAutoComplete
+                    div={{ className: "col-4 form-group mandatory" }}
+                    label={{ isImp: true, forceLabel: "Company Name" }}
+                    selector={{
+                      name: "insurance_provider_id",
+                      className: "select-fld",
+                      value: this.state.insurance_provider_id,
+                      dataSource: {
+                        textField: "insurance_provider_name",
+                        valueField: "hims_d_insurance_provider_id",
+                        data: this.state.insurance_providers,
+                      },
+                      onChange: this.dropDownHandler,
+                      onClear: () => {
+                        this.setState({
+                          insurance_provider_id: null,
+                          sub_insurance_id: null,
+                          claims: [],
+                        });
+                      },
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-3 form-group mandatory" }}
+                    label={{ isImp: true, forceLabel: "Sub Company Name" }}
+                    selector={{
+                      name: "sub_insurance_id",
+                      className: "select-fld",
+                      value: this.state.sub_insurance_id,
+                      dataSource: {
+                        textField: "insurance_sub_name",
+                        valueField: "hims_d_insurance_sub_id",
+                        data: this.state.sub_ins_companies,
+                      },
+                      onChange: this.dropDownHandler,
+                      onClear: () => {
+                        this.setState({
+                          sub_insurance_id: null,
+                          claims: [],
+                        });
+                      },
+                    }}
+                  />
+                  <AlgaehDateHandler
+                    div={{ className: "col-2 form-group mandatory" }}
+                    label={{ isImp: true, fieldName: "from_date" }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "from_date",
+                    }}
+                    maxDate={new Date()}
+                    events={{
+                      onChange: (selDate) => {
+                        this.setState({
+                          from_date: selDate,
+                          claims: [],
+                        });
+                      },
+                    }}
+                    value={this.state.from_date}
+                  />
+                  <AlgaehDateHandler
+                    div={{ className: "col-2 form-group mandatory" }}
+                    label={{ isImp: true, fieldName: "to_date" }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "to_date",
+                    }}
+                    maxDate={new Date()}
+                    events={{
+                      onChange: (selDate) => {
+                        this.setState({
+                          to_date: selDate,
+                          claims: [],
+                        });
+                      },
+                    }}
+                    value={this.state.to_date}
+                  />
+
+                  <div className="col-3 globalSearchCntr">
+                    <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
+                    <h6 onClick={this.patientSearch.bind(this)}>
+                      {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
+                      {this.state.patient_code
+                        ? this.state.patient_code
+                        : "Search Patient"}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
+                  <div className="col">
+                    <button
+                      onClick={this.getInvoicesForClaims}
+                      className="btn btn-primary"
+                      style={{ marginTop: 20, marginLeft: 5, float: "right" }}
+                    >
+                      Load
+                    </button>
+                    <button
+                      onClick={this.clearSearch}
+                      className="btn btn-default"
+                      style={{ marginTop: 20, float: "right" }}
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="col-3 globalSearchCntr form-group">
+                    <AlgaehLabel
+                      label={{ forceLabel: "Search Statement No." }}
+                    />
+                    <h6 onClick={ClaimSearch.bind(this)}>
+                      {new URLSearchParams(this.props.location?.search).get(
+                        "insurance_statement_number"
+                      ) ?? "Search Statement No."}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>{" "}
+                  <div className="col">
+                    {" "}
+                    <button
+                      // onClick={this.clearSearch}
+                      onClick={() => this.props.history.push("/RCMWorkbench")}
+                      className="btn btn-default"
+                      style={{ marginTop: 20, float: "left" }}
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <div className="col">
+                    {new URLSearchParams(this.props.location?.search).get(
+                      "insurance_statement_number"
+                    ) ? (
                       <div className="row">
-                        <div className="col-2 form-group">
-                          <label className="style_Label ">Statement No.</label>
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Status",
+                            }}
+                          />
                           <h6>
-                            {this.state.claimData.insurance_statement_number
-                              ? this.state.claimData.insurance_statement_number
-                              : `----`}
-                            {/* {data?.insurance_statement_number || "---"} */}
+                            {new URLSearchParams(
+                              this.props.location?.search
+                            ).get("insurance_status") === "C" ? (
+                              <span className="badge badge-success">
+                                Closed
+                              </span>
+                            ) : (
+                              <span className="badge badge-success">Open</span>
+                            )}
                           </h6>
                         </div>
-                        <div className="col-3">
-                          <label className="style_Label ">Company Name</label>
-                          <h6>
-                            {this.state.claimData.insurance_provider_name
-                              ? this.state.claimData.insurance_provider_name
-                              : `----`}
-                            {/* {data?.insurance_provider_name || "---"} */}
-                          </h6>
-                        </div>
-                        <div className="col-3">
-                          <label className="style_Label ">
-                            Sub Company Name
-                          </label>
-                          <h6>
-                            {this.state.claimData.insurance_sub_name
-                              ? this.state.claimData.insurance_sub_name
-                              : `----`}
-                            {/* {data?.insurance_sub_name || "---"} */}
-                          </h6>
-                        </div>
-                        <div className="col-2">
-                          <label className="style_Label ">From Date</label>
-                          <h6>
-                            {this.state.claimData.from_date
-                              ? this.state.claimData.from_date
-                              : `----`}
-                          </h6>
-                        </div>
-                        <div className="col-2">
-                          <label className="style_Label ">To Date</label>
-                          <h6>
-                            {this.state.claimData.to_date
-                              ? this.state.claimData.to_date
-                              : `----`}
-                          </h6>
-                        </div>
-                        <div className="col-2">
-                          <label className="style_Label ">
-                            Total Claim Amount
-                          </label>
-                          <h6>
-                            {this.state.claimData.total_gross_amount
-                              ? this.state.claimData.total_gross_amount
-                              : 0.0}
-                          </h6>
-                        </div>
-                        <i className="fas fa-minus calcSybmbol"></i>
-                        <div className="col-2">
-                          <label className="style_Label ">
-                            Total Denial Amount
-                          </label>
-                          <h6>
-                            {this.state.claimData.total_denial_amount
-                              ? this.state.claimData.total_denial_amount
-                              : 0.0}
-                          </h6>
-                        </div>{" "}
-                        <i className="fas fa-equals calcSybmbol"></i>
-                        <div className="col-2">
-                          <label className="style_Label ">
-                            Total Remittance Amount
-                          </label>
-                          <h6>
-                            {this.state.claimData.total_remittance_amount
-                              ? this.state.claimData.total_remittance_amount
-                              : 0.0}
-                          </h6>
+                      </div>
+                    ) : null}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+          {this.state.rcmMode === "S" ? (
+            <div className="col-12">
+              <StatementTable
+                insurance_status={new URLSearchParams(
+                  this.props.location?.search
+                ).get("insurance_status")}
+              />
+            </div>
+          ) : (
+            <div className="col-12">
+              {this.state.rcmMode === "R" ? (
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="row">
+                          <div className="col-2 form-group">
+                            <label className="style_Label ">
+                              Statement No.
+                            </label>
+                            <h6>
+                              {this.state.claimData.insurance_statement_number
+                                ? this.state.claimData
+                                    .insurance_statement_number
+                                : `----`}
+                              {/* {data?.insurance_statement_number || "---"} */}
+                            </h6>
+                          </div>
+                          <div className="col-3">
+                            <label className="style_Label ">Company Name</label>
+                            <h6>
+                              {this.state.claimData.insurance_provider_name
+                                ? this.state.claimData.insurance_provider_name
+                                : `----`}
+                              {/* {data?.insurance_provider_name || "---"} */}
+                            </h6>
+                          </div>
+                          <div className="col-3">
+                            <label className="style_Label ">
+                              Sub Company Name
+                            </label>
+                            <h6>
+                              {this.state.claimData.insurance_sub_name
+                                ? this.state.claimData.insurance_sub_name
+                                : `----`}
+                              {/* {data?.insurance_sub_name || "---"} */}
+                            </h6>
+                          </div>
+                          <div className="col-2">
+                            <label className="style_Label ">From Date</label>
+                            <h6>
+                              {this.state.claimData.from_date
+                                ? this.state.claimData.from_date
+                                : `----`}
+                            </h6>
+                          </div>
+                          <div className="col-2">
+                            <label className="style_Label ">To Date</label>
+                            <h6>
+                              {this.state.claimData.to_date
+                                ? this.state.claimData.to_date
+                                : `----`}
+                            </h6>
+                          </div>
+                          <div className="col-2">
+                            <label className="style_Label ">
+                              Total Claim Amount
+                            </label>
+                            <h6>
+                              {this.state.claimData.total_gross_amount
+                                ? this.state.claimData.total_gross_amount
+                                : 0.0}
+                            </h6>
+                          </div>
+                          <i className="fas fa-minus calcSybmbol"></i>
+                          <div className="col-2">
+                            <label className="style_Label ">
+                              Total Denial Amount
+                            </label>
+                            <h6>
+                              {this.state.claimData.total_denial_amount
+                                ? this.state.claimData.total_denial_amount
+                                : 0.0}
+                            </h6>
+                          </div>{" "}
+                          <i className="fas fa-equals calcSybmbol"></i>
+                          <div className="col-2">
+                            <label className="style_Label ">
+                              Total Remittance Amount
+                            </label>
+                            <h6>
+                              {this.state.claimData.total_remittance_amount
+                                ? this.state.claimData.total_remittance_amount
+                                : 0.0}
+                            </h6>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ) : null}
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="row">
-                <div className="col-12" id="rcmDesktopGrid_Cntr">
-                  {!!this.state.claims?.length && (
-                    <div className="col">
-                      <Checkbox
-                        checked={this.state.checkAll}
-                        onChange={this.selectAll.bind(this)}
-                        indeterminate={this.state.indeterminate}
-                      >
-                        Select All
-                      </Checkbox>
-                    </div>
-                  )}
-                  <AlgaehDataGrid
-                    id="rcmDesktopGrid"
-                    columns={columns}
-                    keyId="service_type_id"
-                    dataSource={{
-                      data: this.state.claims,
-                    }}
-                    filter={true}
-                    isEditable={false}
-                    height={"80vh"}
-                    paging={{ page: 0, rowsPerPage: 20 }}
-                    // events={{
-                    //   onDelete: deletePosDetail.bind(this, this, context),
-                    //   onEdit: row => {},
-                    //   onDone: updatePosDetail.bind(this, this)
-                    // }}
-                    // onRowSelect={row => {
-                    //   getItemLocationStock(this, row);
-                    // }}
-                  />
+              ) : null}
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="row">
+                  <div className="col-12" id="rcmDesktopGrid_Cntr">
+                    {!!this.state.claims?.length && (
+                      <div className="col">
+                        <Checkbox
+                          checked={this.state.checkAll}
+                          onChange={this.selectAll.bind(this)}
+                          indeterminate={this.state.indeterminate}
+                        >
+                          Select All
+                        </Checkbox>
+                      </div>
+                    )}
+                    <AlgaehDataGrid
+                      id="rcmDesktopGrid"
+                      columns={columns}
+                      keyId="service_type_id"
+                      dataSource={{
+                        data: this.state.claims,
+                      }}
+                      filter={true}
+                      isEditable={false}
+                      height={"80vh"}
+                      paging={{ page: 0, rowsPerPage: 20 }}
+                      // events={{
+                      //   onDelete: deletePosDetail.bind(this, this, context),
+                      //   onEdit: row => {},
+                      //   onDone: updatePosDetail.bind(this, this)
+                      // }}
+                      // onRowSelect={row => {
+                      //   getItemLocationStock(this, row);
+                      // }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
-        {this.state.rcmMode === "C" && (
-          <div className="hptl-phase1-footer">
-            <div className="row">
-              <div className="col-12">
-                <button
-                  onClick={this.openReviewSubmit}
-                  disabled={
-                    !this.state.validatedClaims.length || this.state.submitted
-                  }
-                  type="button"
-                  className="btn btn-primary"
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Submit Claims",
-                      returnText: true,
+          )}
+          {this.state.rcmMode === "C" && (
+            <div className="hptl-phase1-footer">
+              <div className="row">
+                <div className="col-12">
+                  <button
+                    onClick={() => {
+                      this.setState({ visible: true });
                     }}
-                  />
-                </button>
-                <button
-                  onClick={this.clearSearch}
-                  type="button"
-                  className="btn btn-default"
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Clear",
-                      returnText: true,
-                    }}
-                  />
-                </button>
-                {/* 
+                    disabled={
+                      !this.state.validatedClaims.length || this.state.submitted
+                    }
+                    type="button"
+                    className="btn btn-primary"
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Submit Claims",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                  <button
+                    onClick={this.clearSearch}
+                    type="button"
+                    className="btn btn-default"
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Clear",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                  {/* 
                 <button
                   // onClick={this.openReviewSubmit}
                   type="button"
@@ -1423,72 +1444,123 @@ class RCMWorkbench extends Component {
                     }}
                   />
                 </button> */}
-                <button
-                  onClick={this.claimsReport.bind(this)}
-                  type="button"
-                  className="btn btn-other"
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Claims Report",
-                      returnText: true,
-                    }}
-                  />
-                </button>
-                <button
-                  onClick={this.preValidateReport.bind(this)}
-                  type="button"
-                  className="btn btn-other"
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Pre Validate Report",
-                      returnText: true,
-                    }}
-                  />
-                </button>{" "}
-                <button
-                  onClick={this.generateReports.bind(this)}
-                  type="button"
-                  className="btn btn-other"
-                  disabled={this.state.generateReport}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Bulk Report Generate",
-                      returnText: true,
-                    }}
-                  />
-                </button>
+                  <button
+                    onClick={this.claimsReport.bind(this)}
+                    type="button"
+                    className="btn btn-other"
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Claims Report",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                  <button
+                    onClick={this.preValidateReport.bind(this)}
+                    type="button"
+                    className="btn btn-other"
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Pre Validate Report",
+                        returnText: true,
+                      }}
+                    />
+                  </button>{" "}
+                  <button
+                    onClick={this.generateReports.bind(this)}
+                    type="button"
+                    className="btn btn-other"
+                    disabled={this.state.generateReport}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Bulk Report Generate",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        {this.state.rcmMode === "R" && (
-          <div className="hptl-phase1-footer">
-            <div className="row">
-              <div className="col-12">
-                <button
-                  onClick={this.resubmitClaims}
-                  disabled={
-                    !this.state.resubmissionList ||
-                    !this.state.resubmissionList.length
-                  }
-                  type="button"
-                  className="btn btn-primary"
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Re-Submit Claims",
-                      returnText: true,
-                    }}
-                  />
-                </button>
+          )}
+          {this.state.rcmMode === "R" && (
+            <div className="hptl-phase1-footer">
+              <div className="row">
+                <div className="col-12">
+                  <button
+                    onClick={this.resubmitClaims}
+                    disabled={
+                      !this.state.resubmissionList ||
+                      !this.state.resubmissionList.length
+                    }
+                    type="button"
+                    className="btn btn-primary"
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Re-Submit Claims",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+        {this.state.visible ? (
+          <AlgaehModal
+            className="algaehStatementStyle"
+            title={"Confirm Submit"}
+            visible={this.state.visible}
+            maskClosable={false}
+            closable={false}
+            destroyOnClose={true}
+            afterClose={() => {
+              this.setState({ visible: false });
+            }}
+            footer={
+              <div>
+                <button
+                  onClick={() => {
+                    if (this.state.payment_date) {
+                      this.openReviewSubmit();
+                    } else {
+                      swalMessage({
+                        type: "warning",
+                        title: "please select payment Date first",
+                      });
+                      return;
+                    }
+                  }}
+                >
+                  Submit Claims
+                </button>
+              </div>
+            }
+          >
+            <AlgaehDateHandler
+              div={{ className: "col-6 form-group mandatory" }}
+              label={{ isImp: true, fieldName: "payment_date" }}
+              textBox={{
+                className: "txt-fld",
+                name: "payment_date",
+              }}
+              maxDate={new Date()}
+              events={{
+                onChange: (selDate) => {
+                  this.setState({
+                    payment_date: selDate,
+                  });
+                },
+              }}
+              value={this.state.payment_date}
+            />
+          </AlgaehModal>
+        ) : null}
+      </>
       // </div>
     );
   }

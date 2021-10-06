@@ -1843,7 +1843,7 @@ export default {
 export function saveMultiStatement(req, res, next) {
   const _mysql = new algaehMysql();
   try {
-    const { invoiceList, from_date, to_date } = req.body;
+    const { invoiceList, from_date, to_date, payment_date } = req.body;
     const { algaeh_d_app_user_id } = req.userIdentity;
     _mysql
       .executeQueryWithTransaction({
@@ -1897,7 +1897,7 @@ export function saveMultiStatement(req, res, next) {
               query: `insert into hims_f_insurance_statement(insurance_statement_number, total_gross_amount,
               total_company_responsibility, total_company_vat, total_company_payable, total_remittance_amount,
               total_balance_amount, insurance_provider_id, sub_insurance_id, created_by, created_date, updated_by,
-              updated_date, insurance_status,from_date,to_date)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+              updated_date, insurance_status,from_date,to_date,transaction_date)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
               values: [
                 invNum,
                 total_gross_amount,
@@ -1915,6 +1915,7 @@ export function saveMultiStatement(req, res, next) {
                 "P",
                 from_date,
                 to_date,
+                payment_date,
               ],
               printQuery: true,
             })
@@ -1923,7 +1924,7 @@ export function saveMultiStatement(req, res, next) {
               req.body.sub_insurance_id = sub_insurance_id;
               req.body.total_company_payable = total_company_payable;
               req.body.hims_f_insurance_statement_id = result.insertId;
-
+              req.body.payment_date = payment_date;
               _mysql
                 .executeQuery({
                   query: `update hims_d_insurance_provider set insurance_statement_count=? 
@@ -1970,6 +1971,7 @@ export function saveMultiStatement(req, res, next) {
       });
   } catch (error) {
     _mysql.releaseConnection();
+    next(error);
   }
 }
 
@@ -1980,7 +1982,7 @@ export function generateAccountingEntry(req, res, next) {
 
     const _mysql = new algaehMysql(_options);
     // const utilities = new algaehUtilities();
-
+    console.log("Iam here 1");
     _mysql
       .executeQuery({
         query:
@@ -2016,9 +2018,9 @@ export function generateAccountingEntry(req, res, next) {
 
               voucher_type = "sales";
               narration = `, insurance (${insurance_data.insurance_sub_name}) receivable: ${inputParam.total_company_payable}`;
-
+              console.log("inputParam1232131231312312313", inputParam);
               EntriesArray.push({
-                payment_date: new Date(),
+                payment_date: inputParam.payment_date,
                 head_id: OP_CTRL.head_id,
                 child_id: OP_CTRL.child_id,
                 debit_amount: 0,
@@ -2028,7 +2030,7 @@ export function generateAccountingEntry(req, res, next) {
               });
 
               EntriesArray.push({
-                payment_date: new Date(),
+                payment_date: inputParam.payment_date,
                 head_id: insurance_data.head_id,
                 child_id: insurance_data.child_id,
                 debit_amount: inputParam.total_company_payable,
