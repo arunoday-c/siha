@@ -549,7 +549,7 @@ export default {
         query:
           "with recursive cte  as (\
             select  finance_account_head_id\
-            from finance_account_head where account_code ='1.2.3'\
+            from finance_account_head where account_type ='AR'\
             union select H.finance_account_head_id\
             from finance_account_head  H inner join cte\
             on H.parent_acc_id = cte.finance_account_head_id  \
@@ -610,7 +610,7 @@ export default {
         //Last record
         strQuery += `select 'OVER-${dis_interval}' as days, ROUND(sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id
               from finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id where
-              head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date > DATE_SUB(date('${req.query.till_date}'),INTERVAL ${interval} DAY)
+              head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date < DATE_SUB(date('${req.query.till_date}'),INTERVAL ${interval} DAY)
               group by child_id  with rollup;`;
 
         dyn_interval[`OVER-${dis_interval}`] = "";
@@ -1029,7 +1029,7 @@ export default {
         query:
           "with recursive cte  as (\
             select  finance_account_head_id\
-            from finance_account_head where account_code ='2.2.2'\
+            from finance_account_head where  account_type ='AP'\
             union select H.finance_account_head_id\
             from finance_account_head  H inner join cte\
             on H.parent_acc_id = cte.finance_account_head_id  \
@@ -1092,7 +1092,7 @@ export default {
         //Last record
         strQuery += `select 'OVER-${dis_interval}' as days, ROUND(sum(credit_amount)-sum(H.settled_amount), ${decimal_places}) as credit_amount ,child_id
           from finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id where
-          head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date > DATE_SUB(date('${req.query.till_date}'),INTERVAL ${interval} DAY)
+          head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date < DATE_SUB(date('${req.query.till_date}'),INTERVAL ${interval} DAY)
           group by child_id  with rollup;`;
 
         dyn_interval[`OVER-${dis_interval}`] = "";

@@ -32,7 +32,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
   // const createPrintObject = useRef(undefined);
   const [data, setData] = useState([]);
   const [till_date, setTillDate] = useState(new Date());
-  const [date_wise, setDateWise] = useState("N");
+  // const [date_wise, setDateWise] = useState("N");
   const [footerData, setFooterData] = useState({});
   const [loading, setLoading] = useState(false);
   const [interval, setInterval] = useState(30);
@@ -75,7 +75,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
   // const { organization_name, address1, address2, full_name } = organisation;
 
   function onPreviewClick() {
-    if (date_wise === "Y" && till_date === undefined) {
+    if (till_date === undefined) {
       swalMessage({
         type: "warning",
         title: "Select Upto Date.",
@@ -104,7 +104,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
         from_date: dates[0],
         to_date: dates[1],
         excel,
-        date_wise,
+        // date_wise,
         till_date,
         interval: interval,
         period: period,
@@ -329,7 +329,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
         screen_type={type}
       />
       <div className="row inner-top-search">
-        <div className="col-2">
+        {/* <div className="col-2">
           <label>Date Wise</label>
           <div className="customCheckbox">
             <label className="checkbox inline">
@@ -347,7 +347,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
               <span> Yes</span>
             </label>
           </div>
-        </div>
+        </div> */}
 
         <AlgaehDateHandler
           div={{
@@ -370,9 +370,9 @@ export default function AgingReport({ style, result, layout, type, dates }) {
               }
             },
           }}
-          others={{
-            disabled: date_wise === "N" ? true : false,
-          }}
+          // others={{
+          //   disabled: date_wise === "N" ? true : false,
+          // }}
         />
 
         <div className="col">

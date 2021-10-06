@@ -9,7 +9,6 @@ export function GenerateExcel({
   sheetName,
   tableprops,
 }) {
-  debugger;
   return new Promise((resolve, reject) => {
     if (data === undefined) {
       resolve(false);
@@ -87,7 +86,7 @@ export function GenerateExcel({
           const row_count = worksheet.rowCount;
           worksheet.getRow(row_count).eachCell((cell) => {
             if (!isNaN(parseFloat(cell.value))) {
-              cell.value = parseFloat(cell.value.replace(/,/g, ""));
+              cell.value = parseFloat(String(cell.value).replace(/,/g, ""));
               cell.numFmt = "#,##0.00";
               cell.alignment = { vertical: "middle", horizontal: "right" };
             }
@@ -132,8 +131,7 @@ export function GenerateExcel({
       workbook.xlsx.writeBuffer().then((buff) => {
         resolve(
           new Blob([buff], {
-            type:
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           })
         );
       });
