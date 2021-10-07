@@ -1591,7 +1591,6 @@ let updatdePatEncntrStatus = (req, res, next) => {
 //created by irfan: to get patient profile
 let getPatientProfile = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
-
   try {
     // if (req.db == null) {
     //   next(httpStatus.dataBaseNotInitilizedError());
@@ -1615,7 +1614,7 @@ let getPatientProfile = (req, res, next) => {
       strField = " ,PV.visit_code ";
       strQuery =
         " INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id = PE.visit_id \
-        INNER JOIN hims_d_visit_type VT ON VT.hims_d_visit_type_id = PV.visit_type";
+        INNER JOIN hims_d_visit_type VT ON VT.hims_d_visit_type_id = PV.visit_type ";
       strWhereCon = " AND visit_id =  " + inputData.visit_id;
       strWhereCon1 = " AND PE.visit_id !=  " + inputData.visit_id;
     }
