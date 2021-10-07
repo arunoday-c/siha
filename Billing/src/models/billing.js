@@ -616,8 +616,8 @@ export default {
             decimal_places
           );
 
-          console.log("sendingObject", sendingObject);
-          console.log("inputParam", inputParam);
+          // console.log("sendingObject", sendingObject);
+          // console.log("inputParam", inputParam);
 
           sendingObject.net_amount =
             parseFloat(inputParam.gross_total) -
@@ -654,7 +654,7 @@ export default {
             }
           }
 
-          console.log("sendingObject", sendingObject);
+          // console.log("sendingObject", sendingObject);
 
           sendingObject.receiveable_amount = utilities.decimalPoints(
             sendingObject.receiveable_amount,
@@ -1340,63 +1340,116 @@ export default {
               printQuery: true,
             })
             .then((result) => {
-              console.log("result", result);
-              let collected_cash = 0;
-              let expected_card = 0;
+              // console.log("result", result);
+              const first_record = _.head(result);
 
-              collected_cash = new LINQ(inputParam.receiptdetails)
-                .Where((w) => w.pay_type == "CA")
-                .Sum((s) => parseFloat(s.amount));
+              if (first_record.hims_f_cash_handover_detail_id === null) {
+                // console.log("IF");
 
-              expected_card = new LINQ(inputParam.receiptdetails)
-                .Where((w) => w.pay_type == "CD")
-                .Sum((s) => parseFloat(s.amount));
+                const collected_cash = new LINQ(inputParam.receiptdetails)
+                  .Where((w) => w.pay_type == "CA")
+                  .Sum((s) => parseFloat(s.amount));
 
-              expected_card =
-                result[0].expected_card === null
-                  ? 0
-                  : parseFloat(result[0].expected_card) - expected_card;
-              collected_cash =
-                result[0].collected_cash === null
-                  ? 0
-                  : parseFloat(result[0].collected_cash) - collected_cash;
+                _mysql
+                  .executeQueryWithTransaction({
+                    query:
+                      "INSERT INTO `hims_f_cash_handover_detail` ( cash_handover_header_id, casher_id,\
+                      shift_status,open_date,  collected_cash, expected_cash, created_date, created_by, updated_date, updated_by,hospital_id)\
+                      VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      first_record["hims_f_cash_handover_header_id"],
+                      req.userIdentity.algaeh_d_app_user_id,
+                      "O",
+                      new Date(),
+                      -collected_cash,
+                      -collected_cash,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      req.userIdentity.hospital_id,
+                    ],
+                    printQuery: true,
+                  })
+                  .then((updateResult) => {
+                    // consol.log("IF");
+                    if (req.records) {
+                      req.records["internal_error"] = false;
+                    } else {
+                      req.records = {
+                        internal_error: false,
+                      };
+                    }
 
-              _mysql
-                .executeQueryWithTransaction({
-                  query:
-                    "update hims_f_cash_handover_detail set collected_cash=?,expected_card=?,\
+                    next();
+                  })
+                  .catch((error) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+
+                    //  console.log("er3 :", error);
+                  });
+              } else {
+                // console.log("Else");
+                // consol.log("Else");
+                let collected_cash = 0;
+                let expected_card = 0;
+
+                collected_cash = new LINQ(inputParam.receiptdetails)
+                  .Where((w) => w.pay_type == "CA")
+                  .Sum((s) => parseFloat(s.amount));
+
+                expected_card = new LINQ(inputParam.receiptdetails)
+                  .Where((w) => w.pay_type == "CD")
+                  .Sum((s) => parseFloat(s.amount));
+
+                expected_card =
+                  first_record.expected_card === null
+                    ? 0
+                    : parseFloat(first_record.expected_card) - expected_card;
+                collected_cash =
+                  first_record.collected_cash === null
+                    ? 0
+                    : parseFloat(first_record.collected_cash) - collected_cash;
+
+                _mysql
+                  .executeQueryWithTransaction({
+                    query:
+                      "update hims_f_cash_handover_detail set collected_cash=?,expected_card=?,\
                     updated_date=?,updated_by=? where record_status='A' \
                   and hims_f_cash_handover_detail_id=?;\
                   update hims_f_cash_handover_detail set expected_cash=collected_cash-refunded_cash\
                               where hims_f_cash_handover_detail_id=?;",
-                  values: [
-                    collected_cash,
-                    expected_card,
-                    new Date(),
-                    req.userIdentity.algaeh_d_app_user_id,
-                    result[0]["hims_f_cash_handover_detail_id"],
-                    result[0]["hims_f_cash_handover_detail_id"],
-                  ],
-                  printQuery: true,
-                })
-                .then((updateResult) => {
-                  if (req.records) {
-                    req.records["internal_error"] = false;
-                  } else {
-                    req.records = {
-                      internal_error: false,
-                    };
-                  }
+                    values: [
+                      collected_cash,
+                      expected_card,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      first_record["hims_f_cash_handover_detail_id"],
+                      first_record["hims_f_cash_handover_detail_id"],
+                    ],
+                    printQuery: true,
+                  })
+                  .then((updateResult) => {
+                    if (req.records) {
+                      req.records["internal_error"] = false;
+                    } else {
+                      req.records = {
+                        internal_error: false,
+                      };
+                    }
 
-                  next();
-                })
-                .catch((error) => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
+                    next();
+                  })
+                  .catch((error) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+
+                    //  console.log("er3 :", error);
                   });
-
-                  //  console.log("er3 :", error);
-                });
+              }
             })
             .catch((error) => {
               _mysql.rollBackTransaction(() => {
@@ -1467,20 +1520,20 @@ export default {
                   printQuery: true,
                 })
                 .then((result) => {
-                  console.log("1", result);
+                  // console.log("1", result);
                   let collected_cash = 0;
                   let expected_card = 0;
-                  console.log("2", receipt_result);
+                  // console.log("2", receipt_result);
                   collected_cash = new LINQ(receipt_result)
                     .Where((w) => w.pay_type == "CA")
                     .Sum((s) => parseFloat(s.amount));
 
-                  console.log("3");
+                  // console.log("3");
                   expected_card = new LINQ(receipt_result)
                     .Where((w) => w.pay_type == "CD")
                     .Sum((s) => parseFloat(s.amount));
 
-                  console.log("4");
+                  // console.log("4");
                   expected_card =
                     parseFloat(result[0].expected_card) - expected_card;
                   collected_cash =
@@ -4032,12 +4085,12 @@ export default {
               });
             }
 
-            console.log("inputParam.receiptdetails", inputParam.receiptdetails);
+            // console.log("inputParam.receiptdetails", inputParam.receiptdetails);
             let bank_card_id = inputParam.receiptdetails.find(
               (f) => f.pay_type == "CD"
             );
 
-            console.log("bank_card_id === ", bank_card_id);
+            // console.log("bank_card_id === ", bank_card_id);
             let strQuery = "select 1=1";
             if (bank_card_id !== undefined) {
               strQuery =
@@ -4553,9 +4606,9 @@ export default {
                           printQuery: true,
                         })
                         .then((subResult) => {
-                          console.log("closeConnection", closeConnection);
+                          // console.log("closeConnection", closeConnection);
                           if (closeConnection) {
-                            console.log("111");
+                            // console.log("111");
                             _mysql.commitTransaction(() => {
                               _mysql.releaseConnection();
                             });
