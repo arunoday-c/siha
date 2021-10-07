@@ -818,6 +818,70 @@ export default function Income({
         ],
       },
       {
+        subitem: "Revenue Report",
+        // template_name: "Income/dailyCashCollection",
+        reportName: "revenueHisReport",
+        // componentCode: "RPT_INC_CASH_COLL",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "show_vat",
+            initialLoad: true,
+            isImp: true,
+            label: "Show Vat",
+            sort: "off",
+            others: {
+              sort: "off",
+            },
+
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: FORMAT_YESNO,
+            },
+          },
+        ],
+      },
+      {
         subitem: "Daily Cash Collection - Summary",
         // template_name: "Income/dailyCashCollection",
         reportName: "dailyCashCollection",
