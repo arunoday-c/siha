@@ -381,7 +381,7 @@ export default {
                         query:
                           "INSERT INTO `finance_voucher_header` (payment_mode,ref_no,cheque_date,amount, payment_date, month, year,\
                        narration, voucher_no, voucher_type,from_screen,invoice_no,invoice_ref_no,posted_from,\
-                       created_by, updated_by, created_date, updated_date,receipt_type,cust_ref_no)\
+                       created_by, updated_by, created_date, updated_date,receipt_type,custom_ref_no)\
                        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         values: [
                           payment_mode,
@@ -2422,7 +2422,7 @@ export default {
       _mysql
         .executeQuery({
           query: `select distinct finance_voucher_header_id,VD.head_id,VD.child_id,voucher_type, ROUND(amount,${decimal_places}) as amount,H.payment_date,
-          H.narration,voucher_no,payment_mode, ref_no,H.receipt_type, H.cheque_date,   VD.auth_status ,U.username as entered_by,
+          H.narration,voucher_no,custom_ref_no,payment_mode, ref_no,H.receipt_type, H.cheque_date,   VD.auth_status ,U.username as entered_by,
           VD.entered_by as entered_id,'${user_id}' as current_user_id
            from finance_voucher_header H
           inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id

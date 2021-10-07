@@ -66,7 +66,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT hims_f_rad_order_id, SA.patient_id, visit_id, ip_id, provider_id, template_id, billed, service_id,\
+            "SELECT hims_f_rad_order_id, SA.patient_id, visit_id, ip_id, SA.provider_id, template_id, billed, service_id,\
             SR.service_code, SR.service_name, status, cancelled, ordered_by, ordered_date, test_type, technician_id, \
             scheduled_date_time, scheduled_by, arrived_date, arrived, validate_by, result_html, validate_date_time,\
             attended_by, attended_date_time, exam_start_date_time, exam_end_date_time, exam_status, report_type, comments,\

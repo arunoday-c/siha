@@ -420,6 +420,41 @@ class LabInvestigation extends Component {
                             style: { textAlign: "left" },
                           },
                         },
+
+                        {
+                          fieldName: "display_formula",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Formula" }} />
+                          ),
+                          editorTemplate: (row) => {
+                            return (
+                              <div>
+                                <label>{row.display_formula}</label>
+                                <i
+                                  className="fas fa-pen"
+                                  onClick={this.showFormulaPopup.bind(
+                                    this,
+                                    row
+                                  )}
+                                />
+                                {row.display_formula !== "" &&
+                                row.display_formula ? (
+                                  <i
+                                    className="fas fa-trash-alt"
+                                    onClick={this.onDeleteFormula.bind(
+                                      this,
+                                      row
+                                    )}
+                                  />
+                                ) : null}
+                              </div>
+                            );
+                          },
+                          others: {
+                            minWidth: 250,
+                            style: { textAlign: "center" },
+                          },
+                        },
                         {
                           fieldName: "analyte_report_group",
                           label: (
@@ -512,41 +547,6 @@ class LabInvestigation extends Component {
                           },
                           others: {
                             minWidth: 130,
-                            style: { textAlign: "center" },
-                          },
-                        },
-
-                        {
-                          fieldName: "display_formula",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Formula" }} />
-                          ),
-                          editorTemplate: (row) => {
-                            return (
-                              <div>
-                                <label>{row.display_formula}</label>
-                                <i
-                                  className="fas fa-pen"
-                                  onClick={this.showFormulaPopup.bind(
-                                    this,
-                                    row
-                                  )}
-                                />
-                                {row.display_formula !== "" &&
-                                row.display_formula ? (
-                                  <i
-                                    className="fas fa-trash-alt"
-                                    onClick={this.onDeleteFormula.bind(
-                                      this,
-                                      row
-                                    )}
-                                  />
-                                ) : null}
-                              </div>
-                            );
-                          },
-                          others: {
-                            minWidth: 250,
                             style: { textAlign: "center" },
                           },
                         },

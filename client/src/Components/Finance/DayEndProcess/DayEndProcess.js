@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import _ from "lodash";
 import "./day_end_prc.scss";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 import {
   // AlgaehDataGrid,
@@ -239,11 +240,13 @@ class DayEndProcess extends Component {
             dayEnd: result_data, //.length > 0 ? result_data : [{}],
             revert_visible: false,
           });
+          AlgaehLoader({ show: false });
           return this.props.history?.push(
             `${this.props.location?.pathname}?from_date=${this.state.from_date}&to_date=${this.state.to_date}&revert_trans=${this.state.revert_trans}&posted=${this.state.posted}`
           );
         },
         onCatch: (error) => {
+          AlgaehLoader({ show: false });
           swalMessage({ title: error, type: "error" });
         },
       });
@@ -308,6 +311,7 @@ class DayEndProcess extends Component {
       cancelButtonText: "No",
     }).then((willProcess) => {
       if (willProcess.value) {
+        AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/finance/bulkPosttoFinance",
           skipParse: true,
@@ -331,6 +335,7 @@ class DayEndProcess extends Component {
             this.getDayEndProcess();
           },
           onFailure: (error) => {
+            AlgaehLoader({ show: false });
             swalMessage({
               title: error.message,
               type: "error",

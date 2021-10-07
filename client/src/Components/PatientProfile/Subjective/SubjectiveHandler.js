@@ -192,6 +192,11 @@ export default function SubjectiveHandler() {
         complaint_inactive_date: null,
         complaint_type: $this.state.complaint_type,
         lmp_days: $this.state.lmp_days,
+        primary_id_no: $this.props.pat_profile.primary_id_no,
+        visit_code: $this.props.pat_profile.visit_code,
+        Encounter_Date: $this.props.pat_profile.Encounter_Date,
+        significant_signs: $this.state.significant_signs,
+        other_signs: $this.state.other_signs,
       });
       algaehApiCall({
         uri: "/doctorsWorkBench/addPatientChiefComplaints",

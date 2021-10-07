@@ -17,13 +17,13 @@
         <thead>
           <tr>
             <th>Sl No.</th>
-            <th>Patient Code</th>
+            <th>Code</th>
             <th>Patient Name</th>
             <th>Service Name</th>
-            <th>Invoice Number</th>
+            <th>Invoice No.</th>
             <th>Invoice Date</th>
-            <th>Card Number</th>
-            <th>Policy Number</th>
+            <th>Card No.</th>
+            <th>Policy No.</th>
             <th>Total</th>
             <th>Vat</th>
             <th>Net Payable</th>
@@ -73,13 +73,13 @@
                 {{#each docs}}
                   <tr>
                     <td datatype="string">{{inc @index}}</td>
-                    <td>{{patient_code}}</td>
-                    <td>{{full_name}}</td>
-                    <td>{{service_name}}</td>
+                    <td datatype="string">{{patient_code}}</td>
+                    <td datatype="string" class="txtFld">{{full_name}}</td>
+                    <td datatype="string">{{service_name}}</td>
                     <td datatype="string">{{invoice_number}}</td>
                     <td datatype="string">{{invoice_date}}</td>
-                    <td>{{card_number}}</td>
-                    <td>{{policy_number}}</td>
+                    <td datatype="string">{{card_number}}</td>
+                    <td datatype="string">{{policy_number}}</td>
                     <td class="numberFld">{{company_resp}}</td>
                     <td class="numberFld">{{company_tax}}</td>
                     <td class="numberFld">{{company_payable}}</td>
@@ -93,7 +93,7 @@
 
           {{else}}
             <tr>
-              <td colspan="6" class="noResultTextReport">No Records Found</td>
+              <td colspan="11" class="noResultTextReport">No Records Found</td>
             </tr>{{/hasElement}}
         </tbody>
 

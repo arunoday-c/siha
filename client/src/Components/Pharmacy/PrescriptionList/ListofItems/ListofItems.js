@@ -155,6 +155,8 @@ class ListofItems extends PureComponent {
                         ? "Twice daily (Bid)"
                         : row.frequency === "10"
                         ? "Three times daily (tid)"
+                        : row.frequency === "18"
+                        ? "Four times daily (qid)"
                         : row.frequency === "11"
                         ? "Five times daily"
                         : row.frequency === "12"
@@ -169,8 +171,6 @@ class ListofItems extends PureComponent {
                         ? "Every eight hours (q8h)"
                         : row.frequency === "17"
                         ? "Every twelve hours (q12h)"
-                        : row.frequency === "18"
-                        ? "Four times daily (qid)"
                         : row.frequency === "19"
                         ? "Other (As per need)"
                         : null;

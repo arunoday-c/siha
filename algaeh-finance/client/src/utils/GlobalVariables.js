@@ -34,6 +34,7 @@ export const Account_Type = [
   { name: "Profit & Loss", value: "PL" },
   { name: "Bank", value: "B" },
   { name: "Account Receivable", value: "AR" },
+  { name: "Account Payable", value: "AP" },
   { name: "Current Assets", value: "CA" },
   { name: "Non Current Assets", value: "NCA" },
   { name: "Cash and Cash Equivalent", value: "CACE" },

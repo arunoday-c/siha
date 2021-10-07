@@ -729,6 +729,19 @@ export default memo(function (props) {
                           },
                         },
                         {
+                          fieldName: "custom_ref_no",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Reference No." }}
+                            />
+                          ),
+                          filterable: true,
+                          others: {
+                            Width: 120,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
                           fieldName: "voucher_type",
                           label: (
                             <AlgaehLabel

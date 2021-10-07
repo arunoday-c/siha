@@ -1,23 +1,33 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { InfoBar } from "../../Wrappers";
 import {
   AlgaehMessagePop,
   AlgaehDataGrid,
   AlgaehLabel,
+  AlgaehButton,
 } from "algaeh-react-components";
 import { LoadCustomerReceivables } from "./event";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
+import ModalPrintCustomerAndSupplier from "./ModalPrintCustomerAndSupplier";
 
+const STATUS = {
+  CHECK: true,
+  UNCHECK: false,
+  INDETERMINATE: true,
+};
 function CustomerList(props) {
   const history = useHistory();
-
+  let allChecked = useRef(undefined);
   const [customer_receivables, setCustomerReceivables] = useState([]);
   const [info, setInfo] = useState({
     over_due: "0.00",
     total_receivable: "0.00",
   });
-
+  const [filteredDataToPrint, setFilteredDataToPrint] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const [childIds, setChildIds] = useState("");
+  const [checkAll, setCheckAll] = useState(STATUS.UNCHECK);
   useEffect(() => {
     LoadCustomerReceivables()
       .then((data) => {
@@ -31,119 +41,212 @@ function CustomerList(props) {
         });
       });
   }, []);
+  const bulkPrintReport = () => {
+    const data = customer_receivables;
 
+    let filterData = data.filter((f) => f.checked === true);
+    setFilteredDataToPrint(filterData);
+    const childIdsForReport = filterData.map((item) => {
+      return item.finance_account_child_id;
+    });
+
+    if (childIdsForReport.length > 0) {
+      setVisible(true);
+      setChildIds(childIdsForReport);
+    }
+    console.log("filteredData", childIdsForReport.join(","));
+  };
+  const selectAll = (e) => {
+    const status = e.target.checked;
+    const myState = customer_receivables.map((f) => {
+      return {
+        ...f,
+        checked: status,
+      };
+    });
+
+    const hasUncheck = myState.filter((f) => {
+      return f.checked === undefined || f.checked === false;
+    });
+
+    const totalRecords = myState.length;
+    setCheckAll(
+      totalRecords === hasUncheck.length
+        ? "UNCHECK"
+        : hasUncheck.length === 0
+        ? "CHECK"
+        : "INDETERMINATE"
+    );
+    setCustomerReceivables([...myState]);
+  };
+  const selectToPrintReport = (row, e) => {
+    const status = e.target.checked;
+    row.checked = status;
+    const records = customer_receivables;
+    const hasUncheck = records.filter((f) => {
+      return f.checked === undefined || f.checked === false;
+    });
+
+    const totalRecords = records.length;
+    let ckStatus =
+      totalRecords === hasUncheck.length
+        ? "UNCHECK"
+        : hasUncheck.length === 0
+        ? "CHECK"
+        : "INDETERMINATE";
+    if (ckStatus === "INDETERMINATE") {
+      allChecked.indeterminate = true;
+    } else {
+      allChecked.indeterminate = false;
+    }
+    setCheckAll(ckStatus);
+    setCustomerReceivables([...records]);
+  };
   return (
-    <div className="row">
-      <div className="col-12">
-        <InfoBar data={info} />
-        <div className="row">
-          <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Customer List</h3>
-                </div>{" "}
-                <div className="actions">
-                  {" "}
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => {
-                      history.push("CustomerSetup", { data: "placeholder" });
-                    }}
-                  >
-                    <i className="fas fa-plus"></i>
-                  </button>
+    <>
+      <div className="row">
+        <div className="col-12">
+          <InfoBar data={info} />
+          <div className="row">
+            <div className="col-12">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">Customer List</h3>
+                  </div>{" "}
+                  <div className="actions">
+                    {" "}
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        history.push("CustomerSetup", { data: "placeholder" });
+                      }}
+                    >
+                      <i className="fas fa-plus"></i>
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div
-                    className="col-lg-12 customCheckboxGrid"
-                    id="customerGrid_Cntr"
-                  >
-                    <AlgaehDataGrid
-                      columns={[
-                        {
-                          // label: "Code",
-
-                          label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
-                          sortable: true,
-                          fieldName: "ledger_code",
-                          filterable: true,
-                          displayTemplate: (record) => {
-                            return <span>{record.ledger_code}</span>;
-                          },
-                          others: {
-                            width: 200,
-                            style: { textAlign: "center" },
-                          },
-                        },
-                        {
-                          // label: "Customer / Company",
-
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Customer/ Company" }}
-                            />
-                          ),
-                          sortable: true,
-                          fieldName: "child_name",
-                          filterable: true,
-                          displayTemplate: (record) => {
-                            return (
-                              <p
-                                className="p-link"
-                                type="link"
-                                onClick={() =>
-                                  history.push("/CustomerPayment", {
-                                    data: record,
-                                  })
+                <div className="portlet-body">
+                  <div className="row">
+                    <div
+                      className="col-lg-12 customCheckboxGrid"
+                      id="customerGrid_Cntr"
+                    >
+                      <AlgaehDataGrid
+                        columns={[
+                          {
+                            label: (
+                              <input
+                                type="checkbox"
+                                defaultChecked={
+                                  checkAll === "CHECK" ? true : false
                                 }
-                              >
-                                {record.child_name}
-                              </p>
-                            );
+                                ref={(input) => {
+                                  allChecked = input;
+                                }}
+                                onChange={selectAll}
+                              />
+                            ),
+                            fieldName: "select",
+                            displayTemplate: (row) => {
+                              return (
+                                <input
+                                  type="checkbox"
+                                  checked={row.checked}
+                                  onChange={(e) => selectToPrintReport(row, e)}
+                                />
+                              );
+                            },
+                            others: {
+                              maxWidth: 50,
+                              filterable: false,
+                              sortable: false,
+                            },
                           },
-                          others: {
-                            // width: 200,
-                            style: { textAlign: "left" },
-                          },
-                        },
-                        {
-                          // label: "Balance",
+                          {
+                            // label: "Code",
 
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Balance Amt." }}
-                            />
-                          ),
-                          sortable: true,
-                          fieldName: "balance_amount",
-                          others: {
-                            width: 200,
-                            style: { textAlign: "right" },
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Code" }} />
+                            ),
+                            sortable: true,
+                            fieldName: "ledger_code",
+                            filterable: true,
+                            displayTemplate: (record) => {
+                              return <span>{record.ledger_code}</span>;
+                            },
+                            others: {
+                              width: 200,
+                              style: { textAlign: "center" },
+                            },
                           },
-                          displayTemplate: (row) => {
-                            return (
-                              <span>
-                                {getAmountFormart(row.balance_amount, {
-                                  appendSymbol: false,
-                                })}
-                              </span>
-                            );
-                          },
-                        },
-                      ]}
-                      // height="80vh"
+                          {
+                            // label: "Customer / Company",
 
-                      // rowUnique="finance_voucher_header_id"
-                      rowUniqueId="finance_voucher_header_id"
-                      // dataSource={{ data: customer_receivables }}
-                      data={customer_receivables || []}
-                      isFilterable={true}
-                      pagination={true}
-                      pageOptions={{ rows: 50, page: 1 }}
-                    />
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Customer/ Company" }}
+                              />
+                            ),
+                            sortable: true,
+                            fieldName: "child_name",
+                            filterable: true,
+                            displayTemplate: (record) => {
+                              return (
+                                <p
+                                  className="p-link"
+                                  type="link"
+                                  onClick={() =>
+                                    history.push("/CustomerPayment", {
+                                      data: record,
+                                    })
+                                  }
+                                >
+                                  {record.child_name}
+                                </p>
+                              );
+                            },
+                            others: {
+                              // width: 200,
+                              style: { textAlign: "left" },
+                            },
+                          },
+                          {
+                            // label: "Balance",
+
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Balance Amt." }}
+                              />
+                            ),
+                            sortable: true,
+                            fieldName: "balance_amount",
+                            others: {
+                              width: 200,
+                              style: { textAlign: "right" },
+                            },
+                            displayTemplate: (row) => {
+                              return (
+                                <span>
+                                  {getAmountFormart(row.balance_amount, {
+                                    appendSymbol: false,
+                                  })}
+                                </span>
+                              );
+                            },
+                          },
+                        ]}
+                        // height="80vh"
+
+                        // rowUnique="finance_voucher_header_id"
+                        rowUniqueId="finance_voucher_header_id"
+                        // dataSource={{ data: customer_receivables }}
+                        data={customer_receivables || []}
+                        isFilterable={true}
+                        pagination={true}
+                        pageOptions={{ rows: 50, page: 1 }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -151,7 +254,36 @@ function CustomerList(props) {
           </div>
         </div>
       </div>
-    </div>
+      <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col-12">
+            <AlgaehButton
+              className="btn btn-default"
+              // disabled={!processList.length}
+              // loading={loading}
+              onClick={() => bulkPrintReport()}
+            >
+              Print
+            </AlgaehButton>
+          </div>
+        </div>
+      </div>
+      {visible ? (
+        <ModalPrintCustomerAndSupplier
+          title="Customer Report"
+          visible={visible}
+          screenFrom="CUST"
+          childIds={childIds}
+          filteredDataToPrint={filteredDataToPrint}
+          onCancel={() => {
+            setVisible(false);
+          }}
+          onOk={() => {
+            setVisible(false);
+          }}
+        />
+      ) : null}
+    </>
   );
 }
 
