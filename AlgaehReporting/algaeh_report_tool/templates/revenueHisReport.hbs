@@ -11,11 +11,15 @@
             <th>Handover Date</th>
             <th>Total Cash</th>
             <th>Total Card</th>
+              {{#if show_vat "Y"}}
             <th>Net cash before Vat.</th>
             <th>Total Cash Vat.</th>
+             {{/if}}
             <th>Net cash after Vat.</th>
+              {{#if show_vat "Y"}}
             <th>Total Company before Vat.</th>
             <th>Total Company Vat.</th>
+             {{/if}}
             <th>Net Company after Vat.</th>
           </tr>
         </thead>
@@ -27,11 +31,15 @@
                 <td datatype="string">{{receipt_date}}</td>
                  <td class="numberFld">{{numberFormating cash ../decimalOnly}}</td>
                  <td class="numberFld">{{numberFormating card ../decimalOnly}}</td>
+                   {{#if show_vat "Y"}}
                  <td class="numberFld">{{numberFormating patient_before_tax ../decimalOnly}}</td>
                  <td class="numberFld">{{numberFormating patient_tax ../decimalOnly}}</td>
+                  {{/if}}
                  <td class="numberFld">{{numberFormating patient_after_tax ../decimalOnly}}</td>
+                   {{#if show_vat "Y"}}
                  <td class="numberFld">{{numberFormating company_before_tax ../decimalOnly}}</td>
                  <td class="numberFld">{{numberFormating company_tax ../decimalOnly}}</td>
+                  {{/if}}
                  <td class="numberFld">{{numberFormating company_after_tax ../decimalOnly}}</td>
               </tr>
             {{/each}}
