@@ -16,44 +16,19 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      // utilities.logger().log("input: ", input);
-
-      // let qry = "";
-
-      // //   switch (input.receipt_type) {
-      // // case "OP":
-      // if (input.sub_department_id > 0) {
-      //   str += ` and V.sub_department_id= ${input.sub_department_id}`;
-      // }
-      // if (input.provider_id > 0) {
-      //   str += ` and V.doctor_id= ${input.provider_id}`;
-      // }
-      // if (input.cashier_name > 0) {
-      //   str += ` and BH.created_by= ${input.cashier_name}`;
-      // }
-
-      let show_vat = "";
-      if (input.show_vat === "Y") {
-        show_vat = ", show_vat = 'Y' ,";
-      } else if (input.is_SendOut === "N") {
-        show_vat = ", show_vat ='N' ,";
-      }
-
-      // if (input.show_vat > 0) {
-      //   str += ` and BH.created_by= ${input.cashier_name}`;
-      // }
-
       options.mysql
         .executeQuery({
           query: `
-            select hims_f_receipt_header_id,receipt_date,${show_vat}
-            sum(cash) as cash, sum(card) as card, sum(amount) as total, 
+            select hims_f_receipt_header_id,receipt_date,
+            sum(cash) as cash, sum(card) as card, sum(amount) as total,
+            sum(patient_res) as patient_before_tax, sum(patient_tax) as patient_tax, sum(patient_payable) as patient_after_tax,
             sum(company_res) as company_before_tax, sum(company_tax) as company_tax, sum(company_payable) as company_after_tax
             from (
-            select RH.hims_f_receipt_header_id,${show_vat}
+            select RH.hims_f_receipt_header_id,
             date(RH.receipt_date) as receipt_date ,RD.pay_type,RD.amount,
             case RD.pay_type when 'CA' then RD.amount else '0.00' end as cash,
             case RD.pay_type when 'CD' then RD.amount else '0.00' end as card,
+            BH.patient_res,BH.patient_tax, BH.patient_payable,
             BH.company_res,BH.company_tax, BH.company_payable
             from  hims_f_billing_header BH
             inner join hims_f_receipt_header RH on BH.receipt_header_id=RH.hims_f_receipt_header_id
@@ -73,6 +48,7 @@ const executePDF = function executePDFMethod(options) {
         .then((results) => {
           const result = {
             details: results,
+            show_vat: input.show_vat,
             expected_cash: options.currencyFormat(
               _.sumBy(results, (s) => parseFloat(s.cash)),
               options.args.crypto
@@ -83,6 +59,18 @@ const executePDF = function executePDFMethod(options) {
             ),
             expected_total: options.currencyFormat(
               _.sumBy(results, (s) => parseFloat(s.total)),
+              options.args.crypto
+            ),
+            total_patient_before_tax: options.currencyFormat(
+              _.sumBy(results, (s) => parseFloat(s.patient_before_tax)),
+              options.args.crypto
+            ),
+            total_patient_tax: options.currencyFormat(
+              _.sumBy(results, (s) => parseFloat(s.patient_tax)),
+              options.args.crypto
+            ),
+            total_patient_after_tax: options.currencyFormat(
+              _.sumBy(results, (s) => parseFloat(s.patient_after_tax)),
               options.args.crypto
             ),
             total_company_before_tax: options.currencyFormat(

@@ -11,9 +11,12 @@
             <th>Handover Date</th>
             <th>Total Cash</th>
             <th>Total Card</th>
-            <th>Total Company Pay before Vat.</th>
+            <th>Net cash before Vat.</th>
+            <th>Total Cash Vat.</th>
+            <th>Net cash after Vat.</th>
+            <th>Total Company before Vat.</th>
             <th>Total Company Vat.</th>
-            <th>Total Company Pay after Vat.</th>
+            <th>Net Company after Vat.</th>
           </tr>
         </thead>
         <tbody>
@@ -24,6 +27,9 @@
                 <td datatype="string">{{receipt_date}}</td>
                  <td class="numberFld">{{numberFormating cash ../decimalOnly}}</td>
                  <td class="numberFld">{{numberFormating card ../decimalOnly}}</td>
+                 <td class="numberFld">{{numberFormating patient_before_tax ../decimalOnly}}</td>
+                 <td class="numberFld">{{numberFormating patient_tax ../decimalOnly}}</td>
+                 <td class="numberFld">{{numberFormating patient_after_tax ../decimalOnly}}</td>
                  <td class="numberFld">{{numberFormating company_before_tax ../decimalOnly}}</td>
                  <td class="numberFld">{{numberFormating company_tax ../decimalOnly}}</td>
                  <td class="numberFld">{{numberFormating company_after_tax ../decimalOnly}}</td>
@@ -34,8 +40,15 @@
               <td colspan="2" class="numberFld"></td>
               <td class="numberFld">{{expected_cash}}</td>
               <td class="numberFld">{{expected_card}}</td>
+                {{#if show_vat "Y"}}
+                  <td class="numberFld">{{total_patient_before_tax}}</td>
+                  <td class="numberFld">{{total_patient_tax}}</td>
+              {{/if}}
+              <td class="numberFld">{{total_patient_after_tax}}</td>
+              {{#if show_vat "Y"}}
               <td class="numberFld">{{total_company_before_tax}}</td>
               <td class="numberFld">{{total_company_tax}}</td>
+              {{/if}}
               <td class="numberFld">{{total_company_after_tax}}</td>
               {{!-- <td class="numberFld"></td> --}}
             </tr>
