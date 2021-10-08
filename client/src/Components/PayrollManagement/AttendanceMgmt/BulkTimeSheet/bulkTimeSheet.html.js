@@ -5,6 +5,7 @@ import Filter from "./Filter/filter.html";
 import {
   // AlagehAutoComplete,
   AlgaehLabel,
+  AlgaehModalPopUp,
   // AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 import { swalMessage } from "../../../../utils/algaehApiCall";
@@ -15,9 +16,12 @@ import {
 } from "./bulkTimeSheet.events";
 import EditAttendencePerDay from "./EditAttendencePerDay";
 import { AlgaehSecurityElement } from "algaeh-react-components";
+
 function BulkTimeSheet(props) {
   const [filter, setFilter] = useState({});
   const [data, setData] = useState([]);
+  const [pending_leave, setPendigLeave] = useState([]);
+  const [employee_encash, setLeaveEncash] = useState([]);
   const [dates, setDates] = useState([]);
   const [message, setMessage] = useState("");
   const [process, setProcess] = useState(true);
@@ -35,6 +39,7 @@ function BulkTimeSheet(props) {
   };
   const [project_state, setProjectState] = useState(base_state);
   const [selectedTD, setSelectedTD] = useState({});
+  const [openModal, setOpenModal] = useState(false);
 
   function editingProjectRoster(e, employee_name) {
     const projectObj = {
@@ -117,6 +122,8 @@ function BulkTimeSheet(props) {
           const {
             allDates,
             data,
+            pending_leave,
+            employee_encash,
             department_id,
             employee_id,
             from_date,
@@ -126,7 +133,9 @@ function BulkTimeSheet(props) {
             sub_department_id,
             to_date,
             year,
+            invalid_input,
           } = result;
+
           setDates(allDates);
           setFilter({
             department_id,
@@ -139,7 +148,14 @@ function BulkTimeSheet(props) {
             to_date,
             year,
           });
-          setData(data);
+          if (invalid_input === false) {
+            setData(data);
+          }
+          setPendigLeave(pending_leave);
+          setLeaveEncash(employee_encash);
+          if (pending_leave.length > 0 || employee_encash.length > 0) {
+            setOpenModal(true);
+          }
           setProcess(false);
           setErrorHtml("");
         }}
@@ -147,6 +163,95 @@ function BulkTimeSheet(props) {
           setErrorHtml("");
         }}
       />
+
+      <AlgaehModalPopUp
+        title="Employee Data"
+        events={{
+          onClose: () => {
+            setOpenModal(false);
+          },
+        }}
+        openPopup={openModal}
+      >
+        <div className="popupInner">
+          <div className="col">
+            <div className="row">
+              <div className="col margin-top-15">
+                <div className="row">
+                  {pending_leave.length > 0 ? (
+                    <h6>Employee Leave Pending</h6>
+                  ) : null}
+
+                  {pending_leave.map((item, index) => (
+                    <>
+                      <div className="col-2 form-group">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Employee Code",
+                          }}
+                        />
+                        <h6>{item.employee_code}</h6>
+                      </div>
+                      <div className="col form-group">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Employee Name",
+                          }}
+                        />
+                        <h6>{item.full_name}</h6>
+                      </div>
+                    </>
+                  ))}
+                  {employee_encash.length > 0 ? (
+                    <h6>Employee Encash Pending</h6>
+                  ) : null}
+
+                  {employee_encash.map((item, index) => (
+                    <>
+                      <div className="col-2 form-group">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Employee Code",
+                          }}
+                        />
+                        <h6>{item.employee_code}</h6>
+                      </div>
+                      <div className="col form-group">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Employee Name",
+                          }}
+                        />
+                        <h6>{item.full_name}</h6>
+                      </div>
+                    </>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="popupFooter">
+          <div className="col-lg-12">
+            <div className="row">
+              <div className="col-lg-4"> &nbsp;</div>
+
+              <div className="col-lg-8">
+                <button
+                  onClick={() => {
+                    setOpenModal(false);
+                  }}
+                  type="button"
+                  className="btn btn-default"
+                >
+                  CANCEL
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </AlgaehModalPopUp>
 
       <EditAttendencePerDay
         project_state={project_state}
@@ -282,9 +387,8 @@ function BulkTimeSheet(props) {
                         errorMessage.response !== undefined &&
                         typeof errorMessage.response.data.message === "string"
                       ) {
-                        const hasLi = errorMessage.response.data.message.includes(
-                          "<li>"
-                        );
+                        const hasLi =
+                          errorMessage.response.data.message.includes("<li>");
                         if (hasLi) {
                           setErrorHtml(errorMessage.response.data.message);
                         } else {
