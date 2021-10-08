@@ -6216,15 +6216,19 @@ export default {
               "SELECT attendance_type,salary_pay_before_end_date,payroll_payment_date from hims_d_hrms_options limit 1; \
               select hims_f_leave_application_id, employee_code, full_name from hims_f_leave_application L \
               inner join hims_d_employee E on E.hims_d_employee_id=L.employee_id where status='PEN' and L.hospital_id=?;\
-              select hims_f_leave_encash_header_id, employee_code, full_name from hims_f_leave_encash_header L \
-              inner join hims_d_employee E on E.hims_d_employee_id=L.employee_id where authorized='PEN' and L.hospital_id=?;",
-            values: [input.branch_id,input.branch_id],
+              select hims_f_leave_encash_header_id, employee_code, full_name from hims_f_leave_encash_header EH \
+              inner join hims_d_employee E on E.hims_d_employee_id=EH.employee_id where authorized='PEN' and EH.hospital_id=?;\
+              select hims_f_loan_application_id, employee_code, full_name from hims_f_loan_application LO \
+              inner join hims_d_employee E on E.hims_d_employee_id=LO.employee_id where loan_authorized='PEN' and LO.hospital_id=?;",
+
+            values: [input.branch_id, input.branch_id, input.branch_id],
             printQuery: true,
           })
           .then((opts) => {
             const options = opts[0][0];
             const pending_leave = opts[1];
             const employee_encash = opts[2];
+            const employee_loan = opts[3];
 
             if (
               options.attendance_type == "DM" ||
@@ -6409,6 +6413,7 @@ export default {
                         ),
                         pending_leave: pending_leave,
                         employee_encash: employee_encash,
+                        employee_loan: employee_loan,
                       };
 
                       next();
@@ -6418,6 +6423,7 @@ export default {
                         invalid_input: true,
                         pending_leave: pending_leave,
                         employee_encash: employee_encash,
+                        employee_loan: employee_loan,
                         allDates: [],
                       };
                       next();

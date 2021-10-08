@@ -241,3 +241,31 @@
     }
   }
 }
+ul.requestList {
+  // display: none;
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+  color: #000;
+  border: 1px solid #ccc;
+  overflow: auto;
+  min-height: 55vh;
+  max-height: 55vh;
+
+  li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid #ccc;
+    display: block;
+    span {
+      padding: 3px 5px;
+      display: inline-block;
+      &:first-child {
+        width: 100px;
+        text-align: center;
+        border-right: 1px solid #ccc;
+      }
+    }
+  }
+}

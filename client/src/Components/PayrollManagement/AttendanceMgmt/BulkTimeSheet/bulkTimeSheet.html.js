@@ -22,6 +22,7 @@ function BulkTimeSheet(props) {
   const [data, setData] = useState([]);
   const [pending_leave, setPendigLeave] = useState([]);
   const [employee_encash, setLeaveEncash] = useState([]);
+  const [employee_loan, setLeaveLoan] = useState([]);
   const [dates, setDates] = useState([]);
   const [message, setMessage] = useState("");
   const [process, setProcess] = useState(true);
@@ -124,6 +125,7 @@ function BulkTimeSheet(props) {
             data,
             pending_leave,
             employee_encash,
+            employee_loan,
             department_id,
             employee_id,
             from_date,
@@ -153,7 +155,12 @@ function BulkTimeSheet(props) {
           }
           setPendigLeave(pending_leave);
           setLeaveEncash(employee_encash);
-          if (pending_leave.length > 0 || employee_encash.length > 0) {
+          setLeaveLoan(employee_loan);
+          if (
+            pending_leave.length > 0 ||
+            employee_encash.length > 0 ||
+            employee_loan.length > 0
+          ) {
             setOpenModal(true);
           }
           setProcess(false);
@@ -165,7 +172,7 @@ function BulkTimeSheet(props) {
       />
 
       <AlgaehModalPopUp
-        title="Employee Data"
+        title="Pending Requests"
         events={{
           onClose: () => {
             setOpenModal(false);
@@ -176,58 +183,90 @@ function BulkTimeSheet(props) {
         <div className="popupInner">
           <div className="col">
             <div className="row">
-              <div className="col margin-top-15">
-                <div className="row">
-                  {pending_leave.length > 0 ? (
-                    <h6>Employee Leave Pending</h6>
-                  ) : null}
-
-                  {pending_leave.map((item, index) => (
-                    <>
-                      <div className="col-2 form-group">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Employee Code",
-                          }}
-                        />
-                        <h6>{item.employee_code}</h6>
-                      </div>
-                      <div className="col form-group">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Employee Name",
-                          }}
-                        />
-                        <h6>{item.full_name}</h6>
-                      </div>
-                    </>
-                  ))}
-                  {employee_encash.length > 0 ? (
-                    <h6>Employee Encash Pending</h6>
-                  ) : null}
-
-                  {employee_encash.map((item, index) => (
-                    <>
-                      <div className="col-2 form-group">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Employee Code",
-                          }}
-                        />
-                        <h6>{item.employee_code}</h6>
-                      </div>
-                      <div className="col form-group">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Employee Name",
-                          }}
-                        />
-                        <h6>{item.full_name}</h6>
-                      </div>
-                    </>
-                  ))}
-                </div>
+              <div className="col alert alert-warning">
+                <strong>Warning!</strong> Please take actions for below requests
+                for selected branch, then upload time-sheet to avoid multiple
+                alteration.
               </div>
+            </div>
+            <div className="row">
+              {pending_leave.length > 0 ? (
+                <div className="col">
+                  <h6>
+                    <b>Pending Leave Requests</b>
+                  </h6>
+                  <small>Leave Management/ Leave Authorization</small>
+                  <ul className="requestList">
+                    {pending_leave.map((item, index) => (
+                      <li>
+                        <span>{item.employee_code}</span>
+                        <span>{item.full_name}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              {employee_encash.length > 0 ? (
+                <div className="col">
+                  <h6>
+                    <b>Pending Encashment Requests</b>
+                  </h6>
+                  <small>Leave Management/ Encashment Authorization</small>
+
+                  <ul className="requestList">
+                    {employee_encash.map((item, index) => (
+                      <li>
+                        <span>{item.employee_code}</span>
+                        <span>{item.full_name}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+              {employee_loan.length > 0 ? (
+                <div className="col">
+                  <h6>
+                    <b>Pending Loan Requests</b>
+                  </h6>
+                  <small>Loan Management/ Loan Authorization</small>
+                  <ul className="requestList">
+                    {employee_loan.map((item, index) => (
+                      <li>
+                        <span>{item.employee_code}</span>
+                        <span>{item.full_name}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              {/* <div className="col-4">
+                {employee_loan.length > 0 ? (
+                  <h6>Employee Loan Pending</h6>
+                ) : null}
+
+                {employee_loan.map((item, index) => (
+                  <>
+                    <div className="col-2 form-group">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Employee Code",
+                        }}
+                      />
+                      <h6>{item.employee_code}</h6>
+                    </div>
+                    <div className="col form-group">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Employee Name",
+                        }}
+                      />
+                      <h6>{item.full_name}</h6>
+                    </div>
+                  </>
+                ))}
+              </div> */}
             </div>
           </div>
         </div>
@@ -283,7 +322,7 @@ function BulkTimeSheet(props) {
       <div className="row">
         <div className={errorHtml !== "" ? "col-9" : "col"}>
           <div
-            className="portlet portlet-bordered margin-top-15"
+            className="portlet portlet-bordered"
             style={{ marginBottom: 60 }}
           >
             <div className="portlet-title">
@@ -349,7 +388,7 @@ function BulkTimeSheet(props) {
         </div>
         {errorHtml !== "" ? (
           <div className="col-3 errorCntrDiv">
-            <div className="portlet portlet-bordered margin-top-15 ">
+            <div className="portlet portlet-bordered ">
               <div className="portlet-body">
                 <h6>Attention!</h6>
                 <p>
