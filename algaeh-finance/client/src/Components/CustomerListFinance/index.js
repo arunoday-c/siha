@@ -7,9 +7,14 @@ import {
   AlgaehLabel,
   AlgaehButton,
 } from "algaeh-react-components";
-import { LoadCustomerReceivables } from "./event";
+import {
+  LoadCustomerReceivables,
+  onPdfGeneration,
+  onExcelGeneration,
+} from "./event";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
-import ModalPrintCustomerAndSupplier from "./ModalPrintCustomerAndSupplier";
+import { useStateWithCallbackLazy } from "use-state-with-callback";
+// import ModalPrintCustomerAndSupplier from "./ModalPrintCustomerAndSupplier";
 
 const STATUS = {
   CHECK: true,
@@ -24,9 +29,9 @@ function CustomerList(props) {
     over_due: "0.00",
     total_receivable: "0.00",
   });
-  const [filteredDataToPrint, setFilteredDataToPrint] = useState([]);
-  const [visible, setVisible] = useState(false);
-  const [childIds, setChildIds] = useState("");
+  // const [filteredDataToPrint, setFilteredDataToPrint] = useState([]);
+  // const [visible, setVisible] = useState(false);
+  const [childIds, setChildIds] = useStateWithCallbackLazy([]);
   const [checkAll, setCheckAll] = useState(STATUS.UNCHECK);
   useEffect(() => {
     LoadCustomerReceivables()
@@ -41,20 +46,24 @@ function CustomerList(props) {
         });
       });
   }, []);
-  const bulkPrintReport = () => {
+  const bulkPrintReport = (type) => {
     const data = customer_receivables;
 
     let filterData = data.filter((f) => f.checked === true);
-    setFilteredDataToPrint(filterData);
+    // await setFilteredDataToPrint(filterData);
     const childIdsForReport = filterData.map((item) => {
       return item.finance_account_child_id;
     });
 
     if (childIdsForReport.length > 0) {
-      setVisible(true);
-      setChildIds(childIdsForReport);
+      // setVisible(true);
+      setChildIds(childIdsForReport, (data) => {
+        debugger;
+        type === "PDF"
+          ? onPdfGeneration("CUST", data)
+          : onExcelGeneration("CUST", data);
+      });
     }
-    console.log("filteredData", childIdsForReport.join(","));
   };
   const selectAll = (e) => {
     const status = e.target.checked;
@@ -261,14 +270,23 @@ function CustomerList(props) {
               className="btn btn-default"
               // disabled={!processList.length}
               // loading={loading}
-              onClick={() => bulkPrintReport()}
+              onClick={() => bulkPrintReport("PDF")}
             >
-              Print
+              Print PDF Report
+            </AlgaehButton>
+            <AlgaehButton
+              className="btn btn-default"
+              // disabled={!processList.length}
+              // loading={loading}
+              onClick={() => bulkPrintReport("EXCEL")}
+            >
+              Print Excel Report
             </AlgaehButton>
           </div>
         </div>
       </div>
-      {visible ? (
+
+      {/* {visible ? (
         <ModalPrintCustomerAndSupplier
           title="Customer Report"
           visible={visible}
@@ -282,7 +300,7 @@ function CustomerList(props) {
             setVisible(false);
           }}
         />
-      ) : null}
+      ) : null} */}
     </>
   );
 }
