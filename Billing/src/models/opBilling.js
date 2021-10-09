@@ -334,7 +334,7 @@ export default {
                 const rad_data = package_details.filter(
                   (f) => f.service_type_id == "11"
                 );
-                console.log("lab_data", lab_data);
+                // console.log("lab_data", lab_data);
                 if (lab_data.length > 0) {
                   req.body.LAB_Package = true;
                 }
@@ -730,6 +730,11 @@ export default {
         })
         .then((product_type) => {
           if (product_type.length == 1) {
+            // console.log("inputParam.from_bill_id", inputParam.from_bill_id);
+            // console.log(
+            //   "inputParam.hims_f_billing_header_id",
+            //   inputParam.hims_f_billing_header_id
+            // );
             _mysql
               .executeQuery({
                 query:
@@ -829,12 +834,16 @@ export default {
                           return f;
                       });
 
+                      // console.log("bill", bill);
+
                       const credit_amount = _.sumBy(bill, (s) =>
                         parseFloat(s.net_amout)
                       );
 
                       EntriesArray.push({
-                        payment_date: new Date(),
+                        payment_date: moment(inputParam.bill_date).format(
+                          "YYYY-MM-DD"
+                        ),
                         head_id: curService.head_id,
                         child_id: curService.child_id,
                         debit_amount: 0,
@@ -846,9 +855,11 @@ export default {
                     });
 
                     //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
-                    if (new_bill_header.advance_adjust > 0) {
+                    if (parseFloat(new_bill_header.advance_adjust) > 0) {
                       EntriesArray.push({
-                        payment_date: new Date(),
+                        payment_date: moment(inputParam.bill_date).format(
+                          "YYYY-MM-DD"
+                        ),
                         head_id: OP_DEP.head_id,
                         child_id: OP_DEP.child_id,
                         debit_amount: new_bill_header.advance_adjust,
@@ -859,9 +870,12 @@ export default {
                       });
                     }
                     //PROVIDING OP SERVICE ON CREDIT
-                    if (new_bill_header.credit_amount > 0) {
+                    // console.log("new_bill_header", new_bill_header);
+                    if (parseFloat(new_bill_header.credit_amount) > 0) {
                       EntriesArray.push({
-                        payment_date: new Date(),
+                        payment_date: moment(inputParam.bill_date).format(
+                          "YYYY-MM-DD"
+                        ),
                         head_id: OP_REC.head_id,
                         child_id: OP_REC.child_id,
                         debit_amount: new_bill_header.credit_amount,
@@ -876,7 +890,9 @@ export default {
                     new_receipt_details.forEach((m) => {
                       if (m.pay_type == "CD") {
                         EntriesArray.push({
-                          payment_date: new Date(),
+                          payment_date: moment(inputParam.bill_date).format(
+                            "YYYY-MM-DD"
+                          ),
                           head_id: CARD_SETTL.head_id,
                           child_id: CARD_SETTL.child_id,
                           debit_amount: m.amount,
@@ -887,7 +903,9 @@ export default {
                         });
                       } else {
                         EntriesArray.push({
-                          payment_date: new Date(),
+                          payment_date: moment(inputParam.bill_date).format(
+                            "YYYY-MM-DD"
+                          ),
                           head_id: CIH_OP.head_id,
                           child_id: CIH_OP.child_id,
                           debit_amount: m.amount,
@@ -905,7 +923,9 @@ export default {
                       parseFloat(new_bill_header.company_payble) > 0
                     ) {
                       EntriesArray.push({
-                        payment_date: new Date(),
+                        payment_date: moment(inputParam.bill_date).format(
+                          "YYYY-MM-DD"
+                        ),
                         head_id: OP_CTRL.head_id,
                         child_id: OP_CTRL.child_id,
                         debit_amount: new_bill_header.company_payble,
@@ -920,7 +940,9 @@ export default {
 
                     if (parseFloat(new_bill_header.total_tax) > 0) {
                       EntriesArray.push({
-                        payment_date: new Date(),
+                        payment_date: moment(inputParam.bill_date).format(
+                          "YYYY-MM-DD"
+                        ),
                         head_id: OUTPUT_TAX.head_id,
                         child_id: OUTPUT_TAX.child_id,
                         debit_amount: 0,
@@ -946,7 +968,9 @@ export default {
                       );
 
                       EntriesArray.push({
-                        payment_date: new Date(),
+                        payment_date: moment(inputParam.bill_date).format(
+                          "YYYY-MM-DD"
+                        ),
                         head_id: curService.head_id,
                         child_id: curService.child_id,
                         debit_amount: debeit_amount,
@@ -960,7 +984,9 @@ export default {
                     //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
                     if (bill_header.advance_adjust > 0) {
                       EntriesArray.push({
-                        payment_date: new Date(),
+                        payment_date: moment(inputParam.bill_date).format(
+                          "YYYY-MM-DD"
+                        ),
                         head_id: OP_DEP.head_id,
                         child_id: OP_DEP.child_id,
                         debit_amount: 0,
@@ -973,7 +999,9 @@ export default {
                     //PROVIDING OP SERVICE ON CREDIT
                     if (bill_header.credit_amount > 0) {
                       EntriesArray.push({
-                        payment_date: new Date(),
+                        payment_date: moment(inputParam.bill_date).format(
+                          "YYYY-MM-DD"
+                        ),
                         head_id: OP_REC.head_id,
                         child_id: OP_REC.child_id,
                         debit_amount: 0,
@@ -988,7 +1016,9 @@ export default {
                     receipt_details.forEach((m) => {
                       if (m.pay_type == "CD") {
                         EntriesArray.push({
-                          payment_date: new Date(),
+                          payment_date: moment(inputParam.bill_date).format(
+                            "YYYY-MM-DD"
+                          ),
                           head_id: CARD_SETTL.head_id,
                           child_id: CARD_SETTL.child_id,
                           debit_amount: 0,
@@ -999,7 +1029,9 @@ export default {
                         });
                       } else {
                         EntriesArray.push({
-                          payment_date: new Date(),
+                          payment_date: moment(inputParam.bill_date).format(
+                            "YYYY-MM-DD"
+                          ),
                           head_id: CIH_OP.head_id,
                           child_id: CIH_OP.child_id,
                           debit_amount: 0,
@@ -1019,7 +1051,9 @@ export default {
                       parseFloat(bill_header.company_payble) > 0
                     ) {
                       EntriesArray.push({
-                        payment_date: new Date(),
+                        payment_date: moment(inputParam.bill_date).format(
+                          "YYYY-MM-DD"
+                        ),
                         head_id: OP_CTRL.head_id,
                         child_id: OP_CTRL.child_id,
                         debit_amount: 0,
@@ -1034,7 +1068,9 @@ export default {
 
                     if (parseFloat(bill_header.total_tax) > 0) {
                       EntriesArray.push({
-                        payment_date: new Date(),
+                        payment_date: moment(inputParam.bill_date).format(
+                          "YYYY-MM-DD"
+                        ),
                         head_id: OUTPUT_TAX.head_id,
                         child_id: OUTPUT_TAX.child_id,
                         debit_amount: bill_header.total_tax,
@@ -1065,7 +1101,7 @@ export default {
                 VALUES (?,?,?,?,?,?,?,?,?);" +
                           strQuery,
                         values: [
-                          new Date(),
+                          new Date(inputParam.bill_date),
                           amount,
                           voucher_type,
                           new_bill_header.hims_f_billing_header_id,
@@ -1087,6 +1123,8 @@ export default {
                         } else {
                           headerDayEnd = header_result;
                         }
+
+                        // console.log("EntriesArray", EntriesArray);
 
                         const month = moment().format("M");
                         const year = moment().format("YYYY");
@@ -1120,7 +1158,7 @@ export default {
                           .then((subResult) => {
                             // console.log("FOUR");
                             if (req.connection == null) {
-                              req.records = updateOrder;
+                              req.records = subResult;
                               _mysql.commitTransaction(() => {
                                 _mysql.releaseConnection();
                                 next();
@@ -1233,7 +1271,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
       const new_bill_detail = bill_Result[4];
       const new_receipt_details = bill_Result[5];
 
-      console.log("new_bill_header", new_bill_header.company_payble);
+      // console.log("new_bill_header", new_bill_header.company_payble);
 
       const servicesIds = ["0"];
       if (new_bill_detail && new_bill_detail.length > 0) {
