@@ -719,7 +719,7 @@ export default {
       // console.log("generateAccountingEntryAdjustBill");
 
       const inputParam = req.body;
-
+      const { closeConnection } = inputParam;
       // console.log("inputParam", inputParam);
       _mysql
         .executeQuery({
@@ -1108,7 +1108,10 @@ export default {
                           new_bill_header.bill_number,
                           inputParam.ScreenCode,
                           narration,
-                          req.userIdentity.algaeh_d_app_user_id,
+                          closeConnection
+                            ? inputParam.created_by
+                            : req.userIdentity.algaeh_d_app_user_id,
+                          ,
                           new Date(),
                         ],
                         printQuery: true,
