@@ -3253,7 +3253,7 @@ export function checkIDExists(req, res, next) {
 
     if (inputParam.scan_by === "PI") {
       strQuery = mysql.format(
-        `SELECT hims_f_lab_order_id, lab_id_number as id_number, lab_id_number, full_name,IT.description AS test_name,
+        `SELECT hims_f_lab_order_id, lab_id_number as id_number, primary_id_no, lab_id_number, full_name,IT.description AS test_name,
         gender, hims_f_lab_order_id as order_id, 
         date_of_birth, test_id, hims_d_lab_sample_id FROM hims_f_patient P 
         INNER JOIN hims_f_lab_order L ON P.hims_d_patient_id=L.patient_id

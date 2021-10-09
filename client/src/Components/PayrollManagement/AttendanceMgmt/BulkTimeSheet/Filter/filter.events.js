@@ -4,11 +4,11 @@ export function getHospitals(callBack) {
   algaehApiCall({
     uri: "/organization/getOrganizationByUser",
     method: "GET",
-    onSuccess: res => {
+    onSuccess: (res) => {
       if (res.data.success) {
         callBack(res.data.records);
       }
-    }
+    },
   });
 }
 export function getAttendanceDates(callBack) {
@@ -16,11 +16,11 @@ export function getAttendanceDates(callBack) {
     uri: "/attendance/getAttendanceDates",
     method: "GET",
     module: "hrManagement",
-    onSuccess: res => {
+    onSuccess: (res) => {
       if (res.data.success) {
         callBack(res.data.result);
       }
-    }
+    },
   });
 }
 
@@ -30,11 +30,11 @@ export function getDivisionProject(data, callBack) {
     method: "GET",
     data: data,
     module: "hrManagement",
-    onSuccess: res => {
+    onSuccess: (res) => {
       if (res.data.success) {
         callBack(res.data.records);
       }
-    }
+    },
   });
 }
 export function getBranchWiseDepartments(data, callback) {
@@ -43,11 +43,11 @@ export function getBranchWiseDepartments(data, callback) {
     method: "GET",
     data: data,
     module: "masterSettings",
-    onSuccess: res => {
+    onSuccess: (res) => {
       if (res.data.success) {
         callback(res.data.records);
       }
-    }
+    },
   });
 }
 
@@ -57,11 +57,11 @@ export function getEmpGroups(callback) {
     method: "GET",
     module: "hrManagement",
     data: { record_status: "A" },
-    onSuccess: res => {
+    onSuccess: (res) => {
       if (res.data.success) {
         callback(res.data.records);
       }
-    }
+    },
   });
 }
 
@@ -69,7 +69,7 @@ export function UploadTimesheet(files, props) {
   AlgaehLoader({ show: true });
   const reader = new FileReader();
   reader.readAsDataURL(files[0]);
-  reader.onload = e => {
+  reader.onload = (e) => {
     const data = e.target.result.split(",")[1];
     algaehApiCall({
       uri: "/attendance/excelManualTimeSheetRead",
@@ -78,14 +78,14 @@ export function UploadTimesheet(files, props) {
         data,
       method: "post",
       module: "hrManagement",
-      onSuccess: response => {
+      onSuccess: (response) => {
         AlgaehLoader({ show: false });
         if (response.data.success === true) {
           props.uploadExcel(response.data.result);
         } else {
           props.uploadErrors(response.data.result.message);
         }
-      }
+      },
     });
   };
 }
@@ -96,17 +96,18 @@ export function getPreview(data, props) {
     data: data,
     method: "get",
     module: "hrManagement",
-    onSuccess: response => {
+    onSuccess: (response) => {
       AlgaehLoader({ show: false });
 
       if (response.data.success === true) {
         props.preview(response.data.result);
       } else {
+        props.preview(response.data.result);
         swalMessage({
           type: "error",
-          title: response.data.result.message
+          title: response.data.result.message,
         });
       }
-    }
+    },
   });
 }

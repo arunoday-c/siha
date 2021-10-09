@@ -1,5 +1,6 @@
 {
   "form_opbilling": "OP Bill Cancellation",
+  "form_opbilling_cancel": "OP Bill Cancellation",
   "form_name": "OP Bill Cancellation",
   "form_home": "Home",
   "form_create": "Create New",
@@ -103,8 +104,8 @@
   "tax_lbl": "Vat",
   "payable_lbl": "Payable",
 
-    "patient_lbl": "Patient Responsibility",
-    "company_lbl": "Company Responsibility",
+  "patient_lbl": "Patient Responsibility",
+  "company_lbl": "Company Responsibility",
   "sec_comp_lbl": "Secondary Co.",
 
   "insurance_company": "Insurance Co.",

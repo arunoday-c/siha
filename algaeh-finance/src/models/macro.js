@@ -47,6 +47,7 @@ export async function macro(req, res, next) {
             ScreenCode,
             sub_department_id,
             created_by,
+            insurance_yesno,
           } = _.head(details);
           let receiptdetails = [];
           let billdetails = [];
@@ -140,7 +141,9 @@ export async function macro(req, res, next) {
             bill_number,
             patient_code,
             pack_advance_adjust,
+            insured: insurance_yesno,
             company_payable,
+            company_payble: company_payable,
             total_tax,
             sheet_discount_amount,
             ScreenCode,
@@ -183,6 +186,7 @@ export async function macro(req, res, next) {
             finance_day_end_header_id,
             patient_code,
             bill_cancel_number,
+            insurance_yesno,
             company_payable,
             total_tax,
             sheet_discount_amount,
@@ -281,7 +285,9 @@ export async function macro(req, res, next) {
             finance_day_end_header_id,
             bill_cancel_number,
             patient_code,
+            insured: insurance_yesno,
             company_payable,
+            company_payble: company_payable,
             total_tax,
             sheet_discount_amount,
             ScreenCode,
