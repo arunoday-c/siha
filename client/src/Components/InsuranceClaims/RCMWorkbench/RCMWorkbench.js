@@ -1513,7 +1513,7 @@ class RCMWorkbench extends Component {
         {this.state.visible ? (
           <AlgaehModal
             className="algaehStatementStyle"
-            title={"Confirm Submit"}
+            title={"Confirm Transaction Date"}
             visible={this.state.visible}
             maskClosable={false}
             closable={false}
@@ -1523,6 +1523,16 @@ class RCMWorkbench extends Component {
             }}
             footer={
               <div>
+                <button
+                  onClick={() => {
+                    this.setState({
+                      visible: false,
+                    });
+                  }}
+                  className="btn btn-default btn-small"
+                >
+                  Cancel
+                </button>
                 <button
                   onClick={() => {
                     if (this.state.payment_date) {
@@ -1535,6 +1545,8 @@ class RCMWorkbench extends Component {
                       return;
                     }
                   }}
+                  className="btn btn-primary btn-small"
+                  style={{ marginLeft: 5 }}
                 >
                   Submit Claims
                 </button>
@@ -1542,8 +1554,8 @@ class RCMWorkbench extends Component {
             }
           >
             <AlgaehDateHandler
-              div={{ className: "col-6 form-group mandatory" }}
-              label={{ isImp: true, fieldName: "payment_date" }}
+              div={{ className: "col form-group mandatory" }}
+              label={{ isImp: true, forceLabel: "Transaction Date" }}
               textBox={{
                 className: "txt-fld",
                 name: "payment_date",
