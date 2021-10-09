@@ -460,7 +460,7 @@ let algaehSearchConfig = (searchName, req) => {
       },
       {
         searchName: "exit_employees_final_settlement",
-        searchQuery: `select SQL_CALC_FOUND_ROWS hims_d_employee_id, E.title_id, E.full_name, E.arabic_name, 
+        searchQuery: `select SQL_CALC_FOUND_ROWS hims_d_employee_id, E.title_id, E.employee_code,E.full_name, E.arabic_name, 
         S.sub_department_name,FSH.hims_f_final_settlement_header_id,E.sub_department_id,D.designation,FSH.final_settlement_number,
         CASE WHEN FSH.final_settlement_status = 'AUT' THEN 'Authorised' WHEN FSH.final_settlement_status = 'SET' 
         THEN 'Settled' WHEN FSH.final_settlement_status = 'PEN' THEN 'Pending' END as final_settlement_status,
@@ -487,7 +487,7 @@ let algaehSearchConfig = (searchName, req) => {
       },
       {
         searchName: "exit_employees_gratuity",
-        searchQuery: `select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, E.arabic_name, 
+        searchQuery: `select SQL_CALC_FOUND_ROWS E.hims_d_employee_id, E.employee_code, title_id, E.full_name, E.arabic_name, 
                      S.sub_department_name,E.sub_department_id,D.designation,EOS.end_of_service_number,CASE WHEN EOS.gratuity_status = 'PEN' 
                      THEN 'Pending' WHEN EOS.gratuity_status = 'PRO' THEN 'Processed'
                      WHEN EOS.gratuity_status = 'PAI' THEN 'Paid' WHEN EOS.gratuity_status = 'FOR' THEN 'Forfiett' WHEN EOS.gratuity_status = 'PEF' THEN 'Pending Forfiett' else
