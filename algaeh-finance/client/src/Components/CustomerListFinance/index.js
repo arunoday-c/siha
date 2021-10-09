@@ -31,6 +31,7 @@ function CustomerList(props) {
   });
   // const [filteredDataToPrint, setFilteredDataToPrint] = useState([]);
   // const [visible, setVisible] = useState(false);
+  const [enablePrint, setEnablePrint] = useState(true);
   const [childIds, setChildIds] = useStateWithCallbackLazy([]);
   const [checkAll, setCheckAll] = useState(STATUS.UNCHECK);
   useEffect(() => {
@@ -57,6 +58,7 @@ function CustomerList(props) {
 
     if (childIdsForReport.length > 0) {
       // setVisible(true);
+      // setEnablePrint(false);
       setChildIds(childIdsForReport, (data) => {
         debugger;
         type === "PDF"
@@ -87,6 +89,7 @@ function CustomerList(props) {
         : "INDETERMINATE"
     );
     setCustomerReceivables([...myState]);
+    setEnablePrint(status === true ? false : true);
   };
   const selectToPrintReport = (row, e) => {
     const status = e.target.checked;
@@ -110,6 +113,7 @@ function CustomerList(props) {
     }
     setCheckAll(ckStatus);
     setCustomerReceivables([...records]);
+    setEnablePrint(hasUncheck.length === records.length ? true : false);
   };
   return (
     <>
@@ -268,7 +272,7 @@ function CustomerList(props) {
           <div className="col-12">
             <AlgaehButton
               className="btn btn-default"
-              // disabled={!processList.length}
+              disabled={enablePrint}
               // loading={loading}
               onClick={() => bulkPrintReport("PDF")}
             >
@@ -276,7 +280,7 @@ function CustomerList(props) {
             </AlgaehButton>
             <AlgaehButton
               className="btn btn-default"
-              // disabled={!processList.length}
+              disabled={enablePrint}
               // loading={loading}
               onClick={() => bulkPrintReport("EXCEL")}
             >

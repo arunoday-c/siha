@@ -22,6 +22,7 @@ const STATUS = {
 function CustomerList(props) {
   let allChecked = useRef(undefined);
   const [supplier_payable, setSupplierPayable] = useState([]);
+  const [enablePrint, setEnablePrint] = useState(true);
   const history = useHistory();
   const [info, setInfo] = useState({
     over_due: "",
@@ -60,6 +61,7 @@ function CustomerList(props) {
 
     if (childIdsForReport.length > 0) {
       // setVisible(true);
+
       debugger;
       setChildIds(childIdsForReport, (data) => {
         type === "PDF"
@@ -90,6 +92,7 @@ function CustomerList(props) {
         : "INDETERMINATE"
     );
     setSupplierPayable([...myState]);
+    setEnablePrint(status === true ? false : true);
   };
   const selectToPrintReport = (row, e) => {
     const status = e.target.checked;
@@ -113,6 +116,7 @@ function CustomerList(props) {
     }
     setCheckAll(ckStatus);
     setSupplierPayable([...records]);
+    setEnablePrint(hasUncheck.length === records.length ? true : false);
   };
   return (
     <>
@@ -252,7 +256,7 @@ function CustomerList(props) {
           <div className="col-12">
             <AlgaehButton
               className="btn btn-default"
-              // disabled={!processList.length}
+              disabled={enablePrint}
               // loading={loading}
               onClick={() => bulkPrintReport("PDF")}
             >
@@ -260,7 +264,7 @@ function CustomerList(props) {
             </AlgaehButton>
             <AlgaehButton
               className="btn btn-default"
-              // disabled={!processList.length}
+              disabled={enablePrint}
               // loading={loading}
               onClick={() => bulkPrintReport("EXCEL")}
             >
