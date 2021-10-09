@@ -162,8 +162,7 @@ const FinalizeSalary = ($this) => {
   }
   swal({
     title: "Checklist before finalize!",
-    html:
-      "<table class='salaryCheckList'> <tr> <td> <i class='fas fa-check' /> </td> <td>Apply Leave and Authorize, If any.</td> </tr><tr> <td> <i class='fas fa-check' /> </td> <td>Apply Annual Leave and Authorize, If any.</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Apply Loan, Authorize and Pay, If any.</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Exit Date, If any.</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Process Attendance</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Assign Misc. If any.</td> </tr> <tr><td> <i class='fas fa-check' /> </td>  <td>Validated Salary</td> </tr></table><p>I understand above checklist and validated.</p>",
+    html: "<table class='salaryCheckList'> <tr> <td> <i class='fas fa-check' /> </td> <td>Apply Leave and Authorize, If any.</td> </tr><tr> <td> <i class='fas fa-check' /> </td> <td>Apply Annual Leave and Authorize, If any.</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Apply Loan, Authorize and Pay, If any.</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Exit Date, If any.</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Process Attendance</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Assign Misc. If any.</td> </tr> <tr><td> <i class='fas fa-check' /> </td>  <td>Validated Salary</td> </tr></table><p>I understand above checklist and validated.</p>",
     type: "warning",
     showCancelButton: true,
     confirmButtonText: "Finalize",

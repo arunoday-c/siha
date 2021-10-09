@@ -11,7 +11,7 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -25,7 +25,7 @@ const SalaryProcess = ($this, from) => {
       let inputObj = {
         year: $this.state.year,
         month: $this.state.month,
-        hospital_id: $this.state.hospital_id
+        hospital_id: $this.state.hospital_id,
       };
       if ($this.state.employee_id !== null) {
         inputObj.employee_id = $this.state.employee_id;
@@ -40,13 +40,13 @@ const SalaryProcess = ($this, from) => {
         module: "hrManagement",
         data: inputObj,
         method: "GET",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.result.length > 0) {
             let data = response.data.result[0];
             let finalizeBtn = true;
             let strMessage = "Salary already finalized for selected criteria.";
             let not_process = Enumerable.from(data.salaryprocess_header)
-              .where(w => w.salary_processed === "N")
+              .where((w) => w.salary_processed === "N")
               .toArray();
             if (not_process.length > 0) {
               finalizeBtn = false;
@@ -55,47 +55,47 @@ const SalaryProcess = ($this, from) => {
             $this.setState({
               salaryprocess_header: data.salaryprocess_header,
               salaryprocess_detail: data.salaryprocess_detail,
-              finalizeBtn: finalizeBtn
+              finalizeBtn: finalizeBtn,
             });
             AlgaehLoader({ show: false });
 
             if (from === "load") {
               swalMessage({
                 title: strMessage,
-                type: "success"
+                type: "success",
               });
             }
           } else {
             $this.setState({
               salaryprocess_header: [],
               salaryprocess_detail: [],
-              finalizeBtn: true
+              finalizeBtn: true,
             });
             AlgaehLoader({ show: false });
             swalMessage({
               title: "Invalid. Please process attendence",
-              type: "error"
+              type: "error",
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           $this.setState({
             salaryprocess_header: [],
             salaryprocess_detail: [],
-            finalizeBtn: true
+            finalizeBtn: true,
           });
           swalMessage({
             title: error.message || error.response.data.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
-    }
+    },
   });
 };
 
-const ClearData = $this => {
+const ClearData = ($this) => {
   $this.setState({
     year: moment().year(),
     month: moment(new Date()).format("M"),
@@ -126,26 +126,26 @@ const ClearData = $this => {
     loan_payable_amount: null,
     loan_due_amount: null,
     net_salary: null,
-    salary_dates: null
+    salary_dates: null,
   });
 };
 
-const FinalizeSalary = $this => {
+const FinalizeSalary = ($this) => {
   AlgaehLoader({ show: true });
 
-  const salary_header_id = _.map($this.state.salaryprocess_header, o => {
+  const salary_header_id = _.map($this.state.salaryprocess_header, (o) => {
     return o.hims_f_salary_id;
   });
 
-  const employee_id = _.map($this.state.salaryprocess_header, o => {
+  const employee_id = _.map($this.state.salaryprocess_header, (o) => {
     return o.employee_id;
   });
 
-  const net_salary = _.map($this.state.salaryprocess_header, o => {
+  const net_salary = _.map($this.state.salaryprocess_header, (o) => {
     return {
       net_salary: o.net_salary,
       total_paid_days: o.total_paid_days,
-      employee_id: o.employee_id
+      employee_id: o.employee_id,
     };
   });
 
@@ -164,7 +164,7 @@ const FinalizeSalary = $this => {
     year: $this.state.year,
     month: $this.state.month,
     hospital_id: $this.state.hospital_id,
-    net_salary: net_salary
+    net_salary: net_salary,
   };
 
   algaehApiCall({
@@ -172,39 +172,39 @@ const FinalizeSalary = $this => {
     module: "hrManagement",
     data: inputObj,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         SalaryProcess($this, "finalize");
         $this.setState({
-          finalizeBtn: true
+          finalizeBtn: true,
         });
         AlgaehLoader({ show: false });
         swalMessage({
           title: "Finalized Successfully.",
-          type: "success"
+          type: "success",
         });
       } else {
         AlgaehLoader({ show: false });
         swalMessage({
           title: response.data.result,
-          type: "error"
+          type: "error",
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message || error.response.data.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const employeeSearch = $this => {
+const employeeSearch = ($this) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Employee_details.employee
+      columns: spotlightSearch.Employee_details.employee,
     },
     searchName: "employee",
     uri: "/gloabelSearch/get",
@@ -215,12 +215,12 @@ const employeeSearch = $this => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       $this.setState({
         employee_name: row.full_name,
-        employee_id: row.hims_d_employee_id
+        employee_id: row.hims_d_employee_id,
       });
-    }
+    },
   });
 };
 
@@ -228,19 +228,19 @@ const openSalaryComponents = ($this, row) => {
   const salaryprocess_Earning = Enumerable.from(
     $this.state.salaryprocess_detail[0]
   )
-    .where(w => w.salary_header_id === row.hims_f_salary_id)
+    .where((w) => w.salary_header_id === row.hims_f_salary_id)
     .toArray();
 
   const salaryprocess_Deduction = Enumerable.from(
     $this.state.salaryprocess_detail[1]
   )
-    .where(w => w.salary_header_id === row.hims_f_salary_id)
+    .where((w) => w.salary_header_id === row.hims_f_salary_id)
     .toArray();
 
   const salaryprocess_Contribute = Enumerable.from(
     $this.state.salaryprocess_detail[2]
   )
-    .where(w => w.salary_header_id === row.hims_f_salary_id)
+    .where((w) => w.salary_header_id === row.hims_f_salary_id)
     .toArray();
 
   $this.setState({
@@ -265,13 +265,13 @@ const openSalaryComponents = ($this, row) => {
     unpaid_leave: row.unpaid_leave,
     present_days: row.present_days,
     total_paid_days: row.total_paid_days,
-    dis_employee_name: row.full_name
+    dis_employee_name: row.full_name,
   });
 };
 
 const closeSalaryComponents = ($this, e) => {
   $this.setState({
-    isOpen: !$this.state.isOpen
+    isOpen: !$this.state.isOpen,
   });
 };
 
@@ -282,5 +282,5 @@ export {
   ClearData,
   employeeSearch,
   openSalaryComponents,
-  closeSalaryComponents
+  closeSalaryComponents,
 };
