@@ -282,7 +282,7 @@ const openSalaryComponents = ($this, row) => {
   )
     .where((w) => w.salary_header_id === row.hims_f_salary_id)
     .toArray();
-
+  debugger;
   $this.setState({
     isOpen: !$this.state.isOpen,
     salaryprocess_Earning: salaryprocess_Earning,
@@ -307,6 +307,7 @@ const openSalaryComponents = ($this, row) => {
     display_present_days: row.display_present_days,
     total_paid_days: row.total_paid_days,
     dis_employee_name: row.full_name,
+    dis_employee_code: row.employee_code,
   });
 };
 

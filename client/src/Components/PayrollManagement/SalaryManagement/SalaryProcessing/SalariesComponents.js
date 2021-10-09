@@ -47,9 +47,9 @@ export default class SalariesComponents extends PureComponent {
                         }}
                       />
                       <h6>
-                        {this.state.employee_code === null
+                        {this.state.dis_employee_code === null
                           ? 0
-                          : this.state.employee_code}
+                          : this.state.dis_employee_code}
                       </h6>
                     </div>
                     <div className="col-4">
