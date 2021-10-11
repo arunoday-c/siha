@@ -10,6 +10,7 @@ const {
   getDocumentsDetails,
   deleteDocument,
   updateDocument,
+  updateOldRecordDocument,
 } = empDocModels;
 
 export default () => {
@@ -71,5 +72,18 @@ export default () => {
     });
     delete req.records;
   });
+  api.put(
+    "/updateOldRecordDocument",
+    updateOldRecordDocument,
+    (req, res, next) => {
+      const _result = req.records;
+      res.status(utilities.httpStatus().ok).json({
+        success: true,
+        records: _result,
+      });
+      delete req.records;
+    }
+  );
+
   return api;
 };

@@ -28,6 +28,7 @@ import eventLogic from "./eventsLogic/employeeDocumentLogic";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 const { Dragger } = Upload;
+// const document_grid_copy = [];
 // const AlgaehFileUploader = React.memo(
 //   React.lazy(() => import("../../Wrapper/algaehFileUpload"))
 // );
@@ -46,10 +47,14 @@ class EmployeeDocuments extends Component {
       document_type_list: [],
       hospital_id: null,
       fileList: [],
+
+      employee_code: null,
     };
     this.getHospitals();
     this.getEmployees();
+    this.editedRecord = {};
   }
+
   afterPassPortSave(fileName, uniqueID, file) {
     // let details = this.state.document_grid;
     const _type = this.state.document_type;
@@ -62,22 +67,34 @@ class EmployeeDocuments extends Component {
     if (_unique.length > 1) {
       _document_type_name = _unique[_unique.length - 1];
     }
+    // eventLogic()
+    //   .saveDocument(file, uniqueID)
+    //   .then((result) => {
+
     eventLogic()
-      .saveDocument(file, uniqueID)
+      .saveDocumentDetails({
+        document_id: _document_id,
+        document_type: _type,
+        employee_id: this.state.employee_id,
+        document_name: fileName,
+        dependent_id: this.state.selected_id,
+        download_uniq_id: uniqueID,
+        document_type_name: _document_type_name,
+        file: file,
+        // unique_id_fromMongo: result,
+      })
       .then((result) => {
-        eventLogic();
+        const formData = new FormData();
+        formData.append("doc_number", result.insertId);
+        formData.append("nameOfTheFolder", uniqueID);
+        formData.append("EmpFolderName", this.state.employee_code);
+        file.forEach((file, index) => {
+          formData.append(`file_${index}`, file, file.name);
+          formData.append("fileName", file.name);
+        });
+
         eventLogic()
-          .saveDocumentDetails({
-            document_id: _document_id,
-            document_type: _type,
-            employee_id: this.state.employee_id,
-            document_name: fileName,
-            dependent_id: this.state.selected_id,
-            download_uniq_id: uniqueID,
-            document_type_name: _document_type_name,
-            file: file,
-            unique_id_fromMongo: result,
-          })
+          .saveDocument(formData)
           .then((result) => {
             eventLogic()
               .getSaveDocument({
@@ -90,6 +107,7 @@ class EmployeeDocuments extends Component {
                   title: "Successfully done",
                   type: "success",
                 });
+                // document_grid_copy = [...result];
                 this.setState({
                   document_grid: result,
                 });
@@ -107,14 +125,27 @@ class EmployeeDocuments extends Component {
               type: "error",
             });
           });
-        // details.push({
-        //   document_name: fileName,
-        //   document_type_name: _document_type_name,
-        //   download_doc: uniqueID,
-        // });
-        // this.setState({
-        //   document_grid: details,
-        // });
+        // eventLogic()
+        //   .getSaveDocument({
+        //     document_type: this.state.document_type,
+        //     employee_id: this.state.employee_id,
+        //     dependent_id: this.state.selected_id,
+        //   })
+        //   .then((result) => {
+        //     swalMessage({
+        //       title: "Successfully done",
+        //       type: "success",
+        //     });
+        //     this.setState({
+        //       document_grid: result,
+        //     });
+        //   })
+        //   .catch((error) => {
+        //     swalMessage({
+        //       title: error.message,
+        //       type: "error",
+        //     });
+        //   });
       })
       .catch((error) => {
         swalMessage({
@@ -122,12 +153,29 @@ class EmployeeDocuments extends Component {
           type: "error",
         });
       });
+    // details.push({
+    //   document_name: fileName,
+    //   document_type_name: _document_type_name,
+    //   download_doc: uniqueID,
+    // });
+    // this.setState({
+    //   document_grid: details,
+    // });
+    // })
+    // .catch((error) => {
+    //   swalMessage({
+    //     title: error.message,
+    //     type: "error",
+    //   });
+    // });
   }
 
   onChangeDocTypeHandler(e) {
+    // document_grid_copy = [];
     this.setState({
       employee_name: null,
       document_grid: [],
+
       employee_id: undefined,
       // hospital_id: null,
       document_type_list: [],
@@ -262,7 +310,7 @@ class EmployeeDocuments extends Component {
         //   .getSelectedDocument(data)
         //   .then((result) => {
         eventLogic()
-          .onDelete(data)
+          .onDelete(data, this.state)
           .then(
             swalMessage({
               title: "Successfully Deleted",
@@ -279,6 +327,7 @@ class EmployeeDocuments extends Component {
                     dependent_id: this.state.selected_id,
                   })
                   .then((result) => {
+                    // document_grid_copy = [...result];
                     this.setState({
                       document_grid: result,
                     });
@@ -325,20 +374,32 @@ class EmployeeDocuments extends Component {
       },
       onSuccess: (response) => {
         if (response.data.success) {
-          swalMessage({
-            title: "Record updated successfully",
-            type: "success",
-          });
           eventLogic()
-            .getSaveDocument({
-              document_type: this.state.document_type,
-              employee_id: this.state.employee_id,
-              dependent_id: this.state.selected_id,
-            })
+            .updateDocumentNamePhysical(data, this.state, this.editedRecord)
             .then((result) => {
-              this.setState({
-                document_grid: result,
-              });
+              eventLogic()
+                .getSaveDocument({
+                  document_type: this.state.document_type,
+                  employee_id: this.state.employee_id,
+                  dependent_id: this.state.selected_id,
+                })
+                .then((result) => {
+                  swalMessage({
+                    title: "Record updated successfully",
+                    type: "success",
+                  });
+                  delete this.editedRecord[data.hims_f_employee_documents_id];
+                  // document_grid_copy = [...result];
+                  this.setState({
+                    document_grid: result,
+                  });
+                })
+                .catch((error) => {
+                  swalMessage({
+                    title: error.message,
+                    type: "error",
+                  });
+                });
             })
             .catch((error) => {
               swalMessage({
@@ -364,6 +425,7 @@ class EmployeeDocuments extends Component {
         dependent_id: this.state.selected_id,
       })
       .then((result) => {
+        // document_grid_copy = [...result];
         this.setState({
           document_grid: result,
         });
@@ -388,6 +450,7 @@ class EmployeeDocuments extends Component {
             dependent_id: this.state.selected_id,
           })
           .then((result) => {
+            // document_grid_copy = [...result];
             this.setState({
               document_grid: result,
             });
@@ -402,7 +465,7 @@ class EmployeeDocuments extends Component {
     );
   }
 
-  dropDownHandler(value) {
+  dropDownHandler(value, name) {
     this.setState({
       [value.name]: value.value,
     });
@@ -417,10 +480,12 @@ class EmployeeDocuments extends Component {
     });
   }
   onClearEmployeeHandler(e) {
+    // document_grid_copy = [];
     this.setState({
       document_type: null,
       // selected_id: undefined,
       document_grid: [],
+
       document_for_list: [],
 
       employee_name: null,
@@ -518,6 +583,7 @@ class EmployeeDocuments extends Component {
           {
             employee_name: row.full_name,
             employee_id: row.hims_d_employee_id,
+            employee_code: row.employee_code,
           },
           () => {
             this.onChangeEmployeeHandler(row);
@@ -543,7 +609,7 @@ class EmployeeDocuments extends Component {
   }
   downloadSelectedFile(row, isPreview) {
     AlgaehLoader({ show: true });
-    eventLogic().downloadDoc(row, isPreview);
+    eventLogic().downloadDoc(row, isPreview, this.state);
   }
 
   // downloadSelectedFile(row) {
@@ -838,8 +904,13 @@ class EmployeeDocuments extends Component {
                     paging={{ page: 0, rowsPerPage: 20 }}
                     events={{
                       //,
-                      onEdit: (row) => {},
-                      onDelete: this.deleteDeptUser.bind(this),
+                      onEdit: (row) => {
+                        this.editedRecord[row.hims_f_employee_documents_id] =
+                          row.document_name;
+                      },
+                      onDelete: (row) => {
+                        this.deleteDeptUser(row);
+                      },
                       onDone: this.updateDocumentName.bind(this), //updateDeptUser.bind(this, this)
                     }}
                   />

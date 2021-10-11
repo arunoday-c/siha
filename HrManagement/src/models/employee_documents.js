@@ -150,10 +150,39 @@ export default {
     try {
       _mysql
         .executeQuery({
-          query:
-            "UPDATE  hims_f_employee_documents SET document_name=?,create_by=?,created_date=?,update_by=?,update_date=?   WHERE hims_f_employee_documents_id=?",
+          query: `UPDATE  hims_f_employee_documents SET document_name=?,create_by=?,created_date=?,update_by=?,update_date=?   WHERE hims_f_employee_documents_id=?`,
           values: [
             input.document_name,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            input.hims_f_employee_documents_id,
+          ],
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  updateOldRecordDocument: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const input = req.body;
+    try {
+      _mysql
+        .executeQuery({
+          query: `UPDATE  hims_f_employee_documents SET unique_id_fromMongo = ?,create_by=?,created_date=?,update_by=?,update_date=?   WHERE hims_f_employee_documents_id=?`,
+          values: [
+            null,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
