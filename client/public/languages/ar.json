@@ -439,6 +439,7 @@
   "vitals_master": "",
   "total_patients": "مجموع المرضى",
   "form_opbilling": "حزمة الفواتير",
+  "form_opbilling_cancel": "إلغاء فواتير OP",
   "bill_number": "رقم الفاتوره",
   "s_patient_code": "اختر المريض",
   "incharge_or_provider": "مزود",

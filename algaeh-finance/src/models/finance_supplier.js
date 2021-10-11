@@ -11,7 +11,7 @@ export default {
     const decimal_places = req.userIdentity.decimal_places;
     _mysql
       .executeQuery({
-        query: `select C.finance_account_child_id ,C.child_name,
+        query: `select C.finance_account_child_id ,C.child_name,C.ledger_code,
         ROUND(  coalesce(sum(credit_amount) ,0)- coalesce(sum(debit_amount)   ,0),${decimal_places})
        as balance_amount,coalesce(V.bank_account_no,'-') as bank_account_no,V.contact_number from
        hims_d_vendor V inner join finance_account_child C  on V.child_id=C.finance_account_child_id

@@ -8,11 +8,8 @@ const executePDF = function executePDFMethod(options) {
       let str = "";
       let input = {};
       let params = options.args.reportParams;
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
 
       params.forEach((para) => {
         input[para["name"]] = para["value"];
@@ -36,7 +33,7 @@ const executePDF = function executePDFMethod(options) {
             left join hims_f_salary_loans as LS on LS.loan_application_id = LO.hims_f_loan_application_id
             left join hims_f_salary as SL on SL.hims_f_salary_id = LS.salary_header_id
             left join hims_d_designation as ED on ED.hims_d_designation_id=EM.employee_designation_id
-            where LO.hims_f_loan_application_id=? and LO.loan_authorized='IS' and PM.cancel = 'N' and SL.salary_paid='Y';`,
+            where LO.hims_f_loan_application_id=? and LO.loan_authorized='IS' and PM.cancel = 'N' ;`,
           values: [input.hims_f_loan_application_id],
           printQuery: true,
         })
@@ -45,8 +42,8 @@ const executePDF = function executePDFMethod(options) {
           // const total_approved_amount = options.currencyFormat(_.sumBy(result, s => parseFloat(s.approved_amount)),options.args.crypto);
           const detail = result.filter((f) => f.salary_header_id !== null);
           resolve({
-            result: detail,
             header,
+            result: detail,
             start_month: moment(header.start_month, "M").format("MMMM"),
             // total_approved_amount,
             currency: {

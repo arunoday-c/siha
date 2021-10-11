@@ -340,7 +340,7 @@ class OPBillCancellation extends Component {
           //   width={this.state.breadCrumbWidth}
           title={
             <AlgaehLabel
-              label={{ fieldName: "form_opbilling", align: "ltr" }}
+              label={{ fieldName: "form_opbilling_cancel", align: "ltr" }}
             />
           }
           breadStyle={this.props.breadStyle}

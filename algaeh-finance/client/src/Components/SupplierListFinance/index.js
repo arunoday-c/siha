@@ -4,11 +4,17 @@ import {
   AlgaehMessagePop,
   AlgaehTable,
   AlgaehButton,
+  AlgaehLabel,
 } from "algaeh-react-components";
 import { LoadSupplierPayable } from "./event";
+import {
+  onPdfGeneration,
+  onExcelGeneration,
+} from "../CustomerListFinance/event";
 import { InfoBar } from "../../Wrappers";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
-import ModalPrintCustomerAndSupplier from "../CustomerListFinance/ModalPrintCustomerAndSupplier";
+import { useStateWithCallbackLazy } from "use-state-with-callback";
+// import ModalPrintCustomerAndSupplier from "../CustomerListFinance/ModalPrintCustomerAndSupplier";
 const STATUS = {
   CHECK: true,
   UNCHECK: false,
@@ -17,6 +23,7 @@ const STATUS = {
 function CustomerList(props) {
   let allChecked = useRef(undefined);
   const [supplier_payable, setSupplierPayable] = useState([]);
+  const [enablePrint, setEnablePrint] = useState(true);
   const history = useHistory();
   const [info, setInfo] = useState({
     over_due: "",
@@ -24,8 +31,8 @@ function CustomerList(props) {
     day_end_pending: "",
   });
   const [checkAll, setCheckAll] = useState(STATUS.UNCHECK);
-  const [visible, setVisible] = useState(false);
-  const [childIds, setChildIds] = useState("");
+  // const [visible, setVisible] = useState(false);
+  const [childIds, setChildIds] = useStateWithCallbackLazy([]);
   useEffect(() => {
     LoadSupplierPayable()
       .then((data) => {
@@ -44,7 +51,7 @@ function CustomerList(props) {
       });
   }, []);
 
-  const bulkPrintReport = () => {
+  const bulkPrintReport = (type) => {
     const data = supplier_payable;
 
     const filterData = data.filter((f) => f.checked);
@@ -54,8 +61,14 @@ function CustomerList(props) {
     });
 
     if (childIdsForReport.length > 0) {
-      setVisible(true);
-      setChildIds(childIdsForReport);
+      // setVisible(true);
+
+      debugger;
+      setChildIds(childIdsForReport, (data) => {
+        type === "PDF"
+          ? onPdfGeneration("SUPPLIER", data)
+          : onExcelGeneration("SUPPLIER", data);
+      });
     }
   };
   const selectAll = (e) => {
@@ -80,6 +93,7 @@ function CustomerList(props) {
         : "INDETERMINATE"
     );
     setSupplierPayable([...myState]);
+    setEnablePrint(status === true ? false : true);
   };
   const selectToPrintReport = (row, e) => {
     const status = e.target.checked;
@@ -103,6 +117,7 @@ function CustomerList(props) {
     }
     setCheckAll(ckStatus);
     setSupplierPayable([...records]);
+    setEnablePrint(hasUncheck.length === records.length ? true : false);
   };
   return (
     <>
@@ -148,7 +163,9 @@ function CustomerList(props) {
                                 onChange={selectAll}
                               />
                             ),
-                            fieldName: "select",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Select" }} />
+                            ),
                             displayTemplate: (row) => {
                               return (
                                 <input
@@ -165,7 +182,28 @@ function CustomerList(props) {
                             },
                           },
                           {
-                            label: "Supplier / Company",
+                            // label: "Code",
+
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Code" }} />
+                            ),
+                            sortable: true,
+                            fieldName: "ledger_code",
+                            filterable: true,
+                            displayTemplate: (record) => {
+                              return <span>{record.ledger_code}</span>;
+                            },
+                            others: {
+                              width: 200,
+                              style: { textAlign: "center" },
+                            },
+                          },
+                          {
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Supplier/ Company" }}
+                              />
+                            ),
                             sortable: true,
                             filterable: true,
                             fieldName: "child_name",
@@ -185,27 +223,45 @@ function CustomerList(props) {
                                 </p>
                               );
                             },
+                            others: {
+                              // width: 200,
+                              style: { textAlign: "left" },
+                            },
                           },
                           {
-                            label: "Contact Number",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Contact No." }}
+                              />
+                            ),
                             sortable: true,
                             filterable: true,
                             fieldName: "contact_number",
                             others: {
                               width: 200,
+                              style: { textAlign: "left" },
                             },
                           },
                           {
-                            label: "Account Number",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Account No." }}
+                              />
+                            ),
                             sortable: true,
                             filterable: true,
                             fieldName: "bank_account_no",
                             others: {
                               width: 200,
+                              style: { textAlign: "left" },
                             },
                           },
                           {
-                            label: "Balance",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Balance Amt." }}
+                              />
+                            ),
                             sortable: true,
                             displayTemplate: (row) => {
                               return (
@@ -220,6 +276,7 @@ function CustomerList(props) {
                             fieldName: "balance_amount",
                             others: {
                               width: 200,
+                              style: { textAlign: "right" },
                             },
                           },
                         ]}
@@ -242,16 +299,24 @@ function CustomerList(props) {
           <div className="col-12">
             <AlgaehButton
               className="btn btn-default"
-              // disabled={!processList.length}
+              disabled={enablePrint}
               // loading={loading}
-              onClick={() => bulkPrintReport()}
+              onClick={() => bulkPrintReport("PDF")}
             >
-              Print
+              Print PDF Report
+            </AlgaehButton>
+            <AlgaehButton
+              className="btn btn-default"
+              disabled={enablePrint}
+              // loading={loading}
+              onClick={() => bulkPrintReport("EXCEL")}
+            >
+              Print Excel Report
             </AlgaehButton>
           </div>
         </div>
       </div>
-      {visible ? (
+      {/* {visible ? (
         <ModalPrintCustomerAndSupplier
           title="Supplier Report"
           visible={visible}
@@ -264,7 +329,7 @@ function CustomerList(props) {
             setVisible(false);
           }}
         />
-      ) : null}
+      ) : null} */}
     </>
   );
 }

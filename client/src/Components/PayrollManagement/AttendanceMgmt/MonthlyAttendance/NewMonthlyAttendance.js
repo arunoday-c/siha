@@ -21,6 +21,7 @@ export default class NewMonthlyAttendance extends Component {
       displayLoader: false,
       data: [],
       currEmp: null,
+      currEmpCode: null,
       inputs: {},
 
       formatingString: "",
@@ -221,6 +222,7 @@ export default class NewMonthlyAttendance extends Component {
     this.setState({
       openMonthlyDetail: true,
       currEmp: data.employee_name,
+      currEmpCode: data.employee_code,
     });
   }
 
@@ -246,6 +248,7 @@ export default class NewMonthlyAttendance extends Component {
           open={this.state.openMonthlyDetail}
           onClose={this.closeMonthlyDetail.bind(this)}
           employee_name={this.state.currEmp}
+          employee_code={this.state.currEmpCode}
         />
 
         <MonthModify

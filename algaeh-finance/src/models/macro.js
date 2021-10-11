@@ -47,6 +47,8 @@ export async function macro(req, res, next) {
             ScreenCode,
             sub_department_id,
             created_by,
+            insurance_yesno,
+            from_bill_id,
           } = _.head(details);
           let receiptdetails = [];
           let billdetails = [];
@@ -133,14 +135,27 @@ export async function macro(req, res, next) {
             });
           });
 
+          console.log("from_bill_id", from_bill_id);
+          // consol.log("from_bill_id", from_bill_id);
+
+          if (from_bill_id > 0) {
+            strUrl =
+              "http://localhost:3014/api/v1/opBilling/generateAccountingEntryAdjustBill";
+          }
+
+          console.log("strUrl", strUrl);
+          // consol.log("strUrl", strUrl);
           return {
             hims_f_billing_header_id,
+            from_bill_id,
             bill_date,
             finance_day_end_header_id,
             bill_number,
             patient_code,
             pack_advance_adjust,
+            insured: insurance_yesno,
             company_payable,
+            company_payble: company_payable,
             total_tax,
             sheet_discount_amount,
             ScreenCode,
@@ -183,6 +198,7 @@ export async function macro(req, res, next) {
             finance_day_end_header_id,
             patient_code,
             bill_cancel_number,
+            insurance_yesno,
             company_payable,
             total_tax,
             sheet_discount_amount,
@@ -281,7 +297,9 @@ export async function macro(req, res, next) {
             finance_day_end_header_id,
             bill_cancel_number,
             patient_code,
+            insured: insurance_yesno,
             company_payable,
+            company_payble: company_payable,
             total_tax,
             sheet_discount_amount,
             ScreenCode,

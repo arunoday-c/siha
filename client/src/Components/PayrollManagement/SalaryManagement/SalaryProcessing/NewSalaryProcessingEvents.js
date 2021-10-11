@@ -162,8 +162,7 @@ const FinalizeSalary = ($this) => {
   }
   swal({
     title: "Checklist before finalize!",
-    html:
-      "<table class='salaryCheckList'> <tr> <td> <i class='fas fa-check' /> </td> <td>Apply Leave and Authorize, If any.</td> </tr><tr> <td> <i class='fas fa-check' /> </td> <td>Apply Annual Leave and Authorize, If any.</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Apply Loan, Authorize and Pay, If any.</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Exit Date, If any.</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Process Attendance</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Assign Misc. If any.</td> </tr> <tr><td> <i class='fas fa-check' /> </td>  <td>Validated Salary</td> </tr></table><p>I understand above checklist and validated.</p>",
+    html: "<table class='salaryCheckList'> <tr> <td> <i class='fas fa-check' /> </td> <td>Apply Leave and Authorize, If any.</td> </tr><tr> <td> <i class='fas fa-check' /> </td> <td>Apply Annual Leave and Authorize, If any.</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Apply Loan, Authorize and Pay, If any.</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Exit Date, If any.</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Process Attendance</td> </tr> <tr> <td> <i class='fas fa-check' /> </td> <td>Assign Misc. If any.</td> </tr> <tr><td> <i class='fas fa-check' /> </td>  <td>Validated Salary</td> </tr></table><p>I understand above checklist and validated.</p>",
     type: "warning",
     showCancelButton: true,
     confirmButtonText: "Finalize",
@@ -283,7 +282,7 @@ const openSalaryComponents = ($this, row) => {
   )
     .where((w) => w.salary_header_id === row.hims_f_salary_id)
     .toArray();
-
+  debugger;
   $this.setState({
     isOpen: !$this.state.isOpen,
     salaryprocess_Earning: salaryprocess_Earning,
@@ -308,6 +307,7 @@ const openSalaryComponents = ($this, row) => {
     display_present_days: row.display_present_days,
     total_paid_days: row.total_paid_days,
     dis_employee_name: row.full_name,
+    dis_employee_code: row.employee_code,
   });
 };
 

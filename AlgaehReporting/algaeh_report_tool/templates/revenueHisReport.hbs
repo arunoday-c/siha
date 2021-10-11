@@ -1,0 +1,74 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div class="print-body">
+
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Handover Date</th>
+            <th>Total Cash</th>
+            <th>Total Card</th>
+              {{#if show_vat "Y"}}
+            <th>Net cash before Vat.</th>
+            <th>Total Cash Vat.</th>
+             {{/if}}
+            <th>Net cash after Vat.</th>
+              {{#if show_vat "Y"}}
+            <th>Total Company before Vat.</th>
+            <th>Total Company Vat.</th>
+             {{/if}}
+            <th>Net Company after Vat.</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#hasElement details}}
+            {{#each details}}
+              <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td datatype="string">{{receipt_date}}</td>
+              <td class="numberFld">{{numberFormating cash ../decimalOnly}}</td>
+              <td class="numberFld">{{numberFormating card ../decimalOnly}}</td>
+              {{#if ../show_vat "Y"}}
+                <td class="numberFld">{{numberFormating patient_before_tax ../decimalOnly}}</td>
+                <td class="numberFld">{{numberFormating patient_tax ../decimalOnly}}</td>
+              {{/if}}
+              <td class="numberFld">{{numberFormating patient_after_tax ../decimalOnly}}</td>
+              {{#if ../show_vat "Y"}}
+                <td class="numberFld">{{numberFormating company_before_tax ../decimalOnly}}</td>
+                <td class="numberFld">{{numberFormating company_tax ../decimalOnly}}</td>
+              {{/if}}
+              <td class="numberFld">{{numberFormating company_after_tax ../decimalOnly}}</td>
+              </tr>
+            {{/each}}
+            <tr class="numberFldTotalBottom">
+
+              <td colspan="2" class="numberFld"></td>
+              <td class="numberFld">{{expected_cash}}</td>
+              <td class="numberFld">{{expected_card}}</td>
+                {{#if show_vat "Y"}}
+                  <td class="numberFld">{{total_patient_before_tax}}</td>
+                  <td class="numberFld">{{total_patient_tax}}</td>
+              {{/if}}
+              <td class="numberFld">{{total_patient_after_tax}}</td>
+              {{#if show_vat "Y"}}
+              <td class="numberFld">{{total_company_before_tax}}</td>
+              <td class="numberFld">{{total_company_tax}}</td>
+              {{/if}}
+              <td class="numberFld">{{total_company_after_tax}}</td>
+              {{!-- <td class="numberFld"></td> --}}
+            </tr>
+          {{else}}
+            <tr>
+              <td colspan="7" class="noResultTextReport">No Records Found</td>
+            </tr>
+          {{/hasElement}}
+
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
+</body>

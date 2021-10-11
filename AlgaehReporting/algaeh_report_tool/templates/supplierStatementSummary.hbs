@@ -1,58 +1,32 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
 
 <body>
-    <div class="print-body">
-
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        {{!-- <th>Date</th>
-                        <th>Invoice Number</th>
-                        <th>Due Date</th>
-                        <th>Invoice Amount</th>
-                        <th>Paid Amount</th>
-                        <th>Balance Amount</th>
-                        <th>Status</th> --}}
-                        <th>SUPPLIER / COMPANY</th>
-                        <th>CONTACT NUMBER</th>
-                        <th>ACCOUNT NUMBER</th>
-                        <th>BALANCE</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each detail}}
-                    <tr class="numberFldTotal">
-                        <td datatype="string">{{inc @index}}</td>
-                        {{!-- <td class="txtFld" datatype="string">{{invoice_date}}</td>
-                        <td class="numberFld">{{invoice_no}}</td>
-                        <td class="numberFld">{{due_date}}</td>
-                        <td class="numberFld">{{numberFormating invoice_amount ../currencyOnly}}</td>
-                        <td class="numberFld">{{numberFormating settled_amount ../currencyOnly}}</td>
-                        <td class="numberFld">{{numberFormating balance_amount ../currencyOnly}}</td>
-                        <td class="numberFld">{{invoice_status}}</td> --}}
-
-                        <td class="txtFld" datatype="string">{{child_name}}</td>
-                        <td class="txtFld" datatype="string">{{contact_number}}</td>
-                                                <td class="txtFld" datatype="string">{{bank_account_no}}</td>
-                                                <td class="numberFld">{{numberFormating balance_amount ../currencyOnly}}</td>
-
-                    </tr>
-                    {{/each }}
-                    {{!-- <tr class="numberFldTotalBottom">
-                        <td colspan="2"></td>
-                        <td class="numberFld">{{numberFormating ftr_total_expected_cash ./currencyOnly}}</td>
-                        <td class="numberFld">{{numberFormating ftr_total_expected_card ./currencyOnly}}</td>
-                        <td class="numberFld">{{numberFormating ftr_total_expected_cheque ./currencyOnly}}</td>
-                        <td class="numberFld">{{numberFormating ftr_net_total_expected ./currencyOnly}}</td>
-                        <td class="numberFld">{{numberFormating ftr_net_total_collected ./currencyOnly}}</td>
-                        <td class="numberFld">{{numberFormating ftr_net_total_diff ./currencyOnly}}</td>
-                        <td colspan=""></td>
-                    </tr> --}}
-                </tbody>
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+<div class="print-body">
+    <section>
+        <table class="tableForData" cell-padding="0">
+            <thead>
+                <tr>
+                    <th>Sl No.</th>
+                    <th>Code</th>
+                    <th>SUPPLIER / COMPANY</th>
+                    <th>CONTACT NUMBER</th>
+                    <th>ACCOUNT NUMBER</th>
+                    <th>BALANCE</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each detail}}
+                <tr>
+                    <td datatype="string">{{inc @index}}</td>
+                    <td class="txtFld" datatype="string">{{ledger_code}}</td>
+                    <td class="txtFld" datatype="string">{{child_name}}</td>
+                    <td class="" datatype="string">{{contact_number}}</td>
+                    <td class="" datatype="string">{{bank_account_no}}</td>
+                    <td class="numberFld">{{numberFormating balance_amount ../currencyOnly}}</td>
+                </tr>
+                {{/each }}
+            </tbody>
+        </table>
+    </section>
+</div>
 </body>

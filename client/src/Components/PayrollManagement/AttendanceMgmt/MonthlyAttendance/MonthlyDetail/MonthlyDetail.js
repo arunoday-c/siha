@@ -28,6 +28,14 @@ function MonthlyDetail(props) {
 
           <div className="row margin-top-15">
             {" "}
+            <div className="col-2">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Employee code",
+                }}
+              />
+              <h6>{props.employee_code}</h6>
+            </div>
             <div className="col">
               <AlgaehLabel
                 label={{

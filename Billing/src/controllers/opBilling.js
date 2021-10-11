@@ -193,5 +193,19 @@ export default () => {
     }
   );
 
+  api.post(
+    "/generateAccountingEntryAdjustBill",
+    (req, res, next) => {
+      req.connection = null;
+      delete req.connection;
+      next();
+    },
+    generateAccountingEntryAdjustBill,
+    (req, res) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+      });
+    }
+  );
   return api;
 };

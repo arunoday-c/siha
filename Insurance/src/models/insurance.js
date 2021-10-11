@@ -2018,7 +2018,7 @@ export function generateAccountingEntry(req, res, next) {
 
               voucher_type = "sales";
               narration = `, insurance (${insurance_data.insurance_sub_name}) receivable: ${inputParam.total_company_payable}`;
-              console.log("inputParam1232131231312312313", inputParam);
+              // console.log("inputParam1232131231312312313", inputParam);
               EntriesArray.push({
                 payment_date: inputParam.payment_date,
                 head_id: OP_CTRL.head_id,
@@ -2047,7 +2047,7 @@ export function generateAccountingEntry(req, res, next) {
                 document_number,from_screen,narration, invoice_no, entered_by,entered_date) \
                 VALUES (?,?,?,?,?,?,?,?,?,?);",
                   values: [
-                    new Date(),
+                    inputParam.payment_date,
                     inputParam.total_company_payable,
                     voucher_type,
                     inputParam.hims_f_insurance_statement_id,

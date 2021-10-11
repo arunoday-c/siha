@@ -601,6 +601,7 @@
   "pat_payable": "Patient Payable",
   "co_payable": "Co. Payable",
   "form_opbilling": "OP Billing",
+  "form_opbilling_cancel": "OP Billing Cancellation",
   "bill_cancel_number": "Cancellation Number",
   "bill_cancel_date": "Cancellation Date",
   "bill_number": "Bill Number",
