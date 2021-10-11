@@ -84,9 +84,15 @@ export default {
     const { decimal_places, org_country_id } = req.userIdentity;
     _mysql
       .executeQuery({
-        query: `select EOS.hims_f_end_of_service_id, EOS.employee_id,EOS.join_date,EOS.exit_date,
+        query: `select E.employee_code, E.full_name, E.arabic_name, 
+        S.sub_department_name,EOS.hims_f_end_of_service_id, EOS.employee_id,EOS.join_date,EOS.exit_date,
         EOS.payable_days,EOS.service_years,EOS.payable_days,EOS.calculated_gratutity_amount,
-        EOS.payable_amount,EOS.end_of_service_number,CASE WHEN EOS.exit_type ='T' THEN 'Terminated' WHEN EOS.exit_type ='R' THEN 'Resigned' else 'Retirement' END as exit_status, EOS.gratuity_status,EOS.remarks,EOS.total_gratutity_amount,EOS.transaction_date from hims_f_end_of_service EOS 
+        EOS.payable_amount,EOS.end_of_service_number,
+        CASE WHEN EOS.exit_type ='T' THEN 'Terminated' WHEN EOS.exit_type ='R' THEN 'Resigned' else 'Retirement' END as exit_status, 
+        EOS.gratuity_status,EOS.remarks,EOS.total_gratutity_amount,EOS.transaction_date 
+        from hims_f_end_of_service EOS
+        inner join hims_d_employee as E on E.hims_d_employee_id = EOS.employee_id
+        inner join hims_d_sub_department as S on S.hims_d_sub_department_id =E.sub_department_id
         where employee_id = ?;select gratuity_min_year from hims_d_end_of_service_options limit 1;`,
         values: [_input.hims_d_employee_id],
       })

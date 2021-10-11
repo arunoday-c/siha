@@ -3,6 +3,7 @@ import {
   Spin,
   AlgaehMessagePop,
   // AlgaehTable,
+  // AlgaehTable,
   Empty,
 } from "algaeh-react-components";
 import moment from "moment";
@@ -32,71 +33,74 @@ export default memo(function (props) {
         .then((response) => {
           const { success, records, message } = response.data;
           if (success === true) {
-            const {
-              columns,
-              O,
-              I,
-              F,
-              net_operating,
-              net_investing,
-              net_financing,
-            } = records;
+            // const {
+            //   columns,
+            //   O,
+            //   I,
+            //   F,
+            //   net_operating,
+            //   net_investing,
+            //   net_financing,
+            // } = records;
+
+            // newColumns.unshift({
+            //   fieldName: "name",
+            //   label: "Name",
+            //   freezable: true,
+            // });
+            // setColumns(newColumns);
+            // let detailsData = [];
+            // function getOtherObjects(netObject) {
+            //   let columnObj = {};
+            //   columns.forEach((column) => {
+            //     const name = column["colum_id"];
+            //     columnObj[name] = netObject[name];
+            //   });
+            //   return columnObj;
+            // }
+            // function getRecords(netObject, labelName, children) {
+            //   const columnObj = getOtherObjects(netObject);
+            //   detailsData.push({
+            //     name: labelName,
+            //     label: labelName,
+            //     ...columnObj,
+            //     children,
+            //   });
+            // }
+
+            // //operating
+            // if (O !== undefined) {
+            //   getRecords(
+            //     net_operating,
+            //     "Cash flows from operating activities",
+            //     O
+            //   );
+            // }
+            // //investing
+            // if (I !== undefined) {
+            //   getRecords(
+            //     net_investing,
+            //     "Cash flows from investing activities",
+            //     I
+            //   );
+            // }
+            // //financing
+            // if (F !== undefined) {
+            //   let labelDef = "Cash flows from financing activities";
+            //   if (net_financing["total"] < 0) {
+            //     labelDef = "Cash flows in financing activities";
+            //   }
+            //   getRecords(net_financing, labelDef, F);
+            // }
+            const { columns, data } = records;
             let newColumns = columns.map((column) => {
               return {
                 fieldName: column.colum_id,
                 label: column.label,
               };
             });
-            newColumns.unshift({
-              fieldName: "name",
-              label: "Name",
-              freezable: true,
-            });
             setColumns(newColumns);
-            let detailsData = [];
-            function getOtherObjects(netObject) {
-              let columnObj = {};
-              columns.forEach((column) => {
-                const name = column["colum_id"];
-                columnObj[name] = netObject[name];
-              });
-              return columnObj;
-            }
-            function getRecords(netObject, labelName, children) {
-              const columnObj = getOtherObjects(netObject);
-              detailsData.push({
-                name: labelName,
-                label: labelName,
-                ...columnObj,
-                children,
-              });
-            }
-
-            //operating
-            if (O !== undefined) {
-              getRecords(
-                net_operating,
-                "Cash flows from operating activities",
-                O
-              );
-            }
-            //investing
-            if (I !== undefined) {
-              getRecords(
-                net_investing,
-                "Cash flows from investing activities",
-                I
-              );
-            }
-            //financing
-            if (F !== undefined) {
-              let labelDef = "Cash flows from financing activities";
-              if (net_financing["total"] < 0) {
-                labelDef = "Cash flows in financing activities";
-              }
-              getRecords(net_financing, labelDef, F);
-            }
-            setData(detailsData);
+            setData(data);
             setLoading(false);
           } else {
             setLoading(false);
@@ -115,6 +119,7 @@ export default memo(function (props) {
         });
     }
   }, [display_column_by, from_date, to_date]);
+  // console.log("columns===>", columns, data);
   return (
     <Spin
       spinning={loading}

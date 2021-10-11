@@ -27,20 +27,20 @@
           {{#hasElement details}}
             {{#each details}}
               <tr>
-                <td datatype="string">{{inc @index}}</td>
-                <td datatype="string">{{receipt_date}}</td>
-                 <td class="numberFld">{{numberFormating cash ../decimalOnly}}</td>
-                 <td class="numberFld">{{numberFormating card ../decimalOnly}}</td>
-                   {{#if show_vat "Y"}}
-                 <td class="numberFld">{{numberFormating patient_before_tax ../decimalOnly}}</td>
-                 <td class="numberFld">{{numberFormating patient_tax ../decimalOnly}}</td>
-                  {{/if}}
-                 <td class="numberFld">{{numberFormating patient_after_tax ../decimalOnly}}</td>
-                   {{#if show_vat "Y"}}
-                 <td class="numberFld">{{numberFormating company_before_tax ../decimalOnly}}</td>
-                 <td class="numberFld">{{numberFormating company_tax ../decimalOnly}}</td>
-                  {{/if}}
-                 <td class="numberFld">{{numberFormating company_after_tax ../decimalOnly}}</td>
+              <td datatype="string">{{inc @index}}</td>
+              <td datatype="string">{{receipt_date}}</td>
+              <td class="numberFld">{{numberFormating cash ../decimalOnly}}</td>
+              <td class="numberFld">{{numberFormating card ../decimalOnly}}</td>
+              {{#if ../show_vat "Y"}}
+                <td class="numberFld">{{numberFormating patient_before_tax ../decimalOnly}}</td>
+                <td class="numberFld">{{numberFormating patient_tax ../decimalOnly}}</td>
+              {{/if}}
+              <td class="numberFld">{{numberFormating patient_after_tax ../decimalOnly}}</td>
+              {{#if ../show_vat "Y"}}
+                <td class="numberFld">{{numberFormating company_before_tax ../decimalOnly}}</td>
+                <td class="numberFld">{{numberFormating company_tax ../decimalOnly}}</td>
+              {{/if}}
+              <td class="numberFld">{{numberFormating company_after_tax ../decimalOnly}}</td>
               </tr>
             {{/each}}
             <tr class="numberFldTotalBottom">

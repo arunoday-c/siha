@@ -30,7 +30,7 @@ const executePDF = function executePDFMethod(options) {
         options.mysql
           .executeQuery({
             query: `SELECT cost_center_type  FROM finance_options limit 1;`,
-            values: [input.head_id],
+            // values: [input.head_id],
             printQuery: true,
           })
           .then((result) => {
@@ -107,18 +107,18 @@ const executePDF = function executePDFMethod(options) {
                       details: outputArray,
                       total_debit: total_debit,
                       total_credit: total_credit,
-                      decimalOnly: {
-                        decimal_places,
-                        addSymbol: false,
-                        symbol_position,
-                        currency_symbol,
-                      },
-                      currencyOnly: {
-                        decimal_places,
-                        addSymbol: false,
-                        symbol_position,
-                        currency_symbol,
-                      },
+                      // decimalOnly: {
+                      //   decimal_places,
+                      //   addSymbol: true,
+                      //   symbol_position,
+                      //   currency_symbol,
+                      // },
+                      // currencyOnly: {
+                      //   decimal_places,
+                      //   addSymbol: true,
+                      //   symbol_position,
+                      //   currency_symbol,
+                      // },
                     });
                   } else {
                     resolve({

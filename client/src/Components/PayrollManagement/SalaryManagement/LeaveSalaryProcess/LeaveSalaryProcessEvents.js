@@ -441,6 +441,7 @@ const openSalaryComponents = ($this, row) => {
         $this.setState({
           isOpen: !$this.state.isOpen,
           dis_employee_name: header.full_name,
+          dis_employee_code: header.employee_code,
           salaryprocess_Earning: salaryprocess_Earning,
           salaryprocess_Deduction: salaryprocess_Deduction,
           salaryprocess_Contribute: salaryprocess_Contribute,

@@ -189,7 +189,7 @@ function CustomerList(props) {
                               return <span>{record.ledger_code}</span>;
                             },
                             others: {
-                              width: 200,
+                              width: 100,
                               style: { textAlign: "center" },
                             },
                           },

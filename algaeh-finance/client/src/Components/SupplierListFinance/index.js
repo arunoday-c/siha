@@ -4,6 +4,7 @@ import {
   AlgaehMessagePop,
   AlgaehTable,
   AlgaehButton,
+  AlgaehLabel,
 } from "algaeh-react-components";
 import { LoadSupplierPayable } from "./event";
 import {
@@ -162,7 +163,9 @@ function CustomerList(props) {
                                 onChange={selectAll}
                               />
                             ),
-                            fieldName: "select",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Select" }} />
+                            ),
                             displayTemplate: (row) => {
                               return (
                                 <input
@@ -179,7 +182,28 @@ function CustomerList(props) {
                             },
                           },
                           {
-                            label: "Supplier / Company",
+                            // label: "Code",
+
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Code" }} />
+                            ),
+                            sortable: true,
+                            fieldName: "ledger_code",
+                            filterable: true,
+                            displayTemplate: (record) => {
+                              return <span>{record.ledger_code}</span>;
+                            },
+                            others: {
+                              width: 200,
+                              style: { textAlign: "center" },
+                            },
+                          },
+                          {
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Supplier/ Company" }}
+                              />
+                            ),
                             sortable: true,
                             filterable: true,
                             fieldName: "child_name",
@@ -199,27 +223,45 @@ function CustomerList(props) {
                                 </p>
                               );
                             },
+                            others: {
+                              // width: 200,
+                              style: { textAlign: "left" },
+                            },
                           },
                           {
-                            label: "Contact Number",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Contact No." }}
+                              />
+                            ),
                             sortable: true,
                             filterable: true,
                             fieldName: "contact_number",
                             others: {
                               width: 200,
+                              style: { textAlign: "left" },
                             },
                           },
                           {
-                            label: "Account Number",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Account No." }}
+                              />
+                            ),
                             sortable: true,
                             filterable: true,
                             fieldName: "bank_account_no",
                             others: {
                               width: 200,
+                              style: { textAlign: "left" },
                             },
                           },
                           {
-                            label: "Balance",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Balance Amt." }}
+                              />
+                            ),
                             sortable: true,
                             displayTemplate: (row) => {
                               return (
@@ -234,6 +276,7 @@ function CustomerList(props) {
                             fieldName: "balance_amount",
                             others: {
                               width: 200,
+                              style: { textAlign: "right" },
                             },
                           },
                         ]}
