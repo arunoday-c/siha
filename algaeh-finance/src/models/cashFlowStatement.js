@@ -259,14 +259,15 @@ function cashFlow_TotalsOnly(options, next) {
                     and VD.auth_status='A' and  VD.payment_date <= date('${to_date}')
                     where C.head_id in (${Current_Asset})
                     group by C.finance_account_child_id;
-
+-- Current Liability
                     select  finance_account_child_id as child_id,child_name as name , 
                     ROUND((coalesce(sum( credit_amount  ) ,0)- coalesce(sum(debit_amount) ,0) ),${decimal_places}) as   closing_bal
                     from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id 
                     and VD.auth_status='A' and  VD.payment_date <= date('${to_date}')
                     where C.head_id in (${Current_Liability})
                     group by C.finance_account_child_id;
-
+                    
+                    -- Fixed Asset
  
                     select finance_account_head_id, account_name as name ,
                     ROUND((coalesce(sum( debit_amount ) ,0)- coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
@@ -1222,6 +1223,235 @@ function cashFlow_monthly_yearly(options, next) {
     });
   } catch (e) {
     console.log("e:", e);
+    next(e);
+  }
+}
+
+export async function cashFlowStatement(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const { decimal_places } = req.userIdentity;
+    const from_date = "2021-09-01";
+    const to_date = "2021-09-30";
+    /*
+    select finance_account_head_id,account_code,account_name,       
+      parent_acc_id,account_type
+      from finance_account_head   where  account_type in ('CA','CL','NCA','NCL','EQTY','PL');
+    */
+    const result = await _mysql
+      .executeQuery({
+        query: ` -- Query for account name
+        select finance_account_head_id,account_code,account_name,       
+        parent_acc_id,account_type from finance_account_head   where  account_type in ('PL');
+        -- Operational Activity
+        with recursive cte as (
+          select finance_account_head_id,account_code,account_name,       
+      parent_acc_id,account_type from finance_account_head   where  account_type in ('CA','CL')
+          union                 
+          select H.finance_account_head_id,H.account_code,H.account_name,       
+      H.parent_acc_id,H.account_type from finance_account_head H  
+          inner join cte on H.parent_acc_id = cte.finance_account_head_id  
+          )select * from cte ;
+        -- Investing Activity
+        with recursive cte as (
+          select finance_account_head_id,account_code,account_name,       
+      parent_acc_id,account_type from finance_account_head   where  account_type in ('NCA')
+          union                 
+          select H.finance_account_head_id,H.account_code,H.account_name,       
+      H.parent_acc_id,H.account_type from finance_account_head H  
+          inner join cte on H.parent_acc_id = cte.finance_account_head_id  
+          )select * from cte ;
+       -- Financing Activity
+       with recursive cte as (
+        select finance_account_head_id,account_code,account_name,       
+    parent_acc_id,account_type from finance_account_head   where  account_type in ('EQTY','NCL')
+        union                 
+        select H.finance_account_head_id,H.account_code,H.account_name,       
+    H.parent_acc_id,H.account_type from finance_account_head H  
+        inner join cte on H.parent_acc_id = cte.finance_account_head_id  
+        )select * from cte ;
+        with recursive cte as (
+          select finance_account_head_id,account_code,account_name,       
+          parent_acc_id from finance_account_head   where  account_type='CACE' 
+          union                 
+          select H.finance_account_head_id,H.account_code,H.account_name,       
+          H.parent_acc_id from finance_account_head H  
+          inner join cte on H.parent_acc_id = cte.finance_account_head_id  
+          )select * from cte ;
+      `,
+        printQuery: true,
+      })
+      .catch((e) => {
+        throw e;
+      });
+    const netProfit = result[0];
+    // _.filter(result[0], (f) => f.account_type === "PL");
+    const operationalActivities = result[1];
+    //_.filter(
+    //   result[1],
+    //   (f) => f.account_type === "CA" || f.account_type === "CL"
+    // );
+    const investingActivities = result[2];
+    //  _.filter(
+    //   result[2],
+    //   (f) => f.account_type === "NCA"
+    // );
+    const financingActivities = result[3];
+    //  _.filter(
+    //   result[3],
+    //   (f) => f.account_type === "EQTY" || f.account_type === "NCL"
+    // );
+    const cashAndCashEqu = result[4];
+    if (netProfit.length > 0) {
+      //Net profit List to directly bind to database query.
+      const _netProfitList = netProfit
+        .map((m) => {
+          return m.finance_account_head_id;
+        })
+        .join(",");
+
+      //_operational Activities List to directly bind to database query.
+      const _operationalActivitiesList = operationalActivities
+        .map((m) => {
+          return m.finance_account_head_id;
+        })
+        .join(",");
+
+      //Investing Activities List to directly bind to database query.
+      const _investingActivitiesList = investingActivities
+        .map((m) => {
+          return m.finance_account_head_id;
+        })
+        .join(",");
+
+      //Financing Activities List to directly bind to database query.
+      const _financingActivitiesList = financingActivities
+        .map((m) => {
+          return m.finance_account_head_id;
+        })
+        .join(",");
+
+      const _cashAndCashEqu = cashAndCashEqu
+        .map((m) => {
+          return m.finance_account_head_id;
+        })
+        .join(",");
+
+      // console.log("_operationalActivitiesList===>", _investingActivitiesList);
+      //Net profit between date range
+      const cumulativeResult = await _mysql
+        .executeQuery({
+          query: ` -- Net Profit
+          select  C.finance_account_child_id as child_id,MAX(C.child_name) as name,
+         ROUND((coalesce(sum(credit_amount) ,0)- coalesce(sum(debit_amount) ,0) ),${decimal_places}) as closing_bal
+         from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
+         and VD.auth_status='A' and  VD.payment_date < date('${from_date}') 
+         inner join finance_account_head as H on H.finance_account_head_id=C.head_id
+         where finance_account_head_id in(${_netProfitList})
+         group by C.finance_account_child_id;
+         -- operational Activities
+         select  finance_account_child_id as child_id,MAX(child_name) as name , 
+                    ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
+                    from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id 
+                    and VD.auth_status='A' and  VD.payment_date < date('${from_date}')
+                    where C.head_id in (${_operationalActivitiesList})
+                    group by C.finance_account_child_id;
+        -- Investing Activities
+        select  finance_account_child_id as child_id,MAX(child_name) as name , 
+                    ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
+                    from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id 
+                    and VD.auth_status='A' and  VD.payment_date < date('${from_date}')
+                    where C.head_id in (${_investingActivitiesList})
+                    group by C.finance_account_child_id;
+        -- Financing Activities
+        select  finance_account_child_id as child_id,MAX(child_name) as name , 
+                                ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
+                                from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id 
+                                and VD.auth_status='A' and  VD.payment_date < date('${from_date}')
+                                where C.head_id in (${_financingActivitiesList})
+                                group by C.finance_account_child_id;
+        -- Cash and cash equivalent
+        select  finance_account_child_id as child_id,MAX(child_name) as name , 
+                                ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
+                                from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id 
+                                and VD.auth_status='A' and  VD.payment_date <= date('${to_date}')
+                                where C.head_id in (${_cashAndCashEqu})
+                                group by C.finance_account_child_id;
+         `,
+          printQuery: true,
+        })
+        .catch((e) => {
+          throw e;
+        });
+
+      const _totalOperating = _.sumBy(cumulativeResult[1], (s) =>
+        parseFloat(s.closing_bal)
+      ).toFixed(decimal_places);
+      const _totalInvesting = _.sumBy(cumulativeResult[2], (s) =>
+        parseFloat(s.closing_bal)
+      ).toFixed(decimal_places);
+      const _totalFinancing = _.sumBy(cumulativeResult[3], (s) =>
+        parseFloat(s.closing_bal)
+      ).toFixed(decimal_places);
+      const _totalCashAndEqu = _.sumBy(cumulativeResult[4], (s) =>
+        parseFloat(s.closing_bal)
+      ).toFixed(decimal_places);
+      let dataToSend = [];
+      dataToSend.push(
+        {
+          child_id: 0,
+          name: "Net Profit",
+          closing_bal: _.sumBy(cumulativeResult[0], (s) =>
+            parseFloat(s.closing_bal)
+          ).toFixed(decimal_places),
+          children: cumulativeResult[0],
+        },
+        {
+          child_id: 0,
+          name: "Adjustments for operating activities ",
+          closing_bal: _totalOperating,
+          children: cumulativeResult[1],
+        },
+        {
+          child_id: 0,
+          name: "Adjustments for investing activities ",
+          closing_bal: _totalInvesting,
+          children: cumulativeResult[2],
+        },
+        {
+          child_id: 0,
+          name: "Adjustments for Financing activities ",
+          closing_bal: _totalFinancing,
+          children: cumulativeResult[3],
+        },
+        {
+          child_id: 0,
+          name: "NET Total ",
+          closing_bal: parseFloat(
+            parseFloat(_totalOperating) +
+              parseFloat(_totalInvesting) +
+              parseFloat(_totalFinancing)
+          ).toFixed(decimal_places),
+        },
+        {
+          child_id: 0,
+          name: "Cash and Cash Equivalent",
+          closing_bal: _totalCashAndEqu,
+        }
+      );
+      _mysql.releaseConnection();
+      // console.log("_netProfitResult===>", cumulativeResult);
+      req.records = {
+        columns: [
+          { colum_id: "name", label: "Name" },
+          { colum_id: "closing_bal", label: "Total" },
+        ],
+        data: dataToSend,
+      };
+      next();
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 }

@@ -298,7 +298,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                   //   : "")
                 }
                 onClick={() => {
-                  debugger;
+                  // debugger;
                   if (Object.keys(editorRecord).length > 0) {
                     setEditorRecord({});
                   } else {

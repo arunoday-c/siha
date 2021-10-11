@@ -33,6 +33,9 @@ export default memo(function Modal(props) {
     setLoading(true);
 
     resultdata["nodeName"] = selectedNode?.node?.full_name;
+    resultdata["head_id"] = selectedNode?.node?.head_id
+      ? selectedNode?.node?.head_id
+      : selectedNode?.node?.finance_account_head_id;
     generateReport("pdf", resultdata)
       .then((result) => {
         const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${result}&filename=Ledger report`;
@@ -87,6 +90,7 @@ export default memo(function Modal(props) {
       try {
         let outcomeDataHospital = {};
         let outcomeDataCostCenter = {};
+
         if (inputdata !== undefined && Object.keys(inputdata).length > 0) {
           outcomeDataHospital = {
             name: "hospital_id",
@@ -139,6 +143,7 @@ export default memo(function Modal(props) {
           },
           { name: "Account Name", value: inputdata.nodeName },
         ];
+
         if (fromInvoice) {
           data = {
             report: {
@@ -200,8 +205,7 @@ export default memo(function Modal(props) {
               reportParams: [
                 {
                   name: "head_id",
-                  value:
-                    head_id === undefined ? finance_account_head_id : head_id,
+                  value: head_id ? head_id : finance_account_head_id,
                   label: "Head",
                   labelValue: label,
                 },
