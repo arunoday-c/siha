@@ -76,7 +76,7 @@ export default function TrailBalaceReport({
             {/* Al Fanar Mall، 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia */}
           </div>
           <hr></hr>
-          <h3>Trail Balance</h3>
+          <h3>Trial Balance</h3>
           <p>
             As on:{" "}
             <b>
