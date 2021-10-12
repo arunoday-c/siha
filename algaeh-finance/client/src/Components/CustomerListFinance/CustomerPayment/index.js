@@ -823,7 +823,14 @@ export default memo(function (props) {
               loading={loading}
               onClick={onClickCreditNotes}
             >
-              Include Credit Note
+              Add Credit Note
+            </AlgaehButton>
+            <AlgaehButton
+              className="btn btn-default"
+              loading={loading}
+              // onClick={onClickCreditNotes}
+            >
+              Add Advance
             </AlgaehButton>
             <AlgaehButton
               className="btn btn-default"
