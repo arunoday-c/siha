@@ -2537,7 +2537,7 @@ let deleteInvOrderedItems = (req, res, next) => {
     _mysql
       .executeQueryWithTransaction({
         query:
-          "SELECT inventory_consumption_header_id FROM hims_f_inventory_consumption_detail where ordered_inventory_id=?; \
+          "SELECT hims_f_inventory_consumption_detail_id, inventory_consumption_header_id FROM hims_f_inventory_consumption_detail where ordered_inventory_id=?; \
           DELETE FROM hims_f_ordered_inventory where hims_f_ordered_inventory_id=?;\
           UPDATE hims_f_inventory_consumption_detail SET cancelled='Y' where ordered_inventory_id=?;",
         values: [
@@ -2554,6 +2554,9 @@ let deleteInvOrderedItems = (req, res, next) => {
           pool: _mysql.pool,
           path: keyPath,
         };
+        req.body.from_screen = "EHR";
+        req.body.hims_f_inventory_consumption_detail_id =
+          res_result[0][0].hims_f_inventory_consumption_detail_id;
         req.body.consumption_header_id =
           res_result[0][0].inventory_consumption_header_id;
         // _mysql.releaseConnection();

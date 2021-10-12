@@ -41,6 +41,7 @@ const compile = async function (templateName, data) {
       "algaeh_report_tool/templates",
       `${templateName}.hbs`
     );
+    // console.log("data===>", data, "templateName===>", templateName);
     const html = await fs.readFile(filePath, "utf-8");
 
     return await hbs.compile(html)(data);

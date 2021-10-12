@@ -353,19 +353,29 @@ export default {
               //   input.inventory_stock_detail
               // );
               let _inventory_consumption_detail_id = [];
-              input.inventory_stock_detail.map((o) => {
+              if (input.from_screen === "EHR") {
                 _inventory_consumption_detail_id.push(
-                  o.hims_f_inventory_consumption_detail_id
+                  input.hims_f_inventory_consumption_detail_id
                 );
-              });
+              } else {
+                input.inventory_stock_detail.map((o) => {
+                  _inventory_consumption_detail_id.push(
+                    o.hims_f_inventory_consumption_detail_id
+                  );
+                });
+              }
 
               // console.log(
               //   "old_inventory_stock_detail",
               //   old_inventory_stock_detail.length
               // );
               // console.log(
-              //   "inventory_stock_detail",
-              //   input.inventory_stock_detail.length
+              //   "_inventory_consumption_detail_id",
+              //   _inventory_consumption_detail_id
+              // );
+              // consol.log(
+              //   "_inventory_consumption_detail_id",
+              //   _inventory_consumption_detail_id
               // );
 
               let strQty = `UPDATE hims_f_inventory_consumption_detail set cancelled='Y' where hims_f_inventory_consumption_detail_id in (${_inventory_consumption_detail_id});`;
