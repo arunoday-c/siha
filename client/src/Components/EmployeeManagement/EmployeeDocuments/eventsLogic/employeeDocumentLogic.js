@@ -1,7 +1,7 @@
 import {
   algaehApiCall,
   swalMessage,
-  getCookie,
+  // getCookie,
 } from "../../../../utils/algaehApiCall";
 import _ from "lodash";
 import { newAlgaehApi } from "../../../../hooks";
@@ -169,27 +169,32 @@ export default function eventsLogEmployeeDocument() {
           });
       });
     },
-    saveDocument: (files = [], destinationName, contract_id) => {
+    updateDocumentNamePhysical: (doc, state, editedRecord) => {
       return new Promise((resolve, reject) => {
-        const formData = new FormData();
+        // const gridData = document_grid_copy;
+        // const oldNameDoc = gridData.filter(
+        //   (f) =>
+        //     f.hims_f_employee_documents_id === doc.hims_f_employee_documents_id
+        // )[0].document_name;
 
-        formData.append("destinationName", destinationName);
-        // formData.append("contract_id", contract_id);
-        files.forEach((file, index) => {
-          formData.append(`file_${index}`, file, file.name);
-        });
-        formData.append("forModule", "EmployeeDocModel");
-        formData.append("pageName", getCookie("ScreenName"));
         newAlgaehApi({
-          uri: "/saveContractDoc",
-          data: formData,
-          extraHeaders: { "Content-Type": "multipart/form-data" },
-          method: "POST",
+          uri: "/updateDocumentNamePhysical",
+          data: {
+            doc_number: doc.hims_f_employee_documents_id,
+            oldFilePath: `EmployeeDocuments/${state.employee_code}/${
+              doc.download_uniq_id
+            }/${doc.hims_f_employee_documents_id}/${
+              doc.hims_f_employee_documents_id
+            }__ALGAEH__${editedRecord[doc.hims_f_employee_documents_id]}`,
+            newPath: `EmployeeDocuments/${state.employee_code}/${doc.download_uniq_id}/${doc.hims_f_employee_documents_id}/${doc.hims_f_employee_documents_id}__ALGAEH__${doc.document_name}`,
+          },
+
+          method: "GET",
           module: "documentManagement",
         })
           .then((res) => {
             if (res.data.success) {
-              resolve(res.data.unique);
+              resolve(res.data);
             } else {
               resolve([]);
             }
@@ -197,10 +202,39 @@ export default function eventsLogEmployeeDocument() {
           .catch((error) => reject(error));
       });
     },
-    downloadDoc: (doc, isPreview) => {
+    saveDocument: (formData) => {
+      return new Promise((resolve, reject) => {
+        // const formData = new FormData();
+
+        // formData.append("destinationName", destinationName);
+        // // formData.append("contract_id", contract_id);
+        // files.forEach((file, index) => {
+        //   formData.append(`file_${index}`, file, file.name);
+        // });
+        // formData.append("forModule", "EmployeeDocModel");
+        // formData.append("pageName", getCookie("ScreenName"));
+        newAlgaehApi({
+          uri: "/uploadEmployeeDoc",
+          data: formData,
+          extraHeaders: { "Content-Type": "multipart/form-data" },
+          method: "POST",
+          module: "documentManagement",
+        })
+          .then((res) => {
+            if (res.data.success) {
+              resolve(res.data);
+            } else {
+              resolve([]);
+            }
+          })
+          .catch((error) => reject(error));
+      });
+    },
+    downloadDoc: (doc, isPreview, state) => {
       // if (doc.fromPath === true) {
+      console.log("completepath");
       newAlgaehApi({
-        uri: "/getContractDoc",
+        uri: "/getUploadedEmployeeFiles",
         module: "documentManagement",
         method: "GET",
         extraHeaders: {
@@ -210,13 +244,29 @@ export default function eventsLogEmployeeDocument() {
           responseType: "blob",
         },
         data: {
-          destinationName: doc.download_uniq_id,
-          forModule: "EmployeeDocModel",
-          download: true,
+          doc_number: doc.hims_f_employee_documents_id,
+          filePath: `EmployeeDocuments/${state.employee_code}/${doc.download_uniq_id}/${doc.hims_f_employee_documents_id}/${doc.hims_f_employee_documents_id}__ALGAEH__${doc.document_name}`,
+          nameOfTheFolder: doc.download_uniq_id,
+          folderPath: `EmployeeDocuments/${state.employee_code}/${doc.download_uniq_id}/${doc.hims_f_employee_documents_id}/`,
+          movedOldFile: doc.unique_id_fromMongo ? false : true,
           unique_id_fromMongo: doc.unique_id_fromMongo,
+          filename: doc.document_name,
+          employee_code: state.employee_code,
         },
       })
         .then((resp) => {
+          if (doc.unique_id_fromMongo) {
+            newAlgaehApi({
+              uri: "/documents/updateOldRecordDocument",
+              module: "hrManagement",
+              method: "PUT",
+              data: {
+                hims_f_employee_documents_id: doc.hims_f_employee_documents_id,
+              },
+            })
+              .then((res) => {})
+              .catch((error) => console.log(error));
+          }
           const urlBlob = URL.createObjectURL(resp.data);
           if (isPreview) {
             window.open(urlBlob);
@@ -270,22 +320,39 @@ export default function eventsLogEmployeeDocument() {
     //   });
     // },
 
-    onDelete: (doc) => {
+    onDelete: (doc, state) => {
       return new Promise((resolve, reject) => {
-        newAlgaehApi({
-          uri: "/deleteContractDoc",
-          method: "DELETE",
+        algaehApiCall({
+          uri: "/deleteEmployeeDocs",
           module: "documentManagement",
-          data: { id: doc.unique_id_fromMongo, forModule: "EmployeeDocModel" },
-        })
-          .then((res) => {
-            if (res.data.success) {
-              resolve(res);
+          method: "DELETE",
+          data: {
+            completePath: `EmployeeDocuments/${state.employee_code}/${doc.download_uniq_id}/${doc.hims_f_employee_documents_id}`,
+          },
+          cancelRequestId: "deleteDocument",
+          onSuccess: (response) => {
+            if (response.data.success) {
+              resolve(response);
             }
-          })
-          .catch((error) => {
+          },
+          onFailure: (error) => {
             reject(error);
-          });
+          },
+        });
+        // newAlgaehApi({
+        //   uri: "/deleteContractDoc",
+        //   method: "DELETE",
+        //   module: "documentManagement",
+        //   data: { id: doc.unique_id_fromMongo, forModule: "EmployeeDocModel" },
+        // })
+        //   .then((res) => {
+        //     if (res.data.success) {
+        //       resolve(res);
+        //     }
+        //   })
+        //   .catch((error) => {
+        //     reject(error);
+        //   });
       });
     },
 
