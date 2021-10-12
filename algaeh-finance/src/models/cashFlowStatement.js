@@ -1231,8 +1231,8 @@ export async function cashFlowStatement(req, res, next) {
   const _mysql = new algaehMysql();
   try {
     const { decimal_places } = req.userIdentity;
-    const from_date = "2021-09-01";
-    const to_date = "2021-09-30";
+    const from_date = "2021-10-01";
+    const to_date = "2021-10-12";
     /*
     select finance_account_head_id,account_code,account_name,       
       parent_acc_id,account_type
@@ -1381,28 +1381,28 @@ select H.finance_voucher_header_id,
          ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal,
          'CA' as account_type 
          from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
-         and VD.auth_status='A' and  VD.payment_date < date('${from_date}')
+         and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}') 
          where C.head_id in (${_operationalActivitiesList_CA})
          group by C.finance_account_child_id;
          select  finance_account_child_id as child_id,MAX(child_name) as name ,
          ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal,
          'CL' as account_type
          from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
-         and VD.auth_status='A' and  VD.payment_date < date('${from_date}')
+         and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}') 
          where C.head_id in (${_operationalActivitiesList_CL})
          group by C.finance_account_child_id;
         -- Investing Activities
         select  finance_account_child_id as child_id,MAX(child_name) as name , 
                     ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
                     from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id 
-                    and VD.auth_status='A' and  VD.payment_date < date('${from_date}')
+                    and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}') 
                     where C.head_id in (${_investingActivitiesList})
                     group by C.finance_account_child_id;
         -- Financing Activities
         select  finance_account_child_id as child_id,MAX(child_name) as name , 
                                 ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
                                 from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id 
-                                and VD.auth_status='A' and  VD.payment_date < date('${from_date}')
+                                and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}') 
                                 where C.head_id in (${_financingActivitiesList})
                                 group by C.finance_account_child_id;
         -- Cash and cash equivalent

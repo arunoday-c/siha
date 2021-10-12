@@ -94,9 +94,12 @@ export default memo(function (props) {
             // }
             const { columns, data } = records;
             let newColumns = columns.map((column) => {
+              const freeze =
+                column.colum_id === "name" ? { freezable: true } : {};
               return {
                 fieldName: column.colum_id,
                 label: column.label,
+                ...freeze,
               };
             });
             setColumns(newColumns);
@@ -130,7 +133,11 @@ export default memo(function (props) {
       {columns.length === 0 ? (
         <Empty description="No data to show." />
       ) : (
-        <PrintLayout title="Cash Flow" columns={columns} data={data} />
+        <PrintLayout
+          title="Cash Flow Statement"
+          columns={columns}
+          data={data}
+        />
       )}
     </Spin>
   );
