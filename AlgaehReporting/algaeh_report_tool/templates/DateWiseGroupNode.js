@@ -102,7 +102,7 @@ const executePDF = function executePDFMethod(options) {
                     //   outputArray.push(...dateWiseGroup[i]);
                     // }
                     const outputArray = final_result;
-                    console.log("outputArray======", outputArray);
+                    // console.log("outputArray======", outputArray);
                     resolve({
                       details: outputArray,
                       total_debit: total_debit,

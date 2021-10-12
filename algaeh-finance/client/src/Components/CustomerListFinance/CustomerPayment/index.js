@@ -20,6 +20,7 @@ import _ from "lodash";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 import { newAlgaehApi } from "../../../hooks";
 import CreditNotes from "./creditNotes";
+import Advance from "./advance";
 export default memo(function (props) {
   const location = useLocation();
   const history = useHistory();
@@ -38,6 +39,7 @@ export default memo(function (props) {
     day_end_pending: "",
   });
   const [showCreditNotes, setShowCreditNotes] = useState(false);
+  const [showAdvance, setShowAdvance] = useState(false);
   const [selectedChildId, setSelectedChildId] = useState(0);
   const [loading, setLoading] = useState(false);
   const [allCreditNotes, setAllCreditNote] = useState([]);
@@ -455,6 +457,12 @@ export default memo(function (props) {
           setShowCreditNotes(false);
         }}
       />
+      <Advance
+        show={showAdvance}
+        hide={() => {
+          setShowAdvance(false);
+        }}
+      />
       <StatementReport
         title="Customer Statement"
         selectedNode={location.state.data}
@@ -824,6 +832,15 @@ export default memo(function (props) {
               onClick={onClickCreditNotes}
             >
               Include Credit Note
+            </AlgaehButton>
+            <AlgaehButton
+              className="btn btn-default"
+              loading={loading}
+              onClick={() => {
+                setShowAdvance(true);
+              }}
+            >
+              Apply Advance
             </AlgaehButton>
             <AlgaehButton
               className="btn btn-default"
