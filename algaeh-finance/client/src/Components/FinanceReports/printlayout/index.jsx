@@ -26,11 +26,11 @@ export default function ({
       .then((result) => {
         setExcelLoading(false);
         if (typeof result !== "boolean") {
-          const a: HTMLAnchorElement = document.createElement("a");
+          const a = document.createElement("a");
           a.style.display = "none";
           document.body.appendChild(a);
 
-          const url: string = window.URL.createObjectURL(result);
+          const url = window.URL.createObjectURL(result);
 
           a.href = url;
           a.download = `${title}.xlsx`;
