@@ -446,7 +446,7 @@ let getTreatmentPlan = (req, res, next) => {
 
     let strQuery = "";
     if (input.episode_id != null) {
-      strQuery += " and episode_id=" + input.episode_id;
+      strQuery += " and TP.episode_id=" + input.episode_id;
     }
     if (input.patient_id != null) {
       strQuery += " and patient_id=" + input.patient_id;
@@ -458,9 +458,10 @@ let getTreatmentPlan = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "select hims_f_treatment_plan_id, plan_name, patient_id, episode_id, visit_id, remarks,\
-        approve_status, plan_status,consult_date from  hims_f_treatment_plan where record_status='A' " +
-          strQuery,
+          "select hims_f_treatment_plan_id, plan_name, TP.patient_id, TP.episode_id, TP.visit_id, TP.remarks,DT.service_id,\
+        approve_status, plan_status,consult_date from  hims_f_treatment_plan TP left join hims_f_dental_treatment DT on DT.treatment_plan_id=TP.hims_f_treatment_plan_id   where TP.record_status='A' " +
+          strQuery +
+          " group by TP.hims_f_treatment_plan_id",
         printQuery: true,
       })
       .then((result) => {
