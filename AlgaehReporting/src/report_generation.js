@@ -324,7 +324,7 @@ hbs.registerHelper("commentBreakUp", function (comment_data) {
 });
 hbs.registerHelper("dynamic", (records, columns) => {
   const tds = columns.map((item) => {
-    return `<td>${records[item]}</td>`;
+    return `<td class="numberFld">${records[item]}</td>`;
   });
   return tds;
 });

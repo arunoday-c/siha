@@ -821,7 +821,7 @@ export default function Income({
         subitem: "Revenue Report",
         // template_name: "Income/dailyCashCollection",
         reportName: "revenueHisReport",
-        // componentCode: "RPT_INC_CASH_COLL",
+        componentCode: "RPT_INC_REV_RPT",
         requireIframe: true,
         reportParameters: [
           {
@@ -877,6 +877,86 @@ export default function Income({
               textField: "name",
               valueField: "value",
               data: FORMAT_YESNO,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Company Revenue Report",
+        // template_name: "Income/dailyCashCollection",
+        reportName: "companyWiseRevenue",
+        componentCode: "RPT_INC_COM_REV_RPT",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "show_vat",
+            initialLoad: true,
+            isImp: true,
+            label: "Show with VAT",
+            sort: "off",
+            others: {
+              sort: "off",
+            },
+
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: FORMAT_YESNO,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "primary_sub_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Sub Company",
+            link: {
+              uri: "/insurance/getSubInsurance",
+              module: "insurance",
+            },
+            dataSource: {
+              textField: "insurance_sub_name",
+              valueField: "hims_d_insurance_sub_id",
             },
           },
         ],
