@@ -358,6 +358,7 @@ export default {
     const drillDownLevel = req.query.drillDownLevel;
     option["drillDownLevel"] = drillDownLevel;
     if (option.old == "Y") {
+      console.log("34567");
       getAccountHeadsForTrialBalance(decimal_places, 1, option)
         .then((asset) => {
           getAccountHeadsForTrialBalance(decimal_places, 2, option)
@@ -418,6 +419,7 @@ export default {
           next(e);
         });
     } else {
+      console.log("0987");
       const _mysql = new algaehMysql();
       option["_mysql"] = _mysql;
       _mysql
@@ -2916,7 +2918,7 @@ function getTrialBalanceFunc(
           ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred,
           VD.payment_date,VD.is_opening_bal
           from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
-          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'   ${qryStr}
+          left join finance_vo/ucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'   ${qryStr}
           and date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by C.finance_account_child_id,VD.payment_date,VD.is_opening_bal;
 
           select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level

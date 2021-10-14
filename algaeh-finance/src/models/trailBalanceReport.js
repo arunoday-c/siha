@@ -13,7 +13,10 @@ export async function trailBalanceRpt(req, res, next) {
       ACCOUNTS,
       drillDownLevel,
       non_zero,
+      last_record,
     } = req.query;
+    // console.log("last_record", last_record);
+    // consol.log("last_record", last_record);
     const decimal_places = req.userIdentity.decimal_places;
     /** for options */
     const optionRecords = await _mysql
@@ -87,6 +90,7 @@ export async function trailBalanceRpt(req, res, next) {
     let tree = {};
     const transactions = result[1];
     const openingBalance = result[2];
+    let final_child = [];
     _.chain(result[0])
       .groupBy((g) => g.root_id)
       .forEach((details, key) => {
@@ -193,7 +197,22 @@ export async function trailBalanceRpt(req, res, next) {
                 leafNode: "Y",
                 ledger_code: item.child_ledger_code,
               });
+              if (last_record === "Y") {
+                final_child.push({
+                  ...others,
+                  tr_debit_amount,
+                  tr_credit_amount,
+                  title: item.child_name,
+                  label: item.child_name,
+                  arabic_name: item.arabic_child_name,
+                  op_amount,
+                  cb_amount,
+                  leafNode: "Y",
+                  ledger_code: item.child_ledger_code,
+                });
+              }
             };
+            // console.log("child", child);
             //Hide non zero
             if (non_zero === "Y") {
               if (
@@ -212,7 +231,10 @@ export async function trailBalanceRpt(req, res, next) {
                 val.finance_account_head_id == item.finance_account_head_id
               );
             });
+            // console.log("data", data);
+
             if (!data) {
+              // consol.log("data", data);
               target.push({
                 ...item,
                 op_amount: 0,
@@ -289,11 +311,21 @@ export async function trailBalanceRpt(req, res, next) {
         ] = _.head(roots);
       })
       .value();
-    req.records = {
-      ...tree,
-      total_debit_amount: 0,
-      total_credit_amount: 0,
-    };
+    // console.log("tree", tree);
+
+    if (last_record === "Y") {
+      req.records = {
+        final_child: final_child,
+        total_debit_amount: 0,
+        total_credit_amount: 0,
+      };
+    } else {
+      req.records = {
+        ...tree,
+        total_debit_amount: 0,
+        total_credit_amount: 0,
+      };
+    }
     next();
     console.log("<<<<<Done pushed>>>>");
     // console.log("result===>", JSON.stringify(tree));

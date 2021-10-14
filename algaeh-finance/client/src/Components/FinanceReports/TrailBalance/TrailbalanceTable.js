@@ -12,9 +12,10 @@ export default function TrailBalaceReport({
   showArabic,
   showLedgerCode,
   levels = "ALL",
+  showLastrecord,
   // createPrintObject,
 }) {
-  const { asset, expense, liability, capital, income } = data;
+  const { asset, expense, liability, capital, income, final_child } = data;
   const [showDrillDown, setShowDrillDown] = useState(false);
   const [row, setRow] = useState(undefined);
   const [columns, setColumns] = useState([]);
@@ -161,20 +162,25 @@ export default function TrailBalaceReport({
     }
   }, [showLedgerCode, showArabic]);
   let accounts = [];
-  if (asset) {
-    accounts.push(asset);
-  }
-  if (expense) {
-    accounts.push(expense);
-  }
-  if (liability) {
-    accounts.push(liability);
-  }
-  if (capital) {
-    accounts.push(capital);
-  }
-  if (income) {
-    accounts.push(income);
+  debugger;
+  if (showLastrecord === "Y") {
+    accounts = final_child;
+  } else {
+    if (asset) {
+      accounts.push(asset);
+    }
+    if (expense) {
+      accounts.push(expense);
+    }
+    if (liability) {
+      accounts.push(liability);
+    }
+    if (capital) {
+      accounts.push(capital);
+    }
+    if (income) {
+      accounts.push(income);
+    }
   }
   function OpenDrillDown(rec) {
     setShowDrillDown(true);
