@@ -46,7 +46,7 @@ export default function TrailBalaceReport({
   if (data.asset) {
     return (
       <PrintLayout
-        title="Trail Banalnce"
+        title="Trial Balance"
         data={accounts || []}
         columns={[
           {

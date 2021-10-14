@@ -194,7 +194,7 @@ export default function TrailBalaceReport({
       />
 
       <PrintLayout
-        title="Trail Balance"
+        title="Trial Balance"
         dates={dates}
         showArabic={showArabic}
         columns={columns}
