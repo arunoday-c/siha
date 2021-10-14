@@ -1437,32 +1437,60 @@ export default function JournalVoucher({
             }}
           />
           {voucherType === "journal" ? (
-            <div className="col form-group">
-              <label className="style_Label">Advance</label>
-              <label className="radio-inline">
-                <input
-                  type="radio"
-                  name="d_m_wise"
-                  onChange={(check) => {
-                    setIsAdvance("Y");
-                  }}
-                  checked={is_advance === "Y" ? true : false}
-                />
-                Yes
-              </label>
-              <label className="radio-inline">
-                <input
-                  type="radio"
-                  name="d_m_wise"
-                  onChange={(check) => {
-                    setIsAdvance("N");
-                  }}
-                  checked={is_advance === "N" ? true : false}
-                />
-                No
-              </label>
+            <div className="col-3">
+              <label>Is this Advance</label>
+              <div className="customRadio">
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    name="d_m_wise"
+                    onChange={(check) => {
+                      setIsAdvance("Y");
+                    }}
+                    checked={is_advance === "Y" ? true : false}
+                  />
+                  <span>Yes</span>
+                </label>
+
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    name="d_m_wise"
+                    onChange={(check) => {
+                      setIsAdvance("N");
+                    }}
+                    checked={is_advance === "N" ? true : false}
+                  />
+                  <span>No</span>
+                </label>
+              </div>
             </div>
-          ) : null}
+          ) : // <div className="col form-group">
+          //   <label className="style_Label">Advance</label>
+          //   <label className="radio-inline">
+          //     <input
+          //       type="radio"
+          //       name="d_m_wise"
+          //       onChange={(check) => {
+          //         setIsAdvance("Y");
+          //       }}
+          //       checked={is_advance === "Y" ? true : false}
+          //     />
+          //     Yes
+          //   </label>
+          //   <label className="radio-inline">
+          //     <input
+          //       type="radio"
+          //       name="d_m_wise"
+          //       onChange={(check) => {
+          //         setIsAdvance("N");
+          //       }}
+          //       checked={is_advance === "N" ? true : false}
+          //     />
+          //     No
+          //   </label>
+          // </div>
+          null}
           {voucherType === "expense_voucher" ? (
             <>
               <AlgaehTreeSearch
