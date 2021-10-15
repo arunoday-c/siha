@@ -428,6 +428,13 @@ export function PatientRegistration() {
           type: "error",
         });
       }
+      if (err.message?.includes("hims_f_patient.secondary_id_no_UNIQUE")) {
+        AlgaehMessagePop({
+          display:
+            "Duplicate Secondary id number, Please provide a new ID number",
+          type: "error",
+        });
+      }
     },
   });
 
@@ -727,6 +734,7 @@ export function PatientRegistration() {
             ...input,
             ...billInfo,
             ...billData,
+            primary_id_no: input.primary_id_no,
             age: moment().diff(moment(input?.date_of_birth), "year"),
             department_id: parseInt(department_id, 10),
             sub_department_id: parseInt(sub_department_id, 10),
