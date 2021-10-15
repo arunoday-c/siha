@@ -361,19 +361,33 @@ function SampleCollection() {
                   // },
 
                   {
-                    fieldName: "",
+                    fieldName: "status",
                     label: <AlgaehLabel label={{ fieldName: "status" }} />,
                     displayTemplate: (row) => {
                       return (
                         <span className="badge badge-light">
-                          {row.number_of_tests_collected} /{" "}
-                          {row.number_of_tests} - Collected
+                          {row.number_of_tests_collected} /{row.number_of_tests}{" "}
+                          -
+                          {row.number_of_tests_collected === row.number_of_tests
+                            ? "Collected"
+                            : "Ordered"}
                         </span>
                       );
                     },
                     disabled: true,
                     filterable: true,
                     sortable: true,
+                    filterType: "choices",
+                    choices: [
+                      {
+                        name: "Ordered",
+                        value: "O",
+                      },
+                      {
+                        name: "Collected",
+                        value: "CL",
+                      },
+                    ],
                     others: {
                       width: 120,
                       resizable: false,
