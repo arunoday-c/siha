@@ -413,9 +413,13 @@ export default {
 
                         let arrCounter = [];
                         let updateQry = "";
+
                         if (isMultipleInvoices === "M") {
                           let queryString = "";
 
+                          // console.log("merdgeRecords", merdgeRecords);
+                          // console.log("merdgeRecords", input["voucher_type"]);
+                          // consol.log("merdgeRecords", input["voucher_type"]);
                           for (let i = 0; i < merdgeRecords.length; i++) {
                             const {
                               balance_amount,
@@ -432,10 +436,12 @@ export default {
                               : balance_amount;
                             if (
                               voucher_type === "debit_note" ||
-                              voucher_type === "credit_note"
+                              voucher_type === "credit_note" ||
+                              voucher_type === "advance"
                             ) {
                               b_amt = balance_amount;
                             }
+                            // console.log("merdgeRecords", merdgeRecords[i]);
                             if (input["voucher_type"] !== "credit_note") {
                               queryString += _mysql.mysqlQueryFormat(
                                 "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount,voucher_type)value(?,?,?,?);",
@@ -447,7 +453,6 @@ export default {
                                 ]
                               );
                             }
-
                             if (
                               input["voucher_type"] == "credit_note" ||
                               input["voucher_type"] == "debit_note" ||
@@ -505,6 +510,9 @@ export default {
                           if (queryString === "") {
                             queryString = "select 1;";
                           }
+                          // console.log("queryString", queryString);
+                          // console.log("updateQry", updateQry);
+                          // consol.log("queryString", queryString);
                           _mysql
                             .executeQueryWithTransaction({
                               query: `${queryString}${updateQry}${updateDebitNoteQuery}`,

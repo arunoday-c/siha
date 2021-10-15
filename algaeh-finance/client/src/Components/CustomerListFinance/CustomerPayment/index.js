@@ -26,6 +26,7 @@ export default memo(function (props) {
   const history = useHistory();
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
+  const [adv_data, setAdvData] = useState([]);
   const [indeterminate, setIndeterminate] = useState(false);
   const [checkAll, setCheckAll] = useState(false);
   const [selectAmount, setSelectedAmount] = useState(0);
@@ -282,6 +283,7 @@ export default memo(function (props) {
   function onClickSendSelected(isFromProcessed, processe_form) {
     isFromProcessed = isFromProcessed || false;
     const filterCheck = data.filter((f) => f.checked === true);
+    debugger;
     if (filterCheck.length === 0) {
       AlgaehMessagePop({
         type: "warning",
@@ -296,37 +298,44 @@ export default memo(function (props) {
         );
       });
       let creditNoteTotal = 0;
+      let AdvanceTotal = 0;
       let grandTotal = 0;
       let filterCreditNotes = [];
+      let filterAdvance = [];
 
+      debugger;
       if (isFromProcessed === true) {
-        if (processe_form === "A") {
-          filterCreditNotes = customerAdvance.map((item) => {
-            const { voucher_no, amount, finance_voucher_header_id } = item;
-            return {
-              voucher_no,
-              balance_amount: amount,
-              finance_voucher_header_id,
-              voucher_type: "credit_note",
-            };
-          });
-        } else {
-          filterCreditNotes = allCreditNotes.map((item) => {
-            const { invoice_no, amount, finance_voucher_header_id } = item;
-            return {
-              invoice_no,
-              balance_amount: amount,
-              finance_voucher_header_id,
-              voucher_type: "credit_note",
-            };
-          });
+        filterAdvance = customerAdvance.map((item) => {
+          const { voucher_no, amount, finance_voucher_header_id } = item;
+          return {
+            invoice_no: voucher_no,
+            balance_amount: amount,
+            finance_voucher_header_id,
+            voucher_type: "advance",
+          };
+        });
+
+        filterCreditNotes = allCreditNotes.map((item) => {
+          const { invoice_no, amount, finance_voucher_header_id } = item;
+          return {
+            invoice_no,
+            balance_amount: amount,
+            finance_voucher_header_id,
+            voucher_type: "credit_note",
+          };
+        });
+
+        if (filterAdvance) {
+          AdvanceTotal = _.sumBy(filterAdvance, (s) =>
+            parseFloat(s.balance_amount)
+          );
         }
         if (filterCreditNotes) {
           creditNoteTotal = _.sumBy(filterCreditNotes, (s) =>
             parseFloat(s.balance_amount)
           );
         }
-        grandTotal = totalAmount - creditNoteTotal;
+        grandTotal = totalAmount - AdvanceTotal - creditNoteTotal;
       }
       const { narration, child_id, head_id, voucher_type, invoice_no } =
         filterCheck[0];
@@ -347,11 +356,16 @@ export default memo(function (props) {
                 </div>
                 <i className="fas fa-minus calcSybmbol"></i>
                 <div className="col">
-                  <label className="style_Label ">
-                    {processe_form === "A"
-                      ? "Advance Amount"
-                      : "Credit Note Amount"}
-                  </label>
+                  <label className="style_Label ">{"Advance Amount"}</label>
+                  <h6>
+                    {getAmountFormart(AdvanceTotal, {
+                      appendSymbol: false,
+                    })}
+                  </h6>
+                </div>
+                <i className="fas fa-minus calcSybmbol"></i>
+                <div className="col">
+                  <label className="style_Label ">{"Credit Note Amount"}</label>
                   <h6>
                     {getAmountFormart(creditNoteTotal, {
                       appendSymbol: false,
@@ -402,7 +416,11 @@ export default memo(function (props) {
           if (isFromProcessed === true) {
             for (let i = 0; i < filterCreditNotes.length; i++)
               merdgeData.push(filterCreditNotes[i]);
+
+            for (let i = 0; i < filterAdvance.length; i++)
+              merdgeData.push(filterAdvance[i]);
           }
+          const total_amount = creditNoteTotal + AdvanceTotal;
           history.push("/JournalVoucher", {
             data: {
               narration,
@@ -417,7 +435,7 @@ export default memo(function (props) {
             merdge: merdgeData,
             filterDebitNotes: filterCreditNotes,
             type: "customer",
-            debitNoteTotal: creditNoteTotal > 0 ? creditNoteTotal : null,
+            debitNoteTotal: total_amount > 0 ? total_amount : null,
             customerOrSupplerHeaderName: childName,
             customerOrSupplerDetailName: invoice_no,
           });
@@ -489,6 +507,9 @@ export default memo(function (props) {
         getAllCreditNotes={(creditNotesArray) => {
           setAllCreditNote(creditNotesArray);
           setShowCreditNotes(false);
+        }}
+        getCustomerAdvance={(customerAdvanceArray) => {
+          setCustomerAdvance(customerAdvanceArray);
         }}
       />
       <Advance
@@ -879,7 +900,7 @@ export default memo(function (props) {
             >
               Add Advance
             </AlgaehButton> */}
-            <AlgaehButton
+            {/* <AlgaehButton
               className="btn btn-default"
               loading={loading}
               onClick={onClickAdvance}
@@ -888,7 +909,7 @@ export default memo(function (props) {
               // }}
             >
               Apply Advance
-            </AlgaehButton>
+            </AlgaehButton> */}
             <AlgaehButton
               className="btn btn-default"
               // disabled={!processList.length}

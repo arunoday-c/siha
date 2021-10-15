@@ -12,14 +12,17 @@ export default memo(function CreditNotes({
   child_id,
   hide,
   getAllCreditNotes,
+  getCustomerAdvance,
 }: {
   show: boolean,
   child_id: Number,
   hide: Function,
   getAllCreditNotes: Function,
+  getCustomerAdvance: Function,
 }) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [adv_data, setAdvData] = useState([]);
   useEffect(() => {
     if (show === true) {
       setLoading(true);
@@ -37,12 +40,28 @@ export default memo(function CreditNotes({
           const { result } = res.data;
           setData(result);
         }
+
+        const adv_res = await newAlgaehApi({
+          uri: "/finance_customer/getCustomerAdvance",
+          method: "GET",
+          module: "finance",
+          data: {
+            child_id,
+          },
+        });
+        setLoading(false);
+        if (adv_res.data.success) {
+          const { result } = adv_res.data;
+          setAdvData(result);
+        }
       })();
     }
   }, [show]);
   function onClickOk() {
     const filterData = data.filter((f) => f.checked === true);
+    const adv_filterData = adv_data.filter((f) => f.checked === true);
     getAllCreditNotes([...filterData]);
+    getCustomerAdvance([...adv_filterData]);
   }
   return (
     <Modal
@@ -98,6 +117,55 @@ export default memo(function CreditNotes({
                       },
                     ]}
                     data={data}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-12">
+          <div className="portlet portlet-bordered margin-top-15  margin-bottom-15">
+            <div className="portlet-body">
+              <div className="row">
+                <div className="col-12">
+                  <AlgaehTable
+                    columns={[
+                      {
+                        fieldName: "checked",
+                        label: "Select",
+                        sortable: false,
+                        filterable: false,
+                        displayTemplate: (row) => {
+                          return (
+                            <Checkbox
+                              disabled={row.invoice_status === "closed"}
+                              defaultChecked={row["checked"]}
+                              onChange={(e) => {
+                                const { checked } = e.target;
+                                row["checked"] = checked;
+                              }}
+                            />
+                          );
+                        },
+                      },
+                      {
+                        fieldName: "payment_date",
+                        label: "Payment Date",
+                      },
+                      {
+                        fieldName: "voucher_no",
+                        label: "Voucher No.",
+                      },
+                      {
+                        fieldName: "amount",
+                        label: "Amount",
+                      },
+                      {
+                        fieldName: "narration",
+                        label: "Narration",
+                      },
+                    ]}
+                    data={adv_data}
                   />
                 </div>
               </div>
