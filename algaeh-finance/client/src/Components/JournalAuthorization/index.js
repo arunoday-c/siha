@@ -374,7 +374,6 @@ export default memo(function (props) {
         },
       });
     }
-
     return (
       <>
         {record.auth_status === "P" ? (
@@ -463,6 +462,80 @@ export default memo(function (props) {
    * @param {string} text
    * @param {object} record
    */
+
+  const showReport = (e) => {
+    setLoading(true);
+    // const reportType = e.currentTarget.getAttribute("report");
+    let reportExtraParams = {};
+    let sentItems = [];
+    const recordCheckList = listOfDetails.filter((f) => f.checked === true);
+    let reportName;
+    reportExtraParams = { multiMerdgeReport: recordCheckList.length };
+    recordCheckList.forEach((item) => {
+      let myRecords = [];
+
+      myRecords.push({ name: "receipt_type", value: item.receipt_type });
+      myRecords.push({
+        name: "voucher_header_id",
+        value: item.finance_voucher_header_id,
+      });
+      myRecords.push({
+        name: "voucher_type",
+        value: item.voucher_type,
+      });
+      myRecords.push({
+        name: "voucher_no",
+        value: item.voucher_no,
+      });
+      sentItems.push(myRecords);
+    });
+    reportName: item.voucher_type === "journal"
+      ? "JVReport_journal"
+      : item.voucher_type === "contra"
+      ? "JVReport_contra"
+      : item.voucher_type === "receipt"
+      ? "JVReport_receipt"
+      : item.voucher_type === "payment"
+      ? "JVReport_payment"
+      : item.voucher_type === "sales"
+      ? "JVReport_sales"
+      : item.voucher_type === "purchase"
+      ? "JVReport_purchase"
+      : item.voucher_type === "credit_note"
+      ? "JVReport_creditNote"
+      : item.voucher_type === "debit_note"
+      ? "JVReport_debitNote"
+      : "JVReport_expense";
+
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: reportName,
+          reportParams: sentItems,
+          outputFileType: "PDF",
+          ...reportExtraParams,
+        },
+      },
+      onSuccess: (res) => {
+        setLoading(false);
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Lab Report`;
+        // const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Lab Report for ${this.state.patient_code}-${this.state.patient_name}`;
+        window.open(origin);
+      },
+      onCatch: (err) => {
+        debugger;
+        setLoading(false);
+      },
+    });
+  };
 
   const voucherCol = (text, record) => (
     <AlgaehButton
@@ -669,6 +742,36 @@ export default memo(function (props) {
                       className="journalAuthGrid"
                       columns={[
                         {
+                          label: (
+                            <input
+                              type="checkbox"
+                              // defaultChecked={
+                              //   checkAll === "CHECK" ? true : false
+                              // }
+                              // ref={(input) => {
+                              //   allChecked = input;
+                              // }}
+                              // onChange={selectAll}
+                            />
+                          ),
+                          fieldName: "select",
+                          displayTemplate: (row) => {
+                            return (
+                              <input
+                                type="checkbox"
+                                checked={row.checked}
+                                // onChange={(e) => selectToPrintReport(row, e)}
+                              />
+                            );
+                          },
+                          others: {
+                            maxWidth: 50,
+                            filterable: false,
+                            sortable: false,
+                          },
+                        },
+
+                        {
                           fieldName: "id",
                           // label: "Actions",
                           label: (
@@ -840,6 +943,22 @@ export default memo(function (props) {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col-lg-12">
+            <button
+              type="submit"
+              className="btn btn-default"
+              style={{ marginLeft: 10 }}
+              // onClick={showReport}
+              onClick={showReport}
+            >
+              Print
+            </button>
           </div>
         </div>
       </div>
