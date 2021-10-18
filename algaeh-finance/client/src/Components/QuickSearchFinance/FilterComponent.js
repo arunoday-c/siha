@@ -148,7 +148,7 @@ export default function FilterComponent({ setData, loading, setLoading }) {
           }}
           label={{
             forceLabel: "Search Term",
-            isImp: true,
+            isImp: false,
           }}
           textBox={{
             type: "text",
