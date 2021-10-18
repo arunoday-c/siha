@@ -653,6 +653,7 @@ export default memo(function (props) {
                             sortable: true,
                             filterable: true,
                           },
+
                           {
                             fieldName: "narration",
                             label: (

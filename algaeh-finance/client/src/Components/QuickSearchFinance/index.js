@@ -1,6 +1,6 @@
 import React, { memo, useState } from "react";
 import "./QuickSearchFinance.scss";
-import { AlgaehTable } from "algaeh-react-components";
+import { AlgaehTable, AlgaehLabel } from "algaeh-react-components";
 import { Spin, Button } from "antd";
 import FilterComponent from "./FilterComponent";
 import VoucherDetails from "./VoucherDetails";
@@ -58,37 +58,92 @@ export default memo(function QuickSearch(props) {
                           columns={[
                             {
                               fieldName: "invoice_date",
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "Date" }} />
+                              ),
                               label: "Date",
                               sortable: true,
+                              others: {
+                                Width: 100,
+                                style: { textAlign: "center" },
+                              },
                             },
                             {
                               fieldName: "voucher_type",
-                              label: "Type",
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "Type" }} />
+                              ),
                               sortable: true,
                               filterable: true,
-                            },
-                            {
-                              fieldName: "voucher_no",
-                              label: "Voucher No",
-                              sortable: true,
-                              filterable: true,
-                              displayTemplate: linkCol,
+                              others: {
+                                Width: 120,
+                                style: { textAlign: "center" },
+                              },
                             },
                             {
                               fieldName: "narration",
-                              label: "Description",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Narration" }}
+                                />
+                              ),
                               sortable: true,
                               filterable: true,
+                              others: {
+                                // Width: 120,
+                                style: { textAlign: "left" },
+                              },
                             },
+                            {
+                              fieldName: "voucher_no",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Voucher No." }}
+                                />
+                              ),
+                              sortable: true,
+                              filterable: true,
+                              displayTemplate: linkCol,
+                              others: {
+                                Width: 120,
+                                style: { textAlign: "center" },
+                              },
+                            },
+
                             {
                               fieldName: "invoice_no",
-                              label: "Invoice No",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Invoice No." }}
+                                />
+                              ),
                               sortable: true,
                               filterable: true,
+                              others: {
+                                Width: 120,
+                                style: { textAlign: "center" },
+                              },
                             },
                             {
+                              fieldName: "custom_ref_no",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Reference No." }}
+                                />
+                              ),
+                              sortable: true,
+                              filterable: true,
+                              others: {
+                                Width: 120,
+                                style: { textAlign: "center" },
+                              },
+                            },
+
+                            {
                               fieldName: "amount",
-                              label: "Amount",
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                              ),
                               sortable: true,
                               filterable: true,
                               displayTemplate: (row) => {
@@ -100,11 +155,23 @@ export default memo(function QuickSearch(props) {
                                   </span>
                                 );
                               },
+                              others: {
+                                Width: 120,
+                                style: { textAlign: "right" },
+                              },
                             },
                             {
                               fieldName: "updated_date",
-                              label: "Last Modified Date",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Last Modified" }}
+                                />
+                              ),
                               sortable: true,
+                              others: {
+                                Width: 120,
+                                style: { textAlign: "center" },
+                              },
                             },
                           ]}
                           // height="80vh"
