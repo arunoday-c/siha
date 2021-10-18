@@ -422,16 +422,14 @@ export function PatientRegistration() {
     },
     onError: (err) => {
       if (err.message?.includes("hims_f_patient.primary_id_no_UNIQUE")) {
-        AlgaehMessagePop({
-          display:
-            "Duplicate primary id number, Please provide a new ID number",
+        swalMessage({
+          title: "Duplicate Primary ID No., Please Enter New No.",
           type: "error",
         });
       }
       if (err.message?.includes("hims_f_patient.secondary_id_no_UNIQUE")) {
-        AlgaehMessagePop({
-          display:
-            "Duplicate Secondary id number, Please provide a new ID number",
+        swalMessage({
+          title: "Duplicate Secondary ID No., Please Enter New No.",
           type: "error",
         });
       }
