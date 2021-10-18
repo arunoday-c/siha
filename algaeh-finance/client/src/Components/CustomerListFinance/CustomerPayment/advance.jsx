@@ -12,11 +12,6 @@ export default memo(function Advance({
   child_id,
   hide,
   getCustomerAdvance,
-}: {
-  show: boolean,
-  child_id: Number,
-  hide: Function,
-  getCustomerAdvance: Function,
 }) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -44,15 +39,24 @@ export default memo(function Advance({
     const filterData = data.filter((f) => f.checked === true);
     getCustomerAdvance([...filterData]);
   }
+
   return (
     <Modal
       visible={show}
       title={"Advance List"}
       maskClosable={false}
-      okText="Continue with Selected"
+      // okText="Continue with Selected"
       className={`row algaehNewModal`}
       onCancel={hide}
-      onOk={onClickOk}
+      // onOk={onClickOk}
+      footer={[
+        <button onClick={onClickOk} className="btn btn-primary">
+          Continue
+        </button>,
+        <button onClick={hide} className="btn btn-default">
+          Close
+        </button>,
+      ]}
     >
       <Spin spinning={loading}>
         <div className="col-12">
