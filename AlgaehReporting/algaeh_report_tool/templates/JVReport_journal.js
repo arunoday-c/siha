@@ -2,6 +2,7 @@ const executePDF = function executePDFMethod(options) {
   return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
+      console.log(" options.args.crypto", options.args);
       const { decimal_places, symbol_position, currency_symbol } =
         options.args.crypto;
 

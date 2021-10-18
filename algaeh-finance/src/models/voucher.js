@@ -2387,6 +2387,7 @@ export default {
     const _mysql = new algaehMysql();
 
     const input = req.query;
+    console.log("input.voucherType", input.voucherType);
     const decimal_places = req.userIdentity.decimal_places;
     const user_id = req.userIdentity.algaeh_d_app_user_id;
     if (input.auth_level > 0 && input.auth_level <= 2) {
@@ -2417,6 +2418,9 @@ export default {
         strQry += ` and VD.auth1 ='N'`;
       } else if (input.auth_status == "P" && input.auth_level == 2) {
         strQry += ` and VD.auth1 ='Y' and VD.auth2 ='N'`;
+      }
+      if (input.voucherType) {
+        strQry += ` and voucher_type = "${input.voucherType}"`;
       }
       let onlyCreditAccounts = "and VD.payment_type='CR'";
       let strGroupBy = ` group by finance_voucher_header_id`;

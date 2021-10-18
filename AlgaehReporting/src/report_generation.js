@@ -945,7 +945,10 @@ export default {
                       mysql: _mysql,
                       inputs: _inputOrders,
                       args: multiMerdgeReport
-                        ? { reportParams: _inputParam.reportParams[r] }
+                        ? {
+                            reportParams: _inputParam.reportParams[r],
+                            crypto: req.userIdentity,
+                          }
                         : _inputParam,
                       // args: _inputParam,
                       loadash: _,
