@@ -653,6 +653,7 @@ export default memo(function (props) {
                             sortable: true,
                             filterable: true,
                           },
+
                           {
                             fieldName: "narration",
                             label: (
@@ -891,7 +892,7 @@ export default memo(function (props) {
               loading={loading}
               onClick={onClickCreditNotes}
             >
-              Add Credit Note
+              Add Advance or Credit Note
             </AlgaehButton>
             {/* <AlgaehButton
               className="btn btn-default"

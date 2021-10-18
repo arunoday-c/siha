@@ -74,6 +74,13 @@ export default {
           whereStr += `  (H.invoice_no =  '${input.value}'  or H.invoice_ref_no =  '${input.value}')  `;
         }
         break;
+      case "custom_ref_no":
+        if (input.search_type == "C") {
+          whereStr += `  (H.custom_ref_no like  '%${input.value}%' )  `;
+        } else if (input.search_type == "E") {
+          whereStr += `  (H.custom_ref_no =  '${input.value}')  `;
+        }
+        break;
       case "voucher_no":
         if (input.search_type == "C") {
           whereStr += `  H.voucher_no like  '%${input.value}%'   `;
@@ -88,9 +95,9 @@ export default {
 
     _mysql
       .executeQuery({
-        query: ` select distinct finance_voucher_header_id ,voucher_type,voucher_no,amount,
+        query: ` select distinct finance_voucher_header_id ,voucher_type,voucher_no,custom_ref_no,amount,
         H.payment_date as invoice_date ,coalesce( coalesce( invoice_no,invoice_ref_no),'-') invoice_no,
-        H.updated_date ,H.narration from finance_voucher_header H  inner join 
+        date(H.updated_date) as updated_date ,H.narration from finance_voucher_header H  inner join 
         finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id 
         and VD.auth_status='A'  ${joinStr} where ${whereStr};`,
         printQuery: false,

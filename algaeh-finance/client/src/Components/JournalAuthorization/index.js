@@ -1069,7 +1069,7 @@ export default memo(function (props) {
               className="btn btn-default"
               style={{ marginLeft: 10 }}
               // onClick={showReport}
-              onClick={showReport}
+              // onClick={showReport}
             >
               Print
             </button>

@@ -1,10 +1,13 @@
 import React, { memo, useState, useEffect } from "react";
+import { swalMessage } from "../../../utils/algaehApiCall";
+
 import {
   Modal,
   Spin,
   // AlgaehMessagePop,
   AlgaehTable,
   Checkbox,
+  AlgaehLabel,
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../hooks";
 export default memo(function CreditNotes({
@@ -13,12 +16,6 @@ export default memo(function CreditNotes({
   hide,
   getAllCreditNotes,
   getCustomerAdvance,
-}: {
-  show: boolean,
-  child_id: Number,
-  hide: Function,
-  getAllCreditNotes: Function,
-  getCustomerAdvance: Function,
 }) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -60,30 +57,48 @@ export default memo(function CreditNotes({
   function onClickOk() {
     const filterData = data.filter((f) => f.checked === true);
     const adv_filterData = adv_data.filter((f) => f.checked === true);
-    getAllCreditNotes([...filterData]);
-    getCustomerAdvance([...adv_filterData]);
+
+    if (filterData.length > 0 || adv_filterData.length > 0) {
+      getAllCreditNotes([...filterData]);
+      getCustomerAdvance([...adv_filterData]);
+    } else {
+      swalMessage({
+        type: "warning",
+        title: "Please select at least one invoice",
+      });
+      return;
+    }
   }
   return (
     <Modal
       visible={show}
-      title={"Credit Notes List"}
+      title={"Advance & Credit Note List"}
       maskClosable={false}
       okText="Continue with Selected"
-      className={`row algaehNewModal`}
+      // className={`row algaehNewModal AdvCreNoteModal`}
       onCancel={hide}
-      onOk={onClickOk}
+      // onOk={onClickOk}
+      footer={[
+        <button onClick={onClickOk} className="btn btn-primary">
+          Continue
+        </button>,
+        <button onClick={hide} className="btn btn-default">
+          Close
+        </button>,
+      ]}
+      className={`row algaehNewModal AdvCreNoteModal`}
     >
       <Spin spinning={loading}>
         <div className="col-12">
           <div className="portlet portlet-bordered margin-top-15  margin-bottom-15">
             <div className="portlet-body">
               <div className="row">
-                <div className="col-12">
+                <div className="col-6">
                   <AlgaehTable
                     columns={[
                       {
                         fieldName: "checked",
-                        label: "Select",
+                        label: <AlgaehLabel label={{ forceLabel: "select" }} />,
                         sortable: false,
                         filterable: false,
                         displayTemplate: (row) => {
@@ -98,41 +113,54 @@ export default memo(function CreditNotes({
                             />
                           );
                         },
-                      },
-                      {
-                        fieldName: "payment_date",
-                        label: "Payment Date",
-                      },
-                      {
-                        fieldName: "invoice_no",
-                        label: "Invoice No.",
-                      },
-                      {
-                        fieldName: "amount",
-                        label: "Amount",
+                        others: {
+                          Width: 50,
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "narration",
-                        label: "Narration",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Narration" }} />
+                        ),
+                      },
+
+                      {
+                        fieldName: "invoice_no",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Invoice No." }} />
+                        ),
+                        others: {
+                          Width: 120,
+                          style: { textAlign: "center" },
+                        },
+                      },
+                      {
+                        fieldName: "payment_date",
+                        label: <AlgaehLabel label={{ forceLabel: "Date" }} />,
+                        others: {
+                          Width: 120,
+                          style: { textAlign: "center" },
+                        },
+                      },
+                      {
+                        fieldName: "amount",
+                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
+                        others: {
+                          Width: 10,
+                          style: { textAlign: "right" },
+                        },
                       },
                     ]}
                     data={data}
                   />
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-12">
-          <div className="portlet portlet-bordered margin-top-15  margin-bottom-15">
-            <div className="portlet-body">
-              <div className="row">
-                <div className="col-12">
+                <div className="col-6">
                   <AlgaehTable
                     columns={[
                       {
                         fieldName: "checked",
-                        label: "Select",
+                        label: <AlgaehLabel label={{ forceLabel: "select" }} />,
                         sortable: false,
                         filterable: false,
                         displayTemplate: (row) => {
@@ -147,22 +175,43 @@ export default memo(function CreditNotes({
                             />
                           );
                         },
-                      },
-                      {
-                        fieldName: "payment_date",
-                        label: "Payment Date",
-                      },
-                      {
-                        fieldName: "voucher_no",
-                        label: "Voucher No.",
-                      },
-                      {
-                        fieldName: "amount",
-                        label: "Amount",
+                        others: {
+                          Width: 50,
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "narration",
-                        label: "Narration",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Narration" }} />
+                        ),
+                      },
+
+                      {
+                        fieldName: "invoice_no",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Invoice No." }} />
+                        ),
+                        others: {
+                          Width: 120,
+                          style: { textAlign: "center" },
+                        },
+                      },
+                      {
+                        fieldName: "payment_date",
+                        label: <AlgaehLabel label={{ forceLabel: "Date" }} />,
+                        others: {
+                          Width: 120,
+                          style: { textAlign: "center" },
+                        },
+                      },
+                      {
+                        fieldName: "amount",
+                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
+                        others: {
+                          Width: 10,
+                          style: { textAlign: "right" },
+                        },
                       },
                     ]}
                     data={adv_data}

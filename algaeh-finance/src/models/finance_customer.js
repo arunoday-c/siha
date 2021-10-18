@@ -108,7 +108,7 @@ export default {
                when settlement_status='P' and curdate()> due_date then 'over due'
                when settlement_status='P' and settled_amount<1 then 'open'
                when settlement_status='P' and settled_amount>0 then 'paid' end as invoice_status,
-               D.child_id,D.head_id, D.is_opening_bal, H.voucher_no,
+               D.child_id,D.head_id, D.is_opening_bal, H.voucher_no,H.custom_ref_no,
                C.finance_account_child_id,
                C.child_name
                from finance_voucher_header H
