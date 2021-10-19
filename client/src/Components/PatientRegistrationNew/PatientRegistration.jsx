@@ -26,7 +26,7 @@ import { InsuranceDetails } from "./InsuranceDetails";
 import { VisitDetails } from "./VisitDetail";
 import { BillDetails } from "./BillDetails";
 import { AdvanceModal } from "./AdvanceRefundModal";
-import { algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import axios from "axios";
 import sockets from "../../sockets";
 import swal from "sweetalert2";
