@@ -57,7 +57,8 @@ export default memo(function CreditNotes({
   function onClickOk() {
     const filterData = data.filter((f) => f.checked === true);
     const adv_filterData = adv_data.filter((f) => f.checked === true);
-
+    setData([]);
+    setAdvData([]);
     if (filterData.length > 0 || adv_filterData.length > 0) {
       getAllCreditNotes([...filterData]);
       getCustomerAdvance([...adv_filterData]);
@@ -69,6 +70,11 @@ export default memo(function CreditNotes({
       return;
     }
   }
+  function onCancel() {
+    setData([]);
+    setAdvData([]);
+    hide();
+  }
   return (
     <Modal
       visible={show}
@@ -76,13 +82,13 @@ export default memo(function CreditNotes({
       maskClosable={false}
       okText="Continue with Selected"
       // className={`row algaehNewModal AdvCreNoteModal`}
-      onCancel={hide}
+      onCancel={onCancel}
       // onOk={onClickOk}
       footer={[
         <button onClick={onClickOk} className="btn btn-primary">
           Continue
         </button>,
-        <button onClick={hide} className="btn btn-default">
+        <button onClick={onCancel} className="btn btn-default">
           Close
         </button>,
       ]}
@@ -188,9 +194,9 @@ export default memo(function CreditNotes({
                       },
 
                       {
-                        fieldName: "invoice_no",
+                        fieldName: "voucher_no",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Invoice No." }} />
+                          <AlgaehLabel label={{ forceLabel: "Voucher No." }} />
                         ),
                         others: {
                           Width: 120,

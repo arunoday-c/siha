@@ -5,12 +5,13 @@ import AppointmentRooms from "./AppointmentRooms/AppointmentRooms";
 import AppointmentClinics from "./AppointmentClinics/AppointmentClinics";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehTabs } from "algaeh-react-components";
+import { setCookie } from "../../utils/algaehApiCall";
 
 class AppointmentSetup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "AppointmentStatus"
+      pageDisplay: "AppointmentStatus",
     };
   }
 
@@ -22,8 +23,14 @@ class AppointmentSetup extends Component {
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
-      pageDisplay: specified
+      pageDisplay: specified,
     });
+  }
+
+  componentDidMount() {
+    setCookie("ScreenName", "AppointmentSetup", 30);
+    setCookie("module_id", 2, 30);
+    setCookie("ScreenCode", "ST0002", 30);
   }
 
   render() {
@@ -36,35 +43,35 @@ class AppointmentSetup extends Component {
               title: (
                 <AlgaehLabel
                   label={{
-                    fieldName: "appointment_status"
+                    fieldName: "appointment_status",
                   }}
                 />
               ),
               children: <AppointmentStatus />,
-              componentCode: "APP_STATUS"
+              componentCode: "APP_STATUS",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    fieldName: "appointment_rooms"
+                    fieldName: "appointment_rooms",
                   }}
                 />
               ),
               children: <AppointmentRooms />,
-              componentCode: "APP_ROOMS"
+              componentCode: "APP_ROOMS",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    fieldName: "appointment_clinics"
+                    fieldName: "appointment_clinics",
                   }}
                 />
               ),
               children: <AppointmentClinics />,
-              componentCode: "APP_CLINICS"
-            }
+              componentCode: "APP_CLINICS",
+            },
           ]}
           renderClass="appoSetupSection"
         />
