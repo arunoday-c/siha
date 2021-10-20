@@ -17,6 +17,10 @@
                         <td class="numberFld"><b>{{numberFormating total_amount ./currencyOnly}}</b></th>
                     </tr>
                      <tr>
+                        <td class="txtFld">Credit Amount</td>
+                        <td class="numberFld"><b>{{numberFormating creditAmt ./currencyOnly}}</b></th>
+                    </tr>
+                     <tr>
                         <td class="txtFld">Over Due Amount</td>
                         <td class="numberFld"><b>{{numberFormating overDueAmt ./currencyOnly}}</b></th>
                     </tr>
@@ -45,7 +49,8 @@
                         <td datatype="string">{{inc @index}}</td>
                         <td  datatype="string">{{invoice_date}}</td>
                         <td = datatype="string">{{voucher_type}}</td>
-                        <td  datatype="string">{{invoice_no}}</td>
+                        {{!-- <td  datatype="string">{{invoice_no}}</td> --}}
+                        <td  datatype="string">{{voucher_no}} {{#if voucher_type "Credit Note"}} /{{invoice_no}} {{/if}}</td>
                         <td class="numberFld">{{numberFormating invoice_amount ../decimalOnly}}</td>
                         <td class="numberFld">{{numberFormating settled_amount ../decimalOnly}}</td>
                         <td class="numberFld">{{numberFormating balance_amount ../decimalOnly}}</td>

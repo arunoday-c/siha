@@ -171,7 +171,7 @@ function CustomerList(props) {
                               );
                             },
                             others: {
-                              maxWidth: 50,
+                              width: 50,
                               filterable: false,
                               sortable: false,
                             },
@@ -189,7 +189,7 @@ function CustomerList(props) {
                               return <span>{record.ledger_code}</span>;
                             },
                             others: {
-                              width: 100,
+                              width: 200,
                               style: { textAlign: "center" },
                             },
                           },
@@ -235,7 +235,7 @@ function CustomerList(props) {
                             sortable: true,
                             fieldName: "balance_amount",
                             others: {
-                              width: 200,
+                              width: 150,
                               style: { textAlign: "right" },
                             },
                             displayTemplate: (row) => {
