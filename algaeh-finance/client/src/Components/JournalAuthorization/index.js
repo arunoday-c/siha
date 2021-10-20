@@ -68,6 +68,7 @@ export default memo(function (props) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
   const [dates, setDates] = useState(undefined);
+  const [currentPage, setCurrentPage] = useState(1);
   // const paymentTemplates = [
   //   { key: "payment_mode", title: "Payment Mode" },
   //   { key: "ref_no", title: "Reference No" },
@@ -87,6 +88,7 @@ export default memo(function (props) {
   // }, []);
 
   React.useEffect(() => {
+    document.querySelector(".pageLeft").style.pointerEvents = "none";
     algaehApiCall({
       uri: "/finance/getAccountHeads",
       method: "GET",
@@ -187,6 +189,7 @@ export default memo(function (props) {
     //   });
   };
   const selectAll = (e) => {
+    // const rowsExistCount = document.querySelector("table")?.rows?.length;
     const status = e.target.checked;
     const myState = data.map((f) => {
       return {
@@ -554,31 +557,56 @@ export default memo(function (props) {
   const showReport = (e) => {
     setLoading(true);
     if (voucherType) {
-      const records = data;
+      // const records = data;
       // const reportType = e.currentTarget.getAttribute("report");
       let reportExtraParams = {};
       let sentItems = [];
-      const recordCheckList = records.filter((f) => f.checked === true);
+      let rows = document.querySelector("table").querySelector("tbody").rows;
+
+      for (let t = 0; t < rows.length; t++) {
+        const e = rows[t];
+        const td = e.querySelector("td");
+        const isChecked = td.querySelector("input[type='checkbox']").checked;
+        if (isChecked === true) {
+          debugger;
+          const value = td.getAttribute("data-value");
+          let myRecords = [];
+          myRecords.push({
+            name: "voucher_header_id",
+            value: value,
+          });
+          // myRecords.push({
+          //   name: "voucher_type",
+          //   value: item.voucher_type,
+          // });
+          // myRecords.push({
+          //   name: "voucher_no",
+          //   value: item.voucher_no,
+          // });
+          sentItems.push(myRecords);
+        }
+      }
+      // const recordCheckList = records.filter((f) => f.checked === true);
       let reportName;
-      reportExtraParams = { multiMerdgeReport: recordCheckList.length };
-      recordCheckList.forEach((item) => {
-        let myRecords = [];
+      reportExtraParams = { multiMerdgeReport: sentItems.length };
+      // recordCheckList.forEach((item) => {
+      //   let myRecords = [];
 
-        myRecords.push({
-          name: "voucher_header_id",
-          value: item.finance_voucher_header_id,
-        });
-        // myRecords.push({
-        //   name: "voucher_type",
-        //   value: item.voucher_type,
-        // });
-        // myRecords.push({
-        //   name: "voucher_no",
-        //   value: item.voucher_no,
-        // });
-        sentItems.push(myRecords);
-      });
-
+      //   myRecords.push({
+      //     name: "voucher_header_id",
+      //     value: item.finance_voucher_header_id,
+      //   });
+      //   // myRecords.push({
+      //   //   name: "voucher_type",
+      //   //   value: item.voucher_type,
+      //   // });
+      //   // myRecords.push({
+      //   //   name: "voucher_no",
+      //   //   value: item.voucher_no,
+      //   // });
+      //   sentItems.push(myRecords);
+      // });
+      debugger;
       reportName =
         voucherType === "journal"
           ? "JVReport_journal"
@@ -684,7 +712,7 @@ export default memo(function (props) {
             onChange={selectAll}
           />
         ),
-        fieldName: "select",
+        fieldName: "finance_voucher_header_id",
         displayTemplate: (row) => {
           return (
             <input
@@ -899,6 +927,7 @@ export default memo(function (props) {
                     <div className="col-lg-12 customCheckboxGrid">
                       <AlgaehDataGrid
                         className="journalAuthGrid"
+                        rowUniqueId="finance_voucher_header_id"
                         columns={[
                           manualColumns,
 
@@ -914,6 +943,7 @@ export default memo(function (props) {
                               width: 100,
                             },
                           },
+
                           {
                             fieldName: "auth_status",
                             label: (
@@ -1071,8 +1101,15 @@ export default memo(function (props) {
                         isFilterable={true}
                         rowUnique="finance_voucher_header_id"
                         pagination={true}
+                        aggregate={(data1) => {
+                          debugger;
+                        }}
                         // persistence={null}
-                        pageOptions={{ rows: 50, page: 1 }}
+                        pageOptions={{ rows: 50, page: currentPage }}
+                        pageEvent={(page, check) => {
+                          debugger;
+                          setCurrentPage(page);
+                        }}
                       />
                     </div>
                   </div>
