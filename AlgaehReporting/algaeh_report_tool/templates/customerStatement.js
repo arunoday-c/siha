@@ -20,8 +20,8 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `select FC.child_name,H.finance_voucher_header_id,H.day_end_header_id,
-             round(H.amount ,${decimal_places}) as invoice_amount,
-             -- case when H.voucher_type = 'sales' then round(H.amount ,${decimal_places}) when H.voucher_type = 'credit_note' then round((H.amount) ,${decimal_places}) end as invoice_amount,
+            -- round(H.amount ,${decimal_places}) as invoice_amount,
+             case when H.voucher_type = 'sales' then round(H.amount ,${decimal_places}) when H.voucher_type = 'credit_note' then round(-H.amount,${decimal_places}) end as invoice_amount,
             round(H.amount-coalesce(FSH.amount,settled_amount),${decimal_places}) as balance_amount,
             round(coalesce(FSH.amount,settled_amount),${decimal_places}) as settled_amount,
             coalesce(FSH.invoice_ref_no, invoice_no) as invoice_no ,
@@ -62,7 +62,7 @@ const executePDF = function executePDFMethod(options) {
                   // child_name,
                 };
               })
-              .orderBy((o) => o.invoice_date, "desc")
+              .orderBy((o) => o.invoice_date, "asc")
               .value();
             const overDueAmt = _.sumBy(rptResult, (s) => {
               if (s.invoice_status === "Over Due") {
@@ -94,16 +94,15 @@ const executePDF = function executePDFMethod(options) {
               }
             });
 
-            console.log("creditAmt", creditAmt);
-            console.log("creditAmt1", parseFloat(creditAmt));
             resolve({
               detail: rptResult,
               child_name: results[0].child_name,
-              total_invoice_amount: parseFloat(invAmt) - parseFloat(creditAmt),
+              total_invoice_amount: parseFloat(invAmt) + parseFloat(creditAmt),
               total_settled_amount: _.sumBy(rptResult, (s) =>
                 parseFloat(s.settled_amount)
               ),
-              total_amount: parseFloat(balAmt) - parseFloat(creditAmt),
+              total_amount: parseFloat(balAmt) + parseFloat(creditAmt),
+              total_amountOut: parseFloat(balAmt),
               overDueAmt: overDueAmt,
               creditAmt: creditAmt,
               decimalOnly: {
