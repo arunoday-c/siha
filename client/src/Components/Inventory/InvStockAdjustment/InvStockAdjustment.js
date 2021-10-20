@@ -34,7 +34,7 @@ import Options from "../../../Options.json";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
-
+import { setCookie } from "../../../utils/algaehApiCall";
 class InvStockAdjustment extends Component {
   constructor(props) {
     super(props);
@@ -58,6 +58,8 @@ class InvStockAdjustment extends Component {
     };
   }
   componentDidMount() {
+    setCookie("ScreenName", "InvStockAdjustment", 30);
+    setCookie("ScreenCode", "INV0010", 30);
     this.props.getLocation({
       uri: "/inventoryGlobal/getUserLocationPermission",
       module: "inventory",
@@ -507,9 +509,10 @@ class InvStockAdjustment extends Component {
                                   />
                                 ),
                                 displayTemplate: (row) => {
-                                  let display = GlobalVariables.ADJUSTMENT_TYPE.filter(
-                                    (f) => f.value === row.adjustment_type
-                                  );
+                                  let display =
+                                    GlobalVariables.ADJUSTMENT_TYPE.filter(
+                                      (f) => f.value === row.adjustment_type
+                                    );
 
                                   return (
                                     <span>

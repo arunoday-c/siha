@@ -15,7 +15,7 @@ import { PortalSetup } from "./PortalSetup";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { AlgaehTabs, MainContext } from "algaeh-react-components";
-
+import { setCookie } from "../../utils/algaehApiCall";
 class CommonSetup extends Component {
   constructor(props) {
     super(props);
@@ -123,6 +123,9 @@ class CommonSetup extends Component {
         mappingName: "userdrtails",
       },
     });
+    setCookie("ScreenName", "CommonSetup", 30);
+    setCookie("module_id", 2, 30);
+    setCookie("ScreenCode", "ST0004", 30);
   }
 
   // openTab(e) {

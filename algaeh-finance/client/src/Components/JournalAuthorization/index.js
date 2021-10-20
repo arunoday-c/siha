@@ -13,8 +13,9 @@ import {
   Modal,
   AlgaehTreeSearch,
   AlgaehLabel,
+  Spin,
 } from "algaeh-react-components";
-import { algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall, setCookie } from "../../utils/algaehApiCall";
 import Details from "./details";
 import {
   LoadVouchersToAuthorize,
@@ -86,6 +87,8 @@ export default memo(function (props) {
   // }, []);
 
   React.useEffect(() => {
+    setCookie("ScreenName", "JournalAuthorization", 30);
+    setCookie("ScreenCode", "FN0002", 30);
     algaehApiCall({
       uri: "/finance/getAccountHeads",
       method: "GET",
@@ -114,6 +117,7 @@ export default memo(function (props) {
     const searchQuery = parameters.get("searchQuery");
     const _from_date = parameters.get("from_date");
     const _to_date = parameters.get("to_date");
+    const _voucherType = parameters.get("voucherType");
     if (searchQuery) {
       setSearch(searchQuery);
     }
@@ -128,6 +132,11 @@ export default memo(function (props) {
     }
     if (auth_status) {
       setStatus(auth_status);
+    }
+    if (_voucherType) {
+      debugger;
+      setVoucherType(_voucherType);
+      setCheckBox(true);
     }
     loadDataCall();
   }, [location.search]);
@@ -235,6 +244,7 @@ export default memo(function (props) {
     const searchQuery = parameters.get("searchQuery");
     const _from_date = parameters.get("from_date");
     const _to_date = parameters.get("to_date");
+    const _voucherType = parameters.get("voucherType");
     let others = {
       // auth_status: auth_status === "ALL" ? "" : auth_status,
       searchQuery: searchQuery && searchQuery !== "null" ? searchQuery : search,
@@ -252,10 +262,13 @@ export default memo(function (props) {
 
     LoadVouchersToAuthorize({
       auth_level: _level ?? level,
-      voucherType: voucherType,
+      voucherType: _voucherType ?? voucherType,
       ...others,
     })
       .then((result) => {
+        if (voucherType) {
+          setCheckBox(true);
+        }
         setLoading(false);
         setData([...result]);
       })
@@ -541,6 +554,7 @@ export default memo(function (props) {
    */
 
   const showReport = (e) => {
+    setLoading(true);
     if (voucherType) {
       const records = data;
       // const reportType = e.currentTarget.getAttribute("report");
@@ -556,17 +570,17 @@ export default memo(function (props) {
           name: "voucher_header_id",
           value: item.finance_voucher_header_id,
         });
-        myRecords.push({
-          name: "voucher_type",
-          value: item.voucher_type,
-        });
-        myRecords.push({
-          name: "voucher_no",
-          value: item.voucher_no,
-        });
+        // myRecords.push({
+        //   name: "voucher_type",
+        //   value: item.voucher_type,
+        // });
+        // myRecords.push({
+        //   name: "voucher_no",
+        //   value: item.voucher_no,
+        // });
         sentItems.push(myRecords);
       });
-      debugger;
+
       reportName =
         voucherType === "journal"
           ? "JVReport_journal"
@@ -607,9 +621,15 @@ export default memo(function (props) {
           const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Lab Report`;
           // const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Lab Report for ${this.state.patient_code}-${this.state.patient_name}`;
           window.open(origin);
+          setLoading(false);
         },
         onCatch: (err) => {
           debugger;
+          setLoading(false);
+          AlgaehMessagePop({
+            type: "error",
+            display: "error",
+          });
           // setLoading(false);
         },
       });
@@ -684,167 +704,166 @@ export default memo(function (props) {
       }
     : null;
   return (
-    <div className="row">
-      <AlgaehModal
-        title={`Reason -${voucherNo}`}
-        visible={rejectVisible}
-        destroyOnClose={true}
-        okText="Save"
-        onOk={modalOnOk}
-        onCancel={() => {
-          finance_voucher_header_id = "";
-          rejectText = "";
-          setRejectVisible(false);
-        }}
-      >
-        <AlgaehFormGroup
-          div={{ className: "col" }}
-          label={{ forceLabel: "Reason for reject ?", isImp: true }}
-          multiline={true}
-          textBox={{
-            row: 3,
-            defaultValue: rejectText,
+    <Spin spinning={loading}>
+      <div className="row">
+        <AlgaehModal
+          title={`Reason -${voucherNo}`}
+          visible={rejectVisible}
+          destroyOnClose={true}
+          okText="Save"
+          onOk={modalOnOk}
+          onCancel={() => {
+            finance_voucher_header_id = "";
+            rejectText = "";
+            setRejectVisible(false);
           }}
-          events={{
-            onChange: (e) => {
-              rejectText = e.target.value;
-            },
-          }}
-        />
-      </AlgaehModal>
-
-      <Details
-        visible={visible}
-        voucherNo={voucherNo}
-        inVisible={() => {
-          setRowDetails([]);
-          setVoucherNo("");
-          setVisibale(false);
-        }}
-        data={rowDetails}
-      />
-
-      <div className="col-12">
-        <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
-          <AlgaehAutoComplete
-            div={{
-              className: "col-2",
-            }}
-            label={{
-              forceLabel: "Levels",
-            }}
-            selector={{
-              dataSource: {
-                data: [
-                  { text: "Level 1", value: "1" },
-                  { text: "Level 2", value: "2" },
-                ],
-                valueField: "value",
-                textField: "text",
-              },
-              value: level,
-
-              onChange: (selected) => {
-                setLevel(selected.value);
-              },
-              onClear: () => {
-                setLevel(undefined);
-              },
-            }}
-          />
-          <AlgaehAutoComplete
-            div={{
-              className: "col-2",
-            }}
-            label={{
-              forceLabel: "Record Status",
-            }}
-            selector={{
-              dataSource: {
-                data: [
-                  { text: "All Records", value: "" },
-                  { text: "Pending", value: "P" },
-                  { text: "Rejected", value: "R" },
-                  { text: "Approved", value: "A" },
-                ],
-                valueField: "value",
-                textField: "text",
-              },
-              value: status,
-              onChange: (selected) => {
-                setStatus(selected.value);
-              },
-              onClear: () => {
-                setStatus(undefined);
-              },
-            }}
-          />
-          <AlgaehAutoComplete
-            div={{ className: "col-2" }}
-            label={{
-              fieldName: "voucherType",
-            }}
-            selector={{
-              value: voucherType,
-              dataSource: {
-                data: dataPayment,
-                valueField: "value",
-                textField: "label",
-              },
-              onChange: (selected) => {
-                debugger;
-                setVoucherType(selected.value);
-
-                setCheckBox(true);
-              },
-              onClear: () => {
-                setVoucherType(null);
-
-                setCheckBox(false);
-              },
-              others: {
-                // disabled: disableFiled || afterSaveDisabled,
-              },
-            }}
-          />
-          <AlgaehDateHandler
-            div={{ className: "col-3" }}
-            label={{ forceLabel: "Selected Range" }}
-            type="range"
+        >
+          <AlgaehFormGroup
+            div={{ className: "col" }}
+            label={{ forceLabel: "Reason for reject ?", isImp: true }}
+            multiline={true}
             textBox={{
-              value: dates,
+              row: 3,
+              defaultValue: rejectText,
             }}
             events={{
-              onChange: (selected) => {
-                setDates(selected);
+              onChange: (e) => {
+                rejectText = e.target.value;
               },
             }}
           />
-          <AlgaehTreeSearch
-            div={{ className: "col" }}
-            label={{
-              forceLabel: "Search",
-            }}
-            tree={{
-              treeDefaultExpandAll: true,
-              // updateInternally: true,
-              data: accounts,
-              disableHeader: true,
-              textField: "full_name",
-              disabled: false,
-              valueField: (node) => {
-                if (node?.finance_account_child_id) {
-                  return `${node?.head_id}-${node?.finance_account_child_id}-${node?.account_code}`;
-                } else {
-                  return `${node?.finance_account_head_id}-${node?.account_code}`;
-                }
-              },
+        </AlgaehModal>
 
-              value: search,
-              onChange: OnChangeTreeValue,
-            }}
-          />
-          {/* <AlgaehFormGroup
+        <Details
+          visible={visible}
+          voucherNo={voucherNo}
+          inVisible={() => {
+            setRowDetails([]);
+            setVoucherNo("");
+            setVisibale(false);
+          }}
+          data={rowDetails}
+        />
+
+        <div className="col-12">
+          <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
+            <AlgaehAutoComplete
+              div={{
+                className: "col-2",
+              }}
+              label={{
+                forceLabel: "Levels",
+              }}
+              selector={{
+                dataSource: {
+                  data: [
+                    { text: "Level 1", value: "1" },
+                    { text: "Level 2", value: "2" },
+                  ],
+                  valueField: "value",
+                  textField: "text",
+                },
+                value: level,
+
+                onChange: (selected) => {
+                  setLevel(selected.value);
+                },
+                onClear: () => {
+                  setLevel(undefined);
+                },
+              }}
+            />
+            <AlgaehAutoComplete
+              div={{
+                className: "col-2",
+              }}
+              label={{
+                forceLabel: "Record Status",
+              }}
+              selector={{
+                dataSource: {
+                  data: [
+                    { text: "All Records", value: "" },
+                    { text: "Pending", value: "P" },
+                    { text: "Rejected", value: "R" },
+                    { text: "Approved", value: "A" },
+                  ],
+                  valueField: "value",
+                  textField: "text",
+                },
+                value: status,
+                onChange: (selected) => {
+                  setStatus(selected.value);
+                },
+                onClear: () => {
+                  setStatus(undefined);
+                },
+              }}
+            />
+            <AlgaehAutoComplete
+              div={{ className: "col-2" }}
+              label={{
+                fieldName: "voucherType",
+              }}
+              selector={{
+                value: voucherType,
+                dataSource: {
+                  data: dataPayment,
+                  valueField: "value",
+                  textField: "label",
+                },
+                onChange: (selected) => {
+                  debugger;
+                  setVoucherType(selected.value);
+                },
+                onClear: () => {
+                  setVoucherType(null);
+
+                  setCheckBox(false);
+                },
+                others: {
+                  // disabled: disableFiled || afterSaveDisabled,
+                },
+              }}
+            />
+            <AlgaehDateHandler
+              div={{ className: "col-3" }}
+              label={{ forceLabel: "Selected Range" }}
+              type="range"
+              textBox={{
+                value: dates,
+              }}
+              events={{
+                onChange: (selected) => {
+                  setDates(selected);
+                },
+              }}
+            />
+            <AlgaehTreeSearch
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Search",
+              }}
+              tree={{
+                treeDefaultExpandAll: true,
+                // updateInternally: true,
+                data: accounts,
+                disableHeader: true,
+                textField: "full_name",
+                disabled: false,
+                valueField: (node) => {
+                  if (node?.finance_account_child_id) {
+                    return `${node?.head_id}-${node?.finance_account_child_id}-${node?.account_code}`;
+                  } else {
+                    return `${node?.finance_account_head_id}-${node?.account_code}`;
+                  }
+                },
+
+                value: search,
+                onChange: OnChangeTreeValue,
+              }}
+            />
+            {/* <AlgaehFormGroup
             div={{
               className: "col",
             }}
@@ -863,219 +882,224 @@ export default memo(function (props) {
               },
             }}
           /> */}
-          <div className="col">
-            <button
-              className="btn btn-primary"
-              onClick={loadData}
-              style={{ marginTop: 18 }}
-              disabled={loading}
-            >
-              Load
-            </button>
+            <div className="col">
+              <button
+                className="btn btn-primary"
+                onClick={loadData}
+                style={{ marginTop: 18 }}
+                disabled={loading}
+              >
+                Load
+              </button>
+            </div>
           </div>
-        </div>
-        <div className="row">
-          <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-lg-12 customCheckboxGrid">
-                    <AlgaehDataGrid
-                      className="journalAuthGrid"
-                      columns={[
-                        manualColumns,
+          <div className="row">
+            <div className="col-12">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-body">
+                  <div className="row">
+                    <div className="col-lg-12 customCheckboxGrid">
+                      <AlgaehDataGrid
+                        className="journalAuthGrid"
+                        columns={[
+                          manualColumns,
 
-                        {
-                          fieldName: "id",
-                          // label: "Actions",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Action" }} />
-                          ),
-                          displayTemplate: actions,
+                          {
+                            fieldName: "id",
+                            // label: "Actions",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Action" }} />
+                            ),
+                            displayTemplate: actions,
 
-                          others: {
-                            width: 100,
+                            others: {
+                              width: 100,
+                            },
                           },
-                        },
-                        {
-                          fieldName: "auth_status",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Status" }} />
-                          ),
-                          sortable: true,
-                          filterable: true,
-                          displayTemplate: (row) => {
-                            return (
-                              <span>
-                                {row.auth_status === "P" ? (
-                                  <span className="badge badge-warning">
-                                    Pending
-                                  </span>
-                                ) : row.auth_status === "A" ? (
-                                  <span className="badge badge-success">
-                                    Approved
-                                  </span>
-                                ) : row.auth_status === "R" ? (
-                                  <span className="badge badge-danger">
-                                    Rejected
-                                  </span>
-                                ) : (
-                                  "------"
-                                )}
-                              </span>
-                            );
+                          {
+                            fieldName: "auth_status",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Status" }} />
+                            ),
+                            sortable: true,
+                            filterable: true,
+                            displayTemplate: (row) => {
+                              return (
+                                <span>
+                                  {row.auth_status === "P" ? (
+                                    <span className="badge badge-warning">
+                                      Pending
+                                    </span>
+                                  ) : row.auth_status === "A" ? (
+                                    <span className="badge badge-success">
+                                      Approved
+                                    </span>
+                                  ) : row.auth_status === "R" ? (
+                                    <span className="badge badge-danger">
+                                      Rejected
+                                    </span>
+                                  ) : (
+                                    "------"
+                                  )}
+                                </span>
+                              );
+                            },
+                            others: {
+                              Width: 110,
+                              style: { textAlign: "center" },
+                            },
                           },
-                          others: {
-                            Width: 110,
-                            style: { textAlign: "center" },
+                          {
+                            fieldName: "voucher_no",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Voucher Number" }}
+                              />
+                            ),
+                            filterable: true,
+                            sortable: true,
+                            displayTemplate: voucherCol,
+                            others: {
+                              Width: 150,
+                              style: { textAlign: "center" },
+                            },
                           },
-                        },
-                        {
-                          fieldName: "voucher_no",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Voucher Number" }}
-                            />
-                          ),
-                          filterable: true,
-                          sortable: true,
-                          displayTemplate: voucherCol,
-                          others: {
-                            Width: 150,
-                            style: { textAlign: "center" },
+                          {
+                            fieldName: "custom_ref_no",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Reference No." }}
+                              />
+                            ),
+                            filterable: true,
+                            others: {
+                              Width: 120,
+                              style: { textAlign: "center" },
+                            },
                           },
-                        },
-                        {
-                          fieldName: "custom_ref_no",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Reference No." }}
-                            />
-                          ),
-                          filterable: true,
-                          others: {
-                            Width: 120,
-                            style: { textAlign: "center" },
+                          {
+                            fieldName: "voucher_type",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Voucher Type" }}
+                              />
+                            ),
+                            filterable: true,
+                            displayTemplate: (row) => {
+                              return _.startCase(
+                                row.voucher_type ? row.voucher_type : ""
+                              );
+                            },
+                            others: {
+                              Width: 120,
+                              style: { textAlign: "center" },
+                            },
                           },
-                        },
-                        {
-                          fieldName: "voucher_type",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Voucher Type" }}
-                            />
-                          ),
-                          filterable: true,
-                          displayTemplate: (row) => {
-                            return _.startCase(
-                              row.voucher_type ? row.voucher_type : ""
-                            );
+                          {
+                            fieldName: "payment_date",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Payment Date" }}
+                              />
+                            ),
+                            filterable: true,
+                            others: {
+                              Width: 120,
+                              style: { textAlign: "center" },
+                            },
                           },
-                          others: {
-                            Width: 120,
-                            style: { textAlign: "center" },
-                          },
-                        },
-                        {
-                          fieldName: "payment_date",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Payment Date" }}
-                            />
-                          ),
-                          filterable: true,
-                          others: {
-                            Width: 120,
-                            style: { textAlign: "center" },
-                          },
-                        },
-                        // ...paymentTemplates,
-                        /* Commented paymentTemplates there is no condition we can use directly   */
-                        // {
-                        //   fieldName: "payment_mode",
-                        //   label: "Payment Mode",
-                        //   displayTemplate: (row) => {
-                        //     return row["payment_mode"] === "N"
-                        //       ? "NONE"
-                        //       : row["payment_mode"];
-                        //   },
-                        // },
-                        // { fieldName: "ref_no", label: "Reference No" },
-                        // { fieldName: "cheque_date", label: "Cheque Date" },
-                        /* Commented End */
-                        {
-                          fieldName: "amount",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Amount" }} />
-                          ),
+                          // ...paymentTemplates,
+                          /* Commented paymentTemplates there is no condition we can use directly   */
+                          // {
+                          //   fieldName: "payment_mode",
+                          //   label: "Payment Mode",
+                          //   displayTemplate: (row) => {
+                          //     return row["payment_mode"] === "N"
+                          //       ? "NONE"
+                          //       : row["payment_mode"];
+                          //   },
+                          // },
+                          // { fieldName: "ref_no", label: "Reference No" },
+                          // { fieldName: "cheque_date", label: "Cheque Date" },
+                          /* Commented End */
+                          {
+                            fieldName: "amount",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                            ),
 
-                          filterable: true,
-                          displayTemplate: (row) => {
-                            return (
-                              <span>
-                                {getAmountFormart(row.amount, {
-                                  appendSymbol: false,
-                                })}
-                              </span>
-                            );
+                            filterable: true,
+                            displayTemplate: (row) => {
+                              return (
+                                <span>
+                                  {getAmountFormart(row.amount, {
+                                    appendSymbol: false,
+                                  })}
+                                </span>
+                              );
+                            },
+                            others: {
+                              Width: 110,
+                              style: { textAlign: "right" },
+                            },
                           },
-                          others: {
-                            Width: 110,
-                            style: { textAlign: "right" },
+                          {
+                            fieldName: "narration",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Narration" }}
+                              />
+                            ),
+                            filterable: true,
+                            others: {
+                              style: { textAlign: "left" },
+                            },
                           },
-                        },
-                        {
-                          fieldName: "narration",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Narration" }} />
-                          ),
-                          filterable: true,
-                          others: {
-                            style: { textAlign: "left" },
+                          {
+                            fieldName: "entered_by",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Entered By" }}
+                              />
+                            ),
+                            filterable: true,
+                            others: {
+                              Width: 200,
+                              style: { textAlign: "left" },
+                            },
                           },
-                        },
-                        {
-                          fieldName: "entered_by",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Entered By" }} />
-                          ),
-                          filterable: true,
-                          others: {
-                            Width: 200,
-                            style: { textAlign: "left" },
-                          },
-                        },
-                      ]}
-                      data={data}
-                      isFilterable={true}
-                      rowUnique="finance_voucher_header_id"
-                      pagination={true}
-                      // persistence={null}
-                      pageOptions={{ rows: 50, page: 1 }}
-                    />
+                        ]}
+                        data={data}
+                        isFilterable={true}
+                        rowUnique="finance_voucher_header_id"
+                        pagination={true}
+                        // persistence={null}
+                        pageOptions={{ rows: 50, page: 1 }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="hptl-phase1-footer">
-        <div className="row">
-          <div className="col-lg-12">
-            <button
-              type="submit"
-              className="btn btn-default"
-              style={{ marginLeft: 10 }}
-              onClick={showReport}
-              // onClick={showReport}
-            >
-              Print
-            </button>
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="submit"
+                className="btn btn-default"
+                style={{ marginLeft: 10 }}
+                onClick={showReport}
+                // onClick={showReport}
+              >
+                Print
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Spin>
   );
 });
