@@ -771,15 +771,21 @@ export default {
                     // );
                     let pass = false;
                     // _reportOutput.length
-                    if (_reportOutput.length === parseInt(multiMerdgeReport)) {
-                      for (let k = 0; k < _reportOutput.length; k++) {
-                        pass = false;
-                        if (fs.existsSync(_reportOutput[k])) {
-                          pass = true;
-                        } else {
+                    if (multiMerdgeReport) {
+                      if (
+                        _reportOutput.length === parseInt(multiMerdgeReport)
+                      ) {
+                        for (let k = 0; k < _reportOutput.length; k++) {
                           pass = false;
+                          if (fs.existsSync(_reportOutput[k])) {
+                            pass = true;
+                          } else {
+                            pass = false;
+                          }
                         }
                       }
+                    } else {
+                      pass = true;
                     }
 
                     // if (r == _reportCount - 1) {
@@ -790,7 +796,7 @@ export default {
                         "algaeh_report_tool/templates/Output",
                         _outfileName
                       );
-
+                      console.log("pass", pass);
                       // if (pass === true) {
                       if (_reportOutput.length > 1) {
                         _mysql.releaseConnection();
