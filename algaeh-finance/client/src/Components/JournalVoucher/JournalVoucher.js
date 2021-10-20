@@ -34,7 +34,7 @@ import {
 } from "./JournalVoucher.events";
 // import PaymentComponent from "./PaymentComponent";
 import AccountsDrawer from "./AccountDrawer";
-import { getCookie, algaehApiCall } from "../../utils/algaehApiCall";
+import { getCookie, algaehApiCall, setCookie } from "../../utils/algaehApiCall";
 import { newAlgaehApi } from "../../hooks";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 
@@ -147,6 +147,8 @@ export default function JournalVoucher({
   const [deletedEntries, setDeletedEntries] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   useEffect(() => {
+    setCookie("ScreenName", "JournalVoucher", 30);
+    setCookie("ScreenCode", "JOURNAL LEDGER", 30);
     if (location.state?.language) {
       i18next.changeLanguage(location.state?.language);
       setLanguage(location.state?.language === "ar" ? "rtl" : "ltr");

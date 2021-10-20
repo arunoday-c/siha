@@ -14,7 +14,11 @@ import Options from "../../../Options.json";
 import { useLocation, useHistory } from "react-router-dom";
 // import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import { newAlgaehApi } from "../../../hooks";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  setCookie,
+} from "../../../utils/algaehApiCall";
 import {
   MainContext,
   AlgaehLabel,
@@ -40,6 +44,8 @@ export default function InvConsumptionCancel({ breadStyle }) {
     // userPreferences,
   } = useContext(MainContext);
   useEffect(() => {
+    setCookie("ScreenName", "InvConsumptionCancel", 30);
+    setCookie("ScreenCode", "INV0011", 30);
     const params = new URLSearchParams(location?.search);
     if (params?.get("can_consumption_number")) {
       setMegaState({
