@@ -14,7 +14,7 @@ import ProjectMapping from "./ProjectMapping/ProjectMapping";
 import ProjectMaster from "./ProjectMaster/ProjectMaster";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehTabs, MainContext } from "algaeh-react-components";
-
+import { setCookie } from "../../utils/algaehApiCall";
 class BusinessSetup extends Component {
   constructor(props) {
     super(props);
@@ -168,6 +168,10 @@ class BusinessSetup extends Component {
       HIMS_Active: active,
       screens_data: screens_data,
     });
+
+    setCookie("ScreenName", "BusinessSetup", 30);
+    setCookie("module_id", 2, 30);
+    setCookie("ScreenCode", "ST0003", 30);
   }
 
   openTab(e) {

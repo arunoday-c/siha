@@ -15,7 +15,7 @@ import {
   AlgaehLabel,
   Spin,
 } from "algaeh-react-components";
-import { algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall, setCookie } from "../../utils/algaehApiCall";
 import Details from "./details";
 import {
   LoadVouchersToAuthorize,
@@ -87,6 +87,8 @@ export default memo(function (props) {
   // }, []);
 
   React.useEffect(() => {
+    setCookie("ScreenName", "JournalAuthorization", 30);
+    setCookie("ScreenCode", "FN0002", 30);
     algaehApiCall({
       uri: "/finance/getAccountHeads",
       method: "GET",
