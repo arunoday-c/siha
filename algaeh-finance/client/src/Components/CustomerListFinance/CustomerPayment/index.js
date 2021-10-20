@@ -20,7 +20,7 @@ import _ from "lodash";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 import { newAlgaehApi } from "../../../hooks";
 import CreditNotes from "./creditNotes";
-import Advance from "./advance";
+// import Advance from "./advance";
 export default memo(function (props) {
   const location = useLocation();
   const history = useHistory();
@@ -122,11 +122,12 @@ export default memo(function (props) {
     }
   }, [location.state]);
   useEffect(() => {
-    if (allCreditNotes.length > 0) onClickSendSelected(true);
-  }, [allCreditNotes]);
-  useEffect(() => {
-    if (customerAdvance.length > 0) onClickSendSelected(true, "A");
-  }, [customerAdvance]);
+    if (allCreditNotes.length > 0 || customerAdvance.length > 0)
+      onClickSendSelected(true);
+  }, [allCreditNotes, customerAdvance]);
+  // useEffect(() => {
+  //   if (customerAdvance.length > 0) onClickSendSelected(true, "A");
+  // }, [customerAdvance]);
   const rejectInvoice = (row) => {
     confirm({
       okText: "Revert",
@@ -280,10 +281,10 @@ export default memo(function (props) {
       );
     }
   }
-  function onClickSendSelected(isFromProcessed, processe_form) {
+  function onClickSendSelected(isFromProcessed) {
     isFromProcessed = isFromProcessed || false;
     const filterCheck = data.filter((f) => f.checked === true);
-    debugger;
+
     if (filterCheck.length === 0) {
       AlgaehMessagePop({
         type: "warning",
@@ -303,7 +304,6 @@ export default memo(function (props) {
       let filterCreditNotes = [];
       let filterAdvance = [];
 
-      debugger;
       if (isFromProcessed === true) {
         filterAdvance = customerAdvance.map((item) => {
           const { voucher_no, amount, finance_voucher_header_id } = item;
@@ -512,7 +512,7 @@ export default memo(function (props) {
           setCustomerAdvance(customerAdvanceArray);
         }}
       />
-      <Advance
+      {/* <Advance
         show={showAdvance}
         hide={() => {
           setShowAdvance(false);
@@ -522,7 +522,7 @@ export default memo(function (props) {
           setCustomerAdvance(customerAdvanceArray);
           setShowAdvance(false);
         }}
-      />
+      /> */}
       <StatementReport
         title="Customer Statement"
         selectedNode={location.state.data}
