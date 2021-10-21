@@ -1985,7 +1985,10 @@ export default {
                     })
                       .then((resultReq) => {
                         result = resultReq;
-                        console.log("Here inside Result Request====>");
+                        console.log(
+                          "Here inside Result Request====>",
+                          result.totalRecords
+                        );
                         startGenerate();
                       })
                       .catch((error) => {});

@@ -26,7 +26,7 @@ export default function PrintAccounts({ visible, data, onClose, title }) {
       data: data,
 
       excelBodyRender: (records, cb) => {
-        console.log("records= = ", records);
+        // console.log("records= = ", records);
 
         records.ledger_code = records.group_code ?? records.ledger_code;
         cb(records);

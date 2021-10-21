@@ -1,10 +1,12 @@
+{{#ifExist totalRecords}}
 {{{importStyle 'css/algaehReportStyles.css'}}}
-<body>
     <div class="print-body">
-        {{!-- <p style="text-align: center;">
-            <b> Selected Date Range : {{from_date}} ~ {{to_date}} </b></p>
-            <hr/> --}}
+       
+            
+            <div id="total_records">{{totalRecords}}</div>
+          
         <section>
+             {{/ifExist}}
             <table class="tableForDataNoBorder" cell-padding="0">
                 <thead>
                     <tr>
@@ -17,10 +19,9 @@
                         <th width="" class="numberFld ">Closing Balance</th>
                     </tr>
                 </thead>
+                 
                 <tbody>
-                    {{!-- <tr>
-                        <td colspan="5" class="txtFld"><b>{{account_name}} / {{ledger_code}}</b></td>
-                    </tr> --}}
+                   
 
                     <tr class="numberFld ">
                         <td class="numberFld" colspan="6"></td>
@@ -45,22 +46,15 @@
                         <td class="numberFld"><b>{{numberFormating total_credit currencyOnly}}</b></td>
                         <td></td>
                     </tr>
-                    {{!-- <tr class="numberFld ">
-                        <td class="numberFld" colspan="3">Closing Balance</td>
-                        <td class="numberFld">{{CB_debit_side}}</td>
-                        <td class="numberFld">{{CB_credit_side}}</td>
-                    </tr> --}}
+                    
                     <tr class="numberFld ">
                         <td class="numberFld" colspan="6"></td>
                         <td class="numberFld" ><small>Closing Balance</small>: <b>{{numberFormating closing_balance currencyOnly}}</b></td>
-                    </tr>
-                    {{!-- <tr class="numberFld numberFldTotalBottom">
-                        <td class="numberFld" colspan="3"></td>
-                        <td class="numberFld">{{final_balance}}</td>
-                        <td class="numberFld">{{final_balance}}</td>
-                    </tr> --}}
+                    </tr>       
                 </tbody>
+           
             </table>
+             {{#ifExist totalRecords}}
         </section>
     </div>
-</body>
+     {{/ifExist}}
