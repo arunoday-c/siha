@@ -90,7 +90,7 @@ export default memo(function Modal(props) {
            if(checkLoading){
              return;
            }
-           
+
            const waitElement = document.createElement("div");
            waitElement.setAttribute("id","pleaseWait");
            waitElement.innerText ="Please Wait...";
@@ -160,7 +160,13 @@ export default memo(function Modal(props) {
                 return str.join("&");
               }
                const qry = serialize(resultdata);
-               fetch('http://localhost:3018/api/v1/getRawReport?'+qry,{
+               let url ="";
+               if(window.location.port===""){
+                 url = window.location.protocol+"//"+window.location.hostname+"/reports";
+               }else{
+                url = window.location.protocol+"//"+window.location.hostname+":3018";
+               }
+               fetch(url+'/api/v1/getRawReport?'+qry,{
                 method: 'GET',
                 headers:{
                  "x-api-key":token,
