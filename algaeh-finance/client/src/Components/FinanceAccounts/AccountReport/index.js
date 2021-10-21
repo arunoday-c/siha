@@ -65,8 +65,7 @@ export default memo(function Modal(props) {
             window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"};
             var db;
           document.querySelector(".print-body").addEventListener("scroll",(e)=>{
-            debugger;
-            console.log("Here it is",e.target.scrollTop);
+           
             const totalBodyHeight = document.querySelector(".print-body").scrollHeight;            //document.body.scrollHeight;
             if((e.target.scrollTop+e.target.offsetHeight) < totalBodyHeight){
               return;
@@ -91,14 +90,15 @@ export default memo(function Modal(props) {
            if(checkLoading){
              return;
            }
+           
            const waitElement = document.createElement("div");
            waitElement.setAttribute("id","pleaseWait");
            waitElement.innerText ="Please Wait...";
-
+          document.body.append(waitElement);
            customerObjectStore.onsuccess = function(event){
              if(customerObjectStore.result){
               const token = customerObjectStore.result;
-              debugger;
+            
               const resultdata = {
                 report:JSON.stringify({
                   displayName: "Ledger Report - Date Wise",
@@ -180,6 +180,8 @@ export default memo(function Modal(props) {
                })
                .catch(error=>{
                  console.error("Error ====>",error);
+               }).finally(()=>{
+               // document.removeChild(document.getElementById("pleaseWait"));
                });
              }else{
                console.error("Some error occurred");
