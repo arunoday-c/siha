@@ -181,7 +181,7 @@ export default memo(function Modal(props) {
                .catch(error=>{
                  console.error("Error ====>",error);
                }).finally(()=>{
-               // document.removeChild(document.getElementById("pleaseWait"));
+               document.body.removeChild(document.getElementById("pleaseWait"));
                });
              }else{
                console.error("Some error occurred");
