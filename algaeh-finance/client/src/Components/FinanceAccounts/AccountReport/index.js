@@ -64,11 +64,11 @@ export default memo(function Modal(props) {
           window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
             window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"};
             var db;
-          document.addEventListener("scroll",(e)=>{
+          document.querySelector(".print-body").addEventListener("scroll",(e)=>{
             debugger;
-            const totalBodyHeight = document.body.scrollHeight;
-            if((window.innerHeight + window.scrollY) < totalBodyHeight){
-              console.log("Here it is return");
+            console.log("Here it is",e.target.scrollTop);
+            const totalBodyHeight = document.querySelector(".print-body").scrollHeight;            //document.body.scrollHeight;
+            if((e.target.scrollTop+e.target.offsetHeight) < totalBodyHeight){
               return;
             }
             const rowsExistCount = document.querySelector("table").querySelector("tbody")?.rows?.length;
@@ -168,17 +168,7 @@ export default memo(function Modal(props) {
                 },
                
                }).then((response)=>{
-                
                 return response.text();
-               //  document.body.append(response.text());
-                //  const fullElement = response.data;
-                //  const rows = fullElement.querySelector("tbody").rows;
-                //  for(let x=0;x<rows.length;x++){
-
-                //   document.querySelector("table").querySelector("tbody").append(rows[x]);
-                //  }
-                
-
                }).then((html)=>{
                 var parser = new DOMParser();
                 var doc = parser.parseFromString(html, "text/html");
@@ -191,23 +181,11 @@ export default memo(function Modal(props) {
                .catch(error=>{
                  console.error("Error ====>",error);
                });
-              //  .finally(()=>{
-              //   document.body.removeChild(document.getElementById("pleaseWait"));
-              //  })
              }else{
                console.error("Some error occurred");
              }
            }
           };
-
-          /*  fetch('https://jsonplaceholder.typicode.com/posts').then(function (response) {
-	// The API call was successful!
-	console.log('success!', response);
-}).catch(function (err) {
-	// There was an error
-	console.warn('Something went wrong.', err);
-});*/
-console.log("drilling====>",e.target.scrollingElement.scrollTop);
           });
           </script>`
         );
