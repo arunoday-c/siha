@@ -1,14 +1,23 @@
+<style type="text/css">
+.print-body{
+    height:99vh;overflow:auto;
+}
+.tableFixHead          { overflow: auto; height: 100px; }
+.tableFixHead thead th { position: sticky; top: 0; z-index: 1; background:#eee;}
+.tableFixHead tfoot td { position: sticky; bottom: 0; z-index: 1; background:#eee;}
+</style>
+
 {{#ifExist totalRecords}}
 {{{importStyle 'css/algaehReportStyles.css'}}}
 
-    <div class="print-body" style="height:99vh;overflow:auto;">
+    <div class="print-body" >
        
             
             <div id="total_records" style="display:none;">{{totalRecords}}</div>
           
         <section>
              {{/ifExist}}
-            <table class="tableForDataNoBorder" cell-padding="0">
+            <table class="tableForDataNoBorder tableFixHead" cell-padding="0">
                 <thead>
                     <tr>
                         <th width=""  class="txtFld">Date</th>
@@ -41,19 +50,21 @@
 
                     {{/each }}
 
-                    <tr class="numberFld ">
+                   
+                </tbody>
+           <tfoot>
+                 <tr class="numberFld ">
                         <td class="numberFld" colspan="4"></td>
                         <td class="numberFld"><b>{{numberFormating total_debit currencyOnly}}</b></td>
                         <td class="numberFld"><b>{{numberFormating total_credit currencyOnly}}</b></td>
-                        <td></td>
+                        <td><b>{{numberFormating closing_balance currencyOnly}}</b></td>
                     </tr>
                     
-                    <tr class="numberFld ">
+                    {{!-- <tr class="numberFld ">
                         <td class="numberFld" colspan="6"></td>
                         <td class="numberFld" ><small>Closing Balance</small>: <b>{{numberFormating closing_balance currencyOnly}}</b></td>
-                    </tr>       
-                </tbody>
-           
+                    </tr>       --}}
+           </tfoot>
             </table>
              {{#ifExist totalRecords}}
         </section>
