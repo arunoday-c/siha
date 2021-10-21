@@ -16,6 +16,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
   const [selectedDates, setSelectedDates] = useState([]);
   const [arabic, setArabic] = useState(false);
   const [nonZero, setNonZero] = useState("N");
+  const [showLastrecord, setShowLastRecord] = useState("N");
   const [level, setLevel] = useState("ALL");
   const [showLedgerCode, setLedgerCode] = useState(false);
   // const createPrintObject = useRef(undefined);
@@ -47,7 +48,13 @@ export default function TrailBalance({ layout, dates, finOptions }) {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [type, dates]);
 
-  async function getData(ACCOUNTS, drillDownLevel, dates, non_zero) {
+  async function getData(
+    ACCOUNTS,
+    drillDownLevel,
+    dates,
+    non_zero,
+    last_record
+  ) {
     const input = {
       hospital_id: finOptions.default_branch_id,
       cost_center_id: finOptions.default_cost_center_id,
@@ -56,6 +63,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
       non_zero,
       ACCOUNTS,
       drillDownLevel,
+      last_record,
     };
     if (type === "tree") {
       input.old = "Y";
@@ -143,6 +151,13 @@ export default function TrailBalance({ layout, dates, finOptions }) {
                       checkText: "Yes",
                       labelText: "Show Account Name in Arabic",
                     },
+                    {
+                      className: "col-2 formgroup finCusCheckBox",
+                      type: "CH",
+                      data: "Show Last Record",
+                      checkText: "Yes",
+                      labelText: "Show Last Record",
+                    },
                   ],
                   []
                 ),
@@ -155,15 +170,17 @@ export default function TrailBalance({ layout, dates, finOptions }) {
                   NONZEROAMOUNT,
                   ARABIC,
                   SHOWLEDGERCODE,
+                  SHOWLASTRECORD,
                 } = inputs;
 
                 setSelectedDates(RANGE);
                 setLoading(true);
                 setNonZero(NONZEROAMOUNT);
+                setShowLastRecord(SHOWLASTRECORD);
                 setArabic(ARABIC === "Y" ? true : false);
                 setLedgerCode(SHOWLEDGERCODE === "Y" ? true : false);
                 setLevel(LEVELS);
-                getData(ACCOUNTS, LEVELS, RANGE, NONZEROAMOUNT)
+                getData(ACCOUNTS, LEVELS, RANGE, NONZEROAMOUNT, SHOWLASTRECORD)
                   .then(() => {
                     setLoading(false);
                     cb();
@@ -182,7 +199,9 @@ export default function TrailBalance({ layout, dates, finOptions }) {
             showArabic={arabic}
             showLedgerCode={showLedgerCode}
             nonZero={nonZero}
+            showLastrecord={showLastrecord}
             levels={level}
+            showLastrecord={showLastrecord}
             // createPrintObject={createPrintObject}
           />
         </>

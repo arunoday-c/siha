@@ -10,6 +10,7 @@ import EnableAudit from "./EnableAudit";
 // import ApiConfig from "./APIConfig";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehTabs } from "algaeh-react-components";
+import { setCookie } from "../../utils/algaehApiCall";
 class AdminSetup extends Component {
   constructor(props) {
     super(props);
@@ -28,6 +29,11 @@ class AdminSetup extends Component {
     });
   }
 
+  componentDidMount() {
+    setCookie("ScreenName", "AdministrationSetup", 30);
+    setCookie("module_id", 2, 30);
+    setCookie("ScreenCode", "ST0001", 30);
+  }
   render() {
     return (
       <div className="admin_setup">

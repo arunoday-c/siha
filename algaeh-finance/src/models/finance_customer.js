@@ -108,7 +108,7 @@ export default {
                when settlement_status='P' and curdate()> due_date then 'over due'
                when settlement_status='P' and settled_amount<1 then 'open'
                when settlement_status='P' and settled_amount>0 then 'paid' end as invoice_status,
-               D.child_id,D.head_id, D.is_opening_bal, H.voucher_no,
+               D.child_id,D.head_id, D.is_opening_bal, H.voucher_no,H.custom_ref_no,
                C.finance_account_child_id,
                C.child_name
                from finance_voucher_header H
@@ -294,6 +294,33 @@ export function getAllCreditNotes(req, res, next) {
 from finance_voucher_header as H inner join finance_voucher_details as D
 on H.finance_voucher_header_id = D.voucher_header_id
 where H.voucher_type ='credit_note'  and H.settlement_status ='P' and D.child_id = ? ;`,
+        values: [child_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}
+export function getCustomerAdvance(req, res, next) {
+  const _mysql = new algaehMysql();
+  const child_id = req.query.child_id;
+  try {
+    _mysql
+      .executeQuery({
+        query: `select H.finance_voucher_header_id,H.voucher_no,H.invoice_no,H.amount,H.payment_date, H.narration, \
+              H.settled_amount,D.finance_voucher_id from finance_voucher_header as H inner join finance_voucher_details as D
+              on H.finance_voucher_header_id = D.voucher_header_id
+              where H.is_advance ='Y' and H.settlement_status ='P'  and D.child_id = ? ;`,
         values: [child_id],
         printQuery: true,
       })

@@ -72,20 +72,32 @@ export function GenerateExcel({
         } else {
           debugger;
           let c_object = records;
+          const tableFooter = document.getElementsByTagName("thead")[0];
+          const elementTr = tableFooter.querySelector("tr");
+          const elementsTd = elementTr.querySelectorAll("th");
           if (Array.isArray(columns)) {
             for (let c = 0; c < columns.length; c++) {
               const e_value = records[columns[c]["fieldName"]];
-              c_object[columns[c]["fieldName"]] = isNaN(e_value)
-                ? e_value
-                : getAmountFormart(parseFloat(e_value), {
-                    appendSymbol: false,
-                  });
+              if (elementsTd[c].innerText === "LEDGER CODE") {
+                c_object[columns[c]["fieldName"]] = e_value;
+              } else {
+                c_object[columns[c]["fieldName"]] = isNaN(e_value)
+                  ? e_value
+                  : parseFloat(e_value);
+              }
+              // const e_value = records[columns[c]["fieldName"]];
+              // c_object[columns[c]["fieldName"]] = isNaN(e_value)
+              //   ? e_value
+              //   : getAmountFormart(parseFloat(e_value), {
+              //       appendSymbol: false,
+              //     });
             }
           }
           worksheet.addRow(c_object);
           const row_count = worksheet.rowCount;
           worksheet.getRow(row_count).eachCell((cell) => {
-            if (!isNaN(parseFloat(cell.value))) {
+            if (cell._column._key === "ledger_code") {
+            } else if (!isNaN(parseFloat(cell.value))) {
               cell.value = parseFloat(String(cell.value).replace(/,/g, ""));
               cell.numFmt = "#,##0.00";
               cell.alignment = { vertical: "middle", horizontal: "right" };
@@ -107,6 +119,7 @@ export function GenerateExcel({
         const elementTr = tableFooter.querySelector("tr");
         const elementsTd = elementTr.querySelectorAll("td");
         let footerFields = [];
+        debugger;
         for (let f = 0; f < elementsTd.length; f++) {
           const e_value =
             elementsTd[f].innerText === ""

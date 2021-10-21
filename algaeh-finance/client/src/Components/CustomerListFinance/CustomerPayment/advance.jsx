@@ -11,10 +11,7 @@ export default memo(function Advance({
   show,
   child_id,
   hide,
-}: {
-  show: boolean,
-  child_id: Number,
-  hide: Function,
+  getCustomerAdvance,
 }) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -23,7 +20,7 @@ export default memo(function Advance({
       setLoading(true);
       (async () => {
         const res = await newAlgaehApi({
-          uri: "/finance_customer/getAllCreditNotes",
+          uri: "/finance_customer/getCustomerAdvance",
           method: "GET",
           module: "finance",
           data: {
@@ -40,17 +37,26 @@ export default memo(function Advance({
   }, [show]);
   function onClickOk() {
     const filterData = data.filter((f) => f.checked === true);
-    // getAllCreditNotes([...filterData]);
+    getCustomerAdvance([...filterData]);
   }
+
   return (
     <Modal
       visible={show}
       title={"Advance List"}
       maskClosable={false}
-      okText="Continue with Selected"
+      // okText="Continue with Selected"
       className={`row algaehNewModal`}
       onCancel={hide}
-      onOk={onClickOk}
+      // onOk={onClickOk}
+      footer={[
+        <button onClick={onClickOk} className="btn btn-primary">
+          Continue
+        </button>,
+        <button onClick={hide} className="btn btn-default">
+          Close
+        </button>,
+      ]}
     >
       <Spin spinning={loading}>
         <div className="col-12">
@@ -83,8 +89,8 @@ export default memo(function Advance({
                         label: "Payment Date",
                       },
                       {
-                        fieldName: "invoice_no",
-                        label: "Invoice No.",
+                        fieldName: "voucher_no",
+                        label: "Voucher No.",
                       },
                       {
                         fieldName: "amount",

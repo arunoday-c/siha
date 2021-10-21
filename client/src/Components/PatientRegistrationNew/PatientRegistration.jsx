@@ -26,7 +26,7 @@ import { InsuranceDetails } from "./InsuranceDetails";
 import { VisitDetails } from "./VisitDetail";
 import { BillDetails } from "./BillDetails";
 import { AdvanceModal } from "./AdvanceRefundModal";
-import { algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import axios from "axios";
 import sockets from "../../sockets";
 import swal from "sweetalert2";
@@ -422,9 +422,14 @@ export function PatientRegistration() {
     },
     onError: (err) => {
       if (err.message?.includes("hims_f_patient.primary_id_no_UNIQUE")) {
-        AlgaehMessagePop({
-          display:
-            "Duplicate primary id number, Please provide a new ID number",
+        swalMessage({
+          title: "Duplicate Primary ID No., Please Enter New No.",
+          type: "error",
+        });
+      }
+      if (err.message?.includes("hims_f_patient.secondary_id_no_UNIQUE")) {
+        swalMessage({
+          title: "Duplicate Secondary ID No., Please Enter New No.",
           type: "error",
         });
       }
@@ -727,6 +732,7 @@ export function PatientRegistration() {
             ...input,
             ...billInfo,
             ...billData,
+            primary_id_no: input.primary_id_no,
             age: moment().diff(moment(input?.date_of_birth), "year"),
             department_id: parseInt(department_id, 10),
             sub_department_id: parseInt(sub_department_id, 10),

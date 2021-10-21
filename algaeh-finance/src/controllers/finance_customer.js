@@ -3,6 +3,7 @@ import utlities from "algaeh-utilities";
 import finance_customer, {
   getAllCreditNotes,
   getCustomerReporttoPrint,
+  getCustomerAdvance,
 } from "../models/finance_customer";
 
 const { getCustomerReceivables, getCustomerInvoiceDetails, revrtInvocieBack } =
@@ -67,6 +68,15 @@ export default () => {
       .end();
   });
   api.get("/getAllCreditNotes", getAllCreditNotes, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records,
+      })
+      .end();
+  });
+  api.get("/getCustomerAdvance", getCustomerAdvance, (req, res) => {
     res
       .status(utlities.AlgaehUtilities().httpStatus().ok)
       .json({

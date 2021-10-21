@@ -364,18 +364,39 @@ class EmployeeDocuments extends Component {
   }
 
   updateDocumentName(data) {
+    let allowedFiles = [".doc", ".docx", ".pdf", ".png", ".jpg"];
+    let regex = new RegExp(
+      "([a-zA-Z0-9s_\\.-:])+(" + allowedFiles.join("|") + ")$"
+    );
+    let patternFileExtension = /\.([0-9a-z]+)(?:[\?#]|$)/i;
+
+    let fileExtension =
+      this.editedRecord[data.hims_f_employee_documents_id].match(
+        patternFileExtension
+      );
+    let fileName = data.document_name;
+    console.log("filterExtension", fileExtension);
+    if (!regex.test(data.document_name)) {
+      fileName = `${data.document_name}${fileExtension[0]}`;
+    }
+
     algaehApiCall({
       uri: "/documents/updateDocument",
       module: "hrManagement",
       method: "PUT",
       data: {
-        document_name: data.document_name,
+        document_name: fileName,
         hims_f_employee_documents_id: data.hims_f_employee_documents_id,
       },
       onSuccess: (response) => {
         if (response.data.success) {
           eventLogic()
-            .updateDocumentNamePhysical(data, this.state, this.editedRecord)
+            .updateDocumentNamePhysical(
+              data,
+              this.state,
+              this.editedRecord,
+              fileName
+            )
             .then((result) => {
               eventLogic()
                 .getSaveDocument({

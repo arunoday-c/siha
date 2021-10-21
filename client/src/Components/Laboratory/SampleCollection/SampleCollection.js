@@ -82,6 +82,9 @@ function SampleCollection() {
           .groupBy("$.visit_id", null, (k, g) => {
             let firstRecordSet = Enumerable.from(g).firstOrDefault();
 
+            const number_of_tests_collected = g
+              .getSource()
+              .filter((f) => f.collected === "Y").length;
             return {
               patient_id: firstRecordSet.patient_id,
               visit_id: firstRecordSet.visit_id,
@@ -93,11 +96,11 @@ function SampleCollection() {
               number_of_tests: g.getSource().length,
               // collected: "Y",
 
-              number_of_tests_collected: g
-                .getSource()
-                .filter((f) => f.collected === "Y").length,
+              number_of_tests_collected: number_of_tests_collected,
 
               status: firstRecordSet.status,
+              sample_status:
+                g.getSource().length === number_of_tests_collected ? "CL" : "O",
               test_type: firstRecordSet.test_type,
               // doctor_name: firstRecordSet.doctor_name,
             };
@@ -361,19 +364,33 @@ function SampleCollection() {
                   // },
 
                   {
-                    fieldName: "",
+                    fieldName: "sample_status",
                     label: <AlgaehLabel label={{ fieldName: "status" }} />,
                     displayTemplate: (row) => {
                       return (
                         <span className="badge badge-light">
-                          {row.number_of_tests_collected} /{" "}
-                          {row.number_of_tests} - Collected
+                          {row.number_of_tests_collected} /{row.number_of_tests}
+                          -
+                          {row.number_of_tests_collected === row.number_of_tests
+                            ? "Collected"
+                            : "Ordered"}
                         </span>
                       );
                     },
                     disabled: true,
                     filterable: true,
                     sortable: true,
+                    filterType: "choices",
+                    choices: [
+                      {
+                        name: "Ordered",
+                        value: "O",
+                      },
+                      {
+                        name: "Collected",
+                        value: "CL",
+                      },
+                    ],
                     others: {
                       width: 120,
                       resizable: false,

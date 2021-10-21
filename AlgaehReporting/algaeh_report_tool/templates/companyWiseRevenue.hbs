@@ -1,0 +1,43 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Company Name</th>
+                        <th width="0" style="width:0px;padding:0;" cell-padding="0"></th>
+                        {{#each columns}}
+                        <th>{{this}}</th>
+                        {{/each}}
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each details}}
+                    <tr>
+                        <td datatype="string">{{inc @index}}</td>
+                        <td datatype="string"  class="txtFld" >{{insurance_sub_name}}</td>
+                        <td class="numberFld">{{{dynamic . ../columns}}}</td>
+                    </tr>
+                    {{/each }}
+
+
+              
+               
+
+                   <tr class="numberFld numberFldTotalBottom">
+                        <td colspan="3"></td>
+                        {{#each footer}}
+                        <td class="numberFld">{{numberFormating this ../currencyOnly}}</td>
+                        {{/each}}
+                    </tr>
+                 </tbody>
+            </table>
+
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

@@ -39,7 +39,7 @@ app.use(cors());
 const _port = process.env.PORT;
 app.use(
   bodyParser.json({
-    limit: "200kb",
+    // limit: "200kb",
   })
 );
 // app.use(

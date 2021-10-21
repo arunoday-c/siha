@@ -16,7 +16,7 @@ export default [
   },
   {
     key: "TB",
-    title: "Trail Balance",
+    title: "Trial Balance",
   },
   {
     key: "AR",

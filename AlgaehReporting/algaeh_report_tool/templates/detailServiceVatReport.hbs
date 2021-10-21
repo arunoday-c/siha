@@ -1,0 +1,85 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                     <tr>
+                        {{!-- <th>Sl No.<small>م</small></th> --}}
+                        <th>Data From<small>معلومات من</small></th>
+                        <th>Bill No.</th>
+                        <th>Visit Date</th>
+                        <th>Patient Code</th>
+                        <th>Patient Name</th>
+                        <th>Service Name<small>اسم المريض</small></th>
+                        <th>Company Name</th>
+                        <th>Cash/Insurance<small>النقد / التأمين</small></th>
+                        <th>Total Before VAT<small>المجموع دون الضريبة</small></th>
+                        <th>Total VAT<small>قيمة الضريبة</small></th>
+                        <th>Total After VAT<small>المجموع بعد الضريبة</small></th>
+                        <th>Patient VAT Amount<small>مبلغ ضريبة المريض</small></th>
+                        <th>Company VAT Amount<small>مبلغ ضريبة الشركة</small></th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                  
+                    {{#hasElement result}}
+                        <tr class="numberFldTotalBottom">
+                            <td colspan="8"></td>
+                            <td class="numberFld">{{numberFormating sum_total_before_vat ./currencyOnly}}</td>
+                            <td class="numberFld">{{numberFormating sum_total_tax ./currencyOnly}}</td>
+                            <td class="numberFld">{{numberFormating sum_total_after_vat ./currencyOnly}}</td>
+                            <td class="numberFld">{{numberFormating sum_patient_tax ./currencyOnly}}</td>
+                            <td class="numberFld">{{numberFormating sum_company_tax ./currencyOnly}}</td>
+                        </tr>
+                    {{#each result}}
+                    {{!-- <tr>
+                        <td colspan="3" class="tableSubHdg">{{doc_number}} - {{visit_date}}</td>
+                        <td colspan="3" class="tableSubHdg">{{patient_code}} - {{full_name}}</td>
+                        <td colspan="3" class="tableSubHdg">{{nationality}}/{{company_name}}</td>
+                    </tr> --}}
+                    {{#each patientList}}
+                    {{#each docs}}
+                     <tr>
+                        {{!-- <td datatype="string">{{inc  index}}</td> --}}
+                        <td>{{data_from}}</td>
+                        <td>{{doc_number}}</td>
+                        <td>{{visit_date}}</td>
+                        <td>{{patient_code}}</td>
+                        <td  class="txtFld" >{{full_name}}</td>
+                        <td class="txtFld" datatype="string">{{service_name}}</td>
+                        <td>{{company_name}}</td>
+                        <td>{{insurance_yesno}}</td>
+                        <td class="numberFld">{{total_before_vat}}</td>
+                        <td class="numberFld">{{total_tax}}</td>
+                        <td class="numberFld">{{total_after_vat}}</td>
+                        <td class="numberFld">{{patient_tax}}</td>
+                        <td class="numberFld">{{company_tax}}</td>
+
+                    </tr>
+                    {{/each }}
+                 
+                    {{/each }}{{/each }}
+                    <tr class="numberFldTotalBottom">
+                            <td colspan="8"></td>
+                            <td class="numberFld">{{numberFormating sum_total_before_vat ./currencyOnly}}</td>
+                            <td class="numberFld">{{numberFormating sum_total_tax ./currencyOnly}}</td>
+                            <td class="numberFld">{{numberFormating sum_total_after_vat ./currencyOnly}}</td>
+                            <td class="numberFld">{{numberFormating sum_patient_tax ./currencyOnly}}</td>
+                            <td class="numberFld">{{numberFormating sum_company_tax ./currencyOnly}}</td>
+                        </tr>
+                    {{else}}
+                    <tr>
+                        <td colspan="8" class="noResultTextReport">No Records Found</td>
+                    </tr>
+                    {{/hasElement }}
+                </tbody>
+
+            </table>
+            
+        </section>
+
+    </div>
+</body>

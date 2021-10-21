@@ -150,6 +150,69 @@ export default function Vat({
         ],
       },
       {
+        subitem: "Detail Service VAT Report",
+        reportName: "detailServiceVatReport",
+        componentCode: "RPT_SER_VAT_DLY_VAT",
+        requireIframe: true,
+        // pageSize: "A4",
+        // pageOrentation: "landscape", //"portrait",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "nationality_id",
+            initialLoad: true,
+            isImp: false,
+            label: "nationality",
+            link: {
+              uri: "/masters/get/nationality",
+            },
+            dataSource: {
+              textField: "nationality",
+              valueField: "hims_d_nationality_id",
+              data: undefined,
+            },
+          },
+        ],
+      },
+      {
         subitem: "Monthly VAT Report",
         reportName: "monthVatReport",
         componentCode: "RPT_VAT_MON_VAT",

@@ -512,8 +512,7 @@ const calculateAmount = ($this, context, row, e) => {
             onSuccess: (response) => {
               if (response.data.success) {
                 response.data.records.patient_payable_h =
-                  response.data.records.patient_payable ||
-                  $this.state.patient_payable;
+                  response.data.records.patient_payable;
                 // response.data.records.patient_payable === 0
                 //   ? response.data.records.patient_payable
                 //   : $this.state.patient_payable;

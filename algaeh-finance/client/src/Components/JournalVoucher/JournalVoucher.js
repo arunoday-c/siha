@@ -34,7 +34,7 @@ import {
 } from "./JournalVoucher.events";
 // import PaymentComponent from "./PaymentComponent";
 import AccountsDrawer from "./AccountDrawer";
-import { getCookie, algaehApiCall } from "../../utils/algaehApiCall";
+import { getCookie, algaehApiCall, setCookie } from "../../utils/algaehApiCall";
 import { newAlgaehApi } from "../../hooks";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 
@@ -121,6 +121,8 @@ export default function JournalVoucher({
   const [columns, setColumns] = useState([]);
   const [dataPaymentBySec, setDataPaymentBySec] = useState([]);
   const [afterSaveDisabled, setAfterSaveDisabled] = useState(false);
+  const [is_advance, setIsAdvance] = useState("N");
+
   const [journerList, setJournerList] = useState(
     baseJournalList.map((m) => {
       return { ...m, narration: "" };
@@ -145,6 +147,8 @@ export default function JournalVoucher({
   const [deletedEntries, setDeletedEntries] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   useEffect(() => {
+    setCookie("ScreenName", "JournalVoucher", 30);
+    setCookie("ScreenCode", "JOURNAL LEDGER", 30);
     if (location.state?.language) {
       i18next.changeLanguage(location.state?.language);
       setLanguage(location.state?.language === "ar" ? "rtl" : "ltr");
@@ -877,6 +881,7 @@ export default function JournalVoucher({
       // voucher_no: `${voucher_no}`,
       hospital_id: hospital_id,
       cost_center_id: cost_center_id,
+      is_advance: is_advance,
       // ...costcenter,
       ...payment,
       from_screen: getCookie("ScreenCode"),
@@ -951,6 +956,7 @@ export default function JournalVoucher({
     setVoucherType("");
     setAccounts([]);
     setPayment(basePayment);
+    setIsAdvance("N");
     setJournerList([
       {
         child_id: undefined,
@@ -1412,7 +1418,7 @@ export default function JournalVoucher({
                 setSorCDetailValue(undefined);
                 setSorCHeaderValue(undefined);
                 setCustomerSupplierID(undefined);
-
+                setIsAdvance("N");
                 // setPrefix(selected.shortHand + "-");
                 onSelectExpenceVoucher(selected.value);
               },
@@ -1422,6 +1428,7 @@ export default function JournalVoucher({
                 setSorCDetailValue(undefined);
                 setSorCHeaderValue(undefined);
                 setCustomerSupplierID(undefined);
+                setIsAdvance("N");
                 setVoucherType("");
                 setAccounts([]);
               },
@@ -1431,6 +1438,61 @@ export default function JournalVoucher({
               },
             }}
           />
+          {voucherType === "journal" ? (
+            <div className="col-3">
+              <label>Is this Advance</label>
+              <div className="customRadio">
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    name="d_m_wise"
+                    onChange={(check) => {
+                      setIsAdvance("Y");
+                    }}
+                    checked={is_advance === "Y" ? true : false}
+                  />
+                  <span>Yes</span>
+                </label>
+
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    name="d_m_wise"
+                    onChange={(check) => {
+                      setIsAdvance("N");
+                    }}
+                    checked={is_advance === "N" ? true : false}
+                  />
+                  <span>No</span>
+                </label>
+              </div>
+            </div>
+          ) : // <div className="col form-group">
+          //   <label className="style_Label">Advance</label>
+          //   <label className="radio-inline">
+          //     <input
+          //       type="radio"
+          //       name="d_m_wise"
+          //       onChange={(check) => {
+          //         setIsAdvance("Y");
+          //       }}
+          //       checked={is_advance === "Y" ? true : false}
+          //     />
+          //     Yes
+          //   </label>
+          //   <label className="radio-inline">
+          //     <input
+          //       type="radio"
+          //       name="d_m_wise"
+          //       onChange={(check) => {
+          //         setIsAdvance("N");
+          //       }}
+          //       checked={is_advance === "N" ? true : false}
+          //     />
+          //     No
+          //   </label>
+          // </div>
+          null}
           {voucherType === "expense_voucher" ? (
             <>
               <AlgaehTreeSearch

@@ -16,7 +16,10 @@
 }
 .journalAuthGrid {
   height: auto;
-  min-height: 70vh !important;
-  max-height: 70vh !important;
+  min-height: 66vh !important;
+  max-height: 66vh !important;
   overflow: auto;
+}
+.AdvCreNoteModal {
+  min-width: 99% !important;
 }

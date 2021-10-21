@@ -381,8 +381,8 @@ export default {
                         query:
                           "INSERT INTO `finance_voucher_header` (payment_mode,ref_no,cheque_date,amount, payment_date, month, year,\
                        narration, voucher_no, voucher_type,from_screen,invoice_no,invoice_ref_no,posted_from,\
-                       created_by, updated_by, created_date, updated_date,receipt_type,custom_ref_no)\
-                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                       created_by, updated_by, created_date, updated_date,receipt_type,custom_ref_no, is_advance)\
+                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         values: [
                           payment_mode,
                           ref_no,
@@ -404,6 +404,7 @@ export default {
                           new Date(),
                           isMultipleInvoices,
                           numgen["REF_NUM"],
+                          input.is_advance,
                         ],
                         printQuery: true,
                       })
@@ -412,9 +413,13 @@ export default {
 
                         let arrCounter = [];
                         let updateQry = "";
+
                         if (isMultipleInvoices === "M") {
                           let queryString = "";
 
+                          // console.log("merdgeRecords", merdgeRecords);
+                          // console.log("merdgeRecords", input["voucher_type"]);
+                          // consol.log("merdgeRecords", input["voucher_type"]);
                           for (let i = 0; i < merdgeRecords.length; i++) {
                             const {
                               balance_amount,
@@ -431,10 +436,12 @@ export default {
                               : balance_amount;
                             if (
                               voucher_type === "debit_note" ||
-                              voucher_type === "credit_note"
+                              voucher_type === "credit_note" ||
+                              voucher_type === "advance"
                             ) {
                               b_amt = balance_amount;
                             }
+                            // console.log("merdgeRecords", merdgeRecords[i]);
                             if (input["voucher_type"] !== "credit_note") {
                               queryString += _mysql.mysqlQueryFormat(
                                 "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount,voucher_type)value(?,?,?,?);",
@@ -446,7 +453,6 @@ export default {
                                 ]
                               );
                             }
-
                             if (
                               input["voucher_type"] == "credit_note" ||
                               input["voucher_type"] == "debit_note" ||
@@ -504,6 +510,9 @@ export default {
                           if (queryString === "") {
                             queryString = "select 1;";
                           }
+                          // console.log("queryString", queryString);
+                          // console.log("updateQry", updateQry);
+                          // consol.log("queryString", queryString);
                           _mysql
                             .executeQueryWithTransaction({
                               query: `${queryString}${updateQry}${updateDebitNoteQuery}`,
@@ -2378,6 +2387,7 @@ export default {
     const _mysql = new algaehMysql();
 
     const input = req.query;
+    console.log("input.voucherType", input.voucherType);
     const decimal_places = req.userIdentity.decimal_places;
     const user_id = req.userIdentity.algaeh_d_app_user_id;
     if (input.auth_level > 0 && input.auth_level <= 2) {
@@ -2408,6 +2418,9 @@ export default {
         strQry += ` and VD.auth1 ='N'`;
       } else if (input.auth_status == "P" && input.auth_level == 2) {
         strQry += ` and VD.auth1 ='Y' and VD.auth2 ='N'`;
+      }
+      if (input.voucherType) {
+        strQry += ` and voucher_type = "${input.voucherType}"`;
       }
       let onlyCreditAccounts = "and VD.payment_type='CR'";
       let strGroupBy = ` group by finance_voucher_header_id`;

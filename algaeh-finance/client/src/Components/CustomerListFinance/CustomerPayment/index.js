@@ -20,12 +20,13 @@ import _ from "lodash";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 import { newAlgaehApi } from "../../../hooks";
 import CreditNotes from "./creditNotes";
-import Advance from "./advance";
+// import Advance from "./advance";
 export default memo(function (props) {
   const location = useLocation();
   const history = useHistory();
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
+  const [adv_data, setAdvData] = useState([]);
   const [indeterminate, setIndeterminate] = useState(false);
   const [checkAll, setCheckAll] = useState(false);
   const [selectAmount, setSelectedAmount] = useState(0);
@@ -43,6 +44,7 @@ export default memo(function (props) {
   const [selectedChildId, setSelectedChildId] = useState(0);
   const [loading, setLoading] = useState(false);
   const [allCreditNotes, setAllCreditNote] = useState([]);
+  const [customerAdvance, setCustomerAdvance] = useState([]);
   const { confirm } = Modal;
 
   useEffect(() => {
@@ -120,8 +122,12 @@ export default memo(function (props) {
     }
   }, [location.state]);
   useEffect(() => {
-    if (allCreditNotes.length > 0) onClickSendSelected(true);
-  }, [allCreditNotes]);
+    if (allCreditNotes.length > 0 || customerAdvance.length > 0)
+      onClickSendSelected(true);
+  }, [allCreditNotes, customerAdvance]);
+  // useEffect(() => {
+  //   if (customerAdvance.length > 0) onClickSendSelected(true, "A");
+  // }, [customerAdvance]);
   const rejectInvoice = (row) => {
     confirm({
       okText: "Revert",
@@ -278,6 +284,7 @@ export default memo(function (props) {
   function onClickSendSelected(isFromProcessed) {
     isFromProcessed = isFromProcessed || false;
     const filterCheck = data.filter((f) => f.checked === true);
+
     if (filterCheck.length === 0) {
       AlgaehMessagePop({
         type: "warning",
@@ -292,10 +299,22 @@ export default memo(function (props) {
         );
       });
       let creditNoteTotal = 0;
+      let AdvanceTotal = 0;
       let grandTotal = 0;
       let filterCreditNotes = [];
+      let filterAdvance = [];
 
       if (isFromProcessed === true) {
+        filterAdvance = customerAdvance.map((item) => {
+          const { voucher_no, amount, finance_voucher_header_id } = item;
+          return {
+            invoice_no: voucher_no,
+            balance_amount: amount,
+            finance_voucher_header_id,
+            voucher_type: "advance",
+          };
+        });
+
         filterCreditNotes = allCreditNotes.map((item) => {
           const { invoice_no, amount, finance_voucher_header_id } = item;
           return {
@@ -305,12 +324,18 @@ export default memo(function (props) {
             voucher_type: "credit_note",
           };
         });
+
+        if (filterAdvance) {
+          AdvanceTotal = _.sumBy(filterAdvance, (s) =>
+            parseFloat(s.balance_amount)
+          );
+        }
         if (filterCreditNotes) {
           creditNoteTotal = _.sumBy(filterCreditNotes, (s) =>
             parseFloat(s.balance_amount)
           );
         }
-        grandTotal = totalAmount - creditNoteTotal;
+        grandTotal = totalAmount - AdvanceTotal - creditNoteTotal;
       }
       const { narration, child_id, head_id, voucher_type, invoice_no } =
         filterCheck[0];
@@ -331,7 +356,16 @@ export default memo(function (props) {
                 </div>
                 <i className="fas fa-minus calcSybmbol"></i>
                 <div className="col">
-                  <label className="style_Label ">Credit Note Amount</label>
+                  <label className="style_Label ">{"Advance Amount"}</label>
+                  <h6>
+                    {getAmountFormart(AdvanceTotal, {
+                      appendSymbol: false,
+                    })}
+                  </h6>
+                </div>
+                <i className="fas fa-minus calcSybmbol"></i>
+                <div className="col">
+                  <label className="style_Label ">{"Credit Note Amount"}</label>
                   <h6>
                     {getAmountFormart(creditNoteTotal, {
                       appendSymbol: false,
@@ -382,7 +416,11 @@ export default memo(function (props) {
           if (isFromProcessed === true) {
             for (let i = 0; i < filterCreditNotes.length; i++)
               merdgeData.push(filterCreditNotes[i]);
+
+            for (let i = 0; i < filterAdvance.length; i++)
+              merdgeData.push(filterAdvance[i]);
           }
+          const total_amount = creditNoteTotal + AdvanceTotal;
           history.push("/JournalVoucher", {
             data: {
               narration,
@@ -397,7 +435,7 @@ export default memo(function (props) {
             merdge: merdgeData,
             filterDebitNotes: filterCreditNotes,
             type: "customer",
-            debitNoteTotal: creditNoteTotal > 0 ? creditNoteTotal : null,
+            debitNoteTotal: total_amount > 0 ? total_amount : null,
             customerOrSupplerHeaderName: childName,
             customerOrSupplerDetailName: invoice_no,
           });
@@ -444,6 +482,20 @@ export default memo(function (props) {
       AlgaehMessagePop({ type: "error", display: e.message });
     }
   }
+  function onClickAdvance() {
+    try {
+      const filterData = data.filter((f) => f.checked === true);
+      if (filterData.length === 0) {
+        setShowAdvance(false);
+        throw new Error("Please select at least one record.");
+      }
+      const { child_id } = _.head(filterData);
+      setSelectedChildId(child_id);
+      setShowAdvance(true);
+    } catch (e) {
+      AlgaehMessagePop({ type: "error", display: e.message });
+    }
+  }
   return (
     <Spin spinning={loading} delay={500}>
       <CreditNotes
@@ -456,13 +508,21 @@ export default memo(function (props) {
           setAllCreditNote(creditNotesArray);
           setShowCreditNotes(false);
         }}
+        getCustomerAdvance={(customerAdvanceArray) => {
+          setCustomerAdvance(customerAdvanceArray);
+        }}
       />
-      <Advance
+      {/* <Advance
         show={showAdvance}
         hide={() => {
           setShowAdvance(false);
         }}
-      />
+        child_id={selectedChildId}
+        getCustomerAdvance={(customerAdvanceArray) => {
+          setCustomerAdvance(customerAdvanceArray);
+          setShowAdvance(false);
+        }}
+      /> */}
       <StatementReport
         title="Customer Statement"
         selectedNode={location.state.data}
@@ -593,6 +653,7 @@ export default memo(function (props) {
                             sortable: true,
                             filterable: true,
                           },
+
                           {
                             fieldName: "narration",
                             label: (
@@ -831,24 +892,25 @@ export default memo(function (props) {
               loading={loading}
               onClick={onClickCreditNotes}
             >
-              Add Credit Note
+              Add Advance or Credit Note
             </AlgaehButton>
-            <AlgaehButton
+            {/* <AlgaehButton
               className="btn btn-default"
               loading={loading}
               // onClick={onClickCreditNotes}
             >
               Add Advance
-            </AlgaehButton>
-            <AlgaehButton
+            </AlgaehButton> */}
+            {/* <AlgaehButton
               className="btn btn-default"
               loading={loading}
-              onClick={() => {
-                setShowAdvance(true);
-              }}
+              onClick={onClickAdvance}
+              // onClick={() => {
+              //   setShowAdvance(true);
+              // }}
             >
               Apply Advance
-            </AlgaehButton>
+            </AlgaehButton> */}
             <AlgaehButton
               className="btn btn-default"
               // disabled={!processList.length}

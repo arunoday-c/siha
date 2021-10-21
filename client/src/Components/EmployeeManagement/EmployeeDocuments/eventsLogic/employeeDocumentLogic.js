@@ -169,7 +169,7 @@ export default function eventsLogEmployeeDocument() {
           });
       });
     },
-    updateDocumentNamePhysical: (doc, state, editedRecord) => {
+    updateDocumentNamePhysical: (doc, state, editedRecord, fileName) => {
       return new Promise((resolve, reject) => {
         // const gridData = document_grid_copy;
         // const oldNameDoc = gridData.filter(
@@ -186,7 +186,7 @@ export default function eventsLogEmployeeDocument() {
             }/${doc.hims_f_employee_documents_id}/${
               doc.hims_f_employee_documents_id
             }__ALGAEH__${editedRecord[doc.hims_f_employee_documents_id]}`,
-            newPath: `EmployeeDocuments/${state.employee_code}/${doc.download_uniq_id}/${doc.hims_f_employee_documents_id}/${doc.hims_f_employee_documents_id}__ALGAEH__${doc.document_name}`,
+            newPath: `EmployeeDocuments/${state.employee_code}/${doc.download_uniq_id}/${doc.hims_f_employee_documents_id}/${doc.hims_f_employee_documents_id}__ALGAEH__${fileName}`,
           },
 
           method: "GET",

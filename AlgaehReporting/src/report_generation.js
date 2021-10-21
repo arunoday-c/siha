@@ -324,7 +324,7 @@ hbs.registerHelper("commentBreakUp", function (comment_data) {
 });
 hbs.registerHelper("dynamic", (records, columns) => {
   const tds = columns.map((item) => {
-    return `<td>${records[item]}</td>`;
+    return `<td class="numberFld">${records[item]}</td>`;
   });
   return tds;
 });
@@ -396,7 +396,7 @@ export default {
           values: [_inputParam.reportName, req.userIdentity["hospital_id"]],
           printQuery: true,
         })
-        .then((data) => {
+        .then(async (data) => {
           _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
           _inputParam["crypto"] = req.userIdentity;
 
@@ -463,10 +463,10 @@ export default {
               }
               if (traceLog === "true")
                 console.log("queryObject===>", queryObject);
-              _mysql
+              await _mysql
                 .executeQuery(queryObject)
-                .then((result) => {
-                  const _path = path.join(
+                .then(async (result) => {
+                  const _path = await path.join(
                     process.cwd(),
                     "algaeh_report_tool/templates/Output",
                     `${_data.report_name}_${uuidv4()}_${
@@ -486,7 +486,7 @@ export default {
                     console.log("_supportingJS===>", _supportingJS);
                   const _header = req.headers;
 
-                  const startGenerate = async () => {
+                  const startGenerate = async (e) => {
                     const baseObj = {
                       header: {
                         top: "150px",
@@ -506,8 +506,8 @@ export default {
                       ? JSON.parse(_data.report_props)
                       : baseObj;
 
-                    const _outPath = _path + ".pdf";
-                    _reportOutput.push(_outPath);
+                    const _outPath = (await _path) + ".pdf";
+                    await _reportOutput.push(_outPath);
                     const browser = await puppeteer.launch({
                       headless: true,
                       args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -763,19 +763,47 @@ export default {
                     console.timeEnd();
                     console.log("_outPath===>", _outPath);
                     await browser.close();
-                    console.log("Close Browser ====>");
-                    if (r == _reportCount - 1) {
+                    // console.log(
+                    //   " _reportOutput.length ",
+
+                    //   r,
+                    //   e,
+                    //   r === parseInt(multiMerdgeReport) - 1
+                    // );
+                    let pass = false;
+                    // _reportOutput.length
+                    if (multiMerdgeReport) {
+                      if (
+                        _reportOutput.length === parseInt(multiMerdgeReport)
+                      ) {
+                        for (let k = 0; k < _reportOutput.length; k++) {
+                          pass = false;
+                          if (fs.existsSync(_reportOutput[k])) {
+                            pass = true;
+                          } else {
+                            pass = false;
+                          }
+                        }
+                      }
+                    } else {
+                      pass = true;
+                    }
+
+                    // if (r == _reportCount - 1) {
+                    if (pass === true) {
                       let _outfileName = "merdge_" + uuidv4() + ".pdf";
                       let _rOut = path.join(
                         process.cwd(),
                         "algaeh_report_tool/templates/Output",
                         _outfileName
                       );
-
+                      console.log("pass", pass);
+                      // if (pass === true) {
                       if (_reportOutput.length > 1) {
                         _mysql.releaseConnection();
                         merge(_reportOutput, _rOut, (error) => {
                           if (error) {
+                            console.log("error", error);
                             res
                               .status(400)
                               .send({ error: JSON.stringify(error) });
@@ -943,11 +971,14 @@ export default {
                     const { executePDF } =
                       __non_webpack_require__(_supportingJS);
 
-                    executePDF({
+                    await executePDF({
                       mysql: _mysql,
                       inputs: _inputOrders,
                       args: multiMerdgeReport
-                        ? { reportParams: _inputParam.reportParams[r] }
+                        ? {
+                            reportParams: _inputParam.reportParams[r],
+                            crypto: req.userIdentity,
+                          }
                         : _inputParam,
                       // args: _inputParam,
                       loadash: _,
@@ -971,9 +1002,9 @@ export default {
                         process.env.QR_CODE_CLIENT ?? "http://localhost:3024/"
                       }${shortUrl}`,
                     })
-                      .then((resultReq) => {
+                      .then(async (resultReq) => {
                         result = resultReq;
-                        startGenerate();
+                        await startGenerate(r);
                       })
                       .catch((error) => {
                         console.log("error in report generation : ", error);
@@ -987,7 +1018,7 @@ export default {
                       const _resu = eval(data_string);
                       result = JSON.parse(_resu);
                     }
-                    startGenerate();
+                    await startGenerate(r);
                   }
                 })
                 .catch((error) => {

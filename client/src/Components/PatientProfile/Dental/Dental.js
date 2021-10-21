@@ -2495,6 +2495,7 @@ class Dental extends Component {
                     dentalTreatments: response.data.records,
                     selected_plan: data.plan_name,
                     approval_status: data.approve_status,
+                    hims_d_services_id: data.service_id,
                   });
                 }
               },
@@ -2559,6 +2560,7 @@ class Dental extends Component {
       provider_id: patientDetails.provider_id,
       episode: patientDetails.episode_id,
       due_date: this.state.due_date,
+      hims_d_services_id: this.state.hims_d_services_id,
     };
     const allCheckList = this.checList.querySelectorAll("[type='checkbox']");
     for (let i = 0; i < allCheckList.length; i++) {
@@ -2929,7 +2931,7 @@ class Dental extends Component {
               this.setState({
                 treatment_gridUpdate: true,
                 openDentalModal: false,
-                hims_d_services_id: null,
+                // hims_d_services_id: null,
                 quantity: 0,
                 standard_fee: 0,
                 total_price: 0,

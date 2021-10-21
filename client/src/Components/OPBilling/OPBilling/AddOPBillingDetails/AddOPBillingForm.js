@@ -716,14 +716,18 @@ class AddOPBillingForm extends Component {
                                 </span>
                               );
                             },
+                            others: {
+                              width: 60,
+                            },
                           },
                           {
                             fieldName: "service_type",
                             label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "service_type_id" }}
-                              />
+                              <AlgaehLabel label={{ forceLabel: "Type" }} />
                             ),
+                            others: {
+                              width: 120,
+                            },
                           },
 
                           {
@@ -741,12 +745,16 @@ class AddOPBillingForm extends Component {
 
                               return (
                                 <span>
-                                  {row.service_name}
-                                  <span className="packageAvail">
+                                  <b>{row.service_name}</b>
+                                  <small className="packageAvail">
                                     {package_service}
-                                  </span>
+                                  </small>
                                 </span>
                               );
+                            },
+                            others: {
+                              // width: 90,
+                              style: { textAlign: "left" },
                             },
                           },
 
@@ -756,15 +764,20 @@ class AddOPBillingForm extends Component {
                               <AlgaehLabel label={{ fieldName: "insurance" }} />
                             ),
                             displayTemplate: (row) => {
-                              return (
-                                <span>
-                                  {row.insurance_yesno === "N"
-                                    ? "Not Covered"
-                                    : "Covered"}
+                              return row.insurance_yesno === "N" ? (
+                                <span className="badge badge-danger">
+                                  Not Covered
+                                </span>
+                              ) : (
+                                <span className="badge badge-success">
+                                  Covered
                                 </span>
                               );
                             },
                             disabled: true,
+                            others: {
+                              width: 100,
+                            },
                           },
                           {
                             fieldName: "unit_cost",
@@ -781,6 +794,10 @@ class AddOPBillingForm extends Component {
                               );
                             },
                             disabled: true,
+                            others: {
+                              width: 90,
+                              style: { textAlign: "right" },
+                            },
                           },
                           {
                             fieldName: "quantity",
@@ -788,6 +805,9 @@ class AddOPBillingForm extends Component {
                               <AlgaehLabel label={{ fieldName: "quantity" }} />
                             ),
                             disabled: true,
+                            others: {
+                              width: 90,
+                            },
                           },
 
                           {
@@ -798,6 +818,10 @@ class AddOPBillingForm extends Component {
                               />
                             ),
                             disabled: true,
+                            others: {
+                              width: 120,
+                              style: { textAlign: "right" },
+                            },
                           },
                           {
                             fieldName: "discount_percentage",
@@ -883,6 +907,10 @@ class AddOPBillingForm extends Component {
                               //   />
                               // );
                             },
+                            others: {
+                              width: 100,
+                              style: { textAlign: "right" },
+                            },
                           },
                           {
                             fieldName: "discount_amout",
@@ -932,6 +960,10 @@ class AddOPBillingForm extends Component {
                                 />
                               );
                             },
+                            others: {
+                              width: 120,
+                              style: { textAlign: "right" },
+                            },
                           },
 
                           {
@@ -949,6 +981,10 @@ class AddOPBillingForm extends Component {
                               );
                             },
                             disabled: true,
+                            others: {
+                              width: 100,
+                              style: { textAlign: "right" },
+                            },
                           },
                         ]}
                         keyId="service_type_id"

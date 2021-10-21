@@ -12,13 +12,13 @@ let addDentalForm = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "INSERT INTO hims_f_dental_form (patient_id,provider_id,visit_id,procedure_id,procedure_amt,vendor_id,request_status,ordered_type,\
+          "INSERT INTO hims_f_dental_form (patient_id,provider_id,visit_id,procedure_id,procedure_amt,request_status,ordered_type,\
             full_name,gender,age,patient_code,requested_date,date_of_birth,department_id,episode,approved,work_status,\
             due_date,bruxzir_anterior,ips_e_max,lava,lumineers,zirconia_e_max_layered,\
             bruxzir,nobel,white_high_nobel,non_precious,pmma,titanium,zirconia_w_ti_base,\
             biomet_3i_encode,screw_retained,flexi,analog,models,implant_parts,impression,\
             bite,shade_tab,others,photos,bags,rx_forms,created_date,created_by,updated_date,updated_by,hospital_id)\
-                 values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                 values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.patient_id,
           input.provider_id,
@@ -28,7 +28,7 @@ let addDentalForm = (req, res, next) => {
           // input.quantity_utilised,
           input.hims_d_services_id,
           input.standard_fee,
-          input.hims_d_vendor_id,
+          // input.hims_d_vendor_id,
           input.request_status,
           input.ordered_type,
           input.full_name,
@@ -302,8 +302,7 @@ export default {
               if (isSendEmail) {
                 try {
                   newAxios(req, {
-                    url:
-                      "http://localhost:3006/api/v1//Document/getEmailConfig",
+                    url: "http://localhost:3006/api/v1//Document/getEmailConfig",
                   }).then((res) => {
                     const options = res.data;
 
