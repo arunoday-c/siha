@@ -1,9 +1,10 @@
 {{#ifExist totalRecords}}
 {{{importStyle 'css/algaehReportStyles.css'}}}
-    <div class="print-body">
+
+    <div class="print-body" style="height:99vh;overflow:auto;">
        
             
-            <div id="total_records">{{totalRecords}}</div>
+            <div id="total_records" style="display:none;">{{totalRecords}}</div>
           
         <section>
              {{/ifExist}}
