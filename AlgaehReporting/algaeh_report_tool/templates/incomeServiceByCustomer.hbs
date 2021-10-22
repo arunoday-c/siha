@@ -1,0 +1,66 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div class="print-body">
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Service Name</th>
+            <th>Unit Cost</th>
+            <th>Total Qty</th>
+            <th>Net before VAT</th>
+            <th>Net VAT</th>
+            <th>Net After VAT</th>
+          </tr>
+
+        </thead>
+        <tbody>
+          {{!-- <tr>
+                        <td colspan="10"></td>
+                        <td colspan="1"><span class="textFloatRight">Total No.
+                                Employees: <b>{{no_employees}}</b></span></td>
+
+                    </tr> --}}
+          {{#hasElement result}}
+            {{#each result}}
+              <tr>
+              <td colspan="8" class="tableSubHdg">{{insurance_sub_name}}</td>
+              {{!-- <td class="tableSubHdg numberFld"><b>{{cashier_total}}</b></td> --}}
+
+              </tr>
+              {{#each doctors}}
+                <tr>
+                <td datatype="string">{{inc @index}}</td>
+                <td>{{service_name}}</td>
+                <td class="numberFld">{{numberFormating unit_cost ../../decimalOnly}}</td>
+                <td>{{total_quantity}}</td>
+                <td class="numberFld">{{numberFormating total_comapany_resp ../../decimalOnly}}</td>
+                <td class="numberFld">{{numberFormating total_company_tax ../../decimalOnly}}</td>
+                <td class="numberFld">{{numberFormating total_company_payble ../../decimalOnly}}</td>
+                {{!-- <td class="numberFld">{{total_company_payble}}</td> --}}
+                </tr>
+                {{#each docs}}
+                {{/each}}
+              {{/each}}
+            {{/each}}
+            <tr class="numberFldTotalBottom">
+              <td colspan="4"></td>
+              <td class="numberFld">{{numberFormating net_comapany_resp ./currencyOnly}}</td>
+              <td class="numberFld">{{numberFormating net_company_tax ./currencyOnly}}</td>
+              <td class="numberFld">{{numberFormating net_company_payble ./currencyOnly}}</td>
+            </tr>
+          {{else}}
+            <tr>
+              <td colspan="9" class="noResultTextReport">No Records Found</td>
+            </tr>{{/hasElement}}
+
+        </tbody>
+
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+  </div>
+</body>
