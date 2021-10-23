@@ -412,7 +412,15 @@ export default memo(function Modal(props) {
           } else {
             reportName = checkedType ? "MonthWiseLeafNode" : "DateWiseLeafNode";
           }
-
+          let rptSetup = {};
+          if (type === "pdf") {
+            rptSetup = {
+              recordSetup: {
+                limit_from: 0,
+                limit_to: 300,
+              },
+            };
+          }
           data = {
             report: {
               displayName: "Ledger Report - Date Wise",
@@ -421,10 +429,7 @@ export default memo(function Modal(props) {
               reportQuery: null,
               pageSize: "A4",
               pageOrentation: "portrait",
-              recordSetup: {
-                limit_from: 0,
-                limit_to: 600,
-              },
+              ...rptSetup,
               reportParams: [
                 {
                   name: "head_id",
