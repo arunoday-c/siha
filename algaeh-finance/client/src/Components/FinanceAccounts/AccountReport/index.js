@@ -10,6 +10,7 @@ import moment from "moment";
 // import { getReportOnScroll } from "./lazyScroll";
 // import CostCenter from "../../costCenterComponent";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { previewReport } from "../../../utils/reportPreview";
 let resultdata = {};
 export default memo(function Modal(props) {
   const {
@@ -49,156 +50,216 @@ export default memo(function Modal(props) {
         const nodeFields = selectedNode?.node;
         const from_date = moment(dateRange[0]).format("YYYY-MM-DD");
         const to_date = moment(dateRange[1]).format("YYYY-MM-DD");
+
+        previewReport(
+          {
+            reportTitle: "Ledger Report - Date Wise",
+            data: {
+              report: {
+                displayName: "Ledger Report - Date Wise",
+                reportName: "DateWiseLeafNode",
+                template_name: null,
+                reportQuery: null,
+                pageSize: "A4",
+                pageOrentation: "portrait",
+
+                reportParams: [
+                  {
+                    name: "child_id",
+                    value: nodeFields.finance_account_child_id,
+                    label: "Child",
+                    labelValue: nodeFields.full_name,
+                  },
+                  { name: "leafnode", value: "Y" },
+                  {
+                    name: "from_date",
+                    value: from_date,
+                  },
+                  {
+                    name: "to_date",
+                    value: to_date,
+                  },
+                  {
+                    name: "Date Range",
+                    value: `${from_date} ~ ${to_date}`,
+                  },
+                  {
+                    name: "Account Header",
+                    value:
+                      parentId === 1
+                        ? "Assets"
+                        : parentId === 2
+                        ? "Liabilities"
+                        : parentId === 4
+                        ? "Income"
+                        : parentId === 3
+                        ? "Capital"
+                        : "Expense",
+                  },
+                  {
+                    name: "Account Name",
+                    value: nodeFields.full_name,
+                  },
+                ],
+              },
+            },
+          },
+          result,
+          () => {
+            setLoading(false);
+            onOk("pdf");
+          }
+        );
+        return;
         // const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${result}&filename=Ledger report`;
         // window.open(origin);
-        const myWindow = window.open(
-          "Ledger Report",
-          "Ledger Report",
-          "resizable=yes"
-        );
-        myWindow.document.write(
-          `${result}<script>
-          let recordsPerPage = document.querySelector("table").querySelector("tbody")?.rows?.length; 
-          
-          const totalRecords = parseInt(document.getElementById("total_records").innerText);
-          window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-            window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"};
-            var db;
-          document.querySelector(".print-body").addEventListener("scroll",(e)=>{
-           
-            const totalBodyHeight = document.querySelector(".print-body").scrollHeight;            //document.body.scrollHeight;
-            if((e.target.scrollTop+e.target.offsetHeight) < totalBodyHeight){
-              return;
-            }
-            const rowsExistCount = document.querySelector("table").querySelector("tbody")?.rows?.length;
-            if(rowsExistCount >= totalRecords){
-              return;
-            }
-           
-            
-            var request = window.indexedDB.open("localforage");
-          request.onerror = function(event) {
-            console.log("Why didn't you allow my web app to use IndexedDB?!");
-          };
-          request.onsuccess = function(event) {
-            db = event.target.result;
-            var customerObjectStore = db.transaction("keyvaluepairs").objectStore("keyvaluepairs").get("token");
-            customerObjectStore.onerror = function(event) {
-              console.error("Unable to retrieve daa from database!");
-           };
-           const checkLoading = document.getElementById("pleaseWait");
-           if(checkLoading){
-             return;
-           }
+        // const myWindow = window.open(
+        //   "Ledger Report",
+        //   "_blank",
+        //   "resizable=yes"
+        // );
+        // myWindow.document.write(
+        //   `${result}<script>
+        //   let recordsPerPage = document.querySelector("table").querySelector("tbody")?.rows?.length;
 
-           const waitElement = document.createElement("div");
-           waitElement.setAttribute("id","pleaseWait");
-           waitElement.innerText ="Please Wait...";
-          document.body.append(waitElement);
-           customerObjectStore.onsuccess = function(event){
-             if(customerObjectStore.result){
-              const token = customerObjectStore.result;
-            
-              const resultdata = {
-                report:JSON.stringify({
-                  displayName: "Ledger Report - Date Wise",
-                  reportName: "DateWiseLeafNode",
-                  template_name: null,
-                  reportQuery: null,
-                  pageSize: "A4",
-                  pageOrentation: "portrait",
-                  recordSetup:{
-                    limit_from:recordsPerPage,
-                    limit_to:rowsExistCount
-                  },
-                  reportParams:[{
-                    name: "child_id",
-                    value:${nodeFields.finance_account_child_id},
-                    label:"Child",
-                    labelValue:"${nodeFields.full_name}"
-                  },{ name: "leafnode", value: "Y" },
-                {
-                  name:"from_date",
-                  value:"${from_date}"
-                },
-                {
-                  name:"to_date",
-                  value:"${to_date}"
-                },{
-                  name: "Date Range",
-                  value:"${from_date} ~ ${to_date}"
-                },{
-                  name: "Account Header",
-                  value:"${
-                    parentId === 1
-                      ? "Assets"
-                      : parentId === 2
-                      ? "Liabilities"
-                      : parentId === 4
-                      ? "Income"
-                      : parentId === 3
-                      ? "Capital"
-                      : "Expense"
-                  }"
-                },{
-                  name: "Account Name", value:"${nodeFields.full_name}"
-                }]
-                })
-              };
-              function serialize(obj, prefix) {
-                var str = [],
-                  p;
-                for (p in obj) {
-                  if(obj.hasOwnProperty(p)) {
-                    var k = prefix ? prefix + "[" + p + "]" : p,
-                      v = obj[p];
-                    str.push((v !== null && typeof v === "object") ?
-                      serialize(v, k) :
-                      encodeURIComponent(k) + "=" + encodeURIComponent(v));
-                  }
-                }
-                return str.join("&");
-              }
-               const qry = serialize(resultdata);
-               let url ="";
-               if(window.location.port===""){
-                 url = window.location.protocol+"//"+window.location.hostname+"/reports";
-               }else{
-                url = window.location.protocol+"//"+window.location.hostname+":3018";
-               }
-               fetch(url+'/api/v1/getRawReport?'+qry,{
-                method: 'GET',
-                headers:{
-                 "x-api-key":token,
-                 "x-client-ip":${window.localStorage.getItem("identity")}
-                },
-               
-               }).then((response)=>{
-                return response.text();
-               }).then((html)=>{
-                var parser = new DOMParser();
-                var doc = parser.parseFromString(html, "text/html");
-              //  document.body.append(doc);
-              const rows = doc.querySelector("tbody").rows;
-                for(let x=0;x<rows.length;x++){
-                   document.querySelector("table").querySelector("tbody").append(rows[x]);
-                  }
-               })
-               .catch(error=>{
-                 console.error("Error ====>",error);
-               }).finally(()=>{
-               document.body.removeChild(document.getElementById("pleaseWait"));
-               });
-             }else{
-               console.error("Some error occurred");
-             }
-           }
-          };
-          });
-          </script>`
-        );
-        setLoading(false);
-        onOk("pdf");
+        //   const totalRecords = parseInt(document.getElementById("total_records").innerText);
+        //   window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+        //     window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"};
+        //     var db;
+        //   document.querySelector(".print-body").addEventListener("scroll",(e)=>{
+
+        //     const totalBodyHeight = document.querySelector(".print-body").scrollHeight;            //document.body.scrollHeight;
+        //     if((e.target.scrollTop+e.target.offsetHeight) < totalBodyHeight){
+        //       return;
+        //     }
+        //     const rowsExistCount = document.querySelector("table").querySelector("tbody")?.rows?.length;
+        //     if(rowsExistCount >= totalRecords){
+        //       return;
+        //     }
+
+        //     var request = window.indexedDB.open("localforage");
+        //   request.onerror = function(event) {
+        //     console.log("Why didn't you allow my web app to use IndexedDB?!");
+        //   };
+        //   request.onsuccess = function(event) {
+        //     db = event.target.result;
+        //     var customerObjectStore = db.transaction("keyvaluepairs").objectStore("keyvaluepairs").get("token");
+        //     customerObjectStore.onerror = function(event) {
+        //       console.error("Unable to retrieve daa from database!");
+        //    };
+        //    const checkLoading = document.getElementById("pleaseWait");
+        //    if(checkLoading){
+        //      return;
+        //    }
+
+        //    const waitElement = document.createElement("div");
+        //    waitElement.setAttribute("id","pleaseWait");
+        //    waitElement.innerText ="Please Wait...";
+        //   document.body.append(waitElement);
+        //    customerObjectStore.onsuccess = function(event){
+        //      if(customerObjectStore.result){
+        //       const token = customerObjectStore.result;
+
+        //       const resultdata = {
+        //         report:JSON.stringify({
+        //           displayName: "Ledger Report - Date Wise",
+        //           reportName: "DateWiseLeafNode",
+        //           template_name: null,
+        //           reportQuery: null,
+        //           pageSize: "A4",
+        //           pageOrentation: "portrait",
+        //           recordSetup:{
+        //             limit_from:recordsPerPage,
+        //             limit_to:rowsExistCount
+        //           },
+        //           reportParams:[{
+        //             name: "child_id",
+        //             value:${nodeFields.finance_account_child_id},
+        //             label:"Child",
+        //             labelValue:"${nodeFields.full_name}"
+        //           },{ name: "leafnode", value: "Y" },
+        //         {
+        //           name:"from_date",
+        //           value:"${from_date}"
+        //         },
+        //         {
+        //           name:"to_date",
+        //           value:"${to_date}"
+        //         },{
+        //           name: "Date Range",
+        //           value:"${from_date} ~ ${to_date}"
+        //         },{
+        //           name: "Account Header",
+        //           value:"${
+        //             parentId === 1
+        //               ? "Assets"
+        //               : parentId === 2
+        //               ? "Liabilities"
+        //               : parentId === 4
+        //               ? "Income"
+        //               : parentId === 3
+        //               ? "Capital"
+        //               : "Expense"
+        //           }"
+        //         },{
+        //           name: "Account Name", value:"${nodeFields.full_name}"
+        //         }]
+        //         })
+        //       };
+        //       function serialize(obj, prefix) {
+        //         var str = [],
+        //           p;
+        //         for (p in obj) {
+        //           if(obj.hasOwnProperty(p)) {
+        //             var k = prefix ? prefix + "[" + p + "]" : p,
+        //               v = obj[p];
+        //             str.push((v !== null && typeof v === "object") ?
+        //               serialize(v, k) :
+        //               encodeURIComponent(k) + "=" + encodeURIComponent(v));
+        //           }
+        //         }
+        //         return str.join("&");
+        //       }
+        //        const qry = serialize(resultdata);
+        //        let url ="";
+        //        if(window.location.port===""){
+        //          url = window.location.protocol+"//"+window.location.hostname+"/reports";
+        //        }else{
+        //         url = window.location.protocol+"//"+window.location.hostname+":3018";
+        //        }
+        //        fetch(url+'/api/v1/getRawReport?'+qry,{
+        //         method: 'GET',
+        //         headers:{
+        //          "x-api-key":token,
+        //          "x-client-ip":${window.localStorage.getItem("identity")}
+        //         },
+
+        //        }).then((response)=>{
+        //         return response.text();
+        //        }).then((html)=>{
+        //         var parser = new DOMParser();
+        //         var doc = parser.parseFromString(html, "text/html");
+        //       //  document.body.append(doc);
+        //       const rows = doc.querySelector("tbody").rows;
+        //         for(let x=0;x<rows.length;x++){
+        //            document.querySelector("table").querySelector("tbody").append(rows[x]);
+        //           }
+        //        })
+        //        .catch(error=>{
+        //          console.error("Error ====>",error);
+        //        }).finally(()=>{
+        //        document.body.removeChild(document.getElementById("pleaseWait"));
+        //        });
+        //      }else{
+        //        console.error("Some error occurred");
+        //      }
+        //    }
+        //   };
+        //   });
+        //   </script>`
+        // );
+        // setLoading(false);
+        // onOk("pdf");
       })
       .catch((error) => {
         setLoading(false);
