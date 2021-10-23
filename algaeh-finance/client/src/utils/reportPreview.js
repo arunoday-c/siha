@@ -5,7 +5,7 @@ export function previewReport(options, initialResult, cb) {
 
   myWindow.document.write(
     `${initialResult} <script>
-          let recordsPerPage = document.querySelector("table").querySelector("tbody")?.rows?.length; 
+          let recordsPerPage = document.querySelector("tbody").querySelectorAll("tr:not(.no_count)").length; 
           document.title = "${reportTitle}";
           const totalRecords = parseInt(document.getElementById("total_records").innerText);
           window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
@@ -13,11 +13,15 @@ export function previewReport(options, initialResult, cb) {
             var db;
           document.querySelector(".print-body").addEventListener("scroll",(e)=>{
            
+            const checkLoading = document.getElementById("pleaseWait");
+            if(checkLoading){
+              return;
+            }
             const totalBodyHeight = document.querySelector(".print-body").scrollHeight;            //document.body.scrollHeight;
             if((e.target.scrollTop+e.target.offsetHeight) < totalBodyHeight){
               return;
             }
-            const rowsExistCount = document.querySelector("table").querySelector("tbody")?.rows?.length;
+            const rowsExistCount = document.querySelector("tbody").querySelectorAll("tr:not(.no_count)").length;
             if(rowsExistCount >= totalRecords){
               return;
             }
@@ -33,10 +37,7 @@ export function previewReport(options, initialResult, cb) {
             customerObjectStore.onerror = function(event) {
               console.error("Unable to retrieve daa from database!");
            };
-           const checkLoading = document.getElementById("pleaseWait");
-           if(checkLoading){
-             return;
-           }
+          
 
            const waitElement = document.createElement("div");
            waitElement.setAttribute("id","pleaseWait");

@@ -97,29 +97,29 @@ const executePDF = function executePDFMethod(options) {
                 if (result.length > 0) {
                   let CB_debit_side = null;
                   let CB_credit_side = null;
-                  // result.forEach((item) => {
-                  //   total_credit = (
-                  //     parseFloat(total_credit) + parseFloat(item.credit_amount)
-                  //   ).toFixed(decimal_places);
-                  //   total_debit = (
-                  //     parseFloat(total_debit) + parseFloat(item.debit_amount)
-                  //   ).toFixed(decimal_places);
-                  // });
+                  result.forEach((item) => {
+                    total_credit = (
+                      parseFloat(total_credit) + parseFloat(item.credit_amount)
+                    ).toFixed(decimal_places);
+                    total_debit = (
+                      parseFloat(total_debit) + parseFloat(item.debit_amount)
+                    ).toFixed(decimal_places);
+                  });
                   const outputArray = [];
 
                   let final_balance = "";
 
                   if (result[0]["root_id"] == 1 || result[0]["root_id"] == 5) {
-                    // const diffrence = parseFloat(
-                    //   total_debit - total_credit
-                    // ).toFixed(decimal_places);
-                    // if (diffrence > 0) {
-                    //   CB_credit_side = diffrence;
-                    // } else {
-                    //   CB_debit_side = diffrence;
-                    // }
+                    const diffrence = parseFloat(
+                      total_debit - total_credit
+                    ).toFixed(decimal_places);
+                    if (diffrence > 0) {
+                      CB_credit_side = diffrence;
+                    } else {
+                      CB_debit_side = diffrence;
+                    }
 
-                    // final_balance = total_debit;
+                    final_balance = total_debit;
 
                     opening_balance =
                       output[totalQuery !== "" ? 2 : 1][0]["deb_minus_cred"];
@@ -146,19 +146,72 @@ const executePDF = function executePDFMethod(options) {
                   _.chain(result)
                     .groupBy((g) => g.payment_date)
                     .forEach((detail) => {
-                      for (let c = 0; c < detail.length; c++) {
-                        const item = detail[c];
-                        const idx = c;
+                      // for (let c = 0; c < detail.length; c++) {
+                      //   const item = detail[c];
+                      //   const idx = c;
+                      //   let row_closing_balance = 0;
+                      //   // console.log("item====>", item);
+                      //   const debit_amt = parseFloat(item.debit_amount);
+                      //   const credit_amt = parseFloat(item.credit_amount);
+                      //   total_credit =
+                      //     parseFloat(total_credit) +
+                      //     parseFloat(item.credit_amount);
+                      //   total_debit =
+                      //     parseFloat(total_debit) +
+                      //     parseFloat(item.debit_amount);
+                      //   if (idx === 0 && index === 0) {
+                      //     lastAmount =
+                      //       parseFloat(lastAmount) +
+                      //       parseFloat(opening_balance);
+                      //   }
+                      //   if (item.root_id === 1 || item.root_id === 5) {
+                      //     if (debit_amt > 0) {
+                      //       row_closing_balance =
+                      //         parseFloat(lastAmount) + parseFloat(debit_amt);
+                      //       if (credit_amt > 0) {
+                      //         row_closing_balance =
+                      //           row_closing_balance - credit_amt;
+                      //       }
+                      //     } else {
+                      //       row_closing_balance =
+                      //         parseFloat(lastAmount) - parseFloat(credit_amt);
+                      //       if (debit_amt > 0) {
+                      //         row_closing_balance =
+                      //           row_closing_balance + debit_amt;
+                      //       }
+                      //     }
+                      //   } else {
+                      //     if (credit_amt > 0) {
+                      //       row_closing_balance =
+                      //         parseFloat(lastAmount) + parseFloat(credit_amt);
+                      //       if (debit_amt > 0) {
+                      //         row_closing_balance =
+                      //           row_closing_balance - debit_amt;
+                      //       }
+                      //     } else {
+                      //       row_closing_balance =
+                      //         parseFloat(lastAmount) - parseFloat(debit_amt);
+                      //       if (credit_amt > 0) {
+                      //         row_closing_balance =
+                      //           row_closing_balance + credit_amt;
+                      //       }
+                      //     }
+                      //   }
+                      //   lastAmount = parseFloat(row_closing_balance);
+                      //   outputArray.push({
+                      //     ...item,
+                      //     voucher_type: _.startCase(item.voucher_type),
+                      //     row_closing_balance:
+                      //       parseFloat(row_closing_balance).toFixed(
+                      //         decimal_places
+                      //       ),
+                      //   });
+                      // }
+
+                      detail.forEach((item, idx) => {
                         let row_closing_balance = 0;
-                        // console.log("item====>", item);
                         const debit_amt = parseFloat(item.debit_amount);
                         const credit_amt = parseFloat(item.credit_amount);
-                        total_credit =
-                          parseFloat(total_credit) +
-                          parseFloat(item.credit_amount);
-                        total_debit =
-                          parseFloat(total_debit) +
-                          parseFloat(item.debit_amount);
                         if (idx === 0 && index === 0) {
                           lastAmount =
                             parseFloat(lastAmount) +
@@ -206,61 +259,8 @@ const executePDF = function executePDFMethod(options) {
                               decimal_places
                             ),
                         });
-                      }
-
-                      // detail.forEach((item, idx) => {
-                      // let row_closing_balance = 0;
-                      // const debit_amt = parseFloat(item.debit_amount);
-                      // const credit_amt = parseFloat(item.credit_amount);
-                      // if (idx === 0 && index === 0) {
-                      //   lastAmount =
-                      //     parseFloat(lastAmount) +
-                      //     parseFloat(opening_balance);
-                      // }
-                      // if (item.root_id === 1 || item.root_id === 5) {
-                      //   if (debit_amt > 0) {
-                      //     row_closing_balance =
-                      //       parseFloat(lastAmount) + parseFloat(debit_amt);
-                      //     if (credit_amt > 0) {
-                      //       row_closing_balance =
-                      //         row_closing_balance - credit_amt;
-                      //     }
-                      //   } else {
-                      //     row_closing_balance =
-                      //       parseFloat(lastAmount) - parseFloat(credit_amt);
-                      //     if (debit_amt > 0) {
-                      //       row_closing_balance =
-                      //         row_closing_balance + debit_amt;
-                      //     }
-                      //   }
-                      // } else {
-                      //   if (credit_amt > 0) {
-                      //     row_closing_balance =
-                      //       parseFloat(lastAmount) + parseFloat(credit_amt);
-                      //     if (debit_amt > 0) {
-                      //       row_closing_balance =
-                      //         row_closing_balance - debit_amt;
-                      //     }
-                      //   } else {
-                      //     row_closing_balance =
-                      //       parseFloat(lastAmount) - parseFloat(debit_amt);
-                      //     if (credit_amt > 0) {
-                      //       row_closing_balance =
-                      //         row_closing_balance + credit_amt;
-                      //     }
-                      //   }
-                      // }
-                      // lastAmount = parseFloat(row_closing_balance);
-                      // outputArray.push({
-                      //   ...item,
-                      //   voucher_type: _.startCase(item.voucher_type),
-                      //   row_closing_balance:
-                      //     parseFloat(row_closing_balance).toFixed(
-                      //       decimal_places
-                      //     ),
-                      // });
-                      // });
-                      // index++;
+                      });
+                      index++;
                     })
                     .value();
                   //    console.log("===outputArray====", outputArray);
