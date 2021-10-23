@@ -16,7 +16,7 @@ const executePDF = function executePDFMethod(options) {
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
-
+      const { limit_from, limit_to } = options.args.recordSetup;
       let strQry = "";
 
       if (
@@ -35,22 +35,23 @@ const executePDF = function executePDFMethod(options) {
           })
           .then((result) => {
             if (result.length > 0) {
-              //ST-cost center
-              // if (
-              //   result[0]["cost_center_type"] == "P" &&
-              //   input.cost_center_id > 0
-              // ) {
-              //   strQry += ` and project_id=${input.cost_center_id} `;
-              // } else if (
-              //   result[0]["cost_center_type"] == "SD" &&
-              //   input.cost_center_id > 0
-              // ) {
-              //   strQry += ` and sub_department_id=${input.cost_center_id} `;
-              // }
-              //END-cost center
+              let totalQuery = "";
+              let limitDefine = "";
+              if (limit_from !== undefined && limit_from === 0) {
+                totalQuery = "SELECT FOUND_ROWS() total_pages;";
+              }
+              if (limit_from !== undefined && limit_to !== undefined) {
+                limitDefine = ` limit ${limit_to} offset ${limit_from}`;
+              }
+              console.log(
+                "limit_from && limit_from === 0",
+                limit_from !== undefined && limit_to !== undefined
+              );
               options.mysql
                 .executeQuery({
-                  query: `select H.finance_voucher_header_id, 
+                  query: `select ${
+                    totalQuery !== "" ? "SQL_CALC_FOUND_ROWS" : ""
+                  } H.finance_voucher_header_id, 
                   case when H.voucher_type='journal' then 'Journal' when H.voucher_type='contra' then 'Contra'
                   when H.voucher_type='receipt' then 'Receipt' when H.voucher_type='payment' then 'Payment'
                   when H.voucher_type='sales' then 'Sales' when H.voucher_type='purchase' then 'Purchase'
@@ -68,63 +69,75 @@ const executePDF = function executePDFMethod(options) {
                   inner join finance_account_child where finance_account_head_id =? union                  
                   select  H.finance_account_head_id from finance_account_head H
                   inner join cte on H.parent_acc_id = cte.finance_account_head_id    
-                  ) select * from cte ) ${strQry}   group by VD.payment_date,VD.child_id,voucher_no  order by VD.payment_date and H.voucher_no;`,
+                  ) select * from cte ) ${strQry}   group by VD.payment_date,VD.child_id,voucher_no  order by VD.payment_date and H.voucher_no ${limitDefine} ;
+                  ${totalQuery}
+                  `,
                   values: [input.head_id],
                   printQuery: true,
                 })
-                .then((final_result) => {
+                .then((resultX) => {
+                  const final_result = resultX[0];
                   let total_debit = parseFloat(0).toFixed(decimal_places);
                   let total_credit = parseFloat(0).toFixed(decimal_places);
-                  if (final_result.length > 0) {
-                    //to get only balace amount
+                  //if (final_result.length > 0) {
+                  //to get only balace amount
 
-                    // if (input.parent_id == 1 || input.parent_id == 5) {
-                    //   //DR
-                    // }
-                    final_result.forEach((item) => {
-                      total_credit = (
-                        parseFloat(total_credit) +
-                        parseFloat(item.credit_amount)
-                      ).toFixed(decimal_places);
-                      total_debit = (
-                        parseFloat(total_debit) + parseFloat(item.debit_amount)
-                      ).toFixed(decimal_places);
-                    });
+                  // if (input.parent_id == 1 || input.parent_id == 5) {
+                  //   //DR
+                  // }
+                  final_result.forEach((item) => {
+                    total_credit = (
+                      parseFloat(total_credit) + parseFloat(item.credit_amount)
+                    ).toFixed(decimal_places);
+                    total_debit = (
+                      parseFloat(total_debit) + parseFloat(item.debit_amount)
+                    ).toFixed(decimal_places);
+                  });
 
-                    // const dateWiseGroup = _.chain(final_result)
-                    //   .groupBy((g) => g.payment_date)
-                    //   .value();
+                  // const dateWiseGroup = _.chain(final_result)
+                  //   .groupBy((g) => g.payment_date)
+                  //   .value();
 
-                    // const outputArray = [];
+                  // const outputArray = [];
 
-                    // for (let i in dateWiseGroup) {
-                    //   dateWiseGroup[i][0]["transaction_date"] = i;
-                    //   outputArray.push(...dateWiseGroup[i]);
-                    // }
-                    const outputArray = final_result;
-                    // console.log("outputArray======", outputArray);
-                    resolve({
-                      details: outputArray,
-                      total_debit: total_debit,
-                      total_credit: total_credit,
-                      // decimalOnly: {
-                      //   decimal_places,
-                      //   addSymbol: true,
-                      //   symbol_position,
-                      //   currency_symbol,
-                      // },
-                      // currencyOnly: {
-                      //   decimal_places,
-                      //   addSymbol: true,
-                      //   symbol_position,
-                      //   currency_symbol,
-                      // },
-                    });
-                  } else {
-                    resolve({
-                      details: [],
-                    });
-                  }
+                  // for (let i in dateWiseGroup) {
+                  //   dateWiseGroup[i][0]["transaction_date"] = i;
+                  //   outputArray.push(...dateWiseGroup[i]);
+                  // }
+                  const outputArray = final_result;
+                  const totalRecords =
+                    totalQuery !== ""
+                      ? resultX[1][0]["total_pages"]
+                      : undefined;
+                  resolve({
+                    details: outputArray,
+                    total_debit: total_debit,
+                    total_credit: total_credit,
+                    totalRecords,
+                    from_date: moment(input.from_date, "YYYY-MM-DD").format(
+                      "DD-MM-YYYY"
+                    ),
+                    to_date: moment(input.to_date, "YYYY-MM-DD").format(
+                      "DD-MM-YYYY"
+                    ),
+                    decimalOnly: {
+                      decimal_places,
+                      addSymbol: false,
+                      symbol_position,
+                      currency_symbol,
+                    },
+                    currencyOnly: {
+                      decimal_places,
+                      addSymbol: false,
+                      symbol_position,
+                      currency_symbol,
+                    },
+                  });
+                  // } else {
+                  //   resolve({
+                  //     details: [],
+                  //   });
+                  // }
                 })
                 .catch((e) => {
                   options.mysql.releaseConnection();

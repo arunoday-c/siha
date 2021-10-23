@@ -16,7 +16,6 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
       const { limit_from, limit_to } = options.args.recordSetup;
-      console.log("options.args.recordSetup===>", options.args.recordSetup);
       let strQry = "";
 
       if (
@@ -268,7 +267,6 @@ const executePDF = function executePDFMethod(options) {
 
                   const totalRecords =
                     totalQuery !== "" ? output[1][0]["total_pages"] : undefined;
-                  console.log("Done before resolve", output[1], totalRecords);
                   resolve({
                     details: outputArray,
                     account_name: result[0]["child_name"],
