@@ -510,7 +510,7 @@ export default memo(function Modal(props) {
       footer={
         <div>
           <span className="ant-btn ant-btn-primary ant-btn-circle ant-btn-icon-only">
-            <i className="fas fa-file-pdf" onClick={onPdfGeneration}></i>
+            <i className="fas fa-eye" onClick={onPdfGeneration}></i>
           </span>
           <span
             className="ant-btn ant-btn-success ant-btn-circle ant-btn-icon-only"

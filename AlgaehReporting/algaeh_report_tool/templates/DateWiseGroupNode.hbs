@@ -1,7 +1,25 @@
-{{{importStyle "css/algaehReportStyles.css"}}}
+<style type="text/css">
+.print-body{
+    height:99vh;overflow:auto;
+}
+.tableFixHead          { overflow: auto; height: 100px; }
+.tableFixHead thead th { position: sticky; top: 0; z-index: 1; background:#eee;}
+.tableFixHead tfoot td { background:#eee;}
+#pleaseWait{
+    position: sticky; bottom: 10px; z-index: 1 ; width: 100%;    background-color: rgb(239, 255, 185);
+    padding: 4px 0;
+    text-align: center;
+    font-weight: bold;
+}
+#total_records{
+    display: none;
+}
+</style>
 
-<body>
-  <div class="print-body">
+{{#ifExist totalRecords}}
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+    <div class="print-body" >
     {{!-- <p style="text-align: center;">
             <b> Selected Date Range : {{from_date}} ~ {{to_date}} </b></p>
             <hr/> --}}
@@ -104,4 +122,4 @@
       </table>
     </section>
   </div>
-</body>
+</body>     {{/ifExist}}

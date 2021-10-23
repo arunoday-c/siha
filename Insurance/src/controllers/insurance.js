@@ -18,6 +18,7 @@ const {
   addPatientInsuranceData,
   getListOfInsuranceProvider,
   getSubInsurance,
+  getSubInsuranceMulti,
   getSubInsuranceGrid,
   getPortalExists,
   updatePortalExists,
@@ -110,6 +111,14 @@ export default () => {
     next();
   });
   api.get("/getSubInsurance", getSubInsurance, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.get("/getSubInsuranceMulti", getSubInsuranceMulti, (req, res, next) => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,

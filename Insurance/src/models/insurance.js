@@ -1647,6 +1647,50 @@ export default {
       next(e);
     }
   },
+  // Sidhiqe for Income Report Multi  Select Dropdown List
+
+  getSubInsuranceMulti: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from  hims_d_organization where hims_d_organization_id=1\
+             and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
+          printQuery: false,
+        })
+        .then((product_type) => {
+          let sqlQry;
+          if (product_type.length == 1) {
+            sqlQry = `SELECT hims_d_insurance_sub_id as value,insurance_sub_name as label from hims_d_insurance_sub where record_status='A';`;
+          } else {
+            sqlQry = `select hims_d_insurance_sub_id as value,insurance_sub_name as label from hims_d_insurance_sub where record_status='A';`;
+          }
+
+          _mysql
+            .executeQuery({
+              query: sqlQry,
+              printQuery: true,
+            })
+            .then((result) => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            })
+            .catch((error) => {
+              _mysql.releaseConnection();
+              next(error);
+            });
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
   getSubInsuranceGrid: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

@@ -41,6 +41,7 @@ export default class ReportUI extends Component {
       report_name: null,
       base64Pdf: undefined,
       multipleValue: [],
+      datePickerValue: undefined,
       pageOrentation: "landscape",
       pageSize: "A4",
       searchCollection: {},
@@ -489,6 +490,7 @@ export default class ReportUI extends Component {
     }
   }
   selectMultipleHandle(name, e) {
+    debugger;
     let _inputText = "";
 
     const _inputBox = document.getElementsByName(name.name);
@@ -631,6 +633,12 @@ export default class ReportUI extends Component {
       });
     }
   }
+  datePickerOnchange(value) {
+    debugger;
+    this.setState({
+      datePickerValue: value,
+    });
+  }
   datePickerHandler(selectedDate) {
     const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
       .where((w) => w.name === selectedDate.name)
@@ -647,7 +655,6 @@ export default class ReportUI extends Component {
         },
       });
     }
-
     // this.setState({
     //   [_param.name]: selectedDate
     // });
@@ -668,6 +675,7 @@ export default class ReportUI extends Component {
     } = require("./algaehWrapper");
     const {
       Select,
+      DatePicker,
       // AlgaehLabel as Label,
     } = require("algaeh-react-components");
     // const { AlgaehAutoSearch } = require("./autoSearch");
@@ -836,9 +844,26 @@ export default class ReportUI extends Component {
                   onChange: this.datePickerHandler.bind(this),
                 }}
                 value={this.state.parameterCollection[_param.name]}
+                picker={this.state.parameterCollection[_param.picker]}
               />
             );
             break;
+
+          case "datePicker":
+            _controls.push(
+              <div className={_className}>
+                <label className="style_Label">{_param.label}</label>
+                <DatePicker
+                  onChange={this.datePickerOnchange.bind(this)}
+                  picker={_param.picker}
+                  value={this.state.datePickerValue}
+                  size={_param.size}
+                  maxDate={new Date()}
+                />
+              </div>
+            );
+            break;
+
           case "time":
             _controls.push(
               <AlgaehDateHandler
