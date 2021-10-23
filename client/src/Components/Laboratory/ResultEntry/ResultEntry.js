@@ -459,6 +459,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
       data: inputObj,
       onSuccess: (response) => {
         if (response.data.success) {
+          setTest_analytes([]);
           getAnalytesReload();
           setIsLoading(false);
         }
@@ -1401,6 +1402,7 @@ function SampleCollectionPatient({ onClose, selectedPatient = {}, open }) {
                                       <ResultInput
                                         row={row}
                                         onChange={(e) => {
+                                          debugger;
                                           onchangegridresult(row, e);
                                         }}
                                       />
