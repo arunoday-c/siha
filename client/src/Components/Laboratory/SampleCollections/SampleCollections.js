@@ -836,9 +836,6 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
         maskClosable={true}
         onCancel={onClose}
         footer={[
-          <button onClick={onClose} className="btn btn-default">
-            Close
-          </button>,
           <AlgaehSecurityComponent componentCode="BTN_BLK_SAM_BAR_COL">
             <button
               className="btn btn-primary"
@@ -851,6 +848,9 @@ function SampleCollectionPatient({ onClose, selected_patient = {}, isOpen }) {
               />
             </button>
           </AlgaehSecurityComponent>,
+          <button onClick={onClose} className="btn btn-default">
+            Close
+          </button>,
 
           <AlgaehSecurityComponent componentCode="BTN_BLK_SAM_BAR_COL">
             <button
