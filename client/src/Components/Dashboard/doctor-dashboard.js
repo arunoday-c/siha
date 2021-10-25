@@ -4,7 +4,7 @@ import { Bar } from "react-chartjs-2";
 import "./dashboard.scss";
 import moment from "moment";
 import AlgaehFile from "../Wrapper/algaehFileUpload";
-
+import PatientAttachmentModal from "../PatientAttachmentModal";
 // import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
 
 import {
@@ -19,7 +19,7 @@ import {
 import { algaehApiCall } from "../../utils/algaehApiCall";
 // import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 // import { RawSecurityElement } from "algaeh-react-components";
-import { ViewAttachmentsModal } from "../MRD/PatientMRD/Encounters/viewAttachmentsModal";
+// import { ViewAttachmentsModal } from "../MRD/PatientMRD/Encounters/viewAttachmentsModal";
 import { useForm, Controller } from "react-hook-form";
 
 import { newAlgaehApi } from "../../hooks";
@@ -972,12 +972,20 @@ export default function Dashboard() {
                       />
                     </Spin>
                     {openAttachmentsModal ? (
-                      <ViewAttachmentsModal
-                        rowData={currentRow}
-                        visible={openAttachmentsModal}
-                        onClose={showAttachmentsOfServices}
+                      <PatientAttachmentModal
+                        openModal={openAttachmentsModal}
+                        row={currentRow}
+                        uniqueId={currentRow.lab_id_number}
+                        onlyView={true}
+                        nameOfTheFolder="LaboratoryDocuments"
+                        CloseModal={showAttachmentsOfServices}
                       />
-                    ) : null}
+                    ) : // <ViewAttachmentsModal
+                    //   rowData={currentRow}
+                    //   visible={openAttachmentsModal}
+                    //   onClose={showAttachmentsOfServices}
+                    // />
+                    null}
                   </div>
                 </div>
               </div>
