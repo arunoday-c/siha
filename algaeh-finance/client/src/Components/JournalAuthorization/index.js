@@ -646,8 +646,7 @@ export default memo(function (props) {
         onSuccess: (res) => {
           // setLoading(false);
           const urlBlob = URL.createObjectURL(res.data);
-          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Lab Report`;
-          // const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Lab Report for ${this.state.patient_code}-${this.state.patient_name}`;
+          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Merged Journal Report`;
           window.open(origin);
           setLoading(false);
         },

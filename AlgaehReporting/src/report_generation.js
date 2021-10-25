@@ -694,6 +694,7 @@ export default {
                       // shortUrl = shortid.generate();
                       detailResult["shortUrl"] = `${qrUrl}${shortUrl}`;
                     }
+
                     let pageContent = await compile(
                       `${_data.report_name}${usehbs}`,
                       {
@@ -701,6 +702,7 @@ export default {
                         reqHeader: _header,
                       }
                     );
+
                     if (singleHeaderFooter === true) {
                       pageContent = header_format + pageContent + footerFormat;
                     }
@@ -747,7 +749,8 @@ export default {
                       div.className = "watermark";
                       document.body.appendChild(div);
                     });
-
+                    console.log("Page PDF ====>");
+                    console.time();
                     await page.pdf({
                       path: _outPath,
                       ...pageSize,
@@ -756,11 +759,9 @@ export default {
                       displayHeaderFooter: displayHeaderFooter,
                       ..._pdfTemplating,
                       ...others,
-
-                      // headerTemplate:
-                      //   "<h1>H1 tag</h1><h2>H2 tag</h2><hr style='border-bottom: 2px solid #8c8b8b;' />"
                     });
-
+                    console.timeEnd();
+                    console.log("_outPath===>", _outPath);
                     await browser.close();
                     // console.log(
                     //   " _reportOutput.length ",
@@ -816,6 +817,7 @@ export default {
                                 });
                                 const _fs = fs.createReadStream(_rOut);
                                 _fs.on("end", async () => {
+                                  console.log("Here it is ===>");
                                   const axiosRes = await axios(
                                     //"http://localhost:3024/fileShare",
                                     "http://localhost:3024/uploadFile",
@@ -1820,6 +1822,7 @@ export default {
   },
   getRawReport: async (req, res) => {
     const input = req.query;
+    console.log("input====>", input);
     const _mysql = new algaehMysql();
     try {
       const _inputParam = JSON.parse(input.report);
@@ -1835,6 +1838,7 @@ export default {
         })
         .then((data) => {
           _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
+          _inputParam["crypto"] = req.userIdentity;
           const _reportCount = data[0].length;
           if (_reportCount > 0) {
             let _reportOutput = [];
@@ -1884,12 +1888,13 @@ export default {
                     // res.write("No record");
                     return;
                   }
-
+                  let shortUrl = "";
                   const _supportingJS = path.join(
                     process.cwd(),
                     "algaeh_report_tool/templates",
                     `${_data.report_name}.js`
                   );
+                  console.log("_supportingJS====>", _supportingJS);
                   const _header = req.headers;
 
                   const startGenerate = async () => {
@@ -1983,19 +1988,26 @@ export default {
                   if (fs.existsSync(_supportingJS)) {
                     const { executePDF } =
                       __non_webpack_require__(_supportingJS);
+
                     executePDF({
                       mysql: _mysql,
                       inputs: _inputOrders,
                       args: _inputParam,
                       loadash: _,
+                      xtype: xtype,
                       moment: moment,
                       mainData: data[1],
                       result: result,
                       writtenForm: writtenForm,
-                      currencyFormat: (currency, formater) => {
+                      convertMilimetersToPixel: convertMilimetersToPixel,
+                      utilitites: () => {
+                        return new utilitites();
+                      },
+                      currencyFormat: (currency, formater, addSymbol) => {
                         return new utilitites().getCurrencyFormart(
                           currency,
-                          formater
+                          formater,
+                          addSymbol
                         );
                       },
                       shortenURL: `${
@@ -2004,6 +2016,10 @@ export default {
                     })
                       .then((resultReq) => {
                         result = resultReq;
+                        console.log(
+                          "Here inside Result Request====>",
+                          result.totalRecords
+                        );
                         startGenerate();
                       })
                       .catch((error) => {});

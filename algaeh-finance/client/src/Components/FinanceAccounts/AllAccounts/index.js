@@ -191,7 +191,7 @@ function AllAccounts({ title, inDrawer }) {
                 "NodeAddButton " + (node.leafnode === "Y" ? "disabled" : "")
               }
               onClick={() => {
-                console.log(rowInfo, "selected node");
+                // console.log(rowInfo, "selected node");
                 setSelectedNode(rowInfo);
                 setShowPopup(true);
                 setNewAccount(true);

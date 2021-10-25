@@ -28,9 +28,13 @@ const executePDF = function executePDFMethod(options) {
 
       let strData = "";
 
-      if (input.primary_sub_id > 0) {
-        strData += ` and IM.primary_sub_id=${input.primary_sub_id}`;
+      // if (input.hims_d_insurance_sub_ids > 0) {
+      if (input.hims_d_insurance_sub_ids.length > 0) {
+        strData += ` and IM.primary_sub_id in (${input.hims_d_insurance_sub_ids})`;
       }
+
+      console.log("input=", input);
+      console.log("params=", params);
 
       options.mysql
         .executeQuery({

@@ -5,25 +5,31 @@ const executePDF = function executePDFMethod(options) {
   return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
-
       const moment = options.moment;
       let input = {};
       const { decimal_places, symbol_position, currency_symbol } =
         options.args.crypto;
-      const params = options.args.reportParams;
 
+      const params = options.args.reportParams;
       // const decimal_places = options.args.crypto.decimal_places;
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
+      const limit_from = options.args.recordSetup
+        ? options.args.recordSetup.limit_from
+        : undefined;
+      const limit_to = options.args.recordSetup
+        ? options.args.recordSetup.limit_to
+        : undefined;
+      // const { limit_from, limit_to } = options.args?.recordSetup;
       let strQry = "";
 
       if (
         moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
         moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
       ) {
-        strQry = ` and VD.payment_date between date('${input.from_date}') and date('${input.to_date}') `;
+        strQry = ` and payment_date between date('${input.from_date}') and date('${input.to_date}') `;
       }
 
       if (input.leafnode == "Y") {
@@ -34,44 +40,51 @@ const executePDF = function executePDFMethod(options) {
             printQuery: true,
           })
           .then((resul) => {
-            //ST-cost center
-            // if (
-            //   resul[0]["cost_center_type"] == "P" &&
-            //   input.cost_center_id > 0
-            // ) {
-            //   strQry += ` and project_id=${input.cost_center_id} `;
-            // } else if (
-            //   resul[0]["cost_center_type"] == "SD" &&
-            //   input.cost_center_id > 0
-            // ) {
-            //   strQry += ` and sub_department_id=${input.cost_center_id} `;
-            // }
-            //END-cost center
+            // select finance_voucher_header_id,
+            //     case when H.voucher_type='journal' then 'Journal' when H.voucher_type='contra' then 'Contra'
+            //     when H.voucher_type='receipt' then 'Receipt' when H.voucher_type='payment' then 'Payment'
+            //     when H.voucher_type='sales' then 'Sales' when H.voucher_type='purchase' then 'Purchase'
+            //     when H.voucher_type='credit_note' then 'Credit Note' when H.voucher_type='debit_note' then 'Debit Note'
+            //     when H.voucher_type='expense_voucher' then 'Expense' when H.voucher_type='year_end' then 'Year End'
+            //     when H.voucher_type='year_end_rev' then 'Year End Reversal' end as voucher_type,
+            //     voucher_no,VD.narration,
+            //     VD.head_id,VD.payment_date, VD.child_id, AH.root_id,
+            //     debit_amount,credit_amount,C.child_name,C.ledger_code
+            //     from finance_voucher_header H right join finance_voucher_details VD
+            //     on H.finance_voucher_header_id=VD.voucher_header_id inner join finance_account_child C on
+            //     VD.child_id=C.finance_account_child_id inner join  finance_account_head AH on
+            //     C.head_id=AH.finance_account_head_id where VD.auth_status='A' and
+            //     VD.child_id=? ${strQry} order by VD.payment_date
 
+            let totalQuery = "";
+            let limitDefine = "";
+
+            // console.log("limit_from && limit_to", limit_from && limit_to);
+            if (limit_from !== undefined && limit_from === 0) {
+              totalQuery = "SELECT FOUND_ROWS() total_pages;";
+            }
+            if (limit_from !== undefined && limit_to !== undefined) {
+              limitDefine = ` limit ${limit_to} offset ${limit_from}`;
+            }
+            console.log(
+              "limit_from && limit_from === 0",
+              limit_from !== undefined && limit_to !== undefined
+            );
             options.mysql
               .executeQuery({
                 query: `
-                select finance_voucher_header_id,
-                case when H.voucher_type='journal' then 'Journal' when H.voucher_type='contra' then 'Contra'
-                when H.voucher_type='receipt' then 'Receipt' when H.voucher_type='payment' then 'Payment'
-                when H.voucher_type='sales' then 'Sales' when H.voucher_type='purchase' then 'Purchase'
-                when H.voucher_type='credit_note' then 'Credit Note' when H.voucher_type='debit_note' then 'Debit Note'
-                when H.voucher_type='expense_voucher' then 'Expense' when H.voucher_type='year_end' then 'Year End'
-                when H.voucher_type='year_end_rev' then 'Year End Reversal' end as voucher_type,
-                voucher_no,VD.narration,
-                VD.head_id,VD.payment_date, VD.child_id, AH.root_id,              
-                debit_amount,credit_amount,C.child_name,C.ledger_code
-                from finance_voucher_header H right join finance_voucher_details VD
-                on H.finance_voucher_header_id=VD.voucher_header_id inner join finance_account_child C on
-                VD.child_id=C.finance_account_child_id inner join  finance_account_head AH on
-                C.head_id=AH.finance_account_head_id where VD.auth_status='A' and
-                VD.child_id=? ${strQry} order by VD.payment_date;
+                select ${
+                  totalQuery !== "" ? "SQL_CALC_FOUND_ROWS" : ""
+                } * from view_date_wise_leaf_node where child_id=? ${strQry} order by payment_date ${limitDefine} ;
+                ${totalQuery}
                 select  child_id,ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),2) as cred_minus_deb,
                 ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),2)  as deb_minus_cred
                 from   finance_voucher_details    where child_id=? and auth_status='A'  and payment_date < ?;
                 select  child_id,ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),2) as cred_minus_deb,
                 ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),2)  as deb_minus_cred
-                from   finance_voucher_details    where child_id=? and auth_status='A'  and payment_date <= ?;   `,
+                from   finance_voucher_details    where child_id=? and auth_status='A'  and payment_date <= ?;  
+               
+                `,
                 values: [
                   input.child_id,
                   input.child_id,
@@ -100,12 +113,6 @@ const executePDF = function executePDFMethod(options) {
                     ).toFixed(decimal_places);
                   });
                   const outputArray = [];
-                  // const dateWiseGroup = _.chain(result)
-                  //   .groupBy((g) => g.payment_date)
-                  //   .value();
-                  // for (let i in dateWiseGroup) {
-                  //   outputArray.push(...dateWiseGroup[i]);
-                  // }
 
                   let final_balance = "";
 
@@ -121,8 +128,10 @@ const executePDF = function executePDFMethod(options) {
 
                     final_balance = total_debit;
 
-                    opening_balance = output[1][0]["deb_minus_cred"];
-                    closing_balance = output[2][0]["deb_minus_cred"];
+                    opening_balance =
+                      output[totalQuery !== "" ? 2 : 1][0]["deb_minus_cred"];
+                    closing_balance =
+                      output[totalQuery !== "" ? 3 : 2][0]["deb_minus_cred"];
                   } else {
                     const diffrence = parseFloat(
                       total_credit - total_debit
@@ -134,26 +143,87 @@ const executePDF = function executePDFMethod(options) {
                     }
                     final_balance = total_credit;
 
-                    opening_balance = output[1][0]["cred_minus_deb"];
-                    closing_balance = output[2][0]["cred_minus_deb"];
+                    opening_balance =
+                      output[totalQuery !== "" ? 2 : 1][0]["cred_minus_deb"];
+                    closing_balance =
+                      output[totalQuery !== "" ? 3 : 2][0]["cred_minus_deb"];
                   }
                   let lastAmount = 0;
                   let index = 0;
                   _.chain(result)
                     .groupBy((g) => g.payment_date)
                     .forEach((detail) => {
+                      // for (let c = 0; c < detail.length; c++) {
+                      //   const item = detail[c];
+                      //   const idx = c;
+                      //   let row_closing_balance = 0;
+                      //   // console.log("item====>", item);
+                      //   const debit_amt = parseFloat(item.debit_amount);
+                      //   const credit_amt = parseFloat(item.credit_amount);
+                      //   total_credit =
+                      //     parseFloat(total_credit) +
+                      //     parseFloat(item.credit_amount);
+                      //   total_debit =
+                      //     parseFloat(total_debit) +
+                      //     parseFloat(item.debit_amount);
+                      //   if (idx === 0 && index === 0) {
+                      //     lastAmount =
+                      //       parseFloat(lastAmount) +
+                      //       parseFloat(opening_balance);
+                      //   }
+                      //   if (item.root_id === 1 || item.root_id === 5) {
+                      //     if (debit_amt > 0) {
+                      //       row_closing_balance =
+                      //         parseFloat(lastAmount) + parseFloat(debit_amt);
+                      //       if (credit_amt > 0) {
+                      //         row_closing_balance =
+                      //           row_closing_balance - credit_amt;
+                      //       }
+                      //     } else {
+                      //       row_closing_balance =
+                      //         parseFloat(lastAmount) - parseFloat(credit_amt);
+                      //       if (debit_amt > 0) {
+                      //         row_closing_balance =
+                      //           row_closing_balance + debit_amt;
+                      //       }
+                      //     }
+                      //   } else {
+                      //     if (credit_amt > 0) {
+                      //       row_closing_balance =
+                      //         parseFloat(lastAmount) + parseFloat(credit_amt);
+                      //       if (debit_amt > 0) {
+                      //         row_closing_balance =
+                      //           row_closing_balance - debit_amt;
+                      //       }
+                      //     } else {
+                      //       row_closing_balance =
+                      //         parseFloat(lastAmount) - parseFloat(debit_amt);
+                      //       if (credit_amt > 0) {
+                      //         row_closing_balance =
+                      //           row_closing_balance + credit_amt;
+                      //       }
+                      //     }
+                      //   }
+                      //   lastAmount = parseFloat(row_closing_balance);
+                      //   outputArray.push({
+                      //     ...item,
+                      //     voucher_type: _.startCase(item.voucher_type),
+                      //     row_closing_balance:
+                      //       parseFloat(row_closing_balance).toFixed(
+                      //         decimal_places
+                      //       ),
+                      //   });
+                      // }
+
                       detail.forEach((item, idx) => {
                         let row_closing_balance = 0;
-
                         const debit_amt = parseFloat(item.debit_amount);
                         const credit_amt = parseFloat(item.credit_amount);
-
                         if (idx === 0 && index === 0) {
                           lastAmount =
                             parseFloat(lastAmount) +
                             parseFloat(opening_balance);
                         }
-
                         if (item.root_id === 1 || item.root_id === 5) {
                           if (debit_amt > 0) {
                             row_closing_balance =
@@ -187,9 +257,7 @@ const executePDF = function executePDFMethod(options) {
                             }
                           }
                         }
-
                         lastAmount = parseFloat(row_closing_balance);
-
                         outputArray.push({
                           ...item,
                           voucher_type: _.startCase(item.voucher_type),
@@ -203,6 +271,9 @@ const executePDF = function executePDFMethod(options) {
                     })
                     .value();
                   //    console.log("===outputArray====", outputArray);
+
+                  const totalRecords =
+                    totalQuery !== "" ? output[1][0]["total_pages"] : undefined;
                   resolve({
                     details: outputArray,
                     account_name: result[0]["child_name"],
@@ -214,6 +285,7 @@ const executePDF = function executePDFMethod(options) {
                     final_balance: final_balance,
                     opening_balance: opening_balance,
                     closing_balance: closing_balance,
+                    totalRecords,
                     from_date: moment(input.from_date, "YYYY-MM-DD").format(
                       "DD-MM-YYYY"
                     ),

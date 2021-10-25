@@ -1425,13 +1425,7 @@ select H.finance_voucher_header_id,
           return { ...m, closing_bal: Math.abs(m.closing_bal) };
         }
       });
-      const operationalActivityCL = cumulativeResult[2].map((m) => {
-        if (parseFloat(m.closing_bal) < 0) {
-          return { ...m, closing_bal: Math.abs(m.closing_bal) };
-        } else {
-          return { ...m };
-        }
-      });
+      const operationalActivityCL = cumulativeResult[2];
 
       const _totalOperating = parseFloat(
         _.sumBy(operationalActivityCA, (s) => parseFloat(s.closing_bal)) +
