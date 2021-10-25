@@ -27,6 +27,7 @@
             <table class="tableForDataNoBorder tableFixHead" cell-padding="0">
                 <thead>
                     <tr>
+                         <th width=""  class="txtFld">ID</th>
                         <th width=""  class="txtFld">Date</th>
                         <th width=""  class="txtFld">Voucher Type</th>
                         <th width=""  class="txtFld">Voucher No.</th>
@@ -47,6 +48,7 @@
                      {{/ifExist}}
                     {{#each details}}
                     <tr>
+                        <td>{{finance_voucher_header_id}}</td>
                         <td datatype="string"  class="txtFld">{{payment_date}}</td>
                         <td datatype="string"  class="txtFld">{{voucher_type}}</td>
                         <td datatype="string"  class="txtFld">{{voucher_no}}</td>
