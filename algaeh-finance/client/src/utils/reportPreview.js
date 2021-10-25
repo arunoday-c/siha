@@ -5,7 +5,7 @@ export function previewReport(options, initialResult, cb) {
 
   myWindow.document.write(
     `${initialResult} <script>
-          let recordsPerPage = document.querySelector("tbody").querySelectorAll("tr:not(.no_count)").length; 
+          let recordsPerPage = parseInt(document.getElementById("rows_per_page").innerText); 
           document.title = "${reportTitle}";
           const totalRecords = parseInt(document.getElementById("total_records").innerText);
           window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
@@ -53,8 +53,9 @@ export function previewReport(options, initialResult, cb) {
                     pageSize:"A4",
                     pageOrentation:"portrait",
                     recordSetup:{
-                        limit_from:recordsPerPage,
-                        limit_to:rowsExistCount
+                        limit_from:document.querySelector("tbody").querySelectorAll("tr:not(.no_count)").length,//rowsExistCount,
+                        limit_to:recordsPerPage,
+                     
                     },
                     reportParams:${JSON.stringify(report.reportParams)}
                 })
@@ -90,13 +91,15 @@ export function previewReport(options, initialResult, cb) {
                }).then((response)=>{
                 return response.text();
                }).then((html)=>{
-                var parser = new DOMParser();
-                var doc = parser.parseFromString(html, "text/html");
-              //  document.body.append(doc);
-              const rows = doc.querySelector("tbody").rows;
-                for(let x=0;x<rows.length;x++){
-                   document.querySelector("table").querySelector("tbody").append(rows[x]);
-                  }
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
+              
+              const tableBody = doc.querySelector("table").cloneNode(true).querySelector("tbody").querySelectorAll("tr");
+              
+             for(let tb=0;tb<tableBody.length;tb++){
+                document.getElementById("main_table").querySelector("tbody").append(tableBody[tb].cloneNode(true));
+             }
+             
                })
                .catch(error=>{
                  console.error("Error ====>",error);

@@ -62,7 +62,7 @@ export default memo(function Modal(props) {
                 reportQuery: null,
                 pageSize: "A4",
                 pageOrentation: "portrait",
-
+                skip: { opening_balance: false },
                 reportParams: [
                   {
                     name: "child_id",

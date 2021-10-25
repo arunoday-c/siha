@@ -22,9 +22,9 @@ const executePDF = function executePDFMethod(options) {
       const limit_to = options.args.recordSetup
         ? options.args.recordSetup.limit_to
         : undefined;
-      const skip = options.args.recordSetup
-        ? options.recordSetup.args.skip
-        : undefined;
+      // const skip = options.args.recordSetup
+      //   ? options.recordSetup.args.skip
+      //   : undefined;
       // const { limit_from, limit_to } = options.args?.recordSetup;
       let strQry = "";
 
@@ -61,13 +61,14 @@ const executePDF = function executePDFMethod(options) {
 
             let totalQuery = "";
             let limitDefine = "";
-
+            let rowsPerPage = undefined;
             // console.log("limit_from && limit_to", limit_from && limit_to);
             if (limit_from !== undefined && limit_from === 0) {
               totalQuery = "SELECT FOUND_ROWS() total_pages;";
+              rowsPerPage = limit_to;
             }
             if (limit_from !== undefined && limit_to !== undefined) {
-              limitDefine = ` limit ${limit_from} offset ${limit_to}`;
+              limitDefine = ` limit ${limit_to} offset ${limit_from}`;
             }
             console.log(
               "limit_from && limit_from === 0",
@@ -107,7 +108,7 @@ const executePDF = function executePDFMethod(options) {
                 if (result.length > 0) {
                   let CB_debit_side = null;
                   let CB_credit_side = null;
-                  console.log("");
+                  console.log("Here it is ");
                   result.forEach((item) => {
                     total_credit = (
                       parseFloat(total_credit) + parseFloat(item.credit_amount)
@@ -155,8 +156,9 @@ const executePDF = function executePDFMethod(options) {
                   let lastAmount = 0;
                   let index = 0;
                   _.chain(result)
-                    .groupBy((g) => g.payment_date)
-                    .forEach((detail) => {
+                    // .groupBy((g) => g.payment_date)
+                    .forEach((detail, idx) => {
+                      // console.log("detail===>", detail);
                       // for (let c = 0; c < detail.length; c++) {
                       //   const item = detail[c];
                       //   const idx = c;
@@ -219,63 +221,62 @@ const executePDF = function executePDFMethod(options) {
                       //   });
                       // }
 
-                      detail.forEach((item, idx) => {
-                        let row_closing_balance = 0;
-                        const debit_amt = parseFloat(item.debit_amount);
-                        const credit_amt = parseFloat(item.credit_amount);
-                        if (idx === 0 && index === 0) {
-                          lastAmount =
-                            parseFloat(lastAmount) +
-                            parseFloat(opening_balance);
-                        }
-                        if (item.root_id === 1 || item.root_id === 5) {
-                          if (debit_amt > 0) {
-                            row_closing_balance =
-                              parseFloat(lastAmount) + parseFloat(debit_amt);
-                            if (credit_amt > 0) {
-                              row_closing_balance =
-                                row_closing_balance - credit_amt;
-                            }
-                          } else {
-                            row_closing_balance =
-                              parseFloat(lastAmount) - parseFloat(credit_amt);
-                            if (debit_amt > 0) {
-                              row_closing_balance =
-                                row_closing_balance + debit_amt;
-                            }
-                          }
-                        } else {
+                      // detail.forEach((item, idx) => {
+                      const item = detail;
+                      let row_closing_balance = 0;
+                      const debit_amt = parseFloat(item.debit_amount);
+                      const credit_amt = parseFloat(item.credit_amount);
+                      if (idx === 0 && index === 0) {
+                        lastAmount =
+                          parseFloat(lastAmount) + parseFloat(opening_balance);
+                      }
+                      if (item.root_id === 1 || item.root_id === 5) {
+                        if (debit_amt > 0) {
+                          row_closing_balance =
+                            parseFloat(lastAmount) + parseFloat(debit_amt);
                           if (credit_amt > 0) {
                             row_closing_balance =
-                              parseFloat(lastAmount) + parseFloat(credit_amt);
-                            if (debit_amt > 0) {
-                              row_closing_balance =
-                                row_closing_balance - debit_amt;
-                            }
-                          } else {
+                              row_closing_balance - credit_amt;
+                          }
+                        } else {
+                          row_closing_balance =
+                            parseFloat(lastAmount) - parseFloat(credit_amt);
+                          if (debit_amt > 0) {
                             row_closing_balance =
-                              parseFloat(lastAmount) - parseFloat(debit_amt);
-                            if (credit_amt > 0) {
-                              row_closing_balance =
-                                row_closing_balance + credit_amt;
-                            }
+                              row_closing_balance + debit_amt;
                           }
                         }
-                        lastAmount = parseFloat(row_closing_balance);
-                        outputArray.push({
-                          ...item,
-                          voucher_type: _.startCase(item.voucher_type),
-                          row_closing_balance:
-                            parseFloat(row_closing_balance).toFixed(
-                              decimal_places
-                            ),
-                        });
+                      } else {
+                        if (credit_amt > 0) {
+                          row_closing_balance =
+                            parseFloat(lastAmount) + parseFloat(credit_amt);
+                          if (debit_amt > 0) {
+                            row_closing_balance =
+                              row_closing_balance - debit_amt;
+                          }
+                        } else {
+                          row_closing_balance =
+                            parseFloat(lastAmount) - parseFloat(debit_amt);
+                          if (credit_amt > 0) {
+                            row_closing_balance =
+                              row_closing_balance + credit_amt;
+                          }
+                        }
+                      }
+                      lastAmount = parseFloat(row_closing_balance);
+                      outputArray.push({
+                        ...item,
+                        voucher_type: _.startCase(item.voucher_type),
+                        row_closing_balance:
+                          parseFloat(row_closing_balance).toFixed(
+                            decimal_places
+                          ),
                       });
+                      // });
                       index++;
                     })
                     .value();
-                  //    console.log("===outputArray====", outputArray);
-
+                  console.log("===outputArray====", outputArray.length);
                   const totalRecords =
                     totalQuery !== "" ? output[1][0]["total_pages"] : undefined;
                   resolve({
@@ -290,6 +291,7 @@ const executePDF = function executePDFMethod(options) {
                     opening_balance: opening_balance,
                     closing_balance: closing_balance,
                     totalRecords,
+                    rowsPerPage,
                     from_date: moment(input.from_date, "YYYY-MM-DD").format(
                       "DD-MM-YYYY"
                     ),
