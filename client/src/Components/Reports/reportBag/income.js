@@ -479,7 +479,7 @@ export default function Income({
       {
         subitem: "Income Services by Customer",
         reportName: "incomeServiceByCustomer",
-        // componentCode: "RPT_INC_SVRS",
+        componentCode: "RPT_INC_SRV_CUS",
         requireIframe: true,
         reportParameters: [
           {
@@ -519,35 +519,35 @@ export default function Income({
               minDate: null,
             },
           },
-          {
-            className: "col-3 form-group",
-            type: "dropdown",
-            name: "service_type_id",
-            initialLoad: true,
-            isImp: false,
-            link: {
-              uri: "/serviceType",
-              module: "masterSettings",
-            },
-            dataSource: {
-              textField: "service_type",
-              valueField: "hims_d_service_type_id",
-              data: undefined,
-            },
-          },
-          {
-            className: "col-6 form-group AutosearchClass",
-            type: "selectMultiple",
-            name: "hims_d_services_ids",
-            isImp: false,
-            link: {
-              uri: "/serviceType/serviceList",
-              module: "masterSettings",
-            },
-            value: null,
-            data: undefined,
-            label: "Services List",
-          },
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "service_type_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   link: {
+          //     uri: "/serviceType",
+          //     module: "masterSettings",
+          //   },
+          //   dataSource: {
+          //     textField: "service_type",
+          //     valueField: "hims_d_service_type_id",
+          //     data: undefined,
+          //   },
+          // },
+          // {
+          //   className: "col-6 form-group AutosearchClass",
+          //   type: "selectMultiple",
+          //   name: "hims_d_services_ids",
+          //   isImp: false,
+          //   link: {
+          //     uri: "/serviceType/serviceList",
+          //     module: "masterSettings",
+          //   },
+          //   value: null,
+          //   data: undefined,
+          //   label: "Services List",
+          // },
           {
             className: "col-6 form-group AutosearchClass",
             type: "selectMultiple",
@@ -899,6 +899,71 @@ export default function Income({
             dataSource: {
               textField: "cashier_name",
               valueField: "cashier_id",
+              data: undefined,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Income by Transfer Type",
+        reportName: "incomebyTransferType",
+        requireIframe: true,
+        componentCode: "RPT_INC_TRF_TYP",
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "card_name",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Transfer Type",
+            link: {
+              uri: "/cardmaster/getCards",
+              module: "masterSettings",
+            },
+            value: cashier_id,
+            dataSource: {
+              textField: "card_name",
+              valueField: "hims_d_bank_card_id",
               data: undefined,
             },
           },
