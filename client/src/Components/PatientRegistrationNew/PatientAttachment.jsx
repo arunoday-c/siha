@@ -26,66 +26,142 @@ export function PatientAttachments({
   const [loading, setLoading] = useState(true);
 
   const downloadDoc = (doc, isPreview) => {
-    if (doc.fromPath === true) {
-      setLoading(true);
-      newAlgaehApi({
-        uri: "/getContractDoc",
-        module: "documentManagement",
-        method: "GET",
-        extraHeaders: {
-          Accept: "blon",
-        },
-        others: {
-          responseType: "blob",
-        },
-        data: {
-          contract_no: doc.contract_no,
-          filename: doc.filename,
-          download: true,
-        },
+    // if (doc.fromPath === true) {
+
+    //   newAlgaehApi({
+    //     uri: "/getUploadedFiles",
+    //     module: "documentManagement",
+    //     method: "GET",
+    //     extraHeaders: {
+    //       Accept: "blob",
+    //     },
+    //     others: {
+    //       responseType: "blob",
+    //     },
+    //     data: {
+    //       doc_number: doc.contract_id,
+    //       filePath: `PatientDocuments/${patientData.patient_code}/RegistrationAttachments/${doc.contract_id}/${doc.contract_id}__ALGAEH__${doc.filename}`,
+
+    //       mainFolderName: "PatientDocuments",
+    //       subFolderName: patientData.patient_code,
+    //       specificFolder: "RegistrationAttachments",
+    //       document: doc.document,
+
+    //       folderPath: `PatientDocuments/${patientData.patient_code}/RegistrationAttachments/${doc.contract_id}/`,
+    //       movedOldFile: doc._id ? false : true,
+    //       unique_id: doc._id,
+    //       filename: doc.filename,
+    //     },
+    //   })
+    //     .then((resp) => {
+    //       debugger;
+    //       const urlBlob = URL.createObjectURL(resp.data);
+    //       if (isPreview) {
+    //         window.open(urlBlob);
+    //       } else {
+    //         const link = document.createElement("a");
+    //         link.download = doc.filename;
+    //         link.href = urlBlob;
+    //         document.body.appendChild(link);
+    //         link.click();
+    //         document.body.removeChild(link);
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+
+    //   // setLoading(true);
+    //   // newAlgaehApi({
+    //   //   uri: "/getContractDoc",
+    //   //   module: "documentManagement",
+    //   //   method: "GET",
+    //   //   extraHeaders: {
+    //   //     Accept: "blon",
+    //   //   },
+    //   //   others: {
+    //   //     responseType: "blob",
+    //   //   },
+    //   //   data: {
+    //   //     contract_no: doc.contract_no,
+    //   //     filename: doc.filename,
+    //   //     download: true,
+    //   //   },
+    //   // })
+    //   //   .then((resp) => {
+    //   //     const urlBlob = URL.createObjectURL(resp.data);
+    //   //     if (isPreview) {
+    //   //       window.open(urlBlob);
+    //   //     } else {
+    //   //       const link = document.createElement("a");
+    //   //       link.download = doc.filename;
+    //   //       link.href = urlBlob;
+    //   //       document.body.appendChild(link);
+    //   //       link.click();
+    //   //       document.body.removeChild(link);
+    //   //     }
+    //   //     setLoading(false);
+    //   //   })
+    //   //   .catch((error) => {
+    //   //     console.log(error);
+    //   //     setLoading(false);
+    //   //   });
+    // } else {
+    //   const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+    //   const link = document.createElement("a");
+    //   if (!isPreview) {
+    //     link.download = doc.filename;
+    //     link.href = fileUrl;
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    //   } else {
+    //     fetch(fileUrl)
+    //       .then((res) => res.blob())
+    //       .then((fblob) => {
+    //         const newUrl = URL.createObjectURL(fblob);
+    //         window.open(newUrl);
+    //       });
+    //   }
+    // }
+    newAlgaehApi({
+      uri: "/downloadPatDocument",
+      module: "documentManagement",
+      method: "GET",
+      extraHeaders: {
+        Accept: "blob",
+      },
+      others: {
+        responseType: "blob",
+      },
+      data: {
+        fileName: doc.value,
+      },
+    })
+      .then((resp) => {
+        const urlBlob = URL.createObjectURL(resp.data);
+        if (isPreview) {
+          window.open(urlBlob);
+        } else {
+          const link = document.createElement("a");
+          link.download = doc.name;
+          link.href = urlBlob;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+        // setPDFLoading(false);
       })
-        .then((resp) => {
-          const urlBlob = URL.createObjectURL(resp.data);
-          if (isPreview) {
-            window.open(urlBlob);
-          } else {
-            const link = document.createElement("a");
-            link.download = doc.filename;
-            link.href = urlBlob;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.log(error);
-          setLoading(false);
-        });
-    } else {
-      const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-      const link = document.createElement("a");
-      if (!isPreview) {
-        link.download = doc.filename;
-        link.href = fileUrl;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        fetch(fileUrl)
-          .then((res) => res.blob())
-          .then((fblob) => {
-            const newUrl = URL.createObjectURL(fblob);
-            window.open(newUrl);
-          });
-      }
-    }
+      .catch((error) => {
+        console.log(error);
+        // setPDFLoading(false);
+      });
   };
 
   const deleteDoc = (doc) => {
     confirm({
       title: `Are you sure you want to delete this file?`,
-      content: `${doc.filename}`,
+      content: `${doc.name}`,
       icon: "",
       okText: "Yes",
       okType: "danger",
@@ -100,29 +176,46 @@ export function PatientAttachments({
   };
 
   const onDelete = (doc) => {
+    // newAlgaehApi({
+    //   uri: "/deleteContractDoc",
+    //   method: "DELETE",
+    //   module: "documentManagement",
+    //   data: { id: doc._id },
+    // }).then((res) => {
+    //   if (res.data.success) {
+    //     setSavedFiles((state) => {
+    //       const remaining = state.filter((item) => item._id !== doc._id);
+    //       return [...remaining];
+    //     });
+    //   }
+    // });
     newAlgaehApi({
-      uri: "/deleteContractDoc",
+      uri: "/deleteDocs",
       method: "DELETE",
       module: "documentManagement",
-      data: { id: doc._id },
+      data: { completePath: doc.value },
     }).then((res) => {
       if (res.data.success) {
         setSavedFiles((state) => {
-          const remaining = state.filter((item) => item._id !== doc._id);
+          const remaining = state.filter((item) => item.name !== doc.name);
           return [...remaining];
         });
       }
     });
   };
 
-  const getDocuments = (contract_no) => {
+  const getDocuments = () => {
     setLoading(true);
     newAlgaehApi({
-      uri: "/getContractDoc",
+      uri: "/moveOldFiles",
       module: "documentManagement",
       method: "GET",
       data: {
-        contract_no,
+        mainFolderName: "PatientDocuments",
+        subFolderName: patientData.patient_code,
+        specificFolder: "RegistrationAttachments",
+        contract_no: patientData.patient_code,
+        completePath: `PatientDocuments/${patientData.patient_code}/RegistrationAttachments/${patientData?.hims_d_patient_id}/`,
       },
     })
       .then((res) => {
@@ -150,26 +243,36 @@ export function PatientAttachments({
     }
   }, [patientData, visible]);
 
-  const saveDocument = (files = [], contract_no, contract_id) => {
+  const saveDocument = (files = []) => {
     debugger;
     setLoading(true);
-      const formData = new FormData();
-      formData.append("contract_no", contract_no);
-      formData.append("contract_id", contract_id);
-      files.forEach((file, index) => {
-        formData.append(`file_${index}`, file, file.name);
-      });
-      newAlgaehApi({
-        uri: "/saveContractDoc",
-        data: formData,
-        extraHeaders: { "Content-Type": "multipart/form-data" },
-        method: "POST",
-        module: "documentManagement",
-      })
+    const formData = new FormData();
+    formData.append("doc_number", patientData?.hims_d_patient_id);
+    formData.append("mainFolderName", "PatientDocuments");
+    formData.append("subFolderName", patientData.patient_code);
+    formData.append("specificFolder", "RegistrationAttachments");
+    files.forEach((file, index) => {
+      formData.append(`file_${index}`, file, file.name);
+      formData.append("fileName", file.name);
+    });
+
+    // const formData = new FormData();
+    // formData.append("contract_no", contract_no);
+    // formData.append("contract_id", contract_id);
+    // files.forEach((file, index) => {
+    //   formData.append(`file_${index}`, file, file.name);
+    // });
+    newAlgaehApi({
+      uri: "/uploadDocument",
+      data: formData,
+      extraHeaders: { "Content-Type": "multipart/form-data" },
+      method: "POST",
+      module: "documentManagement",
+    })
       .then((value) => {
         setLoading(false);
         setFileList([]);
-        getDocuments(contract_no);
+        getDocuments();
       })
       .catch((e) => console.log(e));
   };
@@ -250,7 +353,7 @@ export function PatientAttachments({
                           {savedFiles.length ? (
                             savedFiles.map((doc) => (
                               <li>
-                                <b> {doc.filename} </b>
+                                <b> {doc.name} </b>
                                 <span>
                                   <i
                                     className="fas fa-download"

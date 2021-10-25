@@ -15,8 +15,13 @@ const executePDF = function executePDFMethod(options) {
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
-      const limit_from = options.args?.recordSetup?.limit_from;
-      const limit_to = options.args?.recordSetup?.limit_to;
+
+      const limit_from = options.args.recordSetup
+        ? options.args.recordSetup.limit_from
+        : undefined;
+      const limit_to = options.args.recordSetup
+        ? options.args.recordSetup.limit_to
+        : undefined;
       // const { limit_from, limit_to } = options.args?.recordSetup;
       let strQry = "";
 

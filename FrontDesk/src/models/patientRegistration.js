@@ -111,7 +111,10 @@ export default {
             inputparam.primary_identity_id,
             inputparam.primary_id_no.trim(),
             inputparam.secondary_identity_id,
-            inputparam.secondary_id_no.trim(),
+            inputparam.secondary_id_no
+              ? inputparam.secondary_id_no.trim()
+              : null,
+
             inputparam.referring_institute_id,
             inputparam.photo_file,
             inputparam.primary_id_file,

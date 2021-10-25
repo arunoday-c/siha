@@ -1,0 +1,56 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div class="print-body">
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Bill No.</th>
+            <th>Receipt No.</th>
+            <th>Receipt Date</th>
+            <th>Amount</th>
+            {{! <th>Patient Code</th>
+            <th>Patient Name</th>
+            <th>Contact No.</th>
+            <th>Nationality</th> }}
+          </tr>
+
+        </thead>
+        <tbody>
+
+          {{#hasElement result}}
+
+            {{#each result}}
+              <tr>
+                <td colspan="8" class="tableSubHdg">{{card_name}}</td>
+
+              </tr>
+              {{#each receiptList}}
+                {{#each docs}}
+                  <tr>
+                    <td datatype="string">{{inc @index}}</td>
+                    <td class="">{{bill_number}}</td>
+                    <td class="">{{receipt_number}}</td>
+                    <td class="">{{receipt_date}}</td>
+                    <td class="">{{amount}}</td>
+
+                  </tr>
+                {{/each}}
+
+              {{/each}}{{/each}}
+
+          {{else}}
+            <tr>
+              <td colspan="8" class="noResultTextReport">No Records Found</td>
+            </tr>
+          {{/hasElement}}
+        </tbody>
+
+      </table>
+
+    </section>
+
+  </div>
+</body>

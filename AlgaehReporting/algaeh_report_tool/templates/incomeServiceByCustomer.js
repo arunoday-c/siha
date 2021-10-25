@@ -19,15 +19,15 @@ const executePDF = function executePDFMethod(options) {
 
       let strQuery = "";
 
-      if (input.service_type_id > 0) {
-        str += `and  BD.service_type_id=${input.service_type_id}`;
-      }
+      // if (input.service_type_id > 0) {
+      //   str += `and  BD.service_type_id=${input.service_type_id}`;
+      // }
 
-      if (input.hims_d_services_ids.length > 0) {
-        str += ` and BD.services_id in (${input.hims_d_services_ids}) `;
-      }
+      // if (input.hims_d_services_ids.length > 0) {
+      //   str += ` and BD.services_id in (${input.hims_d_services_ids}) `;
+      // }
       if (input.hims_d_insurance_sub_ids.length > 0) {
-        str += ` and INS.hims_d_insurance_sub_id in (${input.hims_d_insurance_sub_ids}) `;
+        strQuery += ` and INS.hims_d_insurance_sub_id in (${input.hims_d_insurance_sub_ids}) `;
       }
 
       options.mysql

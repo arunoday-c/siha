@@ -442,10 +442,11 @@ export default {
 
       _mysql
         .executeQuery({
-          query: `  select hims_f_lab_order_id,LO.lab_id_number, LO.visit_id, LO.patient_id, visit_date, E.full_name as provider_name, S.service_name, LO.billed as lab_billed, 
+          query: `  select hims_f_lab_order_id,LO.lab_id_number, LO.visit_id, LO.patient_id, visit_date,P.patient_code, E.full_name as provider_name, S.service_name, LO.billed as lab_billed, 
           LO.status as lab_ord_status, S.service_type_id from hims_f_lab_order LO 
           inner join hims_f_patient_visit V on LO.visit_id = V.hims_f_patient_visit_id
           inner join hims_d_services S on LO.service_id=S.hims_d_services_id 
+          inner join hims_f_patient P  on V.patient_id=P.hims_d_patient_id
           inner join hims_d_employee  E on LO.provider_id=E.hims_d_employee_id where   
           ${_stringData}  order by hims_f_lab_order_id;
           select hims_f_rad_order_id, visit_date, E.full_name as provider_name, S.service_name, RO.billed as rad_billed, 
