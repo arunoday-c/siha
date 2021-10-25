@@ -9,6 +9,7 @@ import moment from "moment";
 // import NursesNotes from "../../../PatientProfile/Examination/NursesNotes";
 import Options from "../../../../Options.json";
 // import Summary from "../Summary/Summary";
+import PatientAttachmentModal from "../../../PatientAttachmentModal";
 import { Dimmer, Loader } from "semantic-ui-react";
 import {
   // AlgaehAutoComplete,
@@ -19,7 +20,7 @@ import {
   Dropdown,
   AlgaehLabel,
 } from "algaeh-react-components";
-import { ViewAttachmentsModal } from "./viewAttachmentsModal";
+// import { ViewAttachmentsModal } from "./viewAttachmentsModal";
 import ReferralDataGrid from "../../../PatientProfile/Plan/Referal/ReferralDataGrid";
 // import { newAlgaehApi } from "../../../../hooks";
 import SickLeave from "../../../PatientProfile/SickLeave/SickLeave";
@@ -1187,10 +1188,18 @@ export default function OPEncounterDetails({
             </div>
           ) : null}
           {openAttachmentsModal ? (
-            <ViewAttachmentsModal
-              rowData={currentRow}
-              visible={openAttachmentsModal}
-              onClose={showAttachmentsOfServices}
+            // <ViewAttachmentsModal
+            //   rowData={currentRow}
+            //   visible={openAttachmentsModal}
+            //   onClose={showAttachmentsOfServices}
+            // />
+            <PatientAttachmentModal
+              openModal={openAttachmentsModal}
+              row={currentRow}
+              uniqueId={currentRow.lab_id_number}
+              onlyView={true}
+              nameOfTheFolder="LaboratoryDocuments"
+              CloseModal={showAttachmentsOfServices}
             />
           ) : null}
           {/* <AlgaehModal
