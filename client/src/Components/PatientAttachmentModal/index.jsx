@@ -11,11 +11,11 @@ export default function PatientAttachmentModal({
   row,
   openModal,
   uniqueId,
-  state,
   nameOfTheFolder,
   CloseModal,
   onlyView,
 }) {
+  debugger;
   useEffect(() => {
     getDocuments(uniqueId);
   }, []);
@@ -135,6 +135,7 @@ export default function PatientAttachmentModal({
     })
       .then((res) => {
         if (res.data.success) {
+          debugger;
           let { data } = res.data;
           setLoading(false);
           setPatientDocList(data);
@@ -275,10 +276,12 @@ export default function PatientAttachmentModal({
                                     onClick={() => downloadDoc(doc, true)}
                                   ></i>
 
-                                  <i
-                                    className="fas fa-trash"
-                                    onClick={() => deleteDoc(doc)}
-                                  ></i>
+                                  {!onlyView ? (
+                                    <i
+                                      className="fas fa-trash"
+                                      onClick={() => deleteDoc(doc)}
+                                    ></i>
+                                  ) : null}
                                 </span>
                               </li>
                             );

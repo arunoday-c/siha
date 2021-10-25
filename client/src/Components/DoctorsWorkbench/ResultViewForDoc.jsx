@@ -10,7 +10,7 @@ import {
   AlgaehLabel,
   MainContext,
   Spin,
-  AlgaehModal,
+  // AlgaehModal,
   AlgaehButton,
 } from "algaeh-react-components";
 import { useForm, Controller } from "react-hook-form";
@@ -23,6 +23,7 @@ import { newAlgaehApi } from "../../hooks";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import ModalMedicalRecord from "./ModalForMedicalRecordPat";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import PatientAttachmentModal from "../PatientAttachmentModal";
 // import { changeChecks } from "../EmployeeManagement/EmployeeMasterIndex/EmployeeMaster/RulesDetails/RulesDetailsEvent";
 
 const ResultViewForDoc = () => {
@@ -43,12 +44,12 @@ const ResultViewForDoc = () => {
   const [visit_id, setVisit_id] = useState(null);
   const [patient_id, setPatient_id] = useState(null);
   const [openMrdModal, setOpenMrdModal] = useState(false);
-  const [attached_docs, setAttached_docs] = useState([]);
-  const [lab_id_number, setLab_id_number] = useState(null);
+  // const [attached_docs, setAttached_docs] = useState([]);
+  // const [lab_id_number, setLab_id_number] = useState(null);
   const [openViewAttachmentModal, setOpenViewAttachmentModal] = useState(false);
-  const [investigation_test_id, setInvestigation_test_id] = useState(null);
+  // const [investigation_test_id, setInvestigation_test_id] = useState(null);
   // const [updateRow, setUpdateRow] = useState([]);
-
+  const [activeRow, setActiveRow] = useState([]);
   const changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.datetimeFormat);
@@ -108,62 +109,62 @@ const ResultViewForDoc = () => {
       },
     });
   };
-  const downloadDoc = (doc, isPreview) => {
-    if (doc.fromPath === true) {
-      setLoading(true);
-      newAlgaehApi({
-        uri: "/getContractDoc",
-        module: "documentManagement",
-        method: "GET",
-        extraHeaders: {
-          Accept: "blon",
-        },
-        others: {
-          responseType: "blob",
-        },
-        data: {
-          contract_no: doc.contract_no,
-          filename: doc.filename,
-          download: true,
-        },
-      })
-        .then((resp) => {
-          const urlBlob = URL.createObjectURL(resp.data);
-          if (isPreview) {
-            window.open(urlBlob);
-          } else {
-            const link = document.createElement("a");
-            link.download = doc.filename;
-            link.href = urlBlob;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.log(error);
-          setLoading(false);
-        });
-    } else {
-      const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-      const link = document.createElement("a");
-      if (!isPreview) {
-        link.download = doc.filename;
-        link.href = fileUrl;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        fetch(fileUrl)
-          .then((res) => res.blob())
-          .then((fblob) => {
-            const newUrl = URL.createObjectURL(fblob);
-            window.open(newUrl);
-          });
-      }
-    }
-  };
+  // const downloadDoc = (doc, isPreview) => {
+  //   if (doc.fromPath === true) {
+  //     setLoading(true);
+  //     newAlgaehApi({
+  //       uri: "/getContractDoc",
+  //       module: "documentManagement",
+  //       method: "GET",
+  //       extraHeaders: {
+  //         Accept: "blon",
+  //       },
+  //       others: {
+  //         responseType: "blob",
+  //       },
+  //       data: {
+  //         contract_no: doc.contract_no,
+  //         filename: doc.filename,
+  //         download: true,
+  //       },
+  //     })
+  //       .then((resp) => {
+  //         const urlBlob = URL.createObjectURL(resp.data);
+  //         if (isPreview) {
+  //           window.open(urlBlob);
+  //         } else {
+  //           const link = document.createElement("a");
+  //           link.download = doc.filename;
+  //           link.href = urlBlob;
+  //           document.body.appendChild(link);
+  //           link.click();
+  //           document.body.removeChild(link);
+  //         }
+  //         setLoading(false);
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //         setLoading(false);
+  //       });
+  //   } else {
+  //     const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+  //     const link = document.createElement("a");
+  //     if (!isPreview) {
+  //       link.download = doc.filename;
+  //       link.href = fileUrl;
+  //       document.body.appendChild(link);
+  //       link.click();
+  //       document.body.removeChild(link);
+  //     } else {
+  //       fetch(fileUrl)
+  //         .then((res) => res.blob())
+  //         .then((fblob) => {
+  //           const newUrl = URL.createObjectURL(fblob);
+  //           window.open(newUrl);
+  //         });
+  //     }
+  //   }
+  // };
   const updateLabOrderServiceForDoc = () => {
     const updateLabOrderDetails = labOrderServicesForDoc.filter((item) => {
       return item.isDirty === true;
@@ -201,31 +202,31 @@ const ResultViewForDoc = () => {
     }
   };
 
-  const getDocuments = (contract_no) => {
-    setLoading(true);
-    newAlgaehApi({
-      uri: "/getContractDoc",
-      module: "documentManagement",
-      method: "GET",
-      data: {
-        contract_no,
-      },
-    })
-      .then((res) => {
-        if (res.data.success) {
-          let { data } = res.data;
-          setAttached_docs(data);
-          setLoading(false);
-        }
-      })
-      .catch((e) => {
-        swalMessage({
-          title: e.message,
-          type: "error",
-        });
-        setLoading(false);
-      });
-  };
+  // const getDocuments = (contract_no) => {
+  //   setLoading(true);
+  //   newAlgaehApi({
+  //     uri: "/getContractDoc",
+  //     module: "documentManagement",
+  //     method: "GET",
+  //     data: {
+  //       contract_no,
+  //     },
+  //   })
+  //     .then((res) => {
+  //       if (res.data.success) {
+  //         let { data } = res.data;
+  //         setAttached_docs(data);
+  //         setLoading(false);
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       swalMessage({
+  //         title: e.message,
+  //         type: "error",
+  //       });
+  //       setLoading(false);
+  //     });
+  // };
   useEffect(() => {
     getLabOrderServiceForDoc(getValues()).then(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -253,19 +254,19 @@ const ResultViewForDoc = () => {
       });
     }
   };
-  useEffect(() => {
-    if (lab_id_number && openViewAttachmentModal && investigation_test_id) {
-      getDocuments(lab_id_number);
-    } else {
-      setAttached_docs([]);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (lab_id_number && openViewAttachmentModal && investigation_test_id) {
+  //     getDocuments(lab_id_number);
+  //   } else {
+  //     setAttached_docs([]);
+  //   }
+  // }, []);
   const onClose = () => {
     setOpenMrdModal((pre) => !pre);
   };
   const onCloseAttachment = () => {
     setOpenViewAttachmentModal((pre) => !pre);
-    setAttached_docs([]);
+    // setAttached_docs([]);
   };
   const changeChecks = (row, e) => {
     // hims_f_lab_order_id
@@ -416,61 +417,71 @@ const ResultViewForDoc = () => {
           />
         ) : null}
         {openViewAttachmentModal ? (
-          <AlgaehModal
-            title="View External Report"
-            visible={openViewAttachmentModal}
-            mask={true}
-            maskClosable={false}
-            onCancel={() => {
+          <PatientAttachmentModal
+            openModal={openViewAttachmentModal}
+            row={activeRow}
+            uniqueId={activeRow.lab_id_number}
+            onlyView={true}
+            nameOfTheFolder="LaboratoryDocuments"
+            CloseModal={() => {
               onCloseAttachment();
             }}
-            footer={[
-              <div className="col-12">
-                <button
-                  onClick={() => {
-                    onCloseAttachment();
-                  }}
-                  className="btn btn-default btn-sm"
-                >
-                  Cancel
-                </button>
-              </div>,
-            ]}
-            className={`algaehNewModal investigationAttachmentModal`}
-          >
-            <div className="portlet-body">
-              <div className="col-6">
-                <div className="row">
-                  <div className="col-12">
-                    <ul className="investigationAttachmentList">
-                      {attached_docs.length ? (
-                        attached_docs.map((doc) => (
-                          <li>
-                            <b> {doc.filename} </b>
-                            <span>
-                              <i
-                                className="fas fa-download"
-                                onClick={() => downloadDoc(doc)}
-                              ></i>
-                              <i
-                                className="fas fa-eye"
-                                onClick={() => downloadDoc(doc, true)}
-                              ></i>
-                            </span>
-                          </li>
-                        ))
-                      ) : (
-                        <div className="col-12 noAttachment" key={1}>
-                          <p>No Attachments Available</p>
-                        </div>
-                      )}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </AlgaehModal>
-        ) : null}
+          />
+        ) : // <AlgaehModal
+        //   title="View External Report"
+        //   visible={openViewAttachmentModal}
+        //   mask={true}
+        //   maskClosable={false}
+        //   onCancel={() => {
+        //     onCloseAttachment();
+        //   }}
+        //   footer={[
+        //     <div className="col-12">
+        //       <button
+        //         onClick={() => {
+        //           onCloseAttachment();
+        //         }}
+        //         className="btn btn-default btn-sm"
+        //       >
+        //         Cancel
+        //       </button>
+        //     </div>,
+        //   ]}
+        //   className={`algaehNewModal investigationAttachmentModal`}
+        // >
+        //   <div className="portlet-body">
+        //     <div className="col-6">
+        //       <div className="row">
+        //         <div className="col-12">
+        //           <ul className="investigationAttachmentList">
+        //             {attached_docs.length ? (
+        //               attached_docs.map((doc) => (
+        //                 <li>
+        //                   <b> {doc.filename} </b>
+        //                   <span>
+        //                     <i
+        //                       className="fas fa-download"
+        //                       onClick={() => downloadDoc(doc)}
+        //                     ></i>
+        //                     <i
+        //                       className="fas fa-eye"
+        //                       onClick={() => downloadDoc(doc, true)}
+        //                     ></i>
+        //                   </span>
+        //                 </li>
+        //               ))
+        //             ) : (
+        //               <div className="col-12 noAttachment" key={1}>
+        //                 <p>No Attachments Available</p>
+        //               </div>
+        //             )}
+        //           </ul>
+        //         </div>
+        //       </div>
+        //     </div>
+        //   </div>
+        // </AlgaehModal>
+        null}
 
         <Spin spinning={loading}>
           <div className="portlet portlet-bordered margin-bottom-15">
@@ -512,11 +523,12 @@ const ResultViewForDoc = () => {
                               aria-hidden="true"
                               onClick={() => {
                                 // currentRow: row,
-                                setLab_id_number(row.lab_id_number);
+                                // setLab_id_number(row.lab_id_number);
                                 setOpenViewAttachmentModal(true);
-                                setInvestigation_test_id(
-                                  row.hims_d_investigation_test_id
-                                );
+                                setActiveRow(row);
+                                // setInvestigation_test_id(
+                                //   row.hims_d_investigation_test_id
+                                // );
                               }}
                             />
                           </span>
