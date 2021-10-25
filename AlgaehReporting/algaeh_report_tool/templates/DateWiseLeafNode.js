@@ -22,6 +22,9 @@ const executePDF = function executePDFMethod(options) {
       const limit_to = options.args.recordSetup
         ? options.args.recordSetup.limit_to
         : undefined;
+      const skip = options.args.recordSetup
+        ? options.recordSetup.args.skip
+        : undefined;
       // const { limit_from, limit_to } = options.args?.recordSetup;
       let strQry = "";
 
@@ -64,7 +67,7 @@ const executePDF = function executePDFMethod(options) {
               totalQuery = "SELECT FOUND_ROWS() total_pages;";
             }
             if (limit_from !== undefined && limit_to !== undefined) {
-              limitDefine = ` limit ${limit_to} offset ${limit_from}`;
+              limitDefine = ` limit ${limit_from} offset ${limit_to}`;
             }
             console.log(
               "limit_from && limit_from === 0",
@@ -104,6 +107,7 @@ const executePDF = function executePDFMethod(options) {
                 if (result.length > 0) {
                   let CB_debit_side = null;
                   let CB_credit_side = null;
+                  console.log("");
                   result.forEach((item) => {
                     total_credit = (
                       parseFloat(total_credit) + parseFloat(item.credit_amount)
