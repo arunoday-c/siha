@@ -1,10 +1,12 @@
-import { algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import _ from "lodash";
+import Enumerable from "linq";
 
 export default function InvItemSetupEvent() {
   return {
     getItems: ($this) => {
       $this.props.getItemMaster({
-        uri: "/inventory/getItemMasterAndItemUom",
+        uri: "/inventory/getItemMasterData",
         module: "inventory",
         method: "GET",
         redux: {
@@ -14,11 +16,70 @@ export default function InvItemSetupEvent() {
       });
     },
     EditItemMaster: ($this, row) => {
-      row.addNew = false;
-      $this.setState({
-        isOpen: !$this.state.isOpen,
-        itemPop: row,
-        addNew: false,
+      debugger;
+      algaehApiCall({
+        uri: "/inventory/getItemMasterAndItemUom",
+        module: "inventory",
+        method: "GET",
+        data: {
+          hims_d_inventory_item_master_id: row.hims_d_inventory_item_master_id,
+        },
+        onSuccess: (response) => {
+          debugger;
+          if (response.data.success) {
+            const ItemList = Enumerable.from(response.data.records)
+              .groupBy("$.hims_d_inventory_item_master_id", null, (k, g) => {
+                let firstRecordSet = Enumerable.from(g).firstOrDefault();
+                return {
+                  item_code: firstRecordSet.item_code,
+                  hims_d_inventory_item_master_id:
+                    firstRecordSet.hims_d_inventory_item_master_id,
+                  item_description: firstRecordSet.item_description,
+                  generic_id: firstRecordSet.generic_id,
+                  category_id: firstRecordSet.category_id,
+                  group_id: firstRecordSet.group_id,
+                  form_id: firstRecordSet.form_id,
+                  storage_id: firstRecordSet.storage_id,
+                  item_uom_id: firstRecordSet.item_uom_id,
+                  purchase_uom_id: firstRecordSet.purchase_uom_id,
+                  sales_uom_id: firstRecordSet.sales_uom_id,
+                  stocking_uom_id: firstRecordSet.stocking_uom_id,
+                  item_status: firstRecordSet.item_status,
+                  radioActive:
+                    firstRecordSet.item_status === "A" ? true : false,
+                  radioInactive:
+                    firstRecordSet.item_status === "I" ? true : false,
+                  service_id: firstRecordSet.service_id,
+                  item_type: firstRecordSet.item_type,
+                  purchase_cost: firstRecordSet.purchase_cost,
+                  addl_information: firstRecordSet.addl_information,
+                  exp_date_required: firstRecordSet.exp_date_required,
+                  sfda_code: firstRecordSet.sfda_code,
+                  reorder_qty: firstRecordSet.reorder_qty,
+                  standard_fee: firstRecordSet.sales_price,
+                  vat_applicable: firstRecordSet.vat_applicable,
+                  vat_percent: firstRecordSet.vat_percent,
+                  arabic_item_description:
+                    firstRecordSet.arabic_item_description,
+                  detail_item_uom: g.getSource(),
+                };
+              })
+              .toArray();
+            const _head = _.head(ItemList);
+            _head.addNew = false;
+            $this.setState({
+              isOpen: !$this.state.isOpen,
+              itemPop: _head,
+              addNew: false,
+            });
+          }
+        },
+        onError: (error) => {
+          swalMessage({
+            title: error.message,
+            type: "warning",
+          });
+        },
       });
     },
     OpenReQtyLocation: ($this, row) => {

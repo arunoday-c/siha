@@ -36,6 +36,7 @@ const {
   getInvLocationReorder,
   updateInvLocationReorder,
   addUniqueId,
+  getItemMasterData,
 } = invModels;
 
 const { addServices, updateServicesOthrs } = serviceModels;
@@ -94,6 +95,12 @@ export default () => {
       });
     }
   );
+  api.get("/getItemMasterData", getItemMasterData, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
 
   api.get("/getLocationPermission", getLocationPermission, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

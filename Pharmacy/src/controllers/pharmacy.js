@@ -42,6 +42,7 @@ const {
   addLocationReorder,
   getLocationReorder,
   updateLocationReorder,
+  getItemMasterPharmacyData,
 } = pharmacyModels;
 const { addServices, updateServicesOthrs } = serviceModels;
 
@@ -113,6 +114,17 @@ export default () => {
   api.get(
     "/getItemMasterAndItemUom",
     getItemMasterAndItemUom,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+
+  api.get(
+    "/getItemMasterPharmacyData",
+    getItemMasterPharmacyData,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

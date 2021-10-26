@@ -96,7 +96,7 @@ let updateIntoInvItemLocation = (req, res, next) => {
     // xmlQuery += "</hims_m_item_location>";
     // utilities.logger().log("xmlQuery: ", xmlQuery);
     _mysql
-      .executeQuery({
+      .executeQueryWithTransaction({
         query:
           "SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'STRICT_TRANS_TABLES',''));call algaeh_proc_inv_item_location ('" +
           xmlQuery +
@@ -163,14 +163,16 @@ let updateIntoInvItemLocation = (req, res, next) => {
         }
       })
       .catch((e) => {
-        // console.log("error data: ", e);
+        console.log("error data: ", e);
         _mysql.rollBackTransaction(() => {
           next(e);
         });
       });
   } catch (e) {
-    _mysql.releaseConnection();
-    next(e);
+    console.log("errortry: ", e);
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
   }
 };
 
