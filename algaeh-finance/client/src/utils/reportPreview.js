@@ -41,11 +41,23 @@ export function previewReport(options, initialResult, cb) {
 
            const waitElement = document.createElement("div");
            waitElement.setAttribute("id","pleaseWait");
-           waitElement.innerText ="Please Wait...";
+           waitElement.innerText ="Please Wait your report is loading...";
           document.body.append(waitElement);
            customerObjectStore.onsuccess = function(event){
              if(customerObjectStore.result){
               const token = customerObjectStore.result;
+             let others=undefined;
+             const rptArray=[${report.lastRecord}];
+             console.log("rptArray=====>",rptArray);
+            
+              if(rptArray.length>0){
+                others={};
+                  for(let c=0;c<rptArray.length;c++){
+                    
+                  const counter =  document.querySelector("tbody").querySelectorAll("tr:not(.no_count)").length;
+                  others[String(rptArray[c])]=document.querySelector("tbody").querySelectorAll("tr:not(.no_count)")[counter-1].cells[rptArray[c]].innerText;
+                  }
+              }
               const resultdata = {
                 report:JSON.stringify({
                     displayName:"${report.displayName}",
@@ -55,11 +67,12 @@ export function previewReport(options, initialResult, cb) {
                     recordSetup:{
                         limit_from:document.querySelector("tbody").querySelectorAll("tr:not(.no_count)").length,//rowsExistCount,
                         limit_to:recordsPerPage,
-                     
+                        others
                     },
                     reportParams:${JSON.stringify(report.reportParams)}
                 })
               };
+              console.log("resultdata===>",resultdata);
               function serialize(obj, prefix) {
                 var str = [],
                   p;
