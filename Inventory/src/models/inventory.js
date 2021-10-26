@@ -466,6 +466,46 @@ export default {
     }
   },
 
+  getItemMasterData: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let _strQry = "";
+      // let intValues = [];
+      // if (req.query.hims_d_inventory_item_master_id != null) {
+      //   _strQry = "and IM.hims_d_inventory_item_master_id=?";
+      //   intValues.push(req.query.hims_d_inventory_item_master_id);
+      // }
+
+      _mysql
+        .executeQuery({
+          query:
+            "select IM.hims_d_inventory_item_master_id,\
+              IM.item_master_img_unique_id,IM.item_code, IM.item_description, IM.arabic_item_description, \
+              IM.structure_id, IM.category_id,IM.group_id,IM.item_type, \
+              IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, IM.item_status, \
+              IM.service_id, IM.purchase_cost,IM.addl_information,IM.exp_date_required, \
+              IM.sfda_code, IM.reorder_qty,IM.sales_price,S.vat_applicable,S.vat_percent from \
+              hims_d_inventory_item_master IM \
+              left join hims_d_services S on IM.service_id = S.hims_d_services_id where IM.record_status='A' ",
+          // values: intValues,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
   getItemMasterAndItemUom: (req, res, next) => {
     const _mysql = new algaehMysql();
 
