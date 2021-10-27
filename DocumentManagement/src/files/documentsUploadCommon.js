@@ -3,9 +3,8 @@ import path from "path";
 import fs from "fs-extra";
 import mime from "mime-types";
 import Contracts from "../Model/contractDocs";
-
+import ReceiptEntry from "../Model/receiptEntryDoc";
 import "regenerator-runtime/runtime";
-import { async } from "regenerator-runtime/runtime";
 
 const folder = process.env.UPLOADFOLDER || process.cwd();
 export async function uploadDocument(req, res, next) {
@@ -60,9 +59,13 @@ export async function uploadDocument(req, res, next) {
         //   }
         // }
         let subFolder;
-        subFolder = path.join(mainFolder, fieldObject.subFolderName);
-        if (!fs.existsSync(subFolder)) {
-          fs.mkdirSync(subFolder);
+        if (fieldObject.subFolderName) {
+          subFolder = path.join(mainFolder, fieldObject.subFolderName);
+          if (!fs.existsSync(subFolder)) {
+            fs.mkdirSync(subFolder);
+          }
+        } else {
+          subFolder = mainFolder;
         }
         if (fieldObject.specificFolder) {
           subFolder = path.join(subFolder, fieldObject.specificFolder);
@@ -204,17 +207,23 @@ export async function getUploadedFiles(req, res, next) {
 export const moveOldFiles = (req, res) => {
   try {
     const input = req.query;
-    const { contract_no, completePath } = input;
-    Contracts.find({ contract_no }, async (err, docs) => {
+    let Model = input.fromModule === "Receipt" ? ReceiptEntry : Contracts;
+    const { contract_no, completePath, hasUniqueId } = input;
+    const findObj =
+      input.fromModule === "Receipt"
+        ? { grn_number: contract_no }
+        : { contract_no };
+    Model.find(findObj, async (err, docs) => {
       if (err) {
         res.status(400).json({ error: err.message });
       } else {
         if (docs.length > 0) {
-          console.log("start");
           for (let i = 0; i < docs.length; i++) {
             req.fileName = docs[i].filename;
-            req.doc_number = docs[i].contract_id;
-            console.log("docs");
+            req.doc_number = hasUniqueId
+              ? req.query.doc_number
+              : docs[i].contract_id;
+
             await makeFolderStructure(req, res)
               .then(async (uploadDocFolder) => {
                 console.log("ia here");
@@ -255,25 +264,40 @@ export const moveOldFiles = (req, res) => {
                 } else {
                   fullDocumentPath;
                 }
-
-                await fs.rename(
-                  docs[i].document,
-                  fullDocumentPath,
-                  function (err) {
+                if (docs[i].fromPath) {
+                  await fs.rename(
+                    docs[i].document,
+                    fullDocumentPath,
+                    function (err) {
+                      if (err) {
+                        res.status(400).json({ error: err.message });
+                      } else {
+                        Model.findByIdAndDelete(docs[i]._id, (err, docs) => {
+                          if (err) {
+                            res.status(400).json({ error: err.message });
+                          }
+                        });
+                      }
+                    }
+                  );
+                } else {
+                  const fileContents = new Buffer(docs[i].document, "base64");
+                  await fs.writeFile(fullDocumentPath, fileContents, (err) => {
                     if (err) {
                       res.status(400).json({ error: err.message });
                     } else {
-                      Contracts.findByIdAndDelete(docs[i]._id, (err, docs) => {
+                      Model.findByIdAndDelete(docs[i]._id, (err, docs) => {
                         if (err) {
                           res.status(400).json({ error: err.message });
                         }
                       });
                     }
-                  }
-                );
+                  });
+                }
               })
               .catch((err) => res.status(400).json({ error: err.message }));
           }
+          console.log("docs", "iam here");
           const directoryPath = path.join(folder, "UPLOAD");
 
           const completePathOfFolder = path.join(directoryPath, completePath);
@@ -328,7 +352,7 @@ async function makeFolderStructure(req, res) {
     // doc_number,
     filename,
   } = req.query;
-  console.log("1", req.doc_number);
+
   try {
     const uploadExists = folder.toUpperCase().includes("UPLOAD");
     const uploadPath = path.resolve(folder, uploadExists ? "" : "UPLOAD");
@@ -338,21 +362,30 @@ async function makeFolderStructure(req, res) {
     }
     const mainFolder = path.join(uploadPath, mainFolderName);
     if (!fs.existsSync(mainFolder)) {
-      console.log("hereq", mainFolder);
       fs.mkdirSync(mainFolder);
     }
     let subFolder;
-    subFolder = path.join(mainFolder, subFolderName);
-    if (!fs.existsSync(subFolder)) {
-      fs.mkdirSync(subFolder);
+    if (subFolderName) {
+      subFolder = path.join(mainFolder, subFolderName);
+      if (!fs.existsSync(subFolder)) {
+        fs.mkdirSync(subFolder);
+      }
+    } else {
+      subFolder = mainFolder;
     }
+    console.log("subFolder", subFolder);
+
+    // subFolder = path.join(mainFolder, subFolderName);
+    // if (!fs.existsSync(subFolder)) {
+    //   fs.mkdirSync(subFolder);
+    // }
     if (specificFolder) {
       subFolder = path.join(subFolder, specificFolder);
       if (!fs.existsSync(subFolder)) {
         fs.mkdirSync(subFolder);
       }
     }
-    console.log("subFolder", subFolder);
+
     const uploadDocFolder = path.join(subFolder, `${req.doc_number}`);
     if (!fs.existsSync(uploadDocFolder)) {
       fs.mkdirSync(uploadDocFolder);

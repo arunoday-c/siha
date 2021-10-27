@@ -137,8 +137,37 @@ class ContractManagement extends Component {
   }
 
   downloadDoc = (doc) => {
+    // newAlgaehApi({
+    //   uri: "/getContractDoc",
+    //   module: "documentManagement",
+    //   method: "GET",
+    //   extraHeaders: {
+    //     Accept: "blob",
+    //   },
+    //   others: {
+    //     responseType: "blob",
+    //   },
+    //   data: {
+    //     contract_no: doc.contract_no,
+    //     filename: doc.filename,
+    //     download: true,
+    //   },
+    // })
+    //   .then((resp) => {
+    //     const urlBlob = URL.createObjectURL(resp.data);
+
+    //     const link = document.createElement("a");
+    //     link.download = doc.filename;
+    //     link.href = urlBlob;
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
     newAlgaehApi({
-      uri: "/getContractDoc",
+      uri: "/downloadFromPath",
       module: "documentManagement",
       method: "GET",
       extraHeaders: {
@@ -148,25 +177,27 @@ class ContractManagement extends Component {
         responseType: "blob",
       },
       data: {
-        contract_no: doc.contract_no,
-        filename: doc.filename,
-        download: true,
+        fileName: doc.value,
       },
     })
       .then((resp) => {
         const urlBlob = URL.createObjectURL(resp.data);
-
+        // if (isPreview) {
+        //   window.open(urlBlob);
+        // } else {
         const link = document.createElement("a");
-        link.download = doc.filename;
+        link.download = doc.name;
         link.href = urlBlob;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        // }
+        // setPDFLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        // setPDFLoading(false);
       });
-
     // debugger;
     // const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
     // // const link = document.createElement("a");
@@ -207,10 +238,10 @@ class ContractManagement extends Component {
 
   onDelete = (doc) => {
     newAlgaehApi({
-      uri: "/deleteContractDoc",
+      uri: "/deleteDocs",
       method: "DELETE",
       module: "documentManagement",
-      data: { id: doc._id },
+      data: { completePath: doc.value },
     }).then((res) => {
       if (res.data.success) {
         this.setState((state) => {
@@ -221,6 +252,21 @@ class ContractManagement extends Component {
         });
       }
     });
+    // newAlgaehApi({
+    //   uri: "/deleteContractDoc",
+    //   method: "DELETE",
+    //   module: "documentManagement",
+    //   data: { id: doc._id },
+    // }).then((res) => {
+    //   if (res.data.success) {
+    //     this.setState((state) => {
+    //       const contract_docs = state.contract_docs.filter(
+    //         (item) => item._id !== doc._id
+    //       );
+    //       return { contract_docs };
+    //     });
+    //   }
+    // });
   };
 
   render() {
@@ -740,9 +786,10 @@ class ContractManagement extends Component {
                                 />
                               ),
                               displayTemplate: (row) => {
-                                let display = GlobalVariables.SERVICE_FREQUENCY.filter(
-                                  (f) => f.value === row.service_frequency
-                                );
+                                let display =
+                                  GlobalVariables.SERVICE_FREQUENCY.filter(
+                                    (f) => f.value === row.service_frequency
+                                  );
 
                                 return (
                                   <span>
@@ -852,7 +899,7 @@ class ContractManagement extends Component {
                             {this.state.contract_docs.length ? (
                               this.state.contract_docs.map((doc) => (
                                 <li>
-                                  <b> {doc.filename} </b>
+                                  <b> {doc.name} </b>
                                   <span>
                                     <i
                                       className="fas fa-download"

@@ -272,13 +272,16 @@ export function updateContract() {
 
 export function saveDocument(files = [], contract_no, contract_id, $this) {
   const formData = new FormData();
-  formData.append("contract_no", contract_no);
-  formData.append("contract_id", contract_id);
+  formData.append("doc_number", contract_no);
+  formData.append("mainFolderName", "ContractDocuments");
+
   files.forEach((file, index) => {
     formData.append(`file_${index}`, file, file.name);
+    formData.append("fileName", file.name);
   });
+
   newAlgaehApi({
-    uri: "/saveContractDoc",
+    uri: "/uploadDocument",
     data: formData,
     extraHeaders: { "Content-Type": "multipart/form-data" },
     method: "POST",
@@ -286,6 +289,21 @@ export function saveDocument(files = [], contract_no, contract_id, $this) {
   })
     .then((value) => getDocuments(contract_no, $this))
     .catch((e) => console.log(e));
+  // const formData = new FormData();
+  // formData.append("contract_no", contract_no);
+  // formData.append("contract_id", contract_id);
+  // files.forEach((file, index) => {
+  //   formData.append(`file_${index}`, file, file.name);
+  // });
+  // newAlgaehApi({
+  //   uri: "/saveContractDoc",
+  //   data: formData,
+  //   extraHeaders: { "Content-Type": "multipart/form-data" },
+  //   method: "POST",
+  //   module: "documentManagement",
+  // })
+  //   .then((value) => getDocuments(contract_no, $this))
+  //   .catch((e) => console.log(e));
 }
 
 export function getDocuments(contract_no, $this) {
@@ -295,14 +313,21 @@ export function getDocuments(contract_no, $this) {
     },
     () => {
       newAlgaehApi({
-        uri: "/getContractDoc",
+        uri: "/moveOldFiles",
         module: "documentManagement",
         method: "GET",
         data: {
-          contract_no,
+          mainFolderName: "ContractsDocuments",
+          // subFolderName: this.state.data.employee_code,
+          doc_number: contract_no,
+
+          hasUniqueId: true,
+          contract_no: contract_no,
+          completePath: `ContractsDocuments/${contract_no}/`,
         },
       })
         .then((res) => {
+          debugger;
           if (res.data.success) {
             let { data } = res.data;
             $this.setState(
@@ -332,6 +357,44 @@ export function getDocuments(contract_no, $this) {
             type: "error",
           });
         });
+      // newAlgaehApi({
+      //   uri: "/getContractDoc",
+      //   module: "documentManagement",
+      //   method: "GET",
+      //   data: {
+      //     contract_no,
+      //   },
+      // })
+      //   .then((res) => {
+      //     if (res.data.success) {
+      //       let { data } = res.data;
+      //       $this.setState(
+      //         {
+      //           contract_docs: data,
+      //           contract_files: [],
+      //           saveEnable: $this.state.dataExists,
+      //           loading: false,
+      //         },
+      //         () => {
+      //           AlgaehLoader({ show: false });
+      //         }
+      //       );
+      //     }
+      //   })
+      //   .catch((e) => {
+      //     $this.setState(
+      //       {
+      //         loading: false,
+      //       },
+      //       () => {
+      //         AlgaehLoader({ show: false });
+      //       }
+      //     );
+      //     swalMessage({
+      //       title: e.message,
+      //       type: "error",
+      //     });
+      //   });
     }
   );
 }

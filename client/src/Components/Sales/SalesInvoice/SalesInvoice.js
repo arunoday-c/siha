@@ -141,12 +141,26 @@ class SalesInvoice extends Component {
     }
   }
   getDocuments = () => {
+    // newAlgaehApi({
+    //   uri: "/getReceiptEntryDoc",
+    //   module: "documentManagement",
+    //   method: "GET",
+    //   data: {
+    //     grn_number: this.state.invoice_number,
+    //   },
+    // })
+    debugger;
     newAlgaehApi({
-      uri: "/getReceiptEntryDoc",
+      uri: "/moveOldFiles",
       module: "documentManagement",
       method: "GET",
       data: {
-        grn_number: this.state.invoice_number,
+        mainFolderName: "SalesInvoiceDocuments",
+        doc_number: this.state.invoice_number,
+        hasUniqueId: true,
+        contract_no: this.state.invoice_number,
+        fromModule: "Receipt",
+        completePath: `SalesInvoiceDocuments/${this.state.invoice_number}/`,
       },
     })
       .then((res) => {
@@ -175,12 +189,24 @@ class SalesInvoice extends Component {
   };
   saveDocument = (files = [], number, id) => {
     if (this.state.invoice_number) {
+      // const formData = new FormData();
+      // formData.append("grn_number", number || this.state.invoice_number);
+      // formData.append(
+      //   "hims_f_procurement_grn_header_id",
+      //   id || this.state.hims_f_sales_invoice_header_id
+      // );
+      // if (files.length) {
+      //   files.forEach((file, index) => {
+      //     formData.append(`file_${index}`, file, file.name);
+      //   });
+      // } else {
+      //   this.state.sales_invoice_files.forEach((file, index) => {
+      //     formData.append(`file_${index}`, file, file.name);
+      //   });
+      // }
       const formData = new FormData();
-      formData.append("grn_number", number || this.state.invoice_number);
-      formData.append(
-        "hims_f_procurement_grn_header_id",
-        id || this.state.hims_f_sales_invoice_header_id
-      );
+      formData.append("doc_number", this.state.invoice_number);
+      formData.append("mainFolderName", "SalesInvoiceDocuments");
       if (files.length) {
         files.forEach((file, index) => {
           formData.append(`file_${index}`, file, file.name);
@@ -190,8 +216,15 @@ class SalesInvoice extends Component {
           formData.append(`file_${index}`, file, file.name);
         });
       }
+      // newAlgaehApi({
+      //   uri: "/saveReceiptEntryDoc",
+      //   data: formData,
+      //   extraHeaders: { "Content-Type": "multipart/form-data" },
+      //   method: "POST",
+      //   module: "documentManagement",
+      // })
       newAlgaehApi({
-        uri: "/saveReceiptEntryDoc",
+        uri: "/uploadDocument",
         data: formData,
         extraHeaders: { "Content-Type": "multipart/form-data" },
         method: "POST",
@@ -207,22 +240,54 @@ class SalesInvoice extends Component {
     }
   };
   downloadDoc(doc, isPreview) {
-    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-    const link = document.createElement("a");
-    if (!isPreview) {
-      link.download = doc.filename;
-      link.href = fileUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      fetch(fileUrl)
-        .then((res) => res.blob())
-        .then((fblob) => {
-          const newUrl = URL.createObjectURL(fblob);
-          window.open(newUrl);
-        });
-    }
+    // const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+    // const link = document.createElement("a");
+    // if (!isPreview) {
+    //   link.download = doc.filename;
+    //   link.href = fileUrl;
+    //   document.body.appendChild(link);
+    //   link.click();
+    //   document.body.removeChild(link);
+    // } else {
+    //   fetch(fileUrl)
+    //     .then((res) => res.blob())
+    //     .then((fblob) => {
+    //       const newUrl = URL.createObjectURL(fblob);
+    //       window.open(newUrl);
+    //     });
+    // }
+    newAlgaehApi({
+      uri: "/downloadFromPath",
+      module: "documentManagement",
+      method: "GET",
+      extraHeaders: {
+        Accept: "blob",
+      },
+      others: {
+        responseType: "blob",
+      },
+      data: {
+        fileName: doc.value,
+      },
+    })
+      .then((resp) => {
+        const urlBlob = URL.createObjectURL(resp.data);
+        if (isPreview) {
+          window.open(urlBlob);
+        } else {
+          const link = document.createElement("a");
+          link.download = doc.name;
+          link.href = urlBlob;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+        // setPDFLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        // setPDFLoading(false);
+      });
   }
 
   deleteDoc = (doc) => {
@@ -244,18 +309,33 @@ class SalesInvoice extends Component {
   };
 
   onDelete = (doc) => {
+    // newAlgaehApi({
+    //   uri: "/deleteReceiptEntryDoc",
+    //   method: "DELETE",
+    //   module: "documentManagement",
+    //   data: { id: doc._id },
+    // }).then((res) => {
+    //   if (res.data.success) {
+    //     this.setState((state) => {
+    //       const invoice_docs = state.invoice_docs.filter(
+    //         (item) => item._id !== doc._id
+    //       );
+    //       return { invoice_docs };
+    //     });
+    //   }
+    // });
     newAlgaehApi({
-      uri: "/deleteReceiptEntryDoc",
+      uri: "/deleteDocs",
       method: "DELETE",
       module: "documentManagement",
-      data: { id: doc._id },
+      data: { completePath: doc.value },
     }).then((res) => {
       if (res.data.success) {
         this.setState((state) => {
-          const invoice_docs = state.invoice_docs.filter(
-            (item) => item._id !== doc._id
+          const receipt_docs = state.receipt_docs.filter(
+            (item) => item.name !== doc.name
           );
-          return { invoice_docs };
+          return { receipt_docs };
         });
       }
     });
@@ -685,7 +765,7 @@ class SalesInvoice extends Component {
                             {this.state.invoice_docs?.length ? (
                               this.state.invoice_docs.map((doc) => (
                                 <li>
-                                  <b> {doc.filename} </b>
+                                  <b> {doc.name} </b>
                                   <span>
                                     <i
                                       className="fas fa-download"

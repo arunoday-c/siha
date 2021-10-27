@@ -26,6 +26,11 @@ const executePDF = function executePDFMethod(options) {
       //   ? options.recordSetup.args.skip
       //   : undefined;
       // const { limit_from, limit_to } = options.args?.recordSetup;
+      let lastOpeningBalance = 0;
+      if (options.args.recordSetup && options.args.recordSetup.others) {
+        const others = options.args.recordSetup.others;
+        lastOpeningBalance = parseFloat(others["6"].replace(/,/g, ""));
+      }
       let strQry = "";
 
       if (
@@ -70,10 +75,7 @@ const executePDF = function executePDFMethod(options) {
             if (limit_from !== undefined && limit_to !== undefined) {
               limitDefine = ` limit ${limit_to} offset ${limit_from}`;
             }
-            console.log(
-              "limit_from && limit_from === 0",
-              limit_from !== undefined && limit_to !== undefined
-            );
+
             options.mysql
               .executeQuery({
                 query: `
@@ -108,7 +110,6 @@ const executePDF = function executePDFMethod(options) {
                 if (result.length > 0) {
                   let CB_debit_side = null;
                   let CB_credit_side = null;
-                  console.log("Here it is ");
                   result.forEach((item) => {
                     total_credit = (
                       parseFloat(total_credit) + parseFloat(item.credit_amount)
@@ -132,11 +133,15 @@ const executePDF = function executePDFMethod(options) {
                     }
 
                     final_balance = total_debit;
-
-                    opening_balance =
-                      output[totalQuery !== "" ? 2 : 1][0]["deb_minus_cred"];
-                    closing_balance =
-                      output[totalQuery !== "" ? 3 : 2][0]["deb_minus_cred"];
+                    if (lastOpeningBalance === 0) {
+                      opening_balance =
+                        output[totalQuery !== "" ? 2 : 1][0]["deb_minus_cred"];
+                      closing_balance =
+                        output[totalQuery !== "" ? 3 : 2][0]["deb_minus_cred"];
+                    } else {
+                      opening_balance = lastOpeningBalance;
+                      closing_balance = lastOpeningBalance;
+                    }
                   } else {
                     const diffrence = parseFloat(
                       total_credit - total_debit
@@ -147,12 +152,17 @@ const executePDF = function executePDFMethod(options) {
                       CB_credit_side = diffrence;
                     }
                     final_balance = total_credit;
-
-                    opening_balance =
-                      output[totalQuery !== "" ? 2 : 1][0]["cred_minus_deb"];
-                    closing_balance =
-                      output[totalQuery !== "" ? 3 : 2][0]["cred_minus_deb"];
+                    if (lastOpeningBalance === 0) {
+                      opening_balance =
+                        output[totalQuery !== "" ? 2 : 1][0]["cred_minus_deb"];
+                      closing_balance =
+                        output[totalQuery !== "" ? 3 : 2][0]["cred_minus_deb"];
+                    } else {
+                      opening_balance = lastOpeningBalance;
+                      closing_balance = lastOpeningBalance;
+                    }
                   }
+
                   let lastAmount = 0;
                   let index = 0;
                   _.chain(result)
@@ -276,7 +286,7 @@ const executePDF = function executePDFMethod(options) {
                       index++;
                     })
                     .value();
-                  console.log("===outputArray====", outputArray.length);
+
                   const totalRecords =
                     totalQuery !== "" ? output[1][0]["total_pages"] : undefined;
                   resolve({

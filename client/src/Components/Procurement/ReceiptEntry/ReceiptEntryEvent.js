@@ -320,12 +320,25 @@ const SaveReceiptEnrty = ($this) => {
   });
 };
 const getDocuments = ($this) => {
+  // newAlgaehApi({
+  //   uri: "/getReceiptEntryDoc",
+  //   module: "documentManagement",
+  //   method: "GET",
+  //   data: {
+  //     grn_number: $this.state.grn_number,
+  //   },
+  // })
   newAlgaehApi({
-    uri: "/getReceiptEntryDoc",
+    uri: "/moveOldFiles",
     module: "documentManagement",
     method: "GET",
     data: {
-      grn_number: $this.state.grn_number,
+      mainFolderName: "ReceiptEntryDocuments",
+      doc_number: $this.state.grn_number,
+      hasUniqueId: true,
+      contract_no: $this.state.grn_number,
+      fromModule: "Receipt",
+      completePath: `ReceiptEntryDocuments/${$this.state.grn_number}/`,
     },
   })
     .then((res) => {
