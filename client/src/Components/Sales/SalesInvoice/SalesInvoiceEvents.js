@@ -148,6 +148,7 @@ const getCtrlCode = ($this, saveDocument, docNumber) => {
             if (saveDocument) {
               $this.saveDocument();
             } else {
+              $this.getDocuments(docNumber);
               return;
             }
           });

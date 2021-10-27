@@ -128,18 +128,36 @@ class ApplyLeave extends Component {
   saveDocument = (files = [], contract_no, contract_id) => {
     if (files?.length) {
       const formData = new FormData();
-      formData.append("contract_no", contract_no);
-      formData.append("contract_id", contract_id);
+      formData.append("doc_number", contract_no);
+      formData.append("mainFolderName", "EmployeeDocuments");
+      formData.append("subFolderName", "LeaveApplication");
+      formData.append("specificFolder", this.state.employee_code);
       files.forEach((file, index) => {
         formData.append(`file_${index}`, file, file.name);
+        formData.append("fileName", file.name);
       });
+
       return newAlgaehApi({
-        uri: "/saveContractDoc",
+        uri: "/uploadDocument",
         data: formData,
         extraHeaders: { "Content-Type": "multipart/form-data" },
         method: "POST",
         module: "documentManagement",
       });
+
+      // const formData = new FormData();
+      // formData.append("contract_no", contract_no);
+      // formData.append("contract_id", contract_id);
+      // files.forEach((file, index) => {
+      //   formData.append(`file_${index}`, file, file.name);
+      // });
+      // return newAlgaehApi({
+      //   uri: "/saveContractDoc",
+      //   data: formData,
+      //   extraHeaders: { "Content-Type": "multipart/form-data" },
+      //   method: "POST",
+      //   module: "documentManagement",
+      // });
     } else {
       return new Promise((resolve, reject) => resolve(1));
     }
@@ -310,9 +328,11 @@ class ApplyLeave extends Component {
             const { available_balance } = this.state;
             swal({
               title: "Applying across the year leave?",
-              text: `Employee have ${
+              text: `Employee have ${parseFloat(
                 available_balance - calculatedLeaveDays
-              } balance leave, Do you want to Encash Leave or Transfer to next year?`,
+              ).toFixed(
+                2
+              )} balance leave, Do you want to Encash Leave or Transfer to next year?`,
               type: "warning",
               showCancelButton: true,
               confirmButtonText: "Request Encashment",

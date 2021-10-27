@@ -4660,6 +4660,33 @@ export default {
       });
     }
   },
+  deletePackageData: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      console.log("deletePackageData");
+      _mysql
+        .executeQuery({
+          query: `DELETE FROM hims_f_package_detail where package_header_id=?; \
+          DELETE FROM hims_f_package_header where hims_f_package_header_id=?; `,
+          values: [
+            req.body.hims_f_package_header_id,
+            req.body.hims_f_package_header_id,
+          ],
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 };
 
 //Not in Use

@@ -138,12 +138,31 @@ class DNItemList extends Component {
   }
   saveDocument = (files = [], number, id) => {
     if (this.state.delivery_note_number) {
+      // const formData = new FormData();
+      // formData.append("grn_number", number || this.state.delivery_note_number);
+      // formData.append(
+      //   "hims_f_procurement_grn_header_id",
+      //   id || this.state.hims_f_procurement_dn_header_id
+      // );
+      // if (files.length) {
+      //   files.forEach((file, index) => {
+      //     formData.append(`file_${index}`, file, file.name);
+      //   });
+      // } else {
+      //   this.state.delivery_files.forEach((file, index) => {
+      //     formData.append(`file_${index}`, file, file.name);
+      //   });
+      // }
+      // newAlgaehApi({
+      //   uri: "/saveReceiptEntryDoc",
+      //   data: formData,
+      //   extraHeaders: { "Content-Type": "multipart/form-data" },
+      //   method: "POST",
+      //   module: "documentManagement",
+      // })
       const formData = new FormData();
-      formData.append("grn_number", number || this.state.delivery_note_number);
-      formData.append(
-        "hims_f_procurement_grn_header_id",
-        id || this.state.hims_f_procurement_dn_header_id
-      );
+      formData.append("doc_number", this.state.delivery_note_number);
+      formData.append("mainFolderName", "DeliveryNoteEntryDocuments");
       if (files.length) {
         files.forEach((file, index) => {
           formData.append(`file_${index}`, file, file.name);
@@ -153,8 +172,14 @@ class DNItemList extends Component {
           formData.append(`file_${index}`, file, file.name);
         });
       }
+
+      // files.forEach((file, index) => {
+      //   formData.append(`file_${index}`, file, file.name);
+      //   formData.append("fileName", file.name);
+      // });
+
       newAlgaehApi({
-        uri: "/saveReceiptEntryDoc",
+        uri: "/uploadDocument",
         data: formData,
         extraHeaders: { "Content-Type": "multipart/form-data" },
         method: "POST",
@@ -170,22 +195,54 @@ class DNItemList extends Component {
     }
   };
   downloadDoc(doc, isPreview) {
-    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-    const link = document.createElement("a");
-    if (!isPreview) {
-      link.download = doc.filename;
-      link.href = fileUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      fetch(fileUrl)
-        .then((res) => res.blob())
-        .then((fblob) => {
-          const newUrl = URL.createObjectURL(fblob);
-          window.open(newUrl);
-        });
-    }
+    // const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+    // const link = document.createElement("a");
+    // if (!isPreview) {
+    //   link.download = doc.filename;
+    //   link.href = fileUrl;
+    //   document.body.appendChild(link);
+    //   link.click();
+    //   document.body.removeChild(link);
+    // } else {
+    //   fetch(fileUrl)
+    //     .then((res) => res.blob())
+    //     .then((fblob) => {
+    //       const newUrl = URL.createObjectURL(fblob);
+    //       window.open(newUrl);
+    //     });
+    // }
+    newAlgaehApi({
+      uri: "/downloadFromPath",
+      module: "documentManagement",
+      method: "GET",
+      extraHeaders: {
+        Accept: "blob",
+      },
+      others: {
+        responseType: "blob",
+      },
+      data: {
+        fileName: doc.value,
+      },
+    })
+      .then((resp) => {
+        const urlBlob = URL.createObjectURL(resp.data);
+        if (isPreview) {
+          window.open(urlBlob);
+        } else {
+          const link = document.createElement("a");
+          link.download = doc.name;
+          link.href = urlBlob;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+        // setPDFLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        // setPDFLoading(false);
+      });
   }
 
   deleteDoc = (doc) => {
@@ -207,18 +264,33 @@ class DNItemList extends Component {
   };
 
   onDelete = (doc) => {
+    // newAlgaehApi({
+    //   uri: "/deleteReceiptEntryDoc",
+    //   method: "DELETE",
+    //   module: "documentManagement",
+    //   data: { id: doc._id },
+    // }).then((res) => {
+    //   if (res.data.success) {
+    //     this.setState((state) => {
+    //       const delivery_docs = state.delivery_docs.filter(
+    //         (item) => item._id !== doc._id
+    //       );
+    //       return { delivery_docs };
+    //     });
+    //   }
+    // });
     newAlgaehApi({
-      uri: "/deleteReceiptEntryDoc",
+      uri: "/deleteDocs",
       method: "DELETE",
       module: "documentManagement",
-      data: { id: doc._id },
+      data: { completePath: doc.value },
     }).then((res) => {
       if (res.data.success) {
         this.setState((state) => {
-          const delivery_docs = state.delivery_docs.filter(
-            (item) => item._id !== doc._id
+          const receipt_docs = state.receipt_docs.filter(
+            (item) => item.name !== doc.name
           );
-          return { delivery_docs };
+          return { receipt_docs };
         });
       }
     });
@@ -1006,11 +1078,12 @@ class DNItemList extends Component {
                                         this.state.posted === "Y" ? true : false
                                       }
                                       events={{
-                                        onChange: onchangegridcoldatehandle.bind(
-                                          this,
-                                          this,
-                                          row
-                                        ),
+                                        onChange:
+                                          onchangegridcoldatehandle.bind(
+                                            this,
+                                            this,
+                                            row
+                                          ),
                                       }}
                                       value={row.expiry_date}
                                     />
@@ -1358,7 +1431,7 @@ class DNItemList extends Component {
                                 {this.state.delivery_docs?.length ? (
                                   this.state.delivery_docs.map((doc) => (
                                     <li>
-                                      <b> {doc.filename} </b>
+                                      <b> {doc.name} </b>
                                       <span>
                                         <i
                                           className="fas fa-download"

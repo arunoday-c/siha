@@ -62,18 +62,53 @@ class LeaveAuthDetail extends Component {
     );
   }
   getDocuments = (contract_no) => {
+    // newAlgaehApi({
+    //   uri: "/getContractDoc",
+    //   module: "documentManagement",
+    //   method: "GET",
+    //   data: {
+    //     contract_no,
+    //   },
+    // })
+    //   .then((res) => {
+    //     if (res.data.success) {
+    //       let { data } = res.data;
+
+    //       this.setState(
+    //         {
+    //           contract_docs: data,
+    //         },
+    //         () => {
+    //           AlgaehLoader({ show: false });
+    //         }
+    //       );
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     AlgaehMessagePop({
+    //       type: "error",
+    //       display: e.message,
+    //     });
+    //   });
+    debugger;
     newAlgaehApi({
-      uri: "/getContractDoc",
+      uri: "/moveOldFiles",
       module: "documentManagement",
       method: "GET",
       data: {
-        contract_no,
+        mainFolderName: "EmployeeDocuments",
+        subFolderName: this.state.data.employee_code,
+        doc_number: this.state.data.leave_application_code,
+        specificFolder: "LeaveApplication",
+        hasUniqueId: true,
+        contract_no: this.state.data.leave_application_code,
+        completePath: `EmployeeDocuments/${this.state.data.employee_code}/LeaveApplication/${this.state.data.leave_application_code}/`,
       },
     })
       .then((res) => {
+        debugger;
         if (res.data.success) {
           let { data } = res.data;
-
           this.setState(
             {
               contract_docs: data,
@@ -276,12 +311,44 @@ class LeaveAuthDetail extends Component {
   }
 
   downloadDoc = (doc) => {
-    const link = document.createElement("a");
-    link.download = doc.filename;
-    link.href = `data:${doc.filetype};base64,${doc.document}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // const link = document.createElement("a");
+    // link.download = doc.filename;
+    // link.href = `data:${doc.filetype};base64,${doc.document}`;
+    // document.body.appendChild(link);
+    // link.click();
+    // document.body.removeChild(link);
+    newAlgaehApi({
+      uri: "/downloadFromPath",
+      module: "documentManagement",
+      method: "GET",
+      extraHeaders: {
+        Accept: "blob",
+      },
+      others: {
+        responseType: "blob",
+      },
+      data: {
+        fileName: doc.value,
+      },
+    })
+      .then((resp) => {
+        const urlBlob = URL.createObjectURL(resp.data);
+        // if (isPreview) {
+        //   window.open(urlBlob);
+        // } else {
+        const link = document.createElement("a");
+        link.download = doc.name;
+        link.href = urlBlob;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        // }
+        // setPDFLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        // setPDFLoading(false);
+      });
   };
 
   cancelLeave(type) {
@@ -571,7 +638,7 @@ class LeaveAuthDetail extends Component {
                             {this.state.contract_docs?.length ? (
                               this.state.contract_docs?.map((doc) => (
                                 <li>
-                                  <b> {doc.filename} </b>
+                                  <b> {doc.name} </b>
                                   <span>
                                     <i
                                       className="fas fa-download"
