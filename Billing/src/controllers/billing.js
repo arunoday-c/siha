@@ -27,6 +27,7 @@ const {
   addCashHandover,
   generateAccountingEntry,
   checkServiceExists,
+  deletePackageData,
 } = models;
 
 const { insertLadOrderedServices } = labModels;
@@ -186,6 +187,12 @@ export default () => {
     });
   });
   api.post("/generateAccountEntry", generateAccountingEntry, (req, res) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+    });
+  });
+
+  api.post("/deletePackageData", deletePackageData, (req, res) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
     });
