@@ -240,22 +240,54 @@ class SalesInvoice extends Component {
     }
   };
   downloadDoc(doc, isPreview) {
-    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-    const link = document.createElement("a");
-    if (!isPreview) {
-      link.download = doc.filename;
-      link.href = fileUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      fetch(fileUrl)
-        .then((res) => res.blob())
-        .then((fblob) => {
-          const newUrl = URL.createObjectURL(fblob);
-          window.open(newUrl);
-        });
-    }
+    // const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+    // const link = document.createElement("a");
+    // if (!isPreview) {
+    //   link.download = doc.filename;
+    //   link.href = fileUrl;
+    //   document.body.appendChild(link);
+    //   link.click();
+    //   document.body.removeChild(link);
+    // } else {
+    //   fetch(fileUrl)
+    //     .then((res) => res.blob())
+    //     .then((fblob) => {
+    //       const newUrl = URL.createObjectURL(fblob);
+    //       window.open(newUrl);
+    //     });
+    // }
+    newAlgaehApi({
+      uri: "/downloadFromPath",
+      module: "documentManagement",
+      method: "GET",
+      extraHeaders: {
+        Accept: "blob",
+      },
+      others: {
+        responseType: "blob",
+      },
+      data: {
+        fileName: doc.value,
+      },
+    })
+      .then((resp) => {
+        const urlBlob = URL.createObjectURL(resp.data);
+        if (isPreview) {
+          window.open(urlBlob);
+        } else {
+          const link = document.createElement("a");
+          link.download = doc.name;
+          link.href = urlBlob;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+        // setPDFLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        // setPDFLoading(false);
+      });
   }
 
   deleteDoc = (doc) => {
