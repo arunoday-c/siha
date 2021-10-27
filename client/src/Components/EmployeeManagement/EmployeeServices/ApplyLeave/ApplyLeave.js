@@ -310,9 +310,11 @@ class ApplyLeave extends Component {
             const { available_balance } = this.state;
             swal({
               title: "Applying across the year leave?",
-              text: `Employee have ${
+              text: `Employee have ${parseFloat(
                 available_balance - calculatedLeaveDays
-              } balance leave, Do you want to Encash Leave or Transfer to next year?`,
+              ).toFixed(
+                2
+              )} balance leave, Do you want to Encash Leave or Transfer to next year?`,
               type: "warning",
               showCancelButton: true,
               confirmButtonText: "Request Encashment",
