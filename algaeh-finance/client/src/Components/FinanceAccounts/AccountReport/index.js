@@ -62,7 +62,7 @@ export default memo(function Modal(props) {
                 reportQuery: null,
                 pageSize: "A4",
                 pageOrentation: "portrait",
-
+                lastRecord: [6], //last row 6th column
                 reportParams: [
                   {
                     name: "child_id",

@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import Enumerable from "linq";
+// import Enumerable from "linq";
 import "./ItemSetup.scss";
 import "../../styles/site.scss";
 import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
@@ -151,40 +151,40 @@ class ItemSetup extends Component {
   }
 
   render() {
-    let ItemList = Enumerable.from(this.props.itemlist)
-      .groupBy("$.hims_d_item_master_id", null, (k, g) => {
-        let firstRecordSet = Enumerable.from(g).firstOrDefault();
+    // let ItemList = Enumerable.from(this.props.itemlist)
+    //   .groupBy("$.hims_d_item_master_id", null, (k, g) => {
+    //     let firstRecordSet = Enumerable.from(g).firstOrDefault();
 
-        return {
-          item_code: firstRecordSet.item_code,
-          hims_d_item_master_id: firstRecordSet.hims_d_item_master_id,
-          item_description: firstRecordSet.item_description,
-          generic_id: firstRecordSet.generic_id,
-          category_id: firstRecordSet.category_id,
-          group_id: firstRecordSet.group_id,
-          form_id: firstRecordSet.form_id,
-          storage_id: firstRecordSet.storage_id,
-          item_uom_id: firstRecordSet.item_uom_id,
-          purchase_uom_id: firstRecordSet.purchase_uom_id,
-          sales_uom_id: firstRecordSet.sales_uom_id,
-          stocking_uom_id: firstRecordSet.stocking_uom_id,
-          item_status: firstRecordSet.item_status,
-          radioActive: firstRecordSet.item_status === "A" ? true : false,
-          radioInactive: firstRecordSet.item_status === "I" ? true : false,
-          service_id: firstRecordSet.service_id,
-          purchase_cost: firstRecordSet.purchase_cost,
-          addl_information: firstRecordSet.addl_information,
-          exp_date_required: firstRecordSet.exp_date_required,
-          sfda_code: firstRecordSet.sfda_code,
-          reorder_qty: firstRecordSet.reorder_qty,
-          standard_fee: firstRecordSet.sales_price,
-          vat_applicable: firstRecordSet.vat_applicable,
-          vat_percent: firstRecordSet.vat_percent,
-          detail_item_uom:
-            firstRecordSet.hims_m_item_uom_id === null ? [] : g.getSource(),
-        };
-      })
-      .toArray();
+    //     return {
+    //       item_code: firstRecordSet.item_code,
+    //       hims_d_item_master_id: firstRecordSet.hims_d_item_master_id,
+    //       item_description: firstRecordSet.item_description,
+    //       generic_id: firstRecordSet.generic_id,
+    //       category_id: firstRecordSet.category_id,
+    //       group_id: firstRecordSet.group_id,
+    //       form_id: firstRecordSet.form_id,
+    //       storage_id: firstRecordSet.storage_id,
+    //       item_uom_id: firstRecordSet.item_uom_id,
+    //       purchase_uom_id: firstRecordSet.purchase_uom_id,
+    //       sales_uom_id: firstRecordSet.sales_uom_id,
+    //       stocking_uom_id: firstRecordSet.stocking_uom_id,
+    //       item_status: firstRecordSet.item_status,
+    //       radioActive: firstRecordSet.item_status === "A" ? true : false,
+    //       radioInactive: firstRecordSet.item_status === "I" ? true : false,
+    //       service_id: firstRecordSet.service_id,
+    //       purchase_cost: firstRecordSet.purchase_cost,
+    //       addl_information: firstRecordSet.addl_information,
+    //       exp_date_required: firstRecordSet.exp_date_required,
+    //       sfda_code: firstRecordSet.sfda_code,
+    //       reorder_qty: firstRecordSet.reorder_qty,
+    //       standard_fee: firstRecordSet.sales_price,
+    //       vat_applicable: firstRecordSet.vat_applicable,
+    //       vat_percent: firstRecordSet.vat_percent,
+    //       detail_item_uom:
+    //         firstRecordSet.hims_m_item_uom_id === null ? [] : g.getSource(),
+    //     };
+    //   })
+    //   .toArray();
     return (
       <div className="hims_item_setup">
         <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
@@ -445,7 +445,7 @@ class ItemSetup extends Component {
                   ]}
                   keyId="hims_d_item_master_id"
                   dataSource={{
-                    data: ItemList,
+                    data: this.props.itemlist,
                   }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}

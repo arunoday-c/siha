@@ -20,14 +20,13 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
 
     <div class="print-body" >
-      <div id="total_records" style="display:none;">{{totalRecords}}</div>
-          
+      <div id="total_records">{{totalRecords}}</div>
+     <div id="rows_per_page">{{rowsPerPage}}</div>
         <section>
-             {{/ifExist}}
-            <table class="tableForDataNoBorder tableFixHead" cell-padding="0">
+              {{/ifExist}}
+               <table class="tableForDataNoBorder tableFixHead" cell-padding="0" id="main_table"> 
                 <thead>
                     <tr>
-                         <th width=""  class="txtFld">ID</th>
                         <th width=""  class="txtFld">Date</th>
                         <th width=""  class="txtFld">Voucher Type</th>
                         <th width=""  class="txtFld">Voucher No.</th>
@@ -37,8 +36,7 @@
                         <th width="" class="numberFld ">Closing Balance</th>
                     </tr>
                 </thead>
-                 
-                <tbody>
+        <tbody>
                    
 {{#ifExist totalRecords}}
                     <tr class="numberFld no_count">
@@ -48,7 +46,6 @@
                      {{/ifExist}}
                     {{#each details}}
                     <tr>
-                        <td>{{finance_voucher_header_id}}</td>
                         <td datatype="string"  class="txtFld">{{payment_date}}</td>
                         <td datatype="string"  class="txtFld">{{voucher_type}}</td>
                         <td datatype="string"  class="txtFld">{{voucher_no}}</td>
@@ -62,6 +59,7 @@
 
                    
                 </tbody>
+             {{#ifExist totalRecords}}
            <tfoot>
                  <tr class="numberFld ">
                         <td class="numberFld" colspan="4"></td>
@@ -75,6 +73,7 @@
                         <td class="numberFld" ><small>Closing Balance</small>: <b>{{numberFormating closing_balance currencyOnly}}</b></td>
                     </tr>       --}}
            </tfoot>
+             {{/ifExist}}
             </table>
              {{#ifExist totalRecords}}
         </section>
