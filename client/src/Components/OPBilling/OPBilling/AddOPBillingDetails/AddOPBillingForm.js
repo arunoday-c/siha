@@ -441,10 +441,52 @@ class AddOPBillingForm extends Component {
   }
 
   deleteBillDetail(context, row) {
+    debugger;
+
+    if (row.service_type_id === 14) {
+      swal({
+        title: "Package Service",
+        html:
+          "<b>" +
+          row.service_name +
+          "</b> this is package service do you want to delete from package data?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        confirmButtonColor: "#44b8bd",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "No",
+      }).then((willProceed) => {
+        if (willProceed.value) {
+          algaehApiCall({
+            uri: "/billing/deletePackageData",
+            module: "billing",
+            method: "POST",
+            data: { hims_f_package_header_id: row.ordered_package_id },
+            onSuccess: (response) => {
+              if (response.data.success) {
+                this.clearData(context, row);
+              }
+            },
+            onFailure: (error) => {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                title: error.message,
+                type: "error",
+              });
+            },
+          });
+        }
+      });
+    } else {
+      this.clearData(context, row);
+    }
+  }
+
+  clearData(context, row) {
     let serviceDetails = this.state.billdetails;
     let _index = serviceDetails.indexOf(row);
     serviceDetails.splice(_index, 1);
-
     if (serviceDetails.length === 0) {
       if (context !== undefined) {
         context.updateState({
@@ -527,7 +569,6 @@ class AddOPBillingForm extends Component {
       }
     }
   }
-
   render() {
     let Package_Exists =
       this.props.PatientPackageList === undefined
