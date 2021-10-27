@@ -460,14 +460,31 @@ class ApplyLeave extends Component {
 
   saveDocument = (files = [], contract_no, contract_id) => {
     if (this.state.document_mandatory && files?.length) {
+      // const formData = new FormData();
+      // formData.append("contract_no", contract_no);
+      // formData.append("contract_id", contract_id);
+      // files.forEach((file, index) => {
+      //   formData.append(`file_${index}`, file, file.name);
+      // });
+      // return newAlgaehApi({
+      //   uri: "/saveContractDoc",
+      //   data: formData,
+      //   extraHeaders: { "Content-Type": "multipart/form-data" },
+      //   method: "POST",
+      //   module: "documentManagement",
+      // });
       const formData = new FormData();
-      formData.append("contract_no", contract_no);
-      formData.append("contract_id", contract_id);
+      formData.append("doc_number", contract_no);
+      formData.append("mainFolderName", "EmployeeDocuments");
+      formData.append("subFolderName", "LeaveApplication");
+      formData.append("specificFolder", this.props.empData.employee_code);
       files.forEach((file, index) => {
         formData.append(`file_${index}`, file, file.name);
+        formData.append("fileName", file.name);
       });
+
       return newAlgaehApi({
-        uri: "/saveContractDoc",
+        uri: "/uploadDocument",
         data: formData,
         extraHeaders: { "Content-Type": "multipart/form-data" },
         method: "POST",

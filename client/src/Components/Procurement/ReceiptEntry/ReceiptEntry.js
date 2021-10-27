@@ -102,11 +102,8 @@ class ReceiptEntry extends Component {
   saveDocument = (files = [], number, id) => {
     if (this.state.grn_number) {
       const formData = new FormData();
-      formData.append("grn_number", number || this.state.grn_number);
-      formData.append(
-        "hims_f_procurement_grn_header_id",
-        id || this.state.hims_f_procurement_grn_header_id
-      );
+      formData.append("doc_number", this.state.grn_number);
+      formData.append("mainFolderName", "ReceiptEntryDocuments");
       if (files.length) {
         files.forEach((file, index) => {
           formData.append(`file_${index}`, file, file.name);
@@ -116,8 +113,14 @@ class ReceiptEntry extends Component {
           formData.append(`file_${index}`, file, file.name);
         });
       }
+
+      // files.forEach((file, index) => {
+      //   formData.append(`file_${index}`, file, file.name);
+      //   formData.append("fileName", file.name);
+      // });
+
       newAlgaehApi({
-        uri: "/saveReceiptEntryDoc",
+        uri: "/uploadDocument",
         data: formData,
         extraHeaders: { "Content-Type": "multipart/form-data" },
         method: "POST",
@@ -125,6 +128,30 @@ class ReceiptEntry extends Component {
       })
         .then((value) => getDocuments(this))
         .catch((e) => console.log(e));
+      // const formData = new FormData();
+      // formData.append("grn_number", number || this.state.grn_number);
+      // formData.append(
+      //   "hims_f_procurement_grn_header_id",
+      //   id || this.state.hims_f_procurement_grn_header_id
+      // );
+      // if (files.length) {
+      //   files.forEach((file, index) => {
+      //     formData.append(`file_${index}`, file, file.name);
+      //   });
+      // } else {
+      //   this.state.recepit_files.forEach((file, index) => {
+      //     formData.append(`file_${index}`, file, file.name);
+      //   });
+      // }
+      // newAlgaehApi({
+      //   uri: "/saveReceiptEntryDoc",
+      //   data: formData,
+      //   extraHeaders: { "Content-Type": "multipart/form-data" },
+      //   method: "POST",
+      //   module: "documentManagement",
+      // })
+      //   .then((value) => getDocuments(this))
+      //   .catch((e) => console.log(e));
     } else {
       swalMessage({
         title: "Can't upload attachments for unsaved Receipt Entry",
@@ -133,22 +160,54 @@ class ReceiptEntry extends Component {
     }
   };
   downloadDoc(doc, isPreview) {
-    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-    const link = document.createElement("a");
-    if (!isPreview) {
-      link.download = doc.filename;
-      link.href = fileUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      fetch(fileUrl)
-        .then((res) => res.blob())
-        .then((fblob) => {
-          const newUrl = URL.createObjectURL(fblob);
-          window.open(newUrl);
-        });
-    }
+    // const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+    // const link = document.createElement("a");
+    // if (!isPreview) {
+    //   link.download = doc.filename;
+    //   link.href = fileUrl;
+    //   document.body.appendChild(link);
+    //   link.click();
+    //   document.body.removeChild(link);
+    // } else {
+    //   fetch(fileUrl)
+    //     .then((res) => res.blob())
+    //     .then((fblob) => {
+    //       const newUrl = URL.createObjectURL(fblob);
+    //       window.open(newUrl);
+    //     });
+    // }
+    newAlgaehApi({
+      uri: "/downloadFromPath",
+      module: "documentManagement",
+      method: "GET",
+      extraHeaders: {
+        Accept: "blob",
+      },
+      others: {
+        responseType: "blob",
+      },
+      data: {
+        fileName: doc.value,
+      },
+    })
+      .then((resp) => {
+        const urlBlob = URL.createObjectURL(resp.data);
+        if (isPreview) {
+          window.open(urlBlob);
+        } else {
+          const link = document.createElement("a");
+          link.download = doc.name;
+          link.href = urlBlob;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+        // setPDFLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        // setPDFLoading(false);
+      });
   }
 
   deleteDoc = (doc) => {
@@ -171,20 +230,35 @@ class ReceiptEntry extends Component {
 
   onDelete = (doc) => {
     newAlgaehApi({
-      uri: "/deleteReceiptEntryDoc",
+      uri: "/deleteDocs",
       method: "DELETE",
       module: "documentManagement",
-      data: { id: doc._id },
+      data: { completePath: doc.value },
     }).then((res) => {
       if (res.data.success) {
         this.setState((state) => {
           const receipt_docs = state.receipt_docs.filter(
-            (item) => this.state._id !== doc._id
+            (item) => item.name !== doc.name
           );
           return { receipt_docs };
         });
       }
     });
+    // newAlgaehApi({
+    //   uri: "/deleteReceiptEntryDoc",
+    //   method: "DELETE",
+    //   module: "documentManagement",
+    //   data: { id: doc._id },
+    // }).then((res) => {
+    //   if (res.data.success) {
+    //     this.setState((state) => {
+    //       const receipt_docs = state.receipt_docs.filter(
+    //         (item) => this.state._id !== doc._id
+    //       );
+    //       return { receipt_docs };
+    //     });
+    //   }
+    // });
   };
 
   render() {
@@ -688,7 +762,7 @@ class ReceiptEntry extends Component {
                                 {this.state.receipt_docs.length ? (
                                   this.state.receipt_docs.map((doc) => (
                                     <li>
-                                      <b> {doc.filename} </b>
+                                      <b> {doc.name} </b>
                                       <span>
                                         <i
                                           className="fas fa-download"

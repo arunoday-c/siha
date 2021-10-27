@@ -42,12 +42,25 @@ const loctexthandle = ($this, e) => {
   }
 };
 const getDocuments = ($this) => {
+  // newAlgaehApi({
+  //   uri: "/getReceiptEntryDoc",
+  //   module: "documentManagement",
+  //   method: "GET",
+  //   data: {
+  //     grn_number: $this.state.delivery_note_number,
+  //   },
+  // })
   newAlgaehApi({
-    uri: "/getReceiptEntryDoc",
+    uri: "/moveOldFiles",
     module: "documentManagement",
     method: "GET",
     data: {
-      grn_number: $this.state.delivery_note_number,
+      mainFolderName: "DeliveryNoteEntryDocuments",
+      doc_number: $this.state.delivery_note_number,
+      hasUniqueId: true,
+      contract_no: $this.state.delivery_note_number,
+      fromModule: "Receipt",
+      completePath: `DeliveryNoteEntryDocuments/${$this.state.delivery_note_number}/`,
     },
   })
     .then((res) => {
@@ -330,9 +343,10 @@ const SaveDNEnrty = ($this) => {
         }
       } else {
         if (InputObj.po_entry_detail[j].dn_entry_detail.length > 0) {
-          InputObj.pharmacy_stock_detail = InputObj.pharmacy_stock_detail.concat(
-            InputObj.po_entry_detail[j].dn_entry_detail
-          );
+          InputObj.pharmacy_stock_detail =
+            InputObj.pharmacy_stock_detail.concat(
+              InputObj.po_entry_detail[j].dn_entry_detail
+            );
         } else {
           $this.state.po_entry_detail[j].removed = "Y";
         }
@@ -350,9 +364,10 @@ const SaveDNEnrty = ($this) => {
         }
       } else {
         if (InputObj.po_entry_detail[j].dn_entry_detail.length > 0) {
-          InputObj.inventory_stock_detail = InputObj.inventory_stock_detail.concat(
-            InputObj.po_entry_detail[j].dn_entry_detail
-          );
+          InputObj.inventory_stock_detail =
+            InputObj.inventory_stock_detail.concat(
+              InputObj.po_entry_detail[j].dn_entry_detail
+            );
         } else {
           $this.state.po_entry_detail[j].removed = "Y";
         }
