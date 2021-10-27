@@ -53,28 +53,28 @@ const executePDF = function executePDFMethod(options) {
           _.chain(results)
             .groupBy((g) => g.bill_date)
             .forEach((details, key) => {
-              debugger;
               const desc = _.head(details);
               let innerObject = {
                 bill_date: desc.bill_date,
               };
               let items_inner_object = {};
               for (let i = 0; i < columns.length; i++) {
-                const filteredData = details.find(
-                  (f) => f.bill_date === columns[i]
+                const filteredData = details.filter(
+                  (f) => f.card_name === columns[i]
+                );
+                const totalAmt = _.sumBy(filteredData, (s) =>
+                  parseFloat(s.totalAmt)
                 );
 
-                items_inner_object[columns[i]] =
-                  filteredData === undefined ? 0 : filteredData.totalAmt;
+                items_inner_object[columns[i]] = totalAmt ? totalAmt : 0;
               }
-              //   _.sumBy(filteredData, (s) =>
-              //     parseFloat(s["total_amount"] ? s["total_amount"] : 0)
-              //   );
+
               let total_item_count = 0;
 
               Object.keys(items_inner_object).forEach((itm) => {
                 total_item_count =
                   total_item_count + parseFloat(items_inner_object[itm]);
+
                 items_inner_object[itm] = options.currencyFormat(
                   items_inner_object[itm],
                   crypto_data
