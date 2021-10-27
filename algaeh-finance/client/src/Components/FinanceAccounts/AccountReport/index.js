@@ -50,7 +50,17 @@ export default memo(function Modal(props) {
         const nodeFields = selectedNode?.node;
         const from_date = moment(dateRange[0]).format("YYYY-MM-DD");
         const to_date = moment(dateRange[1]).format("YYYY-MM-DD");
-
+        setLoading(false);
+        onOk("pdf");
+        const a = document.createElement("a");
+        a.href = result;
+        a.download = `${selectedNode?.node?.label}_${moment(
+          dateRange[0]
+        ).format("DD-MM-YYYY")}-${moment(dateRange[1]).format(
+          "DD-MM-YYYY"
+        )}.${"pdf"}`;
+        a.click();
+        return;
         previewReport(
           {
             reportTitle: "Ledger Report - Date Wise",
@@ -462,7 +472,7 @@ export default memo(function Modal(props) {
           };
         }
         const _type =
-          type === "excel"
+          type === "excel" || type === "pdf"
             ? {
                 headers: {
                   Accept: "blob",
@@ -472,7 +482,7 @@ export default memo(function Modal(props) {
             : {};
         algaehApiCall({
           cancelRequestId: "accountReport",
-          uri: type === "excel" ? "/excelReport" : "/getRawReport", //"/report",
+          uri: type === "excel" ? "/excelReport" : "/report", //"/getRawReport", //"/report",
           module: "reports",
           method: "GET",
           ..._type,
@@ -482,13 +492,13 @@ export default memo(function Modal(props) {
           // others: { responseType: "blob" },
           data: data,
           onSuccess: (response) => {
-            debugger;
-            if (type === "pdf") {
-              resolve(response.data);
-            } else {
-              const url = URL.createObjectURL(response.data);
-              resolve(url);
-            }
+            // debugger;
+            // if (type === "pdf") {
+            //   resolve(response.data);
+            // } else {
+            const url = URL.createObjectURL(response.data);
+            resolve(url);
+            // }
           },
           onCatch: (error) => {
             reject(error);
