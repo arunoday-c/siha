@@ -1,27 +1,78 @@
 <style type="text/css">
 .print-body{
-    height:99vh;overflow:auto;
+     height:95vh;overflow:auto;
+     box-shadow:0 4px 5px #ccc;
 }
-.tableFixHead          { overflow: auto; height: 100px; }
+.tableFixHead          { overflow: auto; height: 100px;}
 .tableFixHead thead th { position: sticky; top: 0; z-index: 1; background:#eee;}
 .tableFixHead tfoot td { background:#eee;}
 #pleaseWait{
-    position: sticky; bottom: 10px; z-index: 1 ; width: 100%;    background-color: rgb(239, 255, 185);
+    position: sticky; bottom: 20px; z-index: 1 ; width: 100%; 
     padding: 4px 0;
     text-align: center;
     font-weight: bold;
 }
+#pagination{
+    position: sticky; bottom:0; z-index: 1;
+  display: inline-block;
+  margin:0  auto;
+  width: 100%;
+  text-align: center;
+  vertical-align:middle;
+  align-items: center;
+  display: none;
+}
+#pagination a,#pagination input {
+  color: black;
+  display: inline-block;
+  padding: 8px 16px;
+  text-decoration: none;
+  border: 1px solid #ddd;
+}
+#pagination input {
+    width: 50px;
+    height: 30px;
+    padding-left: 4px;
+    padding-right:4px;
+    text-align: center;
+    font-size: 11px;
+}
+
+#pagination a.active {
+  background-color: #4CAF50;
+  color: white;
+  border: 1px solid #4CAF50;
+}
+
+#pagination a:hover:not(.active) {background-color: #ddd;}
+
+#pagination a:first-child {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+#pagination a:last-child {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+ 
+}
+
+
 #total_records{
     display: none;
 }
+
+#rows_per_page{
+    display: none;
+}
+
 </style>
 
 {{#ifExist totalRecords}}
 {{{importStyle 'css/algaehReportStyles.css'}}}
 
     <div class="print-body" >
-      <div id="total_records">{{totalRecords}}</div>
-     <div id="rows_per_page">{{rowsPerPage}}</div>
+     
         <section>
               {{/ifExist}}
                <table class="tableForDataNoBorder tableFixHead" cell-padding="0" id="main_table"> 
@@ -77,6 +128,21 @@
             </table>
              {{#ifExist totalRecords}}
         </section>
+      
     </div>
+            <div id="total_records">{{totalRecords}}</div>
+            <div id="rows_per_page">{{rowsPerPage}}</div>
+            <div id="pagination">
+                <a href="#">&laquo;</a>
+                <a href="#">1</a>
+                <a class="active" href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">4</a>
+                <a href="#">5</a>
+                <input type="number"/>
+                <input type="button" value="GO"/>
+                <a href="#">80</a>
+                <a href="#">&raquo;</a>
+            </div>
     {{!-- <div id="pleaseWait">Please Wait...</div> --}}
      {{/ifExist}}
