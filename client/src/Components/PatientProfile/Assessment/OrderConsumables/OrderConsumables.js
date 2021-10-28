@@ -90,7 +90,6 @@ class OrderConsumables extends Component {
   }
 
   getPatientInsurance() {
-    debugger;
     if (this.state.source === "I") {
       this.props.getPatientInsurance({
         uri: "/patientRegistration/getPatientInsurance",
@@ -164,7 +163,6 @@ class OrderConsumables extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    debugger;
     let Location_name =
       this.props.inventorylocations !== undefined &&
       this.props.inventorylocations.length > 0

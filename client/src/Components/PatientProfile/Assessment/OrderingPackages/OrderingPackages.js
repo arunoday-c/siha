@@ -96,7 +96,6 @@ class OrderingPackages extends Component {
   }
 
   getPatientInsurance() {
-    debugger;
     if (this.props.source === "I") {
       this.props.getPatientInsurance({
         uri: "/patientRegistration/getPatientInsurance",
