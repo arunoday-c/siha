@@ -40,8 +40,8 @@ export default class ReportUI extends Component {
       buttonDisable: true,
       report_name: null,
       base64Pdf: undefined,
-      multipleValue: [],
-      datePickerValue: undefined,
+      multipleValue: {},
+      datePickerValue: {},
       pageOrentation: "landscape",
       pageSize: "A4",
       searchCollection: {},
@@ -235,21 +235,35 @@ export default class ReportUI extends Component {
                   item.parentElement.parentElement.parentElement.querySelector(
                     "label"
                   ).innerText;
-
-                let labelValue = item.value;
-                let data = that.state.parameterCollection.item_id;
-                const filter =
-                  labelValue === ""
-                    ? {}
-                    : {
-                        label: label.replace("*", ""),
-                        labelValue: labelValue,
-                      };
-                parameters.push({
-                  name: item.name,
-                  value: data,
-                  ...filter,
-                });
+                if (
+                  item.parentElement.parentElement
+                    .getAttribute("class")
+                    .includes("ant-picker")
+                ) {
+                  parameters.push({
+                    name: "from_date",
+                    value: that.state.parameterCollection.from_date,
+                  });
+                  parameters.push({
+                    name: "to_date",
+                    value: that.state.parameterCollection.to_date,
+                  });
+                } else {
+                  let labelValue = item.value;
+                  let data = that.state.parameterCollection.item_id;
+                  const filter =
+                    labelValue === ""
+                      ? {}
+                      : {
+                          label: label.replace("*", ""),
+                          labelValue: labelValue,
+                        };
+                  parameters.push({
+                    name: item.name,
+                    value: data,
+                    ...filter,
+                  });
+                }
               } else {
                 let labelValue = item.value;
                 let type = item.getAttribute("data_role");
@@ -279,9 +293,13 @@ export default class ReportUI extends Component {
                 item.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute(
                   "name"
                 );
+
               parameters.push({
                 name: name,
-                value: this.state.multipleValue,
+                value:
+                  this.state.multipleValue[name]?.length > 0
+                    ? this.state.multipleValue[name]
+                    : [],
               });
             }
           });
@@ -489,17 +507,15 @@ export default class ReportUI extends Component {
       });
     }
   }
-  selectMultipleHandle(name, e) {
-    debugger;
-    let _inputText = "";
-
-    const _inputBox = document.getElementsByName(name.name);
-    if (_inputBox.length !== 0) {
-      _inputText = _inputBox[0].value;
-    }
+  selectMultipleHandle(name, value) {
     this.setState({
-      multipleValue: e,
-      [name.name + "_text"]: _inputText,
+      parameterCollection: {
+        ...this.state.parameterCollection,
+      },
+      multipleValue: {
+        ...this.state.multipleValue,
+        [name.name]: value,
+      },
     });
   }
 
@@ -577,7 +593,6 @@ export default class ReportUI extends Component {
         callBack(text);
       },
       onRowSelect: (row) => {
-        debugger;
         this.setState({
           searchCollection: { ...row },
         });
@@ -633,10 +648,20 @@ export default class ReportUI extends Component {
       });
     }
   }
-  datePickerOnchange(value) {
-    debugger;
+  datePickerOnchange(props, value, dateString) {
+    let from_date;
+    let to_date;
+    if (props.picker === "week") {
+      from_date = value.startOf("week").toDate();
+      to_date = value.endOf("week").toDate();
+    }
     this.setState({
-      datePickerValue: value,
+      parameterCollection: {
+        ...this.state.parameterCollection,
+        [props.name]: value,
+        from_date: moment(from_date).format("YYYY-MM-DD"),
+        to_date: moment(to_date).format("YYYY-MM-DD"),
+      },
     });
   }
   datePickerHandler(selectedDate) {
@@ -799,7 +824,7 @@ export default class ReportUI extends Component {
                     },
                     data_role: "multipleSelectList",
                     name: _param.name,
-                    value: this.state.multipleValue,
+                    value: this.state.multipleValue[_param.name],
                     options: _data1,
                     onChange: this.selectMultipleHandle.bind(this, {
                       name: _param.name,
@@ -854,10 +879,14 @@ export default class ReportUI extends Component {
               <div className={_className}>
                 <label className="style_Label">{_param.label}</label>
                 <DatePicker
-                  onChange={this.datePickerOnchange.bind(this)}
+                  onChange={this.datePickerOnchange.bind(this, {
+                    name: _param.name,
+                    picker: _param.picker,
+                  })}
                   picker={_param.picker}
-                  value={this.state.datePickerValue}
+                  value={this.state.parameterCollection[_param.name]}
                   size={_param.size}
+                  name={_param.name}
                   maxDate={new Date()}
                 />
               </div>
