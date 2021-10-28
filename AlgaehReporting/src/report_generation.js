@@ -1894,7 +1894,6 @@ export default {
                     "algaeh_report_tool/templates",
                     `${_data.report_name}.js`
                   );
-                  console.log("_supportingJS====>", _supportingJS);
                   const _header = req.headers;
 
                   const startGenerate = async () => {
@@ -1905,57 +1904,56 @@ export default {
                       _data.report_header_file_name != null &&
                       _data.report_header_file_name != ""
                     ) {
-                      const _headerTemp = await compile(
-                        _data.report_header_file_name,
-                        {
-                          reqHeader: _header,
-                          ...data[1][0],
-                          identity: req.userIdentity,
-                          user_name:
-                            req.userIdentity["user_display_name"]["username"],
-                          report_name_for_header: _data.report_name_for_header,
-                        }
-                      );
-                      _pdfTemplating["headerTemplate"] = _headerTemp;
-                      _pdfTemplating["margin"] = {
-                        top: "150px",
-                      };
+                      // const _headerTemp = await compile(
+                      //   _data.report_header_file_name,
+                      //   {
+                      //     reqHeader: _header,
+                      //     ...data[1][0],
+                      //     identity: req.userIdentity,
+                      //     user_name:
+                      //       req.userIdentity["user_display_name"]["username"],
+                      //     report_name_for_header: _data.report_name_for_header,
+                      //   }
+                      // );
+                      // _pdfTemplating["headerTemplate"] = _headerTemp;
+                      // _pdfTemplating["margin"] = {
+                      //   top: "150px",
+                      // };
                     }
                     if (
                       _data.report_footer_file_name != null &&
                       _data.report_footer_file_name != ""
                     ) {
-                      _pdfTemplating["footerTemplate"] = await compile(
-                        _data.report_footer_file_name,
-                        {
-                          reqHeader: _header,
-                          ...data[1][0],
-                          report_name_for_header: _data.report_name_for_header,
-                        }
-                      );
-
-                      _pdfTemplating["margin"] = {
-                        ..._pdfTemplating["margin"],
-                        bottom: "70px",
-                      };
+                      // _pdfTemplating["footerTemplate"] = await compile(
+                      //   _data.report_footer_file_name,
+                      //   {
+                      //     reqHeader: _header,
+                      //     ...data[1][0],
+                      //     report_name_for_header: _data.report_name_for_header,
+                      //   }
+                      // );
+                      // _pdfTemplating["margin"] = {
+                      //   ..._pdfTemplating["margin"],
+                      //   bottom: "70px",
+                      // };
                     } else {
-                      _pdfTemplating[
-                        "footerTemplate"
-                      ] = `<style> .pdffooter { font-size: 8px;
-                    font-family: Arial, Helvetica, sans-serif; font-weight: bold; width: 100%; text-align: center; color: grey; padding-left: 10px; }
-                    .showreportname{float:left;padding-left:5px;font-size: 08px;}
-                    .showcompay{float:right;padding-right:5px;font-size: 08px;}
-                    </style>
-                    <div class="pdffooter">
-                    <span class="showreportname">System Generated Report - ${_data.report_name_for_header}</span>
-                    <span>Page </span>
-                    <span class="pageNumber"></span> / <span class="totalPages"></span>
-                    <span class="showcompay">Powered by Algaeh Techonologies.</span>
-                    </div>`;
-                      _pdfTemplating["margin"] = {
-                        ..._pdfTemplating["margin"],
-                        bottom: "50px",
-                      };
+                      //   _pdfTemplating[
+                      //     "footerTemplate"
+                      //   ] = `<style> .pdffooter { font-size: 8px;
+                      // font-family: Arial, Helvetica, sans-serif; font-weight: bold; width: 100%; text-align: center; color: grey; padding-left: 10px; }
+                      // .showreportname{float:left;padding-left:5px;font-size: 08px;}
+                      // .showcompay{float:right;padding-right:5px;font-size: 08px;}
+                      // </style>
+                      // <div class="pdffooter">
+                      // <span class="showreportname">System Generated Report - ${_data.report_name_for_header}</span>
+                      // <span>Page </span>
+                      // <span class="pageNumber"></span> / <span class="totalPages"></span>
+                      // <span class="showcompay">Powered by Algaeh Techonologies.</span>
+                      // </div>`;
+                      // _pdfTemplating["margin"] = {
+                      //   ..._pdfTemplating["margin"],
+                      //   bottom: "50px",
+                      // };
                     }
 
                     const reportRaw = await compile(_data.report_name, {
@@ -1964,11 +1962,9 @@ export default {
                     });
                     _mysql.releaseConnection();
                     if (reportRaw != "") {
-                      res
-                        .status(200)
-                        .send(
-                          reportRaw + "~@" + JSON.stringify(_pdfTemplating)
-                        );
+                      res.status(200).send(
+                        reportRaw //+ "~@" + JSON.stringify(_pdfTemplating)
+                      );
                       // res.writeHead(200, {
                       //   "content-type": "text/html"
                       // });
@@ -2016,10 +2012,10 @@ export default {
                     })
                       .then((resultReq) => {
                         result = resultReq;
-                        console.log(
-                          "Here inside Result Request====>",
-                          result.totalRecords
-                        );
+                        // console.log(
+                        //   "Here inside Result Request====>",
+                        //   result.totalRecords
+                        // );
                         startGenerate();
                       })
                       .catch((error) => {});

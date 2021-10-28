@@ -30,7 +30,7 @@ export default memo(function Modal(props) {
   const [dateRange, setDateRange] = useState(previousMonthDate);
   const [loading, setLoading] = useState(false);
 
-  function onPdfGeneration() {
+  function onPdfGeneration(type) {
     if (dateRange.length < 2) {
       setPleaseWait("Please enter Data range!");
       setLoading(false);
@@ -43,24 +43,27 @@ export default memo(function Modal(props) {
     resultdata["head_id"] = selectedNode?.node?.head_id
       ? selectedNode?.node?.head_id
       : selectedNode?.node?.finance_account_head_id;
-    console.log("selectedNode===>", selectedNode);
-    generateReport("pdf", resultdata)
+
+    generateReport(type, resultdata)
       .then((result, html) => {
-        debugger;
+        // debugger;
         const nodeFields = selectedNode?.node;
         const from_date = moment(dateRange[0]).format("YYYY-MM-DD");
         const to_date = moment(dateRange[1]).format("YYYY-MM-DD");
-        setLoading(false);
-        onOk("pdf");
-        const a = document.createElement("a");
-        a.href = result;
-        a.download = `${selectedNode?.node?.label}_${moment(
-          dateRange[0]
-        ).format("DD-MM-YYYY")}-${moment(dateRange[1]).format(
-          "DD-MM-YYYY"
-        )}.${"pdf"}`;
-        a.click();
-        return;
+        if (type === "pdf") {
+          setLoading(false);
+          onOk("pdf");
+          const a = document.createElement("a");
+          a.href = result;
+          a.download = `${selectedNode?.node?.label}_${moment(
+            dateRange[0]
+          ).format("DD-MM-YYYY")}-${moment(dateRange[1]).format(
+            "DD-MM-YYYY"
+          )}.${"pdf"}`;
+          a.click();
+          return;
+        }
+
         previewReport(
           {
             reportTitle: "Ledger Report - Date Wise",
@@ -423,7 +426,7 @@ export default memo(function Modal(props) {
             reportName = checkedType ? "MonthWiseLeafNode" : "DateWiseLeafNode";
           }
           let rptSetup = {};
-          if (type === "pdf") {
+          if (type === "preview") {
             rptSetup = {
               recordSetup: {
                 limit_from: 0,
@@ -439,7 +442,7 @@ export default memo(function Modal(props) {
               reportQuery: null,
               pageSize: "A4",
               pageOrentation: "portrait",
-              //...rptSetup,
+              ...rptSetup,
               reportParams: [
                 {
                   name: "head_id",
@@ -482,7 +485,12 @@ export default memo(function Modal(props) {
             : {};
         algaehApiCall({
           cancelRequestId: "accountReport",
-          uri: type === "excel" ? "/excelReport" : "/report", //"/getRawReport", //"/report",
+          uri:
+            type === "excel"
+              ? "/excelReport"
+              : type === "pdf"
+              ? "/report"
+              : "/getRawReport", //"/report",
           module: "reports",
           method: "GET",
           ..._type,
@@ -493,12 +501,12 @@ export default memo(function Modal(props) {
           data: data,
           onSuccess: (response) => {
             // debugger;
-            // if (type === "pdf") {
-            //   resolve(response.data);
-            // } else {
-            const url = URL.createObjectURL(response.data);
-            resolve(url);
-            // }
+            if (type === "preview") {
+              resolve(response.data);
+            } else {
+              const url = URL.createObjectURL(response.data);
+              resolve(url);
+            }
           },
           onCatch: (error) => {
             reject(error);
@@ -525,13 +533,19 @@ export default memo(function Modal(props) {
       footer={
         <div>
           <span className="ant-btn ant-btn-primary ant-btn-circle ant-btn-icon-only">
-            <i className="fas fa-eye" onClick={onPdfGeneration}></i>
+            <i
+              className="fas fa-eye"
+              onClick={() => onPdfGeneration("preview")}
+            ></i>
           </span>
           <span
             className="ant-btn ant-btn-circle ant-btn-icon-only"
             style={{ backgroundColor: "#d70303", color: "#fff" }}
           >
-            <i className="fas fa-file-pdf" onClick={onPdfGeneration}></i>
+            <i
+              className="fas fa-file-pdf"
+              onClick={() => onPdfGeneration("pdf")}
+            ></i>
           </span>
           <span
             className="ant-btn ant-btn-circle ant-btn-icon-only"
