@@ -16,12 +16,17 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      const limit_from = options.args.recordSetup
-        ? options.args.recordSetup.limit_from
-        : undefined;
-      const limit_to = options.args.recordSetup
-        ? options.args.recordSetup.limit_to
-        : undefined;
+      let limit_from = undefined;
+      let limit_to = undefined;
+      if (options.args.recordSetup) {
+        limit_from = options.args.recordSetup
+          ? options.args.recordSetup.limit_from
+          : undefined;
+        limit_to = options.args.recordSetup
+          ? options.args.recordSetup.limit_to
+          : undefined;
+      }
+
       // const skip = options.args.recordSetup
       //   ? options.recordSetup.args.skip
       //   : undefined;
@@ -330,13 +335,13 @@ const executePDF = function executePDFMethod(options) {
               .catch((e) => {
                 console.log("EEEE:", e);
                 options.mysql.releaseConnection();
-                next(e);
+                reject(e);
               });
           })
           .catch((e) => {
             console.log("EEEE6:", e);
             options.mysql.releaseConnection();
-            next(e);
+            reject(e);
           });
       } else {
         resolve({
