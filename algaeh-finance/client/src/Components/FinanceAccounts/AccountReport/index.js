@@ -528,7 +528,13 @@ export default memo(function Modal(props) {
             <i className="fas fa-eye" onClick={onPdfGeneration}></i>
           </span>
           <span
-            className="ant-btn ant-btn-success ant-btn-circle ant-btn-icon-only"
+            className="ant-btn ant-btn-circle ant-btn-icon-only"
+            style={{ backgroundColor: "#d70303", color: "#fff" }}
+          >
+            <i className="fas fa-file-pdf" onClick={onPdfGeneration}></i>
+          </span>
+          <span
+            className="ant-btn ant-btn-circle ant-btn-icon-only"
             style={{ backgroundColor: "#00a796", color: "#fff" }}
           >
             <i className="fas fa-file-excel" onClick={onExcelGeneration}></i>
