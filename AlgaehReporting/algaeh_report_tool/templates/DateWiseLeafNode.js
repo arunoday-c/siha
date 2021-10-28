@@ -291,9 +291,13 @@ const executePDF = function executePDFMethod(options) {
                       index++;
                     })
                     .value();
-
+                  let showFooter = true;
+                  if (options.args.recordSetup) {
+                    showFooter = undefined;
+                  }
                   const totalRecords =
                     totalQuery !== "" ? output[1][0]["total_pages"] : undefined;
+
                   resolve({
                     details: outputArray,
                     account_name: result[0]["child_name"],
@@ -307,6 +311,7 @@ const executePDF = function executePDFMethod(options) {
                     closing_balance: closing_balance,
                     totalRecords,
                     rowsPerPage,
+                    showFooter,
                     from_date: moment(input.from_date, "YYYY-MM-DD").format(
                       "DD-MM-YYYY"
                     ),
