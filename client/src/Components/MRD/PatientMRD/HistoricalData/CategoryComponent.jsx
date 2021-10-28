@@ -14,7 +14,9 @@ export default function CategoryComponent({ componentsName }) {
       module: "MRD",
       method: "GET",
       data: {
-        patient_id: location.state?.content.current_patient,
+        patient_id: location.state?.content.current_patient
+          ? location.state?.content.current_patient
+          : Window.global["mrd_patient"],
         fromHistoricalData: true,
       },
       cancelRequestId: "getPatientDiagnosis",
@@ -37,7 +39,9 @@ export default function CategoryComponent({ componentsName }) {
       module: "MRD",
       method: "GET",
       data: {
-        patient_id: location.state?.content.current_patient,
+        patient_id: location.state?.content.current_patient
+          ? location.state?.content.current_patient
+          : Window.global["mrd_patient"],
         fromHistoricalData: true,
       },
       cancelRequestId: "getPatientMedication",
@@ -60,7 +64,9 @@ export default function CategoryComponent({ componentsName }) {
       module: "MRD",
       method: "GET",
       data: {
-        patient_id: location.state?.content.current_patient,
+        patient_id: location.state?.content.current_patient
+          ? location.state?.content.current_patient
+          : Window.global["mrd_patient"],
       },
       cancelRequestId: "getPatientTreatments",
       onSuccess: (response) => {
@@ -82,7 +88,9 @@ export default function CategoryComponent({ componentsName }) {
       module: "MRD",
       method: "GET",
       data: {
-        patient_id: location.state?.content.current_patient,
+        patient_id: location.state?.content.current_patient
+          ? location.state?.content.current_patient
+          : Window.global["mrd_patient"],
         fromHistoricalData: true,
       },
       cancelRequestId: "getPatientInvestigation",
