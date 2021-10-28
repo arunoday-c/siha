@@ -38,12 +38,14 @@
 </tr>
 {{/each }}
  {{!-- <tfoot> --}}
+     {{#ifExist showFooter}}
         <tr>
             <td class="numberFld" colspan="4"></td>
             <td class="numberFld"><b>{{numberFormating total_debit currencyOnly}}</b></td>
             <td class="numberFld"><b>{{numberFormating total_credit currencyOnly}}</b></td>
             <td class="numberFld"><b>{{numberFormating closing_balance currencyOnly}}</b></td>
         </tr>
+        {{/ifExist}}
     {{!-- </tfoot> --}}
 </tbody>
 {{!-- {{#ifExist totalRecords}} --}}
