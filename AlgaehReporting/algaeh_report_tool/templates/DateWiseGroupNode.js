@@ -16,7 +16,22 @@ const executePDF = function executePDFMethod(options) {
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
-      const { limit_from, limit_to } = options.args.recordSetup;
+      // const { limit_from, limit_to } = options.args.recordSetup;
+      let limit_from = undefined;
+      let limit_to = undefined;
+      if (options.args.recordSetup) {
+        limit_from = options.args.recordSetup
+          ? options.args.recordSetup.limit_from
+          : undefined;
+        limit_to = options.args.recordSetup
+          ? options.args.recordSetup.limit_to
+          : undefined;
+      }
+      let lastOpeningBalance = 0;
+      if (options.args.recordSetup && options.args.recordSetup.others) {
+        const others = options.args.recordSetup.others;
+        lastOpeningBalance = parseFloat(others["6"].replace(/,/g, ""));
+      }
       let strQry = "";
 
       if (
@@ -76,7 +91,7 @@ const executePDF = function executePDFMethod(options) {
                   printQuery: true,
                 })
                 .then((resultX) => {
-                  const final_result = resultX[0];
+                  const final_result = totalQuery !== "" ? resultX[0] : resultX;
                   let total_debit = parseFloat(0).toFixed(decimal_places);
                   let total_credit = parseFloat(0).toFixed(decimal_places);
                   //if (final_result.length > 0) {
@@ -85,6 +100,8 @@ const executePDF = function executePDFMethod(options) {
                   // if (input.parent_id == 1 || input.parent_id == 5) {
                   //   //DR
                   // }
+                  console.log("final_result===>", final_result);
+
                   final_result.forEach((item) => {
                     total_credit = (
                       parseFloat(total_credit) + parseFloat(item.credit_amount)
@@ -141,7 +158,7 @@ const executePDF = function executePDFMethod(options) {
                 })
                 .catch((e) => {
                   options.mysql.releaseConnection();
-                  next(e);
+                  reject(e);
                 });
             } else {
               resolve({
@@ -151,7 +168,7 @@ const executePDF = function executePDFMethod(options) {
           })
           .catch((e) => {
             options.mysql.releaseConnection();
-            next(e);
+            reject(e);
           });
       } else {
         resolve({

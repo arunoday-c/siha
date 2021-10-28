@@ -77,6 +77,7 @@ class OrderedList extends PureComponent {
       },
     });
 
+    debugger;
     this.props.getPakageList({
       uri: "/orderAndPreApproval/getPatientPackage",
       method: "GET",

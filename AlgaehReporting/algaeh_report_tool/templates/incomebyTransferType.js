@@ -29,13 +29,13 @@ const executePDF = function executePDFMethod(options) {
           query: `select hims_f_billing_header_id,
           RH.hims_f_receipt_header_id, RH.receipt_number, BH.bill_number,B.card_name,
           date(RH.receipt_date) as receipt_date, date(BH.bill_date) as bill_date, 
-          RD.hims_f_receipt_details_id,RD.pay_type,sum (RD.amount) as totalAmt, RD.bank_card_id
+          RD.hims_f_receipt_details_id,RD.pay_type, sum(RD.amount) as totalAmt, RD.bank_card_id
           from  hims_f_billing_header BH
           inner join hims_f_receipt_header RH on BH.receipt_header_id=RH.hims_f_receipt_header_id
           inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id
           inner join hims_d_bank_card B on B.hims_d_bank_card_id = RD.bank_card_id
           where date(BH.bill_date)  between date(?) and date(?) and RD.pay_type='CD' and RD.amount <> 0 and
-          BH.adjusted='N' and RH.record_status='A' and RD.record_status='A' and cancelled='N' and adjusted='N' and BH.hospital_id= ? ${strQuery}
+          BH.adjusted='N' and RH.record_status='A' and RD.record_status='A' and cancelled='N' and BH.hospital_id= ? ${strQuery}
           group by BH.hims_f_billing_header_id,date(BH.bill_date)  order by BH.hims_f_billing_header_id;`,
           values: [input.from_date, input.to_date, input.hospital_id],
           printQuery: true,

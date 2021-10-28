@@ -1,82 +1,57 @@
-<style type="text/css">
-.print-body{
-    height:99vh;overflow:auto;
-}
-.tableFixHead          { overflow: auto; height: 100px; }
-.tableFixHead thead th { position: sticky; top: 0; z-index: 1; background:#eee;}
-.tableFixHead tfoot td { background:#eee;}
-#pleaseWait{
-    position: sticky; bottom: 10px; z-index: 1 ; width: 100%;    background-color: rgb(239, 255, 185);
-    padding: 4px 0;
-    text-align: center;
-    font-weight: bold;
-}
-#total_records{
-    display: none;
-}
-</style>
 
-{{#ifExist totalRecords}}
 {{{importStyle 'css/algaehReportStyles.css'}}}
 
-    <div class="print-body" >
-      <div id="total_records">{{totalRecords}}</div>
-     <div id="rows_per_page">{{rowsPerPage}}</div>
-        <section>
-              {{/ifExist}}
-               <table class="tableForDataNoBorder tableFixHead" cell-padding="0" id="main_table"> 
-                <thead>
-                    <tr>
-                        <th width=""  class="txtFld">Date</th>
-                        <th width=""  class="txtFld">Voucher Type</th>
-                        <th width=""  class="txtFld">Voucher No.</th>
-                        <th width=""  class="txtFld">Narration</th>
-                        <th width="" class="numberFld ">Debit Amt</th>
-                        <th width="" class="numberFld ">Credit Amt</th>
-                        <th width="" class="numberFld ">Closing Balance</th>
-                    </tr>
-                </thead>
-        <tbody>
-                   
+<div class="print-body" >
+<section>
+{{!-- tableFixHead --}}
+
+
+<table class="tableForDataNoBorder" cell-padding="0" id="main_table"> 
+<thead>
+<tr>
+<th width=""  class="txtFld">Date</th>
+<th width=""  class="txtFld">Voucher Type</th>
+<th width=""  class="txtFld">Voucher No.</th>
+<th width=""  class="txtFld">Narration</th>
+<th width="" class="numberFld ">Debit Amt</th>
+<th width="" class="numberFld ">Credit Amt</th>
+<th width="" class="numberFld ">Closing Balance</th>
+</tr>
+</thead>
+<tbody>
+
 {{#ifExist totalRecords}}
-                    <tr class="numberFld no_count">
-                        <td class="numberFld" colspan="6"></td>
-                        <td class="numberFld"> <small>Opening Balance: </small><b>{{numberFormating opening_balance currencyOnly}}</b></td>
-                    </tr>
-                     {{/ifExist}}
-                    {{#each details}}
-                    <tr>
-                        <td datatype="string"  class="txtFld">{{payment_date}}</td>
-                        <td datatype="string"  class="txtFld">{{voucher_type}}</td>
-                        <td datatype="string"  class="txtFld">{{voucher_no}}</td>
-                        <td datatype="string"  class="txtFld" width="16%"><small>{{narration}}</small></td>
-                        <td class="numberFld ">{{numberFormating debit_amount ../currencyOnly}}</td>
-                        <td class="numberFld ">{{numberFormating credit_amount ../currencyOnly}}</td>
-                        <td class="numberFld ">{{numberFormating row_closing_balance ../currencyOnly}}</td>
-                    </tr>
+<tr class="numberFld no_count">
+<td class="numberFld" colspan="6"></td>
+<td class="numberFld"> <small>Opening Balance: </small><b>{{numberFormating opening_balance currencyOnly}}</b></td>
+</tr>
+{{/ifExist}}
+{{#each details}}
+<tr>
+<td datatype="string"  class="txtFld">{{payment_date}}</td>
+<td datatype="string"  class="txtFld">{{voucher_type}}</td>
+<td datatype="string"  class="txtFld">{{voucher_no}}</td>
+<td datatype="string"  class="txtFld" width="16%"><small>{{narration}}</small></td>
+<td class="numberFld ">{{numberFormating debit_amount ../currencyOnly}}</td>
+<td class="numberFld ">{{numberFormating credit_amount ../currencyOnly}}</td>
+<td class="numberFld ">{{numberFormating row_closing_balance ../currencyOnly}}</td>
+</tr>
+{{/each }}
+ {{!-- <tfoot> --}}
+        <tr>
+            <td class="numberFld" colspan="4"></td>
+            <td class="numberFld"><b>{{numberFormating total_debit currencyOnly}}</b></td>
+            <td class="numberFld"><b>{{numberFormating total_credit currencyOnly}}</b></td>
+            <td class="numberFld"><b>{{numberFormating closing_balance currencyOnly}}</b></td>
+        </tr>
+    {{!-- </tfoot> --}}
+</tbody>
+{{!-- {{#ifExist totalRecords}} --}}
+   
+{{!-- {{/ifExist}} --}}
+</table>
+</section>
 
-                    {{/each }}
-
-                   
-                </tbody>
-             {{#ifExist totalRecords}}
-           <tfoot>
-                 <tr class="numberFld ">
-                        <td class="numberFld" colspan="4"></td>
-                        <td class="numberFld"><b>{{numberFormating total_debit currencyOnly}}</b></td>
-                        <td class="numberFld"><b>{{numberFormating total_credit currencyOnly}}</b></td>
-                        <td><b>{{numberFormating closing_balance currencyOnly}}</b></td>
-                    </tr>
-                    
-                    {{!-- <tr class="numberFld ">
-                        <td class="numberFld" colspan="6"></td>
-                        <td class="numberFld" ><small>Closing Balance</small>: <b>{{numberFormating closing_balance currencyOnly}}</b></td>
-                    </tr>       --}}
-           </tfoot>
-             {{/ifExist}}
-            </table>
-             {{#ifExist totalRecords}}
-        </section>
-    </div>
-    {{!-- <div id="pleaseWait">Please Wait...</div> --}}
-     {{/ifExist}}
+   <div id="total_records">{{totalRecords}}</div>
+<div id="rows_per_page">{{rowsPerPage}}</div>
+</div>

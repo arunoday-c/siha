@@ -865,17 +865,19 @@ class NurseWorkbench extends Component {
       },
     });
 
-    this.props.getPakageList({
-      uri: "/orderAndPreApproval/getPatientPackage",
-      method: "GET",
-      data: {
-        patient_id: data.visit_id,
-      },
-      redux: {
-        type: "PAIENT_PACKAGE_GET_DATA",
-        mappingName: "pakageList",
-      },
-    });
+    // debugger;
+    // this.props.getPakageList({
+    //   uri: "/orderAndPreApproval/getPatientPackage",
+    //   method: "GET",
+    //   data: {
+    //     patient_id: data.visit_id,
+    //     req_visit: true,
+    //   },
+    //   redux: {
+    //     type: "PAIENT_PACKAGE_GET_DATA",
+    //     mappingName: "pakageList",
+    //   },
+    // });
 
     this.setState(
       {
