@@ -147,7 +147,6 @@ class OrderingServices extends PureComponent {
   }
 
   getPatientInsurance() {
-    debugger;
     if (this.state.source === "I") {
       this.props.getPatientInsurance({
         uri: "/patientRegistration/getPatientInsurance",
@@ -241,7 +240,6 @@ class OrderingServices extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     const orderservicesdata = _.filter(nextProps.orderedList, (f) => {
       return f.trans_package_detail_id === null;
     });

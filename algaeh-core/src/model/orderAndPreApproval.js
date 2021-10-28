@@ -2247,7 +2247,7 @@ let getPatientPackage = (req, res, next) => {
       str += ` and H.hims_f_package_header_id=${req.query.hims_f_package_header_id} `;
     }
 
-    // if (req.query.visit_id > 0) {
+    // if (req.query.visit_id > 0 && req.query.package_visit_type == "ALL") {
     //   str += ` and H.visit_id=${req.query.visit_id} `;
     // }
     if (req.query.package_type == "S" || req.query.package_type == "D") {
@@ -2302,6 +2302,9 @@ let getPatientPackage = (req, res, next) => {
       .then((result) => {
         let header = result[0];
         let details = result[1];
+
+        // console.log("header", header);
+        // console.log("req.query.visit_id", req.query.visit_id);
         const outputArray = [];
         header.forEach((item) => {
           const package_details = details.filter((detail) => {
@@ -2309,8 +2312,18 @@ let getPatientPackage = (req, res, next) => {
               detail["package_header_id"] == item["hims_f_package_header_id"]
             );
           });
-
-          outputArray.push({ ...item, package_details });
+          if (req.query.visit_id > 0) {
+            if (item.package_visit_type == "M") {
+              outputArray.push({ ...item, package_details });
+            } else if (
+              item.package_visit_type == "S" &&
+              req.query.visit_id == item.visit_id
+            ) {
+              outputArray.push({ ...item, package_details });
+            }
+          } else {
+            outputArray.push({ ...item, package_details });
+          }
         });
 
         _mysql.releaseConnection();
