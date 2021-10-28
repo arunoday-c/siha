@@ -439,7 +439,7 @@ export default memo(function Modal(props) {
               reportQuery: null,
               pageSize: "A4",
               pageOrentation: "portrait",
-              ...rptSetup,
+              //...rptSetup,
               reportParams: [
                 {
                   name: "head_id",
