@@ -110,7 +110,7 @@ DocumentManagement/UPLOAD/
 Client_Builds/
 # Typescript v1 declaration files
 typings/
-
+AlgaehReporting/algaeh_report_tool/requestDownloads/
 # Optional npm cache directory
 .npm
 
