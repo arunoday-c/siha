@@ -15,7 +15,6 @@ export default function PrintAccounts({ visible, data, onClose, title }) {
     );
   }
   function handleExcel() {
-    debugger;
     setLoading(true);
     GenerateExcel({
       columns: [

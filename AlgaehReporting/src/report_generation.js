@@ -356,7 +356,16 @@ export default {
   getReport: async (req, res) => {
     const input = req.query;
     const _mysql = new algaehMysql();
+    const headerRequest = req.headers["x-give-access"];
     // const multiMerdgeReport = input.multiMerdgeReport;
+    let responseAsJson = false;
+    if (headerRequest === "algaeh") {
+      responseAsJson = true;
+      res
+        .status(201)
+        .json({ success: true, message: "your request under process" });
+    }
+
     try {
       const _inputParam = JSON.parse(input.report);
       const {
@@ -749,8 +758,7 @@ export default {
                       div.className = "watermark";
                       document.body.appendChild(div);
                     });
-                    console.log("Page PDF ====>");
-                    console.time();
+
                     await page.pdf({
                       path: _outPath,
                       ...pageSize,
@@ -760,8 +768,7 @@ export default {
                       ..._pdfTemplating,
                       ...others,
                     });
-                    console.timeEnd();
-                    console.log("_outPath===>", _outPath);
+
                     await browser.close();
                     // console.log(
                     //   " _reportOutput.length ",
@@ -797,54 +804,69 @@ export default {
                         "algaeh_report_tool/templates/Output",
                         _outfileName
                       );
-                      console.log("pass", pass);
+
                       // if (pass === true) {
                       if (_reportOutput.length > 1) {
                         _mysql.releaseConnection();
                         merge(_reportOutput, _rOut, (error) => {
                           if (error) {
                             console.log("error", error);
-                            res
-                              .status(400)
-                              .send({ error: JSON.stringify(error) });
+                            if (responseAsJson === false) {
+                              res
+                                .status(400)
+                                .send({ error: JSON.stringify(error) });
+                            }
                           } else {
                             fs.exists(_rOut, (exists) => {
                               if (exists) {
-                                res.writeHead(200, {
-                                  "content-type": "application/pdf",
-                                  "content-disposition":
-                                    "attachment;filename=" + _outfileName,
-                                });
-                                const _fs = fs.createReadStream(_rOut);
-                                _fs.on("end", async () => {
-                                  console.log("Here it is ===>");
-                                  const axiosRes = await axios(
-                                    //"http://localhost:3024/fileShare",
-                                    "http://localhost:3024/uploadFile",
-                                    {
-                                      method: "POST",
-                                      data: {
-                                        filePath: _rOut,
-                                        shortUrl: shortUrl,
-                                      },
+                                if (responseAsJson === false) {
+                                  res.writeHead(200, {
+                                    "content-type": "application/pdf",
+                                    "content-disposition":
+                                      "attachment;filename=" + _outfileName,
+                                  });
+                                  const _fs = fs.createReadStream(_rOut);
+                                  _fs.on("end", async () => {
+                                    const axiosRes = await axios(
+                                      //"http://localhost:3024/fileShare",
+                                      "http://localhost:3024/uploadFile",
+                                      {
+                                        method: "POST",
+                                        data: {
+                                          filePath: _rOut,
+                                          shortUrl: shortUrl,
+                                        },
+                                      }
+                                    );
+
+                                    fs.unlink(_rOut);
+                                    for (
+                                      let f = 0;
+                                      f < _reportOutput.length;
+                                      f++
+                                    ) {
+                                      fs.unlink(_reportOutput[f]);
                                     }
-                                  );
+                                  });
 
-                                  fs.unlink(_rOut);
-                                  for (
-                                    let f = 0;
-                                    f < _reportOutput.length;
-                                    f++
-                                  ) {
-                                    fs.unlink(_reportOutput[f]);
-                                  }
-                                });
-
-                                _fs.pipe(res);
+                                  _fs.pipe(res);
+                                } else {
+                                  const { primaryId } = input;
+                                  console.log("1=====>", _rOut);
+                                  updateRequestedDownload(primaryId, _rOut);
+                                }
                               } else {
-                                res
-                                  .status(400)
-                                  .send({ error: "ERROR File does not exist" });
+                                if (responseAsJson === false) {
+                                  res.status(400).send({
+                                    error: "ERROR File does not exist",
+                                  });
+                                } else {
+                                  console.error(
+                                    "Error occur inside Request update @ ",
+                                    new Date().toLocaleString(),
+                                    "===> ERROR File does not exist"
+                                  );
+                                }
                               }
                             });
                           }
@@ -852,114 +874,151 @@ export default {
                       } else {
                         if (input["sendPath"]) {
                           _mysql.releaseConnection();
-                          res
-                            .status(200)
-                            .json({
-                              path: _reportOutput[0],
-                              filename: _data.report_name_for_header + ".pdf",
-                            })
-                            .end();
+                          if (responseAsJson === false) {
+                            res
+                              .status(200)
+                              .json({
+                                path: _reportOutput[0],
+                                filename: _data.report_name_for_header + ".pdf",
+                              })
+                              .end();
+                          } else {
+                            const { primaryId } = input;
+                            console.log("2=====>", _reportOutput[0]);
+                            updateRequestedDownload(
+                              primaryId,
+                              _reportOutput[0]
+                            );
+                          }
                         } else {
                           fs.exists(_reportOutput[0], (exists) => {
                             _mysql.releaseConnection();
                             if (exists) {
-                              res.writeHead(200, {
-                                "content-type": "application/pdf",
-                                "content-disposition":
-                                  "attachment;filename=" + _outfileName,
-                              });
-                              const _fs = fs.createReadStream(_reportOutput[0]);
-                              _fs.on("end", async () => {
-                                const rptPath = fs.createReadStream(
+                              if (responseAsJson === false) {
+                                res.writeHead(200, {
+                                  "content-type": "application/pdf",
+                                  "content-disposition":
+                                    "attachment;filename=" + _outfileName,
+                                });
+                                const _fs = fs.createReadStream(
                                   _reportOutput[0]
                                 );
-                                //  = _reportOutput[0];
+                                _fs.on("end", async () => {
+                                  const rptPath = fs.createReadStream(
+                                    _reportOutput[0]
+                                  );
+                                  //  = _reportOutput[0];
 
-                                if (qrCodeReport) {
-                                  try {
-                                    const form = new FormData();
-                                    form.append(
+                                  if (qrCodeReport) {
+                                    try {
+                                      const form = new FormData();
+                                      form.append(
+                                        "file",
+                                        rptPath
+                                        // fs.createReadStream(rptPath)
+                                      );
+                                      form.append("shortUrl", shortUrl);
+                                      await axios
+                                        .post(`${qrUrl}uploadFile`, form, {
+                                          headers: { ...form.getHeaders() },
+                                        })
+                                        .catch((error) => {
+                                          console.error(error.message);
+                                        });
+                                    } catch (e) {
+                                      console.error(
+                                        "QR Code Server issue===>",
+                                        e
+                                      );
+                                    }
+                                  }
+
+                                  // fs.unlink(_reportOutput[0]);
+                                });
+
+                                if (reportToPortal === "true") {
+                                  const rptParameters =
+                                    _inputParam.reportParams;
+                                  const portal_patient_identity =
+                                    rptParameters.find(
+                                      (f) => f.name === "patient_identity"
+                                    ).value;
+                                  const portal_service_id = rptParameters.find(
+                                    (f) => f.name === "service_id"
+                                  )?.value;
+                                  const portal_visit_code = rptParameters.find(
+                                    (f) => f.name === "visit_code"
+                                  ).value;
+
+                                  if (
+                                    portal_patient_identity &&
+                                    portal_service_id &&
+                                    portal_visit_code
+                                  ) {
+                                    const formD = new FormData();
+                                    formD.append(
                                       "file",
-                                      rptPath
+                                      _fs
                                       // fs.createReadStream(rptPath)
                                     );
-                                    form.append("shortUrl", shortUrl);
-                                    await axios
-                                      .post(`${qrUrl}uploadFile`, form, {
-                                        headers: { ...form.getHeaders() },
+                                    formD.append(
+                                      "details",
+                                      JSON.stringify({
+                                        patient_identity:
+                                          portal_patient_identity,
+                                        service_id: portal_service_id,
+                                        visit_code: portal_visit_code,
+                                        hospital_id:
+                                          req.userIdentity["hospital_id"],
+                                      })
+                                    );
+                                    formD.append(
+                                      "rpt_type",
+                                      rpt_type ?? "PATIENT_REPORT"
+                                    );
+
+                                    axios
+                                      .post(
+                                        `${portalUrl}/report/upload`,
+                                        formD,
+                                        {
+                                          headers: { ...formD.getHeaders() },
+                                        }
+                                      )
+                                      .then(() => {
+                                        console.log(
+                                          "report updated succesfully"
+                                        );
                                       })
                                       .catch((error) => {
-                                        console.error(error.message);
+                                        console.log("error ====> ", error);
+                                        // console.error(error.message);
                                       });
-                                  } catch (e) {
-                                    console.error(
-                                      "QR Code Server issue===>",
-                                      e
-                                    );
                                   }
                                 }
-
-                                // fs.unlink(_reportOutput[0]);
-                              });
-                              if (reportToPortal === "true") {
-                                const rptParameters = _inputParam.reportParams;
-                                const portal_patient_identity =
-                                  rptParameters.find(
-                                    (f) => f.name === "patient_identity"
-                                  ).value;
-                                const portal_service_id = rptParameters.find(
-                                  (f) => f.name === "service_id"
-                                )?.value;
-                                const portal_visit_code = rptParameters.find(
-                                  (f) => f.name === "visit_code"
-                                ).value;
-
-                                if (
-                                  portal_patient_identity &&
-                                  portal_service_id &&
-                                  portal_visit_code
-                                ) {
-                                  const formD = new FormData();
-                                  formD.append(
-                                    "file",
-                                    _fs
-                                    // fs.createReadStream(rptPath)
-                                  );
-                                  formD.append(
-                                    "details",
-                                    JSON.stringify({
-                                      patient_identity: portal_patient_identity,
-                                      service_id: portal_service_id,
-                                      visit_code: portal_visit_code,
-                                      hospital_id:
-                                        req.userIdentity["hospital_id"],
-                                    })
-                                  );
-                                  formD.append(
-                                    "rpt_type",
-                                    rpt_type ?? "PATIENT_REPORT"
-                                  );
-
-                                  axios
-                                    .post(`${portalUrl}/report/upload`, formD, {
-                                      headers: { ...formD.getHeaders() },
-                                    })
-                                    .then(() => {
-                                      console.log("report updated succesfully");
-                                    })
-                                    .catch((error) => {
-                                      console.log("error ====> ", error);
-                                      // console.error(error.message);
-                                    });
-                                }
+                                _fs.pipe(res);
+                              } else {
+                                const { primaryId } = input;
+                                console.log("2=====>", _reportOutput[0]);
+                                updateRequestedDownload(
+                                  primaryId,
+                                  _reportOutput[0]
+                                );
                               }
-                              _fs.pipe(res);
                             } else {
                               _mysql.releaseConnection();
-                              res.status(400).send({
-                                error: "ERROR File does not exist",
-                                filename: _inputParam.reportName,
-                              });
+                              if (responseAsJson === false) {
+                                res.status(400).send({
+                                  error: "ERROR File does not exist",
+                                  filename: _inputParam.reportName,
+                                });
+                              } else {
+                                console.error(
+                                  "Error occur inside Request update @ ",
+                                  new Date().toLocaleString(),
+                                  "===> ERROR File does not exist"
+                                );
+                              }
                             }
                           });
                         }
@@ -1023,43 +1082,64 @@ export default {
                 })
                 .catch((error) => {
                   _mysql.releaseConnection();
-                  res.status(400).send({
-                    error: JSON.stringify(error),
-                    stack: error.stack,
-                    message: error.message,
-                    filename: _inputParam.reportName,
-                  });
+                  if (responseAsJson === false) {
+                    res.status(400).send({
+                      error: JSON.stringify(error),
+                      stack: error.stack,
+                      message: error.message,
+                      filename: _inputParam.reportName,
+                    });
+                  } else {
+                    console.error(
+                      "Error occur inside Request update @ ",
+                      new Date().toLocaleString(),
+                      "===>",
+                      error.stack
+                    );
+                  }
                 });
             }
           } else {
-            res.status(400).send({
-              error: "No such report exists",
-              filename: _inputParam.reportName,
-            });
+            if (responseAsJson === false) {
+              res.status(400).send({
+                error: "No such report exists",
+                filename: _inputParam.reportName,
+              });
+            } else {
+              console.error(
+                "Error occur inside Request update @ ",
+                new Date().toLocaleString(),
+                "===>No such report exists"
+              );
+            }
           }
         })
         .catch((error) => {
           _mysql.releaseConnection();
+          if (responseAsJson === false) {
+            res.status(400).send({
+              error: JSON.stringify(error),
+              stack: error.stack,
+              message: error.message,
+              filename: _inputParam.reportName,
+            });
+          }
           console.log(
             "Error in report table query execution : ",
             JSON.stringify(error)
           );
-          res.status(400).send({
-            error: JSON.stringify(error),
-            stack: error.stack,
-            message: error.message,
-            filename: _inputParam.reportName,
-          });
         });
     } catch (e) {
       _mysql.releaseConnection();
       console.log("Error in try catch : ", JSON.stringify(error));
-      res.status(400).send({
-        error: JSON.stringify(e),
-        stack: error.stack,
-        message: error.message,
-        filename: _inputParam.reportName,
-      });
+      if (responseAsJson === false) {
+        res.status(400).send({
+          error: JSON.stringify(e),
+          stack: error.stack,
+          message: error.message,
+          filename: _inputParam.reportName,
+        });
+      }
     }
   },
   getReportMultiPrint: async (req, res, next) => {
@@ -1822,7 +1902,7 @@ export default {
   },
   getRawReport: async (req, res) => {
     const input = req.query;
-    console.log("input====>", input);
+
     const _mysql = new algaehMysql();
     try {
       const _inputParam = JSON.parse(input.report);
@@ -2137,3 +2217,113 @@ export default {
     });
   },
 };
+
+export async function updateRequestedDownload(primaryId, location) {
+  const _mysql = new algaehMysql();
+  try {
+    const newPath = path.join(
+      process.cwd(),
+      "algaeh_report_tool",
+      "requestDownloads"
+    );
+    if (!fs.existsSync(newPath)) {
+      fs.mkdirSync(newPath);
+    }
+    const fileName = path.basename(location);
+    const newFilePath = path.join(newPath, fileName);
+    fs.moveSync(location, newFilePath);
+    await _mysql
+      .executeQuery({
+        query: `update hims_f_request_download set download_location=?,is_notify=0,can_download=1,record_status='A',update_at=?
+         where hims_f_request_download_id=?;`,
+        values: [newFilePath, new Date(), primaryId],
+      })
+      .catch((error) => {
+        throw error;
+      });
+    _mysql.releaseConnection();
+  } catch (error) {
+    _mysql.releaseConnection();
+    console.error(
+      "Error occur inside Request update @ ",
+      new Date().toLocaleString(),
+      "===>",
+      error.stack
+    );
+  }
+}
+export async function getRecordsDownload(req, res) {
+  const _mysql = new algaehMysql();
+  try {
+    const { algaeh_d_app_user_id } = req.userIdentity;
+    const result = await _mysql
+      .executeQuery({
+        query: `select hims_f_request_download_id,report_title,number_of_download,last_downloaded,
+      can_download from hims_f_request_download where user_id=?`,
+        values: [algaeh_d_app_user_id],
+      })
+      .catch((error) => {
+        throw error;
+      });
+    _mysql.releaseConnection();
+    res
+      .status(200)
+      .json({
+        success: true,
+        result,
+      })
+      .end();
+  } catch (error) {
+    _mysql.releaseConnection();
+    res.status(400).json({ success: false, error: error.message }).end();
+  }
+}
+export async function downloadReport(req, res) {
+  const _mysql = new algaehMysql();
+  try {
+    const { hims_f_request_download_id } = req.query;
+    console.log("hims_f_request_download_id====>", hims_f_request_download_id);
+    const result = await _mysql
+      .executeQuery({
+        query: `select download_location from hims_f_request_download where hims_f_request_download_id=?`,
+        values: [hims_f_request_download_id],
+        printQuery: true,
+      })
+      .catch((error) => {
+        throw error;
+      });
+    const { download_location } = _.head(result);
+    console.log("download_location====>", download_location);
+    if (download_location) {
+      if (fs.existsSync(download_location)) {
+        const fName = path.basename(download_location);
+
+        res.writeHead(200, {
+          "content-type": "application/pdf",
+          "content-disposition": "attachment;filename=" + fName,
+        });
+        const _fs = fs.createReadStream(download_location);
+        _fs.on("end", async () => {
+          await _mysql
+            .executeQuery({
+              query: `update hims_f_request_download set number_of_download = number_of_download+1,
+          last_downloaded=?
+           where hims_f_request_download_id=? `,
+              values: [new Date(), hims_f_request_download_id],
+            })
+            .catch((error) => {
+              throw error;
+            });
+          _mysql.releaseConnection();
+        });
+        _fs.pipe(res);
+      }
+    }
+  } catch (error) {
+    _mysql.releaseConnection();
+    res.writeHead(400, {
+      "content-type": "application/json",
+    });
+    res.status(400).json({ success: false, error: error.message }).end();
+  }
+}

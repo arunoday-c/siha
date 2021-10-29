@@ -85,7 +85,7 @@ import opthometry from "../EHR/controller/opthometry";
 
 import diagram from "../controller/diagram";
 import myInit from "../controller/myinit";
-
+import requestDownload from "../controller/requestDownload";
 //connect to DB
 //function(db)
 const config = con.default;
@@ -178,6 +178,7 @@ initializedDb((db) => {
   router.use("/dentalForm", dentalForm({ config, db }));
   router.use("/opthometry", opthometry({ config, db }));
   router.use("/diagram", diagram({ config, db }));
+  router.use("/request", requestDownload());
 });
 
 export default router;

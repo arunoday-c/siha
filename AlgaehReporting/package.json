@@ -64,6 +64,7 @@
     "formidable": "^1.2.2",
     "fs-extra": "^7.0.1",
     "handlebars": "^4.7.6",
+    "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "moment": "^2.22.1",
     "puppeteer": "1.14.0",

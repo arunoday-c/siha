@@ -7,8 +7,12 @@ import moment from "moment";
 import fs from "fs";
 import path from "path";
 import algaehKeys from "algaeh-keys";
-import reportGen from "./report_generation";
+import reportGen, {
+  getRecordsDownload,
+  downloadReport,
+} from "./report_generation";
 import utliites from "algaeh-utilities/utilities";
+import jwtDecode from "jwt-decode";
 import {
   saveEmployeeDetails,
   getKPIDetails,
@@ -110,7 +114,17 @@ app.use((req, res, next) => {
     console.log("Bypass  url ===>", req.url);
     next();
   } else {
-    authentication(req, res, next);
+    if (
+      req.headers["x-give-access"] &&
+      req.headers["x-give-access"] === "algaeh"
+    ) {
+      const tokenData = jwtDecode(req.headers["x-api-key"]);
+      req.userIdentity = tokenData;
+      // console.log("Here inside xapi===>", tokenData);
+      next();
+    } else {
+      authentication(req, res, next);
+    }
   }
 });
 
@@ -155,6 +169,8 @@ app.use(
   },
   merdgeTosingleReport
 );
+app.use("/api/v1/getRecordsDownload", getRecordsDownload);
+app.use("/api/v1/downloadReport", downloadReport);
 app.use("/api/v1/pentahoreport", (req, res) => {
   let input = req.query;
 

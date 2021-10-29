@@ -11,6 +11,7 @@ import moment from "moment";
 // import CostCenter from "../../costCenterComponent";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { previewReport } from "../../../utils/reportPreview";
+
 let resultdata = {};
 export default memo(function Modal(props) {
   const {
@@ -50,6 +51,7 @@ export default memo(function Modal(props) {
         const nodeFields = selectedNode?.node;
         const from_date = moment(dateRange[0]).format("YYYY-MM-DD");
         const to_date = moment(dateRange[1]).format("YYYY-MM-DD");
+
         if (type === "pdf") {
           setLoading(false);
           onOk("pdf");
@@ -62,8 +64,15 @@ export default memo(function Modal(props) {
           )}.${"pdf"}`;
           a.click();
           return;
+        } else if (type === "requestDownload") {
+          setLoading(false);
+          onOk("pdf");
+          AlgaehMessagePop({
+            type: "success",
+            display: result.message,
+          });
+          return;
         }
-
         previewReport(
           {
             reportTitle: "Ledger Report - Date Wise",
@@ -316,6 +325,7 @@ export default memo(function Modal(props) {
     setLoading(false);
     onCancel();
   }
+
   function generateReport(type, inputdata) {
     return new Promise((resolve, reject) => {
       try {
@@ -474,44 +484,60 @@ export default memo(function Modal(props) {
             },
           };
         }
-        const _type =
-          type === "excel" || type === "pdf"
-            ? {
-                headers: {
-                  Accept: "blob",
-                },
-                others: { responseType: "blob" },
-              }
-            : {};
-        algaehApiCall({
-          cancelRequestId: "accountReport",
-          uri:
-            type === "excel"
-              ? "/excelReport"
-              : type === "pdf"
-              ? "/report"
-              : "/getRawReport", //"/report",
-          module: "reports",
-          method: "GET",
-          ..._type,
-          // headers: {
-          //   Accept: "blob",
-          // },
-          // others: { responseType: "blob" },
-          data: data,
-          onSuccess: (response) => {
-            // debugger;
-            if (type === "preview") {
+
+        if (type === "requestDownload") {
+          algaehApiCall({
+            cancelRequestId: "requestDownload",
+            uri: "/request/downloadReport",
+            method: "GET",
+            data: data,
+            onSuccess: (response) => {
               resolve(response.data);
-            } else {
-              const url = URL.createObjectURL(response.data);
-              resolve(url);
-            }
-          },
-          onCatch: (error) => {
-            reject(error);
-          },
-        });
+            },
+            onCatch: (error) => {
+              throw error;
+            },
+          });
+        } else {
+          const _type =
+            type === "excel" || type === "pdf"
+              ? {
+                  headers: {
+                    Accept: "blob",
+                  },
+                  others: { responseType: "blob" },
+                }
+              : {};
+          algaehApiCall({
+            cancelRequestId: "accountReport",
+            uri:
+              type === "excel"
+                ? "/excelReport"
+                : type === "pdf"
+                ? "/report"
+                : "/getRawReport", //"/report",
+            module: "reports",
+            method: "GET",
+            ..._type,
+            // headers: {
+            //   Accept: "blob",
+            // },
+            // others: { responseType: "blob" },
+            data: data,
+            onSuccess: (response) => {
+              // debugger;
+              if (type === "preview") {
+                resolve(response.data);
+              } else {
+                const url = URL.createObjectURL(response.data);
+                resolve(url);
+              }
+            },
+            onCatch: (error) => {
+              reject(error);
+            },
+          });
+        }
       } catch (e) {
         reject(e);
       }
@@ -532,6 +558,12 @@ export default memo(function Modal(props) {
       }}
       footer={
         <div>
+          <span className="ant-btn ant-btn-primary ant-btn-circle ant-btn-icon-only">
+            <i
+              className="fas fa-cloud-download-alt"
+              onClick={() => onPdfGeneration("requestDownload")}
+            ></i>
+          </span>
           <span className="ant-btn ant-btn-primary ant-btn-circle ant-btn-icon-only">
             <i
               className="fas fa-eye"
