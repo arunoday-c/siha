@@ -20,12 +20,10 @@
 </thead>
 <tbody>
 
-{{#ifExist totalRecords}}
 <tr class="numberFld no_count">
-<td class="numberFld" colspan="6"></td>
-<td class="numberFld"> <small>Opening Balance: </small><b>{{numberFormating opening_balance currencyOnly}}</b></td>
+    <td class="numberFld" colspan="6"></td>
+    <td class="numberFld"> <small>Opening Balance: </small><b>{{numberFormating opening_balance currencyOnly}}</b></td>
 </tr>
-{{/ifExist}}
 {{#each details}}
 <tr>
 <td datatype="string"  class="txtFld">{{payment_date}}</td>

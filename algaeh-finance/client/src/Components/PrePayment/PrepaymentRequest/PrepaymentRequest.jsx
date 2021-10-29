@@ -240,18 +240,17 @@ export function PrepaymentRequest() {
         if (payment_reqDoc.length > 0) {
           saveDocument(payment_reqDoc, result.request_code, result.insertId)
             .then(() => getRequest())
-            .then(() => {
-              AlgaehMessagePop({
-                type: "success",
-                display: "Request Added successfully",
-              });
-            })
+
             .catch((e) => {
               AlgaehMessagePop({
                 type: "warning",
                 display: e.message,
               });
             });
+          AlgaehMessagePop({
+            type: "success",
+            display: "Request Added successfully",
+          });
         } else {
           getRequest();
           AlgaehMessagePop({
@@ -894,7 +893,10 @@ export function PrepaymentRequest() {
                             {/* <p >
                               <i className="fas fa-file-upload"></i>
                             </p> */}
-                            <button className="btn btn-default upload-drag-icon">
+                            <button
+                              className="btn btn-default upload-drag-icon"
+                              type="button"
+                            >
                               Select File
                             </button>
                             {/* <p className="ant-upload-text">
