@@ -445,17 +445,18 @@ class AddOPBillingForm extends Component {
 
     if (row.service_type_id === 14) {
       swal({
-        title: "Package Service",
+        title: "Delete Package Service",
         html:
-          "<b>" +
+          "Do you want to delete <b>" +
           row.service_name +
-          "</b> this is package service do you want to delete from package data?",
+          "</b> package service?",
         type: "warning",
         showCancelButton: true,
-        confirmButtonText: "Yes",
-        confirmButtonColor: "#44b8bd",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "No",
+        confirmButtonText: "Delete Permanent",
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#44b8bd",
+        cancelButtonText: "Delete Temporary",
+        showCloseButton: true,
       }).then((willProceed) => {
         if (willProceed.value) {
           algaehApiCall({
@@ -476,6 +477,8 @@ class AddOPBillingForm extends Component {
               });
             },
           });
+        } else if (willProceed.dismiss === "cancel") {
+          this.clearData(context, row);
         }
       });
     } else {

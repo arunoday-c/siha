@@ -311,10 +311,14 @@ export default {
     const _mysql = new algaehMysql();
     try {
       req.mySQl = _mysql;
+      let Module_Name = ["PAT_VISIT"];
+      if (req.body.consultation == "Y") {
+        Module_Name = ["PAT_VISIT", "PAT_BILL", "RECEIPT"];
+      }
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
-          numgen_codes: ["PAT_VISIT", "PAT_BILL", "RECEIPT"],
+          numgen_codes: Module_Name,
           table_name: "hims_f_app_numgen",
         })
         .then((generatedNumbers) => {
