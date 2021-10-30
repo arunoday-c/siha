@@ -6,6 +6,7 @@ import compression from "compression";
 import moment from "moment";
 import fs from "fs";
 import path from "path";
+import atob from "atob";
 import algaehKeys from "algaeh-keys";
 import reportGen, {
   getRecordsDownload,
@@ -81,7 +82,6 @@ app.use("/barcode", (req, res) => {
 });
 app.use("/getImage/:image", (req, res) => {
   const { image } = req.params;
-
   if (image) {
     const filePath = path.join(
       process.cwd(),
@@ -101,13 +101,18 @@ app.use("/getImage/:image", (req, res) => {
 
 app.use("/getDownloadLink/:dPath", (req, res) => {
   const { dPath } = req.params;
-  console.log("dPath", dPath);
-
-  if (dPath) {
-    const filePath = dPath;
-    res.writeHead(200);
-    const _fs = fs.createReadStream(filePath);
-    _fs.pipe(res);
+  console.log("dPath===>", dPath);
+  const loc = atob(dPath);
+  console.log("loc", loc);
+  const filePath = loc;
+  if (loc) {
+    if (fs.existsSync(filePath)) {
+      res.writeHead(200);
+      const _fs = fs.createReadStream(filePath);
+      _fs.pipe(res);
+    } else {
+      throw new Error("No file exists");
+    }
   } else {
     res.writeHead(400, { "Content-Type": "text/plain" });
     res.write("No such file exist");
