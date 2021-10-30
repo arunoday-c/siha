@@ -5,6 +5,7 @@ export async function insertRecord(data: any) {
       {
         user_id: data.user_id,
         report_title: data.report_title,
+        download_link: data.download_link,
       },
       {
         raw: true,

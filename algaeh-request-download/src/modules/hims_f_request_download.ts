@@ -12,6 +12,9 @@ hims_f_request_download.init(
     download_location: {
       type: DataTypes.STRING(500),
     },
+    download_link: {
+      type: DataTypes.STRING(200),
+    },
     user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
