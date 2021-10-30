@@ -98,6 +98,21 @@ app.use("/getImage/:image", (req, res) => {
     res.write("No such file exist");
   }
 });
+
+app.use("/getDownloadLink/:dPath", (req, res) => {
+  const { dPath } = req.params;
+  console.log("dPath", dPath);
+
+  if (dPath) {
+    const filePath = dPath;
+    res.writeHead(200);
+    const _fs = fs.createReadStream(filePath);
+    _fs.pipe(res);
+  } else {
+    res.writeHead(400, { "Content-Type": "text/plain" });
+    res.write("No such file exist");
+  }
+});
 app.use((req, res, next) => {
   const xBypassUser = "algaeh";
   const xBypassPassword = "alg_hea2018";

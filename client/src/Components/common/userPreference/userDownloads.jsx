@@ -78,50 +78,59 @@ export default function UserDownloads() {
             </div>
             <div className="portlet-body">
               <div className="row">
-                <AlgaehDataGrid
-                  columns={[
-                    {
-                      fieldName: "id",
-                      label: <AlgaehLabel label={{ forceLabel: "" }} />,
-                      displayTemplate: (row) => {
-                        if (row.can_download === 1)
-                          return (
-                            <button
-                              onClick={() => {
-                                downloadReport(row);
-                              }}
-                            >
-                              Download
-                            </button>
-                          );
-                        else return <span>Processing</span>;
+                <div className="col-12">
+                  <AlgaehDataGrid
+                    columns={[
+                      {
+                        fieldName: "id",
+                        label: <AlgaehLabel label={{ forceLabel: "" }} />,
+                        displayTemplate: (row) => {
+                          if (row.can_download === 1)
+                            return (
+                              <i
+                                className="fas fa-download"
+                                onClick={() => {
+                                  downloadReport(row);
+                                }}
+                              ></i>
+
+                              // <button
+                              //   onClick={() => {
+                              //     downloadReport(row);
+                              //   }}
+                              // >
+                              //   Download
+                              // </button>
+                            );
+                          else return <span>Processing</span>;
+                        },
                       },
-                    },
-                    {
-                      fieldName: "report_title",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Report For" }} />
-                      ),
-                    },
-                    {
-                      fieldName: "number_of_download",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Number of downloads" }}
-                        />
-                      ),
-                    },
-                    {
-                      fieldName: "last_downloaded",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Last download on" }}
-                        />
-                      ),
-                    },
-                  ]}
-                  data={data}
-                />
+                      {
+                        fieldName: "report_title",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Report For" }} />
+                        ),
+                      },
+                      {
+                        fieldName: "number_of_download",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Number of downloads" }}
+                          />
+                        ),
+                      },
+                      {
+                        fieldName: "last_downloaded",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Last download on" }}
+                          />
+                        ),
+                      },
+                    ]}
+                    data={data}
+                  />
+                </div>
               </div>
             </div>
           </div>

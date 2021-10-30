@@ -92,11 +92,15 @@ export default memo(function () {
     ]);
     setScreens(scrns);
 
+    console.log("userPreferences", userPreferences);
+
     if (userPreferences?.length > 0 && userPreferences) {
       const preference = userPreferences[0]["FD0002"];
-      if (getValues().screen_code === "FD0002") {
-        setValue("visit_type", preference.visit_type);
-        setValue("doctor", preference.doctor);
+      if (preference) {
+        if (getValues().screen_code === "FD0002") {
+          setValue("visit_type", preference.visit_type);
+          setValue("doctor", preference.doctor);
+        }
       }
     }
   }, []); //eslint-disable-line

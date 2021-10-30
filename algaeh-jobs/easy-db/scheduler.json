@@ -73,5 +73,20 @@
     "updateKeyName": "hims_f_dental_form_id",
     "updateTable": "hims_f_dental_form",
     "templateFile": "dental_Followup"
+  },
+  "accountLedgerDownload": {
+    "name": "accountLedgerDownload",
+    "title": "Ledger Report",
+    "second": "5",
+    "minute": "*",
+    "hour": "*",
+    "dayOfMonth": "*",
+    "month": "*",
+    "dayOfWeek": "*",
+    "moduleType": "accountLedgerDownload",
+    "sqlQuery": "select * from hims_f_request_download where is_notify='0' and record_status='A';",
+    "updateKeyName": "hims_f_request_download_id",
+    "updateTable": "hims_f_request_download",
+    "templateFile": "accountLedgerDownload"
   }
 }
