@@ -185,7 +185,7 @@ export default memo(function () {
   return (
     <>
       <div className="row">
-        <div className="col-12">
+        <div className="col-3">
           <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
             <div className="portlet-title">
               <div className="caption">
@@ -194,8 +194,10 @@ export default memo(function () {
               <div className="actions"></div>
             </div>
             <div className="portlet-body">
+              <small> (For Front Desk Users Only)</small>
+              <hr />
               <div className="row">
-                <div className="col-3">
+                <div className="col-12">
                   <form onSubmit={handleSubmit(addOrUpdatePreference)}>
                     <div className="row">
                       <Controller
@@ -310,7 +312,7 @@ export default memo(function () {
                     </div>
                   </form>
                 </div>
-                <div className="col-3">
+                <div className="col-12" style={{ display: "none" }}>
                   <div className="row">
                     <div className="col-12 switchDiv">
                       <label>Remeber search dropdown</label>
@@ -376,9 +378,9 @@ export default memo(function () {
               </div>
             </div>
           </div>
-        </div>
+        </div>{" "}
+        <UserDownloads />
       </div>
-      <UserDownloads />
     </>
   );
 });
