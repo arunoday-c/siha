@@ -101,7 +101,7 @@ app.use("/getImage/:image", (req, res) => {
 
 app.use("/getDownloadLink/:dPath", (req, res) => {
   const { dPath } = req.params;
-  console.log("dPath===>", dPath);
+
   const loc = atob(dPath);
   console.log("loc", loc);
   const filePath = loc;

@@ -16,7 +16,7 @@ export async function initialPush(
   next: NextFunction
 ) {
   try {
-    const { report } = req.query;
+    const { report, download_link } = req.query;
     if (!report) {
       throw new Error("Parameters are mandatory");
     }
@@ -33,15 +33,15 @@ export async function initialPush(
         `;
         }
       }
-      let port = "";
-      const splitHost = req.headers.host?.split(":");
-      if (splitHost?.length === 2) {
-        port = ":3018";
-      } else {
-        port = "/reports";
-      }
+      // let port = "";
+      // const splitHost = req.headers.host?.split(":");
+      // if (splitHost?.length === 2) {
+      //   port = ":3018";
+      // } else {
+      //   port = "/reports";
+      // }
 
-      const download_link = `${req.protocol}://${req.hostname}${port}`;
+      // const download_link =""; //`${req.protocol}://${req.hostname}${port}`;
       const primaryId = await insertRecord({
         user_id: token["algaeh_d_app_user_id"],
         report_title: title,
