@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import "./userPreference.scss";
+
 import {
   AlgaehDataGrid,
   AlgaehLabel,
@@ -66,76 +68,78 @@ export default function UserDownloads() {
   }
 
   return (
-    <Spin spinning={loading} tip="Please wait..">
-      <div className="row">
-        <div className="col-12">
-          <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">User Download Requests</h3>
-              </div>
-              <div className="actions"></div>
+    <div className="col-9">
+      <Spin spinning={loading} tip="Please wait..">
+        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">User Download Requests</h3>
             </div>
-            <div className="portlet-body">
-              <div className="row">
-                <div className="col-12">
-                  <AlgaehDataGrid
-                    columns={[
-                      {
-                        fieldName: "id",
-                        label: <AlgaehLabel label={{ forceLabel: "" }} />,
-                        displayTemplate: (row) => {
-                          if (row.can_download === 1)
-                            return (
-                              <i
-                                className="fas fa-download"
-                                onClick={() => {
-                                  downloadReport(row);
-                                }}
-                              ></i>
+            <div className="actions"></div>
+          </div>
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col-12" id="userDownload">
+                <AlgaehDataGrid
+                  columns={[
+                    {
+                      fieldName: "id",
+                      label: <AlgaehLabel label={{ forceLabel: "Download" }} />,
+                      displayTemplate: (row) => {
+                        if (row.can_download === 1)
+                          return (
+                            <i
+                              className="fas fa-download"
+                              onClick={() => {
+                                downloadReport(row);
+                              }}
+                            ></i>
 
-                              // <button
-                              //   onClick={() => {
-                              //     downloadReport(row);
-                              //   }}
-                              // >
-                              //   Download
-                              // </button>
-                            );
-                          else return <span>Processing</span>;
-                        },
+                            // <button
+                            //   onClick={() => {
+                            //     downloadReport(row);
+                            //   }}
+                            // >
+                            //   Download
+                            // </button>
+                          );
+                        else return <span>Processing</span>;
                       },
-                      {
-                        fieldName: "report_title",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Report For" }} />
-                        ),
+                    },
+                    {
+                      fieldName: "report_title",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Report For" }} />
+                      ),
+                      others: {
+                        // Width: 150,
+                        style: { textAlign: "left" },
                       },
-                      {
-                        fieldName: "number_of_download",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Number of downloads" }}
-                          />
-                        ),
-                      },
-                      {
-                        fieldName: "last_downloaded",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Last download on" }}
-                          />
-                        ),
-                      },
-                    ]}
-                    data={data}
-                  />
-                </div>
+                    },
+                    {
+                      fieldName: "number_of_download",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "No. of downloads" }}
+                        />
+                      ),
+                    },
+                    {
+                      fieldName: "last_downloaded",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Last download On" }}
+                        />
+                      ),
+                    },
+                  ]}
+                  data={data}
+                />
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </Spin>
+      </Spin>
+    </div>
   );
 }

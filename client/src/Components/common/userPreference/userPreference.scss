@@ -1,0 +1,21 @@
+#userDownload {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 79vh;
+      max-height: 79vh;
+      overflow: auto;
+
+      .fa-download {
+        border: 1px solid #007468 !important;
+        color: #00a796;
+        padding: 9px;
+        border-radius: 50%;
+        &:hover {
+          background-color: #00a796 !important;
+          cursor: pointer;
+          color: white;
+        }
+      }
+    }
+  }
+}

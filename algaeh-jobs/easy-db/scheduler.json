@@ -84,7 +84,7 @@
     "month": "*",
     "dayOfWeek": "*",
     "moduleType": "accountLedgerDownload",
-    "sqlQuery": "select * from hims_f_request_download where is_notify='0' and record_status='A';",
+    "sqlQuery": "select RD.hims_f_request_download_id,RD.report_title,RD.download_link,RD.download_location,USR.employee_id from hims_f_request_download RD inner join algaeh_d_app_user USR on USR.algaeh_d_app_user_id = RD.user_id where RD.is_notify='0' and RD.record_status='A';",
     "updateKeyName": "hims_f_request_download_id",
     "updateTable": "hims_f_request_download",
     "templateFile": "accountLedgerDownload"
