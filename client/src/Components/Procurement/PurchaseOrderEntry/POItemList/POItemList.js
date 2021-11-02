@@ -170,6 +170,20 @@ export default class POItemList extends Component {
                             : "-----------"}
                         </h6>
                       </div>
+
+                      {this.state.receipt_generated === "Y" &&
+                      this.state.po_closed_by > 0 ? (
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "PO Closed Reason",
+                            }}
+                          />
+                          <h6>{this.state.po_close_reason}</h6>
+                        </div>
+                      ) : (
+                        ""
+                      )}
                       {/* <AlagehAutoComplete
                         div={{ className: "col" }}
                         label={{ forceLabel: "Item Category" }}

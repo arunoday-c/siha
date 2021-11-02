@@ -26,6 +26,7 @@ export default {
       sub_total: 0,
       detail_discount: 0,
       extended_total: 0,
+      receipt_generated: "N",
 
       sheet_level_discount_percent: 0,
       sheet_level_discount_amount: 0,
@@ -99,7 +100,7 @@ export default {
       group_description: null,
       category_desc: null,
       purchase_uom_desc: null,
-      revert_data: false
+      revert_data: false,
     };
     return output;
   },

@@ -14,6 +14,7 @@ import {
   // Icon,
   // DatePicker,
   AlgaehTable,
+  Spin,
 } from "algaeh-react-components";
 import ReportLauncher from "../AccountReport";
 // import Charts from "../Charts";
@@ -64,6 +65,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
   const [isNewAccount, setNewAccount] = useState(false);
   const [reportVisible, setReportVisible] = useState(false);
   const [editorRecord, setEditorRecord] = useState({});
+  const [loading, setLoading] = useState(false);
   // const [period, setPeriod] = useState("4");
   // const [accountChart, setAccountChart] = useState([]);
   // const [year, setYear] = useState(moment());
@@ -180,6 +182,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
   }
 
   function loadAccount() {
+    setLoading(true);
     setTreeData([]);
     getAccounts(assetCode, (data) => {
       if (Array.isArray(data)) {
@@ -207,6 +210,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
           setSymbol(firstData["trans_symbol"]);
           setExpandAll(false);
           setLayout("tree");
+          setLoading(false);
           setGridData(() => {
             return [];
           });
@@ -214,6 +218,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
           //   loadChartData(firstData.finance_account_head_id);
           // }
         } else {
+          setLoading(false);
           setTreeData([]);
           setLayout("tree");
           setExpandAll(false);
@@ -222,6 +227,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
           });
         }
       } else {
+        setLoading(false);
         setTreeData([]);
         setLayout("tree");
         setExpandAll(false);
@@ -529,232 +535,234 @@ function TreeComponent({ assetCode, title, inDrawer }) {
   }
 
   return (
-    <div className="container-fluid assetsModuleScreen">
-      {showPopup ? (
-        <AddNewAccount
-          showPopup={showPopup}
-          selectedNode={editorRecord.node ? editorRecord : selectedNode}
-          accountCode={assetCode}
-          onClose={editorRecord.node ? onEditClose : onClose}
-          accountName={editorRecord.node ? editorRecord.node.title : ""}
-          ledgerCode={editorRecord.node ? editorRecord.node.ledger_code : ""}
-          arabicName={
-            editorRecord.node ? editorRecord.node.arabic_account_name : ""
-          }
-          propOnOK={editorRecord.node ? editChild : null}
-          okText={editorRecord.node ? "Change" : "Add"}
-          accountType={
-            editorRecord.node
-              ? editorRecord.node.leafnode === "Y"
-                ? "C"
-                : "G"
-              : ""
-          }
-          accountTyp={editorRecord.node ? editorRecord.node.account_type : ""}
-          isNewAccount={isNewAccount}
-          openingBal={editorRecord.node ? editorRecord.node.subtitle : ""}
+    <Spin spinning={loading}>
+      <div className="container-fluid assetsModuleScreen">
+        {showPopup ? (
+          <AddNewAccount
+            showPopup={showPopup}
+            selectedNode={editorRecord.node ? editorRecord : selectedNode}
+            accountCode={assetCode}
+            onClose={editorRecord.node ? onEditClose : onClose}
+            accountName={editorRecord.node ? editorRecord.node.title : ""}
+            ledgerCode={editorRecord.node ? editorRecord.node.ledger_code : ""}
+            arabicName={
+              editorRecord.node ? editorRecord.node.arabic_account_name : ""
+            }
+            propOnOK={editorRecord.node ? editChild : null}
+            okText={editorRecord.node ? "Change" : "Add"}
+            accountType={
+              editorRecord.node
+                ? editorRecord.node.leafnode === "Y"
+                  ? "C"
+                  : "G"
+                : ""
+            }
+            accountTyp={editorRecord.node ? editorRecord.node.account_type : ""}
+            isNewAccount={isNewAccount}
+            openingBal={editorRecord.node ? editorRecord.node.subtitle : ""}
+          />
+        ) : null}
+        <ReportLauncher
+          title="Ledger Report"
+          visible={reportVisible}
+          selectedNode={selectedNode}
+          parentId={assetCode}
+          onCancel={() => {
+            setReportVisible(false);
+          }}
+          onOk={() => {
+            setReportVisible(false);
+          }}
         />
-      ) : null}
-      <ReportLauncher
-        title="Ledger Report"
-        visible={reportVisible}
-        selectedNode={selectedNode}
-        parentId={assetCode}
-        onCancel={() => {
-          setReportVisible(false);
-        }}
-        onOk={() => {
-          setReportVisible(false);
-        }}
-      />
 
-      <div className="row">
-        {/* <AccountChart /> */}
-        {/* <div className={isExpOrInc && !inDrawer ? "col-8" : "col-12"}> */}
-        <div className={"col-12"}>
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">
-                  {`${title} : ${amount}`}
-                  {symbol}
-                </h3>
+        <div className="row">
+          {/* <AccountChart /> */}
+          {/* <div className={isExpOrInc && !inDrawer ? "col-8" : "col-12"}> */}
+          <div className={"col-12"}>
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">
+                    {`${title} : ${amount}`}
+                    {symbol}
+                  </h3>
+                </div>
+                <div className="actions">
+                  <button
+                    className="btn btn-default btn-circle active"
+                    onClick={layoutFlip}
+                    title="Flip"
+                  >
+                    {layout === "tree" ? (
+                      <i className="fas fa-th"></i>
+                    ) : (
+                      <i className="fas fa-stream"></i>
+                    )}
+                  </button>
+                  <button
+                    className="btn btn-default btn-circle active"
+                    onClick={expandAllNodes}
+                    title="Expand/Collapsed"
+                  >
+                    <i className="fas fa-arrows-alt"></i>
+                  </button>
+                  <button
+                    className="btn btn-default btn-circle active"
+                    onClick={() => {
+                      setOpenPrint(true);
+                    }}
+                  >
+                    <i className="fas fa-print" />
+                  </button>
+                  <button
+                    className="btn btn-primary btn-circle active"
+                    onClick={() => {
+                      setSelectedNode({
+                        node: {
+                          finance_account_head_id: financeHeadId,
+                          parent_acc_id: assetCode,
+                        },
+                      });
+                      setShowPopup(true);
+                      setIsAccountHead(true);
+                      setNewAccount(true);
+                    }}
+                  >
+                    <i className="fas fa-plus" />
+                  </button>
+                </div>
+                <div className="searchCntr">
+                  <input
+                    type="text"
+                    placeholder="Search Account Heads"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                    }}
+                  />
+                  <button
+                    onClick={() => {
+                      const values =
+                        searchFocusIndex !== undefined
+                          ? (searchFoundCount + searchFocusIndex - 1) %
+                            searchFoundCount
+                          : searchFoundCount - 1;
+                      setSearchFocusIndex(values);
+                    }}
+                  >
+                    &lt;
+                  </button>
+                  <button
+                    onClick={() => {
+                      const values =
+                        searchFocusIndex !== undefined
+                          ? (searchFocusIndex + 1) % searchFoundCount
+                          : 0;
+                      setSearchFocusIndex(values);
+                    }}
+                  >
+                    &gt;
+                  </button>
+                  <label>
+                    {searchFoundCount > 0 ? searchFocusIndex + 1 : 0} /
+                    {searchFoundCount || 0}
+                  </label>
+                </div>
               </div>
-              <div className="actions">
-                <button
-                  className="btn btn-default btn-circle active"
-                  onClick={layoutFlip}
-                  title="Flip"
-                >
-                  {layout === "tree" ? (
-                    <i className="fas fa-th"></i>
-                  ) : (
-                    <i className="fas fa-stream"></i>
-                  )}
-                </button>
-                <button
-                  className="btn btn-default btn-circle active"
-                  onClick={expandAllNodes}
-                  title="Expand/Collapsed"
-                >
-                  <i className="fas fa-arrows-alt"></i>
-                </button>
-                <button
-                  className="btn btn-default btn-circle active"
-                  onClick={() => {
-                    setOpenPrint(true);
-                  }}
-                >
-                  <i className="fas fa-print" />
-                </button>
-                <button
-                  className="btn btn-primary btn-circle active"
-                  onClick={() => {
-                    setSelectedNode({
-                      node: {
-                        finance_account_head_id: financeHeadId,
-                        parent_acc_id: assetCode,
-                      },
-                    });
-                    setShowPopup(true);
-                    setIsAccountHead(true);
-                    setNewAccount(true);
-                  }}
-                >
-                  <i className="fas fa-plus" />
-                </button>
-              </div>
-              <div className="searchCntr">
-                <input
-                  type="text"
-                  placeholder="Search Account Heads"
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                  }}
-                />
-                <button
-                  onClick={() => {
-                    const values =
-                      searchFocusIndex !== undefined
-                        ? (searchFoundCount + searchFocusIndex - 1) %
-                          searchFoundCount
-                        : searchFoundCount - 1;
-                    setSearchFocusIndex(values);
-                  }}
-                >
-                  &lt;
-                </button>
-                <button
-                  onClick={() => {
-                    const values =
-                      searchFocusIndex !== undefined
-                        ? (searchFocusIndex + 1) % searchFoundCount
-                        : 0;
-                    setSearchFocusIndex(values);
-                  }}
-                >
-                  &gt;
-                </button>
-                <label>
-                  {searchFoundCount > 0 ? searchFocusIndex + 1 : 0} /
-                  {searchFoundCount || 0}
-                </label>
-              </div>
-            </div>
-            <div className="portlet-body">
-              <div className="col">
-                <div className="row">
-                  {layout === "tree" ? (
-                    <div className="treeNodeWrapper">
-                      <PrintAccount
-                        title={title}
-                        visible={openPrint}
-                        data={treeData}
-                        onClose={() => {
-                          setOpenPrint(false);
-                        }}
-                      />
-                      <SortableTree
-                        treeData={treeData}
-                        onChange={(treeData) => {
-                          setTreeData(treeData);
-                        }}
-                        isVirtualized={true}
-                        canDrag={(rowInfo) => {
-                          return rowInfo.node.canDrag === true ? true : false;
-                        }}
-                        generateNodeProps={generateNodeProps}
-                        searchMethod={searchMethod}
-                        searchQuery={searchQuery}
-                        searchFocusOffset={searchFocusIndex}
-                        searchFinishCallback={(matches) => {
-                          setSearchFocusIndex(
-                            matches.length > 0
-                              ? searchFocusIndex % matches.length
-                              : 0
-                          );
-                          setSearchFoundCount(matches.length);
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div className="row">
-                      {loadingGridData === true ? (
-                        <p>Please wait loading</p>
-                      ) : (
-                        <div className="col-12">
-                          <AlgaehTable
-                            className="accountTable"
-                            columns={[
-                              {
-                                fieldName: "ledger_code",
-                                label: "Ledger Code",
-                                filterable: true,
-                              },
-                              {
-                                fieldName: "child_name",
-                                label: "Ledger Name",
-                                filterable: true,
-                              },
-                              {
-                                fieldName: "arabic_child_name",
-                                label: "Ledger Arabic",
-                                filterable: true,
-                              },
-                              {
-                                fieldName: "closing_balance",
-                                label: "Closing Balance",
-                                displayTemplate: (row) => {
-                                  return (
-                                    <span>
-                                      {getAmountFormart(row.closing_balance, {
-                                        appendSymbol: false,
-                                      })}
-                                    </span>
-                                  );
+              <div className="portlet-body">
+                <div className="col">
+                  <div className="row">
+                    {layout === "tree" ? (
+                      <div className="treeNodeWrapper">
+                        <PrintAccount
+                          title={title}
+                          visible={openPrint}
+                          data={treeData}
+                          onClose={() => {
+                            setOpenPrint(false);
+                          }}
+                        />
+                        <SortableTree
+                          treeData={treeData}
+                          onChange={(treeData) => {
+                            setTreeData(treeData);
+                          }}
+                          isVirtualized={true}
+                          canDrag={(rowInfo) => {
+                            return rowInfo.node.canDrag === true ? true : false;
+                          }}
+                          generateNodeProps={generateNodeProps}
+                          searchMethod={searchMethod}
+                          searchQuery={searchQuery}
+                          searchFocusOffset={searchFocusIndex}
+                          searchFinishCallback={(matches) => {
+                            setSearchFocusIndex(
+                              matches.length > 0
+                                ? searchFocusIndex % matches.length
+                                : 0
+                            );
+                            setSearchFoundCount(matches.length);
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="row">
+                        {loadingGridData === true ? (
+                          <p>Please wait loading</p>
+                        ) : (
+                          <div className="col-12">
+                            <AlgaehTable
+                              className="accountTable"
+                              columns={[
+                                {
+                                  fieldName: "ledger_code",
+                                  label: "Ledger Code",
+                                  filterable: true,
                                 },
-                                filterable: true,
-                              },
-                            ]}
-                            data={gridData}
-                            // hasFooter={true}
-                            isFilterable={true}
-                            // aggregate={field => {
-                            //   return total[field];
-                            // }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  )}
+                                {
+                                  fieldName: "child_name",
+                                  label: "Ledger Name",
+                                  filterable: true,
+                                },
+                                {
+                                  fieldName: "arabic_child_name",
+                                  label: "Ledger Arabic",
+                                  filterable: true,
+                                },
+                                {
+                                  fieldName: "closing_balance",
+                                  label: "Closing Balance",
+                                  displayTemplate: (row) => {
+                                    return (
+                                      <span>
+                                        {getAmountFormart(row.closing_balance, {
+                                          appendSymbol: false,
+                                        })}
+                                      </span>
+                                    );
+                                  },
+                                  filterable: true,
+                                },
+                              ]}
+                              data={gridData}
+                              // hasFooter={true}
+                              isFilterable={true}
+                              // aggregate={field => {
+                              //   return total[field];
+                              // }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Spin>
   );
 }
 

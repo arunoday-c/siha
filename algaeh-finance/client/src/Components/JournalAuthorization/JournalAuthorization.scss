@@ -22,4 +22,11 @@
 }
 .AdvCreNoteModal {
   min-width: 99% !important;
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 31vh;
+      max-height: 31vh;
+      overflow: auto;
+    }
+  }
 }

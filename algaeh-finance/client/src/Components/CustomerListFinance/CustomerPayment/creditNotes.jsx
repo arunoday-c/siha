@@ -96,136 +96,122 @@ export default memo(function CreditNotes({
     >
       <Spin spinning={loading}>
         <div className="col-12">
-          <div className="portlet portlet-bordered margin-top-15  margin-bottom-15">
-            <div className="portlet-body">
-              <div className="row">
-                <div className="col-6">
-                  <AlgaehTable
-                    columns={[
-                      {
-                        fieldName: "checked",
-                        label: <AlgaehLabel label={{ forceLabel: "select" }} />,
-                        sortable: false,
-                        filterable: false,
-                        displayTemplate: (row) => {
-                          return (
-                            <Checkbox
-                              disabled={row.invoice_status === "closed"}
-                              defaultChecked={row["checked"]}
-                              onChange={(e) => {
-                                const { checked } = e.target;
-                                row["checked"] = checked;
-                              }}
-                            />
-                          );
-                        },
-                        others: {
-                          Width: 50,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "narration",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Narration" }} />
-                        ),
-                      },
+          <h4 style={{ marginTop: 10 }}>Credit Note List</h4>
+          <AlgaehTable
+            columns={[
+              {
+                fieldName: "checked",
+                label: <AlgaehLabel label={{ forceLabel: "select" }} />,
+                sortable: false,
+                filterable: false,
+                displayTemplate: (row) => {
+                  return (
+                    <Checkbox
+                      disabled={row.invoice_status === "closed"}
+                      defaultChecked={row["checked"]}
+                      onChange={(e) => {
+                        const { checked } = e.target;
+                        row["checked"] = checked;
+                      }}
+                    />
+                  );
+                },
+                others: {
+                  Width: 50,
+                  style: { textAlign: "center" },
+                },
+              },
+              {
+                fieldName: "narration",
+                label: <AlgaehLabel label={{ forceLabel: "Narration" }} />,
+              },
 
-                      {
-                        fieldName: "invoice_no",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Invoice No." }} />
-                        ),
-                        others: {
-                          Width: 120,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "payment_date",
-                        label: <AlgaehLabel label={{ forceLabel: "Date" }} />,
-                        others: {
-                          Width: 120,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "amount",
-                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
-                        others: {
-                          Width: 10,
-                          style: { textAlign: "right" },
-                        },
-                      },
-                    ]}
-                    data={data}
-                  />
-                </div>
-                <div className="col-6">
-                  <AlgaehTable
-                    columns={[
-                      {
-                        fieldName: "checked",
-                        label: <AlgaehLabel label={{ forceLabel: "select" }} />,
-                        sortable: false,
-                        filterable: false,
-                        displayTemplate: (row) => {
-                          return (
-                            <Checkbox
-                              disabled={row.invoice_status === "closed"}
-                              defaultChecked={row["checked"]}
-                              onChange={(e) => {
-                                const { checked } = e.target;
-                                row["checked"] = checked;
-                              }}
-                            />
-                          );
-                        },
-                        others: {
-                          Width: 50,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "narration",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Narration" }} />
-                        ),
-                      },
+              {
+                fieldName: "invoice_no",
+                label: <AlgaehLabel label={{ forceLabel: "Invoice No." }} />,
+                others: {
+                  Width: 120,
+                  style: { textAlign: "center" },
+                },
+              },
+              {
+                fieldName: "payment_date",
+                label: <AlgaehLabel label={{ forceLabel: "Date" }} />,
+                others: {
+                  Width: 120,
+                  style: { textAlign: "center" },
+                },
+              },
+              {
+                fieldName: "amount",
+                label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
+                others: {
+                  Width: 10,
+                  style: { textAlign: "right" },
+                },
+              },
+            ]}
+            data={data}
+          />
+        </div>
+        <div className="col-12">
+          <h4 style={{ marginTop: 10 }}>Advance List</h4>
+          <AlgaehTable
+            columns={[
+              {
+                fieldName: "checked",
+                label: <AlgaehLabel label={{ forceLabel: "select" }} />,
+                sortable: false,
+                filterable: false,
+                displayTemplate: (row) => {
+                  return (
+                    <Checkbox
+                      disabled={row.invoice_status === "closed"}
+                      defaultChecked={row["checked"]}
+                      onChange={(e) => {
+                        const { checked } = e.target;
+                        row["checked"] = checked;
+                      }}
+                    />
+                  );
+                },
+                others: {
+                  Width: 50,
+                  style: { textAlign: "center" },
+                },
+              },
+              {
+                fieldName: "narration",
+                label: <AlgaehLabel label={{ forceLabel: "Narration" }} />,
+              },
 
-                      {
-                        fieldName: "voucher_no",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Voucher No." }} />
-                        ),
-                        others: {
-                          Width: 120,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "payment_date",
-                        label: <AlgaehLabel label={{ forceLabel: "Date" }} />,
-                        others: {
-                          Width: 120,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "amount",
-                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
-                        others: {
-                          Width: 10,
-                          style: { textAlign: "right" },
-                        },
-                      },
-                    ]}
-                    data={adv_data}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+              {
+                fieldName: "voucher_no",
+                label: <AlgaehLabel label={{ forceLabel: "Voucher No." }} />,
+                others: {
+                  Width: 120,
+                  style: { textAlign: "center" },
+                },
+              },
+              {
+                fieldName: "payment_date",
+                label: <AlgaehLabel label={{ forceLabel: "Date" }} />,
+                others: {
+                  Width: 120,
+                  style: { textAlign: "center" },
+                },
+              },
+              {
+                fieldName: "amount",
+                label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
+                others: {
+                  Width: 10,
+                  style: { textAlign: "right" },
+                },
+              },
+            ]}
+            data={adv_data}
+          />
         </div>
       </Spin>
     </Modal>
