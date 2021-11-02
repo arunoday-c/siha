@@ -19,8 +19,8 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select finance_voucher_header_id,
-          -- case when H.voucher_type = 'sales' then 'Sales' when H.voucher_type = 'credit_note' then 'Credit Note' end as voucher_type,
+          query: `select FC.child_name,H.finance_voucher_header_id,
+          case when H.voucher_type = 'sales' then 'Sales' when H.voucher_type = 'credit_note' then 'Credit Note' end as voucher_type,
           invoice_no,voucher_no,
           case when H.voucher_type = 'sales' then round(H.amount ,2) when H.voucher_type = 'credit_note' then round(-H.amount,2) end as invoice_amount,
           H.narration,
@@ -32,6 +32,7 @@ const executePDF = function executePDFMethod(options) {
           when settlement_status='P' and settled_amount = H.amount then 'Paid' end as invoice_status
            from finance_voucher_header H
           inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id
+          left join finance_account_child FC on FC.finance_account_child_id = D.child_id
           where D.child_id=? and date(D.payment_date) between date(?) and date(?) and H.voucher_type in ('sales','credit_note');`,
           values: [input.child_id, input.from_date, input.to_date],
           printQuery: true,
@@ -42,12 +43,28 @@ const executePDF = function executePDFMethod(options) {
               .groupBy((g) => g.finance_voucher_header_id)
               .map((item, key) => {
                 const header = _.head(item);
-                const settled_amount = _.sumBy(item, (s) =>
-                  parseFloat(s.settled_amount)
-                );
-                const balance_amount =
-                  parseFloat(header ? header.invoice_amount : "0") -
-                  settled_amount;
+                const settled_amount = _.sumBy(item, (s) => {
+                  if (s.voucher_type === "Sales") {
+                    return parseFloat(s.settled_amount);
+                  } else {
+                    return 0.0;
+                  }
+                });
+
+                const balance_amount = _.sumBy(item, (s) => {
+                  if (s.voucher_type === "Sales") {
+                    return (
+                      parseFloat(header ? header.invoice_amount : "0") -
+                      settled_amount
+                    );
+                  } else {
+                    return 0.0;
+                  }
+                });
+
+                // const balance_amount =
+                //   parseFloat(header ? header.invoice_amount : "0") -
+                //   settled_amount;
 
                 return {
                   ...header,
@@ -68,7 +85,7 @@ const executePDF = function executePDFMethod(options) {
 
             const creditAmt = _.sumBy(rptResult, (t) => {
               if (t.voucher_type === "Credit Note") {
-                return parseFloat(t.balance_amount);
+                return parseFloat(t.invoice_amount);
               } else {
                 return 0.0;
               }
@@ -95,8 +112,8 @@ const executePDF = function executePDFMethod(options) {
               total_settled_amount: _.sumBy(rptResult, (s) =>
                 parseFloat(s.settled_amount)
               ),
-              total_amount: parseFloat(balAmt) + parseFloat(creditAmt),
-              total_amountOut: parseFloat(balAmt),
+              total_amount: parseFloat(balAmt),
+              total_amountOut: parseFloat(invAmt),
               overDueAmt: overDueAmt,
               creditAmt: creditAmt,
               decimalOnly: {

@@ -18,6 +18,7 @@ export default memo(function FilterComponent(props) {
     defaultValues: {
       from_date: new Date(),
       hospital_id: -1,
+      showAll: "A",
     },
   });
   const history = useHistory();
@@ -138,6 +139,57 @@ export default memo(function FilterComponent(props) {
                   },
                   onClear: () => {
                     onChange(undefined);
+                  },
+                }}
+              />
+            )}
+          />
+          <Controller
+            name="showAll"
+            control={control}
+            // rules={{ required: "Please select a department" }}
+            render={({ value, onBlur, onChange }) => (
+              <AlgaehAutoComplete
+                div={{ className: "col form-group " }}
+                label={{
+                  forceLabel: "Show By",
+                  // isImp: true,
+                }}
+                // error={errors}
+                selector={{
+                  value,
+                  onChange: (_, selected) => {
+                    onChange(selected);
+                  },
+                  onClear: () => {
+                    onChange(undefined);
+                  },
+                  onBlur: (_, selected) => {
+                    onBlur(selected);
+                  },
+                  name: "showAll",
+                  dataSource: {
+                    data: [
+                      {
+                        name: "All",
+                        value: "A",
+                      },
+                      {
+                        name: "Checked In",
+                        value: "Y",
+                      },
+                      {
+                        name: "Not Checked In",
+                        value: "N",
+                      },
+                    ],
+                    textField: "name",
+                    valueField: "value",
+                  },
+
+                  others: {
+                    // disabled: disabled || current.request_status === "APR",
+                    tabIndex: "23",
                   },
                 }}
               />
