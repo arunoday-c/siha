@@ -1,6 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import moment from "moment";
+import axios from "axios";
 import { getAccountHeadsFunc } from "./finance";
 import voucher from "./voucher";
 const { addVoucher } = voucher;
@@ -22,26 +23,52 @@ export async function getYearEndingDetails(req, res, next) {
     const active = result.find((f) => f.is_active === 1);
     const allAccounts = result.filter((f) => f.is_active === 0);
     const { hospital_id, decimal_places } = req.userIdentity;
-    const yearEndingTotals = await _mysql
-      .executeQuery({
-        query: `SELECT ROUND (coalesce(SUM(A.credit_sum),0) - coalesce(SUM(A.debit_sum),0),${decimal_places}) as credit_minus_debit
-        FROM (
-        SELECT if(payment_type='CR',SUM(credit_amount),0) as credit_sum,
-        if(payment_type='DR',SUM(debit_amount),0) as debit_sum 
-        FROM finance_voucher_details  where head_id=3  and child_id=1
-        and 
-         payment_date between Date(?) and Date(?) and 
-        hospital_id=? and is_deleted ='N' and auth_status='A'
-         GROUP BY payment_type,credit_amount,debit_amount) as A;`,
-        values: [active.year_start_date, active.year_end_date, hospital_id],
-      })
+    _mysql.releaseConnection();
+    const resResult = await axios
+      .get(
+        "http://localhost:3007/api/v1/profit_and_loss_report/getProfitAndLoss",
+        {
+          params: {
+            from_date: active.year_start_date,
+            to_date: active.year_end_date,
+            display_column_by: "T",
+            levels: 999,
+            nonZero: "Y",
+          },
+          headers: {
+            "x-api-key": req.headers["x-api-key"],
+            "x-client-ip": req.headers["x-client-ip"],
+          },
+        }
+      )
       .catch((error) => {
         throw error;
-      });
-    _mysql.releaseConnection();
+      }); //?from_date=2020-01-01&to_date=2020-12-31&display_column_by=T&levels=999&nonZero=Y")
 
+    const { data } = resResult;
+    const { net_profit } = data.records;
+    // console.log("net_profit===>", net_profit);
+    // const yearEndingTotals = await _mysql
+    //   .executeQuery({
+    //     query: `SELECT ROUND (coalesce(SUM(A.credit_sum),0) - coalesce(SUM(A.debit_sum),0),${decimal_places}) as credit_minus_debit
+    //     FROM (
+    //     SELECT if(payment_type='CR',SUM(credit_amount),0) as credit_sum,
+    //     if(payment_type='DR',SUM(debit_amount),0) as debit_sum
+    //     FROM finance_voucher_details  where head_id=3  and child_id=1
+    //     and
+    //      payment_date between Date(?) and Date(?) and
+    //     hospital_id=? and is_deleted ='N' and auth_status='A'
+    //      GROUP BY payment_type,credit_amount,debit_amount) as A;`,
+    //     values: [active.year_start_date, active.year_end_date, hospital_id],
+    //     printQuery: true,
+    //   })
+    //   .catch((error) => {
+    //     throw error;
+    //   });
+    // _mysql.releaseConnection();
+    // console.log("_.head(yearEndingTotals)====>", _.head(yearEndingTotals));
     req.records = {
-      active: { ...active, ..._.head(yearEndingTotals) },
+      active: { ...active, credit_minus_debit: net_profit?.total },
       allAccounts,
     };
     next();
