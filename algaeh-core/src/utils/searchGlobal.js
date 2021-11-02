@@ -1182,7 +1182,7 @@ let algaehSearchConfig = (searchName, req) => {
       },
       {
         searchName: "InsuranceStatementReport",
-        searchQuery: `select S.hims_f_insurance_statement_id as hims_d_item_master_id,S.insurance_statement_number ,
+        searchQuery: `select SQL_CALC_FOUND_ROWS  S.hims_f_insurance_statement_id as hims_d_item_master_id,S.insurance_statement_number ,
           SU.insurance_sub_name  from hims_f_insurance_statement S 
           inner join hims_d_insurance_provider P on S.insurance_provider_id = P.hims_d_insurance_provider_id
           inner join hims_d_insurance_sub SU on S.sub_insurance_id = SU.hims_d_insurance_sub_id where S.record_status='A'`,
@@ -1190,7 +1190,7 @@ let algaehSearchConfig = (searchName, req) => {
       },
       {
         searchName: "BatchGen",
-        searchQuery: `select hims_f_lab_batch_header_id, batch_number, batch_name, H.created_date, username from 
+        searchQuery: `select SQL_CALC_FOUND_ROWS  hims_f_lab_batch_header_id, batch_number, batch_name, H.created_date, username from 
         hims_f_lab_batch_header H INNER JOIN algaeh_d_app_user U  on U.algaeh_d_app_user_id=H.created_by 
         where hims_f_lab_batch_header_id > 0`,
         orderBy: "hims_f_lab_batch_header_id desc",
