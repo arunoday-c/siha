@@ -404,7 +404,9 @@ class PurchaseOrderEntry extends Component {
                   />
 
                   <h6>
-                    {this.state.cancelled === "Y" ? (
+                    {this.state.receipt_generated === "Y" ? (
+                      <span className="badge badge-success">PO Closed</span>
+                    ) : this.state.cancelled === "Y" ? (
                       <span className="badge badge-danger">Rejected</span>
                     ) : this.state.is_posted === "N" &&
                       this.state.is_revert === "N" ? (
@@ -437,8 +439,6 @@ class PurchaseOrderEntry extends Component {
                       <span className="badge badge-danger">
                         Pending For Authorize
                       </span>
-                    ) : this.state.receipt_generated === "Y" ? (
-                      <span className="badge badge-success">PO Closed</span>
                     ) : (
                       <span className="badge badge-danger">
                         Pending For Authorize
