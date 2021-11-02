@@ -125,7 +125,7 @@ export default {
     const _mysql = new algaehMysql();
     try {
       let input = req.query;
-      console.log("input", input);
+      console.log("input", req.query);
       let strQuery = "";
       if (input.doctor_id) {
         strQuery += ` and PV.doctor_id=${input.doctor_id}`;
@@ -136,14 +136,19 @@ export default {
       if (input.hospital_id != -1 && input.hospital_id) {
         strQuery += ` and PV.hospital_id=${input.hospital_id}`;
       }
+      if (input.showAll != "A" && input.showAll) {
+        strQuery += ` and P.checked_in="${input.showAll}"`;
+      }
+
       _mysql
         .executeQuery({
-          query: `SELECT PV.patient_id,E.full_name,PV.doctor_id,PV.sub_department_id,SD.sub_department_name,PV.new_visit_patient,P.checked_in
+          query: `SELECT PV.patient_id,E.full_name,PV.doctor_id,PV.sub_department_id,SD.sub_department_name,
+          PV.new_visit_patient,P.checked_in
           from hims_f_patient_encounter P
           inner join  hims_f_patient_visit PV on PV.hims_f_patient_visit_id=P.visit_id
           inner join hims_d_employee E on E.hims_d_employee_id=PV.doctor_id
           inner join hims_d_sub_department SD on SD.hims_d_sub_department_id=PV.sub_department_id
-          where  date(PV.visit_date)=date(?) and P.checked_in='N' ${strQuery};`,
+          where  date(PV.visit_date)=date(?)  ${strQuery};`,
           values: [
             // input.hospital_id ? input.hospital_id : 1,
             moment(input.from_date).format("YYYY-MM-DD"),
