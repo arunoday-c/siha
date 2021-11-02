@@ -1103,12 +1103,12 @@ export default memo(function (props) {
                         rowUnique="finance_voucher_header_id"
                         pagination={true}
                         aggregate={(data1) => {
-                          debugger;
+                          // debugger;
                         }}
                         // persistence={null}
                         pageOptions={{ rows: 50, page: currentPage }}
                         pageEvent={(page, check) => {
-                          debugger;
+                          // debugger;
                           setCurrentPage(page);
                         }}
                       />
