@@ -19,26 +19,20 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select FC.child_name,H.finance_voucher_header_id,H.day_end_header_id,
-            -- round(H.amount ,${decimal_places}) as invoice_amount,
-             case when H.voucher_type = 'sales' then round(H.amount ,${decimal_places}) when H.voucher_type = 'credit_note' then round(-H.amount,${decimal_places}) end as invoice_amount,
-            round(H.amount-coalesce(FSH.amount,settled_amount),${decimal_places}) as balance_amount,
-            round(coalesce(FSH.amount,settled_amount),${decimal_places}) as settled_amount,
-            coalesce(FSH.invoice_ref_no, invoice_no) as invoice_no ,
-            case when H.voucher_type = 'sales' then 'Sales' when H.voucher_type = 'credit_note' then 'Credit Note' end as voucher_type  ,H.narration,
-            H.payment_date as invoice_date,
-            due_date, H.updated_date as last_modified,
-            case when settlement_status  ='S' then 'closed'
-            when settlement_status='P' and curdate()> due_date then 'Over Due'
-            when settlement_status='P' and settled_amount <> H.amount then 'Open'
-            when settlement_status='P' and settled_amount = H.amount then 'Paid' end as invoice_status,
-            D.child_id,D.head_id, D.is_opening_bal, H.voucher_no
-            from finance_voucher_header H
-            inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id
-            and H.voucher_type in ('sales','credit_note') and H.invoice_no is not null  and  D.child_id=?
-            left join finance_voucher_sub_header FSH on H.invoice_no = FSH.invoice_ref_no 
-            left join finance_account_child FC on FC.finance_account_child_id = D.child_id            
-            where date(H.payment_date) between date(?) and date(?)`,
+          query: `select finance_voucher_header_id,
+          -- case when H.voucher_type = 'sales' then 'Sales' when H.voucher_type = 'credit_note' then 'Credit Note' end as voucher_type,
+          invoice_no,voucher_no,
+          case when H.voucher_type = 'sales' then round(H.amount ,2) when H.voucher_type = 'credit_note' then round(-H.amount,2) end as invoice_amount,
+          H.narration,
+          D.payment_date as invoice_date,settled_amount,
+          due_date, H.updated_date as last_modified,
+          case when settlement_status  ='S' then 'closed'
+          when settlement_status='P' and curdate()> due_date then 'Over Due'
+          when settlement_status='P' and settled_amount <> H.amount then 'Open'
+          when settlement_status='P' and settled_amount = H.amount then 'Paid' end as invoice_status
+           from finance_voucher_header H
+          inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id
+          where D.child_id=? and date(D.payment_date) between date(?) and date(?) and H.voucher_type in ('sales','credit_note');`,
           values: [input.child_id, input.from_date, input.to_date],
           printQuery: true,
         })
