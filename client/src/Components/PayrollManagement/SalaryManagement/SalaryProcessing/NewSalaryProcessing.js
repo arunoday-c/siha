@@ -12,6 +12,7 @@ import {
   closeSalaryComponents,
   getOptions,
   generateMonthlyLoanReport,
+  generateMonthlyRevertReport,
   onClickRevert,
   // generateLevGratReconReport
 } from "./NewSalaryProcessingEvents.js";
@@ -550,6 +551,23 @@ class NewSalaryProcessing extends Component {
                     <AlgaehLabel
                       label={{
                         forceLabel: "Monthly Loan Report",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={generateMonthlyRevertReport.bind(this, this)}
+                    disabled={
+                      this.state.salaryprocess_header.length === 0
+                        ? true
+                        : false
+                    }
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Monthly Revert Report",
                         returnText: true,
                       }}
                     />

@@ -8,6 +8,7 @@ const {
   getOrganizationByUser,
   getMainOrganization,
   updateOrganization,
+  getActiveUserByHospital,
 } = orgModels;
 
 export default () => {
@@ -22,6 +23,21 @@ export default () => {
       .end();
     delete req.records;
   });
+
+  api.get(
+    "/getActiveUserByHospital",
+    getActiveUserByHospital,
+    (req, res, next) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records,
+        })
+        .end();
+      delete req.records;
+    }
+  );
 
   api.get("/getOrganizationByUser", getOrganizationByUser, (req, res, next) => {
     res
