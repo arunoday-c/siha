@@ -288,6 +288,7 @@ export default function JournalVoucher({
                     options["default_cost_center_id"] !== ""
                       ? `${options["default_branch_id"]}-${options["default_cost_center_id"]}`
                       : "";
+
                   return (
                     <AlgaehTreeSearch
                       tree={{
@@ -321,6 +322,7 @@ export default function JournalVoucher({
                             row["cost_center_id"] = undefined;
                           }
                         },
+                        disabled: row.disabled,
                       }}
                     />
                   );
@@ -445,6 +447,7 @@ export default function JournalVoucher({
       setDebitNoteList(filterDebitNotes);
       setDisableFiled(true);
       setNarration(location.state.narration);
+
       if (type === "Adjust") {
         const credit_data = _.filter(data, (f) => {
           return f.payment_type === "CR";
@@ -462,6 +465,7 @@ export default function JournalVoucher({
           _.sumBy(debit_data, (s) => parseFloat(s.amount)).toFixed(2)
         );
         const firstRecord = _.head(credit_data);
+        setIsAdvance(firstRecord.is_advance);
         if (firstRecord.voucher_type === "expense_voucher") {
           setBankAmount(
             _.sumBy(credit_data, (s) => parseFloat(s.amount)).toFixed(2)
@@ -471,7 +475,9 @@ export default function JournalVoucher({
         } else {
           if (
             firstRecord.voucher_type === "receipt" ||
-            firstRecord.voucher_type === "payment"
+            firstRecord.voucher_type === "payment" ||
+            firstRecord.voucher_type === "credit_note" ||
+            firstRecord.voucher_type === "debit_note"
           ) {
             setJournerList(
               data.map((m) => {
@@ -483,7 +489,9 @@ export default function JournalVoucher({
         //---Changes are done here.
         if (
           firstRecord.voucher_type === "receipt" ||
-          firstRecord.voucher_type === "payment"
+          firstRecord.voucher_type === "payment" ||
+          firstRecord.voucher_type === "credit_note" ||
+          firstRecord.voucher_type === "debit_note"
         ) {
           setPayment(basePayment);
           const crDetails =

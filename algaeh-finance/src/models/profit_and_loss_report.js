@@ -11,13 +11,8 @@ export default {
 
     // const input = req.query;
 
-    const {
-      display_column_by,
-      from_date,
-      to_date,
-      levels,
-      nonZero,
-    } = req.query;
+    const { display_column_by, from_date, to_date, levels, nonZero } =
+      req.query;
 
     //  const default_total = parseFloat(0).toFixed(decimal_places);
     // let trans_symbol = "Cr.";
@@ -1093,7 +1088,7 @@ function generateProfitAndLoss(options) {
       _mysql
         .executeQuery({
           query: qry,
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           const headObj = {};
