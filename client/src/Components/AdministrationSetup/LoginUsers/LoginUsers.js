@@ -1332,6 +1332,46 @@ class LoginUsers extends Component {
                             );
                           },
                           filterable: true,
+                          filterType: "choices",
+                          //SU=SUPER USER, AD=ADMIN, D=DOCTOR, N=NURSE, C=CASHIER, L=LAB TECHNICIAN ,O=OTHERS,HR=HR, PM-Payroll Manager, EXT-External
+                          choices: [
+                            {
+                              name: "Admin",
+                              value: "AD",
+                            },
+                            {
+                              name: "Doctor",
+                              value: "D",
+                            },
+                            {
+                              name: "Cashier",
+                              value: "C",
+                            },
+                            {
+                              name: "External",
+                              value: "EXT",
+                            },
+                            {
+                              name: "HR",
+                              value: "HR",
+                            },
+                            {
+                              name: "LAB TECHNICIAN",
+                              value: "L",
+                            },
+                            {
+                              name: "Nurse",
+                              value: "N",
+                            },
+                            {
+                              name: "Others",
+                              value: "O",
+                            },
+                            {
+                              name: "Payroll Manager",
+                              value: "PM",
+                            },
+                          ],
                         },
                         {
                           fieldName: "app_group_name",
@@ -1359,7 +1399,6 @@ class LoginUsers extends Component {
                         {
                           fieldName: "user_status",
                           label: <label className="style_Label">Status</label>,
-                          filterable: true,
                           displayTemplate: (row) => {
                             return row.user_status === "A"
                               ? "Active"
@@ -1367,6 +1406,19 @@ class LoginUsers extends Component {
                               ? "Inactive"
                               : "----------";
                           },
+                          filterable: true,
+                          filterType: "choices",
+                          //SU=SUPER USER, AD=ADMIN, D=DOCTOR, N=NURSE, C=CASHIER, L=LAB TECHNICIAN ,O=OTHERS,HR=HR, PM-Payroll Manager, EXT-External
+                          choices: [
+                            {
+                              name: "Active",
+                              value: "A",
+                            },
+                            {
+                              name: "Inactive",
+                              value: "I",
+                            },
+                          ],
                         },
                       ]}
                       keyId="algaeh_d_app_user_id"
