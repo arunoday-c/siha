@@ -3,7 +3,7 @@ import _ from "lodash";
 import moment from "moment";
 import Excel from "exceljs/dist/es5/exceljs.browser";
 // import algaehUtilities from "algaeh-utilities/utilities";
-
+import axios from "axios";
 export default {
   //created by irfan:
   getAccountHeads_BKP_24_dec: (req, res, next) => {
@@ -239,7 +239,7 @@ export default {
       input.finance_account_head_id > 0 &&
       input.finance_account_head_id < 6
     ) {
-      getAccountHeadsFunc(decimal_places, input.finance_account_head_id)
+      getAccountHeadsFunc(decimal_places, input.finance_account_head_id, req)
         .then((result) => {
           req.records = [result];
           next();
@@ -248,15 +248,15 @@ export default {
           next(e);
         });
     } else if (input.getAll == "Y") {
-      getAccountHeadsFunc(decimal_places, 1)
+      getAccountHeadsFunc(decimal_places, 1, req)
         .then((asset) => {
-          getAccountHeadsFunc(decimal_places, 2)
+          getAccountHeadsFunc(decimal_places, 2, req)
             .then((liability) => {
-              getAccountHeadsFunc(decimal_places, 3)
+              getAccountHeadsFunc(decimal_places, 3, req)
                 .then((capital) => {
-                  getAccountHeadsFunc(decimal_places, 4)
+                  getAccountHeadsFunc(decimal_places, 4, req)
                     .then((income) => {
-                      getAccountHeadsFunc(decimal_places, 5)
+                      getAccountHeadsFunc(decimal_places, 5, req)
                         .then((expense) => {
                           req.records = [
                             asset,
@@ -2998,18 +2998,76 @@ function createHierarchyForDropdown(arry) {
 }
 
 //created by irfan:
-export function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
+export function getAccountHeadsFunc(
+  decimal_places,
+  finance_account_head_id,
+  req
+) {
   // const utilities = new algaehUtilities();
   const _mysql = new algaehMysql();
 
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     if (finance_account_head_id > 0 && finance_account_head_id < 6) {
       const default_total = parseFloat(0).toFixed(decimal_places);
       let trans_symbol = "Cr.";
       if (finance_account_head_id == 1 || finance_account_head_id == 5) {
         trans_symbol = "Dr.";
       }
-      // console.log("finance_account_head_id====>", finance_account_head_id);
+
+      let // totalYearEnding = 0,
+        cred_minus_deb = 0;
+      if (finance_account_head_id == 3) {
+        const yearEndResult = await _mysql
+          .executeQuery({
+            query: `select closing_amount,year_start_date,year_end_date,is_active from finance_year_end where is_active=1;`,
+            printQuery: true,
+          })
+          .catch((error) => {
+            _mysql.releaseConnection();
+            throw error;
+          });
+
+        const activeRecord = yearEndResult.find((f) => f.is_active === 1);
+        // const totalYearEnding = _.chain(yearEndResult)
+        //   .filter((f) => f.is_active === 0)
+        //   .sum((s) => s.closing_amount)
+        //   .values();
+
+        let active_from_date = undefined,
+          active_to_date = undefined;
+
+        if (activeRecord) {
+          active_from_date = activeRecord.year_start_date;
+          active_to_date = activeRecord.year_end_date;
+          const resResult = await axios
+            .get(
+              "http://localhost:3007/api/v1/profit_and_loss_report/getProfitAndLoss",
+              {
+                params: {
+                  from_date: active_from_date,
+                  to_date: active_to_date,
+                  display_column_by: "T",
+                  levels: 999,
+                  nonZero: "Y",
+                },
+                headers: {
+                  "x-api-key": req.headers["x-api-key"],
+                  "x-client-ip": req.headers["x-client-ip"],
+                },
+              }
+            )
+            .catch((error) => {
+              throw error;
+            });
+          const { data } = resResult;
+          const { net_profit } = data.records;
+          cred_minus_deb = net_profit?.total;
+          // console.log("cred_minus_deb====>", cred_minus_deb);
+        } else {
+          throw new Error("There is no active entry in year ending.");
+        }
+      }
+
       _mysql
         .executeQuery({
           query: `select finance_account_head_id,account_code,group_code,account_name, arabic_account_name, C.arabic_child_name,\
@@ -3053,8 +3111,16 @@ export function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
         .then((result) => {
           _mysql.releaseConnection();
 
-          const child_data = result[1];
+          let child_data = result[1];
 
+          if (finance_account_head_id == 3) {
+            const PandLRecord = result[1].find((f) => f.account_type === "PL");
+            const indexOfPandL = result[1].indexOf(PandLRecord);
+            result[1][indexOfPandL] = {
+              ...PandLRecord,
+              cred_minus_deb: cred_minus_deb,
+            };
+          }
           calcAmount(result[3], result[2], decimal_places)
             .then((head_data) => {
               const outputArray = createHierarchy(

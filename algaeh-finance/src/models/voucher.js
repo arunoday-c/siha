@@ -66,7 +66,7 @@ export default {
     input.details.forEach((child) => {
       child_ids.push(child.child_id);
     });
-    console.log("child_ids===>", child_ids);
+    // console.log("child_ids===>", child_ids);
     const childAccount = await _mysql
       .executeQuery({
         query: `select finance_account_child_id from finance_account_child where 
@@ -78,7 +78,6 @@ export default {
         return;
         // throw error;
       });
-    console.log("childAccount--->", childAccount);
     if (childAccount.length !== child_ids.length) {
       // throw new Error("Some child accounts are not matching");
       next(new Error("Some child accounts are not matching"));
