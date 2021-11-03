@@ -2497,12 +2497,13 @@ export default {
 
     _mysql
       .executeQuery({
-        query: `select VH.payment_date as voucher_transaction_date, VH.narration, VH.voucher_type, VH.invoice_ref_no, 
+        query: `select VH.payment_date as voucher_transaction_date, VH.narration, VH.voucher_type, CASE WHEN voucher_type = 'credit_note' THEN VH.invoice_no
+        else VH.invoice_ref_no END as invoice_ref_no, 
         VD.*, CONCAT(VD.head_id, '-', VD.child_id) as sourceName,VD.head_id as og_head_id, VD.child_id as og_child_id,
         ROUND( debit_amount,${decimal_places}) as debit_amount,
         ROUND( credit_amount,${decimal_places}) as credit_amount,
         CASE WHEN payment_type = 'DR' THEN ROUND(debit_amount,2) 
-        else ROUND(credit_amount,2) END as amount
+        else ROUND(credit_amount,2) END as amount,is_advance
         from finance_voucher_details VD inner join finance_voucher_header VH on VH.finance_voucher_header_id=VD.voucher_header_id 
         where VD.voucher_header_id=? and VD.pl_entry='N' order by payment_type; `,
         values: [input.finance_voucher_header_id],

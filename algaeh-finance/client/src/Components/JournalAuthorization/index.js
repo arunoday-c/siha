@@ -1002,7 +1002,7 @@ export default memo(function (props) {
                             ),
                             filterable: true,
                             others: {
-                              Width: 120,
+                              Width: 160,
                               style: { textAlign: "center" },
                             },
                           },
@@ -1023,6 +1023,48 @@ export default memo(function (props) {
                               Width: 120,
                               style: { textAlign: "center" },
                             },
+                            filterable: true,
+                            filterType: "choices",
+                            // enum('journal','contra','receipt','payment','sales','purchase','credit_note','credit_note','expense_voucher')
+
+                            choices: [
+                              {
+                                name: "Journal",
+                                value: "journal",
+                              },
+                              {
+                                name: "Contra",
+                                value: "contra",
+                              },
+                              {
+                                name: "Receipt",
+                                value: "receipt",
+                              },
+                              {
+                                name: "Payment",
+                                value: "payment",
+                              },
+                              {
+                                name: "Sales",
+                                value: "sales",
+                              },
+                              {
+                                name: "Purchase",
+                                value: "purchase",
+                              },
+                              {
+                                name: "Credit Note",
+                                value: "credit_note",
+                              },
+                              {
+                                name: "Debit Note",
+                                value: "debit_note",
+                              },
+                              {
+                                name: "Expense",
+                                value: "expense_voucher",
+                              },
+                            ],
                           },
                           {
                             fieldName: "payment_date",
@@ -1103,12 +1145,12 @@ export default memo(function (props) {
                         rowUnique="finance_voucher_header_id"
                         pagination={true}
                         aggregate={(data1) => {
-                          debugger;
+                          // debugger;
                         }}
                         // persistence={null}
                         pageOptions={{ rows: 50, page: currentPage }}
                         pageEvent={(page, check) => {
-                          debugger;
+                          // debugger;
                           setCurrentPage(page);
                         }}
                       />
