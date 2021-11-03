@@ -23,7 +23,7 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select bill_number as doc_number, V.visit_date,P.employee_id, P.full_name, P.patient_code, P.primary_id_no, N.nationality, \
+          query: `select bill_number as doc_number, BH.bill_date,V.visit_date,P.employee_id, P.full_name, P.patient_code, P.primary_id_no, N.nationality, \
 					CASE WHEN BD.insurance_yesno='Y' THEN 'Insurance' else 'Cash' END as insurance_yesno, \
 					BD.net_amout, BD.comapany_resp as total_before_vat, BD.company_payble as total_after_vat, \
 					BD.patient_tax,BD.company_tax, "Billing" as data_from, IP.insurance_sub_name from hims_f_billing_header BH \

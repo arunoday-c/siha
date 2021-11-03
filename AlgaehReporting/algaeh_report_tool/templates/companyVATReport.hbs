@@ -9,7 +9,8 @@
           <tr>
             <th>Sl No.<small>م</small></th>
             <th>Data From<small>معلومات من</small></th>
-            <th>Date<small>التاريخ</small></th>
+            {{! <th>Date<small>التاريخ</small></th> }}
+            <th>Bill Date<small>التاريخ</small></th>
             <th>Badge/Rig No.<small>شارة لا</small></th>
             <th>MRN No.<small>كود المريض</small></th>
             <th>Patient Name<small>اسم المريض</small></th>
@@ -27,7 +28,8 @@
             <tr>
               <td datatype="string">{{inc @index}}</td>
               <td>{{data_from}}/{{doc_number}}</td>
-              <td datatype="string">{{visit_date}}</td>
+              {{!-- <td datatype="string">{{visit_date}}</td> --}}
+              <td datatype="string">{{bill_date}}</td>
               <td datatype="string">{{employee_id}}</td>
               <td datatype="string">{{patient_code}}</td>
               <td class="txtFld" datatype="string">{{full_name}}</td>
@@ -42,7 +44,7 @@
             </tr>
           {{/each}}
           <tr class="numberFldTotalBottom">
-            <td colspan="8"></td>
+            <td colspan="9"></td>
             <td class="numberFld">{{total_before_vat}}</td>
             <td class="numberFld">{{total_after_vat}}</td>
             {{!-- <td class="numberFld">{{patient_tax}}</td> --}}
