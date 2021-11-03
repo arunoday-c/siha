@@ -50,7 +50,7 @@ function getMaxAuth(options) {
 
 export default {
   //created by irfan:
-  addVoucher: (req, res, next) => {
+  addVoucher: async (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
 
@@ -61,6 +61,29 @@ export default {
     let invoice_ref_no = null;
 
     let invoice_no = input.invoice_no;
+
+    const child_ids = [];
+    input.details.forEach((child) => {
+      child_ids.push(child.child_id);
+    });
+    console.log("child_ids===>", child_ids);
+    const childAccount = await _mysql
+      .executeQuery({
+        query: `select finance_account_child_id from finance_account_child where 
+      finance_account_child_id in (?);`,
+        values: [child_ids],
+      })
+      .catch((error) => {
+        next(error);
+        return;
+        // throw error;
+      });
+    console.log("childAccount--->", childAccount);
+    if (childAccount.length !== child_ids.length) {
+      // throw new Error("Some child accounts are not matching");
+      next(new Error("Some child accounts are not matching"));
+      return;
+    }
 
     switch (input.voucher_type) {
       case "journal":
@@ -112,18 +135,12 @@ export default {
           printQuery: true,
         })
         .then((resul) => {
-          debugger;
           authLevels = resul[0].auth_level;
           new Promise((resolve, reject) => {
             if (resul[0].allow_negative_balance == "Y") {
               resolve({});
             } else {
               if (resul[0].auth_level == "N") {
-                const child_ids = [];
-                input.details.forEach((child) => {
-                  child_ids.push(child.child_id);
-                });
-
                 _mysql
                   .executeQuery({
                     query:

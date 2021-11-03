@@ -3009,7 +3009,7 @@ export function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
       if (finance_account_head_id == 1 || finance_account_head_id == 5) {
         trans_symbol = "Dr.";
       }
-
+      // console.log("finance_account_head_id====>", finance_account_head_id);
       _mysql
         .executeQuery({
           query: `select finance_account_head_id,account_code,group_code,account_name, arabic_account_name, C.arabic_child_name,\
@@ -3048,7 +3048,7 @@ export function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
             finance_account_head_id,
             finance_account_head_id,
           ],
-          // printQuery: true,
+          printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
