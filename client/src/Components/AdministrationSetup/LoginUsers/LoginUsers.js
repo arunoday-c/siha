@@ -8,7 +8,11 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  maxCharactersLeft,
+} from "../../../utils/algaehApiCall";
 import { newAlgaehApi } from "../../../hooks";
 import {
   HIMS_HR_USER_TYPE,
@@ -25,6 +29,7 @@ import {
   Input,
   AlgaehSecurityElement,
   AlgaehDataGrid,
+  AlgaehAutoComplete,
 } from "algaeh-react-components";
 import { generateUserListReport } from "./LoginUsersEvent.js";
 class LoginUsers extends Component {
@@ -54,6 +59,9 @@ class LoginUsers extends Component {
       checkavilablity: false,
       employee_code: "",
       loaduserNameCheck: false,
+      users_created: [],
+      max_users: 0,
+      hospital_id: undefined,
     };
     this.userNameIntervalId = undefined;
   }
@@ -137,6 +145,7 @@ class LoginUsers extends Component {
         employee_code: data.employee_code,
       },
       () => {
+        debugger;
         this.getVerifyUser(username, data.hims_d_employee_id)
           .then((result) => {
             if (result === false) {
@@ -186,6 +195,8 @@ class LoginUsers extends Component {
       checkavilablity: false,
       employee_code: "",
       loaduserNameCheck: false,
+      users_created: [],
+      max_users: 0,
     });
     this.getBranchDetail();
   }
@@ -211,10 +222,20 @@ class LoginUsers extends Component {
     })
       .then((response) => {
         if (response.data.success === true && this._isMounted === true) {
-          this.setState({
-            hospitals: response.data.records,
-            hospital_id: response.data.records[0].hims_d_hospital_id,
-          });
+          debugger;
+          this.setState(
+            {
+              hospitals: response.data.records,
+              hospital_id: response.data.records[0].hims_d_hospital_id,
+            },
+            () => {
+              debugger;
+              this.getActiveUser(
+                this.state.hospital_id,
+                response.data.records[0].max_users
+              );
+            }
+          );
         }
       })
       .catch((error) => {
@@ -230,6 +251,30 @@ class LoginUsers extends Component {
       });
   }
 
+  getActiveUser(hospitalId, number) {
+    debugger;
+
+    newAlgaehApi({
+      uri: "/organization/getActiveUserByHospital",
+      method: "GET",
+      data: { hospital_id: hospitalId },
+    })
+      .then((response) => {
+        if (response.data.success === true) {
+          debugger;
+          this.setState({
+            users_created: response.data.records,
+            max_users: number,
+          });
+        }
+      })
+      .catch((error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      });
+  }
   getBranchDetail() {
     this._isMounted = true;
     algaehApiCall({
@@ -460,7 +505,8 @@ class LoginUsers extends Component {
     });
   }
 
-  dropDownHandler(value) {
+  dropDownHandler(value, selected) {
+    debugger;
     switch (value.name) {
       case "app_group_id":
         this.getRoles(value.value);
@@ -468,6 +514,9 @@ class LoginUsers extends Component {
           [value.name]: value.value,
         });
         break;
+      // case "hospital_id":
+
+      //   break;
       default:
         this.setState({
           [value.name]: value.value,
@@ -789,7 +838,9 @@ class LoginUsers extends Component {
       algaeh_d_app_user_id: null,
     });
   }
-
+  componentWillUnmount() {
+    this.setState({ users_created: [], max_users: 0 });
+  }
   render() {
     return (
       <div className="login_users">
@@ -820,7 +871,42 @@ class LoginUsers extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row">
-                  <AlagehAutoComplete
+                  <AlgaehAutoComplete
+                    div={{ className: "col-8 mandatory" }}
+                    label={{
+                      fieldName: "branch",
+                      isImp: true,
+                    }}
+                    selector={{
+                      name: "hospital_id",
+                      className: "select-fld",
+                      value: this.state.hospital_id,
+                      onChange: (selected, value) => {
+                        this.setState(
+                          {
+                            hospital_id: value,
+                            max_users: selected.max_users,
+                          },
+                          () => {
+                            this.getActiveUser(value, selected.max_users);
+                          }
+                        );
+                      },
+                      onClear: this.onClearBranch.bind(this),
+                      dataSource: {
+                        textField: "hospital_name",
+                        valueField: "hims_d_hospital_id",
+                        data: this.state.hospitals,
+                      },
+                      others: {
+                        disabled:
+                          this.state.algaeh_d_app_user_id === null
+                            ? false
+                            : true,
+                      },
+                    }}
+                  />
+                  {/* <AlagehAutoComplete
                     div={{ className: "col-12 form-group" }}
                     label={{
                       fieldName: "branch",
@@ -835,6 +921,7 @@ class LoginUsers extends Component {
                         valueField: "hims_d_hospital_id",
                         data: this.state.hospitals,
                       },
+                      sort: false,
                       others: {
                         disabled:
                           this.state.algaeh_d_app_user_id === null
@@ -844,63 +931,91 @@ class LoginUsers extends Component {
                       onChange: this.dropDownHandler.bind(this),
                       onClear: this.onClearBranch.bind(this),
                     }}
-                  />
-                  <AlgaehAutoSearch
-                    div={{ className: "col-12 form-group AlgaehAutoSearch" }}
-                    label={{
-                      forceLabel: "Select Employee",
-                      isImp: true,
-                    }}
-                    title="Search Employees"
-                    id="item_id_search"
-                    template={(result) => {
-                      return (
-                        <section className="resultSecStyles">
-                          <div className="row">
-                            <div className="col-8">
-                              <h4 className="title">{result.employee_code}</h4>
-                              <small>{result.full_name}</small>
-                            </div>
-                            <div className="col-4" />
-                          </div>
-                        </section>
-                      );
-                    }}
-                    name="hims_d_employee_id"
-                    columns={spotlightSearch.Employee_details.loginNewEmployee}
-                    displayField="full_name"
-                    value={this.state.full_name}
-                    searchName="admin_employee_search"
-                    extraParameters={{
-                      hospital_id: this.state.hospital_id,
-                    }}
-                    others={{
-                      disabled:
-                        this.state.algaeh_d_app_user_id === null ? false : true,
-                    }}
-                    onClick={this.searchSelect.bind(this)}
-                    onClear={this.onSearchClear.bind(this)}
-                  />
+                  /> */}
+                  <small className="float-right">
+                    Max user Creating left <span> </span>
+                    {maxCharactersLeft(
+                      parseInt(this.state.max_users),
+                      this.state.users_created
+                    )}
+                    /{this.state.max_users}
+                  </small>
+                  {maxCharactersLeft(
+                    parseInt(this.state.max_users),
+                    this.state.users_created
+                  ) > 0 ? (
+                    <>
+                      <AlgaehAutoSearch
+                        div={{
+                          className: "col-12 form-group AlgaehAutoSearch",
+                        }}
+                        label={{
+                          forceLabel: "Select Employee",
+                          isImp: true,
+                        }}
+                        title="Search Employees"
+                        id="item_id_search"
+                        template={(result) => {
+                          return (
+                            <section className="resultSecStyles">
+                              <div className="row">
+                                <div className="col-8">
+                                  <h4 className="title">
+                                    {result.employee_code}
+                                  </h4>
+                                  <small>{result.full_name}</small>
+                                </div>
+                                <div className="col-4" />
+                              </div>
+                            </section>
+                          );
+                        }}
+                        name="hims_d_employee_id"
+                        columns={
+                          spotlightSearch.Employee_details.loginNewEmployee
+                        }
+                        displayField="full_name"
+                        value={this.state.full_name}
+                        searchName="admin_employee_search"
+                        extraParameters={{
+                          hospital_id: this.state.hospital_id,
+                        }}
+                        others={{
+                          disabled:
+                            this.state.algaeh_d_app_user_id === null
+                              ? false
+                              : true,
+                        }}
+                        onClick={this.searchSelect.bind(this)}
+                        onClear={this.onSearchClear.bind(this)}
+                      />
 
-                  <AlagehFormGroup
-                    div={{ className: "col-12 form-group" }}
-                    label={{
-                      forceLabel: "Enter Email Address",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "password_email",
-                      value: this.state.password_email,
-                      events: {
-                        onChange: this.changeTexts.bind(this),
-                      },
-                      others: {
-                        disabled: !this.state.verify_password,
-                        placeholder: "For sending auto generated password",
-                      },
-                    }}
-                  />
+                      <AlagehFormGroup
+                        div={{ className: "col-12 form-group" }}
+                        label={{
+                          forceLabel: "Enter Email Address",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "password_email",
+                          value: this.state.password_email,
+                          events: {
+                            onChange: this.changeTexts.bind(this),
+                          },
+                          others: {
+                            disabled: !this.state.verify_password,
+                            placeholder: "For sending auto generated password",
+                          },
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <small className="float-right">
+                      You have exceeded the user creation <span> </span>
+                    </small>
+                  )}
+
                   {!this.state.verify_password ? (
                     <>
                       <div className="col-12 form-group">
