@@ -63,7 +63,7 @@ export default function Filters({ activeTransaction }) {
       pushToState({ account: "" });
       return;
     }
-    debugger;
+
     if (state.current_year && state.selectRange) {
       pushToState({ account: value });
       const delta = value.split("-");
@@ -198,7 +198,7 @@ export default function Filters({ activeTransaction }) {
             if (node?.finance_account_child_id) {
               return `${node?.head_id}-${node?.finance_account_child_id}-${node?.account_code}`;
             } else {
-              return `${node?.finance_account_head_id}-${node?.account_code}`;
+              return `${node?.finance_account_head_id}`; //-${node?.account_code}
             }
           },
 
