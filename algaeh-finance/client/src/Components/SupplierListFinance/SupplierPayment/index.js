@@ -7,13 +7,19 @@ import {
   AlgaehButton,
   AlgaehFormGroup,
   Tooltip,
+  AlgaehLabel,
 } from "algaeh-react-components";
 import _ from "lodash";
 import { InfoBar } from "../../../Wrappers";
 import StatementReport from "../../StatementReport";
-import { getInvoicesForSupplier, getDebitNotes } from "./SupPaymentEvents";
+import {
+  getInvoicesForSupplier,
+  getDebitNotes,
+  getSupplierAdvance,
+} from "./SupPaymentEvents";
 import { Spin, Checkbox, Modal } from "antd";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
+
 // import { VerifyAuthorization } from "../../CustomerListFinance/CustomerPayment/CusPaymentEvents";
 
 export default memo(function (props) {
@@ -35,6 +41,7 @@ export default memo(function (props) {
   const [showDebitNote, setShowDebitNote] = useState(false);
   const [debitNode, setDebitNode] = useState([]);
   const [selectedBalanceAmount, setSelectedBalanceAmount] = useState(0);
+  const [adv_data, setAdvData] = useState([]);
   useEffect(() => {
     if (location.state) {
       setLoading(true);
@@ -43,7 +50,6 @@ export default memo(function (props) {
       getInvoicesForSupplier(finance_account_child_id)
         .then((res) => {
           if (res.data.success) {
-            debugger;
             const { result } = res.data;
             let modifiedResult = result.result.map((item) => {
               return { ...item, modified_amount: item.balance_amount };
@@ -69,9 +75,12 @@ export default memo(function (props) {
     }
   }, [location.state]);
   function onCloseDebitNote() {
+    debugger;
     setShowDebitNote(false);
+    setAdvData([]);
   }
   function onProcessDebitNote() {
+    debugger;
     setShowDebitNote(false);
     onClickSendSelected(true);
   }
@@ -110,14 +119,21 @@ export default memo(function (props) {
         return;
       }
       const det = await getDebitNotes(filterCheck[0]["child_id"]);
+      const adv_res = await getSupplierAdvance(filterCheck[0]["child_id"]);
+      let _adv_data = [];
+      if (adv_res.data.success) {
+        _adv_data = adv_res.data.result;
+      }
+
       const { result, success } = det.data;
-      if (success && result.length > 0) {
+      if (success && (result.length > 0 || _adv_data.length > 0)) {
+        setAdvData(adv_res.data.result);
         setDebitNode(result);
         setShowDebitNote(true);
       } else {
         AlgaehMessagePop({
           type: "info",
-          display: "No debit invoice found...",
+          display: "No debit/Advance found...",
         });
         return;
       }
@@ -189,9 +205,23 @@ export default memo(function (props) {
       );
     });
     let debitNoteTotal = 0;
+    let AdvanceTotal = 0;
     let grandTotal = 0;
     let filterDebitNotes = [];
+    let filterAdvance = [];
+
+    debugger;
     if (isFromProcessed === true) {
+      filterAdvance = adv_data.map((item) => {
+        const { voucher_no, amount, finance_voucher_header_id } = item;
+        return {
+          invoice_no: voucher_no,
+          balance_amount: amount,
+          finance_voucher_header_id,
+          voucher_type: "advance",
+        };
+      });
+
       filterDebitNotes = debitNode
         .filter((f) => f.checked === true)
         .map((item) => {
@@ -203,20 +233,22 @@ export default memo(function (props) {
             voucher_type: "debit_note",
           };
         });
+
+      if (filterAdvance) {
+        AdvanceTotal = _.sumBy(filterAdvance, (s) =>
+          parseFloat(s.balance_amount)
+        );
+      }
       if (filterDebitNotes) {
         debitNoteTotal = _.sumBy(filterDebitNotes, (s) =>
           parseFloat(s.balance_amount)
         );
       }
-      grandTotal = totalAmount - debitNoteTotal;
+      grandTotal = totalAmount - AdvanceTotal - debitNoteTotal;
     }
-    const {
-      narration,
-      child_id,
-      head_id,
-      voucher_type,
-      invoice_no,
-    } = filterCheck[0];
+    setAdvData([]);
+    const { narration, child_id, head_id, voucher_type, invoice_no } =
+      filterCheck[0];
     Modal.confirm({
       title: "Please verify payment details",
       className: "debitNoteConfirmModal",
@@ -233,7 +265,15 @@ export default memo(function (props) {
                 </h6>
               </div>
               <i className="fas fa-minus calcSybmbol"></i>
-
+              <div className="col">
+                <label className="style_Label ">{"Advance Amount"}</label>
+                <h6>
+                  {getAmountFormart(AdvanceTotal, {
+                    appendSymbol: false,
+                  })}
+                </h6>
+              </div>
+              <i className="fas fa-minus calcSybmbol"></i>
               <div className="col">
                 <label className="style_Label ">Debit Note Amount</label>
                 <h6>
@@ -290,8 +330,11 @@ export default memo(function (props) {
         if (isFromProcessed === true) {
           for (let i = 0; i < filterDebitNotes.length; i++)
             merdgeData.push(filterDebitNotes[i]);
-        }
 
+          for (let i = 0; i < filterAdvance.length; i++)
+            merdgeData.push(filterAdvance[i]);
+        }
+        const total_amount = debitNoteTotal + AdvanceTotal;
         history.push("/JournalVoucher", {
           data: {
             narration,
@@ -305,7 +348,7 @@ export default memo(function (props) {
           merdge: merdgeData,
           filterDebitNotes,
           type: "supplier",
-          debitNoteTotal: debitNoteTotal > 0 ? debitNoteTotal : null,
+          debitNoteTotal: total_amount > 0 ? total_amount : null,
           customerOrSupplerHeaderName: supplierName,
           customerOrSupplerDetailName: invoice_no,
         });
@@ -327,65 +370,120 @@ export default memo(function (props) {
         }}
       />
       <Modal
-        title="Debit Notes List"
+        title="Advance & Debit Notes List"
         visible={showDebitNote}
         maskClosable={false}
         okText="Continue with Selected"
         onOk={onProcessDebitNote}
         onCancel={onCloseDebitNote}
-        className={`row algaehNewModal`}
+        className={`row algaehNewModal AdvCreNoteModal`}
       >
-        <div className="col-12">
-          <div className="portlet portlet-bordered margin-top-15  margin-bottom-15">
-            <div className="portlet-body">
-              <div className="row">
-                <div className="col-12">
-                  <AlgaehTable
-                    columns={[
-                      {
-                        fieldName: "checked",
-                        label: "Select",
-                        sortable: false,
-                        filterable: false,
-                        displayTemplate: (row) => {
-                          return (
-                            <Checkbox
-                              disabled={row.invoice_status === "closed"}
-                              defaultChecked={row["checked"]}
-                              onChange={(e) => {
-                                const { checked } = e.target;
-                                row["checked"] = checked;
-                              }}
-                            />
-                          );
-                        },
-                      },
-                      {
-                        fieldName: "payment_date",
-                        label: "Payment Date",
-                      },
-                      {
-                        fieldName: "invoice_no",
-                        label: "Invoice No.",
-                      },
-                      {
-                        fieldName: "amount",
-                        label: "Amount",
-                      },
-                      {
-                        fieldName: "narration",
-                        label: "Narration",
-                      },
-                    ]}
-                    rowUniqueId="finance_voucher_header_id"
-                    data={debitNode}
-                  />
-                </div>
-              </div>
-            </div>
+        <Spin spinning={loading}>
+          <div className="col-12">
+            <h4 style={{ marginTop: 10 }}>Credit Note List</h4>
+            <AlgaehTable
+              columns={[
+                {
+                  fieldName: "checked",
+                  label: "Select",
+                  sortable: false,
+                  filterable: false,
+                  displayTemplate: (row) => {
+                    return (
+                      <Checkbox
+                        disabled={row.invoice_status === "closed"}
+                        defaultChecked={row["checked"]}
+                        onChange={(e) => {
+                          const { checked } = e.target;
+                          row["checked"] = checked;
+                        }}
+                      />
+                    );
+                  },
+                },
+                {
+                  fieldName: "payment_date",
+                  label: "Payment Date",
+                },
+                {
+                  fieldName: "invoice_no",
+                  label: "Invoice No.",
+                },
+                {
+                  fieldName: "amount",
+                  label: "Amount",
+                },
+                {
+                  fieldName: "narration",
+                  label: "Narration",
+                },
+              ]}
+              rowUniqueId="finance_voucher_header_id"
+              data={debitNode}
+            />
           </div>
-        </div>
+          <div className="col-12">
+            <h4 style={{ marginTop: 10 }}>Advance List</h4>
+            <AlgaehTable
+              columns={[
+                {
+                  fieldName: "checked",
+                  label: <AlgaehLabel label={{ forceLabel: "select" }} />,
+                  sortable: false,
+                  filterable: false,
+                  displayTemplate: (row) => {
+                    return (
+                      <Checkbox
+                        disabled={row.invoice_status === "closed"}
+                        defaultChecked={row["checked"]}
+                        onChange={(e) => {
+                          const { checked } = e.target;
+                          row["checked"] = checked;
+                        }}
+                      />
+                    );
+                  },
+                  others: {
+                    Width: 50,
+                    style: { textAlign: "center" },
+                  },
+                },
+                {
+                  fieldName: "narration",
+                  label: <AlgaehLabel label={{ forceLabel: "Narration" }} />,
+                },
+
+                {
+                  fieldName: "voucher_no",
+                  label: <AlgaehLabel label={{ forceLabel: "Voucher No." }} />,
+                  others: {
+                    Width: 120,
+                    style: { textAlign: "center" },
+                  },
+                },
+                {
+                  fieldName: "payment_date",
+                  label: <AlgaehLabel label={{ forceLabel: "Date" }} />,
+                  others: {
+                    Width: 120,
+                    style: { textAlign: "center" },
+                  },
+                },
+                {
+                  fieldName: "amount",
+                  label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
+                  others: {
+                    Width: 10,
+                    style: { textAlign: "right" },
+                  },
+                },
+              ]}
+              data={adv_data}
+            />
+          </div>
+        </Spin>
       </Modal>
+
       <div className="row">
         <div className="col-12">
           <InfoBar data={info} />
@@ -663,7 +761,7 @@ export default memo(function (props) {
               loading={loading}
               onClick={onClickDebitNotes}
             >
-              Include Debit Note
+              Include Advance OR Debit Note
             </AlgaehButton>
             {/* <AlgaehButton
               className="btn btn-primary"

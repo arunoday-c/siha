@@ -1208,7 +1208,7 @@ export default {
             total_paid_days, S.gross_salary, S.net_salary, advance_due, display_present_days, \
             S.total_earnings,S.total_deductions,loan_payable_amount, loan_due_amount, salary_processed, salary_paid, \
             leave_salary_accrual_amount, leave_salary_days, emp.employee_code, emp.full_name, emp.last_salary_process_date, \
-            AL.from_normal_salary, AL.hims_f_employee_annual_leave_id, LA.employee_joined from hims_f_salary S \
+            AL.from_normal_salary, AL.hims_f_employee_annual_leave_id, LA.employee_joined, S.salary_type,S.month,S.salary_date from hims_f_salary S \
             inner join hims_d_employee emp on S.employee_id = emp.hims_d_employee_id  \
             inner join  hims_d_sub_department SD on emp.sub_department_id=SD.hims_d_sub_department_id \
             left join hims_f_employee_annual_leave AL on emp.hims_d_employee_id = AL.employee_id and  AL.year=? and AL.month = ? and AL.cancelled='N'  \
@@ -5565,12 +5565,17 @@ export function makeSalaryUnfinalized(req, res, next) {
           _mysql
             .executeQueryWithTransaction({
               query: `UPDATE hims_f_salary SET salary_processed='N' where hims_f_salary_id=?;
-              INSERT INTO hims_f_salary_history (salary_header_id, salary_number, created_by, created_date, revert_reason) 
-              VALUE(?, ?, ?, ?, ?) ;`,
+              INSERT INTO hims_f_salary_history (salary_header_id, salary_number,month,year,employee_id,salary_date,salary_type, created_by, created_date, revert_reason) 
+              VALUE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ;`,
               values: [
                 inputParam.hims_f_salary_id,
                 inputParam.hims_f_salary_id,
                 inputParam.salary_number,
+                inputParam.month,
+                inputParam.year,
+                inputParam.employee_id,
+                inputParam.salary_date,
+                inputParam.salary_type,
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 inputParam.revert_reason,

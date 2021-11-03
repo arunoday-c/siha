@@ -63,7 +63,7 @@ export default function Filters({ activeTransaction }) {
       pushToState({ account: "" });
       return;
     }
-    debugger;
+
     if (state.current_year && state.selectRange) {
       pushToState({ account: value });
       const delta = value.split("-");
@@ -140,12 +140,15 @@ export default function Filters({ activeTransaction }) {
         },
       ],
     };
-    const result = await processYearEnd(data).catch((error) => {
-      setLoading(false);
-      AlgaehMessagePop({ type: "error", display: error.message });
-    });
-    AlgaehMessagePop({ type: "success", display: result.message });
-    setLoading(false);
+    processYearEnd(data)
+      .then((result) => {
+        setLoading(false);
+        AlgaehMessagePop({ type: "success", display: "Successfully" });
+      })
+      .catch((error) => {
+        setLoading(false);
+        AlgaehMessagePop({ type: "error", display: error.message });
+      });
   }
   return (
     <div className="row inner-top-search">
@@ -198,7 +201,7 @@ export default function Filters({ activeTransaction }) {
             if (node?.finance_account_child_id) {
               return `${node?.head_id}-${node?.finance_account_child_id}-${node?.account_code}`;
             } else {
-              return `${node?.finance_account_head_id}-${node?.account_code}`;
+              return `${node?.finance_account_head_id}-${node?.account_code}`; //
             }
           },
 
