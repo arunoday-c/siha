@@ -337,6 +337,7 @@ const getOptions = ($this) => {
 };
 
 const onClickRevert = ($this) => {
+  debugger;
   if ($this.state.revert_reason === null || $this.state.revert_reason === "") {
     swalMessage({
       type: "warning",
@@ -364,6 +365,11 @@ const onClickRevert = ($this) => {
         module: "hrManagement",
         data: {
           salary_number: $this.state.emp_salary_details.salary_number,
+          year: $this.state.emp_salary_details.year,
+          month: $this.state.emp_salary_details.month,
+          employee_id: $this.state.emp_salary_details.employee_id,
+          salary_date: $this.state.emp_salary_details.salary_date,
+          salary_type: $this.state.emp_salary_details.salary_type,
           hims_f_salary_id: $this.state.emp_salary_details.hims_f_salary_id,
           revert_reason: $this.state.revert_reason,
         },
@@ -389,6 +395,65 @@ const onClickRevert = ($this) => {
 };
 
 const generateMonthlyLoanReport = ($this) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "monthlyRevertReport",
+        pageOrentation: "landscape",
+        reportParams: [
+          {
+            name: "hospital_id",
+            value: $this.state.hospital_id,
+          },
+          {
+            name: "year",
+            value: $this.state.year,
+          },
+          {
+            name: "month",
+            value: $this.state.month,
+          },
+          {
+            name: "department_id",
+            value: $this.state.department_id,
+          },
+          {
+            name: "sub_department_id",
+            value: $this.state.sub_department_id,
+          },
+          {
+            name: "designation_id",
+            value: $this.state.designation_id,
+          },
+          {
+            name: "group_id",
+            value: $this.state.group_id,
+          },
+          {
+            name: "hims_d_employee_id",
+            value: $this.state.hims_d_employee_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      // const documentName="Salary Slip"
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Monthly Loan Report - ${$this.state.month}/${$this.state.year}`;
+      window.open(origin);
+    },
+  });
+};
+
+const generateMonthlyRevertReport = ($this) => {
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -455,6 +520,7 @@ export {
   closeSalaryComponents,
   getOptions,
   generateMonthlyLoanReport,
+  generateMonthlyRevertReport,
   onClickRevert,
   // generateLevGratReconReport,
 };
