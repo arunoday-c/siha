@@ -1155,6 +1155,7 @@ export default function JournalVoucher({
     } else if (_voucherType === "debit_note") {
       getSupplierDebitNotes({
         child_id: selected.finance_account_child_id,
+        voucherType: _voucherType,
       })
         .then(({ result }) => {
           setSorCDetailLoading(false);
