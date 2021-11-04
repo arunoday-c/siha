@@ -1,0 +1,44 @@
+
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<div class="print-body" >
+<section>
+<table class="tableForDataNoBorder" cell-padding="0" id="main_table"> 
+<thead>
+<tr>
+<th width=""  class="txtFld">Date</th>
+<th width=""  class="txtFld">Voucher Type</th>
+<th width=""  class="txtFld">Voucher No.</th>
+<th width=""  class="txtFld">Narration</th>
+<th width="" class="numberFld ">Debit Amt</th>
+<th width="" class="numberFld ">Credit Amt</th>
+<th width="" class="numberFld ">Closing Balance</th>
+</tr>
+</thead>
+<tbody>
+{{#each details}}
+<tr>
+<td datatype="string"  class="txtFld">{{payment_date}}</td>
+<td datatype="string"  class="txtFld">{{voucher_type}}</td>
+<td datatype="string"  class="txtFld">{{voucher_no}}</td>
+<td datatype="string"  class="txtFld" width="16%"><small>{{narration}}</small></td>
+<td class="numberFld ">{{numberFormating debit_amount ../currencyOnly}}</td>
+<td class="numberFld ">{{numberFormating credit_amount ../currencyOnly}}</td>
+<td class="numberFld ">{{numberFormating row_closing_balance ../currencyOnly}}</td>
+</tr>
+{{/each }}
+     {{#ifExist showFooter}}
+        <tr>
+            <td class="numberFld" colspan="4"></td>
+            <td class="numberFld"><b>{{numberFormating total_debit currencyOnly}}</b></td>
+            <td class="numberFld"><b>{{numberFormating total_credit currencyOnly}}</b></td>
+            <td class="numberFld"><b>{{numberFormating closing_balance currencyOnly}}</b></td>
+        </tr>
+        {{/ifExist}}
+</tbody>
+</table>
+</section>
+
+   <div id="total_records">{{totalRecords}}</div>
+<div id="rows_per_page">{{rowsPerPage}}</div>
+</div>
