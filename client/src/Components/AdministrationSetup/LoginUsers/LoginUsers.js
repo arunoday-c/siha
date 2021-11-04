@@ -872,7 +872,7 @@ class LoginUsers extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <AlgaehAutoComplete
-                    div={{ className: "col-8 mandatory" }}
+                    div={{ className: "col-12" }}
                     label={{
                       fieldName: "branch",
                       isImp: true,
@@ -932,14 +932,29 @@ class LoginUsers extends Component {
                       onClear: this.onClearBranch.bind(this),
                     }}
                   /> */}
-                  <small className="float-right">
-                    Max user Creating left <span> </span>
-                    {maxCharactersLeft(
-                      parseInt(this.state.max_users),
-                      this.state.users_created
-                    )}
-                    /{this.state.max_users}
-                  </small>
+                  <div className="col-12">
+                    {/* <div className="progress">
+                      <div
+                        className="progress-bar"
+                        role="progressbar"
+                        style={{ width: "25%" }}
+                      >
+                        25%
+                      </div>
+                    </div> */}
+
+                    <small className="float-right">
+                      User Limit:
+                      <b>
+                        {" "}
+                        {maxCharactersLeft(
+                          parseInt(this.state.max_users),
+                          this.state.users_created
+                        )}
+                      </b>
+                      /<b>{this.state.max_users}</b>
+                    </small>
+                  </div>
                   {maxCharactersLeft(
                     parseInt(this.state.max_users),
                     this.state.users_created
@@ -1011,9 +1026,14 @@ class LoginUsers extends Component {
                       />
                     </>
                   ) : (
-                    <small className="float-right">
-                      You have exceeded the user creation <span> </span>
-                    </small>
+                    <div
+                      className="col-12"
+                      style={{ textAlign: "center", marginTop: 15 }}
+                    >
+                      <span className="badge badge-danger">
+                        Reached Max User Limit for this Branch
+                      </span>
+                    </div>
                   )}
 
                   {!this.state.verify_password ? (
