@@ -274,6 +274,7 @@ export function getSupplierDebitNotes(options) {
         module: "finance",
         onSuccess: (response) => {
           if (response.data.success === true) {
+            debugger;
             if (options.voucherType === "debit_note") {
               resolve(response.data.result);
             } else resolve(response.data);

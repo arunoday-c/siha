@@ -425,6 +425,7 @@ export default function JournalVoucher({
         return;
       }
 
+      debugger;
       const {
         type,
         data,
@@ -506,11 +507,13 @@ export default function JournalVoucher({
               // customer_type: selected.customer_type,
             });
             setSelInvoice(crDetails.invoice_ref_no);
+            debugger;
             setIsEditMode(true);
           }
         }
 
         setFinanceVoucherHeaderID(location.state.finance_voucher_header_id);
+
         setVoucherType(firstRecord.voucher_type);
 
         const _voucherTrans_date = firstRecord.voucher_transaction_date
@@ -524,12 +527,14 @@ export default function JournalVoucher({
         setPayment((state) => ({ ...state, payment_mode: "CASH" }));
         if (type === "duplicate") {
           const { Details, voucher_type, amount } = data;
+
           let currentVoucher =
             voucher_type === "sales"
               ? "receipt"
               : voucher_type === "purchase"
               ? "payment"
               : voucher_type;
+
           setVoucherType(currentVoucher);
           const records = Details.map((single, index) => ({
             slno: index + 1,
@@ -567,6 +572,7 @@ export default function JournalVoucher({
             child_id,
             disabled,
           } = data;
+
           let currentVoucher =
             voucher_type === "sales"
               ? "receipt"
@@ -577,13 +583,17 @@ export default function JournalVoucher({
             // if (Array.isArray(merdge) && merdge.length === 1) {
             //   setDisableAmount(false);
             // } else {
-            if (voucher_type === "credit_note") {
+            if (
+              voucher_type === "credit_note" ||
+              voucher_type === "debit_note"
+            ) {
               setDisableAmount(false);
             } else setDisableAmount(true);
             // }
 
             setMerdgeRecords(merdge);
           }
+
           setVoucherType(currentVoucher);
           setSelInvoice(invoice_no);
           getCashAccount()
@@ -1199,6 +1209,8 @@ export default function JournalVoucher({
         voucher_type:
           voucherType === "payment"
             ? "purchase"
+            : voucherType === "debit_note"
+            ? "debit_note"
             : voucherType === "credit_note"
             ? "credit_note"
             : "sales",
@@ -1294,6 +1306,7 @@ export default function JournalVoucher({
     //     ? { disabled: records.disabled }
     //     : {}
     //   : {};
+    debugger;
     let isDisabled = disableAmount || afterSaveDisabled;
     if (isEditMode === true) {
       isDisabled = isEditMode;
