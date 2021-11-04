@@ -1745,8 +1745,8 @@ export default function JournalVoucher({
                   </button>
                 </div>
               </div>
-              <div className="row portlet-body" id="JLVoucherListGrid">
-                <div className="col-12">
+              <div className="row portlet-body">
+                <div className="col-12" id="JLVoucherListGrid">
                   <AlgaehDataGrid
                     // className="JLVoucherListGrid"
                     columns={[
