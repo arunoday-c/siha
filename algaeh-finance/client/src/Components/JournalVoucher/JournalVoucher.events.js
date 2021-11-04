@@ -259,16 +259,24 @@ export function getSupplierInvoiceDetails(options) {
 export function getSupplierDebitNotes(options) {
   return new Promise((resolve, reject) => {
     try {
+      let url = "/finance_supplier/getAllDebitNotes";
+      let input = {
+        child_id: options.child_id,
+      };
+      if (options.voucherType === "debit_note") {
+        url = "/finance_supplier/getSupplierInvoiceDetails";
+        input["is_opening_bal"] = "Y";
+      }
       algaehApiCall({
-        uri: "/finance_supplier/getAllDebitNotes",
-        data: {
-          child_id: options.child_id,
-        },
+        uri: url,
+        data: input,
         method: "GET",
         module: "finance",
         onSuccess: (response) => {
           if (response.data.success === true) {
-            resolve(response.data);
+            if (options.voucherType === "debit_note") {
+              resolve(response.data.result);
+            } else resolve(response.data);
           }
         },
         onCatch: (error) => {

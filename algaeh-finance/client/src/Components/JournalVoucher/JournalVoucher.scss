@@ -29,8 +29,8 @@
 #JLVoucherListGrid {
   .newStickyGrid {
     .table-scroll {
-      min-height: 55vh;
-      max-height: 55vh;
+      min-height: 46vh !important;
+      max-height: 46vh !important;
       overflow: auto;
       tbody {
         td {

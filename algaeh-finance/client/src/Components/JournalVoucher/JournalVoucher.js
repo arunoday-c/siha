@@ -1155,6 +1155,7 @@ export default function JournalVoucher({
     } else if (_voucherType === "debit_note") {
       getSupplierDebitNotes({
         child_id: selected.finance_account_child_id,
+        voucherType: _voucherType,
       })
         .then(({ result }) => {
           setSorCDetailLoading(false);
@@ -1745,8 +1746,8 @@ export default function JournalVoucher({
                   </button>
                 </div>
               </div>
-              <div className="row portlet-body" id="JLVoucherListGrid">
-                <div className="col-12">
+              <div className="row portlet-body">
+                <div className="col-12" id="JLVoucherListGrid">
                   <AlgaehDataGrid
                     // className="JLVoucherListGrid"
                     columns={[
