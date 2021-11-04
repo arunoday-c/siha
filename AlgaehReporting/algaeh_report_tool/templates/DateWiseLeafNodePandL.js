@@ -55,7 +55,14 @@ const executePDF = function executePDFMethod(options) {
           const output = totalQuery !== "" ? out_put[0] : out_put;
           const totalRecords =
             totalQuery !== "" ? _.head(out_put[1]).total_pages : undefined;
-          const { child_name, ledger_code } = _.head(output);
+          let child_name = "",
+            ledger_code = "";
+          if (output.length > 0) {
+            const first = _.head(output);
+            ledger_code = first.ledger_code;
+            child_name = first.child_name;
+          }
+
           resolve({
             account_name: child_name,
             ledger_code: ledger_code,
