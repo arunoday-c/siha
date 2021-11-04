@@ -39,11 +39,16 @@ export default memo(function Modal(props) {
     }
     setPleaseWait("Please wait pdf is generating...");
     setLoading(true);
-
+    const isPandL =
+      selectedNode?.node?.head_id === 3 &&
+      selectedNode?.node?.finance_account_child_id === 1
+        ? true
+        : false;
     resultdata["nodeName"] = selectedNode?.node?.full_name;
     resultdata["head_id"] = selectedNode?.node?.head_id
       ? selectedNode?.node?.head_id
       : selectedNode?.node?.finance_account_head_id;
+    resultdata["isPandL"] = isPandL;
 
     generateReport(type, resultdata)
       .then((result, html) => {
@@ -79,7 +84,10 @@ export default memo(function Modal(props) {
             data: {
               report: {
                 displayName: "Ledger Report - Date Wise",
-                reportName: "DateWiseLeafNode",
+                reportName:
+                  isPandL === true
+                    ? "DateWiseLeafNodePandL"
+                    : "DateWiseLeafNode",
                 template_name: null,
                 reportQuery: null,
                 pageSize: "A4",
@@ -434,6 +442,9 @@ export default memo(function Modal(props) {
               : "DateWiseGroupNode";
           } else {
             reportName = checkedType ? "MonthWiseLeafNode" : "DateWiseLeafNode";
+            if (inputdata.isPandL === true) {
+              reportName = "DateWiseLeafNodePandL";
+            }
           }
           let rptSetup = {};
           if (type === "preview") {

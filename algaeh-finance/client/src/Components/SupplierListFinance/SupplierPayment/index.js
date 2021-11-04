@@ -380,12 +380,12 @@ export default memo(function (props) {
       >
         <Spin spinning={loading}>
           <div className="col-12">
-            <h4 style={{ marginTop: 10 }}>Credit Note List</h4>
+            <h4 style={{ marginTop: 10 }}>Debit Note List</h4>
             <AlgaehTable
               columns={[
                 {
                   fieldName: "checked",
-                  label: "Select",
+                  label: <AlgaehLabel label={{ forceLabel: "select" }} />,
                   sortable: false,
                   filterable: false,
                   displayTemplate: (row) => {
@@ -403,19 +403,23 @@ export default memo(function (props) {
                 },
                 {
                   fieldName: "payment_date",
-                  label: "Payment Date",
+                  // label: "Payment Date",
+                  label: <AlgaehLabel label={{ forceLabel: "Payment Date" }} />,
                 },
                 {
                   fieldName: "invoice_no",
-                  label: "Invoice No.",
+                  // label: "Invoice No.",
+                  label: <AlgaehLabel label={{ forceLabel: "Invoice No." }} />,
                 },
                 {
                   fieldName: "amount",
-                  label: "Amount",
+                  // label: "Amount",
+                  label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
                 },
                 {
                   fieldName: "narration",
-                  label: "Narration",
+                  // label: "Narration",
+                  label: <AlgaehLabel label={{ forceLabel: "Narration" }} />,
                 },
               ]}
               rowUniqueId="finance_voucher_header_id"
