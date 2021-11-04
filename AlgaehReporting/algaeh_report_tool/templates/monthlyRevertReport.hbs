@@ -1,0 +1,42 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div class="print-body">
+
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Branch</th>
+            <th>Employee Code</th>
+            <th>Employee Name</th>
+            <th>Salary Number</th>
+            <th>Deducting Month & Year</th>
+            <th>Net Salary</th>
+            <th>Revert Reason</th>
+            <th>Reverted By</th>
+            <th>Reverted On</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each result}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td>{{hospital_name}}</td>
+              <td datatype="string">{{employee_code}}</td>
+              <td class="txtFld">{{full_name}}</td>
+              <td>{{salary_number}}</td>
+              <td>{{revert_month}}-{{year}}</td>
+              <td class="numberFld">{{net_salary}}</td>
+              <td class="txtFld">{{revert_reason}}</td>
+              <td>{{user_display_name}}</td>
+              <td>{{created_date}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
+</body>
