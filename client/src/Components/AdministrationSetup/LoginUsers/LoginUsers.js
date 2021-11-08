@@ -11,7 +11,7 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import {
   algaehApiCall,
   swalMessage,
-  maxCharactersLeft,
+  // maxCharactersLeft,
 } from "../../../utils/algaehApiCall";
 import { newAlgaehApi } from "../../../hooks";
 import {
@@ -59,7 +59,7 @@ class LoginUsers extends Component {
       checkavilablity: false,
       employee_code: "",
       loaduserNameCheck: false,
-      users_created: [],
+      users_created: 0,
       max_users: 0,
       hospital_id: undefined,
     };
@@ -195,8 +195,8 @@ class LoginUsers extends Component {
       checkavilablity: false,
       employee_code: "",
       loaduserNameCheck: false,
-      users_created: [],
-      max_users: 0,
+      // users_created: 0,
+      // max_users: 0,
     });
     this.getBranchDetail();
   }
@@ -263,7 +263,7 @@ class LoginUsers extends Component {
         if (response.data.success === true) {
           debugger;
           this.setState({
-            users_created: response.data.records,
+            users_created: parseInt(response.data.records),
             max_users: number,
           });
         }
@@ -629,8 +629,12 @@ class LoginUsers extends Component {
                   title: "Record updated successfully",
                   type: "success",
                 });
-
+                let hospital = this.state.hospitals;
+                let max_users = hospital.filter(
+                  (f) => f.hims_d_hospital_id === this.state.hospital_id
+                )[0]?.max_users;
                 this.getLoginUsers();
+                this.getActiveUser(this.state.hospital_id, max_users);
                 this.resetSaveState();
               } else if (!response.data.success) {
                 swalMessage({
@@ -785,7 +789,9 @@ class LoginUsers extends Component {
 
     return "";
   }
-
+  maxCharactersLeft(maxLength, value) {
+    return maxLength - value;
+  }
   onVerifyEmailID() {
     if (this.state.password_email === "") {
       swalMessage({
@@ -839,7 +845,7 @@ class LoginUsers extends Component {
     });
   }
   componentWillUnmount() {
-    this.setState({ users_created: [], max_users: 0 });
+    this.setState({ users_created: 0, max_users: 0 });
   }
   render() {
     return (
@@ -943,19 +949,21 @@ class LoginUsers extends Component {
                       </div>
                     </div> */}
 
-                    <small className="float-right">
-                      User Limit:
-                      <b>
-                        {" "}
-                        {maxCharactersLeft(
-                          parseInt(this.state.max_users),
-                          this.state.users_created
-                        )}
-                      </b>
-                      /<b>{this.state.max_users}</b>
-                    </small>
+                    {!this.state.editData ? (
+                      <small className="float-right">
+                        User Limit:
+                        <b>
+                          {" "}
+                          {this.maxCharactersLeft(
+                            parseInt(this.state.max_users),
+                            this.state.users_created
+                          )}
+                        </b>
+                        /<b>{this.state.max_users}</b>
+                      </small>
+                    ) : null}
                   </div>
-                  {maxCharactersLeft(
+                  {this.maxCharactersLeft(
                     parseInt(this.state.max_users),
                     this.state.users_created
                   ) > 0 ? (
@@ -1025,7 +1033,7 @@ class LoginUsers extends Component {
                         }}
                       />
                     </>
-                  ) : (
+                  ) : !this.state.editData ? (
                     <div
                       className="col-12"
                       style={{ textAlign: "center", marginTop: 15 }}
@@ -1034,7 +1042,7 @@ class LoginUsers extends Component {
                         Reached Max User Limit for this Branch
                       </span>
                     </div>
-                  )}
+                  ) : null}
 
                   {!this.state.verify_password ? (
                     <>

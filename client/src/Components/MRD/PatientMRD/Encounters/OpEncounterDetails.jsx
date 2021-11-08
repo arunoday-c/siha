@@ -484,6 +484,7 @@ export default function OPEncounterDetails({
     });
   };
   const getNursingNotes = (visit_id, patient_id) => {
+    debugger;
     algaehApiCall({
       uri: "/doctorsWorkBench/getNurseNotes",
       data: { patient_id, visit_id },
