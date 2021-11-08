@@ -1,2 +1,10 @@
-.Leave_Encashment {
+#leaveEncashment_grid_cntr {
+  .newStickyGrid {
+    margin-bottom: 45px;
+    .table-scroll {
+      min-height: 28vh !important;
+      max-height: 28vh !important;
+      overflow: auto;
+    }
+  }
 }
