@@ -88,7 +88,7 @@ export default function FinanceAccounts({ inDrawer = false }) {
   function importExcelAccountOB(files) {
     setLoading(true);
     // AlgaehLoader({ show: true });
-    debugger;
+
     const reader = new FileReader();
     reader.readAsDataURL(files[0]);
     reader.onload = (e) => {

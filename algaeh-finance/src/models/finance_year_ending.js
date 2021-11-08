@@ -82,13 +82,13 @@ export async function getAccountsForYearEnd(req, res, next) {
     const decimal_places = req.userIdentity.decimal_places;
     let collection = [];
 
-    const liability = await getAccountHeadsFunc(decimal_places, 2).catch(
+    const liability = await getAccountHeadsFunc(decimal_places, 2, req).catch(
       (error) => {
         throw e;
       }
     );
     collection.push(liability);
-    const capital = await getAccountHeadsFunc(decimal_places, 3).catch(
+    const capital = await getAccountHeadsFunc(decimal_places, 3, req).catch(
       (error) => {
         throw e;
       }
