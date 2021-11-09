@@ -1273,7 +1273,7 @@ export async function cashFlowStatement(req, res, next) {
        -- Financing Activity
        with recursive cte as (
         select finance_account_head_id,account_code,account_name,       
-    parent_acc_id,account_type from finance_account_head   where  account_type in ('EQTY','NCL')
+    parent_acc_id,account_type from finance_account_head   where  account_type in ('EQTY','NCL','RE')
         union                 
         select H.finance_account_head_id,H.account_code,H.account_name,       
     H.parent_acc_id,H.account_type from finance_account_head H  
