@@ -1443,14 +1443,15 @@ select H.finance_voucher_header_id,
       const _totalCashAndEqu = _.sumBy(cumulativeResult[5], (s) =>
         parseFloat(s.closing_bal)
       ).toFixed(decimal_places);
+      const _totalNetProfit = _.sumBy(cumulativeResult[0], (s) =>
+        parseFloat(s.closing_bal)
+      ).toFixed(decimal_places);
       let dataToSend = [];
       dataToSend.push(
         {
           child_id: 0,
           name: "Net Profit",
-          closing_bal: _.sumBy(cumulativeResult[0], (s) =>
-            parseFloat(s.closing_bal)
-          ).toFixed(decimal_places),
+          closing_bal: _totalNetProfit,
           children: cumulativeResult[0],
         },
         {
@@ -1475,7 +1476,8 @@ select H.finance_voucher_header_id,
           child_id: 0,
           name: "NET Total ",
           closing_bal: parseFloat(
-            parseFloat(_totalOperating) +
+            parseFloat(_totalNetProfit) +
+              parseFloat(_totalOperating) +
               parseFloat(_totalInvesting) +
               parseFloat(_totalFinancing)
           ).toFixed(decimal_places),
