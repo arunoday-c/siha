@@ -1420,13 +1420,14 @@ select H.finance_voucher_header_id,
         .catch((e) => {
           throw e;
         });
-      const operationalActivityCA = cumulativeResult[1].map((m) => {
-        if (parseFloat(m.closing_bal) > 0) {
-          return { ...m, closing_bal: -m.closing_bal };
-        } else {
-          return { ...m, closing_bal: Math.abs(m.closing_bal) };
-        }
-      });
+      const operationalActivityCA = cumulativeResult[1];
+      // .map((m) => {
+      //   if (parseFloat(m.closing_bal) > 0) {
+      //     return { ...m, closing_bal: -m.closing_bal };
+      //   } else {
+      //     return { ...m, closing_bal: Math.abs(m.closing_bal) };
+      //   }
+      // });
       const operationalActivityCL = cumulativeResult[2];
 
       const _totalOperating = parseFloat(
