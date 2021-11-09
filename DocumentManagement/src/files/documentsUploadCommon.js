@@ -8,7 +8,7 @@ import "regenerator-runtime/runtime";
 
 const folder = process.env.UPLOADFOLDER || process.cwd();
 export async function uploadDocument(req, res, next) {
-  console.log("fieldObject iam here");
+  // console.log("fieldObject iam here");
   try {
     const uploadExists = folder.toUpperCase().includes("UPLOAD");
     const uploadPath = path.resolve(folder, uploadExists ? "" : "UPLOAD");
@@ -138,7 +138,7 @@ export async function uploadDocument(req, res, next) {
 }
 
 export async function getUploadedFiles(req, res, next) {
-  console.log("iamhere 012345678");
+  // console.log("iamhere 012345678");
   try {
     const input = req.query;
     const { filePath, unique_id, document, movedOldFile, filename } = input;
@@ -148,12 +148,12 @@ export async function getUploadedFiles(req, res, next) {
     const completePath = path.join(directoryPath, filePath);
 
     if ((fs.pathExistsSync(document) && unique_id) || !movedOldFile) {
-      console.log("iamhere 213123123");
-      console.log("old method");
+      // console.log("iamhere 213123123");
+      // console.log("old method");
 
       Contracts.find({ _id: unique_id }, (err, docs) => {
         if (err) {
-          console.log("old method error", err);
+          // console.log("old method error", err);
           res.status(400).json({ error: err.message });
         } else {
           docs.map((item) => {
@@ -171,7 +171,7 @@ export async function getUploadedFiles(req, res, next) {
       if (unique_id) {
         Contracts.findByIdAndDelete(unique_id, (err, docs) => {
           if (err) {
-            console.log("finally moved error", err);
+            // console.log("finally moved error", err);
             res.status(400).json({ error: err.message });
           }
         });
@@ -182,12 +182,12 @@ export async function getUploadedFiles(req, res, next) {
         } else {
           fs.readFile(completePath, (err, content) => {
             if (err) {
-              console.log("error in final");
+              // console.log("error in final");
               res.status(400).json({ error: err.message });
               // throw err;
             } else {
               const extension = mime.contentType(path.extname(completePath));
-              console.log("content type", extension);
+              // console.log("content type", extension);
               res.writeHead(200, {
                 "Content-type": extension,
               });
@@ -217,6 +217,7 @@ export const moveOldFiles = (req, res) => {
       if (err) {
         res.status(400).json({ error: err.message });
       } else {
+        // console.log("iam herer error123");
         if (docs.length > 0) {
           for (let i = 0; i < docs.length; i++) {
             req.fileName = docs[i].filename;
@@ -226,7 +227,6 @@ export const moveOldFiles = (req, res) => {
 
             await makeFolderStructure(req, res)
               .then(async (uploadDocFolder) => {
-                console.log("ia here");
                 let fullDocumentPath;
                 let fileNameWithUnique = `${req.doc_number}__ALGAEH__${docs[i].filename}`;
                 fullDocumentPath = path.join(
@@ -251,7 +251,7 @@ export const moveOldFiles = (req, res) => {
                     : undefined;
 
                 if (exists) {
-                  console.log("exists", exists);
+                  // console.log("exists", exists);
                   fileNameWithUnique = `${req.query.doc_number}-${
                     parseInt(existsFileName.length) + 1
                   }__ALGAEH__${docs[i].filename}`;
@@ -297,7 +297,7 @@ export const moveOldFiles = (req, res) => {
               })
               .catch((err) => res.status(400).json({ error: err.message }));
           }
-          console.log("docs", "iam here");
+          // console.log("docs", "iam here");
           const directoryPath = path.join(folder, "UPLOAD");
 
           const completePathOfFolder = path.join(directoryPath, completePath);
@@ -320,26 +320,38 @@ export const moveOldFiles = (req, res) => {
           });
         } else {
           const directoryPath = path.join(folder, "UPLOAD");
-
           const completePathOfFolder = path.join(directoryPath, completePath);
-          fs.readdir(completePathOfFolder, function (err, files) {
-            if (err) {
-              res.status(400).json({ error: err.message });
-            } else {
-              const arrayFiles = files.map((item) => {
-                const fullPath = `${completePathOfFolder}${item}`;
-                const nameFile = item.split("__ALGAEH__");
+          if (!fs.pathExistsSync(completePathOfFolder)) {
+            req.doc_number = req.query.doc_number;
+            await makeFolderStructure(req, res).then(
+              async (uploadDocFolder) => {
+                res.status(200).json({ success: true, data: [] }).end();
+              }
+            );
+          } else {
+            fs.readdir(completePathOfFolder, function (err, files) {
+              if (err) {
+                res.status(400).json({ error: err.message });
+              } else {
+                const arrayFiles = files.map((item) => {
+                  const fullPath = `${completePathOfFolder}${item}`;
+                  const nameFile = item.split("__ALGAEH__");
 
-                return { name: nameFile[nameFile.length - 1], value: fullPath };
-              });
+                  return {
+                    name: nameFile[nameFile.length - 1],
+                    value: fullPath,
+                  };
+                });
 
-              res.status(200).json({ success: true, data: arrayFiles }).end();
-            }
-          });
+                res.status(200).json({ success: true, data: arrayFiles }).end();
+              }
+            });
+          }
         }
       }
     });
   } catch (err) {
+    // console.log("iam herer error123");
     res.status(400).json({ error: err.message });
   }
 };
@@ -373,7 +385,6 @@ async function makeFolderStructure(req, res) {
     } else {
       subFolder = mainFolder;
     }
-    console.log("subFolder", subFolder);
 
     // subFolder = path.join(mainFolder, subFolderName);
     // if (!fs.existsSync(subFolder)) {
@@ -428,7 +439,6 @@ export const downloadDocument = (req, res) => {
 
   fs.access(oldPath, fs.constants.F_OK, (err) => {
     if (err) {
-      console.log("iam here error download", err, oldPath);
       res.status(400).json({ error: err.message });
     } else {
       fs.exists(oldPath, (existsFile) => {
@@ -488,7 +498,6 @@ export const downloadDocument = (req, res) => {
               : undefined;
 
           if (exists) {
-            console.log("exists", exists);
             fileNameWithUnique = `${req.query.doc_number}-${
               parseInt(existsFileName.length) + 1
             }__ALGAEH__${filename}`;
@@ -498,21 +507,19 @@ export const downloadDocument = (req, res) => {
 
             fs.rename(currentPath, newPath, function (err) {
               if (err) {
-                console.log("error12312", err);
                 throw err;
               } else {
-                console.log("error12312");
                 req.query.movedOldFile = true;
                 getUploadedFiles(req, res);
               }
             });
           } else {
             const newPath = path.join(__dirname, fullDocumentPath);
-            console.log("Successfully moved the file!");
+            // console.log("Successfully moved the file!");
 
             fs.rename(currentPath, newPath, function (err) {
               if (err) {
-                console.log(err, "Successfully moved wire");
+                // console.log(err, "Successfully moved wire");
                 throw err;
               } else {
                 req.query.movedOldFile = true;
@@ -521,7 +528,7 @@ export const downloadDocument = (req, res) => {
             });
           }
         } else {
-          console.log("iam here 123");
+          // console.log("iam here 123");
           req.query.movedOldFile = true;
           getUploadedFiles(req, res);
         }
@@ -647,7 +654,7 @@ export const deleteDocs = (req, res) => {
 
     res.status(200).json({ success: true });
   } catch (err) {
-    console.log("completePath11231error", err);
+    // console.log("completePath11231error", err);
     res.status(400).json({ error: err.message });
   }
   // fs.unlink(completePath, (err) => {

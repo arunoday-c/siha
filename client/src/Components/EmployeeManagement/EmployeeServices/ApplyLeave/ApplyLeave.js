@@ -130,8 +130,8 @@ class ApplyLeave extends Component {
       const formData = new FormData();
       formData.append("doc_number", contract_no);
       formData.append("mainFolderName", "EmployeeDocuments");
-      formData.append("subFolderName", "LeaveApplication");
-      formData.append("specificFolder", this.state.employee_code);
+      formData.append("subFolderName", this.state.employee_code);
+      formData.append("specificFolder", "LeaveApplication");
       files.forEach((file, index) => {
         formData.append(`file_${index}`, file, file.name);
         formData.append("fileName", file.name);

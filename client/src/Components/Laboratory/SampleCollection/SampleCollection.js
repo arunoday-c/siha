@@ -10,10 +10,11 @@ import {
   // AlgaehFormGroup,
   AlgaehSecurityComponent,
 } from "algaeh-react-components";
+import _ from "lodash";
 import "./SampleCollection.scss";
 import SampleCollectionModal from "../SampleCollections/SampleCollections";
 import "./../../../styles/site.scss";
-import Enumerable from "linq";
+// import Enumerable from "linq";
 import { useQuery } from "react-query";
 import { newAlgaehApi } from "../../../hooks";
 import { Controller, useForm } from "react-hook-form";
@@ -78,34 +79,72 @@ function SampleCollection() {
       // enabled: enabledHESN,
       onSuccess: (data) => {
         // setEnabledHESN(false);
-        let sampleCollection = Enumerable.from(data)
-          .groupBy("$.visit_id", null, (k, g) => {
-            let firstRecordSet = Enumerable.from(g).firstOrDefault();
-
-            const number_of_tests_collected = g
-              .getSource()
-              .filter((f) => f.collected === "Y").length;
+        let sampleCollection = _.chain(data)
+          .groupBy((g) => (g.visit_id ? g.visit_id : g.ip_id))
+          .map((detail, key) => {
+            const {
+              patient_id,
+              visit_id,
+              primary_id_no,
+              patient_code,
+              test_type,
+              full_name,
+              status,
+              ordered_date,
+              ip_id,
+            } = _.head(detail);
+            const number_of_tests_collected = detail.filter(
+              (f) => f.collected === "Y"
+            ).length;
             return {
-              patient_id: firstRecordSet.patient_id,
-              visit_id: firstRecordSet.visit_id,
-              primary_id_no: firstRecordSet.primary_id_no,
-              patient_code: firstRecordSet.patient_code,
-              full_name: firstRecordSet.full_name,
-              ordered_date: firstRecordSet.ordered_date,
-              ip_id: firstRecordSet.ip_id,
-              number_of_tests: g.getSource().length,
+              patient_id: patient_id,
+              visit_id: visit_id,
+              primary_id_no: primary_id_no,
+              patient_code: patient_code,
+              full_name: full_name,
+              ordered_date: ordered_date,
+              ip_id: ip_id,
+              number_of_tests: detail.length,
               // collected: "Y",
 
               number_of_tests_collected: number_of_tests_collected,
 
-              status: firstRecordSet.status,
+              status: status,
               sample_status:
-                g.getSource().length === number_of_tests_collected ? "CL" : "O",
-              test_type: firstRecordSet.test_type,
-              // doctor_name: firstRecordSet.doctor_name,
+                detail.length === number_of_tests_collected ? "CL" : "O",
+              test_type: test_type,
+              // doctor_name: firstRecordSet.doctor_name,}
             };
           })
-          .toArray();
+          .value();
+        // let sampleCollection = Enumerable.from(data)
+        //   .groupBy("$.visit_id", null, (k, g) => {
+        //     let firstRecordSet = Enumerable.from(g).firstOrDefault();
+
+        //     const number_of_tests_collected = g
+        //       .getSource()
+        //       .filter((f) => f.collected === "Y").length;
+        //     return {
+        //       patient_id: firstRecordSet.patient_id,
+        //       visit_id: firstRecordSet.visit_id,
+        //       primary_id_no: firstRecordSet.primary_id_no,
+        //       patient_code: firstRecordSet.patient_code,
+        //       full_name: firstRecordSet.full_name,
+        //       ordered_date: firstRecordSet.ordered_date,
+        //       ip_id: firstRecordSet.ip_id,
+        //       number_of_tests: g.getSource().length,
+        //       // collected: "Y",
+
+        //       number_of_tests_collected: number_of_tests_collected,
+
+        //       status: firstRecordSet.status,
+        //       sample_status:
+        //         g.getSource().length === number_of_tests_collected ? "CL" : "O",
+        //       test_type: firstRecordSet.test_type,
+        //       // doctor_name: firstRecordSet.doctor_name,
+        //     };
+        //   })
+        //   .toArray();
         setSample_collection(sampleCollection);
       },
       onError: (err) => {

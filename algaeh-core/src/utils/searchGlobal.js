@@ -1199,7 +1199,8 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "admission",
         searchQuery:
           "SELECT SQL_CALC_FOUND_ROWS admission_number, admission_date, patient_code, full_name, primary_id_no \
-          FROM hims_adm_atd_admission A INNER JOIN hims_f_patient P ON P.hims_d_patient_id = A.patient_id where hims_adm_atd_admission_id > 0 ",
+          FROM hims_adm_atd_admission A INNER JOIN hims_f_patient P ON P.hims_d_patient_id = A.patient_id where hims_adm_atd_admission_id > 0   ",
+        orderBy: "A.hims_adm_atd_admission_id desc",
       },
       ...search_global1,
     ],

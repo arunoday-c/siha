@@ -255,7 +255,8 @@ any) {
                               data: dropDownData,
                             },
                             others: {
-                              // disabled: disable_data,
+                              disabled:
+                                disable_data === true ? true : !isInsurance,
                             },
                           }}
                         />
@@ -296,7 +297,8 @@ any) {
                             },
                             // onChange: insurancehandle.bind(this, this, context),
                             others: {
-                              disabled: disable_data,
+                              disabled:
+                                disable_data === true ? true : !isInsurance,
                             },
                           }}
                         />
@@ -334,7 +336,8 @@ any) {
                               data: dropDownData,
                             },
                             others: {
-                              disabled: disable_data,
+                              disabled:
+                                disable_data === true ? true : !isInsurance,
                             },
                           }}
                         />
@@ -372,7 +375,8 @@ any) {
                               data: dropDownData,
                             },
                             others: {
-                              disabled: disable_data,
+                              disabled:
+                                disable_data === true ? true : !isInsurance,
                             },
                           }}
                         />
@@ -414,7 +418,8 @@ any) {
                             className: "txt-fld",
                             name: "primary_card_number",
 
-                            disabled: disable_data,
+                            disabled:
+                              disable_data === true ? true : !isInsurance,
                           }}
                         />
                       )}
@@ -443,7 +448,10 @@ any) {
                             value: value || undefined,
                           }}
                           type="range"
-                          others={{ disabled: disable_data }}
+                          others={{
+                            disabled:
+                              disable_data === true ? true : !isInsurance,
+                          }}
                           events={{
                             onChange: (mdate) => {
                               if (mdate) {
