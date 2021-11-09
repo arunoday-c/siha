@@ -1372,21 +1372,23 @@ select H.finance_voucher_header_id,
           select  C.finance_account_child_id as child_id,MAX(C.child_name) as name,
          ROUND((coalesce(sum(credit_amount) ,0)- coalesce(sum(debit_amount) ,0) ),${decimal_places}) as closing_bal
          from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
-         and VD.auth_status='A' and  VD.payment_date < date('${from_date}') 
+         and VD.auth_status='A' and  VD.payment_date < date('${to_date}') 
          inner join finance_account_head as H on H.finance_account_head_id=C.head_id
          where finance_account_head_id in(${_netProfitList})
          group by C.finance_account_child_id;
          -- operational Activities
          select  finance_account_child_id as child_id,MAX(child_name) as name ,
-         ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal,
-         'CA' as account_type 
+         if(credit_amount>0,ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}),
+         -ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places})) as  closing_bal,
+         'CA' as account_type
          from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
          and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}') 
-         where C.head_id in (${_operationalActivitiesList_CA})
+         where C.head_id in (${_operationalActivitiesList_CA}) and C.head_id not in(${_cashAndCashEqu})
          group by C.finance_account_child_id;
          select  finance_account_child_id as child_id,MAX(child_name) as name ,
-         ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal,
-         'CL' as account_type
+         if(credit_amount>0,ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}),
+         -ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places})) as  closing_bal,
+         'CL' as account_type,debit_amount, credit_amount
          from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
          and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}') 
          where C.head_id in (${_operationalActivitiesList_CL})
@@ -1400,7 +1402,7 @@ select H.finance_voucher_header_id,
                     group by C.finance_account_child_id;
         -- Financing Activities
         select  finance_account_child_id as child_id,MAX(child_name) as name , 
-                                ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
+                                ROUND((coalesce(sum(credit_amount) ,0)-coalesce(sum(debit_amount) ,0) ),${decimal_places}) as  closing_bal
                                 from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id 
                                 and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}') 
                                 where C.head_id in (${_financingActivitiesList})
