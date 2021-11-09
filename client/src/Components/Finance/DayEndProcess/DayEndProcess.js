@@ -1085,7 +1085,49 @@ class DayEndProcess extends Component {
                             );
                           },
                           disabled: true,
+
                           filterable: true,
+                          filterType: "choices",
+                          // enum('journal','contra','receipt','payment','sales','purchase','credit_note','credit_note','expense_voucher')
+
+                          choices: [
+                            {
+                              name: "Journal",
+                              value: "journal",
+                            },
+                            {
+                              name: "Contra",
+                              value: "contra",
+                            },
+                            {
+                              name: "Receipt",
+                              value: "receipt",
+                            },
+                            {
+                              name: "Payment",
+                              value: "payment",
+                            },
+                            {
+                              name: "Sales",
+                              value: "sales",
+                            },
+                            {
+                              name: "Purchase",
+                              value: "purchase",
+                            },
+                            {
+                              name: "Credit Note",
+                              value: "credit_note",
+                            },
+                            {
+                              name: "Debit Note",
+                              value: "debit_note",
+                            },
+                            {
+                              name: "Expense",
+                              value: "expense_voucher",
+                            },
+                          ],
                           sortable: false,
 
                           others: {
