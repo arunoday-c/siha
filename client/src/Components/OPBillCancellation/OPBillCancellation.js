@@ -455,7 +455,7 @@ class OPBillCancellation extends Component {
                   type="button"
                   className="btn btn-primary"
                   onClick={this.SendForApproval.bind(this)}
-                  disabled={this.state.sendAppEnable}
+                  disabled={this.state.sendAppEnable || this.state.saveEnable}
                 >
                   <AlgaehLabel
                     label={{

@@ -128,16 +128,15 @@ const getActiveUserByHospital = (req, res, next) => {
   try {
     _mysql
       .executeQuery({
-        query: `SELECT AU.employee_id from algaeh_d_app_user AU 
-        left join hims_d_employee EM on EM.hims_d_employee_id=AU.employee_id
-        
-        where  AU.user_status='A' and EM.hospital_id=? ;`,
+        query: `SELECT COUNT(*) FROM algaeh_d_app_user USR
+        inner join hims_m_user_employee M on M.employee_id=USR.employee_id
+        where USR.user_type not in ('SU','EXT') and USR.user_status='A' and M.hospital_id=? and M.login_user='Y';`,
         printQuery: true,
         values: [input.hospital_id],
       })
       .then((result) => {
         _mysql.releaseConnection();
-        req.records = result;
+        req.records = result[0]["COUNT(*)"];
         next();
       })
       .catch((error) => {

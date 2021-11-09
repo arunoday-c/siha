@@ -302,24 +302,24 @@ export default function EmployeeMasterPopup({
             onClick={(options, cb) => {
               debugger;
               // trigger();
+              formControlPersonal.trigger();
               // setActiveTab(options.index);
               // cb();
               // clearErrors();
               const activeTab = options.active;
               if (activeTab.name === "EMP_TAB_PER") {
                 debugger;
-                formControlPersonal.trigger();
 
-                if (Object.values(formControlPersonal.errors).length > 0) {
-                  debugger;
-                } else {
-                  debugger;
-                  cb();
-                }
-                debugger;
-              } else {
-                debugger;
-                cb();
+                //   if (Object.values(formControlPersonal.errors).length > 0) {
+                //     debugger;
+                //   } else {
+                //     debugger;
+                //     cb();
+                //   }
+                //   debugger;
+                // } else {
+                //   debugger;
+                //   cb();
               }
             }}
             // renderClass="PrepaymentCntr"
