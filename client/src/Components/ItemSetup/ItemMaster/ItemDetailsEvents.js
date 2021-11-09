@@ -22,11 +22,11 @@ const radioChange = ($this, e) => {
     [e.target.name]: e.target.value,
     radioInactive: radioInactive,
     radioActive: radioActive,
-    item_status: item_status
+    item_status: item_status,
   });
 };
 
-const BatchExpRequired = $this => {
+const BatchExpRequired = ($this) => {
   SetBulkState({
     state: $this,
     callback: () => {
@@ -37,28 +37,28 @@ const BatchExpRequired = $this => {
       $this.setState({
         exp_date_required: exp_date_required,
         batchexpreq: !$this.state.batchexpreq,
-        ...$this.state
+        ...$this.state,
       });
-    }
+    },
   });
 };
 
-const CptCodesSearch = $this => {
+const CptCodesSearch = ($this) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Services.CptCodes
+      columns: spotlightSearch.Services.CptCodes,
     },
     searchName: "CptCodes",
     uri: "/gloabelSearch/get",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       $this.setState({
         cpt_code: row.hims_d_cpt_code_id,
-        cpt_code_data: row.cpt_code
+        cpt_code_data: row.cpt_code,
       });
-    }
+    },
   });
 };
 
@@ -71,9 +71,9 @@ const VatAppilicable = ($this, e) => {
       $this.state.vat_percent = 0;
       $this.setState({
         [name]: value,
-        ...$this.state
+        ...$this.state,
       });
-    }
+    },
   });
 };
 const texthandle = ($this, ctrl, e) => {
@@ -82,7 +82,7 @@ const texthandle = ($this, ctrl, e) => {
   let value = e.value === "" ? null : e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -91,7 +91,7 @@ const additionaleInfo = ($this, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -102,7 +102,7 @@ const uomtexthandle = ($this, ctrl, e) => {
 
   $this.setState({
     [name]: value,
-    uom_description: e.selected.uom_description
+    uom_description: e.selected.uom_description,
   });
 };
 
@@ -121,13 +121,13 @@ const stockingtexthandle = ($this, e) => {
     {
       [name]: value,
       conversion_factor: conversion_factor,
-      convertEnable: convertEnable
+      convertEnable: convertEnable,
     },
-    () => { }
+    () => {}
   );
 };
 
-const AddUom = $this => {
+const AddUom = ($this) => {
   let isError = false;
 
   let stocking_uom_id = null;
@@ -137,7 +137,7 @@ const AddUom = $this => {
 
     swalMessage({
       type: "warning",
-      title: "Please Select UOM."
+      title: "Please Select UOM.",
     });
     document.querySelector("[name='uom_id']").focus();
     return isError;
@@ -149,7 +149,7 @@ const AddUom = $this => {
 
     swalMessage({
       type: "warning",
-      title: "Enter Stocking Uom."
+      title: "Enter Stocking Uom.",
     });
     document.querySelector("[name='stocking_uom']").focus();
 
@@ -159,7 +159,7 @@ const AddUom = $this => {
 
     swalMessage({
       type: "warning",
-      title: "Define Conversion Factor."
+      title: "Define Conversion Factor.",
     });
     document.querySelector("[name='conversion_factor']").focus();
     return isError;
@@ -170,14 +170,14 @@ const AddUom = $this => {
     let uomExists = Enumerable.from(
       detail_item_uom.length !== 0 ? detail_item_uom : null
     )
-      .where(w => w.uom_id === $this.state.uom_id)
+      .where((w) => w.uom_id === $this.state.uom_id)
       .toArray();
 
     if (uomExists.length === 0) {
       let StockingExit = Enumerable.from(
         detail_item_uom.length !== 0 ? detail_item_uom : null
       )
-        .where(w => w.stocking_uom === "Y")
+        .where((w) => w.stocking_uom === "Y")
         .toArray();
 
       if (
@@ -199,7 +199,7 @@ const AddUom = $this => {
                 stocking_uom: $this.state.stocking_uom,
                 conversion_factor: $this.state.conversion_factor,
                 uom_description: $this.state.uom_description,
-                uom_status: "A"
+                uom_status: "A",
               };
               insertItemUomMap.push(Insertobj);
             }
@@ -208,7 +208,7 @@ const AddUom = $this => {
               uom_id: $this.state.uom_id,
               conversion_factor: $this.state.conversion_factor,
               stocking_uom: $this.state.stocking_uom,
-              uom_description: $this.state.uom_description
+              uom_description: $this.state.uom_description,
             };
             detail_item_uom.push(uomObj);
             $this.setState({
@@ -218,17 +218,17 @@ const AddUom = $this => {
               stocking_uom: null,
               conversion_factor: null,
               stocking_uom_id: stocking_uom_id,
-              convertEnable: false
+              convertEnable: false,
             });
 
             $this.state.stocking_uom_id = stocking_uom_id;
-          }
+          },
         });
       } else {
         isError = true;
         swalMessage({
           type: "warning",
-          title: "Only one should be stocking UOM"
+          title: "Only one should be stocking UOM",
         });
 
         return isError;
@@ -237,7 +237,7 @@ const AddUom = $this => {
       isError = true;
       swalMessage({
         type: "warning",
-        title: "Selected UOM Already exists"
+        title: "Selected UOM Already exists",
       });
 
       return isError;
@@ -257,7 +257,7 @@ const updateUOM = ($this, row) => {
         uom_id: row.uom_id,
         stocking_uom: row.stocking_uom,
         conversion_factor: row.conversion_factor,
-        record_status: "A"
+        record_status: "A",
       };
 
       updateUomMapResult.push(Updateobj);
@@ -268,7 +268,7 @@ const updateUOM = ($this, row) => {
         uom_id: row.uom_id,
         stocking_uom: row.stocking_uom,
         conversion_factor: row.conversion_factor,
-        record_status: "A"
+        record_status: "A",
       };
 
       for (let j = 0; j < updateUomMapResult.length; j++) {
@@ -288,16 +288,24 @@ const updateUOM = ($this, row) => {
 
   $this.setState({
     detail_item_uom: detail_item_uom,
-    updateUomMapResult: updateUomMapResult
+    updateUomMapResult: updateUomMapResult,
   });
 };
 
 const deleteUOM = ($this, row, rowId) => {
+  if ($this.state.item_stock_list.length > 0) {
+    swalMessage({
+      type: "error",
+      title: "Stock existing for this item cannot delete stocking UOM.",
+    });
+    return;
+  }
+
   let detail_item_uom = $this.state.detail_item_uom;
   let updateUomMapResult = $this.state.updateUomMapResult;
   let insertItemUomMap = $this.state.insertItemUomMap;
   let stocking_uom_id = $this.state.stocking_uom_id;
-  const stocking_Uom = _.filter(detail_item_uom, f => {
+  const stocking_Uom = _.filter(detail_item_uom, (f) => {
     return f.stocking_uom === "Y";
   });
 
@@ -313,7 +321,7 @@ const deleteUOM = ($this, row, rowId) => {
         uom_id: row.uom_id,
         stocking_uom: row.stocking_uom,
         conversion_factor: row.conversion_factor,
-        record_status: "I"
+        record_status: "I",
       };
       updateUomMapResult.push(Updateobj);
     } else {
@@ -335,7 +343,7 @@ const deleteUOM = ($this, row, rowId) => {
     detail_item_uom: detail_item_uom,
     updateUomMapResult: updateUomMapResult,
     insertItemUomMap: insertItemUomMap,
-    stocking_uom_id: stocking_uom_id
+    stocking_uom_id: stocking_uom_id,
   });
 };
 
@@ -399,23 +407,22 @@ const numberEventHandaler = ($this, ctrl, e) => {
       if (value < 0) {
         swalMessage({
           type: "warning",
-          title: "Cannot be less than zero."
+          title: "Cannot be less than zero.",
         });
         $this.setState({
-          [name]: 0
+          [name]: 0,
         });
       } else {
         $this.setState({
-          [name]: value
+          [name]: value,
         });
       }
-    }
+    },
   });
 };
 
-
 const getFinanceAccountsMaping = ($this) => {
-  debugger
+  debugger;
   algaehApiCall({
     uri: "/finance/getFinanceAccountMapingSingle",
     data: { accounts: ["DEF_INCOME_PHAR"] },
@@ -423,17 +430,36 @@ const getFinanceAccountsMaping = ($this) => {
     method: "GET",
     onSuccess: (response) => {
       if (response.data.success === true) {
-        debugger
+        debugger;
         if (response.data.result.length > 0) {
           $this.setState({
             head_id: response.data.result[0].head_id,
-            child_id: response.data.result[0].child_id
+            child_id: response.data.result[0].child_id,
           });
         }
       }
     },
   });
-}
+};
+
+const getItemLocationStock = ($this, hims_d_item_master_id) => {
+  algaehApiCall({
+    uri: "/pharmacyGlobal/getItemLocationStock",
+    module: "pharmacy",
+    method: "GET",
+    data: { item_id: hims_d_item_master_id },
+    onSuccess: (response) => {
+      if (response.data.success === true) {
+        debugger;
+        if (response.data.records.length > 0) {
+          $this.setState({
+            item_stock_list: response.data.records,
+          });
+        }
+      }
+    },
+  });
+};
 
 export {
   texthandle,
@@ -450,5 +476,6 @@ export {
   CptCodesSearch,
   VatAppilicable,
   numberEventHandaler,
-  getFinanceAccountsMaping
+  getFinanceAccountsMaping,
+  getItemLocationStock,
 };
