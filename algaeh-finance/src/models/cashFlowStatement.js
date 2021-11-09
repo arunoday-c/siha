@@ -1231,8 +1231,8 @@ export async function cashFlowStatement(req, res, next) {
   const _mysql = new algaehMysql();
   try {
     const { decimal_places } = req.userIdentity;
-    const from_date = "2021-10-01";
-    const to_date = "2021-10-12";
+    const from_date = req.query.from_date; // "2021-10-01";
+    const to_date = req.query.to_date; //"2021-10-12";
     /*
     select finance_account_head_id,account_code,account_name,       
       parent_acc_id,account_type
