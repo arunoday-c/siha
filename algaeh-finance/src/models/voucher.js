@@ -523,7 +523,7 @@ export default {
                             }
                           }
                           console.log("updateQry", updateQry);
-                          consol.log("updateQry", updateQry);
+                          //consol.log("updateQry", updateQry);
                           let updateDebitNoteQuery = "";
                           if (debitNoteTotal) {
                             if (input["voucher_type"] !== "credit_note") {
