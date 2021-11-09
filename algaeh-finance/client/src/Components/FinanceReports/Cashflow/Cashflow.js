@@ -5,14 +5,16 @@ import moment from "moment";
 // import { newAlgaehApi } from "../../../hooks";
 // import { AlgaehMessagePop, AlgaehAutoComplete } from "algaeh-react-components";
 import Details from "./detailreport";
+import { AlgaehDateHandler } from "algaeh-react-components";
 // import ReportHeader from "../header";
 // import ReactToPrint from "react-to-print";
-export function Cashflow({ dates, layout }) {
+export function Cashflow({ layout }) {
   // const [organisation, setOrganisation] = useState({});
+  const [dates, setDates] = useState([]);
   const [displayColumn] = useState("T");
-  const from_date = dates.length > 0 ? dates[0] : undefined;
-  const to_date =
-    dates.length > 0 ? moment(dates[1]).format("YYYY-MM-DD") : undefined;
+  // const from_date = dates.length > 0 ? dates[0] : undefined;
+  // const to_date =
+  //   dates.length > 0 ? moment(dates[1]).format("YYYY-MM-DD") : undefined;
   useEffect(() => {
     // newAlgaehApi({
     //   uri: "/organization/getMainOrganization",
@@ -42,11 +44,48 @@ export function Cashflow({ dates, layout }) {
   //   setDisplayColumn(value);
   // }
   return (
-    <Details
-      from_date={from_date}
-      to_date={to_date}
-      display_column_by={displayColumn}
-    />
+    <>
+      <AlgaehDateHandler
+        div={{ className: "col-4 form-group mandatory" }}
+        label={{
+          forceLabel: "Date Range",
+          isImp: true,
+        }}
+        textBox={{
+          className: "txt-fld",
+          name: "primary_effective_start_date",
+          value: dates || undefined,
+        }}
+        type="range"
+        events={{
+          onChange: (mdate) => {
+            setDates(mdate);
+            // if (mdate) {
+            //   onChange(mdate._d);
+            // } else {
+            //   onChange(undefined);
+            // }
+          },
+          onClear: () => {
+            // onChange(undefined);
+            setDates([]);
+          },
+        }}
+      />
+      <Details
+        from_date={
+          dates.length > 0
+            ? moment(dates[0]).format("YYYY-MM-DD")
+            : moment().format("YYYY-MM-DD")
+        }
+        to_date={
+          dates.length > 0
+            ? moment(dates[1]).format("YYYY-MM-DD")
+            : moment().format("YYYY-MM-DD")
+        }
+        display_column_by={displayColumn}
+      />
+    </>
     // <>
 
     //   <div className="row">

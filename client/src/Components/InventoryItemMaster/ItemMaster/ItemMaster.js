@@ -34,6 +34,7 @@ import {
   additionaleInfo,
   numberEventHandaler,
   getFinanceAccountsMaping,
+  getItemLocationStock,
 } from "./ItemDetailsEvents";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { MainContext } from "algaeh-react-components";
@@ -54,6 +55,7 @@ class InvItemMaster extends Component {
       inv_item_image: [],
       disabledDragger: false,
       consumption_factor: 0,
+      item_stock_list: [],
       // diagramsDataBase: [],
     };
   }
@@ -81,6 +83,7 @@ class InvItemMaster extends Component {
   onClose = (e) => {
     this.props.onClose && this.props.onClose(false);
     let IOputs = InventoryItem.inputParam();
+    IOputs.item_stock_list = [];
     this.setState({ ...this.state, ...IOputs });
   };
 
@@ -101,6 +104,21 @@ class InvItemMaster extends Component {
         return item.item_master_img_unique_id ? true : false;
       })[0];
       this.setState({ ...this.state, ...IOputs, disabledDragger: disable });
+
+      getItemLocationStock(
+        this,
+        newProps.itemPop.hims_d_inventory_item_master_id
+      );
+      // this.props.getItemLocationStock({
+      //   uri: "/inventoryGlobal/getItemLocationStock",
+      //   module: "inventory",
+      //   method: "GET",
+      //   data: { item_id: newProps.itemPop.hims_d_inventory_item_master_id },
+      //   redux: {
+      //     type: "ITEM_STOCK",
+      //     mappingName: "invitemstock",
+      //   },
+      // });
     }
   }
 
@@ -966,6 +984,7 @@ function mapStateToProps(state) {
     inventoryitemuom: state.inventoryitemuom,
     inventoryitemservices: state.inventoryitemservices,
     inventoryitemlist: state.inventoryitemlist,
+    invitemstock: state.invitemstock,
   };
 }
 
@@ -975,6 +994,7 @@ function mapDispatchToProps(dispatch) {
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
       getServices: AlgaehActions,
+      getItemLocationStock: AlgaehActions,
     },
     dispatch
   );

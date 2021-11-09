@@ -296,6 +296,14 @@ const updateUOM = ($this, row) => {
 };
 
 const deleteUOM = ($this, row, rowId) => {
+  debugger;
+  if ($this.state.item_stock_list.length > 0) {
+    swalMessage({
+      type: "error",
+      title: "Stock existing for this item cannot delete stocking UOM.",
+    });
+    return;
+  }
   if (row.hims_m_inventory_item_uom_id !== undefined) {
     let detail_item_uom = $this.state.detail_item_uom;
     let updateUomMapResult = $this.state.updateUomMapResult;
@@ -428,6 +436,24 @@ const getFinanceAccountsMaping = ($this) => {
   });
 };
 
+const getItemLocationStock = ($this, hims_d_inventory_item_master_id) => {
+  algaehApiCall({
+    uri: "/inventoryGlobal/getItemLocationStock",
+    module: "inventory",
+    method: "GET",
+    data: { item_id: hims_d_inventory_item_master_id },
+    onSuccess: (response) => {
+      if (response.data.success === true) {
+        debugger;
+        if (response.data.records.length > 0) {
+          $this.setState({
+            item_stock_list: response.data.records,
+          });
+        }
+      }
+    },
+  });
+};
 export {
   texthandle,
   radioChange,
@@ -444,4 +470,5 @@ export {
   additionaleInfo,
   numberEventHandaler,
   getFinanceAccountsMaping,
+  getItemLocationStock,
 };
