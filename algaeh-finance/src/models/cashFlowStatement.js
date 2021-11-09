@@ -1450,31 +1450,31 @@ select H.finance_voucher_header_id,
       dataToSend.push(
         {
           child_id: 0,
-          name: "Net Profit",
+          name: "Net Profit ",
           closing_bal: _totalNetProfit,
           children: cumulativeResult[0],
         },
         {
           child_id: 0,
-          name: "Adjustments for operating activities ",
+          name: "Adjustments for Operating Activities ",
           closing_bal: _totalOperating,
           children: operationalActivityCA.concat(operationalActivityCL),
         },
         {
           child_id: 0,
-          name: "Adjustments for investing activities ",
+          name: "Adjustments for Investing Activities ",
           closing_bal: _totalInvesting,
           children: cumulativeResult[3],
         },
         {
           child_id: 0,
-          name: "Adjustments for Financing activities ",
+          name: "Adjustments for Financing Activities ",
           closing_bal: _totalFinancing,
           children: cumulativeResult[4],
         },
         {
           child_id: 0,
-          name: "NET Total ",
+          name: "Net Total ",
           closing_bal: parseFloat(
             parseFloat(_totalNetProfit) +
               parseFloat(_totalOperating) +
