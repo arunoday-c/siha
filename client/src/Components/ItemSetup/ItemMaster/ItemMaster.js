@@ -34,6 +34,7 @@ import {
   additionaleInfo,
   numberEventHandaler,
   getFinanceAccountsMaping,
+  getItemLocationStock,
 } from "./ItemDetailsEvents";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { MainContext } from "algaeh-react-components";
@@ -52,6 +53,7 @@ class ItemMaster extends Component {
       loading_itemInsert: false,
       head_id: null,
       child_id: null,
+      item_stock_list: [],
     };
     this.initCall();
   }
@@ -80,6 +82,7 @@ class ItemMaster extends Component {
 
   onClose = (e) => {
     let IOputs = ItemSetup.inputParam();
+    IOputs.item_stock_list = [];
     this.setState({ ...this.state, ...IOputs });
     this.props.onClose && this.props.onClose(false);
   };
@@ -93,6 +96,8 @@ class ItemMaster extends Component {
     if (newProps.itemPop.hims_d_item_master_id !== undefined) {
       let IOputs = newProps.itemPop;
       this.setState({ ...this.state, ...IOputs });
+
+      getItemLocationStock(this, newProps.itemPop.hims_d_item_master_id);
     }
   }
 
@@ -854,6 +859,7 @@ function mapStateToProps(state) {
     itemservices: state.itemservices,
     itemuom: state.itemuom,
     itemlist: state.itemlist,
+    phritemstock: state.phritemstock,
   };
 }
 
@@ -867,6 +873,7 @@ function mapDispatchToProps(dispatch) {
       getItemStorage: AlgaehActions,
       getServices: AlgaehActions,
       getItemUOM: AlgaehActions,
+      getItemLocationStock: AlgaehActions,
     },
     dispatch
   );

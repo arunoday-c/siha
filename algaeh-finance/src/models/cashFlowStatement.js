@@ -1231,8 +1231,8 @@ export async function cashFlowStatement(req, res, next) {
   const _mysql = new algaehMysql();
   try {
     const { decimal_places } = req.userIdentity;
-    const from_date = "2021-10-01";
-    const to_date = "2021-10-12";
+    const from_date = req.query.from_date; // "2021-10-01";
+    const to_date = req.query.to_date; //"2021-10-12";
     /*
     select finance_account_head_id,account_code,account_name,       
       parent_acc_id,account_type
@@ -1273,7 +1273,7 @@ export async function cashFlowStatement(req, res, next) {
        -- Financing Activity
        with recursive cte as (
         select finance_account_head_id,account_code,account_name,       
-    parent_acc_id,account_type from finance_account_head   where  account_type in ('EQTY','NCL')
+    parent_acc_id,account_type from finance_account_head   where  account_type in ('EQTY','NCL','RE')
         union                 
         select H.finance_account_head_id,H.account_code,H.account_name,       
     H.parent_acc_id,H.account_type from finance_account_head H  
@@ -1372,35 +1372,38 @@ select H.finance_voucher_header_id,
           select  C.finance_account_child_id as child_id,MAX(C.child_name) as name,
          ROUND((coalesce(sum(credit_amount) ,0)- coalesce(sum(debit_amount) ,0) ),${decimal_places}) as closing_bal
          from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
-         and VD.auth_status='A' and  VD.payment_date < date('${from_date}') 
+         and VD.auth_status='A' and  VD.payment_date <= date('${to_date}') 
          inner join finance_account_head as H on H.finance_account_head_id=C.head_id
          where finance_account_head_id in(${_netProfitList})
          group by C.finance_account_child_id;
          -- operational Activities
          select  finance_account_child_id as child_id,MAX(child_name) as name ,
-         ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal,
-         'CA' as account_type 
+         if(debit_amount>0,-ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}),
+         ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places})) as  closing_bal,
+         'CA' as account_type
          from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
          and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}') 
-         where C.head_id in (${_operationalActivitiesList_CA})
+         where C.head_id in (${_operationalActivitiesList_CA}) and C.head_id not in(${_cashAndCashEqu})
          group by C.finance_account_child_id;
          select  finance_account_child_id as child_id,MAX(child_name) as name ,
-         ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal,
-         'CL' as account_type
+         if(debit_amount>0,ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}),
+         -ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places})) as  closing_bal,
+         'CL' as account_type,debit_amount, credit_amount
          from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
          and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}') 
          where C.head_id in (${_operationalActivitiesList_CL})
          group by C.finance_account_child_id;
         -- Investing Activities
         select  finance_account_child_id as child_id,MAX(child_name) as name , 
-                    ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
+        if(debit_amount>0,-ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}),
+        ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}))  as  closing_bal
                     from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id 
                     and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}') 
                     where C.head_id in (${_investingActivitiesList})
                     group by C.finance_account_child_id;
         -- Financing Activities
         select  finance_account_child_id as child_id,MAX(child_name) as name , 
-                                ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
+                                ROUND((coalesce(sum(credit_amount) ,0)-coalesce(sum(debit_amount) ,0) ),${decimal_places}) as  closing_bal
                                 from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id 
                                 and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}') 
                                 where C.head_id in (${_financingActivitiesList})
@@ -1410,7 +1413,7 @@ select H.finance_voucher_header_id,
                                 ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
                                 from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id 
                                 and VD.auth_status='A' and  VD.payment_date <= date('${to_date}')
-                                where C.head_id in (${_cashAndCashEqu})
+                                where C.head_id in (${_cashAndCashEqu}) and  VD.is_opening_bal = 'Y'
                                 group by C.finance_account_child_id;
          `,
           printQuery: true,
@@ -1418,13 +1421,14 @@ select H.finance_voucher_header_id,
         .catch((e) => {
           throw e;
         });
-      const operationalActivityCA = cumulativeResult[1].map((m) => {
-        if (parseFloat(m.closing_bal) > 0) {
-          return { ...m, closing_bal: -m.closing_bal };
-        } else {
-          return { ...m, closing_bal: Math.abs(m.closing_bal) };
-        }
-      });
+      const operationalActivityCA = cumulativeResult[1];
+      // .map((m) => {
+      //   if (parseFloat(m.closing_bal) > 0) {
+      //     return { ...m, closing_bal: -m.closing_bal };
+      //   } else {
+      //     return { ...m, closing_bal: Math.abs(m.closing_bal) };
+      //   }
+      // });
       const operationalActivityCL = cumulativeResult[2];
 
       const _totalOperating = parseFloat(
@@ -1440,39 +1444,41 @@ select H.finance_voucher_header_id,
       const _totalCashAndEqu = _.sumBy(cumulativeResult[5], (s) =>
         parseFloat(s.closing_bal)
       ).toFixed(decimal_places);
+      const _totalNetProfit = _.sumBy(cumulativeResult[0], (s) =>
+        parseFloat(s.closing_bal)
+      ).toFixed(decimal_places);
       let dataToSend = [];
       dataToSend.push(
         {
           child_id: 0,
-          name: "Net Profit",
-          closing_bal: _.sumBy(cumulativeResult[0], (s) =>
-            parseFloat(s.closing_bal)
-          ).toFixed(decimal_places),
+          name: "Net Profit ",
+          closing_bal: _totalNetProfit,
           children: cumulativeResult[0],
         },
         {
           child_id: 0,
-          name: "Adjustments for operating activities ",
+          name: "Adjustments for Operating Activities ",
           closing_bal: _totalOperating,
           children: operationalActivityCA.concat(operationalActivityCL),
         },
         {
           child_id: 0,
-          name: "Adjustments for investing activities ",
+          name: "Adjustments for Investing Activities ",
           closing_bal: _totalInvesting,
           children: cumulativeResult[3],
         },
         {
           child_id: 0,
-          name: "Adjustments for Financing activities ",
+          name: "Adjustments for Financing Activities ",
           closing_bal: _totalFinancing,
           children: cumulativeResult[4],
         },
         {
           child_id: 0,
-          name: "NET Total ",
+          name: "Net Total ",
           closing_bal: parseFloat(
-            parseFloat(_totalOperating) +
+            parseFloat(_totalNetProfit) +
+              parseFloat(_totalOperating) +
               parseFloat(_totalInvesting) +
               parseFloat(_totalFinancing)
           ).toFixed(decimal_places),

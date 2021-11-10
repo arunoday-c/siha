@@ -11,7 +11,7 @@ export default () => {
 
   api.get(
     "/getCashFlowStatement",
-    //getCashFlowStatement,
+    // getCashFlowStatement,
     cashFlowStatement,
     (req, res, next) => {
       // if (req.records.invalid_input == true) {
