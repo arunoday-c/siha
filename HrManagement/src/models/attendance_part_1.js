@@ -3325,6 +3325,7 @@ export function processBulkAtt_Normal(data) {
                               DilayResult[i]["partial_attendance"] == "N" &&
                               DilayResult[i]["late_joined"] == "N"
                             ) {
+                              console.log("1345678");
                               let t_paid_days = "";
 
                               const total_work_days =
@@ -3426,16 +3427,16 @@ export function processBulkAtt_Normal(data) {
                                 options["leave_salary_payment_days"] == "P" &&
                                 employee_join == false
                               ) {
-                                // console.log("DilayResult", DilayResult[i]);
+                                console.log("DilayResult", DilayResult[i]);
                                 // let _earlyjoin;
                                 const month_days =
                                   moment(month_start).daysInMonth();
                                 DilayResult[i]["total_days"] = month_days;
 
-                                // console.log(
-                                //   "total_days",
-                                //   parseFloat(DilayResult[i]["total_days"])
-                                // );
+                                console.log(
+                                  "total_days",
+                                  parseFloat(DilayResult[i]["total_days"])
+                                );
                                 // console.log(
                                 //   "total_work_days",
                                 //   parseFloat(DilayResult[i]["total_work_days"])
@@ -3523,11 +3524,19 @@ export function processBulkAtt_Normal(data) {
                               //   "pending_unpaid_leave",
                               //   pending_unpaid_leave
                               // );
+
+                              console.log("t_paid_days", t_paid_days);
+                              console.log(
+                                "salary_calendar_fixed_days",
+                                options["salary_calendar_fixed_days"]
+                              );
                               attResult.push({
                                 ...DilayResult[i],
                                 total_paid_days:
-                                  t_paid_days >=
-                                  options["salary_calendar_fixed_days"]
+                                  t_paid_days < 0
+                                    ? 0
+                                    : t_paid_days >=
+                                      options["salary_calendar_fixed_days"]
                                     ? options["salary_calendar_fixed_days"]
                                     : t_paid_days,
                                 total_leave:
@@ -3541,7 +3550,7 @@ export function processBulkAtt_Normal(data) {
                                 updated_by: user_id,
                               });
                             } else {
-                              // console.log("Here im i");
+                              console.log("Here im i");
                               attResult.push({
                                 ...DilayResult[i],
                                 total_paid_days:
@@ -3595,6 +3604,8 @@ export function processBulkAtt_Normal(data) {
                             "updated_date",
                             "updated_by",
                           ];
+
+                          console.log("attResult", attResult);
 
                           _mysql
                             .executeQueryWithTransaction({
