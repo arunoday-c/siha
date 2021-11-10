@@ -559,6 +559,17 @@ class RCMWorkbench extends Component {
           }
         },
         onError: (error) => {
+          if (
+            error.message?.includes(
+              "finance_day_end_header.document_number_UNIQUE"
+            )
+          ) {
+            swalMessage({
+              title: "Duplicate Of Document Number., Please Contact Admin.",
+              type: "error",
+            });
+          }
+
           this.setState({
             visible: false,
           });

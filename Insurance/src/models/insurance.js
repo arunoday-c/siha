@@ -1996,13 +1996,13 @@ export function saveMultiStatement(req, res, next) {
                   // });
                 })
                 .catch((error) => {
-                  _mysql.closeConnection(() => {
+                  _mysql.rollBackTransaction(() => {
                     next(error);
                   });
                 });
             })
             .catch((error) => {
-              _mysql.closeConnection(() => {
+              _mysql.rollBackTransaction(() => {
                 next(error);
               });
             });
@@ -2021,10 +2021,10 @@ export function saveMultiStatement(req, res, next) {
 
 //Generate Accounting entry once statement generates(CR -- OP ctrl DR -- Customer)
 export function generateAccountingEntry(req, res, next) {
-  try {
-    const _options = req.connection == null ? {} : req.connection;
+  const _options = req.connection == null ? {} : req.connection;
 
-    const _mysql = new algaehMysql(_options);
+  const _mysql = new algaehMysql(_options);
+  try {
     // const utilities = new algaehUtilities();
     console.log("Iam here 1");
     _mysql
@@ -2149,20 +2149,21 @@ export function generateAccountingEntry(req, res, next) {
                     })
                     .catch((error) => {
                       console.log("error", error);
-                      _mysql.closeConnection(() => {
+                      _mysql.rollBackTransaction(() => {
                         next(error);
                       });
                     });
                 })
                 .catch((error) => {
-                  console.log("error", error);
-                  _mysql.closeConnection(() => {
+                  console.log("error1", error);
+                  _mysql.rollBackTransaction(() => {
                     next(error);
                   });
                 });
             })
             .catch((error) => {
-              _mysql.closeConnection(() => {
+              console.log("error2", error);
+              _mysql.rollBackTransaction(() => {
                 next(error);
               });
             });
@@ -2174,7 +2175,8 @@ export function generateAccountingEntry(req, res, next) {
         }
       })
       .catch((error) => {
-        _mysql.closeConnection(() => {
+        console.log("error3", error);
+        _mysql.rollBackTransaction(() => {
           next(error);
         });
       });
