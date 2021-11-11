@@ -255,7 +255,7 @@ class PosListItems extends Component {
                             <div className="col">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Quantity In Hand",
+                                  forceLabel: "Qty. In Hand",
                                 }}
                               />
                               <h6>
@@ -329,7 +329,7 @@ class PosListItems extends Component {
                             <AlagehFormGroup
                               div={{ className: "col" }}
                               label={{
-                                forceLabel: "Discount (%)",
+                                forceLabel: "Discount(%)",
                                 isImp: false,
                               }}
                               textBox={{

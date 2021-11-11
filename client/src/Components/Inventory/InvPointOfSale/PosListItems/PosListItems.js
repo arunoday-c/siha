@@ -218,7 +218,7 @@ class PosListItems extends Component {
                             <AlagehFormGroup
                               div={{ className: "col" }}
                               label={{
-                                forceLabel: "Quantity",
+                                forceLabel: "Qty.",
                               }}
                               textBox={{
                                 number: {
@@ -244,7 +244,7 @@ class PosListItems extends Component {
                             <AlagehFormGroup
                               div={{ className: "col" }}
                               label={{
-                                forceLabel: "Quantity in Hand",
+                                forceLabel: "Qty. in Hand",
                               }}
                               textBox={{
                                 decimal: { allowNegative: false },
