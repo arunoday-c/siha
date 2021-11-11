@@ -341,6 +341,7 @@ function mapStateToProps(state) {
   return {
     insuranceprovider: state.insuranceprovider,
     subinsuranceprovider: state.subinsuranceprovider,
+    insProviders: state.insProviders,
   };
 }
 

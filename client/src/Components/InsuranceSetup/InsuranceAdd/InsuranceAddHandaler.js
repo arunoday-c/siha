@@ -13,6 +13,19 @@ const handleNext = ($this, setp, e) => {
   if (!err) {
     if ($this.state.screenName === "InsuranceProvider") {
       if ($this.state.insurance_provider_saved === false) {
+        const prefix_vlidate = $this.props.insProviders.find(
+          (f) => f.prefix === $this.state.prefix
+        );
+
+        if (prefix_vlidate !== undefined) {
+          swalMessage({
+            title:
+              $this.state.prefix +
+              " Prefix cannot be already defined to another componay",
+            type: "warning",
+          });
+          return;
+        }
         //Save Insurance
         $this.state.preapp_valid_days =
           $this.state.preapp_valid_days === "" ||
