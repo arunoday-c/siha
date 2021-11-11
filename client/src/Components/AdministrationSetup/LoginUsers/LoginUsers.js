@@ -949,7 +949,7 @@ class LoginUsers extends Component {
                       </div>
                     </div> */}
 
-                    {!this.state.editData ? (
+                    {!this.state.editData && this.state.max_users ? (
                       <small className="float-right">
                         User Limit:
                         <b>
@@ -966,7 +966,7 @@ class LoginUsers extends Component {
                   {this.maxCharactersLeft(
                     parseInt(this.state.max_users),
                     this.state.users_created
-                  ) > 0 ? (
+                  ) > 0 || !this.state.max_users ? (
                     <>
                       <AlgaehAutoSearch
                         div={{

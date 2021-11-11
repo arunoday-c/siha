@@ -63,16 +63,15 @@ class BreadCrumb extends PureComponent {
   showEditData() {
     if (this.props.editData !== undefined) {
       return (
-        <AlgaehSecurityComponent componentCode="PAT_DATA_EDIT">
-          <li onClick={EditDetails.bind(this, this)}>
-            {" "}
-            {this.props.editData.events.addNewPat ? (
-              <i class="fas fa-user-plus"></i>
-            ) : (
+        <li onClick={EditDetails.bind(this, this)}>
+          {this.props.editData.events.addNewPat ? (
+            <i class="fas fa-user-plus"></i>
+          ) : (
+            <AlgaehSecurityComponent componentCode="PAT_DATA_EDIT">
               <i className="fas fa-user-edit bredcrumpIconBig" />
-            )}
-          </li>
-        </AlgaehSecurityComponent>
+            </AlgaehSecurityComponent>
+          )}
+        </li>
       );
     }
   }

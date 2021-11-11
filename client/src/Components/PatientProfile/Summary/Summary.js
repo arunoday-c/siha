@@ -286,10 +286,10 @@ class Summary extends Component {
                     { name: "Start Date" },
                     { name: "Generic Name" },
                     { name: "Item Description" },
-                    { name: "Dosage" },
-                    { name: "Unit" },
-                    { name: "Frequency" },
-                    { name: "No. of Days" },
+                    // { name: "Dosage" },
+                    // { name: "Unit" },
+                    // { name: "Frequency" },
+                    { name: "Instructions" },
                   ]}
                   columnData={this.state.patientMedications}
                 />
