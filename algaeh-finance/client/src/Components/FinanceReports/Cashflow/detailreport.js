@@ -123,7 +123,7 @@ export default memo(function (props) {
           });
         });
     }
-  }, [display_column_by, from_date, to_date]);
+  }, [display_column_by, from_date, to_date, showArabic, hideZero]);
   // console.log("columns===>", columns, data);
   return (
     <Spin
