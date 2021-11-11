@@ -1,5 +1,5 @@
 const changeChecks = ($this, e) => {
-  e.persist();
+  // e.persist();
   let name = e.target.name;
   switch (e.target.name) {
     case "leave_salary_process":
