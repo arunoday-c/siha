@@ -46,7 +46,7 @@ export function Cashflow({ layout }) {
   //   setDisplayColumn(value);
   // }
   return (
-    <>
+    <div className="row">
       <AlgaehDateHandler
         div={{ className: "col-4 form-group mandatory" }}
         label={{
@@ -74,7 +74,24 @@ export function Cashflow({ layout }) {
           },
         }}
       />
-      <div className="col">
+
+      <div className="col-2">
+        <label>SHOW LEDGER CODE</label>
+        <div className="customCheckbox">
+          <label className="checkbox inline">
+            <input
+              type="checkbox"
+              checked={showArabic}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setShowArabic(checked);
+              }}
+            />
+            <span> Yes</span>
+          </label>
+        </div>
+      </div>
+      <div className="col-3">
         <label>SHOW ACCOUNT NAME IN ARABIC</label>
         <div className="customCheckbox">
           <label className="checkbox inline">
@@ -90,7 +107,7 @@ export function Cashflow({ layout }) {
           </label>
         </div>
       </div>
-      <div className="col">
+      <div className="col-2">
         <label>HIDE ZERO ACCOUNT</label>
         <div className="customCheckbox">
           <label className="checkbox inline">
@@ -121,45 +138,6 @@ export function Cashflow({ layout }) {
         showArabic={showArabic}
         hideZero={hideZero}
       />
-    </>
-    // <>
-
-    //   <div className="row">
-    //     <div className="col-12 reportHeaderAction">
-    //       <span>
-    //         <ReactToPrint
-    //           trigger={() => <i className="fas fa-print" />}
-    //           // content={() => createPrintObject.current}
-    //           removeAfterPrint={true}
-    //           bodyClass="reportPreviewSecLeft"
-    //           pageStyle="@media print {
-    //       html, body {
-    //         height: initial !important;
-    //         overflow: initial !important;
-    //         -webkit-print-color-adjust: exact;
-    //       }
-    //     }
-
-    //     @page {
-    //       size: auto;
-    //       margin: 20mm;
-    //     }"
-    //         />
-    //       </span>
-    //     </div>
-    //   </div>
-
-    //   <ReportHeader title="Cashflow Report" />
-    //   <div className="row">
-
-    //     <div className="col-12">
-    //       <Details
-    //         from_date={from_date}
-    //         to_date={to_date}
-    //         display_column_by={displayColumn}
-    //       />
-    //     </div>
-    //   </div>
-    // </>
+    </div>
   );
 }
