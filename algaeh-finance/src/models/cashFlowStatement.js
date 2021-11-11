@@ -1386,7 +1386,7 @@ select H.finance_voucher_header_id,
            showInArabic === true ? "C.arabic_child_name" : "C.child_name"
          }) as name ,
          if(debit_amount>0,-ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}),
-         ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places})) as  closing_bal,
+         ABS(ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}))) as  closing_bal,
          'CA' as account_type
          from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
          and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}') 
@@ -1395,7 +1395,7 @@ select H.finance_voucher_header_id,
          select  finance_account_child_id as child_id,MAX(${
            showInArabic === true ? "C.arabic_child_name" : "C.child_name"
          }) as name ,
-         if(debit_amount>0,ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}),
+         if(debit_amount>0,ABS(ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places})),
          -ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places})) as  closing_bal,
          'CL' as account_type,debit_amount, credit_amount
          from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
@@ -1407,7 +1407,7 @@ select H.finance_voucher_header_id,
           showInArabic === true ? "C.arabic_child_name" : "C.child_name"
         }) as name ,
         if(debit_amount>0,-ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}),
-        ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}))  as  closing_bal
+        ABS(ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places})))  as  closing_bal
                     from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id 
                     and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}') 
                     where C.head_id in (${_investingActivitiesList})
