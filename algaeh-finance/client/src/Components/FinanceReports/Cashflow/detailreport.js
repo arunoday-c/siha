@@ -10,7 +10,7 @@ import moment from "moment";
 import { newAlgaehApi } from "../../../hooks";
 import PrintLayout from "../printlayout";
 export default memo(function (props) {
-  const { display_column_by, from_date, to_date } = props;
+  const { display_column_by, from_date, to_date, showArabic, hideZero } = props;
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -28,6 +28,8 @@ export default memo(function (props) {
           display_column_by,
           from_date: moment(from_date).format("YYYY-MM-DD"),
           to_date: moment(to_date).format("YYYY-MM-DD"),
+          showArabic: showArabic === true ? "Y" : "N",
+          hideZero: hideZero === true ? "Y" : "N",
         },
       })
         .then((response) => {

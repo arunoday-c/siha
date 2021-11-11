@@ -12,6 +12,8 @@ export function Cashflow({ layout }) {
   // const [organisation, setOrganisation] = useState({});
   const [dates, setDates] = useState([]);
   const [displayColumn] = useState("T");
+  const [showArabic, setShowArabic] = useState(false);
+  const [hideZero, setHideZero] = useState(false);
   // const from_date = dates.length > 0 ? dates[0] : undefined;
   // const to_date =
   //   dates.length > 0 ? moment(dates[1]).format("YYYY-MM-DD") : undefined;
@@ -72,6 +74,38 @@ export function Cashflow({ layout }) {
           },
         }}
       />
+      <div className="col">
+        <label>SHOW ACCOUNT NAME IN ARABIC</label>
+        <div className="customCheckbox">
+          <label className="checkbox inline">
+            <input
+              type="checkbox"
+              checked={showArabic}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setShowArabic(checked);
+              }}
+            />
+            <span> Yes</span>
+          </label>
+        </div>
+      </div>
+      <div className="col">
+        <label>HIDE ZERO ACCOUNT</label>
+        <div className="customCheckbox">
+          <label className="checkbox inline">
+            <input
+              type="checkbox"
+              checked={hideZero}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setHideZero(checked);
+              }}
+            />
+            <span> Yes</span>
+          </label>
+        </div>
+      </div>
       <Details
         from_date={
           dates.length > 0
@@ -84,6 +118,8 @@ export function Cashflow({ layout }) {
             : moment().format("YYYY-MM-DD")
         }
         display_column_by={displayColumn}
+        showArabic={showArabic}
+        hideZero={hideZero}
       />
     </>
     // <>
