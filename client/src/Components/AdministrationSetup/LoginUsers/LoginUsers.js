@@ -951,15 +951,14 @@ class LoginUsers extends Component {
 
                     {!this.state.editData && this.state.max_users ? (
                       <small className="float-right">
-                        User Limit:
+                        User Limit:{" "}
                         <b>
-                          {" "}
                           {this.maxCharactersLeft(
                             parseInt(this.state.max_users),
                             this.state.users_created
                           )}
-                        </b>
-                        /<b>{this.state.max_users}</b>
+                        </b>{" "}
+                        left out of <b>{this.state.max_users}</b>
                       </small>
                     ) : null}
                   </div>
