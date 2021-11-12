@@ -19,9 +19,11 @@ const handleNext = ($this, setp, e) => {
 
         if (prefix_vlidate !== undefined) {
           swalMessage({
-            title:
+            title: "Duplicate Prefix",
+            text:
               $this.state.prefix +
-              " Prefix cannot be already defined to another componay",
+              " same prefix is assign to another company. Please enter another prefix",
+
             type: "warning",
           });
           return;
