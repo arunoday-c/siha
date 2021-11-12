@@ -116,8 +116,13 @@ export default {
       default:
         voucher_type = input.voucher_type.toUpperCase();
     }
-    const { merdgeRecords, partial_amount, debitNoteTotal, debitNoteList } =
-      input;
+    const {
+      merdgeRecords,
+      partial_amount,
+      debitNoteTotal,
+      final_bal_amount,
+      debitNoteList,
+    } = input;
     if (voucher_type == "") {
       req.records = {
         invalid_input: true,
@@ -466,7 +471,10 @@ export default {
                             }
                             console.log("b_amt", b_amt);
 
-                            if (input["voucher_type"] !== "credit_note") {
+                            if (
+                              input["voucher_type"] !== "credit_note" &&
+                              input["voucher_type"] !== "debit_note"
+                            ) {
                               console.log("1");
                               queryString += _mysql.mysqlQueryFormat(
                                 "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount,voucher_type)value(?,?,?,?);",
@@ -493,9 +501,12 @@ export default {
                               //End Commented coz every transaction its giving full amount as bug reported by abu
                               console.log("debitNoteTotal===>", debitNoteTotal);
                               console.log("head_amount===>", head_amount);
-                              // if (debitNoteTotal) {
+                              // if (!debitNoteTotal) {
                               //   console.log("3");
-                              //   if (input["voucher_type"] !== "credit_note") {
+                              //   if (
+                              //     input["voucher_type"] !== "credit_note" &&
+                              //     input["voucher_type"] !== "debit_note"
+                              //   ) {
                               //     updateQry += `update finance_voucher_header set settlement_status='S',settled_amount=amount,updated_date='${moment().format(
                               //       "YYYY-MM-DD"
                               //     )}',updated_by=${
@@ -508,7 +519,10 @@ export default {
                               //   "voucher_type===>",
                               //   input["voucher_type"]
                               // );
-                              if (input["voucher_type"] !== "credit_note") {
+                              if (
+                                input["voucher_type"] !== "credit_note" &&
+                                input["voucher_type"] !== "debit_note"
+                              ) {
                                 updateQry += `update finance_voucher_header set settlement_status=if(settled_amount+${parseFloat(
                                   head_amount
                                 )}=amount,'S','P'),settled_amount=settled_amount+${parseFloat(
@@ -523,10 +537,13 @@ export default {
                             }
                           }
                           console.log("updateQry", updateQry);
-                          //consol.log("updateQry", updateQry);
+                          // consol.log("debitNoteList", debitNoteList);
                           let updateDebitNoteQuery = "";
                           if (debitNoteTotal) {
-                            if (input["voucher_type"] !== "credit_note") {
+                            if (
+                              input["voucher_type"] !== "credit_note" &&
+                              input["voucher_type"] !== "debit_note"
+                            ) {
                               for (
                                 let dk = 0;
                                 dk < debitNoteList.length;
@@ -541,8 +558,12 @@ export default {
                           if (queryString === "") {
                             queryString = "select 1;";
                           }
-                          // console.log("queryString", queryString);
+                          console.log("queryString", queryString);
                           // console.log("updateQry", updateQry);
+                          console.log(
+                            "updateDebitNoteQuery",
+                            updateDebitNoteQuery
+                          );
                           // consol.log("queryString", queryString);
                           _mysql
                             .executeQueryWithTransaction({

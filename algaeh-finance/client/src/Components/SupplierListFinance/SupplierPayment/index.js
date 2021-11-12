@@ -217,6 +217,7 @@ export default memo(function (props) {
         return {
           invoice_no: voucher_no,
           balance_amount: amount,
+          modified_amount: amount,
           finance_voucher_header_id,
           voucher_type: "advance",
         };
@@ -229,6 +230,7 @@ export default memo(function (props) {
           return {
             invoice_no,
             balance_amount: amount,
+            modified_amount: amount,
             finance_voucher_header_id,
             voucher_type: "debit_note",
           };

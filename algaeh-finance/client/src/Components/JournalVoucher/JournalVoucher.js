@@ -1232,6 +1232,7 @@ export default function JournalVoucher({
       ],
       type: voucherType === "payment" ? "supplier" : "customer",
       debitNoteTotal: parseFloat(selected.balance_amount),
+      final_bal_amount: parseFloat(selected.balance_amount),
       filterDebitNotes: [],
       customerOrSupplerHeaderName: SorCHeaderName,
       customerOrSupplerDetailName: selected.invoice_no,

@@ -290,10 +290,11 @@ export function getAllCreditNotes(req, res, next) {
   try {
     _mysql
       .executeQuery({
-        query: `select H.finance_voucher_header_id,H.voucher_no,H.invoice_no,H.amount,H.payment_date,H.narration,H.settled_amount,D.finance_voucher_id
-from finance_voucher_header as H inner join finance_voucher_details as D
-on H.finance_voucher_header_id = D.voucher_header_id
-where H.voucher_type ='credit_note'  and H.settlement_status ='P' and D.child_id = ? ;`,
+        query: `select H.finance_voucher_header_id,H.voucher_no,H.invoice_no,H.amount, \
+        H.payment_date,H.narration,H.settled_amount,D.finance_voucher_id
+        from finance_voucher_header as H inner join finance_voucher_details as D
+        on H.finance_voucher_header_id = D.voucher_header_id
+        where H.voucher_type ='credit_note'  and H.settlement_status ='P' and D.child_id = ? ;`,
         values: [child_id],
         printQuery: true,
       })
