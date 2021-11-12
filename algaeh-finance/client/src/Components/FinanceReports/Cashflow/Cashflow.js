@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import moment from "moment";
 // import { getItem, tokenDecode } from "algaeh-react-components/storage";
 // import jwtDecode from "jwt-decode";
@@ -10,41 +10,12 @@ import { AlgaehDateHandler } from "algaeh-react-components";
 // import ReactToPrint from "react-to-print";
 export function Cashflow({ layout }) {
   // const [organisation, setOrganisation] = useState({});
-  const [dates, setDates] = useState([]);
+  const [dates, setDates] = useState([moment().startOf("month"), moment()]);
   const [displayColumn] = useState("T");
   const [showArabic, setShowArabic] = useState(false);
   const [hideZero, setHideZero] = useState(false);
-  // const from_date = dates.length > 0 ? dates[0] : undefined;
-  // const to_date =
-  //   dates.length > 0 ? moment(dates[1]).format("YYYY-MM-DD") : undefined;
-  useEffect(() => {
-    // newAlgaehApi({
-    //   uri: "/organization/getMainOrganization",
-    //   method: "GET",
-    // })
-    //   .then((result) => {
-    //     const { records, success, message } = result.data;
-    //     if (success === true) {
-    //       setOrganisation(records);
-    //     } else {
-    //       AlgaehMessagePop({
-    //         display: message,
-    //         type: "error",
-    //       });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     AlgaehMessagePop({
-    //       display: error.message,
-    //       type: "error",
-    //     });
-    //   });
-  }, []);
+  const [showLedgerCode, setShowLedgerCode] = useState(false);
 
-  // const { organization_name, address1, address2, full_name } = organisation;
-  // function onChangeDisplayHandler(name, value) {
-  //   setDisplayColumn(value);
-  // }
   return (
     <div className="row">
       <AlgaehDateHandler
@@ -81,10 +52,10 @@ export function Cashflow({ layout }) {
           <label className="checkbox inline">
             <input
               type="checkbox"
-              checked={showArabic}
+              checked={showLedgerCode}
               onChange={(e) => {
                 const checked = e.target.checked;
-                setShowArabic(checked);
+                setShowLedgerCode(checked);
               }}
             />
             <span> Yes</span>
@@ -137,6 +108,7 @@ export function Cashflow({ layout }) {
         display_column_by={displayColumn}
         showArabic={showArabic}
         hideZero={hideZero}
+        showLedgerCode={showLedgerCode}
       />
     </div>
   );

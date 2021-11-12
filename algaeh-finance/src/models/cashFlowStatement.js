@@ -1241,6 +1241,7 @@ export async function cashFlowStatement(req, res, next) {
     //,'CL'
     const showInArabic = req.query.showArabic === "Y" ? true : false;
     const hideZero = req.query.hideZero === "Y" ? true : false;
+    const showLedgerCode = req.query.showLedgerCode === "Y" ? true : false;
     // console.log("req.query.hideZero===>", req.query);
     const result = await _mysql
       .executeQuery({
@@ -1372,8 +1373,10 @@ select H.finance_voucher_header_id,
       const cumulativeResult = await _mysql
         .executeQuery({
           query: ` -- Net Profit
-          select  C.finance_account_child_id as child_id,MAX(${
+          select  C.finance_account_child_id as child_id,CONCAT(MAX(${
             showInArabic === true ? "C.arabic_child_name" : "C.child_name"
+          }),${showLedgerCode === true ? "' / '" : "''"},${
+            showLedgerCode === true ? "MAX(C.ledger_code)" : "''"
           }) as name,
          ROUND((coalesce(sum(credit_amount) ,0)- coalesce(sum(debit_amount) ,0) ),${decimal_places}) as closing_bal
          from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
@@ -1382,9 +1385,11 @@ select H.finance_voucher_header_id,
          where finance_account_head_id in(${_netProfitList})
          group by C.finance_account_child_id;
          -- operational Activities
-         select  finance_account_child_id as child_id,MAX(${
+         select  finance_account_child_id as child_id,CONCAT(MAX(${
            showInArabic === true ? "C.arabic_child_name" : "C.child_name"
-         }) as name ,
+         }),${showLedgerCode === true ? "' / '" : "''"},${
+            showLedgerCode === true ? "MAX(C.ledger_code)" : "''"
+          }) as name ,
          if(debit_amount>0,-ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}),
          ABS(ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}))) as  closing_bal,
          'CA' as account_type
@@ -1392,9 +1397,11 @@ select H.finance_voucher_header_id,
          and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}') 
          where C.head_id in (${_operationalActivitiesList_CA}) and C.head_id not in(${_cashAndCashEqu})
          group by C.finance_account_child_id;
-         select  finance_account_child_id as child_id,MAX(${
+         select  finance_account_child_id as child_id,CONCAT(MAX(${
            showInArabic === true ? "C.arabic_child_name" : "C.child_name"
-         }) as name ,
+         }),${showLedgerCode === true ? "' / '" : "''"},${
+            showLedgerCode === true ? "MAX(C.ledger_code)" : "''"
+          }) as name ,
          if(debit_amount>0,ABS(ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places})),
          -ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places})) as  closing_bal,
          'CL' as account_type,debit_amount, credit_amount
@@ -1403,9 +1410,11 @@ select H.finance_voucher_header_id,
          where C.head_id in (${_operationalActivitiesList_CL})
          group by C.finance_account_child_id;
         -- Investing Activities
-        select  finance_account_child_id as child_id,MAX(${
+        select  finance_account_child_id as child_id,CONCAT(MAX(${
           showInArabic === true ? "C.arabic_child_name" : "C.child_name"
-        }) as name ,
+        }),${showLedgerCode === true ? "' / '" : "''"},${
+            showLedgerCode === true ? "MAX(C.ledger_code)" : "''"
+          }) as name ,
         if(debit_amount>0,-ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}),
         ABS(ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places})))  as  closing_bal
                     from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id 
@@ -1413,18 +1422,22 @@ select H.finance_voucher_header_id,
                     where C.head_id in (${_investingActivitiesList})
                     group by C.finance_account_child_id;
         -- Financing Activities
-        select  finance_account_child_id as child_id,MAX(${
+        select  finance_account_child_id as child_id,CONCAT(MAX(${
           showInArabic === true ? "C.arabic_child_name" : "C.child_name"
-        }) as name ,
+        }),${showLedgerCode === true ? "' / '" : "''"},${
+            showLedgerCode === true ? "MAX(C.ledger_code)" : "''"
+          }) as name ,
                                 ROUND((coalesce(sum(credit_amount) ,0)-coalesce(sum(debit_amount) ,0) ),${decimal_places}) as  closing_bal
                                 from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id 
                                 and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}') 
                                 where C.head_id in (${_financingActivitiesList})
                                 group by C.finance_account_child_id;
         -- Cash and cash equivalent
-        select  finance_account_child_id as child_id,MAX(${
+        select  finance_account_child_id as child_id,CONCAT(MAX(${
           showInArabic === true ? "C.arabic_child_name" : "C.child_name"
-        }) as name ,
+        }),${showLedgerCode === true ? "' / '" : "''"},${
+            showLedgerCode === true ? "MAX(C.ledger_code)" : "''"
+          }) as name ,
                                 ROUND((coalesce(sum(debit_amount) ,0)-coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
                                 from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id 
                                 and VD.auth_status='A' and  VD.payment_date between date('${from_date}') and date('${to_date}')

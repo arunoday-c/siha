@@ -9,8 +9,16 @@ import {
 import moment from "moment";
 import { newAlgaehApi } from "../../../hooks";
 import PrintLayout from "../printlayout";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 export default memo(function (props) {
-  const { display_column_by, from_date, to_date, showArabic, hideZero } = props;
+  const {
+    display_column_by,
+    from_date,
+    to_date,
+    showArabic,
+    hideZero,
+    showLedgerCode,
+  } = props;
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -30,6 +38,7 @@ export default memo(function (props) {
           to_date: moment(to_date).format("YYYY-MM-DD"),
           showArabic: showArabic === true ? "Y" : "N",
           hideZero: hideZero === true ? "Y" : "N",
+          showLedgerCode: showLedgerCode === true ? "Y" : "N",
         },
       })
         .then((response) => {
@@ -98,10 +107,21 @@ export default memo(function (props) {
             let newColumns = columns.map((column) => {
               const freeze =
                 column.colum_id === "name" ? { freezable: true } : {};
+              const template =
+                column.colum_id !== "name"
+                  ? {
+                      displayTemplate: (row) => {
+                        return getAmountFormart(row.closing_bal, {
+                          appendSymbol: false,
+                        });
+                      },
+                    }
+                  : {};
               return {
                 fieldName: column.colum_id,
                 label: column.label,
                 ...freeze,
+                ...template,
               };
             });
             setColumns(newColumns);
@@ -123,7 +143,7 @@ export default memo(function (props) {
           });
         });
     }
-  }, [display_column_by, from_date, to_date, showArabic, hideZero]);
+  }, [display_column_by, from_date, to_date, showArabic, hideZero, showLedgerCode]);
   // console.log("columns===>", columns, data);
   return (
     <Spin
