@@ -63,8 +63,10 @@ export default {
     let invoice_no = input.invoice_no;
 
     const child_ids = [];
+    const head_ids = [];
     input.details.forEach((child) => {
       child_ids.push(child.child_id);
+      head_ids.push(child.head_id);
     });
     // console.log("child_ids===>", child_ids);
     const childAccount = await _mysql
@@ -499,8 +501,8 @@ export default {
                               //   ? partial_amount
                               //   : balance_amount;
                               //End Commented coz every transaction its giving full amount as bug reported by abu
-                              console.log("debitNoteTotal===>", debitNoteTotal);
-                              console.log("head_amount===>", head_amount);
+                              // console.log("debitNoteTotal===>", debitNoteTotal);
+                              // console.log("head_amount===>", head_amount);
                               // if (!debitNoteTotal) {
                               //   console.log("3");
                               //   if (
@@ -755,7 +757,59 @@ export default {
                                   hospital_id: input.hospital_id,
                                 },
                               })
-                              .then((result2) => {
+                              .then(async (result2) => {
+                                let header_balance = 0;
+                                let allowToChange = false;
+                                if (input.voucher_type === "sales") {
+                                  const accountReceivables =
+                                    await _mysql.executeQueryWithTransaction({
+                                      query: `SELECT finance_account_head_id FROM finance_account_head where account_type='AR';
+                                    select parent_acc_id,finance_account_head_id from finance_account_head where finance_account_head_id in (?);
+                                    `,
+                                      values: [head_ids],
+                                    });
+                                  console.log(
+                                    "accountReceivables",
+                                    accountReceivables[0],
+                                    accountReceivables[1]
+                                  );
+                                  const firstAr =
+                                    accountReceivables[0].length > 0
+                                      ? accountReceivables[0][0]
+                                      : undefined;
+                                  const secondAr = accountReceivables[1];
+                                  if (firstAr) {
+                                    const resValues = secondAr.find(
+                                      (f) =>
+                                        f.parent_acc_id ===
+                                        firstAr.finance_account_head_id
+                                    );
+                                    if (resValues) {
+                                      header_balance = _.chain(input.details)
+                                        .filter(
+                                          (f) =>
+                                            parseInt(f.head_id) ===
+                                            resValues.finance_account_head_id
+                                        )
+                                        .sumBy((s) => s.amount)
+                                        .value();
+                                      allowToChange = true;
+                                    }
+                                  }
+                                }
+                                if (allowToChange === true) {
+                                  await _mysql.executeQueryWithTransaction({
+                                    query: `update finance_voucher_header set amount=? where finance_voucher_header_id=?;
+                                    update finance_voucher_sub_header set amount=? where finance_voucher_header_id=?;`,
+                                    values: [
+                                      header_balance,
+                                      finance_voucher_header_id,
+                                      header_balance,
+                                      finance_voucher_header_id,
+                                    ],
+                                  });
+                                }
+
                                 //For Testing without saving Data
                                 // _mysql.rollBackTransaction(() => {
                                 //   _mysql.releaseConnection();
@@ -766,7 +820,10 @@ export default {
                                 //   };
                                 //   next();
                                 // });
+                                // console.log("Not inserted===>", header_balance);
+                                // return;
                                 // For testing without saving data
+
                                 _mysql.commitTransaction(() => {
                                   _mysql.releaseConnection();
                                   req.records = {
