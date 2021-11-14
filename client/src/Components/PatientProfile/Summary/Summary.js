@@ -208,10 +208,11 @@ class Summary extends Component {
                 <p>Not recorded</p>
               ) : (
                 <p>
-                  Patient {_pat_episode.patient_name}, {_pat_episode.age}Y{" "}
-                  {_pat_episode.age_in_months}m {_pat_episode.age_in_days}d/
-                  {_pat_episode.gender}, visited{" "}
-                  {_pat_episode.sub_department_name} Department on{" "}
+                  Patient <b>{_pat_episode.patient_name}</b>,({" "}
+                  {_pat_episode.age}Y {_pat_episode.age_in_months}m{" "}
+                  {_pat_episode.age_in_days}d/
+                  {_pat_episode.gender}), <br />
+                  visited {_pat_episode.sub_department_name} Department on{" "}
                   {_pat_episode.visit_date} for the chief complaint of{" "}
                   <b>{_pat_episode.comment}</b> from {_pat_episode.onset_date}.
                 </p>
@@ -255,26 +256,34 @@ class Summary extends Component {
             <div className="bd-callout bd-callout-theme">
               <h6>Diagnosis</h6>
               <div className="row">
-                <div className="col">
-                  <h6 className="danger">
-                    {_pat_patientDiagnosis.length > 0
-                      ? _pat_patientDiagnosis.map((data, index) =>
-                          data.diagnosis_type === "P"
-                            ? "Primary: " + data.icd_description
-                            : null
-                        )
-                      : "No Diagnosis added"}
-                  </h6>
+                <div className="col-12">
+                  <p className="danger">
+                    Primary:
+                    <b>
+                      {" "}
+                      {_pat_patientDiagnosis.length > 0
+                        ? _pat_patientDiagnosis.map((data, index) =>
+                            data.diagnosis_type === "P"
+                              ? data.icd_description
+                              : null
+                          )
+                        : "No Diagnosis added"}
+                    </b>
+                  </p>
                 </div>
 
-                <div className="col">
-                  <h6 className="">
-                    {_pat_patientDiagnosis.map((data, index) =>
-                      data.diagnosis_type === "S"
-                        ? "Secondary: " + data.icd_description
-                        : null
-                    )}
-                  </h6>
+                <div className="col-12">
+                  <p className="">
+                    Secondary:
+                    <b>
+                      {" "}
+                      {_pat_patientDiagnosis.map((data, index) =>
+                        data.diagnosis_type === "S"
+                          ? data.icd_description
+                          : null
+                      )}
+                    </b>
+                  </p>
                 </div>
               </div>
             </div>
@@ -309,7 +318,7 @@ class Summary extends Component {
                   {this.state.patientMedications.length > 0
                     ? this.state.patientMedications.map((data, index) => (
                         <tr key={index}>
-                          <td>{index + 1}</td>
+                         <td width="50">{index + 1}</td>
                           <td>{data.item_description}</td>
                           <td>{data.dosage}</td>
                           <td>
@@ -347,8 +356,8 @@ class Summary extends Component {
             {this.state.patientSummary?.lab ? (
               this.state.patientSummary.lab?.length > 0 ? (
                 <div className="bd-callout bd-callout-theme">
-                  <h3>Lab Order:-</h3>
-                  <table>
+                  <h6>Lab Order:-</h6>
+                  <table className="accrTable">
                     <thead>
                       <tr>
                         <th>SL No.</th>
@@ -360,8 +369,12 @@ class Summary extends Component {
                       return (
                         <tbody>
                           <tr>
-                            <td>{index + 1}</td>
-                            <td>{service_name}</td>
+                            <td width="50">{index + 1}</td>
+                            <td
+                              style={{ textAlign: "left", fontWeight: "bold" }}
+                            >
+                              {service_name}
+                            </td>
                           </tr>
                         </tbody>
                       );
@@ -373,8 +386,8 @@ class Summary extends Component {
             {this.state.patientSummary?.rad ? (
               this.state.patientSummary.rad?.length > 0 ? (
                 <div className="bd-callout bd-callout-theme">
-                  <h3>Radiology Order:-</h3>
-                  <table>
+                  <h6>Radiology Order:-</h6>
+                  <table className="accrTable">
                     <thead>
                       <tr>
                         <th>SL No.</th>
@@ -386,8 +399,12 @@ class Summary extends Component {
                       return (
                         <tbody>
                           <tr>
-                            <td>{index + 1}</td>
-                            <td>{service_name}</td>
+                            <td width="50">{index + 1}</td>
+                            <td
+                              style={{ textAlign: "left", fontWeight: "bold" }}
+                            >
+                              {service_name}
+                            </td>
                           </tr>
                         </tbody>
                       );
@@ -399,8 +416,8 @@ class Summary extends Component {
             {this.state.patientSummary?.consumableList ? (
               this.state.patientSummary.consumableList?.length > 0 ? (
                 <div className="bd-callout bd-callout-theme">
-                  <h3>Consumable Order:-</h3>
-                  <table>
+                  <h6>Consumable Order:-</h6>
+                  <table className="accrTable">
                     <thead>
                       <tr>
                         <th>SL No.</th>
@@ -414,9 +431,18 @@ class Summary extends Component {
                         return (
                           <tbody>
                             <tr>
-                              <td>{index + 1}</td>
-                              <td>{service_name}</td>
-                              <td>{instructions}</td>
+                              <td width="50">{index + 1}</td>
+                              <td
+                                style={{
+                                  textAlign: "left",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {service_name}
+                              </td>
+                              <td style={{ textAlign: "left" }}>
+                                {instructions}
+                              </td>
                             </tr>
                           </tbody>
                         );
@@ -429,8 +455,8 @@ class Summary extends Component {
             {this.state.patientSummary?.packageList ? (
               this.state.patientSummary.packageList?.length > 0 ? (
                 <div className="bd-callout bd-callout-theme">
-                  <h3>Package Order:-</h3>
-                  <table>
+                  <h6>Package Order:-</h6>
+                  <table className="accrTable">
                     <thead>
                       <tr>
                         <th>SL No.</th>
@@ -443,8 +469,15 @@ class Summary extends Component {
                         return (
                           <tbody>
                             <tr>
-                              <td>{index + 1}</td>
-                              <td>{service_name}</td>
+                              <td width="50">{index + 1}</td>
+                              <td
+                                style={{
+                                  textAlign: "left",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {service_name}
+                              </td>
                             </tr>
                           </tbody>
                         );
@@ -457,8 +490,8 @@ class Summary extends Component {
             {this.state.patientSummary?.examinationList ? (
               this.state.patientSummary.examinationList?.length > 0 ? (
                 <div className="bd-callout bd-callout-theme">
-                  <h3>Physical Examination:-</h3>
-                  <table>
+                  <h6>Physical Examination:-</h6>
+                  <table className="accrTable">
                     <thead>
                       <tr>
                         <th>SL No.</th>
@@ -475,11 +508,18 @@ class Summary extends Component {
                         return (
                           <tbody>
                             <tr>
-                              <td>{index + 1}</td>
-                              <td>{ex_desc}</td>
+                              <td width="50">{index + 1}</td>
+                              <td
+                                style={{
+                                  textAlign: "left",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {ex_desc}
+                              </td>
                               <td>{ex_type}</td>
                               <td>{ex_severity}</td>
-                              <td>{comments}</td>
+                              <td style={{ textAlign: "left" }}>{comments}</td>
                             </tr>
                           </tbody>
                         );
@@ -492,8 +532,8 @@ class Summary extends Component {
             {this.state.patientSummary?.procedureList ? (
               this.state.patientSummary.procedureList?.length > 0 ? (
                 <div className="bd-callout bd-callout-theme">
-                  <h3>Procedure Order:-</h3>
-                  <table>
+                  <h6>Procedure Order:-</h6>
+                  <table className="accrTable">
                     <thead>
                       <tr>
                         <th>SL No.</th>
@@ -506,8 +546,15 @@ class Summary extends Component {
                         return (
                           <tbody>
                             <tr>
-                              <td>{index + 1}</td>
-                              <td>{service_name}</td>
+                              <td width="50">{index + 1}</td>
+                              <td
+                                style={{
+                                  textAlign: "left",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {service_name}
+                              </td>
                             </tr>
                           </tbody>
                         );
