@@ -13,7 +13,7 @@ import {
   ViewInsurance,
   getCashiersAndShiftMAP,
   generateReceipt,
-  getDrilDownData
+  getDrilDownData,
   // generateReceiptSmall,
 } from "./SalesReturnEvents";
 import "./SalesReturn.scss";
@@ -91,7 +91,7 @@ class SalesReturn extends Component {
     getCashiersAndShiftMAP(this, this);
     const queryParams = new URLSearchParams(this.props.location.search);
     if (queryParams.get("sales_return_number")) {
-      getCtrlCode(this, queryParams.get("sales_return_number"))
+      getCtrlCode(this, queryParams.get("sales_return_number"));
     }
     if (queryParams.get("transaction_id")) {
       getDrilDownData(this, queryParams.get("transaction_id"));
@@ -175,8 +175,8 @@ class SalesReturn extends Component {
                   <h6>
                     {this.state.sales_return_date
                       ? moment(this.state.sales_return_date).format(
-                        Options.dateFormat
-                      )
+                          Options.dateFormat
+                        )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -185,25 +185,25 @@ class SalesReturn extends Component {
             printArea={
               this.state.sales_return_number !== null
                 ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateReceipt(this, this);
+                    menuitems: [
+                      {
+                        label: "Print Receipt",
+                        events: {
+                          onClick: () => {
+                            generateReceipt(this, this);
+                          },
                         },
                       },
-                    },
-                    // {
-                    //   label: "Print Receipt Small",
-                    //   events: {
-                    //     onClick: () => {
-                    //       generateReceiptSmall(this, this);
-                    //     },
-                    //   },
-                    // },
-                  ],
-                }
+                      // {
+                      //   label: "Print Receipt Small",
+                      //   events: {
+                      //     onClick: () => {
+                      //       generateReceiptSmall(this, this);
+                      //     },
+                      //   },
+                      // },
+                    ],
+                  }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -215,13 +215,11 @@ class SalesReturn extends Component {
           >
             {/* Patient code */}
 
-            <div className="col-3 globalSearchCntr"
+            <div
+              className="col-3 globalSearchCntr"
               style={{
                 cursor: "pointer",
-                pointerEvents:
-                  this.state.trns_history === true
-                    ? "none"
-                    : "",
+                pointerEvents: this.state.trns_history === true ? "none" : "",
               }}
             >
               <AlgaehLabel label={{ forceLabel: "POS Number" }} />
@@ -271,7 +269,9 @@ class SalesReturn extends Component {
                 }}
               />
               <h6>
-                {this.state.full_name ? this.state.full_name : "--------"}
+                {this.state.dis_patient_name
+                  ? this.state.dis_patient_name
+                  : "-----------"}
               </h6>
             </div>
 
@@ -285,8 +285,8 @@ class SalesReturn extends Component {
                 {this.state.mode_of_pay === "1"
                   ? "Self"
                   : this.state.mode_of_pay === "2"
-                    ? "Insurance"
-                    : "-----------"}
+                  ? "Insurance"
+                  : "-----------"}
               </h6>
             </div>
           </div>
