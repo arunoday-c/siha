@@ -1693,7 +1693,7 @@ let getPatientVitals = (req, res, next) => {
         inner join hims_d_vitals_header PH on PV.vital_id=PH.hims_d_vitals_header_id  \
         left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id=PV.updated_by  \
         where PV.record_status='A' and PH.record_status='A' ${strQuery}
-        group by PV.created_date  , vital_id order by PH.sequence_order asc;`,
+        group by PV.created_date  , vital_id order by visit_time , PH.sequence_order asc;`,
         // printQuery: true,
       })
       .then((result) => {
@@ -3946,8 +3946,8 @@ let getPatientEpisodeSummary = (req, res, next) => {
         query:
           "SELECT hims_f_episode_chief_complaint_id, ECC.episode_id, ECC.patient_id, chief_complaint_id, \
         onset_date, `interval`, duration, severity, score, pain, chronic, complaint_inactive ,\
-        full_name as patient_name,arabic_name,gender \
-        ,hims_f_patient_visit_id,V.visit_date ,sub_department_name,comment, V.age_in_years as age, V.age_in_months,V.age_in_days from\
+        P.full_name as patient_name,P.arabic_name,P.gender,P.patient_code,P.primary_id_no \
+        ,V.hims_f_patient_visit_id,V.visit_date ,sub_department_name,comment, V.age_in_years as age, V.age_in_months,V.age_in_days from\
         hims_f_episode_chief_complaint  ECC\
         inner join hims_f_patient P on ECC.patient_id=P.hims_d_patient_id \
         inner join hims_f_patient_visit V on ECC.episode_id=V.episode_id\
