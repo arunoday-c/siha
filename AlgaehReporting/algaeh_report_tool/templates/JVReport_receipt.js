@@ -18,7 +18,7 @@ const executePDF = function executePDFMethod(options) {
       if (input.receipt_type === "S") {
         str = `SELECT 
         COALESCE(IVH.invoice_number,INS.insurance_statement_number) as invoice_number,
-        COALESCE(IVH.invoice_date,INS.created_date) as invoice_date,
+        COALESCE(date(IVH.invoice_date),date(INS.created_date)) as invoice_date,
         IVH.sales_invoice_mode,
         IVH.sub_total,IVH.net_total,IVH.discount_amount,IVH.total_tax,IVH.net_payable,
         IVH.narration as invNarration,IVH.hospital_id
@@ -28,22 +28,23 @@ const executePDF = function executePDFMethod(options) {
         where VD.finance_voucher_header_id=?;`;
       } else {
         str = `select COALESCE(IVH.invoice_number,INS.insurance_statement_number) as invoice_number,
-        COALESCE(IVH.invoice_date,INS.created_date) as invoice_date,
+        COALESCE(date(IVH.created_date),date(INS.created_date)) as invoice_date,
         IVH.sales_invoice_mode,
-        FH.amount as sub_total, FSH.amount as net_total,FSH.amount as net_payable,
+        FH.amount as sub_total, 
+        FSH.amount as net_total,FSH.amount as net_payable,
         FSH.invoice_ref_no,FSH.voucher_type as voucher_type_group
         from finance_voucher_sub_header FSH
-        inner join finance_voucher_header FH on FH.invoice_no in ( FSH.invoice_ref_no)
+        left join finance_voucher_header FH on FH.invoice_no in ( FSH.invoice_ref_no)
         left join hims_f_sales_invoice_header IVH on IVH.invoice_number = FSH.invoice_ref_no
         left join hims_f_insurance_statement INS on INS.insurance_statement_number = FSH.invoice_ref_no
-        left join finance_voucher_sub_header FSHH on FSHH.finance_voucher_header_id<? and FSHH.invoice_ref_no in ( FSH.invoice_ref_no)
-        where FSH.finance_voucher_header_id=? and FH.voucher_type='sales' group by FSH.finance_voucher_sub_header_id;`;
+        left join finance_voucher_sub_header FSHH on FSHH.finance_voucher_header_id<? 
+        where FSH.finance_voucher_header_id=? group by FSH.finance_voucher_sub_header_id;`;
       }
 
       options.mysql
         .executeQuery({
           query:
-            `SELECT VD.voucher_type,VD.voucher_no,VD.amount,VD.payment_mode,VD.payment_date,
+            `SELECT VD.voucher_type,VD.voucher_no,VD.custom_ref_no,VD.amount,VD.payment_mode,VD.payment_date,
             VD.narration,VD.due_date,VD.settled_amount,VD.created_by,
             CO.contact_number,CO.address,CO.vat_number,
             COALESCE(CO.customer_name,ISB.insurance_sub_name) as customer_name,
@@ -65,6 +66,9 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((result) => {
+          const advanceArray = result[1].filter(
+            (f) => f.voucher_type_group === "advance"
+          );
           const creditNoteArray = result[1].filter(
             (f) => f.voucher_type_group === "credit_note"
           );
@@ -72,20 +76,16 @@ const executePDF = function executePDFMethod(options) {
             (f) => f.voucher_type_group === "receipt"
           );
 
-          console.log("voucher_type_group", creditNoteArray, receiptArray);
-          resolve({
+          const finalResult = {
             resultHeader: result[0].length > 0 ? result[0][0] : {},
+            creditNoteArray: creditNoteArray,
+            advanceArray: advanceArray,
+            receiptArray: receiptArray,
             // resultInvoice: result[1],
             totalNetPayable: _.sumBy(result[1], (s) =>
               parseFloat(s.net_payable)
             ),
-            totalReceiptAmount: _.sumBy(receiptArray, (s) =>
-              parseFloat(s.net_payable)
-            ),
-            totalCreditNoteAmount: _.sumBy(creditNoteArray, (s) =>
-              parseFloat(s.net_payable)
-            ),
-            creditNoteArray: creditNoteArray,
+
             creditNoteTotals: {
               subTotal: _.sumBy(creditNoteArray, (s) =>
                 parseFloat(s.sub_total)
@@ -93,24 +93,25 @@ const executePDF = function executePDFMethod(options) {
               netTotal: _.sumBy(creditNoteArray, (s) =>
                 parseFloat(s.net_total)
               ),
-              //   subTotal: _.sumBy(creditNoteArray, (s) =>
-              //   parseFloat(s.sub_total)
-              // ),
-              // netTotal: _.sumBy(creditNoteArray, (s) =>
-              //   parseFloat(s.net_total)
-              // ),
+            },
+            advanceTotals: {
+              subTotal: _.sumBy(advanceArray, (s) => parseFloat(s.sub_total)),
+              netTotal: _.sumBy(advanceArray, (s) => parseFloat(s.net_total)),
             },
             receiptTotals: {
               subTotal: _.sumBy(receiptArray, (s) => parseFloat(s.sub_total)),
               netTotal: _.sumBy(receiptArray, (s) => parseFloat(s.net_total)),
-              //   subTotal: _.sumBy(creditNoteArray, (s) =>
-              //   parseFloat(s.sub_total)
-              // ),
-              // netTotal: _.sumBy(creditNoteArray, (s) =>
-              //   parseFloat(s.net_total)
-              // ),
             },
-            receiptArray: receiptArray,
+            totalReceiptAmount: _.sumBy(receiptArray, (s) =>
+              parseFloat(s.net_payable)
+            ),
+            totalCreditNoteAmount: _.sumBy(creditNoteArray, (s) =>
+              parseFloat(s.net_payable)
+            ),
+            totalAdvanceAmount: _.sumBy(advanceArray, (s) =>
+              parseFloat(s.net_payable)
+            ),
+
             currency: {
               decimal_places,
               addSymbol: false,
@@ -123,7 +124,16 @@ const executePDF = function executePDFMethod(options) {
               symbol_position,
               currency_symbol,
             },
-          });
+          };
+          const tNetAmt = {
+            ...finalResult,
+            totalNetAmount:
+              parseFloat(finalResult.totalReceiptAmount) -
+              parseFloat(finalResult.totalCreditNoteAmount) -
+              parseFloat(finalResult.totalAdvanceAmount),
+          };
+          console.log("finalResult", tNetAmt);
+          resolve(tNetAmt);
         })
         .catch((error) => {
           options.mysql.releaseConnection();
