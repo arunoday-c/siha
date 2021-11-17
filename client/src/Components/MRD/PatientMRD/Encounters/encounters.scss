@@ -92,6 +92,11 @@
       max-height: 25vh;
       overflow: auto;
     }
+    .paginationCntr {
+      .pageLeft {
+        width: 110%;
+      }
+    }
   }
 }
 .refferalModal {
