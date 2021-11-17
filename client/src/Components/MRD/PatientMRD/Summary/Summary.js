@@ -192,7 +192,7 @@ class Summary extends Component {
                 <p>Not recorded</p>
               ) : (
                 <p>
-                  Patient {_pat_episode.patient_name}, {_pat_episode.age} Yrs/
+                  {_pat_episode.patient_name}, {_pat_episode.age} Yrs/
                   {_pat_episode.gender},<br />
                   visited {_pat_episode.sub_department_name} Department on{" "}
                   {_pat_episode.visit_date} for the chief complaint of{" "}
@@ -204,12 +204,12 @@ class Summary extends Component {
               <p>
                 {this.state.significant_signs
                   ? this.state.significant_signs
-                  : "Not Recorder"}
+                  : "Not Recorded"}
               </p>
 
               <br />
               <h6>Other Signs</h6>
-              {this.state.other_signs ? this.state.other_signs : "Not Recorder"}
+              {this.state.other_signs ? this.state.other_signs : "Not Recorded"}
             </div>
 
             <div className="bd-callout bd-callout-theme">

@@ -1523,6 +1523,19 @@ export default function OPEncounterDetails({
                     <AlgaehDataGrid
                       columns={[
                         {
+                          fieldName: "start_date",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Start Date" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {moment(row.start_date).format("DD-MM-YYYY")}
+                              </span>
+                            );
+                          },
+                        },
+                        {
                           fieldName: "generic_name",
                           label: (
                             <AlgaehLabel
@@ -1538,85 +1551,74 @@ export default function OPEncounterDetails({
                         },
 
                         {
-                          fieldName: "dosage",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Dosage" }} />
-                          ),
-                        },
-                        {
-                          fieldName: "med_units",
-                          label: <AlgaehLabel label={{ forceLabel: "Unit" }} />,
-                        },
-                        {
-                          fieldName: "frequency",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Frequency" }} />
-                          ),
-                          displayTemplate: (row) => {
-                            return row.frequency === "0"
-                              ? "1-0-1"
-                              : row.frequency === "1"
-                              ? "1-0-0"
-                              : row.frequency === "2"
-                              ? "0-0-1"
-                              : row.frequency === "3"
-                              ? "0-1-0"
-                              : row.frequency === "4"
-                              ? "1-1-0"
-                              : row.frequency === "5"
-                              ? "0-1-1"
-                              : row.frequency === "6"
-                              ? "1-1-1"
-                              : row.frequency === "7"
-                              ? "Once only"
-                              : row.frequency === "8"
-                              ? "Once daily (q24h)"
-                              : row.frequency === "9"
-                              ? "Twice daily (Bid)"
-                              : row.frequency === "10"
-                              ? "Three times daily (tid)"
-                              : row.frequency === "18"
-                              ? "Four times daily (qid)"
-                              : row.frequency === "11"
-                              ? "Five times daily"
-                              : row.frequency === "12"
-                              ? "Every two hours (q2h)"
-                              : row.frequency === "13"
-                              ? "Every three hours (q3h)"
-                              : row.frequency === "14"
-                              ? "Every four hours (q4h)"
-                              : row.frequency === "15"
-                              ? "Every six hours (q6h)"
-                              : row.frequency === "16"
-                              ? "Every eight hours (q8h)"
-                              : row.frequency === "17"
-                              ? "Every twelve hours (q12h)"
-                              : row.frequency === "19"
-                              ? "Other (As per need)"
-                              : null;
-                          },
-                        },
-                        {
-                          fieldName: "no_of_days",
+                          fieldName: "instructions",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "No. of Days" }}
+                              label={{ forceLabel: "Instructions" }}
                             />
                           ),
                         },
-                        {
-                          fieldName: "start_date",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Start Date" }} />
-                          ),
-                          displayTemplate: (row) => {
-                            return (
-                              <span>
-                                {moment(row.start_date).format("DD-MM-YYYY")}
-                              </span>
-                            );
-                          },
-                        },
+                        // {
+                        //   fieldName: "med_units",
+                        //   label: <AlgaehLabel label={{ forceLabel: "Unit" }} />,
+                        // },
+                        // {
+                        //   fieldName: "frequency",
+                        //   label: (
+                        //     <AlgaehLabel label={{ forceLabel: "Frequency" }} />
+                        //   ),
+                        //   displayTemplate: (row) => {
+                        //     return row.frequency === "0"
+                        //       ? "1-0-1"
+                        //       : row.frequency === "1"
+                        //       ? "1-0-0"
+                        //       : row.frequency === "2"
+                        //       ? "0-0-1"
+                        //       : row.frequency === "3"
+                        //       ? "0-1-0"
+                        //       : row.frequency === "4"
+                        //       ? "1-1-0"
+                        //       : row.frequency === "5"
+                        //       ? "0-1-1"
+                        //       : row.frequency === "6"
+                        //       ? "1-1-1"
+                        //       : row.frequency === "7"
+                        //       ? "Once only"
+                        //       : row.frequency === "8"
+                        //       ? "Once daily (q24h)"
+                        //       : row.frequency === "9"
+                        //       ? "Twice daily (Bid)"
+                        //       : row.frequency === "10"
+                        //       ? "Three times daily (tid)"
+                        //       : row.frequency === "18"
+                        //       ? "Four times daily (qid)"
+                        //       : row.frequency === "11"
+                        //       ? "Five times daily"
+                        //       : row.frequency === "12"
+                        //       ? "Every two hours (q2h)"
+                        //       : row.frequency === "13"
+                        //       ? "Every three hours (q3h)"
+                        //       : row.frequency === "14"
+                        //       ? "Every four hours (q4h)"
+                        //       : row.frequency === "15"
+                        //       ? "Every six hours (q6h)"
+                        //       : row.frequency === "16"
+                        //       ? "Every eight hours (q8h)"
+                        //       : row.frequency === "17"
+                        //       ? "Every twelve hours (q12h)"
+                        //       : row.frequency === "19"
+                        //       ? "Other (As per need)"
+                        //       : null;
+                        //   },
+                        // },
+                        // {
+                        //   fieldName: "no_of_days",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "No. of Days" }}
+                        //     />
+                        //   ),
+                        // },
                       ]}
                       keyId="index"
                       data={patientMedications}

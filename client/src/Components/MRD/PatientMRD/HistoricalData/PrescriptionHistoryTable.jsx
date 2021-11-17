@@ -12,11 +12,12 @@ function PrescriptionHistory({ columnsArray, columnData }) {
       </thead>
       <tbody>
         {columnData?.map((item, index) => {
-          const { generic_name, item_description, start_date, instructions } =
+          const { start_date, generic_name, item_description, instructions } =
             item;
 
           return (
             <tr key={index}>
+              {" "}
               <td width="100">{start_date}</td>
               <td style={{ textAlign: "left", fontWeight: "bold" }}>
                 {generic_name}
