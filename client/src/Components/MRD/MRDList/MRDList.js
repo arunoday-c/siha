@@ -378,10 +378,10 @@ class MRDList extends Component {
                   data={this.state.patientData}
                   // }}
                   pagination={true}
+                  pageOptions={{ rows: 50, page: 1 }}
                   isFilterable={true}
                   // filter={true}
                   // isEditable={false}
-                  // paging={{ page: 0, rowsPerPage: 20 }}
                 />
               </div>
             </div>

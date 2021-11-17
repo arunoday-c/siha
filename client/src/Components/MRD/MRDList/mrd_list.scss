@@ -1,7 +1,9 @@
 .mrd-list {
-  #mrdListCntr {
-    .ReactTable {
-      max-height: 68vh !important;
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 62vh !important;
+      max-height: 62vh !important;
+      overflow: auto;
     }
   }
 }
