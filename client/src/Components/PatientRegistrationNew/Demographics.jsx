@@ -1100,6 +1100,7 @@ export function Demographics({
                                 },
                                 value,
                                 onChange: (_, selected) => {
+                                  debugger;
                                   setValue("primary_id_no", undefined);
 
                                   const identity_type =

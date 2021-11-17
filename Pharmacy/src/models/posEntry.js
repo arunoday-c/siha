@@ -27,6 +27,7 @@ export default {
             "SELECT hims_f_pharmacy_pos_header_id,receipt_header_id,PH.pos_number,PH.patient_id,P.patient_code,\
             P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.pos_date,PH.year,\
             PH.period,PH.location_id,L.location_description, PH.location_type,PH.sub_total, PH.discount_percentage,\
+            CASE  pos_customer_type WHEN 'OP' THEN P.full_name  ELSE PH.patient_name END as dis_patient_name,\
             PH.discount_amount,PH.net_total,CASE  pos_customer_type WHEN 'OP' THEN P.nationality_id \
             ELSE PH.nationality_id END as nationality_id,PH.patient_name,PH.mobile_number,PH.referal_doctor,\
             PH.copay_amount,PH.patient_responsibility,PH.patient_tax,PH.patient_payable,PH.company_responsibility,\

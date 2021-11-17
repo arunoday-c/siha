@@ -3,11 +3,9 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import SalesReturnputs from "../../../Models/SalesReturn";
-import {
-  algaehApiCall,
-  swalMessage
-} from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import _ from "lodash";
+import swal from "sweetalert2";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -30,7 +28,7 @@ const getDrilDownData = ($this, transaction_id) => {
         data.saveEnable = true;
         data.patient_payable_h = data.patient_payable;
 
-        data.clearData = true
+        data.clearData = true;
         data.postEnable = true;
 
         if (data.receiptdetails.length !== 0) {
@@ -41,7 +39,7 @@ const getDrilDownData = ($this, transaction_id) => {
             }
           }
         }
-        data.trns_history = true
+        data.trns_history = true;
 
         $this.setState(data);
       }
@@ -195,93 +193,107 @@ const GenerateReciept = ($this, callBack) => {
 };
 
 const SaveSalesReturn = ($this) => {
-  const return_qty_zero = _.filter(
-    $this.state.pharmacy_stock_detail,
-    (f) => f.return_quantity === 0 || f.return_quantity === null
-  );
-  if (return_qty_zero.length > 0) {
-    swalMessage({
-      type: "warning",
-      title: "Please Enter the return quantity for each item in the list.",
-    });
-    return;
-  }
-  AlgaehLoader({ show: true });
-  GenerateReciept($this, (that) => {
-    let inputObj = $this.state;
-    inputObj.posted = "Y";
-    inputObj.transaction_type = "SRT";
-    inputObj.pay_type = "P";
-    inputObj.transaction_date = $this.state.sales_return_date;
-
-    for (let i = 0; i < inputObj.pharmacy_stock_detail.length; i++) {
-      inputObj.pharmacy_stock_detail[i].location_id = $this.state.location_id;
-      inputObj.pharmacy_stock_detail[i].location_type =
-        $this.state.location_type;
-
-      inputObj.pharmacy_stock_detail[i].sales_uom =
-        $this.state.pharmacy_stock_detail[i].uom_id;
-      inputObj.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
-      inputObj.pharmacy_stock_detail[i].grn_number =
-        $this.state.pharmacy_stock_detail[i].grn_no;
-
-      inputObj.pharmacy_stock_detail[i].item_category_id =
-        $this.state.pharmacy_stock_detail[i].item_category;
-
-      inputObj.pharmacy_stock_detail[i].net_total =
-        $this.state.pharmacy_stock_detail[i].net_extended_cost;
-
-      inputObj.pharmacy_stock_detail[i].quantity =
-        $this.state.pharmacy_stock_detail[i].return_quantity;
-
-      inputObj.pharmacy_stock_detail[i].return_extended_cost =
-        $this.state.pharmacy_stock_detail[i].extended_cost || 0;
-      inputObj.pharmacy_stock_detail[i].return_discount_amt =
-        $this.state.pharmacy_stock_detail[i].discount_amount || 0;
-      inputObj.pharmacy_stock_detail[i].return_net_extended_cost =
-        $this.state.pharmacy_stock_detail[i].net_extended_cost || 0;
-      inputObj.pharmacy_stock_detail[i].return_pat_responsibility =
-        $this.state.pharmacy_stock_detail[i].patient_responsibility || 0;
-      inputObj.pharmacy_stock_detail[i].return_company_responsibility =
-        $this.state.pharmacy_stock_detail[i].company_responsibility || 0;
-      inputObj.pharmacy_stock_detail[i].return_sec_company_responsibility =
-        $this.state.pharmacy_stock_detail[i].sec_company_responsibility || 0;
-
-      inputObj.pharmacy_stock_detail[i].operation = "+";
-    }
-
-    inputObj.ScreenCode = "PH0003";
-    algaehApiCall({
-      uri: "/salesReturn/addsalesReturn",
-      module: "pharmacy",
-      data: inputObj,
-      onSuccess: (response) => {
-        AlgaehLoader({ show: false });
-        if (response.data.success === true) {
-          $this.setState({
-            sales_return_number: response.data.records.sales_return_number,
-            year: response.data.records.year,
-            period: response.data.records.period,
-            hims_f_pharmcy_sales_return_header_id:
-              response.data.records.hims_f_pharmcy_sales_return_header_id,
-            receipt_number: response.data.records.receipt_number,
-            saveEnable: true,
-            postEnable: false,
-          });
-          swalMessage({
-            title: "Saved successfully . .",
-            type: "success",
-          });
-        }
-      },
-      onFailure: (error) => {
-        AlgaehLoader({ show: false });
+  swal({
+    title: "Are you sure want to Return ?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No",
+  }).then((willDelete) => {
+    if (willDelete.value) {
+      const return_qty_zero = _.filter(
+        $this.state.pharmacy_stock_detail,
+        (f) => f.return_quantity === 0 || f.return_quantity === null
+      );
+      if (return_qty_zero.length > 0) {
         swalMessage({
-          title: error.message,
-          type: "error",
+          type: "warning",
+          title: "Please Enter the return quantity for each item in the list.",
         });
-      },
-    });
+        return;
+      }
+      AlgaehLoader({ show: true });
+      GenerateReciept($this, (that) => {
+        let inputObj = $this.state;
+        inputObj.posted = "Y";
+        inputObj.transaction_type = "SRT";
+        inputObj.pay_type = "P";
+        inputObj.transaction_date = $this.state.sales_return_date;
+
+        for (let i = 0; i < inputObj.pharmacy_stock_detail.length; i++) {
+          inputObj.pharmacy_stock_detail[i].location_id =
+            $this.state.location_id;
+          inputObj.pharmacy_stock_detail[i].location_type =
+            $this.state.location_type;
+
+          inputObj.pharmacy_stock_detail[i].sales_uom =
+            $this.state.pharmacy_stock_detail[i].uom_id;
+          inputObj.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
+          inputObj.pharmacy_stock_detail[i].grn_number =
+            $this.state.pharmacy_stock_detail[i].grn_no;
+
+          inputObj.pharmacy_stock_detail[i].item_category_id =
+            $this.state.pharmacy_stock_detail[i].item_category;
+
+          inputObj.pharmacy_stock_detail[i].net_total =
+            $this.state.pharmacy_stock_detail[i].net_extended_cost;
+
+          inputObj.pharmacy_stock_detail[i].quantity =
+            $this.state.pharmacy_stock_detail[i].return_quantity;
+
+          inputObj.pharmacy_stock_detail[i].return_extended_cost =
+            $this.state.pharmacy_stock_detail[i].extended_cost || 0;
+          inputObj.pharmacy_stock_detail[i].return_discount_amt =
+            $this.state.pharmacy_stock_detail[i].discount_amount || 0;
+          inputObj.pharmacy_stock_detail[i].return_net_extended_cost =
+            $this.state.pharmacy_stock_detail[i].net_extended_cost || 0;
+          inputObj.pharmacy_stock_detail[i].return_pat_responsibility =
+            $this.state.pharmacy_stock_detail[i].patient_responsibility || 0;
+          inputObj.pharmacy_stock_detail[i].return_company_responsibility =
+            $this.state.pharmacy_stock_detail[i].company_responsibility || 0;
+          inputObj.pharmacy_stock_detail[i].return_sec_company_responsibility =
+            $this.state.pharmacy_stock_detail[i].sec_company_responsibility ||
+            0;
+
+          inputObj.pharmacy_stock_detail[i].operation = "+";
+        }
+
+        inputObj.ScreenCode = "PH0003";
+        algaehApiCall({
+          uri: "/salesReturn/addsalesReturn",
+          module: "pharmacy",
+          data: inputObj,
+          onSuccess: (response) => {
+            AlgaehLoader({ show: false });
+            if (response.data.success === true) {
+              $this.setState({
+                sales_return_number: response.data.records.sales_return_number,
+                year: response.data.records.year,
+                period: response.data.records.period,
+                hims_f_pharmcy_sales_return_header_id:
+                  response.data.records.hims_f_pharmcy_sales_return_header_id,
+                receipt_number: response.data.records.receipt_number,
+                saveEnable: true,
+                postEnable: false,
+              });
+              swalMessage({
+                title: "Saved successfully . .",
+                type: "success",
+              });
+            }
+          },
+          onFailure: (error) => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error",
+            });
+          },
+        });
+      });
+    }
   });
 };
 
@@ -538,5 +550,5 @@ export {
   getCashiersAndShiftMAP,
   generateReceipt,
   generateReceiptSmall,
-  getDrilDownData
+  getDrilDownData,
 };

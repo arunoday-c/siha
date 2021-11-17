@@ -100,7 +100,9 @@ const cashtexthandle = ($this, context, ctrl, e) => {
         errorInCash: true,
       },
       () => {
-        $this.setState({ errorInCash: false });
+        $this.setState({ errorInCash: false }, () => {
+          calculateRecipt($this, context);
+        });
       }
     );
   } else {
@@ -137,7 +139,9 @@ const cardtexthandle = ($this, context, ctrl, e) => {
         errorInCard: true,
       },
       () => {
-        $this.setState({ errorInCard: false });
+        $this.setState({ errorInCard: false }, () => {
+          calculateRecipt($this, context);
+        });
       }
     );
   } else {

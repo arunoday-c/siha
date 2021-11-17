@@ -16,8 +16,19 @@
 
   .vitals-sec {
     border: 1px solid #ccc;
-    padding: 0.5rem 0.3rem 0.3rem;
+    padding: 2px 5px;
+    text-align: left;
     .counter {
+      h4 {
+        font-size: 20px;
+        font-weight: bold;
+        margin: 0;
+      }
+      p {
+        text-transform: uppercase;
+        margin: 0;
+        padding: 0;
+      }
       i {
         margin-bottom: 0.5rem;
         height: 30px;
@@ -55,5 +66,8 @@
   .table-primary > td,
   .table-primary > th {
     background: #defffc;
+  }
+  .danger {
+    color: #ff5c5c;
   }
 }
