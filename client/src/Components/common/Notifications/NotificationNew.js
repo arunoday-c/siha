@@ -255,6 +255,7 @@ export default function Notification({ open, handlePanel, count }) {
               userToken={userToken}
               socket={socket}
             />
+
             {/* <NotiList content={list} /> */}
           </TabPane>
         </Tabs>

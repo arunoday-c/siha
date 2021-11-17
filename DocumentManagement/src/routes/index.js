@@ -65,6 +65,7 @@ import {
   getAllNotifications,
   deleteNotification,
   seenNotification,
+  deleteAllNotification,
 } from "../Model/notifications";
 const router = express();
 initializedDb((db) => {
@@ -123,5 +124,6 @@ initializedDb((db) => {
   router.get("/getAllNotifications", getAllNotifications);
   router.post("/seenNotification", seenNotification);
   router.delete("/deleteNotification", deleteNotification);
+  router.delete("/deleteAllNotification", deleteAllNotification);
 });
 export default router;

@@ -66,7 +66,7 @@ export function seenNotification(req, res, next) {
     next(e);
   }
 }
-export function getAllNotifications(req, res, next) {
+export async function getAllNotifications(req, res, next) {
   try {
     const { user_id, require_total_count, perPage, page, todays } = req.query;
 
@@ -144,6 +144,21 @@ export function getAllNotifications(req, res, next) {
       .catch((error) => {
         next(error);
       });
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function deleteAllNotification(req, res, next) {
+  try {
+    const { user_id } = req.body;
+    const result = await notificationModel.deleteMany({
+      user_id: user_id,
+    });
+    res.status(200).json({
+      success: true,
+      message: "Deleted Successfully",
+    });
   } catch (e) {
     next(e);
   }

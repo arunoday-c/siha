@@ -90,6 +90,28 @@ export default function NotificationList({
       console.error(e);
     }
   }
+  async function callDeleteAllNotifications() {
+    try {
+      setLoading(true);
+      await newAlgaehApi({
+        uri: "/deleteAllNotification",
+        module: "documentManagement",
+        method: "DELETE",
+        data: {
+          user_id: userToken.employee_id,
+        },
+      });
+      callNotifications({ require_total_count: true });
+      AlgaehMessagePop({
+        type: "success",
+        display: "Successfully deleted all notifications",
+      });
+    } catch (e) {
+      AlgaehMessagePop({ type: "error", display: e.message });
+    } finally {
+      setLoading(false);
+    }
+  }
   function showTotal() {
     return `Total ${totalRecords} items`;
   }
@@ -101,92 +123,102 @@ export default function NotificationList({
           <Empty description="Nothing for you now, Come back later" />
         </Spin>
       ) : (
-        <List
-          className="demo-loadmore-list"
-          bordered
-          itemLayout="horizontal"
-          dataSource={data}
-          pagination={{
-            pageSize: perPage,
-            showLessItems: true,
-            size: "small",
-            pageSizeOptions: [10, 20, 50],
-            total: totalRecords, //Math.ceil(totalRecords / perPage),
-            showTotal: showTotal,
-            onChange: (page, pageSize) => {
-              setPage(page);
-              setPageSize(pageSize);
-            },
-          }}
-          renderItem={(item) => {
-            return (
-              <List.Item
-                key={item._id}
-                actions={[
-                  <>
-                    {isToday ? null : (
-                      <Button
-                        type="ghost"
-                        shape="circle"
-                        danger
-                        icon={
-                          <i className="fas fa-trash" loading={item.loading} />
-                        }
-                        onClick={async () => {
-                          await callNotificationsDelete({ ...item });
-                          await callNotifications({
-                            require_total_count: true,
-                          });
-                        }}
-                      />
-                    )}
-                    {item.pageToRedirect && isToday ? (
-                      <Link>
-                        <i
-                          class="fas fa-external-link-alt"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            history.push(`${item.pageToRedirect}`, {
-                              data: item.savedData[0],
-                              title: item.title,
+        <>
+          <List
+            className="demo-loadmore-list"
+            bordered
+            itemLayout="horizontal"
+            dataSource={data}
+            pagination={{
+              pageSize: perPage,
+              showLessItems: true,
+              size: "small",
+              pageSizeOptions: [10, 20, 50],
+              total: totalRecords, //Math.ceil(totalRecords / perPage),
+              showTotal: showTotal,
+              onChange: (page, pageSize) => {
+                setPage(page);
+                setPageSize(pageSize);
+              },
+            }}
+            renderItem={(item) => {
+              return (
+                <List.Item
+                  key={item._id}
+                  actions={[
+                    <>
+                      {isToday ? null : (
+                        <Button
+                          type="ghost"
+                          shape="circle"
+                          danger
+                          icon={
+                            <i
+                              className="fas fa-trash"
+                              loading={item.loading}
+                            />
+                          }
+                          onClick={async () => {
+                            await callNotificationsDelete({ ...item });
+                            await callNotifications({
+                              require_total_count: true,
                             });
                           }}
-                        ></i>
-                      </Link>
-                    ) : null}
-                  </>,
-                ]}
-              >
-                <Skeleton avatar title={false} loading={loading} active>
-                  <List.Item.Meta
-                    title={
-                      <>
-                        {item.title || "Title"}
-                        <small>
-                          &nbsp; ({" "}
-                          {moment(item.createdAt).format("DD-MM-YYYY HH:mm:ss")}
-                          )
-                        </small>
-                      </>
-                    }
-                    avatar={
-                      <Avatar
-                        icon={<i className="fas fa-envelope-square"></i>}
-                      />
-                    }
-                    description={
-                      <span
-                        dangerouslySetInnerHTML={{
-                          __html: item.message,
-                        }}
-                      ></span>
-                    }
-                  />
-                </Skeleton>
-              </List.Item>
-            );
-          }}
-        />
+                        />
+                      )}
+                      {item.pageToRedirect && isToday ? (
+                        <Link>
+                          <i
+                            class="fas fa-external-link-alt"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              history.push(`${item.pageToRedirect}`, {
+                                data: item.savedData[0],
+                                title: item.title,
+                              });
+                            }}
+                          ></i>
+                        </Link>
+                      ) : null}
+                    </>,
+                  ]}
+                >
+                  <Skeleton avatar title={false} loading={loading} active>
+                    <List.Item.Meta
+                      title={
+                        <>
+                          {item.title || "Title"}
+                          <small>
+                            &nbsp; ({" "}
+                            {moment(item.createdAt).format(
+                              "DD-MM-YYYY HH:mm:ss"
+                            )}
+                            )
+                          </small>
+                        </>
+                      }
+                      avatar={
+                        <Avatar
+                          icon={<i className="fas fa-envelope-square"></i>}
+                        />
+                      }
+                      description={
+                        <span
+                          dangerouslySetInnerHTML={{
+                            __html: item.message,
+                          }}
+                        ></span>
+                      }
+                    />
+                  </Skeleton>
+                </List.Item>
+              );
+            }}
+          />
+          <Button danger onClick={callDeleteAllNotifications} loading={loading}>
+            Delete all notifications
+          </Button>
+        </>
       )}
     </>
   );
