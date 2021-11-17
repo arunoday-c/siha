@@ -20,6 +20,8 @@ class HistoricalData extends Component {
       patientVitals: [],
       patientDiagnosis: [],
       patientMedication: [],
+      patientDiet: [],
+      patientAllergy: [],
       patientPayments: [],
       patientInvestigations: [],
       patientTreatements: [],
@@ -31,6 +33,8 @@ class HistoricalData extends Component {
     this.getPatientVitals();
     this.getPatientDiagnosis();
     this.getPatientMedication();
+    this.getPatientDiet();
+    this.getPatientAllergy();
     this.getPatientPaymentDetails();
     this.getPatientInvestigation();
     this.getPatientTreatments();
@@ -73,6 +77,54 @@ class HistoricalData extends Component {
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientTreatements: response.data.records });
+        }
+      },
+      onFailure: (error) => {
+        algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
+  getPatientDiet() {
+    algaehApiCall({
+      uri: "/mrd/getPatientDietHis",
+      // module: "MRD",
+      method: "GET",
+      data: {
+        patient_id: Window.global["mrd_patient"],
+      },
+      cancelRequestId: "getPatientDiet",
+      onSuccess: (response) => {
+        algaehLoader({ show: false });
+        if (response.data.success) {
+          this.setState({ patientDiet: response.data.records });
+        }
+      },
+      onFailure: (error) => {
+        algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
+  getPatientAllergy() {
+    algaehApiCall({
+      uri: "/mrd/getPatientAllergyHis",
+      // module: "MRD",
+      method: "GET",
+      data: {
+        patient_id: Window.global["mrd_patient"],
+      },
+      cancelRequestId: "getPatientAllergy",
+      onSuccess: (response) => {
+        algaehLoader({ show: false });
+        if (response.data.success) {
+          this.setState({ patientAllergy: response.data.records });
         }
       },
       onFailure: (error) => {

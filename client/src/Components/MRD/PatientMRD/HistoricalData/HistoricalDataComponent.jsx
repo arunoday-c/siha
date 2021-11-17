@@ -12,8 +12,10 @@ function HistoricalDataComponent() {
     "Vitals",
     "Nursing Notes",
     "Diagnosis",
+    "Diet",
+    "Allergies",
     "Treatments",
-    "Prescription",
+    "Medication",
     "Investigations",
     "Payments",
   ];
@@ -39,7 +41,6 @@ function HistoricalDataComponent() {
                     Vitals
                   </span>
                 </li>
-
                 <li
                   onClick={() => {
                     setComponentIndex(1);
@@ -57,23 +58,23 @@ function HistoricalDataComponent() {
                   <span className={componentIndex === 2 ? "active" : ""}>
                     Diagnosis
                   </span>
-                </li>
+                </li>{" "}
                 <li
                   onClick={() => {
                     setComponentIndex(3);
                   }}
                 >
                   <span className={componentIndex === 3 ? "active" : ""}>
-                    Treatments/ Procedure
+                    Diet Plan
                   </span>
-                </li>
+                </li>{" "}
                 <li
                   onClick={() => {
                     setComponentIndex(4);
                   }}
                 >
                   <span className={componentIndex === 4 ? "active" : ""}>
-                    Prescription History
+                    Allergies
                   </span>
                 </li>
                 <li
@@ -82,6 +83,24 @@ function HistoricalDataComponent() {
                   }}
                 >
                   <span className={componentIndex === 5 ? "active" : ""}>
+                    Treatments/ Procedure
+                  </span>
+                </li>
+                <li
+                  onClick={() => {
+                    setComponentIndex(6);
+                  }}
+                >
+                  <span className={componentIndex === 6 ? "active" : ""}>
+                    Medication
+                  </span>
+                </li>
+                <li
+                  onClick={() => {
+                    setComponentIndex(7);
+                  }}
+                >
+                  <span className={componentIndex === 7 ? "active" : ""}>
                     Investigations
                   </span>
                 </li>
@@ -121,12 +140,16 @@ function HistoricalDataComponent() {
             ) : componentIndex === 2 ? (
               <CategoryComponent componentsName={"Diagnosis"} />
             ) : componentIndex === 3 ? (
-              <CategoryComponent componentsName={"Treatments"} />
+              <CategoryComponent componentsName={"Diet"} />
             ) : componentIndex === 4 ? (
-              <CategoryComponent componentsName={"Prescription"} />
+              <CategoryComponent componentsName={"Allergies"} />
             ) : componentIndex === 5 ? (
-              <CategoryComponent componentsName={"Investigations"} />
+              <CategoryComponent componentsName={"Treatments"} />
             ) : componentIndex === 6 ? (
+              <CategoryComponent componentsName={"Medication"} />
+            ) : componentIndex === 7 ? (
+              <CategoryComponent componentsName={"Investigations"} />
+            ) : componentIndex === 8 ? (
               <CategoryComponent componentsName={"Payments"} />
             ) : null}
           </div>

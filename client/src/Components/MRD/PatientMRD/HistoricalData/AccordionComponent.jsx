@@ -10,6 +10,8 @@ import {
 import DiagnosisTable from "./DiagnosisTable";
 import TreatmentTable from "./TreatmentTable";
 import PrescriptionHistory from "./PrescriptionHistoryTable";
+import DietPlanHistory from "./DietPlanHistory";
+import AllergyHistory from "./AllergyHistory";
 import InvestigationTable from "./InvestigationTable";
 const { Panel } = Collapse;
 
@@ -57,18 +59,23 @@ export default function AccordionComponent({
                 columnsArray={columns}
                 columnData={listOfDetails}
               />
-            ) : componentsName === "Prescription" ? (
+            ) : componentsName === "Medication" ? (
               <PrescriptionHistory
+                columnsArray={columns}
+                columnData={listOfDetails}
+              />
+            ) : componentsName === "Diet" ? (
+              <DietPlanHistory
+                columnsArray={columns}
+                columnData={listOfDetails}
+              />
+            ) : componentsName === "Allergies" ? (
+              <AllergyHistory
                 columnsArray={columns}
                 columnData={listOfDetails}
               />
             ) : componentsName === "Investigations" ? (
               <InvestigationTable
-                columnsArray={columns}
-                columnData={listOfDetails}
-              />
-            ) : componentsName === "Treatments" ? (
-              <TreatmentTable
                 columnsArray={columns}
                 columnData={listOfDetails}
               />

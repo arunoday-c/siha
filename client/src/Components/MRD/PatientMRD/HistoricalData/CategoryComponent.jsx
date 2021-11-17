@@ -82,6 +82,56 @@ export default function CategoryComponent({ componentsName }) {
       },
     });
   };
+
+  const getPatientDiet = () => {
+    algaehApiCall({
+      uri: "/mrd/getPatientDietHis",
+      module: "MRD",
+      method: "GET",
+      data: {
+        patient_id: location.state?.content.current_patient
+          ? location.state?.content.current_patient
+          : Window.global["mrd_patient"],
+      },
+      cancelRequestId: "getPatientDiet",
+      onSuccess: (response) => {
+        setColumns([{ name: "Diet Name" }, { name: "Diet Till Date" }]);
+        if (response.data.success) {
+          setData(response.data.records);
+        }
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  };
+  const getPatientAllergy = () => {
+    algaehApiCall({
+      uri: "/mrd/getPatientAllergyHis",
+      module: "MRD",
+      method: "GET",
+      data: {
+        patient_id: location.state?.content.current_patient
+          ? location.state?.content.current_patient
+          : Window.global["mrd_patient"],
+      },
+      cancelRequestId: "getPatientAllergy",
+      onSuccess: (response) => {
+        if (response.data.success) {
+          setData(response.data.records);
+        }
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  };
   const getPatientInvestigation = () => {
     algaehApiCall({
       uri: "/mrd/getPatientInvestigation",
@@ -107,6 +157,7 @@ export default function CategoryComponent({ componentsName }) {
       },
     });
   };
+
   useEffect(() => {
     if (componentsName === "Diagnosis") {
       getPatientDiagnosis();
@@ -124,12 +175,24 @@ export default function CategoryComponent({ componentsName }) {
         { name: "Service Description" },
         { name: "Teeth Number" },
       ]);
-    } else if (componentsName === "Prescription") {
+    } else if (componentsName === "Diet") {
+      getPatientDiet();
+
+      // setColumns([{ name: "Diet Name" }, { name: "Diet Till Date" }]);
+    } else if (componentsName === "Allergies") {
+      getPatientAllergy();
+      setColumns([
+        { name: "Doctor Name" },
+        { name: "Service Name" },
+        { name: "Service Description" },
+        { name: "Teeth Number" },
+      ]);
+    } else if (componentsName === "Medication") {
       getPatientMedicationHistoricalData();
       setColumns([
-        // { name: "Generic Name" },
-        { name: "Item Description" },
         { name: "Start Date" },
+        { name: "Generic Name" },
+        { name: "Item Description" },
         { name: "Instructions" },
         // { name: "Dosage" },
         // { name: "Unit" },

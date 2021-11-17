@@ -100,7 +100,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hims_f_patient_encounter_id, PE.patient_id,P.full_name,PE.provider_id,\
+            "select hims_f_patient_encounter_id, V.visit_code,PE.patient_id,P.full_name,PE.provider_id,\
               E.full_name as provider_name, visit_id,significant_signs,\
               V.insured,V.sec_insured,V.sub_department_id,SD.sub_department_name,PE.episode_id,PE.encounter_id,PE.updated_date as encountered_date,\
               primary_insurance_provider_id,IP.insurance_provider_name as pri_insurance_provider_name,PE.examination_notes,PE.assesment_notes,\
@@ -136,7 +136,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hims_f_patient_encounter_id, PE.patient_id,P.full_name,PE.provider_id,\
+            "select hims_f_patient_encounter_id, V.visit_code,PE.patient_id,P.full_name,PE.provider_id,\
               E.full_name as provider_name, visit_id,significant_signs,\
               V.insured,V.sec_insured,V.sub_department_id,SD.sub_department_name,PE.episode_id,PE.encounter_id,PE.updated_date as encountered_date,\
               primary_insurance_provider_id,IP.insurance_provider_name as pri_insurance_provider_name,PE.examination_notes,PE.assesment_notes,\
@@ -210,7 +210,7 @@ export default {
               from hims_f_patient_diagnosis PD left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id = PD.created_by,hims_d_icd ICD
              where PD.record_status='A' and   ICD.record_status='A'
              and PD.daignosis_id=ICD.hims_d_icd_id
-            ${_stringData}`,
+            ${_stringData} order by diagnosis_date desc`,
           printQuery: true,
         })
         .then((result) => {
@@ -274,6 +274,117 @@ export default {
             where P.record_status='A' and IM.record_status='A' and IG.record_status='A' and \
             P.hims_f_prescription_id=PD.prescription_id and PD.item_id=IM.hims_d_item_master_id \
             and PD.generic_id =IG.hims_d_item_generic_id " +
+            _stringData +
+            " order by prescription_date desc;",
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          if (input.fromHistoricalData) {
+            const arrangedData = _.chain(result)
+              .groupBy((g) => g.prescription_date)
+              .map((details, key) => {
+                const { prescription_date, user_name } = _.head(details);
+
+                return {
+                  display_date: prescription_date,
+                  user_name: user_name,
+                  detailsOf: details,
+                };
+              })
+              .value();
+            // console.log("arrangedData", arrangedData);
+            req.records = arrangedData;
+          } else {
+            req.records = result;
+          }
+
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getPatientDietHis: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let _stringData = "";
+      const input = req.query;
+
+      if (input.episode_id != null) {
+        _stringData += " and PD.episode_id = ?" + input.episode_id;
+      }
+      if (input.patient_id != null) {
+        _stringData += " and PD.patient_id = ?" + input.patient_id;
+      }
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT D.hims_d_diet_description,PD.till_date,PD.created_date,USR.user_display_name \
+            FROM hims_f_patient_diet PD \
+            inner join hims_d_diet_master D on D.hims_d_diet_master_id=PD.diet_id \
+            inner join algaeh_d_app_user USR on USR.algaeh_d_app_user_id=PD.created_by " +
+            _stringData +
+            ` order by PD.created_date desc;`,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          if (input.fromHistoricalData) {
+            const arrangedData = _.chain(result)
+              .groupBy((g) => moment(g.created_date).format("DD-MM-YYYY"))
+              // .groupBy((g) => g.created_date)
+              .map((details, key) => {
+                const { created_date, user_display_name } = _.head(details);
+
+                return {
+                  display_date: created_date,
+                  user_name: user_display_name,
+                  detailsOf: details,
+                };
+              })
+              .value();
+            console.log("arrangedData", arrangedData);
+            req.records = arrangedData;
+          } else {
+            req.records = result;
+          }
+
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getPatientAllergyHis: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let _stringData = "";
+      const input = req.query;
+
+      if (input.encounter_id != null) {
+        _stringData += " and encounter_id = ?" + input.encounter_id;
+      }
+      if (input.episode_id != null) {
+        _stringData += " and episode_id = ?" + input.episode_id;
+      }
+      if (input.patient_id != null) {
+        _stringData += " and patient_id = ?" + input.patient_id;
+      }
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT * FROM hims_f_patient_diet " +
             _stringData +
             " order by prescription_date desc;",
           printQuery: true,
@@ -407,7 +518,7 @@ export default {
           case when OS.insurance_yesno='N' then 'Not Covered' else 'Covered' end as insurance_yesno 
           FROM hims_f_ordered_services as OS 
           inner join hims_d_services S on S.hims_d_services_id=OS.services_id
-          where OS.service_type_id=2  ${_stringData};`,
+          where OS.service_type_id=2  ${_stringData}  order by OS.updated_date desc;`,
           printQuery: true,
         })
         .then((result) => {

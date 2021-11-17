@@ -15,6 +15,8 @@ const {
   getPatientPaymentDetails,
   getPatientTreatments,
   getPatientSummary,
+  getPatientAllergyHis,
+  getPatientDietHis,
 } = mrdModels;
 
 export default () => {
@@ -86,6 +88,22 @@ export default () => {
 
   // created by irfan :to getPatientMedication
   api.get("/getPatientMedication", getPatientMedication, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.get("/getPatientDietHis", getPatientDietHis, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.get("/getPatientAllergyHis", getPatientAllergyHis, (req, res, next) => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
