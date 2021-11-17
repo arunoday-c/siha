@@ -1,6 +1,7 @@
 const changeChecks = ($this, e) => {
   // e.persist();
   let name = e.target.name;
+  let value = e.target.value;
   switch (e.target.name) {
     case "leave_salary_process":
       $this.setState(
@@ -89,20 +90,27 @@ const changeChecks = ($this, e) => {
     case "gratuity_encash":
       $this.setState(
         {
-          [name]: e.target.value,
+          [name]: value,
         },
         () => {
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            [name]: e.target.value,
+            [name]: value,
           });
         }
       );
       break;
     case "standard_work_hours":
-    case "ramzan_work_hours":
-      $this.setState({ [name]: e.target.value }, () => {
+      $this.setState({ [name]: value }, () => {
         $this.props.EmpMasterIOputs.updateEmployeeTabs({
-          [name]: e.target.value,
+          [name]: value,
+        });
+      });
+      break;
+
+    case "ramzan_work_hours":
+      $this.setState({ [name]: value }, () => {
+        $this.props.EmpMasterIOputs.updateEmployeeTabs({
+          [name]: value,
         });
       });
       break;
