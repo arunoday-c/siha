@@ -743,6 +743,7 @@ export default {
                         await page.addStyleTag({
                           content: "@page:first {margin-top: -8px;}",
                         });
+
                         const sizes = convertMilimetersToPixel(others);
 
                         await page.setViewport({
@@ -760,6 +761,15 @@ export default {
                       document.body.appendChild(div);
                     });
 
+                    if (!_pdfTemplating["margin"]) {
+                      _pdfTemplating["margin"] = {
+                        bottom: "40px",
+                      };
+                    } else {
+                      if (!_pdfTemplating["margin"]["bottom"]) {
+                        _pdfTemplating["margin"]["bottom"] = "40px";
+                      }
+                    }
                     await page.pdf({
                       path: _outPath,
                       ...pageSize,
@@ -853,7 +863,7 @@ export default {
                                   _fs.pipe(res);
                                 } else {
                                   const { primaryId } = input;
-                                  console.log("1=====>", _rOut);
+                                  // console.log("1=====>", _rOut);
                                   updateRequestedDownload(primaryId, _rOut);
                                 }
                               } else {
