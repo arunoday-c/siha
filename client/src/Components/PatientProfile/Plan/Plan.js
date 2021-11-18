@@ -143,6 +143,7 @@ class Plan extends Component {
             {this.state.pageDisplay === "OrderMedication" ? (
               <OrderMedication
                 vat_applicable={this.props.vat_applicable}
+                recentMediction={this.props.recentMediction}
                 refreshState={this.props.mainState}
                 primary_id_no={this.props.primary_id_no}
                 visit_code={this.props.visit_code}

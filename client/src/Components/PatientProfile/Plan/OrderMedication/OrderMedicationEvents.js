@@ -549,7 +549,18 @@ const AddItems = ($this) => {
     updateItems($this, $this.state.rowDetails);
   } else if (!$this.state.updateButton && validate) {
     if (item_exists === undefined) {
-      AddItemsOrUpdate($this);
+      debugger;
+      item_exists = $this.props.recentMediction.find(
+        (f) => f.item_id === $this.state.item_id
+      );
+      if (item_exists === undefined) {
+        AddItemsOrUpdate($this);
+      } else {
+        swalMessage({
+          title: "Selected Item Already Exists.",
+          type: "error",
+        });
+      }
     } else {
       swalMessage({
         title: "Selected Item Already Exists.",

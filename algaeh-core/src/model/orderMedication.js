@@ -6,7 +6,7 @@ import logUtils from "../utils/logging";
 import { LINQ } from "node-linq";
 import moment from "moment";
 import algaehMysql from "algaeh-mysql";
-
+import mysql from "mysql";
 import axios from "axios";
 import "regenerator-runtime/runtime";
 import dotenv from "dotenv";
@@ -1066,12 +1066,41 @@ let updatePatientPrescription = (req, res, next) => {
   try {
     let input = req.body.medicationobj;
 
+    let strQuery = "";
+    if (input.hims_f_chronic_id > 0 && input.chronic_inactive === "N") {
+      strQuery += mysql.format(
+        "DELETE FROM `hims_f_chronic` where hims_f_chronic_id=?;",
+        [input.hims_f_chronic_id]
+      );
+    }
+    if (input.hims_f_chronic_id === null && input.chronic_inactive === "Y") {
+      strQuery += mysql.format(
+        "INSERT INTO hims_f_chronic (item_id,chronic_inactive, medication_category, chronic_category, patient_id,\
+          visit_id, created_date, added_provider_id, updated_date, updated_provider_id\
+      ) values(?,?,?,?,?,?,?,?,?,?);",
+        [
+          input.item_id,
+          "N",
+          "E",
+          "M",
+          input.patient_id,
+          input.visit_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+        ]
+      );
+    }
+
     _mysql
       .executeQueryWithTransaction({
-        query: `Update hims_f_prescription_detail set item_id=?,generic_id=?,dosage=?,med_units=?,
+        query:
+          `Update hims_f_prescription_detail set item_id=?,generic_id=?,dosage=?,med_units=?,
           service_id=?,uom_id=?,item_category_id=?,item_group_id=?,frequency=?,no_of_days=?,frequency_type=?,
           frequency_time=?,frequency_route=?,instructions=?,start_date=? where hims_f_prescription_detail_id=?;
-          SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=? `,
+          SELECT portal_exists FROM hims_d_hospital where hims_d_hospital_id=?;` +
+          strQuery,
         values: [
           input.item_id,
           input.generic_id,
@@ -1381,19 +1410,19 @@ let getPatientMedications = (req, res, next) => {
           //   req.query.patient_id
           // ],
           `select P.hims_f_prescription_id,PD.hims_f_prescription_detail_id,C.hims_f_chronic_id,C.medication_category,P.episode_id,P.prescription_date,P.prescription_status,P.cancelled,
- PD.item_id,IM.item_description,IM.item_code,PD.item_category_id,PD.generic_id,
- PD.item_id,PD.item_category_id,PD.item_group_id,PD.dosage,PD.med_units,PD.frequency,
- PD.no_of_days,PD.dispense,PD.frequency_type,PD.frequency_time,PD.frequency_route,PD.start_date,
- PD.service_id,PD.uom_id,PD.item_status,PD.instructions,PD.insured,PD.pre_approval,
- PD.apprv_status,PD.approved_amount,IG.generic_name 
- from hims_f_prescription as P inner join hims_f_prescription_detail as PD 
- on P.hims_f_prescription_id=PD.prescription_id inner join hims_d_item_master as IM 
- on PD.item_id = IM.hims_d_item_master_id inner join hims_d_item_generic as IG 
-
- on PD.generic_id = IG.hims_d_item_generic_id 
- left  join hims_f_chronic C on (C.patient_id = P.patient_id and C.item_id=PD.item_id and  C.medication_category="I")
- where  P.patient_id=? 
-  order by  prescription_date desc;`,
+            PD.item_id,IM.item_description,IM.item_code,PD.item_category_id,PD.generic_id,
+            PD.item_id,PD.item_category_id,PD.item_group_id,PD.dosage,PD.med_units,PD.frequency,
+            PD.no_of_days,PD.dispense,PD.frequency_type,PD.frequency_time,PD.frequency_route,PD.start_date,
+            PD.service_id,PD.uom_id,PD.item_status,PD.instructions,PD.insured,PD.pre_approval,
+            PD.apprv_status,PD.approved_amount,IG.generic_name, hims_f_chronic_id 
+            from hims_f_prescription as P 
+            inner join hims_f_prescription_detail as PD on P.hims_f_prescription_id=PD.prescription_id 
+            inner join hims_d_item_master as IM on PD.item_id = IM.hims_d_item_master_id 
+            inner join hims_d_item_generic as IG on PD.generic_id = IG.hims_d_item_generic_id 
+            left  join hims_f_chronic C on (C.patient_id = P.patient_id and C.item_id=PD.item_id and
+            C.medication_category="I")
+            where  P.patient_id=? 
+            order by  prescription_date desc;`,
         values: [req.query.patient_id],
         printQuery: true,
       })

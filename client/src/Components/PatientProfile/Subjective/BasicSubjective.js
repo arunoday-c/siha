@@ -300,6 +300,7 @@ class BasicSubjective extends Component {
           data: { patient_id: current_patient }, //Window.global["current_patient"] },
           method: "GET",
           onSuccess: (response) => {
+            debugger;
             const data = { loadingUnderMedication: false };
             if (response.data.success) {
               data["recent_mediction"] = response.data.records.latest_mediction;
@@ -549,6 +550,8 @@ class BasicSubjective extends Component {
       instructions: "",
       total_quantity: 0,
       frequency_route: "OR",
+      chronic_inactive: "N",
+      hims_f_chronic_id: null,
     });
   }
   // favMedData() {
@@ -634,6 +637,8 @@ class BasicSubjective extends Component {
       uom_id: row.uom_id,
       item_category_id: row.item_category_id,
       item_group_id: row.item_group_id,
+      hims_f_chronic_id: row.hims_f_chronic_id,
+      chronic_inactive: row.hims_f_chronic_id > 0 ? "Y" : "N",
     });
   }
   itemHandle(item) {
@@ -674,6 +679,8 @@ class BasicSubjective extends Component {
           addItemEnable: false,
           total_quantity: 0,
           frequency_route: item.item_route ? item.item_route : "OR",
+          chronic_inactive: item.hims_f_chronic_id > 0 ? "Y" : "N",
+          hims_f_chronic_id: item.hims_f_chronic_id,
         }
         // () => {
         //   getItemStock(this);
@@ -701,10 +708,13 @@ class BasicSubjective extends Component {
       instructions: this.state.instructions,
       insured: this.state.insured,
       hims_f_prescription_detail_id: this.state.hims_f_prescription_detail_id,
-
+      patient_id: Window?.global?.current_patient,
+      visit_id: Window?.global?.visit_id,
       primary_id_no: this.props.pat_profile.primary_id_no,
       visit_code: this.props.pat_profile.visit_code,
       item_description: this.state.item_description,
+      chronic_inactive: this.state.chronic_inactive,
+      hims_f_chronic_id: this.state.hims_f_chronic_id,
     };
 
     let Validation =
@@ -950,6 +960,7 @@ class BasicSubjective extends Component {
                   <Plan
                     mainState={this}
                     openMedication={this.state.openMedication}
+                    recentMediction={this.state.active_medication}
                     onClose={this.showMedication.bind(this)}
                     vat_applicable={this.props.vat_applicable}
                     primary_id_no={this.props.pat_profile.primary_id_no}
@@ -1658,6 +1669,30 @@ class BasicSubjective extends Component {
                           }}
                           value={this.state.start_date}
                         />
+                        <div className="col">
+                          <label>Is Chronic Medication</label>
+                          <div className="customCheckbox">
+                            <label className="checkbox block">
+                              <input
+                                type="checkbox"
+                                name="chronic_inactive"
+                                value={this.state.chronic_inactive}
+                                checked={this.state.chronic_inactive === "Y"}
+                                // disabled={this.state.disableEdit}
+                                onChange={(e) => {
+                                  e.target.checked
+                                    ? this.setState({
+                                        chronic_inactive: "Y",
+                                      })
+                                    : this.setState({
+                                        chronic_inactive: "N",
+                                      });
+                                }}
+                              />
+                              <span>Yes</span>
+                            </label>
+                          </div>
+                        </div>
                         <div className="col-12">
                           <label className="style_Label ">Instruction</label>
                           <textarea
