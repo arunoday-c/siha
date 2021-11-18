@@ -90,7 +90,7 @@ class Summary extends Component {
   }
 
   getPatientSummary() {
-    debugger;
+    // debugger;
     const { current_patient, episode_id, visit_id } = Window.global;
     algaehApiCall({
       uri: "/mrd/getPatientSummary",

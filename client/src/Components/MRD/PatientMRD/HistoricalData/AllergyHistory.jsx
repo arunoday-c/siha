@@ -12,8 +12,7 @@ function AllergyHistory({ columnsArray, columnData }) {
       </thead>
       <tbody>
         {columnData?.map((item, index) => {
-          const { start_date, generic_name, item_description, instructions } =
-            item;
+          const { start_date, generic_name, instructions } = item;
 
           return (
             <tr key={index}>
@@ -21,9 +20,6 @@ function AllergyHistory({ columnsArray, columnData }) {
               <td width="100">{start_date}</td>
               <td style={{ textAlign: "left", fontWeight: "bold" }}>
                 {generic_name}
-              </td>
-              <td style={{ textAlign: "left", fontWeight: "bold" }}>
-                {item_description}
               </td>
               <td style={{ textAlign: "left" }}>{instructions}</td>
             </tr>

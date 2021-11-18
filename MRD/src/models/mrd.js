@@ -349,7 +349,7 @@ export default {
                 };
               })
               .value();
-            console.log("arrangedData", arrangedData);
+            // console.log("arrangedData", arrangedData);
             req.records = arrangedData;
           } else {
             req.records = result;
@@ -372,35 +372,37 @@ export default {
       let _stringData = "";
       const input = req.query;
 
-      if (input.encounter_id != null) {
-        _stringData += " and encounter_id = ?" + input.encounter_id;
-      }
-      if (input.episode_id != null) {
-        _stringData += " and episode_id = ?" + input.episode_id;
-      }
-      if (input.patient_id != null) {
-        _stringData += " and patient_id = ?" + input.patient_id;
-      }
       _mysql
         .executeQuery({
-          query:
-            "SELECT * FROM hims_f_patient_diet " +
-            _stringData +
-            " order by prescription_date desc;",
+          query: `SELECT A.allergy_name,if(PA.onset_date is null,'1990-01-01',PA.onset_date) as onset_date,
+          E.full_name as user_name,PA.comment as instructions
+          FROM hims_f_patient_allergy as PA inner join hims_d_allergy as A
+          on A.hims_d_allergy_id = PA.allergy_id 
+          inner join algaeh_d_app_user as U on PA.updated_by=U.algaeh_d_app_user_id
+          inner join hims_d_employee as E on E.hims_d_employee_id=U.employee_id
+          where  PA.allergy_inactive <>'Y' and PA.patient_id=? order by PA.onset_date;`,
+          values: [input.patient_id],
           printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
           if (input.fromHistoricalData) {
             const arrangedData = _.chain(result)
-              .groupBy((g) => g.prescription_date)
+              .groupBy((g) => g.onset_date)
               .map((details, key) => {
-                const { prescription_date, user_name } = _.head(details);
+                const { onset_date, user_name } = _.head(details);
 
                 return {
-                  display_date: prescription_date,
+                  display_date: onset_date,
                   user_name: user_name,
-                  detailsOf: details,
+                  detailsOf: details.map((itx) => {
+                    return {
+                      generic_name: itx.allergy_name,
+                      item_description: itx.allergy_name,
+                      instructions: itx.instructions,
+                      start_date: itx.onset_date,
+                    };
+                  }),
                 };
               })
               .value();

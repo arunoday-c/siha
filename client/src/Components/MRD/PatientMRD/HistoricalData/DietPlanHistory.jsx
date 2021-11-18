@@ -29,4 +29,4 @@ function DietPlanHistory({ columnsArray, columnData }) {
   );
 }
 
-export default DietPlanHistory;
+export default React.memo(DietPlanHistory);

@@ -92,6 +92,7 @@ export default function CategoryComponent({ componentsName }) {
         patient_id: location.state?.content.current_patient
           ? location.state?.content.current_patient
           : Window.global["mrd_patient"],
+        fromHistoricalData: true,
       },
       cancelRequestId: "getPatientDiet",
       onSuccess: (response) => {
@@ -117,6 +118,7 @@ export default function CategoryComponent({ componentsName }) {
         patient_id: location.state?.content.current_patient
           ? location.state?.content.current_patient
           : Window.global["mrd_patient"],
+        fromHistoricalData: true,
       },
       cancelRequestId: "getPatientAllergy",
       onSuccess: (response) => {
@@ -182,10 +184,10 @@ export default function CategoryComponent({ componentsName }) {
     } else if (componentsName === "Allergies") {
       getPatientAllergy();
       setColumns([
-        { name: "Doctor Name" },
-        { name: "Service Name" },
-        { name: "Service Description" },
-        { name: "Teeth Number" },
+        { name: "Onset Date" },
+        { name: "Allergy Name" },
+        // { name: "Service Description" },
+        { name: "Instruction" },
       ]);
     } else if (componentsName === "Medication") {
       getPatientMedicationHistoricalData();
