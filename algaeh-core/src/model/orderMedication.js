@@ -1081,7 +1081,7 @@ let updatePatientPrescription = (req, res, next) => {
         [
           input.item_id,
           "N",
-          "E",
+          "I",
           "M",
           input.patient_id,
           input.visit_id,
