@@ -73,8 +73,8 @@ const executePDF = function executePDFMethod(options) {
           -- Allergey (Result - 7)
           SELECT ALG.allergy_name,
           case when ALG.allergy_type='F' then 'Food' when ALG.allergy_type='A' then 'Airborne' when ALG.allergy_type='AI' then 'Animal & Insect' when ALG.allergy_type='C' then 'Chemical & Others' when ALG.allergy_type='D' then 'Drugs' end as allergy_type,
-          case when PALG.onset='C' then 'Childhood' when PALG.onset='P' then 'Preterms' when PALG.onset='T' then 'Teens' when PALG.onset='A' then 'Adulthood' when PALG.onset='O' then onset_date  end as onset,
-          case when PALG.severity='M' then 'Mild' when PALG.severity='MO' then 'Moderate' when PALG.severity='SE' then 'Severe' end as severity
+          case when PALG.onset='C' then 'Childhood' when PALG.onset='P' then 'Preterm' when PALG.onset='T' then 'Teens' when PALG.onset='A' then 'Adulthood' when PALG.onset='O' then onset_date  end as onset,
+          case when PALG.severity='MI' then 'Mild' when PALG.severity='MO' then 'Moderate' when PALG.severity='SE' then 'Severe' end as severity
           FROM hims_f_patient_allergy as PALG 
           inner join hims_d_allergy ALG on ALG.hims_d_allergy_id=PALG.allergy_id
           where PALG.patient_id=? and PALG.record_status='A';

@@ -328,7 +328,7 @@ export default {
             "SELECT D.hims_d_diet_description,PD.till_date,PD.created_date,USR.user_display_name \
             FROM hims_f_patient_diet PD \
             inner join hims_d_diet_master D on D.hims_d_diet_master_id=PD.diet_id \
-            inner join algaeh_d_app_user USR on USR.algaeh_d_app_user_id=PD.created_by " +
+            inner join algaeh_d_app_user USR on USR.algaeh_d_app_user_id=PD.created_by where PD.record_status='A' " +
             _stringData +
             ` order by PD.created_date desc;`,
           printQuery: true,
@@ -372,21 +372,25 @@ export default {
       let _stringData = "";
       const input = req.query;
 
-      if (input.encounter_id != null) {
-        _stringData += " and encounter_id = ?" + input.encounter_id;
-      }
       if (input.episode_id != null) {
-        _stringData += " and episode_id = ?" + input.episode_id;
+        _stringData += " and PALG.episode_id = ?" + input.episode_id;
       }
       if (input.patient_id != null) {
-        _stringData += " and patient_id = ?" + input.patient_id;
+        _stringData += " and PALG.patient_id = ?" + input.patient_id;
       }
       _mysql
         .executeQuery({
           query:
-            "SELECT * FROM hims_f_patient_diet " +
+            "SELECT ALG.allergy_name,\
+            case when ALG.allergy_type='F' then 'Food' when ALG.allergy_type='A' then 'Airborne' when ALG.allergy_type='AI' then 'Animal & Insect' when ALG.allergy_type='C' then 'Chemical & Others' when ALG.allergy_type='D' then 'Drugs' end as allergy_type, \
+            case when PALG.onset='C' then 'Childhood' when PALG.onset='P' then 'Preterm' when PALG.onset='T' then 'Teens' when PALG.onset='A' then 'Adulthood' when PALG.onset='O' then onset_date  end as onset, \
+            case when PALG.severity='MI' then 'Mild' when PALG.severity='MO' then 'Moderate' when PALG.severity='SE' then 'Severe' end as severity, USR.user_display_name,PALG.created_date \
+            FROM hims_f_patient_allergy as PALG \
+            inner join hims_d_allergy ALG on ALG.hims_d_allergy_id=PALG.allergy_id \
+            inner join algaeh_d_app_user USR on USR.algaeh_d_app_user_id=PALG.created_by \
+            where PALG.record_status='A' " +
             _stringData +
-            " order by prescription_date desc;",
+            ` order by PALG.created_date desc;`,
           printQuery: true,
         })
         .then((result) => {
