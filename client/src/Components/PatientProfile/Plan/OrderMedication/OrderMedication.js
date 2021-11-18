@@ -355,6 +355,8 @@ class OrderMedication extends Component {
       no_of_days: row.no_of_days,
       start_date: row.start_date,
       instructions: row.instructions,
+      chronic_inactive: row.chronic_inactive,
+      isFavMedcine: row.isFavMedcine,
     });
   }
   clearAction = (e) => {

@@ -328,7 +328,7 @@ export default {
             "SELECT D.hims_d_diet_description,PD.till_date,PD.created_date,USR.user_display_name \
             FROM hims_f_patient_diet PD \
             inner join hims_d_diet_master D on D.hims_d_diet_master_id=PD.diet_id \
-            inner join algaeh_d_app_user USR on USR.algaeh_d_app_user_id=PD.created_by " +
+            inner join algaeh_d_app_user USR on USR.algaeh_d_app_user_id=PD.created_by where PD.record_status='A' " +
             _stringData +
             ` order by PD.created_date desc;`,
           printQuery: true,
