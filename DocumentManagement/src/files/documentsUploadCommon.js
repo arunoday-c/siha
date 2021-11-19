@@ -265,21 +265,23 @@ export const moveOldFiles = (req, res) => {
                   fullDocumentPath;
                 }
                 if (docs[i].fromPath) {
-                  await fs.rename(
-                    docs[i].document,
-                    fullDocumentPath,
-                    function (err) {
-                      if (err) {
-                        res.status(400).json({ error: err.message });
-                      } else {
-                        Model.findByIdAndDelete(docs[i]._id, (err, docs) => {
-                          if (err) {
-                            res.status(400).json({ error: err.message });
-                          }
-                        });
+                  if (fs.existsSync(docs[i].document)) {
+                    await fs.rename(
+                      docs[i].document,
+                      fullDocumentPath,
+                      function (err) {
+                        if (err) {
+                          res.status(400).json({ error: err.message });
+                        } else {
+                          Model.findByIdAndDelete(docs[i]._id, (err, docs) => {
+                            if (err) {
+                              res.status(400).json({ error: err.message });
+                            }
+                          });
+                        }
                       }
-                    }
-                  );
+                    );
+                  }
                 } else {
                   const fileContents = new Buffer(docs[i].document, "base64");
                   await fs.writeFile(fullDocumentPath, fileContents, (err) => {
