@@ -112,7 +112,6 @@ export default function PersonalDetails({
   const [presentCities, setPresentCities] = useState([]);
   const [permanentCountry, setPermanentCountry] = useState([]);
   const [permanentCities, setPermanentCities] = useState([]);
-  console.log("FldEditable", FldEditable);
   // const { control, errors, reset, setValue, getValues } = useForm({
   //   defaultValues: {},
   // });
@@ -135,7 +134,11 @@ export default function PersonalDetails({
   function onChangeHandler(name, value) {
     debugger;
     setPersonalDetails({ ...personalDetails, [name]: value });
-    // console.log("result---->", formControlPersonal.getValues(name));
+    console.log(
+      "result---->",
+      formControlPersonal.getValues(name),
+      FldEditable
+    );
   }
   const { data: presonalDetails } = useQuery(
     ["personal-details", { employee_id: EmpMasterIOputs }],
@@ -223,7 +226,7 @@ export default function PersonalDetails({
         EmpMasterIOputs === undefined ||
         EmpMasterIOputs === null,
       refetchOnMount: false,
-      // refetchOnReconnect: false,
+      refetchOnReconnect: false,
       // keepPreviousData: true,
       refetchOnWindowFocus: false,
       initialStale: true,

@@ -242,6 +242,10 @@ export function BillDetails({
   }, [services_id]);
 
   function calculateBillDetails(billData = {}) {
+    const isPatientExists = patient?.primary_id_no ? true : false;
+    if (isPatientExists === false) {
+      return;
+    }
     const sendingObject = { ...billData };
 
     // Sheet Level Discount Nullify
@@ -312,7 +316,8 @@ export function BillDetails({
   }
 
   useEffect(() => {
-    if (billData) {
+    const isPatientExists = patient?.primary_id_no ? true : false;
+    if (billData && isPatientExists === true) {
       setValue("advance_adjust", billData?.advance_adjust);
       setValue(
         "sheet_discount_percentage",
@@ -359,7 +364,8 @@ export function BillDetails({
   }, [shiftMappings, billInfo]);
 
   useEffect(() => {
-    if (billData) {
+    const isPatientExists = patient?.primary_id_no ? true : false;
+    if (billData && isPatientExists === true) {
       if (!enableCash) {
         setBillData((state) => {
           state.cash_amount = 0;
@@ -376,7 +382,8 @@ export function BillDetails({
   }, [enableCash]);
 
   useEffect(() => {
-    if (billData) {
+    const isPatientExists = patient?.primary_id_no ? true : false;
+    if (billData && isPatientExists === true) {
       if (!enableCard) {
         setBillData((state) => {
           state.card_amount = 0;
@@ -890,7 +897,7 @@ export function BillDetails({
                           const credit = e.target.value
                             ? parseFloat(e.target.value)
                             : 0;
-                          debugger;
+
                           const credit_limit =
                             (parseFloat(billData?.net_amount) *
                               parseFloat(service_credit_percentage)) /
