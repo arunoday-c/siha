@@ -93,8 +93,8 @@ export default function NotificationList({
   }
   function callDeleteAllNotifications() {
     Modal.confirm({
-      title: "Do you want to delete all notifications ?",
-      content: "Deleted notifications can not be restore again.",
+      title: "Do you want to clear all notifications?",
+      content: "All Notification will clear from the list.",
       onOk: async () => {
         try {
           setLoading(true);
@@ -109,7 +109,7 @@ export default function NotificationList({
           await callNotifications({ require_total_count: true });
           AlgaehMessagePop({
             type: "success",
-            display: "Successfully deleted all notifications",
+            display: "Successfully cleared all notifications",
           });
         } catch (e) {
           AlgaehMessagePop({ type: "error", display: e.message });
@@ -222,9 +222,24 @@ export default function NotificationList({
               );
             }}
           />
-          <Button danger onClick={callDeleteAllNotifications} loading={loading}>
-            Delete all notifications
-          </Button>
+
+          <button
+            type="button"
+            style={{
+              position: "absolute",
+              bottom: -25,
+              right: 15,
+              padding: "0 5px",
+              // minHeight: 22,
+              // maxHeight: 22,
+              zIndex: 1000,
+            }}
+            className="btn btn-danger"
+            onClick={callDeleteAllNotifications}
+            loading={loading}
+          >
+            Clear All
+          </button>
         </>
       )}
     </>
