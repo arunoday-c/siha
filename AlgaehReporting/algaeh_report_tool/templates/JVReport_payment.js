@@ -2,11 +2,8 @@ const executePDF = function executePDFMethod(options) {
   return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
 
       let str = "";
       let input = {};
@@ -16,38 +13,21 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
+      console.log("input===", input);
+
+      str = `select * from  finance_voucher_sub_header FSH where FSH.finance_voucher_header_id=? group by FSH.finance_voucher_sub_header_id;`;
+
       options.mysql
         .executeQuery({
-          query: `
-          SELECT VD.voucher_type,VD.voucher_no,VD.amount,VD.payment_mode,VD.payment_date,
-          VD.narration,VD.due_date,VD.settled_amount,VD.created_by,
-          VN.vendor_name,VN.vendor_code,VN.contact_number,VN.address,VN.vat_number
-          FROM finance_voucher_header VD
-          inner join hims_f_procurement_grn_header IVH on IVH.inovice_number = VD.invoice_ref_no
-          inner join hims_d_vendor VN on VN.hims_d_vendor_id = IVH.vendor_id
-          where VD.finance_voucher_header_id=?;
-          select FH.amount as opening_amount, FSH.amount as paid_amount, coalesce(FSHH.amount,0) as previous_amount,
-          
-          FSH.invoice_ref_no
-          from finance_voucher_sub_header FSH
-          inner join finance_voucher_header FH on FH.invoice_no in ( FSH.invoice_ref_no)
-          left join finance_voucher_sub_header FSHH on FSHH.finance_voucher_header_id<? and FSHH.invoice_ref_no in ( FSH.invoice_ref_no)
-          where FSH.finance_voucher_header_id=? and FH.voucher_type='purchase' ;
-          select FH.voucher_type,FH.amount as opening_amount,FSH.amount, FSH.amount, 
-          (FH.amount - FSH.amount) as closing_amount, FSH.invoice_ref_no from finance_voucher_sub_header FSH
-          inner join finance_voucher_header FH on FH.invoice_no in ( FSH.invoice_ref_no)           
-          where FSH.finance_voucher_header_id=? and FH.voucher_type='debit_note';           
-          -- select IVH.grn_number,DATE(IVH.invoice_date) as invoice_date, IVH.inovice_number,
-          -- DATE(IVH.grn_date) as grn_date,IVH.po_id,IVH.sub_total,IVH.net_total,IVH.detail_discount,IVH.total_tax,IVH.net_payable,IVH.hospital_id, FSH.amount
-          -- from finance_voucher_sub_header FSH
-          -- inner join finance_voucher_header FH on FH.finance_voucher_header_id = FSH.finance_voucher_header_id
-          -- inner join hims_f_procurement_grn_header IVH on IVH.inovice_number = FH.invoice_ref_no
-          -- inner join hims_d_vendor VN on VN.hims_d_vendor_id = IVH.vendor_id
-          -- where FSH.finance_voucher_header_id=?;
-          `,
+          query:
+            ` SELECT VD.voucher_type,VD.voucher_no,VD.amount,VD.payment_mode,VD.payment_date,
+            VD.narration,VD.due_date,VD.settled_amount,VD.created_by,
+            VN.vendor_name,VN.vendor_code,VN.contact_number,VN.address,VN.vat_number
+            FROM finance_voucher_header VD
+            left join hims_f_procurement_grn_header IVH on IVH.inovice_number = VD.invoice_ref_no
+            left join hims_d_vendor VN on VN.hims_d_vendor_id = IVH.vendor_id
+            where VD.finance_voucher_header_id=?;` + str,
           values: [
-            input.voucher_header_id,
-            input.voucher_header_id,
             input.voucher_header_id,
             input.voucher_header_id,
             input.voucher_header_id,
@@ -55,44 +35,48 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((result) => {
-          // console.log(subTotal);
-          const totalNetPayable = _.sumBy(result[1], (s) =>
-            parseFloat(s.paid_amount)
+          const advanceArray = result[1].filter(
+            (f) => f.voucher_type_group === "advance"
           );
-          const totalDebit_Amt = _.sumBy(result[2], (s) =>
-            parseFloat(s.amount)
+          const debitNoteArray = result[1].filter(
+            (f) => f.voucher_type_group === "debit_note"
           );
-          const invoiceReArrange = _.chain(result[1])
-            .groupBy((g) => g.invoice_ref_no)
-            .map((details, key) => {
-              const { invoice_ref_no, opening_amount, paid_amount } = _.head(
-                details
-              );
+          const paymentArray = result[1].filter(
+            (f) => f.voucher_type_group === "payment"
+          );
 
-              return {
-                invoice_ref_no,
-                opening_amount,
-                paid_amount,
-                previous_amount: _.sumBy(details, (s) =>
-                  parseFloat(s.previous_amount)
-                ),
-                closing_amount:
-                  opening_amount -
-                  paid_amount -
-                  _.sumBy(details, (s) => parseFloat(s.previous_amount)),
-
-                // resultFor: result,
-              };
-            })
-            .value();
-
-          resolve({
+          const finalResult = {
             resultHeader: result[0].length > 0 ? result[0][0] : {},
-            resultInvoice: invoiceReArrange,
-            resultDebit_note: result[2],
-            totalNetPayable: totalNetPayable,
-            totalDebit_Amt: totalDebit_Amt,
-            totalpaid_amt: totalNetPayable - totalDebit_Amt,
+            debitNoteArray: debitNoteArray,
+            advanceArray: advanceArray,
+            paymentArray: paymentArray,
+            // resultInvoice: result[1],
+            totalNetPayable: _.sumBy(result[1], (s) =>
+              parseFloat(s.net_payable)
+            ),
+
+            debitNoteTotals: {
+              subTotal: _.sumBy(debitNoteArray, (s) => parseFloat(s.sub_total)),
+              netTotal: _.sumBy(debitNoteArray, (s) => parseFloat(s.net_total)),
+            },
+            advanceTotals: {
+              subTotal: _.sumBy(advanceArray, (s) => parseFloat(s.sub_total)),
+              netTotal: _.sumBy(advanceArray, (s) => parseFloat(s.net_total)),
+            },
+            receiptTotals: {
+              subTotal: _.sumBy(paymentArray, (s) => parseFloat(s.sub_total)),
+              netTotal: _.sumBy(paymentArray, (s) => parseFloat(s.net_total)),
+            },
+            totalReceiptAmount: _.sumBy(paymentArray, (s) =>
+              parseFloat(s.net_payable)
+            ),
+            totalDebitNoteAmount: _.sumBy(debitNoteArray, (s) =>
+              parseFloat(s.net_payable)
+            ),
+            totalAdvanceAmount: _.sumBy(advanceArray, (s) =>
+              parseFloat(s.net_payable)
+            ),
+
             currency: {
               decimal_places,
               addSymbol: false,
@@ -105,7 +89,16 @@ const executePDF = function executePDFMethod(options) {
               symbol_position,
               currency_symbol,
             },
-          });
+          };
+          const tNetAmt = {
+            ...finalResult,
+            totalNetAmount:
+              parseFloat(finalResult.totalReceiptAmount) -
+              parseFloat(finalResult.totalDebitNoteAmount) -
+              parseFloat(finalResult.totalAdvanceAmount),
+          };
+          console.log("finalResult", tNetAmt);
+          resolve(tNetAmt);
         })
         .catch((error) => {
           options.mysql.releaseConnection();
