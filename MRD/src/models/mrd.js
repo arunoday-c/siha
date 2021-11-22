@@ -458,14 +458,14 @@ export default {
           left join hims_f_patient_visit V on LO.visit_id = V.hims_f_patient_visit_id
           left join hims_adm_atd_admission ADM on ADM.hims_adm_atd_admission_id = LO.ip_id
           inner join hims_d_services S on LO.service_id=S.hims_d_services_id 
-          inner join hims_d_employee  E on LO.provider_id=E.hims_d_employee_id where 1=1  ${_stringData} order by hims_f_lab_order_id;
+          inner join hims_d_employee  E on LO.provider_id=E.hims_d_employee_id where 1=1  ${_stringData} order by LO.hims_f_lab_order_id desc;
           select hims_f_rad_order_id, case when LO.ip_id is NULL then V.visit_date else ADM.admission_date end as visit_date
           , E.full_name as provider_name, S.service_name, LO.billed as rad_billed, 
           LO.status as rad_ord_status,  S.service_type_id from hims_f_rad_order LO 
           left join hims_f_patient_visit V on LO.visit_id = V.hims_f_patient_visit_id
           left join hims_adm_atd_admission ADM on ADM.hims_adm_atd_admission_id = LO.ip_id
           inner join hims_d_services S on LO.service_id=S.hims_d_services_id 
-          inner join hims_d_employee  E on LO.provider_id=E.hims_d_employee_id where 1=1 ${_stringData} order by hims_f_rad_order_id;`,
+          inner join hims_d_employee  E on LO.provider_id=E.hims_d_employee_id where 1=1 ${_stringData} order by LO.hims_f_rad_order_id desc;`,
           // values: [req.query.patient_id, req.query.patient_id],
           printQuery: true,
         })
