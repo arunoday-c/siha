@@ -117,7 +117,7 @@ function InvestigationTable({ columnsArray, columnData }) {
                   : "----"}
               </td>
               <td>
-                {
+                {rad_ord_status === "RA" || lab_ord_status === "V" ? (
                   <span
                     className="pat-code"
                     style={{ color: "#006699" }}
@@ -127,7 +127,7 @@ function InvestigationTable({ columnsArray, columnData }) {
                   >
                     View Report
                   </span>
-                }
+                ) : null}
               </td>
             </tr>
           );
