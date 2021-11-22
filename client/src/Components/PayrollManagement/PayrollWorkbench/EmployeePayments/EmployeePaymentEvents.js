@@ -405,6 +405,33 @@ const getPaymentDetails = ($this, row) => {
   }
 };
 
+const CancelFinalSettlement = ($this, e) => {
+  algaehApiCall({
+    uri: "/employeepayments/cancelFinalSettlement",
+    module: "hrManagement",
+    data: $this.state,
+    method: "POST",
+    onSuccess: (response) => {
+      // if (response.data.success === "true") {
+      LoadData($this);
+      getEmployeePayments($this);
+      swalMessage({
+        title: "Cancelled Succefully...",
+        type: "success",
+      });
+      AlgaehLoader({ show: false });
+      // }
+    },
+    onFailure: (error) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message || error.response.data.message,
+        type: "error",
+      });
+    },
+  });
+};
+
 const ProessEmpPayment = ($this, e) => {
   AlgaehValidation({
     alertTypeIcon: "warning",
@@ -559,4 +586,5 @@ export {
   PaymentOnClear,
   branchHandelEvent,
   getFinanceHeaders,
+  CancelFinalSettlement,
 };

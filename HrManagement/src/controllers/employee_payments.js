@@ -14,7 +14,8 @@ const {
   getLeaveSettleTopayment,
   getEmployeeLeaveSalary,
   updateEmployeeLeaveSalary,
-  generateAccountingEntry
+  generateAccountingEntry,
+  cancelFinalSettlement,
 } = empPaymentModels;
 
 export default () => {
@@ -23,21 +24,21 @@ export default () => {
   api.get("/getLoanTopayment", getLoanTopayment, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      result: req.records
+      result: req.records,
     });
   });
 
   api.get("/getAdvanceTopayment", getAdvanceTopayment, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      result: req.records
+      result: req.records,
     });
   });
 
   api.get("/getGratuityTopayment", getGratuityTopayment, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      result: req.records
+      result: req.records,
     });
   });
 
@@ -47,7 +48,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   );
@@ -58,7 +59,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   );
@@ -66,7 +67,7 @@ export default () => {
   api.get("/getEmployeePayments", getEmployeePayments, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      result: req.records
+      result: req.records,
     });
   });
 
@@ -76,7 +77,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   );
@@ -88,21 +89,24 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   );
 
-  api.put(
-    "/CancelEmployeePayment",
-    CancelEmployeePayment,
-    generateAccountingEntry,
-    (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        result: req.records
-      });
+  api.put("/cancelFinalSettlement", cancelFinalSettlement, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records,
     });
+  });
+
+  api.put("/CancelFinalSettlement", CancelFinalSettlement, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records,
+    });
+  });
 
   api.get(
     "/getEmployeeLeaveSalary",
@@ -110,7 +114,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -121,7 +125,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   );
