@@ -203,7 +203,7 @@ class Summary extends Component {
         <div className="row">
           <div className="col-md-9 col-lg-9">
             <div className="bd-callout bd-callout-theme">
-              <h6>Chief Complaints</h6>
+              <h6>Patient Information</h6>
               {_pat_episode.patient_name === undefined ? (
                 <p>Not recorded</p>
               ) : (
@@ -212,10 +212,18 @@ class Summary extends Component {
                   <b>{_pat_episode.patient_name}</b> /{" "}
                   {_pat_episode.primary_id_no} - ( {_pat_episode.age}Y{" "}
                   {_pat_episode.age_in_months}m {_pat_episode.age_in_days}d/
-                  {_pat_episode.gender}), <br />
-                  visited {_pat_episode.sub_department_name} Department on{" "}
-                  {_pat_episode.visit_date} for the chief complaint of{" "}
-                  <b>{_pat_episode.comment}</b> from {_pat_episode.onset_date}.
+                  {_pat_episode.gender}), visited{" "}
+                  {_pat_episode.sub_department_name} Department on{" "}
+                  <b>{_pat_episode.visit_date}</b>.
+                </p>
+              )}
+              <br />
+              <h6>Chief Complaints</h6>
+              {_pat_episode.patient_name === undefined ? (
+                <p>Not recorded</p>
+              ) : (
+                <p>
+                  {_pat_episode.comment} from {_pat_episode.onset_date}.
                 </p>
               )}
               <br />
