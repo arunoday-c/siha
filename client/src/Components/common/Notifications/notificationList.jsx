@@ -92,11 +92,11 @@ export default function NotificationList({
     }
   }
   function callDeleteAllNotifications() {
-    try {
-      Modal.confirm({
-        title: "Do you want to delete all notifications ?",
-        content: "Deleted notifications can not be restore again.",
-        onOk: async () => {
+    Modal.confirm({
+      title: "Do you want to delete all notifications ?",
+      content: "Deleted notifications can not be restore again.",
+      onOk: async () => {
+        try {
           setLoading(true);
           await newAlgaehApi({
             uri: "/deleteAllNotification",
@@ -111,15 +111,13 @@ export default function NotificationList({
             type: "success",
             display: "Successfully deleted all notifications",
           });
+        } catch (e) {
+          AlgaehMessagePop({ type: "error", display: e.message });
+        } finally {
           setLoading(false);
-        },
-        onCancel: () => {
-          setLoading(false);
-        },
-      });
-    } catch (e) {
-      AlgaehMessagePop({ type: "error", display: e.message });
-    }
+        }
+      },
+    });
   }
   function showTotal() {
     return `Total ${totalRecords} items`;
