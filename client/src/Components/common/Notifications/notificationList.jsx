@@ -7,6 +7,7 @@ import {
   Avatar,
   Spin,
   AlgaehMessagePop,
+  Modal,
 } from "algaeh-react-components";
 import newAlgaehApi from "../../../hooks/newAlgaehApi";
 import { Link } from "react-router-dom";
@@ -90,26 +91,34 @@ export default function NotificationList({
       console.error(e);
     }
   }
-  async function callDeleteAllNotifications() {
+  function callDeleteAllNotifications() {
     try {
-      setLoading(true);
-      await newAlgaehApi({
-        uri: "/deleteAllNotification",
-        module: "documentManagement",
-        method: "DELETE",
-        data: {
-          user_id: userToken.employee_id,
+      Modal.confirm({
+        title: "Do you want to delete all notifications ?",
+        content: "Deleted notifications can not be restore again.",
+        onOk: async () => {
+          setLoading(true);
+          await newAlgaehApi({
+            uri: "/deleteAllNotification",
+            module: "documentManagement",
+            method: "DELETE",
+            data: {
+              user_id: userToken.employee_id,
+            },
+          });
+          await callNotifications({ require_total_count: true });
+          AlgaehMessagePop({
+            type: "success",
+            display: "Successfully deleted all notifications",
+          });
+          setLoading(false);
         },
-      });
-      callNotifications({ require_total_count: true });
-      AlgaehMessagePop({
-        type: "success",
-        display: "Successfully deleted all notifications",
+        onCancel: () => {
+          setLoading(false);
+        },
       });
     } catch (e) {
       AlgaehMessagePop({ type: "error", display: e.message });
-    } finally {
-      setLoading(false);
     }
   }
   function showTotal() {
