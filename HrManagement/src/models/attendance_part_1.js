@@ -1982,7 +1982,6 @@ export function mergeTimesheetData(input) {
             };
           });
           let timingObject = {};
-
           if (workingHoursFrom === "E") {
             timingObject["standard_work_hours"] = attEmp["standard_work_hours"];
             timingObject["consider_overtime"] = attEmp["consider_overtime"];
@@ -2009,13 +2008,7 @@ export function mergeTimesheetData(input) {
           let STD_WM_ = STDWM;
           let HALF_HR_ = HALF_HR;
           let HALF_MIN_ = HALF_MIN;
-          console.log("workingHoursFrom", workingHoursFrom);
           if (workingHoursFrom === "E") {
-            if (employee["ramzan_work_hours"]) {
-              const RMZ_DB = moment(employee["ramzan_work_hours"], "HH:mm:ss");
-              RMZ_HR_ = RMZ_DB.format("HH");
-              RMZ_MIN_ = RMZ_DB.format("mm");
-            }
             if (employee["standard_work_hours"]) {
               STD_WH_ = employee["standard_work_hours"].split(".")[0];
               STD_WM_ = employee["standard_work_hours"].split(".")[1];
@@ -2023,11 +2016,15 @@ export function mergeTimesheetData(input) {
               HALF_HR_ = total_minutes / 2 / 60;
               HALF_MIN_ = (total_minutes / 2) % 60;
             }
-            
-          // }
-          // console.log("STD_WH_", STD_WH_);
-          // console.log("STD_WM_", STD_WM_);
-          // console.log("day_worked_status", day["worked_status"]);
+            if (employee["ramzan_work_hours"]) {
+              const RMZ_DB = moment(employee["ramzan_work_hours"], "HH:mm:ss");
+              RMZ_HR_ = RMZ_DB.format("HH");
+              RMZ_MIN_ = RMZ_DB.format("mm");
+            }
+          }
+          // console.log("STD_WH_", STD_WH_)
+          // console.log("STD_WM_", STD_WM_)
+          // console.log("day_worked_status", day["worked_status"])
           switch (day["worked_status"]) {
             case "AB":
               if (

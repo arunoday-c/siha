@@ -128,8 +128,7 @@
             </table>
             <br>
           
-        </section>
-        <section>
+        </section><section>
                <td class="txtFld" width="60%" ><b>Advances</b>
                    </td>
             <table class="tableForData" cell-padding="0">
@@ -144,6 +143,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    
                     {{#each advanceArray }}
                       <tr>
                         <td width="80">{{inc @index}}</td>
@@ -165,8 +165,12 @@
                     </tr>
                 </tbody>
             </table>
+            </section> 
+
+        
             <br>
-            
+
+            <section>
             <table class="tableNoBorder">
                  <tr>
                     <td class="txtFld"><b>Memo:</b>
@@ -176,10 +180,14 @@
                     <td class="numberFld">Total Receipt: </td>
                     <td class="numberFld" width="100px">{{numberFormating totalReceiptAmount  currencyHeader}}</td>
                 </tr>
+
+
                 <tr>
                     <td class="numberFld">Total Credit: </td>
                     <td class="numberFld">({{numberFormating totalCreditNoteAmount  currencyHeader}})</td>
                 </tr>
+
+
                 <tr>
                     <td class="numberFld">Total Advance: </td>
                     <td class="numberFld">({{numberFormating totalAdvanceAmount  currencyHeader}})</td>
@@ -190,6 +198,7 @@
                 </tr>
             </table>
         </section>
+         
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
     </div>
 </body>

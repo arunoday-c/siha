@@ -1,6 +1,64 @@
 import React from "react";
+import { algaehApiCall } from "../../../../utils/algaehApiCall";
 
 function InvestigationTable({ columnsArray, columnData }) {
+  const generateReport = (row, report_type) => {
+    let inputObj = {};
+    if (row.hims_f_rad_order_id > 0) {
+      inputObj = {
+        tab_name: "Radiology Report",
+        reportName: "radiologyReport",
+        data: [
+          {
+            name: "hims_f_rad_order_id",
+            value: row.hims_f_rad_order_id,
+          },
+        ],
+      };
+    } else {
+      inputObj = {
+        tab_name: "Lab Report",
+        reportName: "hematologyTestReport",
+        data: [
+          {
+            name: "hims_d_patient_id",
+            value: row.patient_id,
+          },
+          {
+            name: "visit_id",
+            value: row.visit_id,
+          },
+          {
+            name: "hims_f_lab_order_id",
+            value: row.hims_f_lab_order_id,
+          },
+        ],
+      };
+    }
+    let tab_name = inputObj.tab_name;
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: inputObj.reportName,
+          reportParams: inputObj.data,
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${tab_name}`;
+        window.open(origin);
+      },
+    });
+  };
+
   return (
     <table className="accrTable">
       <thead>
@@ -58,7 +116,19 @@ function InvestigationTable({ columnsArray, columnData }) {
                   ? "Result Available"
                   : "----"}
               </td>
-              {/* <td>{rad_billed}</td> */}
+              <td>
+                {rad_ord_status === "RA" || lab_ord_status === "V" ? (
+                  <span
+                    className="pat-code"
+                    style={{ color: "#006699" }}
+                    onClick={() => {
+                      generateReport(item, "LAB");
+                    }}
+                  >
+                    View Report
+                  </span>
+                ) : null}
+              </td>
             </tr>
           );
         })}

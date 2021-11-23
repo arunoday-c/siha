@@ -21,6 +21,7 @@ import {
   ClearData,
   PaymentOnClear,
   getFinanceHeaders,
+  CancelFinalSettlement,
 } from "./EmployeePaymentEvents.js";
 import { MainContext } from "algaeh-react-components";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -237,9 +238,10 @@ class EmployeePayment extends Component {
                                   />
                                 ),
                                 displayTemplate: (row) => {
-                                  let display = GlobalVariables.EMPLOYEE_PAYMENT_TYPE.filter(
-                                    (f) => f.value === row.payment_type
-                                  );
+                                  let display =
+                                    GlobalVariables.EMPLOYEE_PAYMENT_TYPE.filter(
+                                      (f) => f.value === row.payment_type
+                                    );
 
                                   return (
                                     <span>
@@ -630,6 +632,17 @@ class EmployeePayment extends Component {
                       <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
                         <div className="row">
                           <div className="col-12">
+                            {this.state.payment_type === "FS" ? (
+                              <button
+                                type="button"
+                                className="btn btn-primary float-right"
+                                onClick={CancelFinalSettlement.bind(this, this)}
+                                disabled={this.state.processBtn}
+                              >
+                                Cancel
+                              </button>
+                            ) : null}
+
                             <button
                               type="button"
                               className="btn btn-primary float-right"
@@ -678,9 +691,10 @@ class EmployeePayment extends Component {
                             ),
 
                             displayTemplate: (row) => {
-                              let display = GlobalVariables.EMPLOYEE_PAYMENT_TYPE.filter(
-                                (f) => f.value === row.payment_type
-                              );
+                              let display =
+                                GlobalVariables.EMPLOYEE_PAYMENT_TYPE.filter(
+                                  (f) => f.value === row.payment_type
+                                );
 
                               return (
                                 <span>
@@ -744,9 +758,10 @@ class EmployeePayment extends Component {
                             ),
 
                             displayTemplate: (row) => {
-                              let display = GlobalVariables.EMP_PAYMENT_MODE.filter(
-                                (f) => f.value === row.payment_mode
-                              );
+                              let display =
+                                GlobalVariables.EMP_PAYMENT_MODE.filter(
+                                  (f) => f.value === row.payment_mode
+                                );
 
                               return (
                                 <span>

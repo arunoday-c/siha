@@ -488,7 +488,8 @@ export default {
                           })
                           .then((monthly_leave) => {
                             let result = {
-                              payment_application_code: payment_application_code,
+                              payment_application_code:
+                                payment_application_code,
                             };
                             // _mysql.commitTransaction(() => {
                             //   _mysql.releaseConnection();
@@ -720,7 +721,8 @@ export default {
                           })
                             .then((loan_deduction) => {
                               let result = {
-                                payment_application_code: payment_application_code,
+                                payment_application_code:
+                                  payment_application_code,
                               };
                               // _mysql.commitTransaction(() => {
                               //   _mysql.releaseConnection();
@@ -890,7 +892,8 @@ export default {
                           })
                             .then((loan_deduction) => {
                               let result = {
-                                payment_application_code: payment_application_code,
+                                payment_application_code:
+                                  payment_application_code,
                               };
                               // _mysql.commitTransaction(() => {
                               //   _mysql.releaseConnection();
@@ -932,7 +935,34 @@ export default {
       next(e);
     }
   },
+  cancelFinalSettlement: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      const inputParam = req.body;
 
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_f_final_settlement_header SET cancelled='Y', cancelled_by=?, cancelled_date=? WHERE hims_f_final_settlement_header_id = ?;",
+          values: [
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            inputParam.employee_final_settlement_id,
+          ],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
   CancelEmployeePayment: (req, res, next) => {
     try {
       const _mysql = new algaehMysql();

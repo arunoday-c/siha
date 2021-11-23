@@ -209,6 +209,7 @@ export default function CategoryComponent({ componentsName }) {
         { name: "Lab Status" },
         // { name: "Lab Billed" },
         { name: "Rad Status" },
+        { name: "Report" },
         // { name: "Radiology Billed" },
       ]);
     }

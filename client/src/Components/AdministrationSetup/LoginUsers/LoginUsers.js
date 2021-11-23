@@ -542,8 +542,9 @@ class LoginUsers extends Component {
             return f.checked === true;
           });
           const selectedData = this.state.branch_detail.find(
-            (f) => f.hims_d_hospital_id === this.state.hospital_id
+            (f) => f.hims_d_hospital_id === parseInt(this.state.hospital_id)
           );
+
           selectedData.login_user = "Y";
           branch_data.push(selectedData);
 

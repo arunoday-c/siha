@@ -1,135 +1,204 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
-
+<style type="text/css">
+.tableNoBorder td{ padding: 3px;}
+</style>
 <body>
-    <div class="print-body">
-        <section>
-            <table class="tableNoBorder" cell-padding="0">
-                <tr>
-                    <td colspan="2">
-                        <h1 class="voucherHdg">Payment Voucher</h1>
-                    </td>
-                <tr>
-
-                <tr style="vertical-align: bottom;">
-                    <td width="55%">
-                        <table class="tableNoBorder">
-                            <tr>
-                                <td class="txtFld" datatype="string">
-                                    <p>Payment To:</p>
-                                    <p><b>{{resultHeader.vendor_code}} - {{resultHeader.vendor_name}}</b></p>
-                                    <p>Mob: {{resultHeader.contact_number}}</p>
-                                    <p>Address: {{resultHeader.address}}</p>
-                                    <p>Vat No.: {{resultHeader.vat_number}}</p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-
-                    <td width="55%">
-                        <table class="tableNoBorder">
-                            <tr>
-                                <td class="numberFld">
-                                    <p>Date: <b>{{resultHeader.payment_date}}</b></p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="numberFld">
-                                    <p>Reference No: <b>{{resultHeader.voucher_no}}</b></p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </section>
-        <section>
-            <td class="txtFld" datatype="string">
-                <p><b> Payment List </b></p>
-            </td>
-
-            <table class="tableForData" cell-padding="0">
-                <thead>
+<div class="print-body">
+    <section>
+        <table class="tableNoBorder" cell-padding="0">
+        <tr>
+            <td colspan="2"><h1 class="voucherHdg">Payment Voucher</h1></td>
+        <tr>
+            
+        <tr style="vertical-align: bottom;">
+             <td width="55%">
+                <table class="tableNoBorder">
                     <tr>
+                        <td  class="txtFld">
+                            <p><b>Paid To:</b></p>
+                            <p>{{resultHeader.customer_code}} - {{resultHeader.customer_name}}</p>
+                            <p>Mob: {{resultHeader.contact_number}}</p>
+                            <p>Address: {{resultHeader.address}}</p>
+                            <p>Vat No.: {{resultHeader.vat_number}}</p>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td  class="txtFld">
+                            <br/><p><b>From Account:</b></p>
+                            <p>{{resultHeader.child_name}}</p>
+                            <p>{{resultHeader.arabic_child_name}}</p>
+                           
+                        </td>
+                    </tr>
+                </table>
+            </td>
+           
+              <td width="55%">
+                <table class="tableNoBorder">
+                    <tr>
+                        <td  class="numberFld"><p>Date: <b>{{resultHeader.payment_date}}</b></p></td>
+                    </tr>
+                     <tr>
+                        <td  class="numberFld"><p>VoucherNo: <b>{{resultHeader.voucher_no}}</b></p></td>
+                    </tr>
+                     <tr>
+                        <td  class="numberFld"><p>Reference No: <b>{{resultHeader.custom_ref_no}}</b></p></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        </table>
+    </section>
+     <td class="txtFld" width="60%" ><b>Payment</b>
+                   </td>
+        <section>
+            <table class="tableForData" cell-padding="0">
+                
+                <thead>
+                  <tr>
                         <th>Sl No.</th>
-                        <th>Invoice Ref. No.</th>
-                        {{!-- <th>Invoice Date</th> --}}
-                        <th>Total Amount</th>
-                        <th>Paid Amount </th>
-                        <th>Prevoius Paid Amount </th>
-                        <th>Balance Amount</th>
-                        {{!-- <th>Net Payable</th> --}}
+                        <th>Invoice No.</th>
+                        <th>Invoice Date</th>
+                        <th>Net Total</th>
+                        <th>Payment</th>
+                        {{!-- <th>Discount</th>
+                        <th>Tax</th> --}}
+                        {{!-- <th>Net Received</th> --}}
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each resultInvoice}}
+                    {{#each paymentArray}}
                     <tr>
-                        <td datatype="string">{{inc @index}}</td>
+                        <td width="80">{{inc @index}}</td>
                         <td>{{invoice_ref_no}}</td>
-                        {{!--  <td datatype="string">{{invoice_date}}</td> --}}
-                        <td class="numberFld">{{numberFormating opening_amount ../currency}}</td>
-                        <td class="numberFld">{{numberFormating paid_amount ../currency}}</td>
-                        <td class="numberFld">{{numberFormating previous_amount ../currency}}</td>
-                        <td class="numberFld">{{numberFormating closing_amount ../currency}}</td>
+                        <td>{{invoice_date}}</td>
+                        <td class="numberFld"  width="100">{{numberFormating sub_total ../currency}}</td>
+                        <td class="numberFld"  width="100">{{numberFormating net_total ../currency}}</td>
+                        {{!-- <td class="numberFld">{{numberFormating detail_discount ../currency}}</td>
+                        <td class="numberFld">{{numberFormating total_tax ../currency}}</td> --}}
+                        {{!-- <td class="numberFld">{{numberFormating net_payable ../currency}}</td> --}}
                     </tr>
                     {{/each }}
+                     <td colspan="3"></td>
+                        <td class="numberFld">{{numberFormating receiptTotals.subTotal ./currencyHeader}}</td>
+                        <td class="numberFld">{{numberFormating receiptTotals.netTotal ./currencyHeader}}</td>
 
                 </tbody>
             </table>
-            <table class="tableNoBorder">
-                <tr class="footerTotalUp">
-                    <td class="numberFld">Total Invoice: </td>
-                    <td class="numberFld">{{numberFormating totalNetPayable currencyHeader}}</td>
-                </tr>
+           
+        </section>
+         <section>
+               <td class="txtFld" width="60%" ><b>Debit Note</b>
+                   </td>
+            <table class="tableForData" cell-padding="0">
+               
+                <thead>
+                  <tr>
+                        <th>Sl No.</th>
+                        <th>Invoice No.</th>
+                        <th>Invoice Date</th>
+                        <th>Net Total</th>
+                        <th>Payment</th>
+                        {{!-- <th>Discount</th>
+                        <th>Tax</th> --}}
+                        {{!-- <th>Net Received</th> --}}
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each debitNoteArray }}
+                    <tr>
+                        <td width="80">{{inc @index}}</td>
+                        <td>{{invoice_ref_no}}</td>
+                        <td>{{invoice_date}}</td>
+                        <td class="numberFld"  width="100">{{numberFormating sub_total ../currency}}</td>
+                        <td class="numberFld"  width="100">{{numberFormating net_total ../currency}}</td>
+                        {{!-- <td class="numberFld">{{numberFormating detail_discount ../currency}}</td>
+                        <td class="numberFld">{{numberFormating total_tax ../currency}}</td> --}}
+                        {{!-- <td class="numberFld">{{numberFormating net_payable ../currency}}</td> --}}
+                    </tr>
+                    {{/each }}
+ <tr>
+                        <td colspan="3"></td>
+                        <td class="numberFld">{{numberFormating creditNoteTotals.subTotal ./currencyHeader}}</td>
+                        <td class="numberFld">{{numberFormating creditNoteTotals.netTotal ./currencyHeader}}</td>
+                        {{!-- <td class="numberFld">{{numberFormating creditNoteTotals.subTotal ./currency}}</td>
+                        <td class="numberFld">{{numberFormating creditNoteTotals.netTotal ./currency}}</td> --}}
+                    </tr>
+                </tbody>
             </table>
             <br>
-            {{#ifCond resultDebit_note.length '>' 0 }}
-            <td class="txtFld" datatype="string">
-                <p><b> Debit Note List </b></p>
-            </td>
+          
+        </section><section>
+               <td class="txtFld" width="60%" ><b>Advances</b>
+                   </td>
             <table class="tableForData" cell-padding="0">
+               
                 <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Ref. No.</th>
-                        {{!-- <th>Invoice Date</th> --}}
-                        <th>Total Amount</th>
-                        <th>Applied Amount </th>
-                        <th>Balance Amount</th>
-                        {{!-- <th>Net Payable</th> --}}
+                  <tr>
+                         <th>Sl No.</th>
+                        <th>Invoice No.</th>
+                        <th>Invoice Date</th>
+                        <th>Net Total</th>
+                        <th>Paid</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each resultDebit_note}}
-                    <tr>
-                        <td datatype="string">{{inc @index}}</td>
+                    
+                    {{#each advanceArray }}
+                      <tr>
+                        <td width="80">{{inc @index}}</td>
                         <td>{{invoice_ref_no}}</td>
-                        {{!--  <td datatype="string">{{invoice_date}}</td> --}}
-                        <td class="numberFld">{{numberFormating opening_amount ../currency}}</td>
-                        <td class="numberFld">{{numberFormating amount ../currency}}</td>
-                        <td class="numberFld">{{numberFormating closing_amount ../currency}}</td>
+                        <td>{{invoice_date}}</td>
+                        <td class="numberFld" width="100">{{numberFormating sub_total ../currency}}</td>
+                        <td class="numberFld" width="100">{{numberFormating net_total ../currency}}</td>
+                        {{!-- <td class="numberFld">{{numberFormating detail_discount ../currency}}</td>
+                        <td class="numberFld">{{numberFormating total_tax ../currency}}</td> --}}
+                        {{!-- <td class="numberFld">{{numberFormating net_payable ../currency}}</td> --}}
                     </tr>
                     {{/each }}
-
+ <tr>
+                        <td colspan="3"></td>
+                        <td class="numberFld">{{numberFormating advanceTotals.subTotal ./currencyHeader}}</td>
+                        <td class="numberFld">{{numberFormating advanceTotals.netTotal ./currencyHeader}}</td>
+                        {{!-- <td class="numberFld">{{numberFormating creditNoteTotals.subTotal ./currency}}</td>
+                        <td class="numberFld">{{numberFormating creditNoteTotals.netTotal ./currency}}</td> --}}
+                    </tr>
                 </tbody>
             </table>
+            </section> 
+
+        
+            <br>
+
+            <section>
             <table class="tableNoBorder">
-                <tr class="footerTotalUp">
+                 <tr>
+                    <td class="txtFld"><b>Memo:</b>
+                    <p>{{resultHeader.narration}}</p></td>
+                </tr>
+                <tr>
+                    <td class="numberFld">Total Payment: </td>
+                    <td class="numberFld" width="100px">{{numberFormating totalReceiptAmount  currencyHeader}}</td>
+                </tr>
+
+
+                <tr>
                     <td class="numberFld">Total Debit: </td>
-                    <td class="numberFld">{{numberFormating totalDebit_Amt currencyHeader}}</td>
+                    <td class="numberFld">({{numberFormating totalCreditNoteAmount  currencyHeader}})</td>
                 </tr>
-            </table>
-            {{/ifCond}}
-            <br>
-            <table class="tableNoBorder">
-                <tr class="footerTotalUp">
-                    <td class="txtFld" width="60%" rowspan="3"><b>Memo:</b>
-                        <p>{{resultHeader.narration}}</p>
-                    </td>
-                    <td class="numberFld">Total Net Payable: </td>
-                    <td class="numberFld">{{numberFormating totalpaid_amt currencyHeader}}</td>
+
+
+                <tr>
+                    <td class="numberFld">Total Advance: </td>
+                    <td class="numberFld">({{numberFormating totalAdvanceAmount  currencyHeader}})</td>
+                </tr>
+                <tr style="border-top: 1px dashed #ccc;">
+                     <td class="numberFld">Net Payment Amount:</td>
+                    <td class="numberFld"><b>{{numberFormating totalNetAmount  currencyHeader}}</b></td>
                 </tr>
             </table>
         </section>
+         
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
     </div>
 </body>
