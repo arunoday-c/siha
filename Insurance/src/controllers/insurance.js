@@ -8,6 +8,7 @@ import insuranceModels, {
   generateAccountingEntry,
   closeStatement,
   ChangeOfInsuranceInvoice,
+  deleteStatement,
 } from "../models/insurance";
 import { generateInsuranceStatement } from "../models/insuranceStatement";
 import {
@@ -368,5 +369,6 @@ export default () => {
   });
   api.get("/generateInsuranceStatement", generateInsuranceStatement);
   api.post("/syncServicesToPortal", syncPortalServices);
+  api.delete("/deleteStatement", deleteStatement);
   return api;
 };

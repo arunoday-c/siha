@@ -7,6 +7,7 @@ import {
   AlgaehLabel,
   Tooltip,
   MainContext,
+  AlgaehMessagePop,
 } from "algaeh-react-components";
 import { UpdateStatement } from "./UpdateStatment";
 import { newAlgaehApi, useQueryParams } from "../../../hooks";
@@ -56,16 +57,41 @@ export function StatementTable(status) {
     }
   };
 
+  async function onDeleteHandler(e, row) {
+    e.target.style.pointerEvents = "none";
+    try {
+      await newAlgaehApi({
+        uri: "/insurance/deleteStatement",
+        module: "insurance",
+        data: {
+          insurance_statement_id: row.insurance_statement_id,
+          hims_f_invoice_header_id: row.hims_f_invoice_header_id,
+        },
+        method: "DELETE",
+      });
+      AlgaehMessagePop({ type: "success", display: "Successfully deleted" });
+      refetch();
+    } catch (e) {
+      AlgaehMessagePop({ type: "error", display: e.message });
+    }
+  }
   const RemittanceButton = (row) => {
     if (status.insurance_status === "C") {
       return null;
     } else {
       return (
-        <Tooltip title="Pay">
-          <span onClick={() => onClickRow(row)}>
-            <i className="fas fa-pen"></i>
-          </span>
-        </Tooltip>
+        <>
+          <Tooltip title="Edit">
+            <span onClick={() => onClickRow(row)}>
+              <i className="fas fa-pen"></i>
+            </span>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <span onClick={(e) => onDeleteHandler(e, row)}>
+              <i className="fas fa-trash"></i>
+            </span>
+          </Tooltip>
+        </>
       );
     }
   };

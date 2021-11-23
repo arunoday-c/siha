@@ -2235,7 +2235,7 @@ export function getInsuranceStatement(req, res, next) {
           parseFloat(s[`submission_amount${level === "1" ? "" : level}`])
         );
 
-        console.log("claims", claims);
+        // console.log("claims", claims);
 
         const remittance_amount = _.sumBy(
           claims,
@@ -2245,7 +2245,7 @@ export function getInsuranceStatement(req, res, next) {
             parseFloat(s.remittance_amount3)
         );
 
-        console.log("remittance_amount", remittance_amount);
+        // console.log("remittance_amount", remittance_amount);
         // const remittance_amount = _.sumBy(claims, (s) =>
         //   parseFloat(s.remittance_amount2)
         // );
@@ -2818,6 +2818,79 @@ export async function ChangeOfInsuranceInvoice(req, res, next) {
   } catch (e) {
     _mysql.rollBackTransaction(() => {
       next(e);
+    });
+  }
+}
+export async function deleteStatement(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const { insurance_statement_id, hims_f_invoice_header_id } = req.body;
+    const { algaeh_d_app_user_id } = req.userIdentity;
+    const record = await _mysql.executeQuery({
+      query: `select hims_f_insurance_statement_id from hims_f_insurance_statement where insurance_status='P' and hims_f_insurance_statement_id=?;
+       select gross_amount,discount_amount,net_amount,patient_resp,patient_tax,patient_payable,company_resp,company_tax,company_payable,
+       sec_company_resp,sec_company_tax,sec_company_payable from hims_f_invoice_header where insurance_statement_id=? and hims_f_invoice_header_id=?;
+       select bill_header_id from hims_f_invoice_details where invoice_header_id=? group by bill_header_id;
+       `,
+      values: [
+        insurance_statement_id,
+        insurance_statement_id,
+        hims_f_invoice_header_id,
+        hims_f_invoice_header_id,
+      ],
+      printQuery: true,
+    });
+    if (record[0].length === 0) {
+      _mysql.releaseConnection();
+      throw new Error("Invouce is not already processed");
+    }
+    await _mysql.executeQueryWithTransaction({
+      query: `update hims_f_invoice_details set record_status='I',updated_by=?,updated_date=? where invoice_header_id =?;
+      update hims_f_invoice_header set claim_status='REV',updated_by=?,updated_date=? where hims_f_invoice_header_id=?`,
+      values: [
+        algaeh_d_app_user_id,
+        new Date(),
+        hims_f_invoice_header_id,
+        algaeh_d_app_user_id,
+        new Date(),
+        hims_f_invoice_header_id,
+      ],
+      printQuery: true,
+    });
+    const invoiceHeaderGrassAmount = _.chain(record[1]).sumBy((s) =>
+      parseFloat(s.gross_amount)
+    );
+    const invoiceHeaderCompanyResp = _.chain(record[1]).sumBy((s) =>
+      parseFloat(s.company_resp)
+    );
+    const invoiceHeaderCompanyVat = _.chain(record[1]).sumBy((s) =>
+      parseFloat(s.company_tax)
+    );
+    const invoiceHeaderCompanyPayable = _.chain(record[1]).sumBy((s) =>
+      parseFloat(s.company_payable)
+    );
+
+    const billHeaders = record[2].map((item) => item.bill_header_id);
+
+    await _mysql.executeQuery({
+      query: `update hims_f_insurance_statement set total_gross_amount=(total_gross_amount-${invoiceHeaderGrassAmount}),
+      total_company_responsibility=(total_company_responsibility-${invoiceHeaderCompanyResp}),
+      total_company_vat=(total_company_vat-${invoiceHeaderCompanyVat}),total_company_payable=(total_company_payable-${invoiceHeaderCompanyPayable})
+      where hims_f_insurance_statement_id=?;
+      update hims_f_billing_header set invoice_generated='N' where hims_f_billing_header_id in (?);
+      `,
+      values: [insurance_statement_id, billHeaders],
+      printQuery: true,
+    });
+    _mysql.commitTransaction(() => {
+      res.status(200).json({
+        success: true,
+        message: `Successfully Deleted.`,
+      });
+    });
+  } catch (error) {
+    _mysql.rollBackTransaction(() => {
+      next(error);
     });
   }
 }
