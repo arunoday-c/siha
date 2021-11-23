@@ -941,23 +941,46 @@ export default {
       const inputParam = req.body;
 
       _mysql
-        .executeQuery({
+        .executeQueryWithTransaction({
           query:
-            "UPDATE hims_f_final_settlement_header SET cancelled='Y', cancelled_by=?, cancelled_date=? WHERE hims_f_final_settlement_header_id = ?;",
-          values: [
-            req.userIdentity.algaeh_d_app_user_id,
-            new Date(),
-            inputParam.employee_final_settlement_id,
-          ],
+            "SELECT loan_application_id FROM hims_f_final_settle_loan_details WHERE final_settlement_header_id in (?)",
+          values: [inputParam.employee_final_settlement_id],
           printQuery: true,
         })
         .then((result) => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
+          const loan_application_id = result.map((o) => {
+            return o.loan_application_id;
+          });
+          _mysql
+            .executeQueryWithTransaction({
+              query:
+                "UPDATE hims_f_final_settlement_header SET cancelled='Y', cancelled_by=?, cancelled_date=? WHERE hims_f_final_settlement_header_id = ?;\
+                  update hims_f_loan_application set loan_closed='N' where hims_f_loan_application_id in (?);",
+              values: [
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                inputParam.employee_final_settlement_id,
+                loan_application_id,
+              ],
+              printQuery: true,
+            })
+            .then((update_result) => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = update_result;
+                next();
+              });
+            })
+            .catch((e) => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
         })
         .catch((e) => {
-          next(e);
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
         });
     } catch (e) {
       next(e);
