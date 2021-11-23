@@ -98,6 +98,7 @@ const checkVisits = async (
 };
 
 export function BillDetails({
+  getValues,
   control,
   trigger,
   setValue,
@@ -118,6 +119,7 @@ export function BillDetails({
   const [dis_percentage, setDisPerc] = useState(0);
   const [visible, setVisible] = useState(false);
   const [applyDiscount, setApplyDiscount] = useState(false);
+
   const { userToken } = useContext(MainContext);
 
   const {
@@ -242,7 +244,11 @@ export function BillDetails({
   }, [services_id]);
 
   function calculateBillDetails(billData = {}) {
-    const isPatientExists = patient?.primary_id_no ? true : false;
+    const isPatientExists = patient?.primary_id_no
+      ? true
+      : getValues()?.primary_id_no
+      ? true
+      : false;
     if (isPatientExists === false) {
       return;
     }
@@ -316,7 +322,12 @@ export function BillDetails({
   }
 
   useEffect(() => {
-    const isPatientExists = patient?.primary_id_no ? true : false;
+    let isPatientExists = patient?.primary_id_no
+      ? true
+      : getValues()?.primary_id_no
+      ? true
+      : false;
+
     if (billData && isPatientExists === true) {
       setValue("advance_adjust", billData?.advance_adjust);
       setValue(
@@ -360,11 +371,17 @@ export function BillDetails({
     if (shiftMappings?.length) {
       setValue("shift_id", shiftMappings[0]?.shift_id);
     }
+
     //eslint-disable-next-line
   }, [shiftMappings, billInfo]);
 
   useEffect(() => {
-    const isPatientExists = patient?.primary_id_no ? true : false;
+    const isPatientExists = patient?.primary_id_no
+      ? true
+      : getValues()?.primary_id_no
+      ? true
+      : false;
+
     if (billData && isPatientExists === true) {
       if (!enableCash) {
         setBillData((state) => {
@@ -382,7 +399,12 @@ export function BillDetails({
   }, [enableCash]);
 
   useEffect(() => {
-    const isPatientExists = patient?.primary_id_no ? true : false;
+    const isPatientExists = patient?.primary_id_no
+      ? true
+      : getValues()?.primary_id_no
+      ? true
+      : false;
+
     if (billData && isPatientExists === true) {
       if (!enableCard) {
         setBillData((state) => {

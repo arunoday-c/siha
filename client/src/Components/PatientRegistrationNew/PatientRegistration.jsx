@@ -1364,6 +1364,7 @@ export function PatientRegistration() {
                   fieldRef={fieldRef}
                   clearErrors={clearErrors}
                   errors={errors}
+                  getValues={getValues}
                   patient={patientData?.patientRegistration}
                 />
               </div>
