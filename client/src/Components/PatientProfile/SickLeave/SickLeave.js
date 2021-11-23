@@ -56,19 +56,29 @@ class SickLeave extends Component {
         }
       );
     }
+  }
+  componentWillReceiveProps(newProps) {
     // if (this.state.diagnosis_data === "" && this.canUpdate === true) {
-    const primaryExists = this.props.patient_diagnosis
-      .filter((f) => f.diagnosis_type === "P")
-      .map((item) => {
-        return item.icd_description;
-      })
-      .join(",");
-    if (primaryExists !== this.state.diagnosis_data) {
+
+    if (newProps.patient_diagnosis.length > 0) {
+      const primaryExists = newProps.patient_diagnosis
+        .filter((f) => f.diagnosis_type === "P")
+        .map((item) => {
+          return item.icd_description;
+        })
+        .join(",");
+
+      // if (primaryExists !== this.state.diagnosis_data) {
       this.setState({
         diagnosis_data: primaryExists,
       });
-      // this.canUpdate = false;
+    } else {
+      this.setState({
+        diagnosis_data: "",
+      });
     }
+    // this.canUpdate = false;
+    // }
     // }
   }
   // componentDidUpdate() {
@@ -170,9 +180,30 @@ class SickLeave extends Component {
   }
 
   onClose = (e) => {
-    this.setState({}, () => {
-      this.props.onClose && this.props.onClose(e);
-    });
+    this.setState(
+      {
+        from_date: null,
+        to_date: null,
+        no_of_days: 0,
+        remarks: "",
+        diagnosis_data: "",
+        reported_sick: false,
+        accompanying_patient: false,
+        patient_unfit: false,
+        patient_fit: false,
+        advice_light_duty: false,
+        pat_need_emp_care: false,
+        episode_id: Window?.global?.episode_id,
+        patient_id: Window?.global?.current_patient,
+        visit_id: Window?.global?.visit_id,
+        ip_id: Window?.global?.ip_id,
+        disableEdit: false,
+        hims_f_patient_sick_leave_id: null,
+      },
+      () => {
+        this.props.onClose && this.props.onClose(e);
+      }
+    );
   };
 
   printSickleaveAfterUpadteAndAdd() {
