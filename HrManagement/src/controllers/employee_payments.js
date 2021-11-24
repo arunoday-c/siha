@@ -8,7 +8,6 @@ const {
   InsertEmployeePayment,
   getEmployeePayments,
   getEncashLeavesTopayment,
-  CancelEmployeePayment,
   getGratuityTopayment,
   getFinalSettleTopayment,
   getLeaveSettleTopayment,
@@ -95,13 +94,6 @@ export default () => {
   );
 
   api.put("/cancelFinalSettlement", cancelFinalSettlement, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      result: req.records,
-    });
-  });
-
-  api.put("/CancelFinalSettlement", CancelFinalSettlement, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       result: req.records,
