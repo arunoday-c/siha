@@ -88,7 +88,7 @@ export function StatementTable(status) {
           </Tooltip>
           <Tooltip title="Delete">
             <span onClick={(e) => onDeleteHandler(e, row)}>
-              <i className="fas fa-trash"></i>
+              <i className="fas fa-trash-alt"></i>
             </span>
           </Tooltip>
         </>
@@ -125,12 +125,12 @@ export function StatementTable(status) {
                   <h6>{data?.to_date || "---"}</h6>
                 </div>
                 <div className="col-2">
-                  <label className="style_Label ">Total Claim Amount</label>
+                  <label className="style_Label ">Total Claim Amt.</label>
                   <h6>{data?.total_company_payable || "0.00"}</h6>
                 </div>
                 <i className="fas fa-minus calcSybmbol"></i>
                 <div className="col-2">
-                  <label className="style_Label ">Total Denial Amount</label>
+                  <label className="style_Label ">Total Denial Amt.</label>
                   <h6>
                     {(data?.calc_denial_amount ?? data?.total_denial_amount) ||
                       "0.00"}
@@ -138,9 +138,7 @@ export function StatementTable(status) {
                 </div>{" "}
                 <i className="fas fa-equals calcSybmbol"></i>
                 <div className="col-2">
-                  <label className="style_Label ">
-                    Total Remittance Amount
-                  </label>
+                  <label className="style_Label ">Total Remittance Amt.</label>
                   <h6>
                     {(data?.calc_remittance_amount ??
                       data?.total_remittance_amount) ||
@@ -168,112 +166,167 @@ export function StatementTable(status) {
             columns={[
               {
                 fieldName: "hims_f_insurance_statement_id",
-                label: "Action",
+                //  filterable: false, label: "Action",
+                filterable: false,
+                label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
                 displayTemplate: RemittanceButton,
               },
               {
                 fieldName: "patient_code",
+                filterable: true,
                 label: <AlgaehLabel label={{ forceLabel: "Patient Code" }} />,
+                others: {
+                  minWidth: 130,
+                  style: { textAlign: "center" },
+                },
               },
               {
                 fieldName: "pat_name",
+                filterable: true,
                 label: <AlgaehLabel label={{ forceLabel: "Patient Name" }} />,
                 disabled: true,
                 others: {
-                  resizable: false,
+                  minWidth: 250,
                   style: { textAlign: "left" },
                 },
               },
               {
                 fieldName: "doc_name",
+                filterable: true,
                 label: <AlgaehLabel label={{ forceLabel: "Doctor Name" }} />,
                 disabled: true,
                 others: {
-                  resizable: false,
+                  minWidth: 250,
                   style: { textAlign: "left" },
                 },
               },
               {
                 fieldName: "invoice_number",
+                filterable: true,
                 label: <AlgaehLabel label={{ forceLabel: "Invoice No." }} />,
                 disabled: true,
                 others: {
-                  resizable: false,
-                  style: { textAlign: "left" },
+                  minWidth: 120,
+                  style: { textAlign: "center" },
                 },
               },
               {
                 fieldName: "invoice_date",
+                filterable: true,
+                filterType: "date",
                 label: <AlgaehLabel label={{ forceLabel: "Invoice date." }} />,
                 disabled: true,
                 others: {
-                  resizable: false,
-                  style: { textAlign: "left" },
+                  minWidth: 180,
+                  style: { textAlign: "center" },
                 },
               },
               {
                 fieldName: "gross_amount",
+                filterable: false,
                 label: <AlgaehLabel label={{ forceLabel: "Invoice Amt." }} />,
                 disabled: true,
                 others: {
-                  resizable: false,
-                  style: { textAlign: "left" },
+                  minWidth: 110,
+                  style: { textAlign: "right" },
                 },
               },
               {
                 fieldName: "company_resp",
+                filterable: false,
                 label: (
                   <AlgaehLabel label={{ forceLabel: "Co. Respo. Amt." }} />
                 ),
+                others: {
+                  minWidth: 130,
+                  style: { textAlign: "right" },
+                },
               },
               {
                 fieldName: "company_tax",
+                filterable: false,
                 label: <AlgaehLabel label={{ forceLabel: "Co. Respo. Tax" }} />,
                 disabled: true,
                 others: {
-                  resizable: false,
-                  style: { textAlign: "left" },
+                  minWidth: 120,
+                  style: { textAlign: "right" },
                 },
               },
               {
                 fieldName: "company_payable",
-                label: <AlgaehLabel label={{ forceLabel: "Claim Amount" }} />,
+                filterable: false,
+                label: <AlgaehLabel label={{ forceLabel: "Claim Amt." }} />,
+                others: {
+                  minWidth: 80,
+                  style: { textAlign: "right" },
+                },
               },
               {
                 fieldName: "remittance_amount",
+                filterable: false,
                 label: (
                   <AlgaehLabel label={{ forceLabel: "Remittance Amt. 1" }} />
                 ),
+                others: {
+                  minWidth: 150,
+                  style: { textAlign: "right" },
+                },
               },
               {
                 fieldName: "denial_amount",
+                filterable: false,
                 label: <AlgaehLabel label={{ forceLabel: "Denial Amt. 1" }} />,
+                others: {
+                  minWidth: 120,
+                  style: { textAlign: "right" },
+                },
               },
               {
                 fieldName: "remittance_amount2",
+                filterable: false,
                 label: (
                   <AlgaehLabel label={{ forceLabel: "Remittance Amt. 2" }} />
                 ),
+                others: {
+                  minWidth: 150,
+                  style: { textAlign: "right" },
+                },
               },
               {
                 fieldName: "denial_amount2",
+                filterable: false,
                 label: <AlgaehLabel label={{ forceLabel: "Denial Amt. 2" }} />,
+                others: {
+                  minWidth: 120,
+                  style: { textAlign: "right" },
+                },
               },
               {
                 fieldName: "remittance_amount3",
+                filterable: false,
                 label: (
                   <AlgaehLabel label={{ forceLabel: "Remittance Amt. 3" }} />
                 ),
+                others: {
+                  minWidth: 150,
+                  style: { textAlign: "right" },
+                },
               },
               {
                 fieldName: "denial_amount3",
+                filterable: false,
                 label: <AlgaehLabel label={{ forceLabel: "Denial Amt. 3" }} />,
+                others: {
+                  minWidth: 120,
+                  style: { textAlign: "right" },
+                },
               },
               {
                 fieldName: "remittance_amount",
+                filterable: false,
                 label: (
                   <AlgaehLabel
-                    label={{ forceLabel: "Total Remittance Amount" }}
+                    label={{ forceLabel: "Total Remittance Amt." }}
                   />
                 ),
                 displayTemplate: (row) => {
@@ -283,11 +336,16 @@ export function StatementTable(status) {
                     parseFloat(row?.remittance_amount3 ?? 0);
                   return sum?.toFixed(userToken?.decimal_places);
                 },
+                others: {
+                  minWidth: 190,
+                  style: { textAlign: "right" },
+                },
               },
               {
                 fieldName: "denial_amount",
+                filterable: false,
                 label: (
-                  <AlgaehLabel label={{ forceLabel: "Total Denial Amount" }} />
+                  <AlgaehLabel label={{ forceLabel: "Total Denial Amt." }} />
                 ),
                 displayTemplate: (row) => {
                   const denail_amunt =
@@ -300,11 +358,19 @@ export function StatementTable(status) {
                       : 0;
                   return denail_amunt?.toFixed(userToken?.decimal_places);
                 },
+                others: {
+                  minWidth: 150,
+                  style: { textAlign: "right" },
+                },
               },
             ]}
             data={data?.claims ?? []}
             // filter={true}
-            paging={{ page: 0, rowsPerPage: 20 }}
+            pagination={true}
+            // editable
+            // actionsStyle={{width:100}}
+            pageOptions={{ rows: 20, page: 1 }}
+            isFilterable={true}
           />
         </div>{" "}
       </div>{" "}

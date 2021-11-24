@@ -2878,12 +2878,11 @@ export async function deleteStatement(req, res, next) {
       total_company_vat=(total_company_vat-${invoiceHeaderCompanyVat}),total_company_payable=(total_company_payable-${invoiceHeaderCompanyPayable})
       where hims_f_insurance_statement_id=?;
       update hims_f_billing_header set invoice_generated='N' where hims_f_billing_header_id in (?);
-      update hims_f_invoice_header set insurance_statement_id=? where hims_f_invoice_header_id=?;
-      `,
+      update hims_f_invoice_header SET insurance_statement_id = NULL, insurance_statement_id_2 = NULL, insurance_statement_id_3 = NULL where hims_f_invoice_header_id=?;`,
       values: [
         insurance_statement_id,
         billHeaders,
-        null,
+        // null,
         hims_f_invoice_header_id,
       ],
       printQuery: true,
