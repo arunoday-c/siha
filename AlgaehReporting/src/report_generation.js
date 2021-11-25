@@ -312,7 +312,8 @@ hbs.registerHelper("logoUrl", function (logo_type, reqHead) {
 hbs.registerHelper("barcode", function (type, text, includetext) {
   type = type || "code128";
   includetext = includetext === undefined ? `&includetext` : ``;
-  return `http://localhost:3018/barcode?bcid=${type}&text=${text}${includetext}&guardwhitespace`;
+  const _text = encodeURIComponent(text);
+  return `http://localhost:3018/barcode?bcid=${type}&text=${_text}${includetext}&guardwhitespace`;
 });
 
 hbs.registerHelper("commentBreakUp", function (comment_data) {

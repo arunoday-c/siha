@@ -36,11 +36,15 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((ress) => {
-          // {"header":${JSON.stringify({...result[0][0],...data[1][0]})},"detail":${JSON.stringify(result[1])}}
           const header = _.head(ress[0]);
 
           const detail = ress[1];
-          // console.log(header);
+          const qrString = `Seller : ${header.organization_name}
+          Vat No. : ${header.business_registration_number}
+          Date & Time : ${header.invoice_date}
+          Net Total : ${header.net_total}
+          Vat : ${header.total_tax}
+          `;
           const result = {
             header: header,
             detail: _.chain(detail)
@@ -115,17 +119,7 @@ const executePDF = function executePDFMethod(options) {
 
             // Here condition required if its qr_encript = yes
 
-            qrData:
-              "Seller:" +
-              header.organization_name +
-              "Vat No.:" +
-              header.business_registration_number +
-              "Date & Time:" +
-              header.invoice_date +
-              "Net Total:" +
-              header.net_total +
-              "Vat:" +
-              header.total_tax,
+            qrData: qrString,
           };
 
           resolve(result);
