@@ -6,6 +6,7 @@ import insuranceModels, {
   updateInsuranceStatement,
   getInvoiceDetails,
   generateAccountingEntry,
+  postTrasaction,
   closeStatement,
   ChangeOfInsuranceInvoice,
   deleteStatement,
@@ -338,11 +339,19 @@ export default () => {
       next();
     }
   );
+  // generateAccountingEntry,
+  api.post("/saveMultiStatement", saveMultiStatement, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+    next();
+  });
   api.post(
-    "/saveMultiStatement",
-    saveMultiStatement,
+    "/postTrasaction",
+    postTrasaction,
     generateAccountingEntry,
-    (req, res) => {
+    (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
         records: req.records,

@@ -24,7 +24,7 @@ import moment from "moment";
 import ClaimSubmission from "./ClaimSubmission/ClaimSubmission";
 import _ from "lodash";
 // import Enumerable from "linq";
-import { Checkbox, AlgaehModal } from "algaeh-react-components";
+import { Checkbox } from "algaeh-react-components";
 import { StatementTable } from "../InsuranceStatement/StatementTable";
 // let validatedClaims = [];
 
@@ -1414,8 +1414,11 @@ class RCMWorkbench extends Component {
               <div className="row">
                 <div className="col-12">
                   <button
+                    // onClick={() => {
+                    //   this.setState({ visible: true });
+                    // }}
                     onClick={() => {
-                      this.setState({ visible: true });
+                      this.openReviewSubmit();
                     }}
                     disabled={
                       !this.state.validatedClaims.length || this.state.submitted
@@ -1521,7 +1524,7 @@ class RCMWorkbench extends Component {
             </div>
           )}
         </div>
-        {this.state.visible ? (
+        {/* {this.state.visible ? (
           <AlgaehModal
             className="algaehStatementStyle"
             title={"Confirm Transaction Date"}
@@ -1582,7 +1585,7 @@ class RCMWorkbench extends Component {
               value={this.state.payment_date}
             />
           </AlgaehModal>
-        ) : null}
+        ) : null} */}
       </>
       // </div>
     );
