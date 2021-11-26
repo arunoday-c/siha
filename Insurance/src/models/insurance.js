@@ -352,12 +352,14 @@ export default {
             _mysql
               .executeQueryWithTransaction({
                 query:
-                  "INSERT INTO `finance_account_child` (child_name,ledger_code,head_id,created_from\
-                    ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?,?)",
+                  "INSERT INTO `finance_account_child` (child_name,ledger_code,head_id, eng_address, ar_address, \
+                    created_from,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?,?)",
                 values: [
                   input[0].insurance_sub_name,
                   input[0].insurance_sub_code,
                   head_id,
+                  input[0].eng_address,
+                  input[0].ar_address,
                   "S",
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
@@ -577,7 +579,7 @@ export default {
             "update hims_d_insurance_sub SET `insurance_sub_code`=?,`insurance_sub_name`=?,\
             `arabic_sub_name`=?,`insurance_provider_id`=?,`card_format`=?,`ins_template_name`=?,\
             `transaction_number`=?,`effective_start_date`=?,`effective_end_date`=?,`updated_by`=?,\
-           head_id=?,child_id=?\
+           head_id=?,child_id=?, eng_address=?, ar_address=?\
              WHERE  `hims_d_insurance_sub_id`=? AND `record_status`='A'",
           values: [
             inputparam.insurance_sub_code,
@@ -593,6 +595,8 @@ export default {
 
             inputparam.head_id,
             inputparam.child_id,
+            inputparam.eng_address,
+            inputparam.ar_address,
             inputparam.hims_d_insurance_sub_id,
           ],
 
@@ -1614,14 +1618,14 @@ export default {
           let sqlQry;
           if (product_type.length == 1) {
             sqlQry = `SELECT hims_d_insurance_sub_id,insurance_sub_code,insurance_sub_name,arabic_sub_name,insurance_provider_id,
-            card_format,ins_template_name,transaction_number,effective_start_date,effective_end_date,user_id,creidt_limit_req,creidt_limit,creidt_amount_till,
+            card_format,ins_template_name,eng_address, ar_address, transaction_number,effective_start_date,effective_end_date,user_id,creidt_limit_req,creidt_limit,creidt_amount_till,
             finance_account_child_id,concat('(',ledger_code,') ',child_name) as child_name ,I.head_id, I.child_id
             from hims_d_insurance_sub  I      
             left join finance_account_child C on I.child_id=C.finance_account_child_id 
             where record_status='A'${_stringData}; `;
           } else {
             sqlQry = ` select hims_d_insurance_sub_id,insurance_sub_code,insurance_sub_name,arabic_sub_name,insurance_provider_id,
-            card_format,ins_template_name,transaction_number,effective_start_date,effective_end_date  from hims_d_insurance_sub where record_status='A' ${_stringData};`;
+            card_format,ins_template_name, eng_address, ar_address, transaction_number,effective_start_date,effective_end_date  from hims_d_insurance_sub where record_status='A' ${_stringData};`;
           }
 
           _mysql
