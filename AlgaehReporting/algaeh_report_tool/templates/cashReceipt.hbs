@@ -3,10 +3,14 @@
       img.specimenBarcode { height:45px; width: 180px; text-align: center;}
 </style>
 
+
 <body>
     <div class="print-body">
+
         <section>
             <table class="tableDotPrint1" cell-padding="0">
+
+
                 {{!-- <tr>
                     <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
                 </tr> --}}
@@ -25,6 +29,7 @@
                 <tr>
                     <td>Age|Gender/ العمر | الجنس:</td>
                     <td>{{header.age_in_years}}/{{header.gender}}</td>
+
                     <td>Nationality/الجنسية:</td>
                     <td><b>{{header.nationality}}</b></td>
                 </tr>
@@ -36,13 +41,13 @@
                     <td>{{header.full_name}}</td>
                 </tr>
 
-                <tr>
+                  <tr>
                     <td>VAT Reg No./الرقم الضريبي:</td>
-                    <td>{{header.tax_number}}</td>
+                    <td>{{header.business_registration_number}}</td>
                     <td>Insurance Co./شركة التأمين:</td>
-                    <td>{{header.insurance_sub_name}} - {{header.transaction_number}}</td>
+                    <td>{{header.insurance_sub_name}}/{{header.transaction_number}}</td>
                 </tr>
-                <tr>
+ <tr>
                     <td>Cashier Name:</td>
                     <td colspan="3">{{header.cashier_name}}</td>
                 </tr>
@@ -62,7 +67,10 @@
                             class="valueText">{{header.sub_department_name}}</span><label
                             class="textArRht">القسم</label></td>
                 </tr> --}}
+
             </table>
+
+
         </section>
         <section>
             <table class="tableDotPrint2" cell-padding="0">
@@ -88,7 +96,7 @@
                     </tr>
                     {{#each detailList}}
                     <tr>
-                        <td class="txtFld" datatype="string">{{ capitalization service_name}}
+                        <td class="txtFld">{{ capitalization service_name}}
                             {{#if service_type_id 1 }}
                             {{#if new_visit_patient "N"}}
                             <span>Follow Up</span>
@@ -110,68 +118,71 @@
                     </tr>
                 </tfoot>
             </table>
-            </table>
-            <div style="float:left;width:30%;border:1px solid #ccc; margin-top:20px;text-align:center;">
+          <div style="float:left;width:37%;border:1px solid #ccc; margin-top:20px;text-align:center;">
  <img
           class="specimenBarcode"
           src={{barcode "code128" header.primary_id_no false}}
         />
         <p>Primary ID No:{{header.primary_id_no}}</p>
-
+ <p style="text-align: center;border-top:1px solid #ccc;padding-top:10px; ">
+               For results enquiry <b style="margin: 0 15px;">0593880131</b> للاستعلام عن النتائج
+            </p>
             </div>
-           <div style="float:left;width:30%;border:1px solid #ccc; margin-top:20px;text-align:center;">
-  <img
-            style="height: 100px;border:1px solid #000;padding:5px;border-radius:2px;"
+<div style="float:left;width:20%; margin-top:20px;text-align:center;">
+  <img 
+            style="width:94px;border:1px solid #ccc; padding:10px"
             src={{barcode "qrcode" qrData}}
           />
 
             </div>
-            <table class="tableTotal" style="float:right;width:30%;">
-                <tr>
-                    <td>Gross Amount</td>
+             <table class="tableTotal" style="float:right;width:30%;">
+               {{!-- <tr>
+                    <td>Gross Amt.</td>
                     <td>{{total_gross_amount}}</td>
-                    <td class="numberFld">: القيمة قبل الخصم</td>
+                    <td class="numberFld">المجموع</td>
                 </tr>
                 <tr>
-                    <td>Discount</td>
+                    <td>Discount Amt.</td>
                     <td>{{total_discount_amount}}</td>
-                    <td class="numberFld">: الخصم</td>
-                </tr>
+                    <td class="numberFld">الخصم</td>
+                </tr> --}}
                 {{#if vat_applicable "Y"}}
                 <tr>
-                    <td>VAT Amount {{default_vat_percent}}%</td>
+                    <td>VAT Amt. {{default_vat_percent}}%</td>
                     <td>{{total_patient_tax}}</td>
-                    <td class="numberFld">: {{default_vat_percent}}% قيمة الضريبة</td>
+                    <td class="numberFld">{{default_vat_percent}}% قيمة الضريبة</td>
                 </tr>
                 <tr>
-                    <td>Amount After VAT</td>
+                    <td>Amt. After VAT</td>
                     <td>{{total_patient_payable}}</td>
-                    <td class="numberFld">: القيمة بعد الضريبة</td>
+                    <td class="numberFld">القيمة بعد الضريبة</td>
                 </tr>
                 {{else}} <tr></tr>{{/if}}
 
                 <tr>
-                    <td>Receivable</td>
-                    <td><b>{{total_patient_payable}}</b></td>
-                    <td>المبلغ النقدي:</td>
+                    <td>Payble Amt.</td>
+                    <td>{{total_patient_payable}}</td>
+                    <td class="numberFld">المبلغ المدفوع</td>
+                </tr> 
+                 {{!-- <tr>
+                    <td>Credit Amt.</td>
+                    <td>{{total_credit_amount}}</td>
+                    <td class="numberFld">مبلغ التأمين</td>
+                </tr>  --}}
+                 <tr>
+                    <td>Receivable Amt.</td>
+                    <td><b>{{total_receiveable_amount}}</b></td>
+                    <td class="numberFld">المستلم</td>
                 </tr>
-                {{!-- <tr>
-                    <td>Paid Amount</td>
-                    <td>0.00</td>
-                    <td>المبلغ المدفوع</td>
+                 <tr>
+                    <td>Balance Amt.</td>
+                    <td>{{total_balance_amount}}</td>
+                    <td class="numberFld">المبلغ المتبقي</td>
                 </tr>
-                <tr>
-                    <td>Due Amount</td>
-                    <td>{{total_net_claim}}</td>
-                    <td>المبلغ المتبقي</td>
-                </tr> --}}
             </table>
-
-        </section>
-        {{!-- <div style="border:1px dotted #ccc; width:50%; margin:auto; font-size:15px"> 
-             <p style="text-align: center; ">
-               For results enquiry <b style="margin: 0 15px;">0593880131</b> للاستعلام عن النتائج
-            </p></div> --}}
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+        
+        </section>   
+		
+      
     </div>
 </body>
