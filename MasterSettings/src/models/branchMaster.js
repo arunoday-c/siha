@@ -16,7 +16,8 @@ export default {
           .executeQuery({
             query:
               "INSERT INTO hims_d_hospital (hospital_code, default_nationality, default_country, default_currency, \
-                hospital_name, hospital_address, requied_emp_id, bill_cancel_approval_required, algaeh_api_auth_id, created_date, created_by, \
+                hospital_name, hospital_address, requied_emp_id, bill_cancel_approval_required, \
+                tax_number, algaeh_api_auth_id, created_date, created_by, \
                 updated_date, updated_by,organization_id ) \
                 values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
@@ -28,6 +29,7 @@ export default {
               input.hospital_address,
               input.requied_emp_id,
               input.bill_cancel_approval_required,
+              input.tax_number,
               input.algaeh_api_auth_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
@@ -121,7 +123,7 @@ export default {
             query:
               "select hims_d_hospital_id,hospital_code,hospital_name,N.nationality,C.country_name,CU.currency_description,\
               hospital_address,hosital_status,requied_emp_id,default_currency,default_country,default_nationality, \
-              bill_cancel_approval_required from hims_d_hospital H left join hims_d_currency CU \
+              bill_cancel_approval_required,tax_number from hims_d_hospital H left join hims_d_currency CU \
               on H.default_currency=CU.hims_d_currency_id left join   hims_d_nationality N  on \
               H.default_nationality=N.hims_d_nationality_id left join  hims_d_country C on\
               H.default_country=C.hims_d_country_id where H.record_status='A'",
@@ -192,8 +194,9 @@ export default {
         _mysql
           .executeQuery({
             query:
-              "update hims_d_hospital  set hospital_code=?,default_nationality=?,default_country=?,default_currency=?,hospital_name=?,\
-                    hospital_address=?,requied_emp_id=?,bill_cancel_approval_required=?, updated_date=?,updated_by=? where hims_d_hospital_id=?",
+              "update hims_d_hospital  set hospital_code=?,default_nationality=?,default_country=?,default_currency=?, \
+              hospital_name=?, hospital_address=?,requied_emp_id=?, bill_cancel_approval_required=?, tax_number=? , \
+              updated_date=?,updated_by=? where hims_d_hospital_id=?",
             values: [
               input.hospital_code,
               input.default_nationality,
@@ -203,6 +206,7 @@ export default {
               input.hospital_address,
               input.requied_emp_id,
               input.bill_cancel_approval_required,
+              input.tax_number,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               input.hospital_id,

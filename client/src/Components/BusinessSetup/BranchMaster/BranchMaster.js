@@ -53,6 +53,7 @@ export default class BranchMaster extends Component {
       default_currency: null,
       hospital_name: null,
       hospital_address: null,
+      tax_number: null,
       requied_emp_id: null,
       bill_cancel_approval_required: null,
       editBranch: false,
@@ -222,9 +223,10 @@ export default class BranchMaster extends Component {
               hospital_name: this.state.hospital_name,
               hospital_address: this.state.hospital_address,
               requied_emp_id: this.state.requied_emp_id,
-              bill_cancel_approval_required: this.state
-                .bill_cancel_approval_required,
+              bill_cancel_approval_required:
+                this.state.bill_cancel_approval_required,
               hospital_id: this.state.hims_d_hospital_id,
+              tax_number: this.state.tax_number,
             },
             onSuccess: (response) => {
               if (response.data.success) {
@@ -261,8 +263,9 @@ export default class BranchMaster extends Component {
               hospital_name: this.state.hospital_name,
               hospital_address: this.state.hospital_address,
               requied_emp_id: this.state.hrequied_emp_id,
-              bill_cancel_approval_required: this.state
-                .bill_cancel_approval_required,
+              tax_number: this.state.tax_number,
+              bill_cancel_approval_required:
+                this.state.bill_cancel_approval_required,
               algaeh_api_auth_id: algaeh_api_auth_id,
             },
             onSuccess: (response) => {
@@ -664,6 +667,7 @@ export default class BranchMaster extends Component {
       default_currency: data.default_currency,
       hospital_name: data.hospital_name,
       hospital_address: data.hospital_address,
+      tax_number: data.tax_number,
       requied_emp_id: data.requied_emp_id,
       bill_cancel_approval_required: data.bill_cancel_approval_required,
       editBranch: true,
@@ -903,6 +907,22 @@ export default class BranchMaster extends Component {
                         data: FORMAT_YESNO,
                       },
                       onChange: this.dropDownHandler.bind(this),
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-6 form-group mandatory" }}
+                    label={{
+                      forceLabel: "Branch Tax Number",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "tax_number",
+                      value: this.state.tax_number,
+                      events: { onChange: this.changeTexts.bind(this) },
+                      option: {
+                        type: "text",
+                      },
                     }}
                   />
                   <AlagehFormGroup
