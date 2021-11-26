@@ -159,25 +159,26 @@ export function FinalRemittance({ data, refetch }) {
   return (
     <>
       <button
-        style={{ marginTop: 10, float: "right" }}
-        className="btn btn-primary"
-        onClick={onClickGenerateStatement}
-        disabled={!data}
-      >
-        Generate Statement
-      </button>
-      <button
-        style={{ marginTop: 10, float: "right" }}
+        style={{ float: "right" }}
         className="btn btn-primary"
         onClick={() => {
           setPostVisible(true);
         }}
         disabled={data?.posted === "N" ? false : posted}
       >
-        Post
+        Post to Finance
       </button>
       <button
-        style={{ marginTop: 10, marginRight: 10, float: "right" }}
+        style={{ float: "right" }}
+        className="btn btn-default"
+        onClick={onClickGenerateStatement}
+        disabled={!data}
+      >
+        Download Statement
+      </button>
+
+      <button
+        style={{ float: "right" }}
         className="btn btn-default"
         onClick={() => setVisible(true)}
         disabled={!data}

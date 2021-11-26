@@ -155,9 +155,6 @@ export function StatementTable(status) {
                       "0.00"}
                   </h6>
                 </div>
-                <div className="col">
-                  <FinalRemittance data={data} refetch={refetch} />
-                </div>
               </div>
             </div>
           </div>
@@ -383,7 +380,14 @@ export function StatementTable(status) {
             isFilterable={true}
           />
         </div>{" "}
-      </div>{" "}
+      </div>
+      <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col">
+            <FinalRemittance data={data} refetch={refetch} />
+          </div>
+        </div>
+      </div>
     </Spin>
   );
 }
