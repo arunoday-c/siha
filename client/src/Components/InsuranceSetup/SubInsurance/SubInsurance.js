@@ -293,6 +293,51 @@ class SubInsurance extends PureComponent {
                         }}
                       />
 
+                      <AlagehFormGroup
+                        div={{ className: "col-12 form-group" }}
+                        label={{
+                          forceLabel: "Address in Eng.",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "eng_address",
+                          value: this.state.eng_address,
+                          option: {
+                            //type: "email"
+                          },
+                          events: {
+                            onChange: texthandle.bind(this, this),
+                          },
+                          others: {
+                            placeholder:
+                              "Eg:- Unit-301-A, 3rd Floor, Lady Curzon Road, Bangalore - 560001",
+                          },
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-12 form-group" }}
+                        label={{
+                          forceLabel: "Address in Arabic",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "ar_address",
+                          value: this.state.ar_address,
+                          option: {
+                            //type: "email"
+                          },
+                          events: {
+                            onChange: texthandle.bind(this, this),
+                          },
+                          others: {
+                            placeholder:
+                              "Eg:- Unit-301-A, 3rd Floor, Lady Curzon Road, Bangalore - 560001",
+                          },
+                        }}
+                      />
+
                       {/*<AlagehFormGroup
                         div={{ className: "col   form-group" }}
                         textBox={{
@@ -607,6 +652,60 @@ class SubInsurance extends PureComponent {
                                   value: row.ins_template_name,
                                   className: "txt-fld",
                                   name: "ins_template_name",
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    ),
+                                  },
+                                }}
+                              />
+                            );
+                          },
+                        },
+                        {
+                          fieldName: "eng_address",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Address In Eng." }}
+                            />
+                          ),
+                          editorTemplate: (row) => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.eng_address,
+                                  className: "txt-fld",
+                                  name: "eng_address",
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    ),
+                                  },
+                                }}
+                              />
+                            );
+                          },
+                        },
+                        {
+                          fieldName: "ar_address",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Address In Arabic" }}
+                            />
+                          ),
+                          editorTemplate: (row) => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.ar_address,
+                                  className: "txt-fld",
+                                  name: "ar_address",
                                   events: {
                                     onChange: onchangegridcol.bind(
                                       this,
