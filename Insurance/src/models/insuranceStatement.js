@@ -46,7 +46,8 @@ export async function generateInsuranceStatement(req, res, next) {
         SUM(id.company_tax) as company_tax_amount,
         ROUND(COALESCE((SUM(id.company_tax) / SUM(id.company_resp))*100,0),2) as comp_tax_percent,
          SUM(id.company_payable) as company_payable,SUM(id.patient_payable) as patient_payable,
-         MAX(ins.to_date) as to_date ,MAX(ins.from_date) as from_date,MAX(isb.ins_template_name) as ins_template_name
+         MAX(ins.to_date) as to_date ,MAX(ins.from_date) as from_date,MAX(isb.ins_template_name) as ins_template_name,
+         MAX(ins.insurance_statement_number) as statement_number, MAX(ins.seq_statememt_number) as seq_statement_number
         from hims_f_invoice_header as ih inner join hims_f_invoice_details as id
         on ih.hims_f_invoice_header_id  = id.invoice_header_id
         left join hims_f_invoice_icd as icd on icd.invoice_header_id  = ih.hims_f_invoice_header_id
@@ -89,7 +90,7 @@ export async function generateInsuranceStatement(req, res, next) {
         // console.log("requireMetaData====>", requireMetaData);
         const { combineservices, filename, aggregations } = requireMetaData;
         const fileName = filename;
-         const fileName1 = result.length > 0 ? result[0]["file_name"] : "";
+        const fileName1 = result.length > 0 ? result[0]["file_name"] : "";
         _.chain(result)
           .groupBy((g) => g.visit_id)
           .forEach((patients, idx) => {
@@ -114,7 +115,9 @@ export async function generateInsuranceStatement(req, res, next) {
                   company_payable: _.sumBy(items, (s) =>
                     parseFloat(s.company_payable)
                   ).toFixed(decimal_places),
-                  net_amount: _.sumBy(items, (s) => parseFloat(s.net_amount)).toFixed(decimal_places),
+                  net_amount: _.sumBy(items, (s) =>
+                    parseFloat(s.net_amount)
+                  ).toFixed(decimal_places),
                   gross_amount: _.sumBy(items, (s) =>
                     parseFloat(s.gross_amount)
                   ).toFixed(decimal_places),
@@ -166,7 +169,7 @@ export async function generateInsuranceStatement(req, res, next) {
             /**  For calculating aggregations */
             let aggregate = undefined;
             if (aggregations) {
-              aggregate ={};
+              aggregate = {};
               Object.keys(aggregations).forEach((item) => {
                 switch (item) {
                   case "SUM":

@@ -2900,7 +2900,7 @@ export async function deleteStatement(req, res, next) {
     });
     if (record[0].length === 0) {
       _mysql.releaseConnection();
-      throw new Error("Invouce is not already processed");
+      throw new Error("Invoice is not already processed");
     }
     await _mysql.executeQueryWithTransaction({
       query: `update hims_f_invoice_details set record_status='I',updated_by=?,updated_date=? where invoice_header_id =?;
@@ -2935,11 +2935,11 @@ export async function deleteStatement(req, res, next) {
       total_company_responsibility=(total_company_responsibility-${invoiceHeaderCompanyResp}),
       total_company_vat=(total_company_vat-${invoiceHeaderCompanyVat}),total_company_payable=(total_company_payable-${invoiceHeaderCompanyPayable})
       where hims_f_insurance_statement_id=?;
-      update hims_f_billing_header set invoice_generated='N' where hims_f_billing_header_id in (?);
+      -- update hims_f_billing_header set invoice_generated='N' where hims_f_billing_header_id in (?);
       update hims_f_invoice_header SET insurance_statement_id = NULL, insurance_statement_id_2 = NULL, insurance_statement_id_3 = NULL where hims_f_invoice_header_id=?;`,
       values: [
         insurance_statement_id,
-        billHeaders,
+        //billHeaders,
         // null,
         hims_f_invoice_header_id,
       ],
