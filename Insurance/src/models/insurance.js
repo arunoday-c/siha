@@ -1117,7 +1117,7 @@ export default {
     try {
       let input = req.query;
 
-      console.log("input === ", input);
+      // console.log("input === ", input);
 
       let qryStr = "";
       if (input.insurance_id > 0) {
@@ -1132,7 +1132,7 @@ export default {
         qryStr += ` and service_type_id=${input.service_type_id} `;
       }
 
-      console.log("qryStr === ", qryStr);
+      // console.log("qryStr === ", qryStr);
       _mysql
         .executeQuery({
           query:
@@ -1427,7 +1427,7 @@ export default {
       let strQuery = "";
       let parameters = "";
 
-      console.log("inputParam.service_type_id", inputParam.service_type_id);
+      // console.log("inputParam.service_type_id", inputParam.service_type_id);
       if (inputParam.service_type_id > 0) {
         parameters = " and service_type_id=" + inputParam.service_type_id;
       }
@@ -1902,98 +1902,117 @@ export function saveMultiStatement(req, res, next) {
       })
       .then((result) => {
         if (result.length > 0) {
-          req.connection = {
-            connection: _mysql.connection,
-            isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool,
-          };
-
-          const {
-            prefix,
-            insurance_statement_count,
-            insurance_provider_id,
-            sub_insurance_id,
-          } = result[0];
-          const total_gross_amount = _.sumBy(result, (s) =>
-            parseFloat(s.gross_amount)
-          );
-          const total_company_responsibility = _.sumBy(result, (s) =>
-            parseFloat(s.company_resp)
-          );
-          const total_company_vat = _.sumBy(result, (s) =>
-            parseFloat(s.company_tax)
-          );
-          const total_company_payable = _.sumBy(result, (s) =>
-            parseFloat(s.company_payable)
-          );
-          const total_remittance_amount = 0;
-          const total_balance_amount =
-            total_gross_amount - total_remittance_amount;
-
-          const update_ins_count = parseInt(insurance_statement_count) + 1;
-
-          const invNum = `${prefix}-${moment().format(
-            "YY"
-          )}-${update_ins_count}`;
-
           _mysql
-            .executeQuery({
-              query: `insert into hims_f_insurance_statement(insurance_statement_number, total_gross_amount,
-              total_company_responsibility, total_company_vat, total_company_payable, total_remittance_amount,
-              total_balance_amount, insurance_provider_id, sub_insurance_id, created_by, created_date, updated_by,
-              updated_date, insurance_status,from_date,to_date,transaction_date)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-              values: [
-                invNum,
-                total_gross_amount,
-                total_company_responsibility,
-                total_company_vat,
-                total_company_payable,
-                total_remittance_amount,
-                total_balance_amount,
+            .generateRunningNumber({
+              user_id: req.userIdentity.algaeh_d_app_user_id,
+              numgen_codes: ["SEQ_STATEMENT_BILL"],
+              table_name: "hims_f_app_numgen",
+            })
+            .then((generatedNumbers) => {
+              const seq_statememt_number = generatedNumbers.SEQ_STATEMENT_BILL;
+              req.connection = {
+                connection: _mysql.connection,
+                isTransactionConnection: _mysql.isTransactionConnection,
+                pool: _mysql.pool,
+              };
+
+              const {
+                prefix,
+                insurance_statement_count,
                 insurance_provider_id,
                 sub_insurance_id,
-                algaeh_d_app_user_id,
-                new Date(),
-                algaeh_d_app_user_id,
-                new Date(),
-                "P",
-                from_date,
-                to_date,
-                payment_date,
-              ],
-              printQuery: true,
-            })
-            .then((result) => {
-              req.body.insurance_statement_number = invNum;
-              req.body.sub_insurance_id = sub_insurance_id;
-              req.body.total_company_payable = total_company_payable;
-              req.body.hims_f_insurance_statement_id = result.insertId;
-              req.body.payment_date = payment_date;
+              } = result[0];
+              const total_gross_amount = _.sumBy(result, (s) =>
+                parseFloat(s.gross_amount)
+              );
+              const total_company_responsibility = _.sumBy(result, (s) =>
+                parseFloat(s.company_resp)
+              );
+              const total_company_vat = _.sumBy(result, (s) =>
+                parseFloat(s.company_tax)
+              );
+              const total_company_payable = _.sumBy(result, (s) =>
+                parseFloat(s.company_payable)
+              );
+              const total_remittance_amount = 0;
+              const total_balance_amount =
+                total_gross_amount - total_remittance_amount;
+
+              const update_ins_count = parseInt(insurance_statement_count) + 1;
+
+              const invNum = `${prefix}-${moment().format(
+                "YY"
+              )}-${update_ins_count}`;
+
+              // console.log(seq_statememt_number);
+              // consol.log(seq_statememt_number);
+
               _mysql
                 .executeQuery({
-                  query: `update hims_d_insurance_provider set insurance_statement_count=? 
+                  query: `insert into hims_f_insurance_statement(insurance_statement_number, seq_statememt_number, 
+                    total_gross_amount, total_company_responsibility, total_company_vat, total_company_payable, 
+                    total_remittance_amount, total_balance_amount, insurance_provider_id, sub_insurance_id, 
+                    created_by, created_date, updated_by, updated_date, insurance_status, from_date, to_date, transaction_date)
+                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                  values: [
+                    invNum,
+                    seq_statememt_number,
+                    total_gross_amount,
+                    total_company_responsibility,
+                    total_company_vat,
+                    total_company_payable,
+                    total_remittance_amount,
+                    total_balance_amount,
+                    insurance_provider_id,
+                    sub_insurance_id,
+                    algaeh_d_app_user_id,
+                    new Date(),
+                    algaeh_d_app_user_id,
+                    new Date(),
+                    "P",
+                    from_date,
+                    to_date,
+                    payment_date,
+                  ],
+                  printQuery: true,
+                })
+                .then((result) => {
+                  req.body.insurance_statement_number = invNum;
+                  req.body.sub_insurance_id = sub_insurance_id;
+                  req.body.total_company_payable = total_company_payable;
+                  req.body.hims_f_insurance_statement_id = result.insertId;
+                  req.body.payment_date = payment_date;
+                  _mysql
+                    .executeQuery({
+                      query: `update hims_d_insurance_provider set insurance_statement_count=? 
                   where hims_d_insurance_provider_id=?; 
                   update hims_f_invoice_header set insurance_statement_id=?,claim_status='S1',submission_amount=company_payable,
                   submission_date = ? where hims_f_invoice_header_id in (?);
                   update hims_f_invoice_details set s1_amt=company_payable where invoice_header_id in (?) and hims_f_invoice_details_id>0;`,
-                  values: [
-                    update_ins_count,
-                    insurance_provider_id,
-                    result.insertId,
-                    new Date(),
-                    invoiceList,
-                    invoiceList,
-                  ],
-                  printQuery: true,
-                })
-                .then((updated) => {
-                  // _mysql.commitTransaction(() => {
-                  //   _mysql.releaseConnection();
-                  req.records = {
-                    record_number: invNum,
-                  };
-                  next();
-                  // });
+                      values: [
+                        update_ins_count,
+                        insurance_provider_id,
+                        result.insertId,
+                        new Date(),
+                        invoiceList,
+                        invoiceList,
+                      ],
+                      printQuery: true,
+                    })
+                    .then((updated) => {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = {
+                          record_number: invNum,
+                        };
+                        next();
+                      });
+                    })
+                    .catch((error) => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
+                    });
                 })
                 .catch((error) => {
                   _mysql.rollBackTransaction(() => {
@@ -2018,7 +2037,44 @@ export function saveMultiStatement(req, res, next) {
     next(error);
   }
 }
-
+export function postTrasaction(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const { insurance_statement_id, payment_date } = req.body;
+    const { algaeh_d_app_user_id } = req.userIdentity;
+    _mysql
+      .executeQueryWithTransaction({
+        query: `UPDATE hims_f_insurance_statement set posted='Y', posted_date=?, posted_by=? 
+                where hims_f_insurance_statement_id=?; select *,(?) as payment_date from hims_f_insurance_statement where hims_f_insurance_statement_id=?`,
+        values: [
+          new Date(),
+          algaeh_d_app_user_id,
+          insurance_statement_id,
+          payment_date,
+          insurance_statement_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        req.connection = {
+          connection: _mysql.connection,
+          isTransactionConnection: _mysql.isTransactionConnection,
+          pool: _mysql.pool,
+        };
+        req.statememt_body = result[1][0];
+        // req.statememt_body.payment_date = payment_date;
+        next();
+      })
+      .catch((error) => {
+        _mysql.closeConnection(() => {
+          next(error);
+        });
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+    next(error);
+  }
+}
 //Generate Accounting entry once statement generates(CR -- OP ctrl DR -- Customer)
 export function generateAccountingEntry(req, res, next) {
   const _options = req.connection == null ? {} : req.connection;
@@ -2026,21 +2082,22 @@ export function generateAccountingEntry(req, res, next) {
   const _mysql = new algaehMysql(_options);
   try {
     // const utilities = new algaehUtilities();
-    console.log("Iam here 1");
+
     _mysql
-      .executeQuery({
+      .executeQueryWithTransaction({
         query:
           "select product_type from  hims_d_organization where hims_d_organization_id=1\
         and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
         printQuery: true,
       })
       .then((product_type) => {
-        const inputParam = req.body;
+        const inputParam = req.statememt_body;
+        //  || req.body;
 
-        console.log("inputParam.sub_insurance_id", inputParam.sub_insurance_id);
+        // executeQueryWithTransaction("inputParam", inputParam);
         if (product_type.length == 1 && inputParam.sub_insurance_id > 0) {
           _mysql
-            .executeQuery({
+            .executeQueryWithTransaction({
               query: `select head_id, child_id from finance_accounts_maping where account in ('OP_CTRL');
                   select insurance_sub_name, head_id, child_id from hims_d_insurance_sub 
                   where hims_d_insurance_sub_id=${inputParam.sub_insurance_id} limit 1`,
@@ -2049,10 +2106,10 @@ export function generateAccountingEntry(req, res, next) {
             .then((Result) => {
               const OP_CTRL = Result[0][0];
               const insurance_data = Result[1][0];
-              console.log("OP_CTRL", OP_CTRL);
-              console.log("insurance_data", insurance_data);
+              // console.log("OP_CTRL", OP_CTRL);
+              // console.log("insurance_data", insurance_data);
 
-              console.log("OP_CTRL", OP_CTRL);
+              // console.log("OP_CTRL", OP_CTRL);
 
               let voucher_type = "";
               let narration = "";
@@ -2083,7 +2140,7 @@ export function generateAccountingEntry(req, res, next) {
                 hospital_id: req.userIdentity.hospital_id,
               });
 
-              console.log("EntriesArray", EntriesArray);
+              // console.log("EntriesArray", EntriesArray);
               _mysql
                 .executeQueryWithTransaction({
                   query:
@@ -2095,8 +2152,8 @@ export function generateAccountingEntry(req, res, next) {
                     inputParam.total_company_payable,
                     voucher_type,
                     inputParam.hims_f_insurance_statement_id,
-                    inputParam.insurance_statement_number,
-                    inputParam.ScreenCode,
+                    inputParam.seq_statememt_number,
+                    "INS0004",
                     narration,
                     inputParam.insurance_statement_number,
                     req.userIdentity.algaeh_d_app_user_id,
@@ -2108,7 +2165,7 @@ export function generateAccountingEntry(req, res, next) {
                 .then((header_result) => {
                   let project_id = null;
 
-                  console.log("header_result", header_result);
+                  // console.log("header_result", header_result);
                   let headerDayEnd = header_result;
                   // headerDayEnd = header_result;
 
@@ -2141,14 +2198,15 @@ export function generateAccountingEntry(req, res, next) {
                       printQuery: true,
                     })
                     .then((subResult) => {
-                      console.log("subResult", subResult);
+                      // console.log("subResult", subResult);
+                      // consol.log("subResult", subResult);
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
                         next();
                       });
                     })
                     .catch((error) => {
-                      console.log("error", error);
+                      // console.log("error", error);
                       _mysql.rollBackTransaction(() => {
                         next(error);
                       });
@@ -2198,7 +2256,7 @@ export function getInsuranceStatement(req, res, next) {
   try {
     _mysql
       .executeQuery({
-        query: `select INH.insurance_provider_name,INH.arabic_provider_name,INSH.insurance_sub_name,INSH.arabic_sub_name,
+        query: `select INH.insurance_provider_name, posted, INH.arabic_provider_name,INSH.insurance_sub_name,INSH.arabic_sub_name,
         hims_f_insurance_statement_id, INS.insurance_statement_number, total_gross_amount, total_company_responsibility, total_company_vat, total_company_payable,
         total_remittance_amount, total_denial_amount, total_balance_amount, insurance_status,
         INS.insurance_provider_id, INS.sub_insurance_id,INS.insurance_status,INS.from_date,INS.to_date  from hims_f_insurance_statement INS
@@ -2609,7 +2667,7 @@ export async function ChangeOfInsuranceInvoice(req, res, next) {
     }
 
     console.log("updateQuery", updateQuery);
-    consol.log("inputData", inputData);
+    // consol.log("inputData", inputData);
     // inputData = [];
     // // console.log("inputData bill", inputData);
     // visit_bills.map((item) => {

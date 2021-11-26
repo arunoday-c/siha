@@ -5,12 +5,14 @@ import {
   Spin,
   AlgaehFormGroup,
   MainContext,
+  AlgaehDateHandler,
 } from "algaeh-react-components";
 import React, { useEffect, useState, useContext } from "react";
 import { useMutation } from "react-query";
 import { newAlgaehApi } from "../../../hooks";
 import { useForm, Controller } from "react-hook-form";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import moment from "moment";
 
 const closeStatement = async ({
   total_remittance_amount,
@@ -39,7 +41,11 @@ const closeStatement = async ({
 };
 
 export function FinalRemittance({ data, refetch }) {
+  debugger;
   const [visible, setVisible] = useState(false);
+  const [post_visible, setPostVisible] = useState(false);
+  const [payment_date, setPaymentDate] = useState(new Date());
+  const [posted, setPosted] = useState(data?.posted === "N" ? false : true);
 
   const [closeStat, { isLoading: mutLoading }] = useMutation(closeStatement, {
     onSuccess: (data) => {
@@ -128,6 +134,28 @@ export function FinalRemittance({ data, refetch }) {
       },
     });
   }
+  function postTrasaction() {
+    debugger;
+    algaehApiCall({
+      uri: "/insurance/postTrasaction",
+      module: "insurance",
+      method: "POST",
+      data: {
+        insurance_statement_id: data?.hims_f_insurance_statement_id,
+        payment_date: payment_date,
+      },
+      onSuccess: (res) => {
+        if (res.data.success) {
+          swalMessage({
+            type: "success",
+            title: "Posted Successfully...",
+          });
+          setPostVisible(false);
+          setPosted(true);
+        }
+      },
+    });
+  }
   return (
     <>
       <button
@@ -139,6 +167,16 @@ export function FinalRemittance({ data, refetch }) {
         Generate Statement
       </button>
       <button
+        style={{ marginTop: 10, float: "right" }}
+        className="btn btn-primary"
+        onClick={() => {
+          setPostVisible(true);
+        }}
+        disabled={data?.posted === "N" ? false : posted}
+      >
+        Post
+      </button>
+      <button
         style={{ marginTop: 10, marginRight: 10, float: "right" }}
         className="btn btn-default"
         onClick={() => setVisible(true)}
@@ -146,6 +184,71 @@ export function FinalRemittance({ data, refetch }) {
       >
         Final Remittance
       </button>
+
+      {post_visible ? (
+        <AlgaehModal
+          className="algaehStatementStyle"
+          title={"Confirm Transaction Date"}
+          visible={post_visible}
+          maskClosable={false}
+          closable={false}
+          destroyOnClose={true}
+          afterClose={() => {
+            setPostVisible(false);
+          }}
+          footer={
+            <div>
+              <button
+                onClick={() => {
+                  setPostVisible(false);
+                }}
+                className="btn btn-default btn-small"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (payment_date) {
+                    postTrasaction();
+                  } else {
+                    swalMessage({
+                      type: "warning",
+                      title: "please select payment Date first",
+                    });
+                    return;
+                  }
+                }}
+                className="btn btn-primary btn-small"
+                style={{ marginLeft: 5 }}
+              >
+                Submit Claims
+              </button>
+            </div>
+          }
+        >
+          <AlgaehDateHandler
+            div={{ className: "col-6 algaeh-date-fld" }}
+            label={{
+              forceLabel: "Transaction Date",
+              isImp: true,
+            }}
+            textBox={{
+              name: "payment_date",
+              className: "form-control",
+              value: payment_date,
+            }}
+            maxDate={moment().add(1, "days")}
+            // others={{
+            //   disabled: !enableOP && accountName,
+            // }}
+            events={{
+              onChange: (momentDate) => {
+                setPaymentDate(momentDate?.format("YYYY-MM-DD"));
+              },
+            }}
+          />
+        </AlgaehModal>
+      ) : null}
       <Spin spinning={mutLoading}>
         <AlgaehModal
           title="Final Remittance"
