@@ -55,7 +55,7 @@ export function VisitDetails({
 
   const { fieldNameFn } = useLangFieldName();
   const { setVisitType } = useContext(MainContext);
-  const { setServiceInfo, setConsultationInfo, disabled } =
+  const { setServiceInfo, setConsultationInfo, disabled, setHardRefresh } =
     useContext(FrontdeskContext);
   const { data, isLoading } = useQuery("doctors-data", getDoctorData, {
     cacheTime: Infinity,
@@ -93,6 +93,7 @@ export function VisitDetails({
       const res = visitTypes?.filter(
         (item) => item?.hims_d_visit_type_id == visit_type
       );
+
       setConsultationInfo(res[0]);
     }
     // eslint-disable-next-line
@@ -133,7 +134,9 @@ export function VisitDetails({
       },
     });
   };
-
+  function reloadBill() {
+    setHardRefresh();
+  }
   return (
     <Spin spinning={isLoading}>
       <div className="hptl-phase1-consultation-details margin-top-15">
@@ -238,6 +241,13 @@ export function VisitDetails({
                             />
                           )}
                         />{" "}
+                        <button
+                          type="button"
+                          className="btn btn-default btn-sm"
+                          onClick={reloadBill}
+                        >
+                          Reload
+                        </button>
                       </div>
                       <div className="row">
                         <div className="col-lg-12">

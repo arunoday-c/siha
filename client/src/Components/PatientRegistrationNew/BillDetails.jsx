@@ -71,6 +71,7 @@ const getBillDetails = async (
       },
     ],
   });
+
   return details?.data?.records;
 };
 
@@ -142,6 +143,8 @@ export function BillDetails({
     consultationInfo,
     setCardDataGlobal: setCardDataGlobal,
     from_package,
+    hardRefresh,
+    // clearTrigger,
   } = useContext(FrontdeskContext);
   // const disabled = !!bill_number && !!receipt_number;
   const { fieldNameFn } = useLangFieldName();
@@ -193,6 +196,7 @@ export function BillDetails({
         promo_code: promoCode,
         discount_amout: discount_amout,
         sub_department_id,
+        hardRefresh,
         // discount_percentage: discount_percentage,
       },
     ],
@@ -243,6 +247,14 @@ export function BillDetails({
     //eslint-disable-next-line
   }, [services_id]);
 
+  // useEffect(() => {
+  //   if (billInfo) {
+  //
+  //     const billItem = billInfo?.billdetails[0];
+  //     calculateBillDetails(billItem);
+  //   }
+  // }, [clearTrigger]);
+
   function calculateBillDetails(billData = {}) {
     const isPatientExists = patient?.primary_id_no
       ? true
@@ -252,6 +264,10 @@ export function BillDetails({
     if (isPatientExists === false) {
       return;
     }
+    triggerCalculateBill(billData);
+  }
+
+  function triggerCalculateBill(billData) {
     const sendingObject = { ...billData };
 
     // Sheet Level Discount Nullify
@@ -274,22 +290,21 @@ export function BillDetails({
     sendingObject.card_amount = 0;
 
     sendingObject.balance_credit = 0;
-    sendingObject.patient_payable = sendingObject.patient_payable.toFixed(2);
-    sendingObject.total_tax = sendingObject.total_tax.toFixed(2);
-    sendingObject.patient_tax = sendingObject.patient_tax.toFixed(2);
-    sendingObject.company_tax = sendingObject.company_tax.toFixed(2);
+    sendingObject.patient_payable = sendingObject.patient_payable?.toFixed(2);
+    sendingObject.total_tax = sendingObject.total_tax?.toFixed(2);
+    sendingObject.patient_tax = sendingObject.patient_tax?.toFixed(2);
+    sendingObject.company_tax = sendingObject.company_tax?.toFixed(2);
     sendingObject.net_tax =
       parseFloat(sendingObject.patient_tax) +
       parseFloat(sendingObject.company_tax);
     sendingObject.company_payable = sendingObject.company_payble;
-    sendingObject.sec_company_tax = sendingObject.sec_company_tax.toFixed(2);
+    sendingObject.sec_company_tax = sendingObject.sec_company_tax?.toFixed(2);
     sendingObject.patient_res = sendingObject.patient_resp;
     sendingObject.company_res = sendingObject.comapany_resp;
     sendingObject.billing_mode = "O";
     setBillInfo(billData);
     setBillData(sendingObject);
   }
-
   function calculateHeaderBillDetails(value, forData) {
     setBillData((sendingObject) => {
       if (forData === "A") {

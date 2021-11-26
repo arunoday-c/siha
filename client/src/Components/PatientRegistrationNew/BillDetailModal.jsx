@@ -149,7 +149,8 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
                             }}
                           />
                           <h6>{`${billData?.deductable_percentage || 0.0} ${
-                            billData?.deductable_type.toUpperCase() === "AMOUNT"
+                            billData?.deductable_type?.toUpperCase() ===
+                            "AMOUNT"
                               ? "AMT"
                               : "%"
                           }`}</h6>
