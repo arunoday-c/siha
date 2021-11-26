@@ -8,6 +8,7 @@ import {
   Tooltip,
   MainContext,
   AlgaehMessagePop,
+  Model,
 } from "algaeh-react-components";
 import { UpdateStatement } from "./UpdateStatment";
 import { newAlgaehApi, useQueryParams } from "../../../hooks";
@@ -59,21 +60,30 @@ export function StatementTable(status) {
 
   async function onDeleteHandler(e, row) {
     e.target.style.pointerEvents = "none";
-    try {
-      await newAlgaehApi({
-        uri: "/insurance/deleteStatement",
-        module: "insurance",
-        data: {
-          insurance_statement_id: row.insurance_statement_id,
-          hims_f_invoice_header_id: row.hims_f_invoice_header_id,
-        },
-        method: "DELETE",
-      });
-      AlgaehMessagePop({ type: "success", display: "Successfully deleted" });
-      refetch();
-    } catch (e) {
-      AlgaehMessagePop({ type: "error", display: e.message });
-    }
+    Modal.confirm({
+      title: "Do you want to delete this invoice?",
+      content: "Deleted invoice completely revered",
+      onOk: () => {
+        try {
+          await newAlgaehApi({
+            uri: "/insurance/deleteStatement",
+            module: "insurance",
+            data: {
+              insurance_statement_id: row.insurance_statement_id,
+              hims_f_invoice_header_id: row.hims_f_invoice_header_id,
+            },
+            method: "DELETE",
+          });
+          AlgaehMessagePop({
+            type: "success",
+            display: "Successfully deleted",
+          });
+          refetch();
+        } catch (e) {
+          AlgaehMessagePop({ type: "error", display: e.message });
+        }
+      },
+    });
   }
   const RemittanceButton = (row) => {
     if (status.insurance_status === "C") {
