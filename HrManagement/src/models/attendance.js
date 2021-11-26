@@ -6414,6 +6414,7 @@ export default {
                         pending_leave: pending_leave,
                         employee_encash: employee_encash,
                         employee_loan: employee_loan,
+                        invalid_input: false,
                       };
 
                       next();
