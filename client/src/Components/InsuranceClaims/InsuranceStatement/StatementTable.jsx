@@ -8,7 +8,7 @@ import {
   Tooltip,
   MainContext,
   AlgaehMessagePop,
-  Model,
+  Modal,
 } from "algaeh-react-components";
 import { UpdateStatement } from "./UpdateStatment";
 import { newAlgaehApi, useQueryParams } from "../../../hooks";
@@ -58,12 +58,12 @@ export function StatementTable(status) {
     }
   };
 
-  async function onDeleteHandler(e, row) {
+  function onDeleteHandler(e, row) {
     e.target.style.pointerEvents = "none";
     Modal.confirm({
       title: "Do you want to delete this invoice?",
       content: "Deleted invoice completely revered",
-      onOk: () => {
+      onOk: async () => {
         try {
           await newAlgaehApi({
             uri: "/insurance/deleteStatement",
