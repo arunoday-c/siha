@@ -353,6 +353,27 @@ const arrayFirstRowToObject = (data, index) => {
     return {};
   }
 };
+function encodeHexaDecimal(str) {
+  var hex, i;
+
+  var result = "";
+  for (i = 0; i < str.length; i++) {
+    hex = str.charCodeAt(i).toString(16);
+    result += ("000" + hex).slice(-4);
+  }
+
+  return Buffer.from(result, "hex").toString("base64");
+}
+function decodeHexaDecimal(base64Str) {
+  const hex = Buffer.from(base64Str, "base64").toString("hex");
+  var j;
+  var hexes = hex.match(/.{1,4}/g) || [];
+  var back = "";
+  for (j = 0; j < hexes.length; j++) {
+    back += String.fromCharCode(parseInt(hexes[j], 16));
+  }
+  return back;
+}
 const { traceLog } = process.env;
 export default {
   getReport: async (req, res) => {
@@ -1072,6 +1093,8 @@ export default {
                       shortenURL: `${
                         process.env.QR_CODE_CLIENT ?? "http://localhost:3024/"
                       }${shortUrl}`,
+                      encodeHexaDecimal,
+                      decodeHexaDecimal,
                     })
                       .then(async (resultReq) => {
                         result = resultReq;
@@ -1362,6 +1385,8 @@ export default {
                             process.env.QR_CODE_CLIENT ??
                             "http://localhost:3024/"
                           }${shortUrl}`,
+                          encodeHexaDecimal,
+                          decodeHexaDecimal,
                         })
                           .then((resultReq) => {
                             result = resultReq;
@@ -1549,6 +1574,8 @@ export default {
                 utilitites: () => {
                   return new utilitites();
                 },
+                encodeHexaDecimal,
+                decodeHexaDecimal,
               }).then((resultData) => {
                 (async () => {
                   try {
@@ -2101,6 +2128,8 @@ export default {
                       shortenURL: `${
                         process.env.QR_CODE_CLIENT ?? "http://localhost:3024/"
                       }${shortUrl}`,
+                      encodeHexaDecimal,
+                      decodeHexaDecimal,
                     })
                       .then((resultReq) => {
                         result = resultReq;
