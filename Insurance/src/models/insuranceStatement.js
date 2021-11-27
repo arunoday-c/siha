@@ -47,7 +47,7 @@ export async function generateInsuranceStatement(req, res, next) {
         ROUND(COALESCE((SUM(id.company_tax) / SUM(id.company_resp))*100,0),2) as comp_tax_percent,
          SUM(id.company_payable) as company_payable,SUM(id.patient_payable) as patient_payable,
          MAX(ins.to_date) as to_date ,MAX(ins.from_date) as from_date,MAX(isb.ins_template_name) as ins_template_name,
-         MAX(ins.insurance_statement_number) as statement_number, MAX(ins.seq_statememt_number) as seq_statement_number
+         case when isb.eng_address is NULL then '' else eng_address end as eng_address,ins.insurance_statement_number
         from hims_f_invoice_header as ih inner join hims_f_invoice_details as id
         on ih.hims_f_invoice_header_id  = id.invoice_header_id
         left join hims_f_invoice_icd as icd on icd.invoice_header_id  = ih.hims_f_invoice_header_id
@@ -91,6 +91,10 @@ export async function generateInsuranceStatement(req, res, next) {
         const { combineservices, filename, aggregations } = requireMetaData;
         const fileName = filename;
         const fileName1 = result.length > 0 ? result[0]["file_name"] : "";
+        const insurance_statement_number1 =
+          result.length > 0 ? result[0]["insurance_statement_number"] : "";
+        const eng_address1 = result.length > 0 ? result[0]["eng_address"] : "";
+        // const fileName1 = result.length > 0 ? result[0]["file_name"] : "";
         _.chain(result)
           .groupBy((g) => g.visit_id)
           .forEach((patients, idx) => {
@@ -200,6 +204,8 @@ export async function generateInsuranceStatement(req, res, next) {
               const clinincNameMapping =
                 identity[common["#CLINICNAME"]["mapping"]];
               const companyNameMapping = common["#COMPANYNAME"]["mapping"];
+              const companyAddressMapping = common["#INSADDRESS"]["mapping"];
+              const statementNoMapping = common["#STATEMENTNO"]["mapping"];
               const date_format = common["#FDATE"]["format"]
                 ? common["#FDATE"]["format"]
                 : "DD-MM-YYYY";
@@ -216,6 +222,8 @@ export async function generateInsuranceStatement(req, res, next) {
                     cell.value = String(cell.value)
                       .replace("#CLINICNAME", clinincNameMapping)
                       .replace("#COMPANYNAME", fileName1)
+                      .replace("#INSADDRESS", eng_address1)
+                      .replace("#STATEMENTNO", insurance_statement_number1)
                       .replace("#FDATE", currentFDate)
                       .replace("#TDATE", currentTDate);
                     if (aggregate) {
