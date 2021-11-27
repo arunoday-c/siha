@@ -85,14 +85,14 @@ export default memo(function () {
       }
     }
     const { other_lang, other_lang_short } = userToken;
-    console.log("usertocken", userToken);
+    // console.log("usertocken", userToken);
     setLanguage([
       { lang_short: "en", lang: "English" },
       { lang_short: other_lang_short, lang: other_lang },
     ]);
     setScreens(scrns);
 
-    console.log("userPreferences", userPreferences);
+    // console.log("userPreferences", userPreferences);
 
     if (userPreferences?.length > 0 && userPreferences) {
       const preference = userPreferences[0]["FD0002"];
@@ -157,8 +157,10 @@ export default memo(function () {
     }
   }
 
-  const addOrUpdatePreference = (data) => {
-    newAlgaehApi({
+  const addOrUpdatePreference = (data, e) => {
+    const { name } = e.nativeEvent.submitter;
+    console.log("name===>", name);
+    let input = {
       uri: "/setPreferences",
       data: {
         preferenceData: { ...data },
@@ -166,12 +168,29 @@ export default memo(function () {
         user_id: userToken.user_id,
       },
       method: "POST",
+    };
+    if (name === "clear") {
+      input = {
+        uri: "/clearUserPreferences",
+        data: {
+          screen_code: data.screen_code,
+          user_id: userToken.user_id,
+        },
+        method: "DELETE",
+      };
+    }
+    // return;
+    newAlgaehApi({
+      ...input,
+
       module: "documentManagement",
     })
       .then((res) => {
         swalMessage({
           type: "success",
-          title: "Request Added successfully",
+          title: `Request ${
+            name === "clear" ? "Added" : "Removed"
+          }  successfully`,
         });
       })
       .catch((e) => {
@@ -235,13 +254,13 @@ export default memo(function () {
                       <Controller
                         name="visit_type"
                         control={control}
-                        rules={{ required: "Please select Visit Type" }}
+                        // rules={{ required: "Please select Visit Type" }}
                         render={({ onChange, value }) => (
                           <AlgaehAutoComplete
                             div={{ className: "col-12  form-group mandatory" }}
                             label={{
                               fieldName: "visit_type",
-                              isImp: true,
+                              // isImp: true,
                             }}
                             error={errors}
                             selector={{
@@ -267,13 +286,13 @@ export default memo(function () {
                       <Controller
                         control={control}
                         name="doctor"
-                        rules={{ required: "Please Select a doctor" }}
+                        // rules={{ required: "Please Select a doctor" }}
                         render={({ onChange, value }) => (
                           <AlgaehTreeSearch
                             div={{ className: "col-12 mandatory" }}
                             label={{
                               fieldName: "doctor_id",
-                              isImp: true,
+                              // isImp: true,
                               align: "ltr",
                             }}
                             error={errors}
@@ -303,9 +322,17 @@ export default memo(function () {
 
                     <div style={{ textAlign: "right" }}>
                       <button
+                        style={{ marginTop: 10 }}
+                        className="btn"
+                        name="clear"
+                      >
+                        CLEAR
+                      </button>
+                      <button
                         type="submit"
                         style={{ marginTop: 10 }}
                         className="btn btn-primary"
+                        name="update"
                       >
                         UPDATE
                       </button>

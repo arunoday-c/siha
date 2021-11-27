@@ -79,3 +79,30 @@ export function getUserPreferences(req, res, next) {
       });
     });
 }
+
+export async function clearUserPreferences(req, res, next) {
+  const { user_id, screen_code } = req.body;
+
+  try {
+    const result = await userPrefernce.findOne({ userID: user_id });
+    const _doc = result["_doc"];
+    delete _doc[screen_code];
+
+    const { preferences, _id, userID, language, theme } = _doc;
+    await userPrefernce.findByIdAndUpdate(
+      { _id },
+      {
+        preferences,
+        language,
+        theme,
+        [screen_code]: null,
+      }
+    );
+    res.status(200).json({
+      success: true,
+      message: "delete success",
+    });
+  } catch (e) {
+    next(e);
+  }
+}

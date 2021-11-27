@@ -21,7 +21,11 @@ import {
   getRadiologyDoc,
   saveRdiologyDoc,
 } from "../Controller/radiologyDoc";
-import { setUserPreference, getUserPreferences } from "../Model/userPreference";
+import {
+  setUserPreference,
+  getUserPreferences,
+  clearUserPreferences,
+} from "../Model/userPreference";
 import { getLogs } from "../Model/loggers";
 import { uploadFile, getUploadedFile } from "../files/index";
 import {
@@ -125,5 +129,6 @@ initializedDb((db) => {
   router.post("/seenNotification", seenNotification);
   router.delete("/deleteNotification", deleteNotification);
   router.delete("/deleteAllNotification", deleteAllNotification);
+  router.delete("/clearUserPreferences", clearUserPreferences);
 });
 export default router;
