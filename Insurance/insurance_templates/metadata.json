@@ -2,6 +2,11 @@
   "common": {
     "#CLINICNAME": { "name": "Clininc Name", "mapping": "hospital_name" },
     "#COMPANYNAME": { "name": "Company Name", "mapping": "file_name" },
+    "#STATEMENTNO": {
+      "name": "Statement No.",
+      "mapping": "insurance_statement_number"
+    },
+    "#INSADDRESS": { "name": "Company Address", "mapping": "eng_address" },
     "#FDATE": {
       "name": "From Date",
       "format": "DD-MM-YYYY",
@@ -24,8 +29,13 @@
       }
     },
     "aggregations": {
-      "SUM": ["gross_amount","patient_payable","company_resp","company_tax_amount","company_payable"]
-      
+      "SUM": [
+        "gross_amount",
+        "patient_payable",
+        "company_resp",
+        "company_tax_amount",
+        "company_payable"
+      ]
     },
     "columns": [
       { "name": "SL NO.", "mapping": "sl_no" },

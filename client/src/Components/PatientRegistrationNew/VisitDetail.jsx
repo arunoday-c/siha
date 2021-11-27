@@ -245,6 +245,7 @@ export function VisitDetails({
                           type="button"
                           className="btn btn-default btn-sm"
                           onClick={reloadBill}
+                          style={{ display: "none" }}
                         >
                           Reload
                         </button>

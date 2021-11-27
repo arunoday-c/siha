@@ -352,12 +352,14 @@ export default {
             _mysql
               .executeQueryWithTransaction({
                 query:
-                  "INSERT INTO `finance_account_child` (child_name,ledger_code,head_id,created_from\
-                    ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?,?)",
+                  "INSERT INTO `finance_account_child` (child_name,ledger_code,head_id, eng_address, ar_address, \
+                    created_from,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?,?)",
                 values: [
                   input[0].insurance_sub_name,
                   input[0].insurance_sub_code,
                   head_id,
+                  input[0].eng_address,
+                  input[0].ar_address,
                   "S",
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
@@ -577,7 +579,7 @@ export default {
             "update hims_d_insurance_sub SET `insurance_sub_code`=?,`insurance_sub_name`=?,\
             `arabic_sub_name`=?,`insurance_provider_id`=?,`card_format`=?,`ins_template_name`=?,\
             `transaction_number`=?,`effective_start_date`=?,`effective_end_date`=?,`updated_by`=?,\
-           head_id=?,child_id=?\
+           head_id=?,child_id=?, eng_address=?, ar_address=?\
              WHERE  `hims_d_insurance_sub_id`=? AND `record_status`='A'",
           values: [
             inputparam.insurance_sub_code,
@@ -593,6 +595,8 @@ export default {
 
             inputparam.head_id,
             inputparam.child_id,
+            inputparam.eng_address,
+            inputparam.ar_address,
             inputparam.hims_d_insurance_sub_id,
           ],
 
@@ -1614,14 +1618,14 @@ export default {
           let sqlQry;
           if (product_type.length == 1) {
             sqlQry = `SELECT hims_d_insurance_sub_id,insurance_sub_code,insurance_sub_name,arabic_sub_name,insurance_provider_id,
-            card_format,ins_template_name,transaction_number,effective_start_date,effective_end_date,user_id,creidt_limit_req,creidt_limit,creidt_amount_till,
+            card_format,ins_template_name,eng_address, ar_address, transaction_number,effective_start_date,effective_end_date,user_id,creidt_limit_req,creidt_limit,creidt_amount_till,
             finance_account_child_id,concat('(',ledger_code,') ',child_name) as child_name ,I.head_id, I.child_id
             from hims_d_insurance_sub  I      
             left join finance_account_child C on I.child_id=C.finance_account_child_id 
             where record_status='A'${_stringData}; `;
           } else {
             sqlQry = ` select hims_d_insurance_sub_id,insurance_sub_code,insurance_sub_name,arabic_sub_name,insurance_provider_id,
-            card_format,ins_template_name,transaction_number,effective_start_date,effective_end_date  from hims_d_insurance_sub where record_status='A' ${_stringData};`;
+            card_format,ins_template_name, eng_address, ar_address, transaction_number,effective_start_date,effective_end_date  from hims_d_insurance_sub where record_status='A' ${_stringData};`;
           }
 
           _mysql
@@ -2256,7 +2260,7 @@ export function getInsuranceStatement(req, res, next) {
   try {
     _mysql
       .executeQuery({
-        query: `select INH.insurance_provider_name, posted, INH.arabic_provider_name,INSH.insurance_sub_name,INSH.arabic_sub_name,
+        query: `select INH.insurance_provider_name, INS.posted, INH.arabic_provider_name,INSH.insurance_sub_name,INSH.arabic_sub_name,
         hims_f_insurance_statement_id, INS.insurance_statement_number, total_gross_amount, total_company_responsibility, total_company_vat, total_company_payable,
         total_remittance_amount, total_denial_amount, total_balance_amount, insurance_status,
         INS.insurance_provider_id, INS.sub_insurance_id,INS.insurance_status,INS.from_date,INS.to_date  from hims_f_insurance_statement INS
@@ -2900,7 +2904,7 @@ export async function deleteStatement(req, res, next) {
     });
     if (record[0].length === 0) {
       _mysql.releaseConnection();
-      throw new Error("Invouce is not already processed");
+      throw new Error("Invoice is not already processed");
     }
     await _mysql.executeQueryWithTransaction({
       query: `update hims_f_invoice_details set record_status='I',updated_by=?,updated_date=? where invoice_header_id =?;
@@ -2935,11 +2939,11 @@ export async function deleteStatement(req, res, next) {
       total_company_responsibility=(total_company_responsibility-${invoiceHeaderCompanyResp}),
       total_company_vat=(total_company_vat-${invoiceHeaderCompanyVat}),total_company_payable=(total_company_payable-${invoiceHeaderCompanyPayable})
       where hims_f_insurance_statement_id=?;
-      update hims_f_billing_header set invoice_generated='N' where hims_f_billing_header_id in (?);
+      -- update hims_f_billing_header set invoice_generated='N' where hims_f_billing_header_id in (?);
       update hims_f_invoice_header SET insurance_statement_id = NULL, insurance_statement_id_2 = NULL, insurance_statement_id_3 = NULL where hims_f_invoice_header_id=?;`,
       values: [
         insurance_statement_id,
-        billHeaders,
+        //billHeaders,
         // null,
         hims_f_invoice_header_id,
       ],

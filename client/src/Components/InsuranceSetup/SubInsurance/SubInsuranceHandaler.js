@@ -41,6 +41,8 @@ const saveAfterUnique = ($this, context) => {
     creidt_limit: $this.state.creidt_limit,
     creidt_limit_req: $this.state.creidt_limit_req,
     insurance_type: $this.state.insurance_type,
+    eng_address: $this.state.eng_address,
+    ar_address: $this.state.ar_address,
   };
   let previous = $this.state.sub_insurance ? $this.state.sub_insurance : [];
   previous.push(obj);

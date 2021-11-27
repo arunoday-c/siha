@@ -86,19 +86,34 @@ export function StatementTable(status) {
     });
   }
   const RemittanceButton = (row) => {
+    debugger;
     if (status.insurance_status === "C") {
       return null;
     } else {
       return (
         <>
           <Tooltip title="Edit">
-            <span onClick={() => onClickRow(row)}>
-              <i className="fas fa-pen"></i>
+            <span>
+              <i
+                style={{
+                  pointerEvents: data?.posted === "N" ? "" : "none",
+                  opacity: data?.posted === "N" ? "" : "0.1",
+                }}
+                className="fas fa-pen"
+                onClick={() => onClickRow(row)}
+              ></i>
             </span>
           </Tooltip>
           <Tooltip title="Delete">
-            <span onClick={(e) => onDeleteHandler(e, row)}>
-              <i className="fas fa-trash-alt"></i>
+            <span>
+              <i
+                style={{
+                  pointerEvents: data?.posted === "N" ? "" : "none",
+                  opacity: data?.posted === "N" ? "" : "0.1",
+                }}
+                onClick={(e) => onDeleteHandler(e, row)}
+                className="fas fa-trash-alt"
+              ></i>
             </span>
           </Tooltip>
         </>
@@ -154,9 +169,6 @@ export function StatementTable(status) {
                       data?.total_remittance_amount) ||
                       "0.00"}
                   </h6>
-                </div>
-                <div className="col">
-                  <FinalRemittance data={data} refetch={refetch} />
                 </div>
               </div>
             </div>
@@ -383,7 +395,14 @@ export function StatementTable(status) {
             isFilterable={true}
           />
         </div>{" "}
-      </div>{" "}
+      </div>
+      <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col">
+            <FinalRemittance data={data} refetch={refetch} />
+          </div>
+        </div>
+      </div>
     </Spin>
   );
 }
