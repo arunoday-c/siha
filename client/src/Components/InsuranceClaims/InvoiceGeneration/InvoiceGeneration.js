@@ -5,15 +5,17 @@ import { bindActionCreators } from "redux";
 import moment from "moment";
 import Options from "../../../Options.json";
 import {
-  // AlagehFormGroup,
+  AlagehFormGroup,
   // AlgaehDataGrid,
   AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
+import { Modal, AlgaehButton } from "algaeh-react-components";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   VisitSearch,
   FinalizedAndInvoice,
   getCtrlCode,
+  CancelInvoiceGeneration,
 } from "./InvoiceGenerationHandaler";
 import { InvoiceDetails } from "./InvoiceDetails";
 import { ChangeInvoiceDetails } from "./ChangeInvoiceDetails";
@@ -66,6 +68,9 @@ class InvoiceGeneration extends Component {
       cash_invoice: true,
       dataExists: false,
       changeShow: false,
+      cancelEnable: true,
+      cancel_visible: false,
+      cancel_reason: "",
     };
   }
 
@@ -152,6 +157,10 @@ class InvoiceGeneration extends Component {
         Invoice_Detail: [],
         cash_invoice: true,
         creidt_invoice: false,
+        cancelEnable: true,
+        cancel_visible: false,
+        cancel_reason: "",
+        insurance_statement_id: null,
       },
       () => {
         if (typeof callBack === "function") {
@@ -390,6 +399,20 @@ class InvoiceGeneration extends Component {
               {this.state.full_name ? this.state.full_name : "Patient Name"}
             </h6>
           </div>
+          <div className="col">
+            <AlgaehLabel
+              label={{
+                forceLabel: "Invoice Ststus",
+              }}
+            />
+            <h6>
+              {this.state.cancelled === "Y"
+                ? "Invoice Cancelled"
+                : this.state.insurance_statement_id > 0
+                ? "Claim Generated"
+                : "----------"}
+            </h6>
+          </div>
 
           {/* <div className="col-4">
             <div className="row">
@@ -442,6 +465,16 @@ class InvoiceGeneration extends Component {
               >
                 <AlgaehLabel
                   label={{ fieldName: "btn_final", returnText: true }}
+                />
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => this.setState({ cancel_visible: true })}
+                disabled={this.state.cancelEnable}
+              >
+                <AlgaehLabel
+                  label={{ forceLabel: "Cancel Invoice", returnText: true }}
                 />
               </button>
               <button
@@ -522,6 +555,47 @@ class InvoiceGeneration extends Component {
                 </div>
               ) : null}
             </div>
+            <Modal
+              title="Invoice Cancel"
+              visible={this.state.cancel_visible}
+              width={1080}
+              footer={null}
+              onCancel={() => this.setState({ cancel_visible: false })}
+              className={`row algaehNewModal invoiceRevertModal`}
+            >
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Enter reason for Cancellarion",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "cancel_reason",
+                  value: this.state.cancel_reason,
+                  events: {
+                    onChange: (e) => {
+                      this.setState({ cancel_reason: e.target.value });
+                    },
+                  },
+                }}
+              />
+
+              <div className="popupFooter">
+                <div className="col-lg-12">
+                  <div className="row">
+                    <div className="col-lg-12">
+                      <AlgaehButton
+                        className="btn btn-primary"
+                        onClick={CancelInvoiceGeneration.bind(this, this)}
+                      >
+                        Cancel Invoice
+                      </AlgaehButton>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Modal>
           </div>
         </div>
       </div>

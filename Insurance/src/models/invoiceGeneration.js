@@ -81,6 +81,75 @@ export default {
     }
   },
 
+  cancelInvoiceGeneration: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = req.body;
+
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "UPDATE `hims_f_invoice_header` SET cancelled='Y', cancelled_by=?, cancelled_date=?, cancel_reason=? \
+            where hims_f_invoice_header_id=?",
+          values: [
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            input.cancel_reason,
+            input.hims_f_invoice_header_id,
+          ],
+
+          printQuery: true,
+        })
+        .then((headerResult) => {
+          let _tempBillHeaderIds = new LINQ(req.body.Invoice_Detail)
+            .Select((s) => s.bill_header_id)
+            .ToArray();
+
+          let billHeaderIds = _tempBillHeaderIds.filter((item, pos) => {
+            return _tempBillHeaderIds.indexOf(item) == pos;
+          });
+
+          _mysql
+            .executeQueryWithTransaction({
+              query:
+                "UPDATE hims_f_billing_header SET invoice_generated = 'N' ,updated_date=?, updated_by=?\
+                      WHERE record_status='A' and  hims_f_billing_header_id in (?);\
+                      UPDATE hims_f_patient_visit SET invoice_generated='N',visit_status='O',updated_date=?, updated_by=?\
+                       WHERE record_status='A' and hims_f_patient_visit_id = ?; ",
+              values: [
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                billHeaderIds,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                input.visit_id,
+              ],
+              printQuery: true,
+            })
+            .then((result) => {
+              // consol.log(result);
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              });
+            })
+            .catch((e) => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        })
+        .catch((e) => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
   //created by:irfan
   addInvoiceGeneration: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -282,7 +351,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT IH.`hims_f_invoice_header_id`, IH.`invoice_number`, IH.`invoice_date`, \
+            "SELECT IH.`hims_f_invoice_header_id`, IH.`invoice_number`, IH.`invoice_date`, IH.insurance_statement_id, IH.cancelled,\
           IH.`invoice_type`, IH.`patient_id`, IH.`visit_id`, IH.`policy_number`, IH.`insurance_provider_id`,\
           IH.`sub_insurance_id`, IH.`network_id`, IH.`network_office_id`, IH.`card_number`, IH.`gross_amount`,\
           IH.`discount_amount`, IH.`net_amount`, IH.`patient_resp` as patient_res, IH.`patient_tax`, IH.`patient_payable`,\

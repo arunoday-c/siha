@@ -19,6 +19,7 @@ const {
   updateInsuranceReqDoc,
   getRequestForCorrectionInsurance,
   getVisitsForGeneration,
+  cancelInvoiceGeneration,
 } = invoiceModels;
 
 export default () => {
@@ -184,6 +185,18 @@ export default () => {
 
     next();
   });
+  api.post(
+    "/cancelInvoiceGeneration",
+    cancelInvoiceGeneration,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    }
+  );
   api.get(
     "/getRequestForCorrectionInsurance",
     getRequestForCorrectionInsurance,

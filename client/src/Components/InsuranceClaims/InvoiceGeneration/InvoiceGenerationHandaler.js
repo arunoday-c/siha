@@ -196,6 +196,7 @@ const FinalizedAndInvoice = ($this) => {
           $this.setState({
             saveEnable: true,
             generateVoice: false,
+            cancel_visible: false,
 
             invoice_number: response.data.records.invoice_number,
             hims_f_invoice_header_id:
@@ -256,6 +257,9 @@ const getCtrlCode = ($this, docNumber) => {
       Invoice_Detail: [],
       cash_invoice: true,
       creidt_invoice: false,
+      cancelEnable: true,
+      cancel_visible: false,
+      cancel_reason: "",
     },
     () => {
       algaehApiCall({
@@ -270,6 +274,14 @@ const getCtrlCode = ($this, docNumber) => {
 
             data.generateVoice = false;
             data.clearEnable = false;
+            data.cancelEnable =
+              data.cancelled === "Y"
+                ? true
+                : data.insurance_statement_id > 0
+                ? true
+                : false;
+
+            data.generateVoice = data.cancelEnable;
             if (data.insurance_provider_id !== null) {
               data.select_invoice = "CD";
 
@@ -334,6 +346,29 @@ const texthandle = ($this, e) => {
   });
 };
 
+const CancelInvoiceGeneration = ($this) => {
+  debugger;
+  algaehApiCall({
+    uri: "/invoiceGeneration/cancelInvoiceGeneration",
+    module: "insurance",
+    data: $this.state,
+    onSuccess: (response) => {
+      debugger;
+      if (response.data.success === true) {
+        $this.setState({
+          cancelEnable: true,
+          generateVoice: true,
+          cancel_visible: false,
+        });
+        swalMessage({
+          title: "Invoice Cancelled Successfully . .",
+          type: "success",
+        });
+      }
+    },
+  });
+};
+
 export {
   VisitSearch,
   getOrderServices,
@@ -341,4 +376,5 @@ export {
   getVisitWiseBillDetailS,
   getCtrlCode,
   texthandle,
+  CancelInvoiceGeneration,
 };
