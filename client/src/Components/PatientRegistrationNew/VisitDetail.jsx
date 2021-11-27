@@ -47,6 +47,7 @@ export function VisitDetails({
   visits = [],
   packages = [],
   patientData,
+  userPrefExit,
 }) {
   const queryParams = useQueryParams();
   const appointment_id = queryParams.get("appointment_id");
@@ -57,20 +58,7 @@ export function VisitDetails({
   const { setVisitType } = useContext(MainContext);
   const { setServiceInfo, setConsultationInfo, disabled, setHardRefresh } =
     useContext(FrontdeskContext);
-  const { data, isLoading } = useQuery("doctors-data", getDoctorData, {
-    cacheTime: Infinity,
-    initialData: {
-      doctors: [],
-      visitTypes: [],
-    },
-    initialStale: true,
-    onSuccess: (data) => {
-      const res = data?.visitTypes?.filter((item) => item.consultation === "Y");
-      setConsultationInfo(res[0]);
-      // setValue("visit_type", res[0]?.hims_d_visit_type_id);
-      setVisitType(res[0]);
-    },
-  });
+
   const {
     hims_d_patient_id,
     primary_insurance_provider_id,
@@ -84,6 +72,28 @@ export function VisitDetails({
       "department_type",
       "visit_type",
     ],
+  });
+
+  const { data, isLoading } = useQuery("doctors-data", getDoctorData, {
+    cacheTime: Infinity,
+    initialData: {
+      doctors: [],
+      visitTypes: [],
+    },
+    initialStale: true,
+    onSuccess: (data) => {
+      let res = [];
+      if (userPrefExit) {
+        res = data?.visitTypes?.filter(
+          (item) => item?.hims_d_visit_type_id == visit_type
+        );
+      } else {
+        res = data?.visitTypes?.filter((item) => item.consultation === "Y");
+      }
+      setConsultationInfo(res[0]);
+      // setValue("visit_type", res[0]?.hims_d_visit_type_id);
+      setVisitType(res[0]);
+    },
   });
 
   const { visitTypes } = data;

@@ -236,6 +236,7 @@ export function PatientRegistration() {
   const [addNewPat, setAddNewPat] = useState(false);
   const [incomeByPoint, setIncomeByPoint] = useState("");
   const [loadFromReader, setLoadFromReader] = useState(false);
+  const [userPrefExit, setUserPrefExit] = useState(false);
   const location = useLocation();
   const history = useHistory();
 
@@ -307,9 +308,11 @@ export function PatientRegistration() {
     const { screen_code } = selectedMenu;
 
     if (userPreferences?.length > 0 && userPreferences) {
+      setUserPrefExit(true);
       const preference = await userPreferences[0][screen_code];
       return preference;
     } else {
+      setUserPrefExit(false);
       return null;
     }
   };
@@ -930,6 +933,7 @@ export function PatientRegistration() {
       user_id: "",
     });
     clearState();
+
     preferenceFunction().then((result) => {
       if (result) {
         setValue("visit_type", result.visit_type);
@@ -1347,6 +1351,7 @@ export function PatientRegistration() {
                   patientData={patientData}
                   packages={packages}
                   errors={errors}
+                  userPrefExit={userPrefExit}
                 />
               </div>
               <PricingModals

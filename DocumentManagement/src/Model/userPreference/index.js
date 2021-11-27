@@ -16,8 +16,9 @@ export function setUserPreference(req, res, next) {
     })
     .then((result) => {
       let newDetails = { userID: user_id };
+
       const keysArray = Object.keys(preferenceData);
-      if (result !== null) {
+      if (result !== null && result._doc[screen_code]) {
         let details = [result._doc[screen_code]];
         let updateArray = [];
         for (let i = 0; i < keysArray.length; i++) {
@@ -55,6 +56,7 @@ export function setUserPreference(req, res, next) {
           });
         })
         .catch((error) => {
+          console.log("erroe", error.trace);
           res.status(400).json({ success: false, message: error });
         });
     })
