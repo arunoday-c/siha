@@ -146,6 +146,7 @@ export function FinalRemittance({ data, refetch }) {
       },
       onSuccess: (res) => {
         if (res.data.success) {
+          refetch();
           swalMessage({
             type: "success",
             title: "Posted Successfully...",

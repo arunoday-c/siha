@@ -86,19 +86,34 @@ export function StatementTable(status) {
     });
   }
   const RemittanceButton = (row) => {
+    debugger;
     if (status.insurance_status === "C") {
       return null;
     } else {
       return (
         <>
           <Tooltip title="Edit">
-            <span onClick={() => onClickRow(row)}>
-              <i className="fas fa-pen"></i>
+            <span>
+              <i
+                style={{
+                  pointerEvents: data?.posted === "N" ? "" : "none",
+                  opacity: data?.posted === "N" ? "" : "0.1",
+                }}
+                className="fas fa-pen"
+                onClick={() => onClickRow(row)}
+              ></i>
             </span>
           </Tooltip>
           <Tooltip title="Delete">
-            <span onClick={(e) => onDeleteHandler(e, row)}>
-              <i className="fas fa-trash-alt"></i>
+            <span>
+              <i
+                style={{
+                  pointerEvents: data?.posted === "N" ? "" : "none",
+                  opacity: data?.posted === "N" ? "" : "0.1",
+                }}
+                onClick={(e) => onDeleteHandler(e, row)}
+                className="fas fa-trash-alt"
+              ></i>
             </span>
           </Tooltip>
         </>
