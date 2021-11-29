@@ -1,6 +1,8 @@
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
   const encodeHexaDecimal = options.encodeHexaDecimal;
+  const hexToBase64String = options.hexToBase64String;
+  const moment = options.moment;
 
   return new Promise(function (resolve, reject) {
     try {
@@ -54,16 +56,34 @@ const executePDF = function executePDFMethod(options) {
           const header = _.head(ress[0]);
 
           const detail = ress[1];
-          let qrString = `Seller's Name: ${header.organization_name}
+          let qrString = "";
+
+          if (qr_encrypt === "Y") {
+            const sellerName = encodeHexaDecimal(
+              "01",
+              header.organization_name
+            );
+            const registrationNo = encodeHexaDecimal(
+              "02",
+              header.business_registration_number
+            );
+            const timeStamp = encodeHexaDecimal(
+              "03",
+              moment.utc(moment(header.invoice_date).utc()).format()
+            );
+            const invoiceWithTax = encodeHexaDecimal("04", header.net_total);
+            const vatTotal = encodeHexaDecimal("05", header.total_tax);
+            qrString = hexToBase64String(
+              `${sellerName}${registrationNo}${timeStamp}${invoiceWithTax}${vatTotal}`
+            );
+          } else {
+            qrString = `Seller's Name: ${header.organization_name}
           Seller's TRN: ${header.business_registration_number}
           Invoice Date & Time : ${header.invoice_date}
           Invoice Total (With VAT): SAR ${header.net_total}
           VAT Total : SAR ${header.total_tax}`;
-          console.log("qr_encrypt=", qr_encrypt);
+          }
 
-          if (qr_encrypt === "Y") qrString = encodeHexaDecimal(qrString);
-
-          console.log("qrString=", qrString);
           const result = {
             header: header,
             detail: _.chain(detail)

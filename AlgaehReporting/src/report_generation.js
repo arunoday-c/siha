@@ -353,15 +353,16 @@ const arrayFirstRowToObject = (data, index) => {
     return {};
   }
 };
-function encodeHexaDecimal(str) {
+function encodeHexaDecimal(index, str) {
   var hex, i;
-
   var result = "";
   for (i = 0; i < str.length; i++) {
     hex = str.charCodeAt(i).toString(16);
-    result += ("000" + hex).slice(-4);
+    result += ("" + hex).slice(-4);
   }
-
+  return `${index}${str.length.toString(16).padStart(2, 0)}${result}`;
+}
+function hexToBase64String(result) {
   return Buffer.from(result, "hex").toString("base64");
 }
 function decodeHexaDecimal(base64Str) {
@@ -1095,6 +1096,7 @@ export default {
                       }${shortUrl}`,
                       encodeHexaDecimal,
                       decodeHexaDecimal,
+                      hexToBase64String,
                     })
                       .then(async (resultReq) => {
                         result = resultReq;
@@ -1387,6 +1389,7 @@ export default {
                           }${shortUrl}`,
                           encodeHexaDecimal,
                           decodeHexaDecimal,
+                          hexToBase64String,
                         })
                           .then((resultReq) => {
                             result = resultReq;
@@ -1576,6 +1579,7 @@ export default {
                 },
                 encodeHexaDecimal,
                 decodeHexaDecimal,
+                hexToBase64String,
               }).then((resultData) => {
                 (async () => {
                   try {
@@ -2130,6 +2134,7 @@ export default {
                       }${shortUrl}`,
                       encodeHexaDecimal,
                       decodeHexaDecimal,
+                      hexToBase64String,
                     })
                       .then((resultReq) => {
                         result = resultReq;
