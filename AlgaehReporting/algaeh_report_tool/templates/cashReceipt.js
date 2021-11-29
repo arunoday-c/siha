@@ -54,14 +54,16 @@ const executePDF = function executePDFMethod(options) {
           const header = _.head(ress[0]);
 
           const detail = ress[1];
-          const qrString = `Seller : ${header.organization_name}
-          Vat No. : ${header.business_registration_number}
-          Date & Time : ${header.invoice_date}
-          Net Total : ${header.net_total}
-          Vat : ${header.total_tax}
-          `;
-          if (qr_encrypt === "Y") encodeHexaDecimal(qrString);
+          let qrString = `Seller's Name: ${header.organization_name}
+          Seller's TRN: ${header.business_registration_number}
+          Invoice Date & Time : ${header.invoice_date}
+          Invoice Total (With VAT): SAR ${header.net_total}
+          VAT Total : SAR ${header.total_tax}`;
+          console.log("qr_encrypt=", qr_encrypt);
 
+          if (qr_encrypt === "Y") qrString = encodeHexaDecimal(qrString);
+
+          console.log("qrString=", qrString);
           const result = {
             header: header,
             detail: _.chain(detail)
