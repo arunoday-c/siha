@@ -402,15 +402,17 @@ class InvoiceGeneration extends Component {
           <div className="col">
             <AlgaehLabel
               label={{
-                forceLabel: "Invoice Ststus",
+                forceLabel: "Invoice Status",
               }}
             />
             <h6>
-              {this.state.cancelled === "Y"
-                ? "Invoice Cancelled"
-                : this.state.insurance_statement_id > 0
-                ? "Claim Generated"
-                : "----------"}
+              {this.state.cancelled === "Y" ? (
+                <span className="badge badge-danger">Invoice Cancelled</span>
+              ) : this.state.insurance_statement_id > 0 ? (
+                <span className="badge badge-success">Statement Generated</span>
+              ) : (
+                "----------"
+              )}
             </h6>
           </div>
 
@@ -469,7 +471,7 @@ class InvoiceGeneration extends Component {
               </button>
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-default"
                 onClick={() => this.setState({ cancel_visible: true })}
                 disabled={this.state.cancelEnable}
               >
