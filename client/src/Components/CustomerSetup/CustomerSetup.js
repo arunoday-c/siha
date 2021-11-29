@@ -352,7 +352,7 @@ class CustomerSetup extends Component {
     const manualColumns = this.state.showAddEmployeeModal
       ? {
           fieldName: "actions",
-          label: <AlgaehLabel label={{ fieldName: "Add Employee" }} />,
+          label: <AlgaehLabel label={{ forceLabel: "Add Employee" }} />,
           displayTemplate: (row) => {
             return (
               <div className="row">
@@ -1057,21 +1057,25 @@ class CustomerSetup extends Component {
                         style: {
                           textAlign: "center",
                         },
-                        filterable: false,
                       },
+                      filterable: false,
                     },
                     manualColumns,
                     {
                       fieldName: "customer_code",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "customer_code" }} />
-                      ),
+                      label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
+                      filterable: true,
                     },
                     {
                       fieldName: "customer_name",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "customer_name" }} />
-                      ),
+                      label: <AlgaehLabel label={{ forceLabel: "Name" }} />,
+                      filterable: true,
+                      others: {
+                        // maxWidth: 120,
+                        style: {
+                          textAlign: "left",
+                        },
+                      },
                     },
                     {
                       fieldName: "business_registration_no",
@@ -1080,18 +1084,21 @@ class CustomerSetup extends Component {
                           label={{ fieldName: "business_registration_no" }}
                         />
                       ),
+                      filterable: true,
                     },
                     {
                       fieldName: "contact_number",
                       label: (
                         <AlgaehLabel label={{ fieldName: "contact_number" }} />
                       ),
+                      filterable: true,
                     },
                     {
                       fieldName: "email_id_1",
                       label: (
                         <AlgaehLabel label={{ fieldName: "primaryEmail" }} />
                       ),
+                      filterable: true,
                     },
                     {
                       fieldName: "payment_terms",
@@ -1101,6 +1108,7 @@ class CustomerSetup extends Component {
                       displayTemplate: (row) => {
                         return row.payment_terms + " Days";
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "payment_mode",
@@ -1120,27 +1128,36 @@ class CustomerSetup extends Component {
                           </span>
                         );
                       },
+                      filterable: true,
                     },
 
                     {
                       fieldName: "customer_status",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "customer_status" }} />
-                      ),
+                      label: <AlgaehLabel label={{ forceLabel: "status" }} />,
                       displayTemplate: (row) => {
                         return row.customer_status === "A"
                           ? "Active"
                           : "Inactive";
                       },
+                      filterable: true,
+                      filterType: "choices",
+                      choices: [
+                        {
+                          name: "Active",
+                          value: "A",
+                        },
+                        {
+                          name: "Inactive",
+                          value: "I",
+                        },
+                      ],
                     },
                   ]}
                   keyId="hims_d_customer_id"
-                  // dataSource={{
                   data={this.state.customers ?? []}
-                  // }}
-                  filter={true}
                   pagination={true}
-                  // paging={{ page: 0, rowsPerPage: 10 }}
+                  pageOptions={{ rows: 50, page: 1 }}
+                  isFilterable={true}
                 />
               </div>
             </div>

@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
+import "./CustomerSetup.scss";
 
 import {
   AlgaehModal,
@@ -154,7 +155,7 @@ function AddDoctorDetails({ onClose, visible, activeRow }) {
             Close
           </button>,
         ]}
-        // className={`row algaehNewModal SelectBedModal`}
+        className={`row algaehNewModal createEditPopup`}
       >
         <Spin spinning={customerEmployeesLoading}>
           <form onSubmit={handleSubmit(addDocDetails)}>
@@ -166,7 +167,7 @@ function AddDoctorDetails({ onClose, visible, activeRow }) {
                   rules={{ required: "Required" }}
                   render={(props) => (
                     <AlgaehFormGroup
-                      div={{ className: "col-2 mandatory form-group" }}
+                      div={{ className: "col mandatory form-group" }}
                       error={errors}
                       label={{
                         forceLabel: "Doctor Name",
@@ -187,7 +188,7 @@ function AddDoctorDetails({ onClose, visible, activeRow }) {
                   rules={{ required: "Required" }}
                   render={(props) => (
                     <AlgaehFormGroup
-                      div={{ className: "col-2 mandatory form-group" }}
+                      div={{ className: "col mandatory form-group" }}
                       error={errors}
                       label={{
                         forceLabel: "Doctor Email",
@@ -202,7 +203,7 @@ function AddDoctorDetails({ onClose, visible, activeRow }) {
                   )}
                 />
 
-                <div className="col-lg-4 algaehInputGroup mandatory">
+                <div className="col algaehInputGroup mandatory">
                   <AlgaehLabel
                     label={{
                       fieldName: "contact_number",
@@ -286,20 +287,11 @@ function AddDoctorDetails({ onClose, visible, activeRow }) {
                   </span>
                 </div>
 
-                <div className="col-2">
-                  <button
-                    type="submit"
-                    style={{ marginTop: 20 }}
-                    className="btn btn-primary"
-                    // onClick={() => refetch()}
-                  >
-                    Add to List
-                  </button>
-                </div>
-                <div className="col-1">
+                <div className="col">
+                  {" "}
                   <button
                     type="button"
-                    style={{ marginTop: 20 }}
+                    style={{ marginTop: 21 }}
                     className="btn btn-default"
                     onClick={() => {
                       reset({
@@ -310,144 +302,126 @@ function AddDoctorDetails({ onClose, visible, activeRow }) {
                   >
                     Clear
                   </button>
+                  <button
+                    type="submit"
+                    style={{ marginTop: 21, marginLeft: 5 }}
+                    className="btn btn-primary"
+                    // onClick={() => refetch()}
+                  >
+                    Add to List
+                  </button>{" "}
                 </div>
               </div>
               <div className="row">
-                <div className="col-8">
-                  <div className="portlet portlet-bordered margin-bottom-15">
-                    <div className="portlet-title">
-                      <div className="caption">
-                        <h3 className="caption-subject">Employee Details</h3>
-                      </div>
-                      <div className="actions"></div>
-                    </div>
-                    <div className="portlet-body">
-                      <div className="row">
-                        <div className="col-12">
-                          <div id="">
-                            <AlgaehDataGrid
-                              className="offerPriceList"
-                              columns={[
-                                {
-                                  fieldName: "employee_name",
-                                  label: "Employee Name",
-                                  //   displayTemplate: (row) => {
+                <div className="col-12" id="customerEmployeeGrid">
+                  <AlgaehDataGrid
+                    // className="customerEmployeeGrid"
+                    columns={[
+                      {
+                        fieldName: "employee_name",
+                        label: "Employee Name",
+                        //   displayTemplate: (row) => {
 
-                                  //   },
-                                },
+                        //   },
+                      },
 
-                                {
-                                  fieldName: "employee_email",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "Employee Email" }}
-                                    />
-                                  ),
-                                },
-                                {
-                                  fieldName: "contact_number",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "Contact Number" }}
-                                    />
-                                  ),
-                                  displayTemplate: (row) =>
-                                    `${row.employee_tel_code} ${row.employee_contact_number}`,
+                      {
+                        fieldName: "employee_email",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Employee Email" }}
+                          />
+                        ),
+                      },
+                      {
+                        fieldName: "contact_number",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Contact Number" }}
+                          />
+                        ),
+                        displayTemplate: (row) =>
+                          `${row.employee_tel_code} ${row.employee_contact_number}`,
 
-                                  editorTemplate: (row) => {
-                                    return (
-                                      <Input.Group compact>
-                                        <Select
-                                          defaultValue={row.employee_tel_code}
-                                          onChange={(_, selected) => {
-                                            row.employee_tel_code = _;
-                                          }}
-                                          virtual={true}
-                                          //   disabled={disabled}
-                                          showSearch
-                                          filterOption={(input, option) => {
-                                            return (
-                                              option.value
-                                                .toLowerCase()
-                                                .indexOf(input.toLowerCase()) >=
-                                              0
-                                            );
-                                          }}
-                                          options={countries
-                                            ?.map((item) => ({
-                                              tel_code: item.tel_code,
-                                              max_phone_digits:
-                                                item.max_phone_digits,
-                                            }))
-                                            .filter(
-                                              (v, i, a) => a.indexOf(v) === i
-                                            )
-                                            .map((item) => {
-                                              row.maxDigits =
-                                                item.max_phone_digits;
-                                              return {
-                                                label: item.tel_code,
-                                                value: item.tel_code,
+                        editorTemplate: (row) => {
+                          return (
+                            <Input.Group compact>
+                              <Select
+                                defaultValue={row.employee_tel_code}
+                                onChange={(_, selected) => {
+                                  row.employee_tel_code = _;
+                                }}
+                                virtual={true}
+                                //   disabled={disabled}
+                                showSearch
+                                filterOption={(input, option) => {
+                                  return (
+                                    option.value
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  );
+                                }}
+                                options={countries
+                                  ?.map((item) => ({
+                                    tel_code: item.tel_code,
+                                    max_phone_digits: item.max_phone_digits,
+                                  }))
+                                  .filter((v, i, a) => a.indexOf(v) === i)
+                                  .map((item) => {
+                                    row.maxDigits = item.max_phone_digits;
+                                    return {
+                                      label: item.tel_code,
+                                      value: item.tel_code,
 
-                                                max_phone_digits:
-                                                  item.max_phone_digits,
-                                              };
-                                            })}
-                                        ></Select>
+                                      max_phone_digits: item.max_phone_digits,
+                                    };
+                                  })}
+                              ></Select>
 
-                                        <Input
-                                          defaultValue={
-                                            row.employee_contact_number
-                                          }
-                                          onChange={(e) => {
-                                            row.employee_contact_number =
-                                              e.target.value;
-                                          }}
-                                          maxLength={
-                                            row.maxDigits
-                                              ? row.maxDigits
-                                              : row.employee_contact_number
-                                                  .length
-                                          }
-                                          placeholder={
-                                            row.maxDigits
-                                              ? `${row.maxDigits} digits`
-                                              : `${row.employee_contact_number.length} digits`
-                                          }
-                                        />
-                                      </Input.Group>
-                                    );
-                                  },
-                                },
-                              ]}
-                              rowUniqueId="hims_d_patient_id"
-                              data={customerEmployees ?? []}
-                              pagination={true}
-                              isEditable={true}
-                              events={{
-                                onSave: (row) => {
-                                  if (
-                                    row?.employee_contact_number &&
-                                    row?.employee_tel_code &&
-                                    row?.employee_name &&
-                                    row?.employee_email
-                                  ) {
-                                    updateCustomerEmployees(row);
-                                  } else {
-                                    swalMessage({
-                                      title: "Please enter all the fields",
-                                      type: "error",
-                                    });
-                                  }
-                                },
-                                onDelete: (row) => deleteCustomerEmployee(row),
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                              <Input
+                                defaultValue={row.employee_contact_number}
+                                onChange={(e) => {
+                                  row.employee_contact_number = e.target.value;
+                                }}
+                                maxLength={
+                                  row.maxDigits
+                                    ? row.maxDigits
+                                    : row.employee_contact_number.length
+                                }
+                                placeholder={
+                                  row.maxDigits
+                                    ? `${row.maxDigits} digits`
+                                    : `${row.employee_contact_number.length} digits`
+                                }
+                              />
+                            </Input.Group>
+                          );
+                        },
+                      },
+                    ]}
+                    rowUniqueId="hims_d_patient_id"
+                    data={customerEmployees ?? []}
+                    pagination={true}
+                    isEditable={true}
+                    events={{
+                      onSave: (row) => {
+                        if (
+                          row?.employee_contact_number &&
+                          row?.employee_tel_code &&
+                          row?.employee_name &&
+                          row?.employee_email
+                        ) {
+                          updateCustomerEmployees(row);
+                        } else {
+                          swalMessage({
+                            title: "Please enter all the fields",
+                            type: "error",
+                          });
+                        }
+                      },
+                      onDelete: (row) => deleteCustomerEmployee(row),
+                    }}
+                  />
                 </div>
               </div>
             </div>

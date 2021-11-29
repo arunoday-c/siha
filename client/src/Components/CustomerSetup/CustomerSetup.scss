@@ -1,22 +1,24 @@
 .customer_setup {
   #customerGrid {
-    .ReactTable {
-      max-height: 78vh !important;
+    .newStickyGrid {
+      .table-scroll {
+        min-height: 73vh;
+        max-height: 73vh;
+        overflow: auto;
+      }
+    }
+  }
+}
+#customerEmployeeGrid {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 53vh;
+      max-height: 53vh;
+      overflow: auto;
     }
   }
 }
 .createEditPopup {
-  .algaeh-modal {
-    .popupInner {
-      // min-height: 75vh;
-      .popLeftDiv {
-        max-height: 73vh;
-      }
-      h6 {
-        font-weight: bold;
-        text-transform: uppercase;
-        font-size: 0.9rem;
-      }
-    }
-  }
+  min-width: 95vw !important;
+  max-width: 95vw !important;
 }
