@@ -1,5 +1,7 @@
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
+  const encodeHexaDecimal = options.encodeHexaDecimal;
+
   return new Promise(function (resolve, reject) {
     try {
       // const header = options.result[0].length > 0 ? options.result[0] : [{}];
@@ -14,6 +16,7 @@ const executePDF = function executePDFMethod(options) {
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
+      const { qr_encrypt } = _.head(options.mainData);
 
       options.mysql
         .executeQuery({
@@ -57,6 +60,8 @@ const executePDF = function executePDFMethod(options) {
           Net Total : ${header.net_total}
           Vat : ${header.total_tax}
           `;
+          if (qr_encrypt === "Y") encodeHexaDecimal(qrString);
+
           const result = {
             header: header,
             detail: _.chain(detail)
