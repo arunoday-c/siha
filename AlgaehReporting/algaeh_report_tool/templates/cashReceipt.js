@@ -23,7 +23,20 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_d_organization ORG on ORG.hims_d_organization_id = H.organization_id 
           where (BH.hims_f_billing_header_id=? or BH.bill_number=?);
           
-          select BH.hims_f_billing_header_id,BH.bill_number ,ST.service_type,	ST.arabic_service_type, S.service_name,	  S.arabic_service_name,    BD.quantity,	BD.unit_cost as price,	BD.gross_amount, BD.patient_resp as patient_share,	  BD.patient_payable,	coalesce(BD.discount_amout,	0)as discount_amount, coalesce(BD.net_amout,	0)as net_amount,	  BD.comapany_resp,	BD.company_tax,	BD.company_payble, BD.patient_tax,	coalesce(BD.company_tax,	0)+   coalesce(BD.comapany_resp,	0) as net_claim, BD.service_type_id,V.new_visit_patient,BH.credit_amount,BH.receiveable_amount,BH.balance_credit from hims_f_billing_header BH       inner join hims_f_patient_visit V on BH.visit_id = V.hims_f_patient_visit_id    inner join hims_f_billing_details BD on BH.hims_f_billing_header_id=BD.hims_f_billing_header_id    inner join hims_d_services S on S.hims_d_services_id = BD.services_id    inner join hims_d_service_type ST on BD.service_type_id = ST.hims_d_service_type_id       where (BH.hims_f_billing_header_id=? or BH.bill_number=?);          `,
+          select BH.hims_f_billing_header_id,BH.bill_number ,ST.service_type,	ST.arabic_service_type, 
+          S.service_name,	  S.arabic_service_name,    BD.quantity,	BD.unit_cost as price,	
+          BD.gross_amount, BD.patient_resp as patient_share,	  
+          BD.patient_payable,	coalesce(BD.discount_amout,	0) as discount_amount, coalesce(BD.net_amout,	0) as net_amount,
+          	  BD.comapany_resp,	BD.company_tax,	BD.company_payble, BD.patient_tax,
+              	coalesce(BD.company_tax,	0)+   coalesce(BD.comapany_resp,	0) as net_claim, 
+                BD.service_type_id,V.new_visit_patient,BH.credit_amount,
+                BH.receiveable_amount,BH.balance_credit 
+                from hims_f_billing_header BH       
+                inner join hims_f_patient_visit V on BH.visit_id = V.hims_f_patient_visit_id    
+                inner join hims_f_billing_details BD on BH.hims_f_billing_header_id=BD.hims_f_billing_header_id    
+                inner join hims_d_services S on S.hims_d_services_id = BD.services_id    
+                inner join hims_d_service_type ST on BD.service_type_id = ST.hims_d_service_type_id       
+                where (BH.hims_f_billing_header_id=? or BH.bill_number=?);          `,
 
           // ["hims_f_billing_header_id","hims_f_billing_header_id","hims_f_billing_header_id","hims_f_billing_header_id"]
           values: [
@@ -114,17 +127,19 @@ const executePDF = function executePDFMethod(options) {
               false
             ),
             total_credit_amount: options.currencyFormat(
-              _.sumBy(detail, (s) => parseFloat(s.credit_amount)),
+              // _.sumBy(detail, (s) => parseFloat(s.credit_amount)),
+              _.head(detail).credit_amount,
               userObject,
               false
             ),
             total_receiveable_amount: options.currencyFormat(
-              _.sumBy(detail, (s) => parseFloat(s.receiveable_amount)),
+              _.head(detail).receiveable_amount,
               userObject,
               false
             ),
             total_balance_amount: options.currencyFormat(
-              _.sumBy(detail, (s) => parseFloat(s.balance_credit)),
+              // _.sumBy(detail, (s) => parseFloat(s.balance_credit)),
+              _.head(detail).balance_credit,
               userObject,
               false
             ),
