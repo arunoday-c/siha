@@ -1,9 +1,14 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
+  const _ = options.loadash;
+  const encodeHexaDecimal = options.encodeHexaDecimal;
+  const hexToBase64String = options.hexToBase64String;
+  const moment = options.moment;
+
   return new Promise(function (resolve, reject) {
     try {
-      const _ = options.loadash;
-      const moment = options.moment;
+      // const _ = options.loadash;
+      // const moment = options.moment;
 
       let input = {};
       const params = options.args.reportParams;
@@ -11,29 +16,10 @@ const executePDF = function executePDFMethod(options) {
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
 
-      // select  IH.*, ID.*, H.*, L.location_description  ,C.customer_name, C.arabic_customer_name,
-      //         C.vat_number,C.address, SO.sales_order_number,SO.customer_po_no,
-      //         SO.sales_order_date from hims_f_sales_invoice_header IH inner join  hims_f_sales_invoice_detail ID
-      //         on IH.hims_f_sales_invoice_header_id=ID.sales_invoice_header_id
-      //         inner join hims_f_sales_dispatch_note_header H  on ID.dispatch_note_header_id=H.hims_f_dispatch_note_header_id
-      //         inner join hims_f_sales_order SO on H.sales_order_id=SO.hims_f_sales_order_id
-      //         left join hims_d_inventory_location L on H.location_id=L.hims_d_inventory_location_id
-      //         left join hims_d_customer C on IH.customer_id=C.hims_d_customer_id
-      //         where IH.invoice_number=?;
-      //         select D.*,U.uom_description, IM.item_code,IM.item_description
-      //         from   hims_f_sales_invoice_header IH
-      //         inner join  hims_f_sales_invoice_detail ID on IH.hims_f_sales_invoice_header_id=ID.sales_invoice_header_id
-      //         inner join hims_f_sales_dispatch_note_header H  on ID.dispatch_note_header_id=H.hims_f_dispatch_note_header_id
-      //         inner join hims_f_sales_dispatch_note_detail D on H.hims_f_dispatch_note_header_id= D. dispatch_note_header_id
-      //         left  join hims_d_inventory_item_master IM on D.item_id=IM.hims_d_inventory_item_master_id
-      //         left join hims_d_inventory_uom U on D.uom_id=U.hims_d_inventory_uom_id
-      //         where IH.invoice_number=?;
+      const { qr_encrypt } = _.head(options.mainData);
 
       options.mysql
         .executeQuery({
@@ -54,7 +40,7 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_f_sales_dispatch_note_batches B on D.hims_f_sales_dispatch_note_detail_id=B.sales_dispatch_note_detail_id
           inner  join hims_d_inventory_item_master IM on B.item_id=IM.hims_d_inventory_item_master_id
           where IH.invoice_number=?  group by item_id order by IM.item_description asc;
-          select organization_name from hims_d_organization`,
+          select organization_name,tax_number,business_registration_number from hims_d_organization;`,
           values: [
             input.invoice_number,
             input.invoice_number,
@@ -65,62 +51,50 @@ const executePDF = function executePDFMethod(options) {
         })
         .then((result) => {
           const grn_details = result[0];
-
-          // const delv_headers = result[1];
-          // const delv_details = result[2];
           const delv_subDetails = result[1];
-          const organization_name = result[2][0].organization_name;
+          const header = result[2][0];
+          let qrString = "";
 
-          // const outputArray = [];
+          console.log(qr_encrypt);
+          // console.log("header=", header);
 
-          // console.log("grn_details", grn_details)
-          // console.log("delv_subDetails", delv_subDetails)
+          if (qr_encrypt === "Y") {
+            console.log("1", header);
+            const detailRst = _.head(grn_details);
 
-          // grn_details.forEach(detail => {
-          //     const dn_header = delv_headers.filter(item => {
-          //         return (
-          //             detail["dispatch_note_header_id"] ==
-          //             item["hims_f_dispatch_note_header_id"]
-          //         );
-          //     });
+            console.log(detailRst);
+            const sellerName = encodeHexaDecimal(
+              "01",
+              header.organization_name
+            );
 
-          //     //looping each dispatch note
-          //     dn_header.forEach(dn => {
-          //         // console.log("dn:", dn)
-          //         const dn_details = delv_details.filter(dn_item => {
-          //             return (
-          //                 dn["hims_f_dispatch_note_header_id"] ==
-          //                 dn_item["dispatch_note_header_id"]
-          //             );
-          //         });
+            const registrationNo = encodeHexaDecimal("02", header.tax_number);
+            const timeStamp = encodeHexaDecimal(
+              "03",
+              moment.utc(moment(detailRst.invoice_date).utc()).format()
+            );
+            const invoiceWithTax = encodeHexaDecimal(
+              "04",
+              detailRst.net_payable
+            );
+            const vatTotal = encodeHexaDecimal("05", detailRst.total_tax);
+            qrString = hexToBase64String(
+              `${sellerName}${registrationNo}${timeStamp}${invoiceWithTax}${vatTotal}`
+            );
+            console.log("qrString", qrString);
+          } else {
+            qrString = `Seller's Name: ${header.organization_name}
+          Seller's TRN: ${header.tax_number}
+          Invoice Date & Time : ${header.invoice_date}
+          Invoice Total (With VAT): SAR ${header.net_total}
+          VAT Total : SAR ${header.total_tax}`;
+            console.log("qrString", qrString);
+          }
 
-          //         const dispatch_items = [];
-
-          //         //dispatch items of each dispatch note
-          //         dn_details.forEach(item => {
-          //             const batches = delv_subDetails.filter(sub => {
-          //                 return (
-          //                     sub["sales_dispatch_note_detail_id"] ==
-          //                     item["hims_f_sales_dispatch_note_detail_id"]
-          //                 );
-          //             });
-
-          //             dispatch_items.push({ ...item, batches });
-          //         });
-
-          //         outputArray.push({
-          //             ...dn,
-          //             dispatch_items: dispatch_items
-          //         });
-          //     });
-          // });
-
-          // let result = ({ ...grn_details[0], delv_subDetails })
-          // console.log("result", result)
-
+          console.log("qrString", qrString);
           resolve({
             ...grn_details[0],
-            organization_name: organization_name,
+            organization_name: header.organization_name,
             invoice_date: moment(grn_details[0].invoice_date).format(
               "YYYY-MM-DD"
             ),
@@ -146,6 +120,7 @@ const executePDF = function executePDFMethod(options) {
             // customer_po_no: outputArray[0].customer_po_no,
             // address: outputArray[0].address,
             details: delv_subDetails,
+            qrData: qrString,
           });
         })
         .catch((error) => {
