@@ -19,7 +19,7 @@ export default {
                 hospital_name, hospital_address, requied_emp_id, bill_cancel_approval_required, \
                 tax_number, algaeh_api_auth_id, created_date, created_by, \
                 updated_date, updated_by,organization_id ) \
-                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.hospital_code,
               input.default_nationality,

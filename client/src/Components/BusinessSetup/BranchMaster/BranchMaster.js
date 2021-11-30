@@ -910,10 +910,10 @@ export default class BranchMaster extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-6 form-group mandatory" }}
+                    div={{ className: "col-6 form-group" }}
                     label={{
-                      forceLabel: "Branch Tax Number",
-                      isImp: true,
+                      forceLabel: "Tax Reg. No.",
+                      isImp: false,
                     }}
                     textBox={{
                       className: "txt-fld",
