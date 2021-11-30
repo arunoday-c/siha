@@ -323,14 +323,14 @@ export default memo(function () {
                     <div style={{ textAlign: "right" }}>
                       <button
                         style={{ marginTop: 10 }}
-                        className="btn"
+                        className="btn btn-default"
                         name="clear"
                       >
                         CLEAR
                       </button>
                       <button
                         type="submit"
-                        style={{ marginTop: 10 }}
+                        style={{ marginTop: 10, marginLeft: 5 }}
                         className="btn btn-primary"
                         name="update"
                       >
@@ -342,7 +342,7 @@ export default memo(function () {
                 <div className="col-12" style={{ display: "none" }}>
                   <div className="row">
                     <div className="col-12 switchDiv">
-                      <label>Remeber search dropdown</label>
+                      <label>Remember search dropdown</label>
                       <Switch
                         className="ant-switch-block"
                         name="searchBarDropDown"
