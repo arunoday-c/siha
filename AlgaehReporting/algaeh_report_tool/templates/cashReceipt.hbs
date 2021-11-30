@@ -7,13 +7,14 @@
 <body>
     <div class="print-body">
 
+<div style="float:right;text-align:center;">
+  <img 
+            style="width:80px;border:1px solid #ccc; padding:10px"
+            src={{barcode "qrcode" qrData}}
+          />
+            </div>
         <section>
             <table class="tableDotPrint1" cell-padding="0">
-
-
-                {{!-- <tr>
-                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-                </tr> --}}
                 <tr>
                     <td style="width:20%">Bill No/ رقم الفاتوره<span class="numberFld">:</span></td>
                     <td style="width:20%"><b>{{header.invoice_number}}</b></td>
@@ -49,28 +50,11 @@
                 </tr>
  <tr>
                     <td>Cashier Name:</td>
-                    <td colspan="3">{{header.cashier_name}}</td>
+                    <td>{{header.cashier_name}}</td>
+                      <td>Insurance Co. Address</td>
+                    <td>{{header.eng_address}}</td>
                 </tr>
-                {{!-- <tr>
-                    <td>Policy/ Class:<span
-                            class="valueText">{{header.network_type}}</span><label class="textArRht"> البوليصة /
-                            الفئة</label></td>
-
-                </tr> --}}
-                {{!-- <tr>
-                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-                </tr>
-                <tr>
-                    <td>Doctor/لطبيب:<span
-                            class="valueText">{{header.full_name}}</span><label class="textArRht"></label></td>
-                    <td>Department:<span
-                            class="valueText">{{header.sub_department_name}}</span><label
-                            class="textArRht">القسم</label></td>
-                </tr> --}}
-
             </table>
-
-
         </section>
         <section>
             <table class="tableDotPrint2" cell-padding="0">
@@ -104,9 +88,9 @@
                             {{/if}} </td>
                         <td class="numberFld">{{gross_amount}}</td>
                         <td class="numberFld">{{discount_amount}}</td>
-                        <td class="numberFld">{{patient_share}}</td>
-                        <td class="numberFld">{{patient_tax}}</td>
-                        <td class="numberFld">{{patient_payable}}</td>
+                        <td class="numberFld">{{net_amount}}</td>
+                        <td class="numberFld">{{total_tax}}</td>
+                        <td class="numberFld">{{total_net_amount}}</td>
                     </tr>
                     {{/each}}
                     {{/each}}
@@ -118,24 +102,17 @@
                     </tr>
                 </tfoot>
             </table>
-          <div style="float:left;width:37%;border:1px solid #ccc; margin-top:20px;text-align:center;">
+          <div style="float:left;width:37%;border:1px solid #ccc; margin-top:5px;text-align:center;">
  <img
-          class="specimenBarcode"
+          class="specimenBarcode" style="margin-top:5px;"
           src={{barcode "code128" header.primary_id_no false}}
         />
-        <p>Primary ID No:{{header.primary_id_no}}</p>
- <p style="text-align: center;border-top:1px solid #ccc;padding-top:10px; ">
+        <p style="margin:0;padding:0;">Primary ID No:{{header.primary_id_no}}</p>
+ <p style="text-align: center;border-top:1px solid #ccc;padding-top:5px; margin:3px 0 0;padding:3px 0;">
                For results enquiry <b style="margin: 0 15px;">0593880131</b> للاستعلام عن النتائج
             </p>
             </div>
-<div style="float:left;width:20%; margin-top:20px;text-align:center;">
-  <img 
-            style="width:94px;border:1px solid #ccc; padding:10px"
-            src={{barcode "qrcode" qrData}}
-          />
-
-            </div>
-             <table class="tableTotal" style="float:right;width:30%;">
+             <table class="tableTotal" style="float:right;width:30%;margin:5px 0 0;">
                {{!-- <tr>
                     <td>Gross Amt.</td>
                     <td>{{total_gross_amount}}</td>
@@ -149,30 +126,25 @@
                 {{#if vat_applicable "Y"}}
                 <tr>
                     <td>VAT Amt. {{default_vat_percent}}%</td>
-                    <td>{{total_patient_tax}}</td>
+                    <td>{{vat_amount_total}}</td>
                     <td class="numberFld">{{default_vat_percent}}% قيمة الضريبة</td>
                 </tr>
-                <tr>
+                {{!-- <tr>
                     <td>Amt. After VAT</td>
                     <td>{{total_patient_payable}}</td>
                     <td class="numberFld">القيمة بعد الضريبة</td>
-                </tr>
+                </tr> --}}
                 {{else}} <tr></tr>{{/if}}
 
                 <tr>
                     <td>Total Amt.</td>
                     <td>{{total_patient_payable}}</td>
                     <td class="numberFld">المبلغ الإجمالي</td>
-                </tr> 
-                 {{!-- <tr>
-                    <td>Credit Amt.</td>
-                    <td>{{total_credit_amount}}</td>
-                    <td class="numberFld">مبلغ التأمين</td>
-                </tr>  --}}
+                </tr>
                  <tr>
                     <td>Received Amt.</td>
                     <td><b>{{total_receiveable_amount}}</b></td>
-                    <td class="numberFld">المبلغ</td>
+                    <td class="numberFld">المبلغ المستلم</td>
                 </tr>
                  <tr>
                     <td>Due Amt.</td>
