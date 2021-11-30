@@ -2933,13 +2933,12 @@ export async function deleteStatement(req, res, next) {
     );
 
     const billHeaders = record[2].map((item) => item.bill_header_id);
-
+    // update hims_f_billing_header set invoice_generated='N' where hims_f_billing_header_id in (?);
     await _mysql.executeQuery({
       query: `update hims_f_insurance_statement set total_gross_amount=(total_gross_amount-${invoiceHeaderGrassAmount}),
       total_company_responsibility=(total_company_responsibility-${invoiceHeaderCompanyResp}),
       total_company_vat=(total_company_vat-${invoiceHeaderCompanyVat}),total_company_payable=(total_company_payable-${invoiceHeaderCompanyPayable})
-      where hims_f_insurance_statement_id=?;
-      -- update hims_f_billing_header set invoice_generated='N' where hims_f_billing_header_id in (?);
+      where hims_f_insurance_statement_id=?;      
       update hims_f_invoice_header SET insurance_statement_id = NULL, insurance_statement_id_2 = NULL, insurance_statement_id_3 = NULL where hims_f_invoice_header_id=?;`,
       values: [
         insurance_statement_id,
