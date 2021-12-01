@@ -103,6 +103,7 @@ export async function generateInsuranceStatement(req, res, next) {
               .forEach((items, key) => {
                 //{ full_name, invoice_number, patient_code }
                 const firstRecords = _.head(items);
+
                 let patObj = {
                   ...firstRecords,
                   sl_no: slno,
@@ -124,6 +125,9 @@ export async function generateInsuranceStatement(req, res, next) {
                   ).toFixed(decimal_places),
                   gross_amount: _.sumBy(items, (s) =>
                     parseFloat(s.gross_amount)
+                  ).toFixed(decimal_places),
+                  patient_payable: _.sumBy(items, (s) =>
+                    parseFloat(s.patient_payable)
                   ).toFixed(decimal_places),
                 };
 
