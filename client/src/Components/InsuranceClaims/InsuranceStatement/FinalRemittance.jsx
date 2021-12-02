@@ -126,16 +126,17 @@ export function FinalRemittance({ data, refetch }) {
         );
         link.click();
       },
-      onCatch: (error) => {
+      onCatch: async (error) => {
+        var text = await error.response.data.text();
+        const { message } = JSON.parse(text);
         AlgaehMessagePop({
           type: "error",
-          display: error,
+          display: message,
         });
       },
     });
   }
   function postTrasaction() {
-    debugger;
     algaehApiCall({
       uri: "/insurance/postTrasaction",
       module: "insurance",

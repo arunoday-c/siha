@@ -88,7 +88,8 @@ export async function generateInsuranceStatement(req, res, next) {
         // console.log("ins_template_name====>", rest, ins_template_name);
         const requireMetaData = rest[ins_template_name]; //fileName.toLowerCase().replace(/ /g, "")];
         // console.log("requireMetaData====>", requireMetaData);
-        const { combineservices, filename, aggregations } = requireMetaData;
+        const { combineservices, filename, aggregations, footer } =
+          requireMetaData;
         const fileName = filename;
         const fileName1 = result.length > 0 ? result[0]["file_name"] : "";
         const insurance_statement_number1 =
@@ -221,7 +222,7 @@ export async function generateInsuranceStatement(req, res, next) {
                 : "";
 
               worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
-                row.eachCell((cell) => {
+                row.eachCell((cell, cIndex) => {
                   if (typeof cell.value === "string") {
                     cell.value = String(cell.value)
                       .replace("#CLINICNAME", clinincNameMapping)
@@ -239,6 +240,8 @@ export async function generateInsuranceStatement(req, res, next) {
                       });
                     }
                   }
+                  const cWidth = cell.value ? cell.value.toString().length : 10;
+                  worksheet.getColumn(cIndex).width = Math.max(cWidth, 30);
                 });
 
                 _lastRow = rowNumber;
@@ -263,9 +266,34 @@ export async function generateInsuranceStatement(req, res, next) {
                       : ""
                   );
                 });
-                worksheet.insertRow(_lastRow + index + 1, cols);
+                _lastRow = _lastRow + index + 1;
+                worksheet.insertRow(_lastRow, cols);
                 // worksheet.getRow(_lastRow + index + 1).font = { size: 18 };
               });
+              if (footer && Array.isArray(footer)) {
+                let lstRow = worksheet.actualRowCount;
+                footer.forEach((item, index) => {
+                  lstRow = lstRow + 1;
+                  worksheet.insertRow(lstRow, [
+                    item.name,
+                    item.value ? item.value : "",
+                  ]);
+                  // console.log("lastRow===>", lstRow);
+                  if (item.merge) {
+                    const mCells = item.merge.replace(/#row/g, lstRow);
+                    worksheet.mergeCells(mCells);
+                  }
+                  if (item.style) {
+                    worksheet
+                      .getRow(lstRow)
+                      .eachCell({ includeEmpty: false }, (cell, cIndex) => {
+                        Object.keys(item.style).forEach((sItem) => {
+                          cell[sItem] = item.style[sItem];
+                        });
+                      });
+                  }
+                });
+              }
 
               res.setHeader(
                 "Content-Type",

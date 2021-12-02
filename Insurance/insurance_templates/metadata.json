@@ -37,6 +37,169 @@
         "company_payable"
       ]
     },
+    "footer": [
+      {
+        "name": "Please send remittance to:",
+        "merge": "A#row:B#row",
+
+        "style": {
+          "border": {
+            "top": { "style": "thin" },
+            "left": { "style": "thin" },
+            "bottom": { "style": "thin" },
+            "right": { "style": "thin" }
+          },
+          "alignment": {
+            "vertical": "middle",
+            "horizontal": "left"
+          }
+        }
+      },
+      {
+        "name": "Bank Name",
+        "value": "Alinma Bank",
+        "style": {
+          "border": {
+            "top": { "style": "thin" },
+            "left": { "style": "thin" },
+            "bottom": { "style": "thin" },
+            "right": { "style": "thin" }
+          },
+          "alignment": {
+            "vertical": "middle",
+            "horizontal": "left"
+          }
+        }
+      },
+      {
+        "name": "Account Name",
+        "value": "Modern Care Medical Complex Co.",
+        "style": {
+          "border": {
+            "top": { "style": "thin" },
+            "left": { "style": "thin" },
+            "bottom": { "style": "thin" },
+            "right": { "style": "thin" }
+          },
+          "alignment": {
+            "vertical": "middle",
+            "horizontal": "left"
+          }
+        }
+      },
+      {
+        "name": "Account No.",
+        "value": "68202571885000",
+        "style": {
+          "border": {
+            "top": { "style": "thin" },
+            "left": { "style": "thin" },
+            "bottom": { "style": "thin" },
+            "right": { "style": "thin" }
+          },
+          "alignment": {
+            "vertical": "middle",
+            "horizontal": "left"
+          }
+        }
+      },
+      {
+        "name": "IBAN No.",
+        "value": "SA58OO435345FDH",
+        "style": {
+          "border": {
+            "top": { "style": "thin" },
+            "left": { "style": "thin" },
+            "bottom": { "style": "thin" },
+            "right": { "style": "thin" }
+          },
+          "alignment": {
+            "vertical": "middle",
+            "horizontal": "left"
+          }
+        }
+      },
+      {
+        "name": "Swift Code",
+        "value": "INMASARI",
+        "style": {
+          "border": {
+            "top": { "style": "thin" },
+            "left": { "style": "thin" },
+            "bottom": { "style": "thin" },
+            "right": { "style": "thin" }
+          },
+          "alignment": {
+            "vertical": "middle",
+            "horizontal": "left"
+          }
+        }
+      },
+      {
+        "name": "Received By",
+        "value": "",
+        "style": {
+          "border": {
+            "top": { "style": "thin" },
+            "left": { "style": "thin" },
+            "bottom": { "style": "thin" },
+            "right": { "style": "thin" }
+          },
+          "alignment": {
+            "vertical": "middle",
+            "horizontal": "left"
+          }
+        }
+      },
+      {
+        "name": "Name",
+        "value": "",
+        "style": {
+          "border": {
+            "top": { "style": "thin" },
+            "left": { "style": "thin" },
+            "bottom": { "style": "thin" },
+            "right": { "style": "thin" }
+          },
+          "alignment": {
+            "vertical": "middle",
+            "horizontal": "left"
+          }
+        }
+      },
+      {
+        "name": "Signature",
+        "value": "",
+        "style": {
+          "border": {
+            "top": { "style": "thin" },
+            "left": { "style": "thin" },
+            "bottom": { "style": "thin" },
+            "right": { "style": "thin" }
+          },
+          "alignment": {
+            "vertical": "middle",
+            "horizontal": "left"
+          }
+        }
+      },
+      {
+        "name": "Date",
+        "value": "",
+        "style": {
+          "border": {
+            "top": { "style": "thin" },
+            "left": { "style": "thin" },
+            "bottom": { "style": "thin" },
+            "right": { "style": "thin" }
+          },
+          "alignment": {
+            "vertical": "middle",
+            "horizontal": "left"
+          }
+        }
+      }
+    ],
     "columns": [
       { "name": "SL NO.", "mapping": "sl_no" },
       { "name": "Policy No.", "mapping": "policy_number" },
