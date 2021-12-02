@@ -541,32 +541,33 @@ const AddItems = ($this) => {
       ? true
       : false;
 
-  let item_exists = $this.state.medicationitems.find(
-    (f) => f.item_id === $this.state.item_id
-  );
+  // let item_exists = $this.state.medicationitems.find(
+  //   (f) => f.item_id === $this.state.item_id
+  // );
   if ($this.state.updateButton && validate) {
     // deleteItems($this, $this.state.rowDetails);
     updateItems($this, $this.state.rowDetails);
   } else if (!$this.state.updateButton && validate) {
-    if (item_exists === undefined) {
-      debugger;
-      item_exists = $this.props.recentMediction.find(
-        (f) => f.item_id === $this.state.item_id
-      );
-      if (item_exists === undefined) {
-        AddItemsOrUpdate($this);
-      } else {
-        swalMessage({
-          title: "Selected Item Already Exists.",
-          type: "error",
-        });
-      }
-    } else {
-      swalMessage({
-        title: "Selected Item Already Exists.",
-        type: "error",
-      });
-    }
+    AddItemsOrUpdate($this);
+    // if (item_exists === undefined) {
+    //   debugger;
+    //   item_exists = $this.props.recentMediction.find(
+    //     (f) => f.item_id === $this.state.item_id
+    //   );
+    //   if (item_exists === undefined) {
+    //     AddItemsOrUpdate($this);
+    //   } else {
+    //     swalMessage({
+    //       title: "Selected Item Already Exists.",
+    //       type: "error",
+    //     });
+    //   }
+    // } else {
+    //   swalMessage({
+    //     title: "Selected Item Already Exists.",
+    //     type: "error",
+    //   });
+    // }
   } else {
     swalMessage({
       title: "Please enter all detils of prescription",

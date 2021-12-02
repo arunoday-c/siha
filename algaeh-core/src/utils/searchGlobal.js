@@ -33,7 +33,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "patientappoinment",
         searchQuery:
-          "select PA.patient_id,PA.patient_code, PA.appointment_from_time, PA.patient_name,\
+          "select SQL_CALC_FOUND_ROWS  PA.patient_id,PA.patient_code, PA.appointment_from_time, PA.patient_name,\
               PA.contact_number, P.employee_id, E.full_name as provider_name, SD.sub_department_name, \
               PA.provider_id, PA.sub_department_id, PA.arabic_name,PA.appointment_status_id, \
               PA.date_of_birth, PA.age,PA.email, PA.gender, PA.number_of_slot as no_of_slots, PA.title_id \
@@ -221,7 +221,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "InvoiceGen",
         searchQuery:
-          "select hims_f_invoice_header_id, invoice_number, invoice_date, pat.patient_code, pat.full_name,\
+          "select SQL_CALC_FOUND_ROWS  hims_f_invoice_header_id, invoice_number, invoice_date, pat.patient_code, pat.full_name,\
           pv.visit_code from hims_f_invoice_header , hims_f_patient pat,  hims_f_patient_visit pv where \
           hims_f_invoice_header.patient_id = pat.hims_d_patient_id and pv.hims_f_patient_visit_id = hims_f_invoice_header.visit_id \
           and pv.patient_id= pat.hims_d_patient_id and hims_f_invoice_header.hospital_id=" +
@@ -513,7 +513,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "loan_apply",
         searchQuery:
-          "select  hims_f_loan_application_id,loan_application_number,employee_id, loan_application_date,approved_amount, \
+          "select SQL_CALC_FOUND_ROWS   hims_f_loan_application_id,loan_application_number,employee_id, loan_application_date,approved_amount, \
           start_month, start_year, emp.employee_code, emp.full_name from hims_f_loan_application, hims_d_employee emp \
           where hims_f_loan_application.employee_id = emp.hims_d_employee_id and hims_f_loan_application.hospital_id=" +
           hospitalId,
@@ -852,7 +852,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "hospitalserviceonly",
         searchQuery:
-          "SELECT hims_d_services_id as hims_d_item_master_id,service_code,service_name,arabic_service_name,service_type_id FROM hims_d_services where service_type_id in (1,2,5,6,7,11,15)",
+          "select SQL_CALC_FOUND_ROWS  hims_d_services_id as hims_d_item_master_id,service_code,service_name,arabic_service_name,service_type_id FROM hims_d_services where service_type_id in (1,2,5,6,7,11,15)",
         orderBy: "hims_d_services_id desc",
         // inputSequence: ["service_type_id", "service_type_id"],
       },
@@ -912,7 +912,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "pharmacyUsers",
         searchQuery:
-          " select algaeh_d_app_user_id,employee_id,E.full_name,E.employee_code,SD.sub_department_name\
+          " select SQL_CALC_FOUND_ROWS  algaeh_d_app_user_id,employee_id,E.full_name,E.employee_code,SD.sub_department_name\
           from algaeh_d_app_user U  inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id\
           inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
           where E.record_status='A' and E.hospital_id=? and SD.department_type='PH'\

@@ -108,22 +108,8 @@
 
             {{#each groupDetail}}
 
-              {{#if result "Negative"}}
-                <tr>
-                  <td class="textEngLft" bgcolor="#009688" text="white"><label
-                      style="color: white;"
-                    >Test Result</label></td>
-                  <td class="textEngCtr" bgcolor="#009688" text="white"><span
-                      style="color: white;"
-                    >{{result}}</span></td>
-                  <td class="textEngCtr" bgcolor="#009688" text="white"><span
-                      style="color: white;"
-                    > غير مصاب</span></td>
-                  <td class="textArbRht" bgcolor="#009688" text="white"><label
-                      style="color: white;"
-                    >نتيجة الاختبار</label></td>
-                </tr>
-              {{else}}
+              {{#if result "Positive"}}
+
                 <tr>
                   <td class="textEngLft" bgcolor="#f44336" text="white"><label
                       style="color: white;"
@@ -139,7 +125,57 @@
                     >نتيجة الاختبار</label></td>
                 </tr>
               {{/if}}
+              {{#if result "Negative"}}
+                <tr>
+                  <td class="textEngLft" bgcolor="#009688" text="white"><label
+                      style="color: white;"
+                    >Test Result</label></td>
+                  <td class="textEngCtr" bgcolor="#009688" text="white"><span
+                      style="color: white;"
+                    >{{result}}</span></td>
+                  <td class="textEngCtr" bgcolor="#009688" text="white"><span
+                      style="color: white;"
+                    > غير مصاب</span></td>
+                  <td class="textArbRht" bgcolor="#009688" text="white"><label
+                      style="color: white;"
+                    >نتيجة الاختبار</label></td>
+                </tr>
+              {{/if}}
+              {{#if result ""}}
+                <tr>
+                  <td class="textEngLft" bgcolor="#ccc" text="black"><label
+                      style="color: black;"
+                    >Test Result</label></td>
+                  <td
+                    colspan="2"
+                    class="textEngCtr"
+                    bgcolor="#ccc"
+                    text="black"
+                  ><label style="color: black;">Not Available</label></td>
 
+                  <td class="textArbRht" bgcolor="#ccc" text="black"><label
+                      style="color: black;"
+                    >نتيجة الاختبار</label></td>
+                </tr>
+
+              {{/if}}
+              {{#if result null}}
+                <tr>
+                  <td class="textEngLft" bgcolor="#ccc" text="black"><label
+                      style="color: black;"
+                    >Test Result</label></td>
+                  <td
+                    colspan="2"
+                    class="textEngCtr"
+                    bgcolor="#ccc"
+                    text="black"
+                  ><label style="color: black;">Not Available</label></td>
+
+                  <td class="textArbRht" bgcolor="#ccc" text="black"><label
+                      style="color: black;"
+                    >نتيجة الاختبار</label></td>
+                </tr>
+              {{/if}}
             {{/each}}{{/each}}{{/each}}
       {{else}}
         <tr>
