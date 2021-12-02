@@ -662,7 +662,7 @@ class OrderMedication extends Component {
                         div={{ className: "col-4 form-group" }}
                         label={{ forceLabel: "Start Date" }}
                         textBox={{ className: "txt-fld", name: "start_date" }}
-                        minDate={new Date()}
+                        // minDate={new Date()}
                         events={{
                           onChange: datehandle.bind(this, this),
                         }}
