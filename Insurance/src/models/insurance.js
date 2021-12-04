@@ -352,14 +352,12 @@ export default {
             _mysql
               .executeQueryWithTransaction({
                 query:
-                  "INSERT INTO `finance_account_child` (child_name,ledger_code,head_id, eng_address, ar_address, \
+                  "INSERT INTO `finance_account_child` (child_name,ledger_code,head_id, \
                     created_from,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?,?)",
                 values: [
                   input[0].insurance_sub_name,
                   input[0].insurance_sub_code,
                   head_id,
-                  input[0].eng_address,
-                  input[0].ar_address,
                   "S",
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
@@ -382,6 +380,8 @@ export default {
                   "user_id",
                   "creidt_limit",
                   "creidt_limit_req",
+                  "eng_address",
+                  "ar_address",
                 ];
 
                 _mysql
