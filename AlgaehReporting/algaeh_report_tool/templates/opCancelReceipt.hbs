@@ -1,8 +1,12 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
 
-<body>
     <div class="print-body">
-
+<span style="float:right;text-align:center;">
+  <img 
+            style="width:100px;border:1px solid #ccc; padding:10px"
+            src={{barcode "qrcode" qrData}}
+          />
+            </span>
         <section>
             <table class="tableForLabel" cell-padding="0">
 
@@ -195,4 +199,3 @@
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
     </div>
-</body>
