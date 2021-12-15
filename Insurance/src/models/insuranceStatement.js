@@ -266,33 +266,35 @@ export async function generateInsuranceStatement(req, res, next) {
                       : ""
                   );
                 });
-                _lastRow = _lastRow + index + 1;
+                _lastRow = _lastRow + 1; //index + 1;
+
                 worksheet.insertRow(_lastRow, cols);
                 // worksheet.getRow(_lastRow + index + 1).font = { size: 18 };
               });
               if (footer && Array.isArray(footer)) {
-                let lstRow = worksheet.actualRowCount;
-                footer.forEach((item, index) => {
-                  lstRow = lstRow + 1;
-                  worksheet.insertRow(lstRow, [
-                    item.name,
-                    item.value ? item.value : "",
+                for (let f = 0; f < footer.length; f++) {
+                  const footerItem = footer[f];
+                  _lastRow = _lastRow + 1;
+
+                  worksheet.insertRow(_lastRow, [
+                    footerItem.name,
+                    footerItem.value ? footerItem.value : "",
                   ]);
-                  // console.log("lastRow===>", lstRow);
-                  if (item.merge) {
-                    const mCells = item.merge.replace(/#row/g, lstRow);
+
+                  if (footerItem.merge) {
+                    const mCells = footerItem.merge.replace(/#row/g, _lastRow);
                     worksheet.mergeCells(mCells);
                   }
-                  if (item.style) {
+                  if (footerItem.style) {
                     worksheet
-                      .getRow(lstRow)
+                      .getRow(_lastRow)
                       .eachCell({ includeEmpty: false }, (cell, cIndex) => {
-                        Object.keys(item.style).forEach((sItem) => {
-                          cell[sItem] = item.style[sItem];
+                        Object.keys(footerItem.style).forEach((sItem) => {
+                          cell[sItem] = footerItem.style[sItem];
                         });
                       });
                   }
-                });
+                }
               }
 
               res.setHeader(

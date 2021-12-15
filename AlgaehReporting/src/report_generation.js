@@ -861,17 +861,29 @@ export default {
                                   });
                                   const _fs = fs.createReadStream(_rOut);
                                   _fs.on("end", async () => {
-                                    const axiosRes = await axios(
-                                      //"http://localhost:3024/fileShare",
-                                      "http://localhost:3024/uploadFile",
-                                      {
-                                        method: "POST",
-                                        data: {
-                                          filePath: _rOut,
-                                          shortUrl: shortUrl,
-                                        },
+                                    if (qrCodeReport) {
+                                      try {
+                                        const form = new FormData();
+                                        form.append(
+                                          "file",
+                                          rptPath
+                                          // fs.createReadStream(rptPath)
+                                        );
+                                        form.append("shortUrl", shortUrl);
+                                        await axios
+                                          .post(`${qrUrl}uploadFile`, form, {
+                                            headers: { ...form.getHeaders() },
+                                          })
+                                          .catch((error) => {
+                                            console.error(error.message);
+                                          });
+                                      } catch (e) {
+                                        console.error(
+                                          "QR Code Server issue===>",
+                                          e
+                                        );
                                       }
-                                    );
+                                    }
 
                                     fs.unlink(_rOut);
                                     for (

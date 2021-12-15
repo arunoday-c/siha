@@ -18,6 +18,14 @@ const folderPath = path.join(__dirname, "../", "templates");
 if (!fs.existsSync(folderPath)) {
   fs.mkdirSync(folderPath);
 }
+process.on("uncaughtException", (error: any, source: any) => {
+  console.error("uncaughtException Error====>", error);
+  console.error("uncaughtException Source====>", source);
+});
+process.on("unhandledRejection", (error: any, source: any) => {
+  console.error("unhandledRejection Error====>", error);
+  console.error("unhandledRejection Source====>", source);
+});
 app.post("/fileShare", (req: Request, res: Response) => {
   try {
     const { filePath, shortUrl } = req.body;
@@ -36,7 +44,7 @@ app.post("/fileShare", (req: Request, res: Response) => {
     } else {
       throw new Error("File path does not exists");
     }
-  } catch (err) {
+  } catch (err: any) {
     res.status(400).json({ message: err.message, success: false }).end();
   }
 });

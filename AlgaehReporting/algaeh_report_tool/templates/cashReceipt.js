@@ -186,7 +186,7 @@ const executePDF = function executePDFMethod(options) {
 
             qrData: qrString,
           };
-          console.log(result);
+          // console.log(result);
           resolve(result);
         });
 
