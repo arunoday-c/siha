@@ -136,6 +136,37 @@ export function FinalRemittance({ data, refetch }) {
       },
     });
   }
+  function generateInsuranceReport() {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "insStatementServiceReport",
+          pageOrentation: "portrait",
+          reportParams: [
+            {
+              name: "hims_f_insurance_statement_id",
+              value: data?.hims_f_insurance_statement_id,
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        // const documentName="Salary Slip"
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=`;
+        window.open(origin);
+      },
+    });
+  }
+
   function postTrasaction() {
     algaehApiCall({
       uri: "/insurance/postTrasaction",
@@ -177,6 +208,14 @@ export function FinalRemittance({ data, refetch }) {
         disabled={!data}
       >
         Download Statement
+      </button>
+      <button
+        style={{ float: "right" }}
+        className="btn btn-default"
+        onClick={generateInsuranceReport}
+        disabled={!data}
+      >
+        Download Report
       </button>
 
       <button

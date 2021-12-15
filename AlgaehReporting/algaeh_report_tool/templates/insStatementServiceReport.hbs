@@ -1,0 +1,77 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div class="print-body">
+    <section>
+
+      <table class="tableDotPrint1" cell-padding="0">
+        <tr>
+          <td style="width:20%">Statement No.<span
+              class="numberFld"
+            >:</span></td>
+          <td style="width:80%"><b
+            >{{header.insurance_statement_number}}</b></td>
+        </tr>
+        <tr>
+          <td style="width:20%">Company Name<span
+              class="numberFld"
+            >:</span></td>
+          <td style="width:80%"><b>{{header.insurance_sub_name}}</b></td>
+        </tr>
+        <tr>
+          <td style="width:20%">Vat No.<span class="numberFld">:</span></td>
+          <td style="width:80%"><b>{{header.transaction_number}}</b></td>
+        </tr>
+        <tr>
+          <td style="width:20%">Address<span class="numberFld">:</span></td>
+          <td style="width:80%"><b>{{header.eng_address}}</b></td>
+        </tr>
+        <tr>
+          <td style="width:20%">From Date<span class="numberFld">:</span></td>
+          <td style="width:80%"><b>{{header.from_date}}</b></td>
+        </tr>
+        <tr>
+          <td style="width:20%">To Date<span class="numberFld">:</span></td>
+          <td style="width:80%"><b>{{header.to_date}}</b></td>
+        </tr>
+
+      </table>
+    </section>
+
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Service Code</th>
+            <th>Service Name</th>
+            <th>Qty</th>
+            <th>Company Responsibility</th>
+            <th>Company Tax</th>
+            <th>Company Payable</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each details}}
+            <tr>
+              <td datatype="string">{{inc @index}}</td>
+              <td class="">{{service_code}}</td>
+              <td class="txtFld">{{service_name}}</td>
+              <td>{{quantity}}</td>
+              <td class="numberFld">{{company_resp}}</td>
+              <td class="numberFld">{{company_tax}}</td>
+              <td class="numberFld">{{company_payable}}</td>
+            </tr>
+          {{/each}}
+          <tr class="numberFldTotalBottom">
+            <td colspan="4" class="numberFld"></td>
+            <td class="numberFld">{{total_company_resp}}</td>
+            <td class="numberFld">{{total_company_tax}}</td>
+            <td class="numberFld">{{total_company_payable}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+  </div>
+</body>
