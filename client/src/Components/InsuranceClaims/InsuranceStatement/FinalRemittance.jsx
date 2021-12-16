@@ -161,7 +161,7 @@ export function FinalRemittance({ data, refetch }) {
       onSuccess: (res) => {
         const urlBlob = URL.createObjectURL(res.data);
         // const documentName="Salary Slip"
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=`;
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Tax Invoice`;
         window.open(origin);
       },
     });

@@ -8,8 +8,8 @@ const executePDF = function executePDFMethod(options) {
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
-      console.log("input", input);
-
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
       options.mysql
         .executeQuery({
           query: `select INS.insurance_statement_number,INS.seq_statememt_number,INS.total_gross_amount,INS.total_company_responsibility,INS.total_company_vat,INS.total_company_payable,INS.from_date,INS.to_date,INS.transaction_date,SUB.insurance_sub_name,SUB.arabic_sub_name,SUB.eng_address,SUB.ar_address,SUB.transaction_number
@@ -33,18 +33,30 @@ const executePDF = function executePDFMethod(options) {
           const data = {
             header: header,
             details: detail,
-            total_company_resp: options.currencyFormat(
+            net_company_resp: options.currencyFormat(
               _.sumBy(detail, (s) => parseFloat(s.company_resp)),
               options.args.crypto
             ),
-            total_company_tax: options.currencyFormat(
+            net_company_tax: options.currencyFormat(
               _.sumBy(detail, (s) => parseFloat(s.company_tax)),
               options.args.crypto
             ),
-            total_company_payable: options.currencyFormat(
+            net_company_payable: options.currencyFormat(
               _.sumBy(detail, (s) => parseFloat(s.company_payable)),
               options.args.crypto
             ),
+            currency: {
+              decimal_places,
+              addSymbol: false,
+              symbol_position,
+              currency_symbol,
+            },
+            currencyheader: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
           };
           resolve(data);
         })

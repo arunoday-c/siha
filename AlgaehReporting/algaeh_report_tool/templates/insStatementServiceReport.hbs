@@ -6,33 +6,35 @@
 
       <table class="tableDotPrint1" cell-padding="0">
         <tr>
-          <td style="width:20%">Statement No.<span
-              class="numberFld"
-            >:</span></td>
-          <td style="width:80%"><b
+          <td style="width:20%">Statement No.</td>
+          <td style="width:60%"><b
             >{{header.insurance_statement_number}}</b></td>
+          <td style="width:20%" class="numberFld">رقم البيان</td>
         </tr>
         <tr>
-          <td style="width:20%">Company Name<span
-              class="numberFld"
-            >:</span></td>
-          <td style="width:80%"><b>{{header.insurance_sub_name}}</b></td>
+          <td style="width:20%">Company Name</td>
+          <td style="width:60%"><b>{{header.insurance_sub_name}}</b></td>
+          <td style="width:20%" class="numberFld">اسم الشركة</td>
         </tr>
         <tr>
-          <td style="width:20%">Vat No.<span class="numberFld">:</span></td>
-          <td style="width:80%"><b>{{header.transaction_number}}</b></td>
+          <td style="width:20%">Vat No.</td>
+          <td style="width:60%"><b>{{header.transaction_number}}</b></td>
+          <td style="width:20%" class="numberFld">الرقم الضريبي</td>
         </tr>
         <tr>
-          <td style="width:20%">Address<span class="numberFld">:</span></td>
-          <td style="width:80%"><b>{{header.eng_address}}</b></td>
+          <td style="width:20%">Address</td>
+          <td style="width:60%"><b>{{header.eng_address}}</b></td>
+          <td style="width:20%" class="numberFld">تبوك</td>
         </tr>
         <tr>
-          <td style="width:20%">From Date<span class="numberFld">:</span></td>
-          <td style="width:80%"><b>{{header.from_date}}</b></td>
+          <td style="width:20%">From Date</td>
+          <td style="width:60%"><b>{{header.from_date}}</b></td>
+          <td style="width:20%" class="numberFld">من التاريخ</td>
         </tr>
         <tr>
-          <td style="width:20%">To Date<span class="numberFld">:</span></td>
-          <td style="width:80%"><b>{{header.to_date}}</b></td>
+          <td style="width:20%">To Date</td>
+          <td style="width:60%"><b>{{header.to_date}}</b></td>
+          <td style="width:20%" class="numberFld">حتي اليوم</td>
         </tr>
 
       </table>
@@ -63,13 +65,38 @@
               <td class="numberFld">{{company_payable}}</td>
             </tr>
           {{/each}}
-          <tr class="numberFldTotalBottom">
+          {{!-- <tr class="numberFldTotalBottom">
             <td colspan="4" class="numberFld"></td>
-            <td class="numberFld">{{total_company_resp}}</td>
-            <td class="numberFld">{{total_company_tax}}</td>
-            <td class="numberFld">{{total_company_payable}}</td>
-          </tr>
+            <td class="numberFld">{{net_company_resp}}</td>
+            <td class="numberFld">{{net_company_tax}}</td>
+            <td class="numberFld">{{net_company_payable}}</td>
+          </tr> --}}
         </tbody>
+      </table>
+      <table class="tableTotal" style="float:right;width:30%;margin:5px 0 0;">
+
+        <tr>
+          <td>Total Amt.</td>
+          <td>{{numberFormating
+              header.total_company_responsibility
+              currencyheader
+            }}</td>
+          <td class="numberFld">المبلغ الإجمالي</td>
+        </tr>
+        <tr>
+          <td>Tax Amt.</td>
+          <td>{{numberFormating header.total_company_vat currencyheader}}</td>
+
+          <td class="numberFld">قيمة الضريبة</td>
+        </tr>
+        <tr>
+          <td>Net Amt.</td>
+          <td>{{numberFormating
+              header.total_company_payable
+              currencyheader
+            }}</td>
+          <td class="numberFld">كمية الشبكة</td>
+        </tr>
       </table>
     </section>
     {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
