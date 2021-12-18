@@ -20,6 +20,9 @@ const executePDF = function executePDFMethod(options) {
       if (input.nationality_id > 0) {
         strData += ` and P.nationality_id= ${input.nationality_id}`;
       }
+      if (input.primary_sub_id > 0) {
+        strData += ` and SI.hims_d_insurance_sub_id=${input.primary_sub_id}`;
+      }
 
       if (input.is_Insurance == "Y") {
         strData += ` and V.insured='Y'`;

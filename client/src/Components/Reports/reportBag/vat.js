@@ -210,6 +210,22 @@ export default function Vat({
               data: undefined,
             },
           },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "primary_sub_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Sub Company",
+            link: {
+              uri: "/insurance/getSubInsurance",
+              module: "insurance",
+            },
+            dataSource: {
+              textField: "insurance_sub_name",
+              valueField: "hims_d_insurance_sub_id",
+            },
+          },
         ],
       },
       {
