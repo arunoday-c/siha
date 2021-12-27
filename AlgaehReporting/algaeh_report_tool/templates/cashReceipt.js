@@ -59,35 +59,35 @@ const executePDF = function executePDFMethod(options) {
 
           let qrString = "";
 
-          if (qr_encrypt === "Y") {
+          if (qr_encrypt === "Y" && header) {
             const sellerName = encodeHexaDecimal(
               "01",
-              header.organization_name
+              header.organization_name ? header.organization_name:""
             );
             const registrationNo = encodeHexaDecimal(
               "02",
-              header.business_registration_number
+              header.business_registration_number?header.business_registration_number:""
             );
             const timeStamp = encodeHexaDecimal(
               "03",
-              moment.utc(moment(header.invoice_date).utc()).format()
+              moment.utc(moment(header.invoice_date?header.invoice_date:new Date()).utc()).format()
             );
             const invoiceWithTax = encodeHexaDecimal(
               "04",
               (
-                parseFloat(header.net_total) + parseFloat(header.total_tax)
+                parseFloat(header.net_total?header.net_total:0) + parseFloat(header.total_tax?header.total_tax:0)
               ).toString()
             );
-            const vatTotal = encodeHexaDecimal("05", header.total_tax);
+            const vatTotal = encodeHexaDecimal("05", header.total_tax?header.total_tax:0);
             qrString = hexToBase64String(
               `${sellerName}${registrationNo}${timeStamp}${invoiceWithTax}${vatTotal}`
             );
           } else {
-            qrString = `Seller's Name: ${header.organization_name}
-          Seller's TRN: ${header.business_registration_number}
-          Invoice Date & Time : ${header.invoice_date}
-          Invoice Total (With VAT): SAR ${header.net_total}
-          VAT Total : SAR ${header.total_tax}`;
+            qrString = `Seller's Name: ${header.organization_name?header.organization_name:""}
+          Seller's TRN: ${header.business_registration_number?header.business_registration_number:""}
+          Invoice Date & Time : ${header.invoice_date?header.invoice_date:""}
+          Invoice Total (With VAT): SAR ${header.net_total?header.net_total:""}
+          VAT Total : SAR ${header.total_tax?header.total_tax:""}`;
           }
 
           const result = {
@@ -186,7 +186,7 @@ const executePDF = function executePDFMethod(options) {
 
             qrData: qrString,
           };
-          // console.log(result);
+          console.log(result);
           resolve(result);
         });
 

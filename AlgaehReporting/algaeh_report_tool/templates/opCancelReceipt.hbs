@@ -10,21 +10,13 @@
         <section>
             <table class="tableForLabel" cell-padding="0">
 
+               
                 <tr>
-                    <td><label class="textEnLft">VAT Reg No.</label>:<span
-                            class="valueText">{{header.tax_number}}</span><label class="textArRht">الرقم الضريبي</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-                </tr>
-                <tr>
-                    <td><label class="textEnLft">Invoice No</label>:<span
-                            class="valueText">{{header.invoice_number}}</span><label class="textArRht">رقم
-                            الفاتورة</label></td>
-                    <td><label class="textEnLft">Invoice Date</label>:<span
+                    <td><label class="textEnLft">Credit Note No.</label>:<span
+                            class="valueText">{{header.invoice_number}}</span><label class="textArRht">رقم الاشعار الدائن</label></td>
+                    <td><label class="textEnLft">Credit Note Date</label>:<span
                             class="valueText">{{dateTime header.invoice_date "date"}}</span><label
-                            class="textArRht">تاريخ الفاتورة</label></td>
+                            class="textArRht">تاريخ الاشعار الدائن</label></td>
                 </tr>
                 <tr>
                     <td><label class="textEnLft">Patient Name</label>:<span
@@ -65,6 +57,16 @@
                     <td><label class="textEnLft">Department</label>:<span
                             class="valueText">{{header.sub_department_name}}</span><label
                             class="textArRht">القسم</label></td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+                </tr> <tr>
+                    <td><label class="textEnLft">VAT Reg No.</label>:<span
+                            class="valueText">{{header.tax_number}}</span><label class="textArRht">الرقم الضريبي</label>
+                    </td>
+					   <td><label class="textEnLft">Bill No.</label>:<span
+                            class="valueText">{{header.bill_number}}</span><label class="textArRht">رقم الفاتوره</label>
+                    </td>
                 </tr>
 
             </table>
